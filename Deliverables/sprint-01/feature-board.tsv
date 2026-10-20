@@ -1,0 +1,15 @@
+Title	URL	Assignees	Status	Estimated size	Real size	Labels
+Import existing Ailixir codebase	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/2		Product Backlog			sprint 2 candidate
+Review existing structure, dependencies & tests	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/3		Product Backlog			sprint 2 candidate
+Identify reusable components & clean up legacy codebase	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/13		Product Backlog			sprint 2 candidate
+Evaluate JValue Crawler integration	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/5		Product Backlog			sprint 2 candidate
+Define patient journey input format	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/1		Product Backlog			sprint 2 candidate
+Create & obtain synthetic patient test journeys	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/14		Product Backlog			sprint 2 candidate
+Define journey matcher architecture	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/4		Product Backlog			sprint 2 candidate
+Define MCP server inputs and outputs	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/7		Product Backlog			sprint 2 candidate
+Review indexing requirements for external resources	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/6		Product Backlog			
+Design matching evaluation criteria	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/11		Product Backlog			
+Implement keyword-based matching baseline	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/8		Product Backlog			
+Research graph-based matching	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/10		Product Backlog			
+Research AI-based matching and summarization	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/9		Product Backlog			
+Establish automated testing and project documentation	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/12		Product Backlog			
