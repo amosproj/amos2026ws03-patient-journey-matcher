@@ -1,0 +1,21 @@
+Title	URL	Assignees	Status	Labels
+Evaluate JValue Crawler integration	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/5	ermancekic, robin38n	Awaiting Review	
+Identify reusable components & clean up legacy codebase	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/13	erentasken, munirad7s, nizi0015, ZiadMeligy	Awaiting Review	
+Create initial Software Architecture Description PDF	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/15	erentasken, ermancekic, munirad7s, nizi0015, robin38n, ZiadMeligy	Awaiting Review	
+Document Software Bill of Materials (SBOM)	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/16	robin38n	Awaiting Review	
+Define patient journey input format	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/1		Feature Archive	
+Create & obtain synthetic patient test journeys	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/14		Product Backlog	sprint 3 candidate
+Review existing structure, dependencies & tests	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/3		Feature Archive	
+Import existing Ailixir codebase	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/2		Feature Archive	
+Define journey matcher architecture	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/4		Product Backlog	sprint 3 candidate
+Define MCP server inputs and outputs	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/7		Product Backlog	sprint 3 candidate
+Review indexing requirements for external resources	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/6		Product Backlog	sprint 3 candidate
+Implement Crawlee-based collection framework	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/23		Product Backlog	sprint 3 candidate
+Design matching evaluation criteria	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/11		Product Backlog	sprint 3 candidate
+Setup Python and TypeScript Package Management	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/24		Product Backlog	sprint 3 candidate
+PostgreSQL Setup with Docker Compose	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/25		Product Backlog	sprint 3 candidate
+Automated checks with GitHub Actions	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/26		Product Backlog	sprint 3 candidate
+Implement keyword-based matching baseline	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/8		Product Backlog	
+Research graph-based matching	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/10		Product Backlog	
+Research AI-based matching and summarization	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/9		Product Backlog	
+Establish automated testing and project documentation	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/12		Product Backlog	
