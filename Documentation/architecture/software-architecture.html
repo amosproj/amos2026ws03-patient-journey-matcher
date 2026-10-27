@@ -1,0 +1,295 @@
+<!doctype html>
+<!-- Source of Deliverables/sprint-02/software-architecture.pdf. Regenerate with:
+     chromium --headless --no-pdf-header-footer --print-to-pdf=Deliverables/sprint-02/software-architecture.pdf Documentation/architecture/software-architecture.html -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Software Architecture</title>
+<style>
+  @page { size: A4; margin: 14mm; }
+  :root {
+    --ink: #1a1a1a;
+    --muted: #555555;
+    --rule: #cfcfcf;
+    --panel: #f3f3f3;
+    --accent: #1d5f8a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #ffffff; color: var(--ink); }
+  body {
+    font-family: "Noto Sans", "Liberation Sans", Arial, sans-serif;
+    font-size: 8.5pt;
+    line-height: 1.36;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .page {
+    width: 182mm;
+    height: 268mm;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    break-after: page;
+  }
+  .page:last-of-type { break-after: auto; }
+  @media screen {
+    body { background: #e4e4e4; padding: 14mm 0; }
+    .page { background: #ffffff; margin: 0 auto 28mm; box-shadow: 0 0 0 14mm #ffffff, 0 0 0 calc(14mm + 1px) #cccccc; }
+  }
+  .head, .foot {
+    flex: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 7.2pt;
+    color: var(--muted);
+  }
+  .head { border-bottom: 1.2pt solid var(--accent); padding-bottom: 1.2mm; margin-bottom: 3.2mm; }
+  .head b { color: var(--ink); }
+  .foot { border-top: 0.6pt solid var(--rule); padding-top: 1.1mm; margin-top: auto; }
+  .foot span:last-child { white-space: nowrap; margin-left: 4mm; }
+  h1 { font-size: 14pt; line-height: 1.15; margin: 0 0 1.2mm; font-weight: 700; }
+  h1 .num { color: var(--accent); margin-right: 2mm; }
+  .lede { margin: 0 0 3mm; color: var(--muted); }
+  h2 { font-size: 9pt; margin: 2.6mm 0 0.8mm; font-weight: 700; }
+  p { margin: 0 0 1.4mm; }
+  ul, ol { margin: 0 0 1.4mm; padding-left: 4.2mm; }
+  li { margin: 0 0 0.8mm; }
+  code, .mono { font-family: "Noto Sans Mono", "Liberation Mono", monospace; font-size: 0.9em; }
+  code { background: var(--panel); padding: 0 0.6mm; border-radius: 0.5mm; }
+  img.diagram { display: block; width: 100%; height: auto; }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1mm 4mm;
+    font-size: 7.4pt;
+    color: var(--muted);
+    border-top: 0.6pt solid var(--rule);
+    padding-top: 1.6mm;
+    margin: 2mm 0 2mm;
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 1.2mm; }
+  .sw { display: inline-block; width: 4.2mm; height: 2.8mm; border-radius: 0.6mm; border: 0.9pt solid; }
+  .sw.py { background: #fbf1e6; border-color: #a35a1a; }
+  .sw.ts { background: #eaf2f8; border-color: #1d5f8a; }
+  .sw.alg { background: #d6e7f3; border-color: #1d5f8a; }
+  .sw.db { background: #eef0f3; border-color: #4a5563; }
+  .sw.ctr { background: #ffffff; border-color: #4a5563; }
+  .sw.ext { background: #ffffff; border-color: #7a7a7a; border-style: dashed; }
+  .sw.out { background: #f4f4f4; border-color: #9a9a9a; border-style: dotted; }
+  .sw.dev { background: #ffffff; border-color: #8a8a8a; border-style: dashed; }
+  .sw.ref { background: repeating-linear-gradient(135deg, #ffffff 0 1.2px, #e2e2e2 1.2px 2.4px); border-color: #9a9a9a; }
+  .ln { display: inline-block; width: 7mm; border-top: 1.2pt solid #3a3a3a; }
+  .ln.r { border-top-style: dashed; }
+  .notes { font-size: 8pt; }
+  .notes li { margin-bottom: 0.9mm; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 7.6pt; line-height: 1.3; }
+  th, td { text-align: left; vertical-align: top; padding: 0.75mm 1.4mm; border-bottom: 0.5pt solid #e0e0e0; }
+  table.stack { font-size: 7.3pt; line-height: 1.25; }
+  table.stack td, table.stack th { padding: 0.5mm 1.3mm; }
+  table.stack tr.grp td { padding-top: 0.6mm; padding-bottom: 0.6mm; }
+  th { font-weight: 700; border-bottom: 1pt solid #9a9a9a; color: #333333; }
+  tr.grp td { background: var(--panel); font-weight: 700; color: #333333; padding-top: 1mm; padding-bottom: 1mm; }
+  td.v { white-space: nowrap; color: var(--muted); }
+  .basis { white-space: nowrap; }
+  .tag {
+    display: inline-block;
+    font-size: 6.6pt;
+    line-height: 1.25;
+    padding: 0 1mm;
+    border-radius: 0.8mm;
+    border: 0.6pt solid var(--accent);
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .tag.p { background: var(--accent); color: #ffffff; }
+  .tag.prop { border-style: dashed; border-color: #8a8a8a; color: var(--muted); }
+  .box {
+    border: 0.6pt solid var(--rule);
+    border-radius: 1.2mm;
+    background: #fafafa;
+    padding: 2mm 2.6mm 1mm;
+    margin-top: 2.6mm;
+  }
+  .box h2 { margin-top: 0; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 5mm; }
+  .text p, .text li { text-align: left; }
+</style>
+</head>
+<body>
+
+<!-- Page 1: runtime components -->
+<section class="page">
+  <div class="head"><span><b>Patient Journey Matcher</b> · Software architecture</span><span>AMOS WS 2026/27 · Team 3 · Sprint 02 · 27.10.2026</span></div>
+  <h1><span class="num">1</span>Runtime components (tiers)</h1>
+  <p class="lede">What runs and who calls whom. Ingestion runs as scheduled batch jobs, all data is in one PostgreSQL server, and clients talk to one long-running MCP server. The numbered steps are explained on page 4.</p>
+
+  <img class="diagram" src="runtime-components.svg" alt="Runtime components">
+
+  <div class="legend">
+    <span><i class="sw py"></i>Python component</span>
+    <span><i class="sw ts"></i>TypeScript component</span>
+    <span><i class="sw db"></i>PostgreSQL table or schema</span>
+    <span><i class="sw ext"></i>external service</span>
+    <span><i class="sw out"></i>outside our system</span>
+    <span><i class="ln"></i>call or write</span>
+    <span><i class="ln r"></i>read</span>
+  </div>
+  <ul class="notes">
+    <li>Every lane runs as containers from one Docker Compose file: PostgreSQL, one crawler container per source, the indexer job and the MCP server.</li>
+    <li>Each table has one writer. The crawler writes <code>documents</code>, the indexer writes the three indexes, and the MCP server only reads.</li>
+    <li><code>download()</code> is one TypeScript module used by the indexer and the MCP server. Full texts stay in memory and are never written to the database.</li>
+  </ul>
+
+  <div class="foot"><span>Planned design for the mid-project release (25.11.2026). We will compare it with the real system at the end of the project.</span><span>1 / 4</span></div>
+</section>
+
+<!-- Page 2: code components -->
+<section class="page">
+  <div class="head"><span><b>Patient Journey Matcher</b> · Software architecture</span><span>AMOS WS 2026/27 · Team 3 · Sprint 02 · 27.10.2026</span></div>
+  <h1><span class="num">2</span>Code components (layers)</h1>
+  <p class="lede">How the code in this repository is organised. Each layer only uses the layers below it. Inside our code, interface modules call domain modules, and domain modules call infrastructure modules.</p>
+
+  <img class="diagram" src="code-components.svg" alt="Code components">
+
+  <div class="legend">
+    <span><i class="sw py"></i>Python module</span>
+    <span><i class="sw ts"></i>TypeScript package</span>
+    <span><i class="sw alg"></i>algorithm plug-in</span>
+    <span><i class="sw ctr"></i>shared contract file</span>
+    <span><i class="sw dev"></i>dev only, not shipped</span>
+    <span><i class="sw ref"></i>reference code</span>
+    <span><i class="ln"></i>imports</span>
+    <span><i class="ln r"></i>follows the contract</span>
+  </div>
+
+  <h2>Where the SS26 code in <code>backend/</code> goes</h2>
+  <table>
+    <thead><tr><th>SS26 code (<code>backend/…</code>)</th><th>Target</th><th>How</th></tr></thead>
+    <tbody>
+      <tr><td><code>scrapers/…/PubMed</code>, <code>Archive</code> (arXiv), <code>YouTube</code> (official API part)</td><td><code>crawler/sources/</code></td><td>Reuse the search and parsing code. Requests go through Crawlee. PDF downloads are dropped; chunking and embedding move to the indexer.</td></tr>
+      <tr><td><code>scrapers/…/BaseScraper</code> (stable IDs, dedup)</td><td><code>crawler/sources/</code> base class</td><td>Adapt: split fetching and parsing from indexing.</td></tr>
+      <tr><td><code>scrapers/key_words/*.csv</code>, <code>scrapers/topics.py</code></td><td><code>crawler/topics/</code></td><td>Reuse as seed queries, converted to one YAML file per disease area.</td></tr>
+      <tr><td><code>workers/pipeline/graph/medical_schema.py</code></td><td><code>matcher/algorithms/graph</code></td><td>Port the entity and relation types to TypeScript.</td></tr>
+      <tr><td><code>api/chat_pipeline/paper_retriever.py</code>, <code>availability.py</code>, <code>astra_client.py</code>, <code>reranker_client.py</code></td><td><code>matcher/core</code>, <code>download</code></td><td>Port the result shape, timeouts and the circuit breaker. AstraDB and reranking clients only if we keep those services (open).</td></tr>
+      <tr><td><code>workers/connections/gemini_client.py</code></td><td><code>matcher/llm</code></td><td>Port the pacing and retry conventions.</td></tr>
+      <tr><td><code>api/</code>, <code>workers/</code> document pipeline, <code>shared/</code> (Firestore, GCS, Pub/Sub)</td><td>not in the first release</td><td>Stays on the AIlixir side. Reference for a later adapter that builds journeys from patient documents.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="foot"><span>Folder names are the planned layout. Today the repository holds <code>backend/</code>, <code>Documentation/</code> and <code>Deliverables/</code>.</span><span>2 / 4</span></div>
+</section>
+
+<!-- Page 3: technology stack -->
+<section class="page">
+  <div class="head"><span><b>Patient Journey Matcher</b> · Software architecture</span><span>AMOS WS 2026/27 · Team 3 · Sprint 02 · 27.10.2026</span></div>
+  <h1><span class="num">3</span>Technology stack</h1>
+  <p class="lede">The first-level technologies we build on, grouped by layer. Versions are the current releases on 27.10.2026. The lockfiles pin exact versions, and the bill of materials in the planning document (#16) is the binding list. Course rule: no copyleft licences in the product.</p>
+
+  <table class="stack">
+    <colgroup><col style="width:27%"><col style="width:11%"><col style="width:33%"><col style="width:18%"><col style="width:11%"></colgroup>
+    <thead><tr><th>Technology</th><th>Version</th><th>Used for</th><th>Licence</th><th>Basis</th></tr></thead>
+    <tbody>
+      <tr class="grp"><td colspan="5">Languages and runtimes</td></tr>
+      <tr><td>Python</td><td class="v">3.12</td><td>Crawler</td><td>PSF-2.0</td><td class="basis"><span class="tag p">Partner</span></td></tr>
+      <tr><td>TypeScript on Node.js</td><td class="v">Node 24 LTS</td><td>Indexer, matchers, MCP server</td><td>Apache-2.0 / MIT</td><td class="basis"><span class="tag p">Partner</span></td></tr>
+
+      <tr class="grp"><td colspan="5">Crawling (Python)</td></tr>
+      <tr><td>Crawlee for Python</td><td class="v">1.11</td><td>Request queue with dedup, retries and rate limits</td><td>Apache-2.0</td><td class="basis"><span class="tag">#5</span></td></tr>
+      <tr><td>Biopython (Entrez)</td><td class="v">1.88</td><td>PubMed search and record parsing</td><td>Biopython (BSD-style)</td><td class="basis"><span class="tag">#13</span></td></tr>
+      <tr><td>arxiv</td><td class="v">4.0</td><td>arXiv API client</td><td>MIT</td><td class="basis"><span class="tag">#13</span></td></tr>
+      <tr><td>google-api-python-client</td><td class="v">2.201</td><td>YouTube Data API, official API only</td><td>Apache-2.0</td><td class="basis"><span class="tag">#5</span></td></tr>
+      <tr><td>feedparser</td><td class="v">6.0</td><td>Podcast RSS feeds</td><td>BSD-2-Clause</td><td class="basis"><span class="tag prop">Proposal</span></td></tr>
+      <tr><td>pydantic</td><td class="v">2.14</td><td>Validating source records</td><td>MIT</td><td class="basis"><span class="tag">#13</span></td></tr>
+      <tr><td>asyncpg</td><td class="v">0.32</td><td>Writing to <code>documents</code></td><td>Apache-2.0</td><td class="basis"><span class="tag prop">Proposal</span></td></tr>
+
+      <tr class="grp"><td colspan="5">Storage</td></tr>
+      <tr><td>PostgreSQL</td><td class="v">18</td><td><code>documents</code>, run log, three index schemas</td><td>PostgreSQL</td><td class="basis"><span class="tag">#5</span> <span class="tag prop">Proposal</span></td></tr>
+      <tr><td>Postgres full-text search</td><td class="v">built in</td><td>Keyword index: term statistics and ranking</td><td>PostgreSQL</td><td class="basis"><span class="tag prop">Proposal</span></td></tr>
+      <tr><td>pgvector</td><td class="v">0.8</td><td>Vectors for the AI summary index (AstraDB is open, page 4)</td><td>PostgreSQL</td><td class="basis"><span class="tag prop">Proposal</span></td></tr>
+
+      <tr class="grp"><td colspan="5">Indexing, matching and MCP interface (TypeScript)</td></tr>
+      <tr><td>MCP TypeScript SDK</td><td class="v">1.32</td><td>MCP server over Streamable HTTP</td><td>MIT, moving to Apache-2.0</td><td class="basis"><span class="tag p">Partner</span></td></tr>
+      <tr><td>zod</td><td class="v">4.6</td><td>Tool schemas and journey validation</td><td>MIT</td><td class="basis"><span class="tag prop">Proposal</span></td></tr>
+      <tr><td>pg (node-postgres)</td><td class="v">8.23</td><td>Database access</td><td>MIT</td><td class="basis"><span class="tag prop">Proposal</span></td></tr>
+
+      <tr class="grp"><td colspan="5">AI services (hosted, keys from AIlixir)</td></tr>
+      <tr><td>Gemini via Vertex AI (@google/genai)</td><td class="v">SDK 2.31</td><td>Source summaries at index time</td><td>Apache-2.0 (SDK)</td><td class="basis"><span class="tag">#13</span></td></tr>
+      <tr><td>OpenAI embeddings (openai)</td><td class="v">SDK 7.45</td><td>Vectors for the AI summary index</td><td>Apache-2.0 (SDK)</td><td class="basis"><span class="tag">#13</span></td></tr>
+
+      <tr class="grp"><td colspan="5">Build, test and delivery</td></tr>
+      <tr><td>Docker Compose</td><td class="v">5.6</td><td>One command to build, one to start the demo</td><td>Apache-2.0</td><td class="basis"><span class="tag prop">Proposal</span></td></tr>
+      <tr><td>uv · pnpm</td><td class="v">0.13 · 12.15</td><td>Dependencies and lockfiles for the bill of materials</td><td>MIT / Apache-2.0 · MIT</td><td class="basis"><span class="tag prop">Proposal</span></td></tr>
+      <tr><td>pytest · Vitest · Ruff · Biome</td><td class="v">9.1 · 5.0 · 0.17 · 2.6</td><td>Unit tests, linting and formatting</td><td>MIT; Biome also Apache-2.0</td><td class="basis"><span class="tag prop">Proposal</span></td></tr>
+      <tr><td>GitHub Actions</td><td class="v">service</td><td>Tests and lint on every pull request</td><td>service terms</td><td class="basis"><span class="tag prop">Proposal</span></td></tr>
+
+      <tr class="grp"><td colspan="5">Demo and test data</td></tr>
+      <tr><td>MCP Inspector</td><td class="v">2.12</td><td>Demo client for reviews</td><td>MIT / Apache-2.0</td><td class="basis"><span class="tag prop">Proposal</span></td></tr>
+      <tr><td>meddocgenerator (AIlixir)</td><td class="v">main</td><td>Synthetic patient journeys</td><td>Apache-2.0, headers to clarify</td><td class="basis"><span class="tag p">Partner</span></td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:1.6mm; font-size:7.4pt; color:#555555;">Basis: <span class="tag p">Partner</span> project description or AIlixir · <span class="tag">#5</span> crawler evaluation · <span class="tag">#13</span> reuse plan · <span class="tag prop">Proposal</span> this document, to be confirmed in review.</p>
+
+  <div class="box">
+    <h2>Not used, and why</h2>
+    <ul>
+      <li><b>JValue crawler:</b> built for bulk files in FTP folder trees, supports none of our sources, needs RabbitMQ, MinIO and Kubernetes (#5).</li>
+      <li><b>Neo4j, Graphiti:</b> the Neo4j server is GPL-3.0. The patient graph stays with AIlixir; our graph index uses Postgres tables.</li>
+      <li><b>psycopg:</b> LGPL-3.0, so we use asyncpg.</li>
+      <li><b>paperscraper, pypdf, YouTube caption scraping:</b> we store metadata only, and the caption scraping breaks YouTube's terms.</li>
+      <li><b>Firebase, Firestore, Cloud Storage, Pub/Sub:</b> AIlixir app infrastructure, only needed if we take over document upload.</li>
+    </ul>
+  </div>
+
+  <div class="foot"><span>Versions checked against the npm and PyPI registries and the projects' release pages on 27.10.2026.</span><span>3 / 4</span></div>
+</section>
+
+<!-- Page 4: explanation -->
+<section class="page text">
+  <div class="head"><span><b>Patient Journey Matcher</b> · Software architecture</span><span>AMOS WS 2026/27 · Team 3 · Sprint 02 · 27.10.2026</span></div>
+  <h1><span class="num">4</span>Explanation of the diagrams and choices</h1>
+  <p class="lede">The Patient Journey Matcher is an MCP server for the AIlixir app. A client sends a patient journey, a dated list of events such as diagnoses and operations, and gets back papers, preprints, videos and podcast episodes that fit the most recent point in that journey.</p>
+
+  <h2>Runtime view (page 1)</h2>
+  <ol>
+    <li><b>Crawling.</b> A daily cron job starts one crawler container per source with the queries from a topic file. The crawler searches the source API, follows a paper's references one level deep, and upserts the metadata into <code>documents</code>. It stores metadata and links only, never full texts.</li>
+    <li><b>Indexing.</b> After each crawl, the indexer reads the new documents, fetches each text with <code>download()</code>, keeps it in memory, and writes three separate indexes: keyword, graph and AI summary. Only the AI summary builder calls an LLM, and only with public source text.</li>
+    <li><b>Query.</b> A client calls an MCP tool with the journey. The journey reader validates it and builds one journey state: the latest event is the focus, and older events are context. How much older events count is still to be tested (#11). All three matchers get the same state, so their results can be compared fairly.</li>
+    <li><b>Answer.</b> The result assembler merges and ranks the hits and adds the metadata and links from <code>documents</code>. When the client asks for one source, <code>download()</code> fetches the original again and passes it on without storing it.</li>
+  </ol>
+
+  <h2>Code view (page 2)</h2>
+  <p>The layers follow the lecture: platform at the bottom, third-party frameworks on top of it, our application code on top of those. The crawler (Python) and the matcher (TypeScript) share no code. Their only contracts are the database schema in <code>db/</code> and the journey JSON Schema in <code>schemas/</code>, so both sides can be built and tested on their own. Each algorithm is a plug-in that implements the <code>Indexer</code> and <code>Matcher</code> interfaces from <code>core</code>; a fourth approach would not change the server. <code>backend/</code> holds the SS26 code copied in #13. It is not built; page 2 lists where its parts move.</p>
+
+  <h2>Choices and reasons</h2>
+  <ul>
+    <li><b>Python for crawling, TypeScript for indexing and querying.</b> Required by the project description. The <code>documents</code> table is the interface between the two.</li>
+    <li><b>Our own crawler on Crawlee instead of a fork of the JValue crawler.</b> This departs from the project description. Our evaluation (#5) found that JValue walks FTP folder trees and stores whole files, while our sources are search APIs that return single records. The professorship advised us to use JValue only as an architecture reference. Crawlee gives us a deduplicating request queue, retries and rate limits.</li>
+    <li><b>Metadata only, download on a match.</b> Storing the originals is too expensive and often not allowed by their licence. The indexes hold derived data only (term statistics, concepts, summaries), and the original is fetched again when needed.</li>
+    <li><b>PostgreSQL for documents and indexes.</b> #5 chose Postgres for <code>documents</code>. Full-text search and pgvector cover the keyword and AI indexes in the same server, and the graph index fits in two tables for concepts and relations. One database server keeps the demo to one command, and avoids the GPL-3.0 Neo4j server.</li>
+    <li><b>Three competing algorithms behind one interface.</b> AIlixir wants a word-statistics, a graph-based and an AI-based approach, each with its own index. We start with the keyword baseline (#8), then add the graph (#10) and AI summary (#9) approaches, and compare all three on the same test journeys and criteria (#11).</li>
+    <li><b>Selective reuse of the SS26 code (#13).</b> We keep the PubMed, arXiv and YouTube parsing, the topic lists and the medical ontology, and port the retrieval result shape and the LLM client conventions to TypeScript. We drop chat, voice, OCR and the YouTube caption scraping.</li>
+    <li><b>Health data.</b> The server does not store or log the journey. Development uses only synthetic journeys from the AIlixir generator (#14).</li>
+    <li><b>Docker Compose.</b> One command builds everything and one starts the demo, on any machine (build process review, 04.11.).</li>
+  </ul>
+
+  <div class="box">
+    <h2>Open points, to settle with AIlixir and in the team</h2>
+    <ul>
+      <li>The journey format the real app sends, and the final MCP tool names and fields (#1, #7).</li>
+      <li>MCP transport and authentication between the AIlixir backend and our server.</li>
+      <li>Vector store: our local pgvector, or AIlixir's AstraDB with Vertex AI Ranking from the SS26 code. The reuse plan (#13) keeps them, the crawler evaluation (#5) drops the AstraDB embedding.</li>
+      <li>LLM provider, EU hosting and who pays; whether summaries and abstracts may be shown to patients.</li>
+      <li>Scope of YouTube (stored data must be refreshed or deleted after 30 days) and reference depth beyond one level.</li>
+      <li>Production and test system for releases.</li>
+    </ul>
+  </div>
+
+  <div class="foot"><span>Sources: project description, crawler evaluation (#5), reuse plan (#13), issues #1 to #16.</span><span>4 / 4</span></div>
+</section>
+
+</body>
+</html>
