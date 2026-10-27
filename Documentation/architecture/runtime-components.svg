@@ -1,0 +1,232 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 996" width="1000" height="996" role="img" aria-label="Runtime components">
+  <style>
+    text { font-family: "Noto Sans", "Liberation Sans", Arial, sans-serif; }
+    .mono { font-family: "Noto Sans Mono", "Liberation Mono", monospace; }
+    .h { font-size: 14px; font-weight: 700; fill: #1a1a1a; }
+    .hm { font-size: 13.5px; font-weight: 700; fill: #1a1a1a; font-family: "Noto Sans Mono", "Liberation Mono", monospace; }
+    .b { font-size: 12px; fill: #3d3d3d; }
+    .bm { font-size: 11.5px; fill: #3d3d3d; font-family: "Noto Sans Mono", "Liberation Mono", monospace; }
+    .lab { font-size: 11px; font-weight: 700; letter-spacing: 0.07em; fill: #555555; }
+    .sub { font-size: 11px; fill: #6a6a6a; }
+    .el { font-size: 11px; fill: #333333; paint-order: stroke; stroke: #ffffff; stroke-width: 4px; stroke-linejoin: round; }
+    .num { font-size: 11px; font-weight: 700; fill: #ffffff; }
+    .dot { fill: #1d5f8a; }
+    .py { fill: #fbf1e6; stroke: #a35a1a; stroke-width: 1.5; }
+    .ts { fill: #eaf2f8; stroke: #1d5f8a; stroke-width: 1.5; }
+    .alg { fill: #d6e7f3; stroke: #1d5f8a; stroke-width: 1.5; }
+    .db { fill: #eef0f3; stroke: #4a5563; stroke-width: 1.5; }
+    .db-opt { fill: #f8f9fa; stroke: #4a5563; stroke-width: 1.2; stroke-dasharray: 5 3; }
+    .ctr { fill: #ffffff; stroke: #4a5563; stroke-width: 1.5; }
+    .ext { fill: #ffffff; stroke: #7a7a7a; stroke-width: 1.2; stroke-dasharray: 6 4; }
+    .out { fill: #f4f4f4; stroke: #9a9a9a; stroke-width: 1.2; stroke-dasharray: 3 3; }
+    .cli { fill: #ffffff; stroke: #555555; stroke-width: 1.3; }
+    .dev { fill: #ffffff; stroke: #8a8a8a; stroke-width: 1.2; stroke-dasharray: 5 4; }
+    .fw { fill: #f3f3f3; stroke: #9a9a9a; stroke-width: 1.1; }
+    .pf { fill: #e8e8e8; stroke: #8a8a8a; stroke-width: 1.1; }
+    .lane-py { fill: #fffaf5; stroke: #dcb894; stroke-width: 1; }
+    .lane-ts { fill: #f5f9fc; stroke: #a8c5da; stroke-width: 1; }
+    .lane-db { fill: #f6f7f9; stroke: #b9c0c9; stroke-width: 1; }
+    .grp { fill: none; stroke: #8fb0c8; stroke-width: 1; stroke-dasharray: 4 3; }
+    .e { fill: none; stroke: #3a3a3a; stroke-width: 1.4; }
+    .r { stroke-dasharray: 5 4; }
+  </style>
+  <rect width="1000" height="996" fill="#ffffff"/>
+  <defs>
+    <marker id="a1" viewBox="0 0 10 10" refX="9.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#3a3a3a"/>
+    </marker>
+  </defs>
+
+  <text class="lab" x="170" y="14" text-anchor="middle">INGESTION · BATCH JOBS</text>
+  <text class="lab" x="485" y="14" text-anchor="middle">PERSISTENCE</text>
+  <text class="lab" x="815" y="14" text-anchor="middle">QUERY · LONG-RUNNING SERVICE</text>
+
+  <!-- top row -->
+  <rect class="ext" x="20" y="26" width="300" height="110" rx="6"/>
+  <g text-anchor="middle">
+    <text class="h" x="170" y="50">Source APIs</text>
+    <text class="b" x="170" y="72">PubMed E-utilities · arXiv API</text>
+    <text class="b" x="170" y="90">YouTube Data API · Zenodo · podcast RSS</text>
+    <text class="b" x="170" y="112">references: Europe PMC · Semantic Scholar</text>
+  </g>
+
+  <rect class="out" x="360" y="26" width="250" height="110" rx="6"/>
+  <g text-anchor="middle">
+    <text class="h" x="485" y="50">AIlixir app</text>
+    <text class="sub" x="485" y="68">outside our system</text>
+    <text class="b" x="485" y="90">patient-document pipeline</text>
+    <text class="b" x="485" y="107">builds the patient journey</text>
+    <text class="b" x="485" y="124">(SS26 copy in backend/)</text>
+  </g>
+
+  <rect class="cli" x="650" y="26" width="330" height="110" rx="6"/>
+  <g text-anchor="middle">
+    <text class="h" x="815" y="50">Clients</text>
+    <text class="b" x="815" y="72">AIlixir app backend · production client</text>
+    <text class="b" x="815" y="92">MCP Inspector · demo and manual tests</text>
+    <text class="b" x="815" y="112">evaluation runner · test journeys (#11)</text>
+  </g>
+  <path class="e" d="M610 81 H650" marker-end="url(#a1)"/>
+
+  <!-- lanes -->
+  <rect class="lane-py" x="20" y="180" width="300" height="282" rx="8"/>
+  <rect class="lane-ts" x="20" y="480" width="300" height="386" rx="8"/>
+  <rect class="lane-db" x="360" y="180" width="250" height="686" rx="8"/>
+  <rect class="lane-ts" x="650" y="180" width="330" height="686" rx="8"/>
+
+  <text class="lab" x="32" y="198">CRAWLER · PYTHON · CRAWLEE</text>
+  <text class="sub" x="32" y="213">one container per source</text>
+  <text class="lab" x="372" y="198">POSTGRESQL 18</text>
+  <text class="sub" x="372" y="213">one server · Docker volume</text>
+  <text class="lab" x="32" y="498">INDEXER · TYPESCRIPT</text>
+  <text class="sub" x="32" y="513">runs after each crawl</text>
+  <text class="lab" x="662" y="198">MCP SERVER · TYPESCRIPT</text>
+  <text class="sub" x="662" y="213">Node.js 24 · Streamable HTTP</text>
+
+  <!-- crawler -->
+  <rect class="py" x="40" y="226" width="130" height="56" rx="5"/>
+  <rect class="py" x="40" y="304" width="260" height="66" rx="5"/>
+  <rect class="py" x="40" y="394" width="120" height="52" rx="5"/>
+  <rect class="py" x="180" y="394" width="120" height="52" rx="5"/>
+  <g text-anchor="middle">
+    <text class="h" x="105" y="245">Scheduler</text>
+    <text class="b" x="105" y="262">daily cron</text>
+    <text class="b" x="105" y="277">topic YAML</text>
+    <text class="h" x="170" y="323">Source scraper</text>
+    <text class="b" x="170" y="341">PubMed · arXiv · YouTube · Zenodo</text>
+    <text class="b" x="170" y="358">podcasts · parsing reused from SS26</text>
+    <text class="h" x="100" y="414">Link extractor</text>
+    <text class="b" x="100" y="433">references</text>
+    <text class="h" x="240" y="414">Request queue</text>
+    <text class="b" x="240" y="433">dedup · depth 1</text>
+  </g>
+  <path class="e" d="M105 282 V304" marker-end="url(#a1)"/>
+  <path class="e" d="M255 304 V136" marker-end="url(#a1)"/>
+  <text class="el" x="262" y="162">HTTPS GET</text>
+  <path class="e" d="M100 370 V394" marker-end="url(#a1)"/>
+  <path class="e" d="M160 420 H180" marker-end="url(#a1)"/>
+  <path class="e" d="M240 394 V370" marker-end="url(#a1)"/>
+  <text class="el" x="107" y="387">record</text>
+  <text class="el" x="247" y="387">next</text>
+  <path class="e" d="M300 337 H380" marker-end="url(#a1)"/>
+  <text class="el" x="340" y="329" text-anchor="middle">upsert</text>
+
+  <!-- postgres -->
+  <rect class="db-opt" x="380" y="226" width="210" height="44" rx="5"/>
+  <rect class="db" x="380" y="290" width="210" height="176" rx="5"/>
+  <rect class="db" x="380" y="576" width="210" height="56" rx="5"/>
+  <rect class="db" x="380" y="652" width="210" height="56" rx="5"/>
+  <rect class="db" x="380" y="728" width="210" height="56" rx="5"/>
+  <text class="sub" x="372" y="566">three index schemas</text>
+  <g text-anchor="middle">
+    <text class="hm" x="485" y="244">crawl_runs</text>
+    <text class="b" x="485" y="262">optional run log</text>
+    <text class="hm" x="485" y="312">documents</text>
+    <text class="b" x="485" y="334">metadata and links only</text>
+    <text class="b" x="485" y="351">no full texts, PDFs</text>
+    <text class="b" x="485" y="368">or transcripts</text>
+    <text class="b" x="485" y="396">one writer: the crawler</text>
+    <text class="b" x="485" y="413">readers: indexer, MCP server</text>
+    <text class="h" x="485" y="598">keyword index</text>
+    <text class="b" x="485" y="617">Postgres full-text search</text>
+    <text class="h" x="485" y="674">graph index</text>
+    <text class="b" x="485" y="693">concepts and relations</text>
+    <text class="h" x="485" y="750">AI summary index</text>
+    <text class="b" x="485" y="769">summaries and pgvector</text>
+  </g>
+
+  <!-- indexer -->
+  <rect class="grp" x="34" y="548" width="212" height="244" rx="6"/>
+  <text class="sub" x="42" y="563">index builders</text>
+  <rect class="ts" x="44" y="576" width="192" height="56" rx="5"/>
+  <rect class="ts" x="44" y="652" width="192" height="56" rx="5"/>
+  <rect class="ts" x="44" y="728" width="192" height="56" rx="5"/>
+  <rect class="ts" x="90" y="812" width="210" height="44" rx="5"/>
+  <g text-anchor="middle">
+    <text class="h" x="140" y="598">keyword builder</text>
+    <text class="b" x="140" y="617">term statistics</text>
+    <text class="h" x="140" y="674">graph builder</text>
+    <text class="b" x="140" y="693">MeSH concepts · ontology</text>
+    <text class="h" x="140" y="750">AI summary builder</text>
+    <text class="b" x="140" y="769">LLM summary · vector</text>
+    <text class="hm" x="195" y="830">download()</text>
+    <text class="b" x="195" y="848">text in memory, never stored</text>
+  </g>
+  <path class="e r" d="M140 548 V522 H420 V466" marker-end="url(#a1)"/>
+  <text class="el" x="292" y="516" text-anchor="middle">reads new documents</text>
+  <path class="e" d="M236 604 H380" marker-end="url(#a1)"/>
+  <path class="e" d="M236 680 H380" marker-end="url(#a1)"/>
+  <path class="e" d="M236 756 H380" marker-end="url(#a1)"/>
+  <text class="el" x="308" y="596" text-anchor="middle">write</text>
+  <path class="e" d="M195 812 V792" marker-end="url(#a1)"/>
+  <path class="e" d="M70 784 V906" marker-end="url(#a1)"/>
+  <text class="el" x="78" y="886">index time</text>
+  <path class="e" d="M230 856 V906" marker-end="url(#a1)"/>
+
+  <!-- mcp server -->
+  <path class="e" d="M940 136 V228" marker-end="url(#a1)"/>
+  <text class="el" x="932" y="162" text-anchor="end">tools/call + journey</text>
+  <rect class="ts" x="670" y="228" width="290" height="62" rx="5"/>
+  <rect class="ts" x="670" y="316" width="140" height="80" rx="5"/>
+  <rect class="ts" x="822" y="316" width="138" height="80" rx="5"/>
+  <rect class="grp" x="670" y="548" width="290" height="244" rx="6"/>
+  <text class="sub" x="678" y="563">three competing matchers</text>
+  <rect class="ts" x="680" y="576" width="270" height="56" rx="5"/>
+  <rect class="ts" x="680" y="652" width="270" height="56" rx="5"/>
+  <rect class="ts" x="680" y="728" width="270" height="56" rx="5"/>
+  <rect class="ts" x="670" y="812" width="290" height="44" rx="5"/>
+  <g text-anchor="middle">
+    <text class="h" x="815" y="248">Tool handlers</text>
+    <text class="bm" x="815" y="266">match_journey · compare_algorithms</text>
+    <text class="b" x="815" y="283"><tspan class="mono">get_source</tspan> · draft names (#7)</text>
+    <text class="h" x="740" y="336">Result assembler</text>
+    <text class="b" x="740" y="356">merge and rank</text>
+    <text class="b" x="740" y="373">add metadata</text>
+    <text class="b" x="740" y="390">and links</text>
+    <text class="h" x="891" y="336">Journey reader</text>
+    <text class="b" x="891" y="356">validate</text>
+    <text class="b" x="891" y="373">focus: latest event</text>
+    <text class="b" x="891" y="390">older: context</text>
+    <text class="h" x="815" y="598">keyword matcher</text>
+    <text class="b" x="815" y="617">BM25-style term ranking</text>
+    <text class="h" x="815" y="674">graph matcher</text>
+    <text class="b" x="815" y="693">concept and relation overlap</text>
+    <text class="h" x="815" y="750">AI summary matcher</text>
+    <text class="b" x="815" y="769">similarity to the summaries</text>
+    <text class="hm" x="815" y="830">download()</text>
+    <text class="b" x="815" y="848">on a match (<tspan class="mono">get_source</tspan>) · not stored</text>
+  </g>
+  <path class="e" d="M891 290 V316" marker-end="url(#a1)"/>
+  <path class="e" d="M740 316 V290" marker-end="url(#a1)"/>
+  <path class="e r" d="M670 366 H590" marker-end="url(#a1)"/>
+  <text class="el" x="630" y="358" text-anchor="middle">metadata</text>
+  <path class="e" d="M891 396 V548" marker-end="url(#a1)"/>
+  <text class="el" x="899" y="474">journey state</text>
+  <path class="e" d="M740 548 V396" marker-end="url(#a1)"/>
+  <text class="el" x="748" y="474">ranked hits</text>
+  <path class="e r" d="M680 604 H590" marker-end="url(#a1)"/>
+  <path class="e r" d="M680 680 H590" marker-end="url(#a1)"/>
+  <path class="e r" d="M680 756 H590" marker-end="url(#a1)"/>
+  <text class="el" x="635" y="596" text-anchor="middle">read</text>
+  <path class="e" d="M960 259 H972 V834 H960" marker-end="url(#a1)"/>
+  <path class="e" d="M815 856 V906" marker-end="url(#a1)"/>
+
+  <!-- bottom row -->
+  <rect class="ext" x="20" y="906" width="130" height="80" rx="6"/>
+  <rect class="ext" x="170" y="906" width="810" height="80" rx="6"/>
+  <g text-anchor="middle">
+    <text class="h" x="85" y="928">LLM API</text>
+    <text class="b" x="85" y="946">summaries,</text>
+    <text class="b" x="85" y="962">embeddings</text>
+    <text class="b" x="85" y="978">keys from AIlixir</text>
+    <text class="h" x="575" y="930">Original sources</text>
+    <text class="b" x="575" y="950">publisher pages, open-access full texts, videos, podcast episodes</text>
+    <text class="b" x="575" y="968">fetched by <tspan class="mono">download()</tspan> while indexing and again on a match; nothing is stored</text>
+  </g>
+
+  <!-- step numbers -->
+  <circle class="dot" cx="206" cy="250" r="10"/><text class="num" x="206" y="254" text-anchor="middle">1</text>
+  <circle class="dot" cx="200" cy="494" r="10"/><text class="num" x="200" y="498" text-anchor="middle">2</text>
+  <circle class="dot" cx="962" cy="160" r="10"/><text class="num" x="962" y="164" text-anchor="middle">3</text>
+  <circle class="dot" cx="716" cy="470" r="10"/><text class="num" x="716" y="474" text-anchor="middle">4</text>
+</svg>
