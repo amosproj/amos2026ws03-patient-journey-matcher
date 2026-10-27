@@ -1,0 +1,10 @@
+Patient Journey Matcher
+Copyright (c) 2021 The AMOS Projects
+
+This repository contains code copied from amosproj/amos2026ss03-ailixir-intelligence
+(https://github.com/amosproj/amos2026ss03-ailixir-intelligence), commit 88ea71a,
+and backend/scrapers/topics.py from commit 05b6c2c^ of the same repository.
+
+That code is licensed under the MIT License, Copyright (c) 2021 The AMOS Projects,
+the same licence as this repository (see LICENSE). The copied files are under
+backend/. backend/README.md lists every file changed against the original.
