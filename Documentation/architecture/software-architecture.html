@@ -1,0 +1,677 @@
+<!doctype html>
+<!-- Source of Deliverables/sprint-02/software-architecture.pdf. Regenerate with:
+     chromium --headless --no-pdf-header-footer --print-to-pdf=Deliverables/sprint-02/software-architecture.pdf Documentation/architecture/software-architecture.html -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Software Architecture</title>
+<style>
+  @page { size: A4; margin: 14mm; }
+  :root {
+    --ink: #1a1a1a;
+    --muted: #555555;
+    --rule: #cfcfcf;
+    --panel: #f3f3f3;
+    --accent: #1d5f8a;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #ffffff; color: var(--ink); }
+  body {
+    font-family: "Noto Sans", "Liberation Sans", Arial, sans-serif;
+    font-size: 8.5pt;
+    line-height: 1.36;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .page {
+    width: 182mm;
+    height: 268mm;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    break-after: page;
+  }
+  .page:last-of-type { break-after: auto; }
+  @media screen {
+    body { background: #e4e4e4; padding: 14mm 0; }
+    .page { background: #ffffff; margin: 0 auto 28mm; box-shadow: 0 0 0 14mm #ffffff, 0 0 0 calc(14mm + 1px) #cccccc; }
+  }
+  .head, .foot {
+    flex: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 7.2pt;
+    color: var(--muted);
+  }
+  .head { border-bottom: 1.2pt solid var(--accent); padding-bottom: 1.2mm; margin-bottom: 3.2mm; }
+  .head b { color: var(--ink); }
+  .foot { border-top: 0.6pt solid var(--rule); padding-top: 1.1mm; margin-top: auto; }
+  .foot span:last-child { white-space: nowrap; margin-left: 4mm; }
+  h1 { font-size: 14pt; line-height: 1.15; margin: 0 0 1.2mm; font-weight: 700; }
+  h1 .num { color: var(--accent); margin-right: 2mm; }
+  .lede { margin: 0 0 3mm; color: var(--muted); }
+  h2 { font-size: 9pt; margin: 2.6mm 0 0.8mm; font-weight: 700; }
+  p { margin: 0 0 1.4mm; }
+  ul, ol { margin: 0 0 1.4mm; padding-left: 4.2mm; }
+  li { margin: 0 0 0.8mm; }
+  code, .mono { font-family: "Noto Sans Mono", "Liberation Mono", monospace; font-size: 0.9em; }
+  code { background: var(--panel); padding: 0 0.6mm; border-radius: 0.5mm; }
+  svg.diagram { display: block; width: 100%; height: auto; }
+  svg text { font-family: "Noto Sans", "Liberation Sans", Arial, sans-serif; }
+  svg .mono { font-family: "Noto Sans Mono", "Liberation Mono", monospace; }
+  svg .h { font-size: 14px; font-weight: 700; fill: #1a1a1a; }
+  svg .hm { font-size: 13.5px; font-weight: 700; fill: #1a1a1a; font-family: "Noto Sans Mono", "Liberation Mono", monospace; }
+  svg .b { font-size: 12px; fill: #3d3d3d; }
+  svg .bm { font-size: 11.5px; fill: #3d3d3d; font-family: "Noto Sans Mono", "Liberation Mono", monospace; }
+  svg .lab { font-size: 11px; font-weight: 700; letter-spacing: 0.07em; fill: #555555; }
+  svg .sub { font-size: 11px; fill: #6a6a6a; }
+  svg .el { font-size: 11px; fill: #333333; paint-order: stroke; stroke: #ffffff; stroke-width: 4px; stroke-linejoin: round; }
+  svg .num { font-size: 11px; font-weight: 700; fill: #ffffff; }
+  svg .dot { fill: var(--accent); }
+  svg .py { fill: #fbf1e6; stroke: #a35a1a; stroke-width: 1.5; }
+  svg .ts { fill: #eaf2f8; stroke: #1d5f8a; stroke-width: 1.5; }
+  svg .alg { fill: #d6e7f3; stroke: #1d5f8a; stroke-width: 1.5; }
+  svg .db { fill: #eef0f3; stroke: #4a5563; stroke-width: 1.5; }
+  svg .db-opt { fill: #f8f9fa; stroke: #4a5563; stroke-width: 1.2; stroke-dasharray: 5 3; }
+  svg .ctr { fill: #ffffff; stroke: #4a5563; stroke-width: 1.5; }
+  svg .ext { fill: #ffffff; stroke: #7a7a7a; stroke-width: 1.2; stroke-dasharray: 6 4; }
+  svg .out { fill: #f4f4f4; stroke: #9a9a9a; stroke-width: 1.2; stroke-dasharray: 3 3; }
+  svg .cli { fill: #ffffff; stroke: #555555; stroke-width: 1.3; }
+  svg .dev { fill: #ffffff; stroke: #8a8a8a; stroke-width: 1.2; stroke-dasharray: 5 4; }
+  svg .fw { fill: #f3f3f3; stroke: #9a9a9a; stroke-width: 1.1; }
+  svg .pf { fill: #e8e8e8; stroke: #8a8a8a; stroke-width: 1.1; }
+  svg .lane-py { fill: #fffaf5; stroke: #dcb894; stroke-width: 1; }
+  svg .lane-ts { fill: #f5f9fc; stroke: #a8c5da; stroke-width: 1; }
+  svg .lane-db { fill: #f6f7f9; stroke: #b9c0c9; stroke-width: 1; }
+  svg .grp { fill: none; stroke: #8fb0c8; stroke-width: 1; stroke-dasharray: 4 3; }
+  svg .e { fill: none; stroke: #3a3a3a; stroke-width: 1.4; }
+  svg .r { stroke-dasharray: 5 4; }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1mm 4mm;
+    font-size: 7.4pt;
+    color: var(--muted);
+    border-top: 0.6pt solid var(--rule);
+    padding-top: 1.6mm;
+    margin: 2mm 0 2mm;
+  }
+  .legend span { display: inline-flex; align-items: center; gap: 1.2mm; }
+  .sw { display: inline-block; width: 4.2mm; height: 2.8mm; border-radius: 0.6mm; border: 0.9pt solid; }
+  .sw.py { background: #fbf1e6; border-color: #a35a1a; }
+  .sw.ts { background: #eaf2f8; border-color: #1d5f8a; }
+  .sw.alg { background: #d6e7f3; border-color: #1d5f8a; }
+  .sw.db { background: #eef0f3; border-color: #4a5563; }
+  .sw.ctr { background: #ffffff; border-color: #4a5563; }
+  .sw.ext { background: #ffffff; border-color: #7a7a7a; border-style: dashed; }
+  .sw.out { background: #f4f4f4; border-color: #9a9a9a; border-style: dotted; }
+  .sw.dev { background: #ffffff; border-color: #8a8a8a; border-style: dashed; }
+  .sw.ref { background: repeating-linear-gradient(135deg, #ffffff 0 1.2px, #e2e2e2 1.2px 2.4px); border-color: #9a9a9a; }
+  .ln { display: inline-block; width: 7mm; border-top: 1.2pt solid #3a3a3a; }
+  .ln.r { border-top-style: dashed; }
+  .notes { font-size: 8pt; }
+  .notes li { margin-bottom: 0.9mm; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 7.6pt; line-height: 1.3; }
+  th, td { text-align: left; vertical-align: top; padding: 0.75mm 1.4mm; border-bottom: 0.5pt solid #e0e0e0; }
+  table.stack { font-size: 7.3pt; line-height: 1.25; }
+  table.stack td, table.stack th { padding: 0.5mm 1.3mm; }
+  table.stack tr.grp td { padding-top: 0.6mm; padding-bottom: 0.6mm; }
+  th { font-weight: 700; border-bottom: 1pt solid #9a9a9a; color: #333333; }
+  tr.grp td { background: var(--panel); font-weight: 700; color: #333333; padding-top: 1mm; padding-bottom: 1mm; }
+  td.v { white-space: nowrap; color: var(--muted); }
+  .basis { white-space: nowrap; }
+  .tag {
+    display: inline-block;
+    font-size: 6.6pt;
+    line-height: 1.25;
+    padding: 0 1mm;
+    border-radius: 0.8mm;
+    border: 0.6pt solid var(--accent);
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .tag.p { background: var(--accent); color: #ffffff; }
+  .tag.prop { border-style: dashed; border-color: #8a8a8a; color: var(--muted); }
+  .box {
+    border: 0.6pt solid var(--rule);
+    border-radius: 1.2mm;
+    background: #fafafa;
+    padding: 2mm 2.6mm 1mm;
+    margin-top: 2.6mm;
+  }
+  .box h2 { margin-top: 0; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 0 5mm; }
+  .text p, .text li { text-align: left; }
+</style>
+</head>
+<body>
+
+<!-- Page 1: runtime components -->
+<section class="page">
+  <div class="head"><span><b>Patient Journey Matcher</b> · Software architecture</span><span>AMOS WS 2026/27 · Team 3 · Sprint 02 · 27.10.2026</span></div>
+  <h1><span class="num">1</span>Runtime components (tiers)</h1>
+  <p class="lede">What runs and who calls whom. Ingestion runs as scheduled batch jobs, all data is in one PostgreSQL server, and clients talk to one long-running MCP server. The numbered steps are explained on page 4.</p>
+
+  <svg class="diagram" viewBox="0 0 1000 996" role="img" aria-label="Runtime components">
+    <defs>
+      <marker id="a1" viewBox="0 0 10 10" refX="9.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="#3a3a3a"/>
+      </marker>
+    </defs>
+
+    <text class="lab" x="170" y="14" text-anchor="middle">INGESTION · BATCH JOBS</text>
+    <text class="lab" x="485" y="14" text-anchor="middle">PERSISTENCE</text>
+    <text class="lab" x="815" y="14" text-anchor="middle">QUERY · LONG-RUNNING SERVICE</text>
+
+    <!-- top row -->
+    <rect class="ext" x="20" y="26" width="300" height="110" rx="6"/>
+    <g text-anchor="middle">
+      <text class="h" x="170" y="50">Source APIs</text>
+      <text class="b" x="170" y="72">PubMed E-utilities · arXiv API</text>
+      <text class="b" x="170" y="90">YouTube Data API · Zenodo · podcast RSS</text>
+      <text class="b" x="170" y="112">references: Europe PMC · Semantic Scholar</text>
+    </g>
+
+    <rect class="out" x="360" y="26" width="250" height="110" rx="6"/>
+    <g text-anchor="middle">
+      <text class="h" x="485" y="50">AIlixir app</text>
+      <text class="sub" x="485" y="68">outside our system</text>
+      <text class="b" x="485" y="90">patient-document pipeline</text>
+      <text class="b" x="485" y="107">builds the patient journey</text>
+      <text class="b" x="485" y="124">(SS26 copy in backend/)</text>
+    </g>
+
+    <rect class="cli" x="650" y="26" width="330" height="110" rx="6"/>
+    <g text-anchor="middle">
+      <text class="h" x="815" y="50">Clients</text>
+      <text class="b" x="815" y="72">AIlixir app backend · production client</text>
+      <text class="b" x="815" y="92">MCP Inspector · demo and manual tests</text>
+      <text class="b" x="815" y="112">evaluation runner · test journeys (#11)</text>
+    </g>
+    <path class="e" d="M610 81 H650" marker-end="url(#a1)"/>
+
+    <!-- lanes -->
+    <rect class="lane-py" x="20" y="180" width="300" height="282" rx="8"/>
+    <rect class="lane-ts" x="20" y="480" width="300" height="386" rx="8"/>
+    <rect class="lane-db" x="360" y="180" width="250" height="686" rx="8"/>
+    <rect class="lane-ts" x="650" y="180" width="330" height="686" rx="8"/>
+
+    <text class="lab" x="32" y="198">CRAWLER · PYTHON · CRAWLEE</text>
+    <text class="sub" x="32" y="213">one container per source</text>
+    <text class="lab" x="372" y="198">POSTGRESQL 18</text>
+    <text class="sub" x="372" y="213">one server · Docker volume</text>
+    <text class="lab" x="32" y="498">INDEXER · TYPESCRIPT</text>
+    <text class="sub" x="32" y="513">runs after each crawl</text>
+    <text class="lab" x="662" y="198">MCP SERVER · TYPESCRIPT</text>
+    <text class="sub" x="662" y="213">Node.js 24 · Streamable HTTP</text>
+
+    <!-- crawler -->
+    <rect class="py" x="40" y="226" width="130" height="56" rx="5"/>
+    <rect class="py" x="40" y="304" width="260" height="66" rx="5"/>
+    <rect class="py" x="40" y="394" width="120" height="52" rx="5"/>
+    <rect class="py" x="180" y="394" width="120" height="52" rx="5"/>
+    <g text-anchor="middle">
+      <text class="h" x="105" y="245">Scheduler</text>
+      <text class="b" x="105" y="262">daily cron</text>
+      <text class="b" x="105" y="277">topic YAML</text>
+      <text class="h" x="170" y="323">Source scraper</text>
+      <text class="b" x="170" y="341">PubMed · arXiv · YouTube · Zenodo</text>
+      <text class="b" x="170" y="358">podcasts · parsing reused from SS26</text>
+      <text class="h" x="100" y="414">Link extractor</text>
+      <text class="b" x="100" y="433">references</text>
+      <text class="h" x="240" y="414">Request queue</text>
+      <text class="b" x="240" y="433">dedup · depth 1</text>
+    </g>
+    <path class="e" d="M105 282 V304" marker-end="url(#a1)"/>
+    <path class="e" d="M255 304 V136" marker-end="url(#a1)"/>
+    <text class="el" x="262" y="162">HTTPS GET</text>
+    <path class="e" d="M100 370 V394" marker-end="url(#a1)"/>
+    <path class="e" d="M160 420 H180" marker-end="url(#a1)"/>
+    <path class="e" d="M240 394 V370" marker-end="url(#a1)"/>
+    <text class="el" x="107" y="387">record</text>
+    <text class="el" x="247" y="387">next</text>
+    <path class="e" d="M300 337 H380" marker-end="url(#a1)"/>
+    <text class="el" x="340" y="329" text-anchor="middle">upsert</text>
+
+    <!-- postgres -->
+    <rect class="db-opt" x="380" y="226" width="210" height="44" rx="5"/>
+    <rect class="db" x="380" y="290" width="210" height="176" rx="5"/>
+    <rect class="db" x="380" y="576" width="210" height="56" rx="5"/>
+    <rect class="db" x="380" y="652" width="210" height="56" rx="5"/>
+    <rect class="db" x="380" y="728" width="210" height="56" rx="5"/>
+    <text class="sub" x="372" y="566">three index schemas</text>
+    <g text-anchor="middle">
+      <text class="hm" x="485" y="244">crawl_runs</text>
+      <text class="b" x="485" y="262">optional run log</text>
+      <text class="hm" x="485" y="312">documents</text>
+      <text class="b" x="485" y="334">metadata and links only</text>
+      <text class="b" x="485" y="351">no full texts, PDFs</text>
+      <text class="b" x="485" y="368">or transcripts</text>
+      <text class="b" x="485" y="396">one writer: the crawler</text>
+      <text class="b" x="485" y="413">readers: indexer, MCP server</text>
+      <text class="h" x="485" y="598">keyword index</text>
+      <text class="b" x="485" y="617">Postgres full-text search</text>
+      <text class="h" x="485" y="674">graph index</text>
+      <text class="b" x="485" y="693">concepts and relations</text>
+      <text class="h" x="485" y="750">AI summary index</text>
+      <text class="b" x="485" y="769">summaries and pgvector</text>
+    </g>
+
+    <!-- indexer -->
+    <rect class="grp" x="34" y="548" width="212" height="244" rx="6"/>
+    <text class="sub" x="42" y="563">index builders</text>
+    <rect class="ts" x="44" y="576" width="192" height="56" rx="5"/>
+    <rect class="ts" x="44" y="652" width="192" height="56" rx="5"/>
+    <rect class="ts" x="44" y="728" width="192" height="56" rx="5"/>
+    <rect class="ts" x="90" y="812" width="210" height="44" rx="5"/>
+    <g text-anchor="middle">
+      <text class="h" x="140" y="598">keyword builder</text>
+      <text class="b" x="140" y="617">term statistics</text>
+      <text class="h" x="140" y="674">graph builder</text>
+      <text class="b" x="140" y="693">MeSH concepts · ontology</text>
+      <text class="h" x="140" y="750">AI summary builder</text>
+      <text class="b" x="140" y="769">LLM summary · vector</text>
+      <text class="hm" x="195" y="830">download()</text>
+      <text class="b" x="195" y="848">text in memory, never stored</text>
+    </g>
+    <path class="e r" d="M140 548 V522 H420 V466" marker-end="url(#a1)"/>
+    <text class="el" x="292" y="516" text-anchor="middle">reads new documents</text>
+    <path class="e" d="M236 604 H380" marker-end="url(#a1)"/>
+    <path class="e" d="M236 680 H380" marker-end="url(#a1)"/>
+    <path class="e" d="M236 756 H380" marker-end="url(#a1)"/>
+    <text class="el" x="308" y="596" text-anchor="middle">write</text>
+    <path class="e" d="M195 812 V792" marker-end="url(#a1)"/>
+    <path class="e" d="M70 784 V906" marker-end="url(#a1)"/>
+    <text class="el" x="78" y="886">index time</text>
+    <path class="e" d="M230 856 V906" marker-end="url(#a1)"/>
+
+    <!-- mcp server -->
+    <path class="e" d="M940 136 V228" marker-end="url(#a1)"/>
+    <text class="el" x="932" y="162" text-anchor="end">tools/call + journey</text>
+    <rect class="ts" x="670" y="228" width="290" height="62" rx="5"/>
+    <rect class="ts" x="670" y="316" width="140" height="80" rx="5"/>
+    <rect class="ts" x="822" y="316" width="138" height="80" rx="5"/>
+    <rect class="grp" x="670" y="548" width="290" height="244" rx="6"/>
+    <text class="sub" x="678" y="563">three competing matchers</text>
+    <rect class="ts" x="680" y="576" width="270" height="56" rx="5"/>
+    <rect class="ts" x="680" y="652" width="270" height="56" rx="5"/>
+    <rect class="ts" x="680" y="728" width="270" height="56" rx="5"/>
+    <rect class="ts" x="670" y="812" width="290" height="44" rx="5"/>
+    <g text-anchor="middle">
+      <text class="h" x="815" y="248">Tool handlers</text>
+      <text class="bm" x="815" y="266">match_journey · compare_algorithms</text>
+      <text class="b" x="815" y="283"><tspan class="mono">get_source</tspan> · draft names (#7)</text>
+      <text class="h" x="740" y="336">Result assembler</text>
+      <text class="b" x="740" y="356">merge and rank</text>
+      <text class="b" x="740" y="373">add metadata</text>
+      <text class="b" x="740" y="390">and links</text>
+      <text class="h" x="891" y="336">Journey reader</text>
+      <text class="b" x="891" y="356">validate</text>
+      <text class="b" x="891" y="373">focus: latest event</text>
+      <text class="b" x="891" y="390">older: context</text>
+      <text class="h" x="815" y="598">keyword matcher</text>
+      <text class="b" x="815" y="617">BM25-style term ranking</text>
+      <text class="h" x="815" y="674">graph matcher</text>
+      <text class="b" x="815" y="693">concept and relation overlap</text>
+      <text class="h" x="815" y="750">AI summary matcher</text>
+      <text class="b" x="815" y="769">similarity to the summaries</text>
+      <text class="hm" x="815" y="830">download()</text>
+      <text class="b" x="815" y="848">on a match (<tspan class="mono">get_source</tspan>) · not stored</text>
+    </g>
+    <path class="e" d="M891 290 V316" marker-end="url(#a1)"/>
+    <path class="e" d="M740 316 V290" marker-end="url(#a1)"/>
+    <path class="e r" d="M670 366 H590" marker-end="url(#a1)"/>
+    <text class="el" x="630" y="358" text-anchor="middle">metadata</text>
+    <path class="e" d="M891 396 V548" marker-end="url(#a1)"/>
+    <text class="el" x="899" y="474">journey state</text>
+    <path class="e" d="M740 548 V396" marker-end="url(#a1)"/>
+    <text class="el" x="748" y="474">ranked hits</text>
+    <path class="e r" d="M680 604 H590" marker-end="url(#a1)"/>
+    <path class="e r" d="M680 680 H590" marker-end="url(#a1)"/>
+    <path class="e r" d="M680 756 H590" marker-end="url(#a1)"/>
+    <text class="el" x="635" y="596" text-anchor="middle">read</text>
+    <path class="e" d="M960 259 H972 V834 H960" marker-end="url(#a1)"/>
+    <path class="e" d="M815 856 V906" marker-end="url(#a1)"/>
+
+    <!-- bottom row -->
+    <rect class="ext" x="20" y="906" width="130" height="80" rx="6"/>
+    <rect class="ext" x="170" y="906" width="810" height="80" rx="6"/>
+    <g text-anchor="middle">
+      <text class="h" x="85" y="928">LLM API</text>
+      <text class="b" x="85" y="946">summaries,</text>
+      <text class="b" x="85" y="962">embeddings</text>
+      <text class="b" x="85" y="978">keys from AIlixir</text>
+      <text class="h" x="575" y="930">Original sources</text>
+      <text class="b" x="575" y="950">publisher pages, open-access full texts, videos, podcast episodes</text>
+      <text class="b" x="575" y="968">fetched by <tspan class="mono">download()</tspan> while indexing and again on a match; nothing is stored</text>
+    </g>
+
+    <!-- step numbers -->
+    <circle class="dot" cx="206" cy="250" r="10"/><text class="num" x="206" y="254" text-anchor="middle">1</text>
+    <circle class="dot" cx="200" cy="494" r="10"/><text class="num" x="200" y="498" text-anchor="middle">2</text>
+    <circle class="dot" cx="962" cy="160" r="10"/><text class="num" x="962" y="164" text-anchor="middle">3</text>
+    <circle class="dot" cx="716" cy="470" r="10"/><text class="num" x="716" y="474" text-anchor="middle">4</text>
+  </svg>
+
+  <div class="legend">
+    <span><i class="sw py"></i>Python component</span>
+    <span><i class="sw ts"></i>TypeScript component</span>
+    <span><i class="sw db"></i>PostgreSQL table or schema</span>
+    <span><i class="sw ext"></i>external service</span>
+    <span><i class="sw out"></i>outside our system</span>
+    <span><i class="ln"></i>call or write</span>
+    <span><i class="ln r"></i>read</span>
+  </div>
+  <ul class="notes">
+    <li>Every lane runs as containers from one Docker Compose file: PostgreSQL, one crawler container per source, the indexer job and the MCP server.</li>
+    <li>Each table has one writer. The crawler writes <code>documents</code>, the indexer writes the three indexes, and the MCP server only reads.</li>
+    <li><code>download()</code> is one TypeScript module used by the indexer and the MCP server. Full texts stay in memory and are never written to the database.</li>
+  </ul>
+
+  <div class="foot"><span>Planned design for the mid-project release (25.11.2026). We will compare it with the real system at the end of the project.</span><span>1 / 4</span></div>
+</section>
+
+<!-- Page 2: code components -->
+<section class="page">
+  <div class="head"><span><b>Patient Journey Matcher</b> · Software architecture</span><span>AMOS WS 2026/27 · Team 3 · Sprint 02 · 27.10.2026</span></div>
+  <h1><span class="num">2</span>Code components (layers)</h1>
+  <p class="lede">How the code in this repository is organised. Each layer only uses the layers below it. Inside our code, interface modules call domain modules, and domain modules call infrastructure modules.</p>
+
+  <svg class="diagram" viewBox="0 0 1000 796" role="img" aria-label="Code components">
+    <defs>
+      <marker id="a2" viewBox="0 0 10 10" refX="9.5" refY="5" markerWidth="6.5" markerHeight="6.5" orient="auto-start-reverse">
+        <path d="M0,0 L10,5 L0,10 z" fill="#3a3a3a"/>
+      </marker>
+      <pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+        <rect width="6" height="6" fill="#ffffff"/>
+        <line x1="0" y1="0" x2="0" y2="6" stroke="#e2e2e2" stroke-width="2.4"/>
+      </pattern>
+    </defs>
+
+    <text class="lab" x="34" y="14">APPLICATION LAYER · OUR CODE</text>
+    <text class="sub" transform="translate(18 95) rotate(-90)" text-anchor="middle">interface</text>
+    <text class="sub" transform="translate(18 233) rotate(-90)" text-anchor="middle">domain</text>
+    <text class="sub" transform="translate(18 375) rotate(-90)" text-anchor="middle">infrastructure</text>
+
+    <!-- crawler/ -->
+    <rect class="lane-py" x="34" y="24" width="300" height="400" rx="8"/>
+    <text x="46" y="46"><tspan class="hm">crawler/</tspan><tspan class="b"> · Python project (uv)</tspan></text>
+    <rect class="py" x="50" y="64" width="268" height="62" rx="5"/>
+    <rect class="py" x="50" y="148" width="268" height="82" rx="5"/>
+    <rect class="py" x="50" y="246" width="128" height="72" rx="5"/>
+    <rect class="py" x="192" y="246" width="126" height="72" rx="5"/>
+    <rect class="py" x="50" y="344" width="268" height="62" rx="5"/>
+    <g text-anchor="middle">
+      <text class="hm" x="184" y="85">cli.py</text>
+      <text class="b" x="184" y="103">one entry point per source</text>
+      <text class="b" x="184" y="119">started by the scheduler</text>
+      <text class="hm" x="184" y="168">sources/</text>
+      <text class="b" x="184" y="186">pubmed · arxiv · youtube</text>
+      <text class="b" x="184" y="202">zenodo · podcasts</text>
+      <text class="b" x="184" y="219">one SourceScraper subclass each</text>
+      <text class="hm" x="114" y="266">references/</text>
+      <text class="b" x="114" y="285">link extractor</text>
+      <text class="b" x="114" y="301">queue rules</text>
+      <text class="hm" x="255" y="266">topics/</text>
+      <text class="b" x="255" y="285">query YAML per</text>
+      <text class="b" x="255" y="301">disease area</text>
+      <text class="hm" x="184" y="366">store.py</text>
+      <text class="b" x="184" y="384">upsert into documents</text>
+      <text class="b" x="184" y="400">(asyncpg)</text>
+    </g>
+    <path class="e" d="M184 126 V148" marker-end="url(#a2)"/>
+    <path class="e" d="M185 230 V344" marker-end="url(#a2)"/>
+
+    <!-- contracts -->
+    <text class="h" x="435" y="46" text-anchor="middle">shared contracts</text>
+    <rect class="ctr" x="350" y="148" width="170" height="74" rx="5"/>
+    <rect class="ctr" x="350" y="344" width="170" height="62" rx="5"/>
+    <g text-anchor="middle">
+      <text class="hm" x="435" y="169">schemas/</text>
+      <text class="b" x="435" y="188">journey JSON Schema</text>
+      <text class="b" x="435" y="205">(#1, #14)</text>
+      <text class="hm" x="435" y="364">db/</text>
+      <text class="b" x="435" y="382">schema and migrations</text>
+      <text class="b" x="435" y="398">documents · indexes</text>
+    </g>
+    <path class="e r" d="M318 375 H350" marker-end="url(#a2)"/>
+    <path class="e r" d="M552 375 H520" marker-end="url(#a2)"/>
+    <path class="e r" d="M552 185 H520" marker-end="url(#a2)"/>
+    <text class="sub" x="435" y="270" text-anchor="middle">the only link between</text>
+    <text class="sub" x="435" y="285" text-anchor="middle">Python and TypeScript</text>
+
+    <!-- matcher/ -->
+    <rect class="lane-ts" x="536" y="24" width="454" height="400" rx="8"/>
+    <text x="548" y="46"><tspan class="hm">matcher/</tspan><tspan class="b"> · TypeScript, pnpm workspace</tspan></text>
+    <rect class="ts" x="552" y="64" width="210" height="62" rx="5"/>
+    <rect class="ts" x="776" y="64" width="198" height="62" rx="5"/>
+    <rect class="ts" x="552" y="148" width="148" height="74" rx="5"/>
+    <rect class="ts" x="714" y="148" width="260" height="74" rx="5"/>
+    <rect class="grp" x="552" y="236" width="422" height="86" rx="6"/>
+    <text class="sub" x="560" y="250">algorithms/ · plug-ins, each implements both core interfaces</text>
+    <rect class="alg" x="562" y="258" width="128" height="56" rx="5"/>
+    <rect class="alg" x="704" y="258" width="128" height="56" rx="5"/>
+    <rect class="alg" x="846" y="258" width="118" height="56" rx="5"/>
+    <rect class="ts" x="552" y="344" width="128" height="62" rx="5"/>
+    <rect class="ts" x="694" y="344" width="140" height="62" rx="5"/>
+    <rect class="ts" x="846" y="344" width="128" height="62" rx="5"/>
+    <g text-anchor="middle">
+      <text class="hm" x="657" y="85">mcp-server</text>
+      <text class="b" x="657" y="103">MCP tools and transport</text>
+      <text class="b" x="657" y="119">server start, config</text>
+      <text class="hm" x="875" y="85">indexer</text>
+      <text class="b" x="875" y="103">CLI job, runs after</text>
+      <text class="b" x="875" y="119">each crawl</text>
+      <text class="hm" x="626" y="169">journey</text>
+      <text class="b" x="626" y="188">parse and validate</text>
+      <text class="b" x="626" y="205">journey state</text>
+      <text class="hm" x="844" y="169">core</text>
+      <text class="b" x="844" y="188">Matcher and Indexer interfaces</text>
+      <text class="b" x="844" y="205">result model, error codes</text>
+      <text class="hm" x="626" y="280">keyword</text>
+      <text class="b" x="626" y="299">indexer + matcher</text>
+      <text class="hm" x="768" y="280">graph</text>
+      <text class="b" x="768" y="299">indexer + matcher</text>
+      <text class="hm" x="905" y="280">ai-summary</text>
+      <text class="b" x="905" y="299">indexer + matcher</text>
+      <text class="hm" x="616" y="366">db</text>
+      <text class="b" x="616" y="384">Postgres access</text>
+      <text class="b" x="616" y="400">(pg)</text>
+      <text class="hm" x="764" y="366">download</text>
+      <text class="b" x="764" y="384">download(), one</text>
+      <text class="b" x="764" y="400">fetcher per source</text>
+      <text class="hm" x="910" y="366">llm</text>
+      <text class="b" x="910" y="384">LLM and</text>
+      <text class="b" x="910" y="400">embedding client</text>
+    </g>
+    <path class="e" d="M626 126 V148" marker-end="url(#a2)"/>
+    <path class="e" d="M740 126 V148" marker-end="url(#a2)"/>
+    <path class="e" d="M875 126 V148" marker-end="url(#a2)"/>
+    <path class="e" d="M616 322 V344" marker-end="url(#a2)"/>
+    <path class="e" d="M764 322 V344" marker-end="url(#a2)"/>
+    <path class="e" d="M905 322 V344" marker-end="url(#a2)"/>
+
+    <!-- dev only and reference -->
+    <rect class="dev" x="34" y="440" width="486" height="56" rx="6"/>
+    <rect class="dev" x="536" y="440" width="454" height="56" rx="6"/>
+    <rect x="34" y="508" width="956" height="52" rx="6" fill="url(#hatch)" stroke="#9a9a9a" stroke-width="1.1"/>
+    <g text-anchor="middle">
+      <text class="hm" x="277" y="460">evaluation/</text>
+      <text class="b" x="277" y="479">test journeys (#14) · relevance judgments · metrics runner (#11)</text>
+      <text class="h" x="763" y="460">tests next to each package</text>
+      <text class="b" x="763" y="479">pytest for crawler/ · Vitest for matcher/ · run in CI (#12)</text>
+      <text class="hm" x="512" y="529">backend/</text>
+      <text class="b" x="512" y="548">SS26 code copied in #13 · reference only, not built or deployed · reused parts move into crawler/ and matcher/ (table below)</text>
+    </g>
+
+    <!-- framework layer -->
+    <text class="lab" x="34" y="586">FRAMEWORK LAYER · THIRD-PARTY LIBRARIES</text>
+    <rect class="fw" x="34" y="596" width="300" height="62" rx="5"/>
+    <rect class="fw" x="350" y="596" width="170" height="62" rx="5"/>
+    <rect class="fw" x="536" y="596" width="454" height="62" rx="5"/>
+    <g text-anchor="middle">
+      <text class="b" x="184" y="616">Crawlee · httpx · Biopython · arxiv</text>
+      <text class="b" x="184" y="633">google-api-python-client · feedparser</text>
+      <text class="b" x="184" y="650">pydantic · asyncpg</text>
+      <text class="b" x="435" y="621">full-text search</text>
+      <text class="b" x="435" y="639">pgvector extension</text>
+      <text class="b" x="763" y="621">MCP TypeScript SDK · zod · pg</text>
+      <text class="b" x="763" y="639">@google/genai · openai (LLM clients)</text>
+    </g>
+
+    <!-- platform layer -->
+    <text class="lab" x="34" y="684">PLATFORM LAYER</text>
+    <rect class="pf" x="34" y="694" width="300" height="44" rx="5"/>
+    <rect class="pf" x="350" y="694" width="170" height="44" rx="5"/>
+    <rect class="pf" x="536" y="694" width="454" height="44" rx="5"/>
+    <rect class="pf" x="34" y="748" width="956" height="40" rx="5"/>
+    <g text-anchor="middle">
+      <text class="h" x="184" y="721">Python 3.12 · uv</text>
+      <text class="h" x="435" y="721">PostgreSQL 18</text>
+      <text class="h" x="763" y="721">Node.js 24 LTS · pnpm</text>
+      <text class="b" x="512" y="773">Docker Compose: one image per component · one command builds everything, one command starts the demo</text>
+    </g>
+  </svg>
+
+  <div class="legend">
+    <span><i class="sw py"></i>Python module</span>
+    <span><i class="sw ts"></i>TypeScript package</span>
+    <span><i class="sw alg"></i>algorithm plug-in</span>
+    <span><i class="sw ctr"></i>shared contract file</span>
+    <span><i class="sw dev"></i>dev only, not shipped</span>
+    <span><i class="sw ref"></i>reference code</span>
+    <span><i class="ln"></i>imports</span>
+    <span><i class="ln r"></i>follows the contract</span>
+  </div>
+
+  <h2>Where the SS26 code in <code>backend/</code> goes</h2>
+  <table>
+    <thead><tr><th>SS26 code (<code>backend/…</code>)</th><th>Target</th><th>How</th></tr></thead>
+    <tbody>
+      <tr><td><code>scrapers/…/PubMed</code>, <code>Archive</code> (arXiv), <code>YouTube</code> (official API part)</td><td><code>crawler/sources/</code></td><td>Reuse the search and parsing code. Requests go through Crawlee. PDF downloads, chunking and the AstraDB embedding are dropped.</td></tr>
+      <tr><td><code>scrapers/…/BaseScraper</code> (stable IDs, dedup)</td><td><code>crawler/sources/</code> base class</td><td>Adapt: split fetching and parsing from indexing.</td></tr>
+      <tr><td><code>scrapers/key_words/*.csv</code>, <code>scrapers/topics.py</code></td><td><code>crawler/topics/</code></td><td>Reuse as seed queries, converted to one YAML file per disease area.</td></tr>
+      <tr><td><code>workers/pipeline/graph/medical_schema.py</code></td><td><code>matcher/algorithms/graph</code></td><td>Port the entity and relation types to TypeScript.</td></tr>
+      <tr><td><code>api/chat_pipeline/paper_retriever.py</code>, <code>availability.py</code></td><td><code>matcher/core</code>, <code>download</code></td><td>Port the result shape (passages with source references), timeouts and the circuit breaker.</td></tr>
+      <tr><td><code>workers/connections/gemini_client.py</code></td><td><code>matcher/llm</code></td><td>Port the pacing and retry conventions.</td></tr>
+      <tr><td><code>api/</code>, <code>workers/</code> document pipeline, <code>shared/</code> (Firestore, GCS, Pub/Sub)</td><td>not in the first release</td><td>Stays on the AIlixir side. Reference for a later adapter that builds journeys from patient documents.</td></tr>
+    </tbody>
+  </table>
+
+  <div class="foot"><span>Folder names are the planned layout. Today the repository holds <code>backend/</code>, <code>Documentation/</code> and <code>Deliverables/</code>.</span><span>2 / 4</span></div>
+</section>
+
+<!-- Page 3: technology stack -->
+<section class="page">
+  <div class="head"><span><b>Patient Journey Matcher</b> · Software architecture</span><span>AMOS WS 2026/27 · Team 3 · Sprint 02 · 27.10.2026</span></div>
+  <h1><span class="num">3</span>Technology stack</h1>
+  <p class="lede">The first-level technologies we build on, grouped by layer. Versions are the current releases on 27.10.2026. The lockfiles pin exact versions, and the bill of materials in the planning document (#16) is the binding list. Course rule: no copyleft licences in the product.</p>
+
+  <table class="stack">
+    <colgroup><col style="width:27%"><col style="width:11%"><col style="width:33%"><col style="width:18%"><col style="width:11%"></colgroup>
+    <thead><tr><th>Technology</th><th>Version</th><th>Used for</th><th>Licence</th><th>Basis</th></tr></thead>
+    <tbody>
+      <tr class="grp"><td colspan="5">Languages and runtimes</td></tr>
+      <tr><td>Python</td><td class="v">3.12</td><td>Crawler</td><td>PSF-2.0</td><td class="basis"><span class="tag p">Partner</span></td></tr>
+      <tr><td>TypeScript on Node.js</td><td class="v">Node 24 LTS</td><td>Indexer, matchers, MCP server</td><td>Apache-2.0 / MIT</td><td class="basis"><span class="tag p">Partner</span></td></tr>
+
+      <tr class="grp"><td colspan="5">Crawling (Python)</td></tr>
+      <tr><td>Crawlee for Python</td><td class="v">1.11</td><td>Request queue with dedup, retries and rate limits</td><td>Apache-2.0</td><td class="basis"><span class="tag">#5</span></td></tr>
+      <tr><td>Biopython (Entrez)</td><td class="v">1.88</td><td>PubMed search and record parsing</td><td>Biopython (BSD-style)</td><td class="basis"><span class="tag">#13</span></td></tr>
+      <tr><td>arxiv</td><td class="v">4.0</td><td>arXiv API client</td><td>MIT</td><td class="basis"><span class="tag">#13</span></td></tr>
+      <tr><td>google-api-python-client</td><td class="v">2.201</td><td>YouTube Data API, official API only</td><td>Apache-2.0</td><td class="basis"><span class="tag">#5</span></td></tr>
+      <tr><td>feedparser</td><td class="v">6.0</td><td>Podcast RSS feeds</td><td>BSD-2-Clause</td><td class="basis"><span class="tag prop">Proposal</span></td></tr>
+      <tr><td>pydantic</td><td class="v">2.14</td><td>Validating source records</td><td>MIT</td><td class="basis"><span class="tag">#13</span></td></tr>
+      <tr><td>asyncpg</td><td class="v">0.32</td><td>Writing to <code>documents</code></td><td>Apache-2.0</td><td class="basis"><span class="tag prop">Proposal</span></td></tr>
+
+      <tr class="grp"><td colspan="5">Storage</td></tr>
+      <tr><td>PostgreSQL</td><td class="v">18</td><td><code>documents</code>, run log, three index schemas</td><td>PostgreSQL</td><td class="basis"><span class="tag">#5</span> <span class="tag prop">Proposal</span></td></tr>
+      <tr><td>Postgres full-text search</td><td class="v">built in</td><td>Keyword index: term statistics and ranking</td><td>PostgreSQL</td><td class="basis"><span class="tag prop">Proposal</span></td></tr>
+      <tr><td>pgvector</td><td class="v">0.8</td><td>Vectors for the AI summary index</td><td>PostgreSQL</td><td class="basis"><span class="tag prop">Proposal</span></td></tr>
+
+      <tr class="grp"><td colspan="5">Indexing, matching and MCP interface (TypeScript)</td></tr>
+      <tr><td>MCP TypeScript SDK</td><td class="v">1.32</td><td>MCP server over Streamable HTTP</td><td>MIT, moving to Apache-2.0</td><td class="basis"><span class="tag p">Partner</span></td></tr>
+      <tr><td>zod</td><td class="v">4.6</td><td>Tool schemas and journey validation</td><td>MIT</td><td class="basis"><span class="tag prop">Proposal</span></td></tr>
+      <tr><td>pg (node-postgres)</td><td class="v">8.23</td><td>Database access</td><td>MIT</td><td class="basis"><span class="tag prop">Proposal</span></td></tr>
+
+      <tr class="grp"><td colspan="5">AI services (hosted, keys from AIlixir)</td></tr>
+      <tr><td>Gemini via Vertex AI (@google/genai)</td><td class="v">SDK 2.31</td><td>Source summaries at index time</td><td>Apache-2.0 (SDK)</td><td class="basis"><span class="tag">#13</span></td></tr>
+      <tr><td>OpenAI embeddings (openai)</td><td class="v">SDK 7.45</td><td>Vectors for the AI summary index</td><td>Apache-2.0 (SDK)</td><td class="basis"><span class="tag">#13</span></td></tr>
+
+      <tr class="grp"><td colspan="5">Build, test and delivery</td></tr>
+      <tr><td>Docker Compose</td><td class="v">5.6</td><td>One command to build, one to start the demo</td><td>Apache-2.0</td><td class="basis"><span class="tag prop">Proposal</span></td></tr>
+      <tr><td>uv · pnpm</td><td class="v">0.13 · 12.15</td><td>Dependencies and lockfiles for the bill of materials</td><td>MIT / Apache-2.0 · MIT</td><td class="basis"><span class="tag prop">Proposal</span></td></tr>
+      <tr><td>pytest · Vitest · Ruff · Biome</td><td class="v">9.1 · 5.0 · 0.17 · 2.6</td><td>Unit tests, linting and formatting</td><td>MIT; Biome also Apache-2.0</td><td class="basis"><span class="tag prop">Proposal</span></td></tr>
+      <tr><td>GitHub Actions</td><td class="v">service</td><td>Tests and lint on every pull request</td><td>service terms</td><td class="basis"><span class="tag prop">Proposal</span></td></tr>
+
+      <tr class="grp"><td colspan="5">Demo and test data</td></tr>
+      <tr><td>MCP Inspector</td><td class="v">2.12</td><td>Demo client for reviews</td><td>MIT / Apache-2.0</td><td class="basis"><span class="tag prop">Proposal</span></td></tr>
+      <tr><td>meddocgenerator (AIlixir)</td><td class="v">main</td><td>Synthetic patient journeys</td><td>Apache-2.0, headers to clarify</td><td class="basis"><span class="tag p">Partner</span></td></tr>
+    </tbody>
+  </table>
+  <p style="margin-top:1.6mm; font-size:7.4pt; color:#555555;">Basis: <span class="tag p">Partner</span> project description or AIlixir · <span class="tag">#5</span> crawler evaluation · <span class="tag">#13</span> reuse plan · <span class="tag prop">Proposal</span> this document, to be confirmed in review.</p>
+
+  <div class="box">
+    <h2>Not used, and why</h2>
+    <ul>
+      <li><b>JValue crawler:</b> built for bulk files in FTP folder trees, supports none of our sources, needs RabbitMQ, MinIO and Kubernetes (#5).</li>
+      <li><b>AstraDB, Vertex AI Ranking:</b> cloud services, but queries must run against a local database (dropped in #5).</li>
+      <li><b>Neo4j, Graphiti:</b> the Neo4j server is GPL-3.0. The patient graph stays with AIlixir; our graph index uses Postgres tables.</li>
+      <li><b>psycopg:</b> LGPL-3.0, so we use asyncpg.</li>
+      <li><b>paperscraper, pypdf, YouTube caption scraping:</b> we store metadata only, and the caption scraping breaks YouTube's terms.</li>
+      <li><b>Firebase, Firestore, Cloud Storage, Pub/Sub:</b> AIlixir app infrastructure, only needed if we take over document upload.</li>
+    </ul>
+  </div>
+
+  <div class="foot"><span>Versions checked against the npm and PyPI registries and the projects' release pages on 27.10.2026.</span><span>3 / 4</span></div>
+</section>
+
+<!-- Page 4: explanation -->
+<section class="page text">
+  <div class="head"><span><b>Patient Journey Matcher</b> · Software architecture</span><span>AMOS WS 2026/27 · Team 3 · Sprint 02 · 27.10.2026</span></div>
+  <h1><span class="num">4</span>Explanation of the diagrams and choices</h1>
+  <p class="lede">The Patient Journey Matcher is an MCP server for the AIlixir app. A client sends a patient journey, a dated list of events such as diagnoses and operations, and gets back papers, preprints, videos and podcast episodes that fit the most recent point in that journey.</p>
+
+  <h2>Runtime view (page 1)</h2>
+  <ol>
+    <li><b>Crawling.</b> A daily cron job starts one crawler container per source with the queries from a topic file. The crawler searches the source API, follows a paper's references one level deep, and upserts the metadata into <code>documents</code>. It stores metadata and links only, never full texts.</li>
+    <li><b>Indexing.</b> After each crawl, the indexer reads the new documents, fetches each text with <code>download()</code>, keeps it in memory, and writes three separate indexes: keyword, graph and AI summary. Only the AI summary builder calls an LLM, and only with public source text.</li>
+    <li><b>Query.</b> A client calls an MCP tool with the journey. The journey reader validates it and builds one journey state: the latest event is the focus, and older events are context. How much older events count is not fixed yet; we will test it with the evaluation runner (#11). All three matchers get the same state, so their results can be compared fairly.</li>
+    <li><b>Answer.</b> The result assembler merges and ranks the hits and adds the metadata and links from <code>documents</code>. When the client asks for one source, <code>download()</code> fetches the original again and passes it on without storing it.</li>
+  </ol>
+
+  <h2>Code view (page 2)</h2>
+  <p>The layers follow the lecture: platform at the bottom, third-party frameworks on top of it, our application code on top of those. The crawler (Python) and the matcher (TypeScript) share no code. Their only contracts are the database schema in <code>db/</code> and the journey JSON Schema in <code>schemas/</code>, so both sides can be built and tested on their own. Each algorithm is a plug-in that implements the <code>Indexer</code> and <code>Matcher</code> interfaces from <code>core</code>; a fourth approach would not change the server. <code>backend/</code> holds the SS26 code copied in #13. It is not built, and the parts we reuse move into the new modules as listed on page 2.</p>
+
+  <h2>Choices and reasons</h2>
+  <ul>
+    <li><b>Python for crawling, TypeScript for indexing and querying.</b> Required by the project description. The <code>documents</code> table is the interface between the two.</li>
+    <li><b>Our own crawler on Crawlee instead of a fork of the JValue crawler.</b> This departs from the project description. Our evaluation (#5) found that JValue walks FTP folder trees and stores whole files, while our sources are search APIs that return single records. The professorship advised us to use JValue only as an architecture reference. Crawlee gives us a deduplicating request queue, retries and rate limits, which is what following references needs.</li>
+    <li><b>Metadata only, download on a match.</b> Storing the originals is too expensive and often not allowed by their licence. The indexes hold derived data only (term statistics, concepts, summaries), and the original is fetched again when someone needs it.</li>
+    <li><b>PostgreSQL for documents and indexes.</b> #5 chose Postgres for <code>documents</code>. Full-text search and pgvector cover the keyword and AI indexes in the same server, and the graph index fits in two tables for concepts and relations. One database server keeps the demo to one command, and avoids the GPL-3.0 Neo4j server.</li>
+    <li><b>Three competing algorithms behind one interface.</b> AIlixir wants a word-statistics, a graph-based and an AI-based approach, each with its own index. We start with the keyword baseline (#8), then add the graph (#10) and AI summary (#9) approaches, and compare all three on the same test journeys and criteria (#11).</li>
+    <li><b>Selective reuse of the SS26 code (#13).</b> We keep the PubMed, arXiv and YouTube parsing, the topic lists and the medical ontology, and port the retrieval result shape and the LLM client conventions to TypeScript. We drop chat, voice, OCR, YouTube caption scraping and the AstraDB index.</li>
+    <li><b>Health data.</b> The server does not store or log the journey. Development uses only synthetic journeys from the AIlixir generator (#14).</li>
+    <li><b>Docker Compose.</b> One command builds everything and one starts the demo, on any team member's machine, as the build process review on 04.11. requires.</li>
+  </ul>
+
+  <div class="box">
+    <h2>Open points, to settle with AIlixir and in the team</h2>
+    <ul>
+      <li>The journey format the real app sends, and the final MCP tool names and fields (#1, #7).</li>
+      <li>MCP transport and authentication between the AIlixir backend and our server.</li>
+      <li>LLM provider, EU hosting and who pays; whether summaries and abstracts may be shown to patients.</li>
+      <li>Scope of YouTube (stored data must be refreshed or deleted after 30 days) and reference depth beyond one level.</li>
+      <li>Production and test system for releases.</li>
+    </ul>
+  </div>
+
+  <div class="foot"><span>Sources: project description, crawler evaluation (#5), reuse plan (#13), issues #1 to #16.</span><span>4 / 4</span></div>
+</section>
+
+</body>
+</html>
