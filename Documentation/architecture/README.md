@@ -27,7 +27,7 @@ Legend: orange = Python component, blue = TypeScript component, grey = PostgreSQ
 
 ## 2 Code components (layers)
 
-How the code in this repository is organised. Each layer only uses the layers below it. Inside our code, interface modules call domain modules, and domain modules call infrastructure modules. The folder names are the planned layout; today the repository holds `backend/`, `Documentation/` and `Deliverables/`.
+How the code in this repository is organised. Each layer only uses the layers below it. Inside our code, interface modules call domain modules, and domain modules call infrastructure modules. The folder names are the planned layout; today the repository holds `crawler/` (empty uv project), `matcher/` (pnpm workspace with empty `indexer` and `mcp-server` packages), `backend/`, `Documentation/` and `Deliverables/`.
 
 ![Code components](code-components.svg)
 
@@ -79,6 +79,7 @@ Basis: **Partner** = project description or AIlixir · **#5** = [crawler evaluat
 | Docker Compose | 5.6 | One command to build, one to start the demo | Apache-2.0 | Proposal |
 | uv · pnpm | 0.13 · 12.15 | Dependencies and lockfiles for the bill of materials | MIT / Apache-2.0 · MIT | Proposal |
 | pytest · Vitest · Ruff · Biome | 9.1 · 5.0 · 0.17 · 2.6 | Unit tests, linting and formatting | MIT; Biome also Apache-2.0 | Proposal |
+| mypy | 2.4 | Python type checks (strict, pydantic plugin) | MIT | Proposal |
 | GitHub Actions | service | Tests and lint on every pull request | service terms | Proposal |
 | **Demo and test data** | | | | |
 | MCP Inspector | 2.12 | Demo client for reviews | MIT / Apache-2.0 | Proposal |
