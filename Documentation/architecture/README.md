@@ -69,7 +69,7 @@ Basis: **Partner** = project description or AIlixir · **#5** = [crawler evaluat
 | Postgres full-text search | built in | Keyword index: term statistics and ranking | PostgreSQL | Proposal |
 | pgvector | 0.8 | Vectors for the AI summary index ([AstraDB is open](#5-open-points)) | PostgreSQL | Proposal |
 | **Indexing, matching and MCP interface (TypeScript)** | | | | |
-| MCP TypeScript SDK | 1.32 | MCP server over Streamable HTTP | MIT, moving to Apache-2.0 | Partner |
+| MCP TypeScript SDK v2 (`@modelcontextprotocol/server`, `@modelcontextprotocol/node`) | 2.4 | MCP server over Streamable HTTP | Apache-2.0 | Partner |
 | zod | 4.6 | Tool schemas and journey validation | MIT | Proposal |
 | pg (node-postgres) | 8.23 | Database access | MIT | Proposal |
 | **AI services (hosted, keys from AIlixir)** | | | | |
