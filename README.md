@@ -13,8 +13,6 @@ The Python crawler and the TypeScript matcher are separate projects with their o
 
 ### Prerequisites
 
-The commands below work on macOS, Linux and Windows (PowerShell).
-
 | Tool | Version |
 |---|---|
 | [Git](https://git-scm.com/downloads) | any recent |
