@@ -43,3 +43,7 @@ The Python crawler and the TypeScript matcher are separate projects with their o
 
 2. Run the tools: `pnpm typecheck`, `pnpm test`, `pnpm lint`
 3. Add a dependency to one package: `pnpm --filter @matcher/indexer add <package>`. Add shared dev tools to the root with `pnpm add -w -D <package>`.
+
+### GitHub CI
+
+See [`Documentation/github-ci.md`](Documentation/github-ci.md).
