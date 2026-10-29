@@ -47,3 +47,13 @@ The Python crawler and the TypeScript matcher are separate projects with their o
 ### GitHub CI
 
 See [`Documentation/github-ci.md`](Documentation/github-ci.md).
+
+### SBOM generation
+
+After installing both projects, run from the repository root:
+
+```sh
+uv run --project crawler python scripts/dependencies.py
+```
+
+It writes all direct dependencies with version, licence and scope to `out/dependencies.tsv`. The `Context` and `Comment` columns stay empty; fill them in afterwards, for example with your coding agent.
