@@ -18,6 +18,16 @@ pids
 # Python
 *.pyc
 __pycache__/
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Crawlee run data (request queues, datasets)
+crawler/storage/
+
+# Secrets
+.env
 
 # vscode
 .vscode/

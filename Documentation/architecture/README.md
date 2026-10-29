@@ -27,7 +27,7 @@ Legend: orange = Python component, blue = TypeScript component, grey = PostgreSQ
 
 ## 2 Code components (layers)
 
-How the code in this repository is organised. Each layer only uses the layers below it. Inside our code, interface modules call domain modules, and domain modules call infrastructure modules. The folder names are the planned layout; today the repository holds `backend/`, `Documentation/` and `Deliverables/`.
+How the code in this repository is organised. Each layer only uses the layers below it. Inside our code, interface modules call domain modules, and domain modules call infrastructure modules. The folder names are the planned layout; today the repository holds `crawler/` (empty uv project), `matcher/` (pnpm workspace with empty `indexer` and `mcp-server` packages), `backend/`, `Documentation/` and `Deliverables/`.
 
 ![Code components](code-components.svg)
 
@@ -69,7 +69,7 @@ Basis: **Partner** = project description or AIlixir · **#5** = [crawler evaluat
 | Postgres full-text search | built in | Keyword index: term statistics and ranking | PostgreSQL | Proposal |
 | pgvector | 0.8 | Vectors for the AI summary index ([AstraDB is open](#5-open-points)) | PostgreSQL | Proposal |
 | **Indexing, matching and MCP interface (TypeScript)** | | | | |
-| MCP TypeScript SDK | 1.32 | MCP server over Streamable HTTP | MIT, moving to Apache-2.0 | Partner |
+| MCP TypeScript SDK v2 (`@modelcontextprotocol/server`, `@modelcontextprotocol/node`) | 2.4 | MCP server over Streamable HTTP | Apache-2.0 | Partner |
 | zod | 4.6 | Tool schemas and journey validation | MIT | Proposal |
 | pg (node-postgres) | 8.23 | Database access | MIT | Proposal |
 | **AI services (hosted, keys from AIlixir)** | | | | |
@@ -79,6 +79,7 @@ Basis: **Partner** = project description or AIlixir · **#5** = [crawler evaluat
 | Docker Compose | 5.6 | One command to build, one to start the demo | Apache-2.0 | Proposal |
 | uv · pnpm | 0.13 · 12.15 | Dependencies and lockfiles for the bill of materials | MIT / Apache-2.0 · MIT | Proposal |
 | pytest · Vitest · Ruff · Biome | 9.1 · 5.0 · 0.17 · 2.6 | Unit tests, linting and formatting | MIT; Biome also Apache-2.0 | Proposal |
+| mypy | 2.4 | Python type checks (strict, pydantic plugin) | MIT | Proposal |
 | GitHub Actions | service | Tests and lint on every pull request | service terms | Proposal |
 | **Demo and test data** | | | | |
 | MCP Inspector | 2.12 | Demo client for reviews | MIT / Apache-2.0 | Proposal |
