@@ -26,7 +26,7 @@ def python_dependencies():
         for requirement in requirements:
             name = re.match(r"[A-Za-z0-9._-]+", requirement)[0]
             meta = metadata(name)
-            licence = meta["License-Expression"] or meta["License"] or ""
+            licence = meta.get("License-Expression") or meta.get("License") or ""
             yield name, meta["Version"], licence, scope
 
 
