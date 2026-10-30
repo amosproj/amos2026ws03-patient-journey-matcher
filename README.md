@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="Documentation/logo.png" alt="Journey Matcher logo" width="240">
+</p>
+
 # Patient Journey Matcher (AMOS WS 2026)
 Something something something
 
