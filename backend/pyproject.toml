@@ -1,0 +1,51 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "API, workers and scrapers copied from SS26 AIlixir (see README.md)"
+requires-python = ">=3.12"
+# Merged from api/, workers/ and scrapers/requirements.txt. Where the files
+# disagreed, the stricter pin wins. google-cloud-pubsub was pinned to 2.27.1,
+# which needs protobuf<6 and so can't be installed with google-cloud-storage
+# 3.10.1; it is a lower bound here.
+dependencies = [
+    # API and workers
+    "email-validator==2.2.0",
+    "fastapi==0.136.1",
+    "firebase-admin==7.4.0",
+    "google-cloud-pubsub>=2.27.1",
+    "google-cloud-storage==3.10.1",
+    "python-dotenv==1.0.1",
+    "python-multipart==0.0.27",
+    "uvicorn==0.46.0",
+    # Knowledge graph and LLM calls
+    "google-genai>=1.0.0",
+    "graphiti-core[google-genai]>=0.3.17",
+    "neo4j>=5.0.0",
+    # Paper retrieval, reranking and embeddings
+    "google-cloud-discoveryengine>=0.13.0",
+    "langchain>=0.2.6",
+    "langchain-astradb>=0.3.3",
+    "langchain-core>=0.2.6",
+    "langchain-openai>=0.1.14",
+    "langchain-text-splitters>=0.2.0",
+    # Scrapers
+    "arxiv>=2.1.0",
+    "biopython>=1.83",
+    "paperscraper>=0.2.11",
+    "pypdf>=4.2.0",
+    "requests>=2.31.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+]
+
+[tool.uv]
+# Not an installable package: api/, workers/ and shared/ are imported from
+# backend/, the scrapers from backend/scrapers/ (as `src.backend...`).
+package = false
+
+[tool.pytest.ini_options]
+pythonpath = [".", "scrapers"]
+testpaths = ["tests"]
