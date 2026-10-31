@@ -1,0 +1,33 @@
+# Build, test and start
+
+Run these commands from the repository root. You need the tools listed under [Prerequisites](../README.md#prerequisites). No credentials are needed.
+
+| Command | What it does |
+|---|---|
+| `make build` | Installs the locked dependencies of `crawler/` and `matcher/`, and typechecks `matcher/` |
+| `make test` | Builds, then runs the same checks as [CI](github-ci.md) |
+| `make start` | Builds, then starts the MCP server on `http://127.0.0.1:3000/mcp` |
+
+Make only calls the `uv` and `pnpm` commands from the [README](../README.md#development-setup), so you can still run them directly.
+
+## From a fresh clone
+
+```sh
+git clone https://github.com/amosproj/amos2026ws03-patient-journey-matcher.git
+cd amos2026ws03-patient-journey-matcher
+make test
+make start
+```
+
+## Check that the server runs
+
+While `make start` is running, list the tools from a second terminal:
+
+```sh
+curl -s -X POST http://127.0.0.1:3000/mcp \
+  -H 'Content-Type: application/json' \
+  -H 'Accept: application/json, text/event-stream' \
+  -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'
+```
+
+The answer lists `match_journey` and `get_source`. Both tools answer `NOT_AVAILABLE` until the matchers exist, see [MCP interface](mcp-interface.md).
