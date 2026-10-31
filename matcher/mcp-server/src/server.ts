@@ -12,7 +12,8 @@ import {
 export type ErrorCode =
   | "NOT_AVAILABLE"
   | "SOURCE_NOT_FOUND"
-  | "UPSTREAM_UNAVAILABLE";
+  | "UPSTREAM_UNAVAILABLE"
+  | "INTERNAL_ERROR";
 
 export class ToolError extends Error {
   readonly code: ErrorCode;
@@ -21,6 +22,14 @@ export class ToolError extends Error {
     super(message);
     this.code = code;
   }
+}
+
+function toToolError(error: unknown): ToolError {
+  if (error instanceof ToolError) return error;
+  // The message can hold journey data, so it is neither returned nor logged.
+  const name = error instanceof Error ? error.name : typeof error;
+  console.error(`Unexpected ${name} during a tool call`);
+  return new ToolError("INTERNAL_ERROR", "The request failed unexpectedly.");
 }
 
 export interface MatchService {
@@ -38,11 +47,8 @@ async function toToolResult<Output extends Record<string, unknown>>(
       structuredContent: output,
     };
   } catch (error) {
-    if (!(error instanceof ToolError)) throw error;
-    const text = JSON.stringify({
-      error_code: error.code,
-      message: error.message,
-    });
+    const { code, message } = toToolError(error);
+    const text = JSON.stringify({ error_code: code, message });
     return { content: [{ type: "text" as const, text }], isError: true };
   }
 }

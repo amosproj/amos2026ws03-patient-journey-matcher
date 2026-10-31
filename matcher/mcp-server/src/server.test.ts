@@ -1,6 +1,6 @@
 import { Client } from "@modelcontextprotocol/client";
 import { InMemoryTransport } from "@modelcontextprotocol/server";
-import { beforeEach, expect, test } from "vitest";
+import { beforeEach, expect, test, vi } from "vitest";
 import type { MatchJourneyInput, MatchResult } from "./contract.ts";
 import { buildServer, type MatchService, ToolError } from "./server.ts";
 
@@ -58,6 +58,8 @@ const service: MatchService = {
     return matchResult;
   },
   getSource: async (sourceId) => {
+    if (sourceId === "pubmed:broken")
+      throw new Error("Patient-5 lookup failed");
     throw new ToolError("SOURCE_NOT_FOUND", `Unknown source ${sourceId}.`);
   },
 };
@@ -117,4 +119,26 @@ test("reports a known failure with a stable error code", async () => {
       }),
     },
   ]);
+});
+
+test("keeps the text of an unexpected failure out of the result and the log", async () => {
+  const log = vi.spyOn(console, "error").mockImplementation(() => {});
+
+  const result = await client.callTool({
+    name: "get_source",
+    arguments: { source_id: "pubmed:broken" },
+  });
+
+  expect(result.isError).toBe(true);
+  expect(result.content).toEqual([
+    {
+      type: "text",
+      text: JSON.stringify({
+        error_code: "INTERNAL_ERROR",
+        message: "The request failed unexpectedly.",
+      }),
+    },
+  ]);
+  expect(log).toHaveBeenCalledWith("Unexpected Error during a tool call");
+  log.mockRestore();
 });

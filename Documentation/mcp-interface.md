@@ -112,7 +112,7 @@ The input is `{ "source_id": "pubmed:42745507" }`. The output holds the fields o
 
 ## Errors
 
-Invalid input is rejected before any tool runs. Known failures return an MCP result with `isError: true` and this text:
+Failures inside a tool return an MCP result with `isError: true` and this text:
 
 ```json
 { "error_code": "SOURCE_NOT_FOUND", "message": "Unknown source pubmed:1." }
@@ -123,10 +123,13 @@ Invalid input is rejected before any tool runs. Known failures return an MCP res
 | `NOT_AVAILABLE` | The requested algorithm or store is not available |
 | `SOURCE_NOT_FOUND` | `get_source` got an unknown ID |
 | `UPSTREAM_UNAVAILABLE` | The origin of a source could not be reached |
+| `INTERNAL_ERROR` | An unexpected failure. The result always has the same message, without any details |
+
+The SDK checks the input before a tool runs and the output after it. When a check fails, the result has `isError: true`, but its text is a plain sentence, such as `Input validation error: ...`, without an `error_code`. A client must not parse every error text as JSON.
 
 ## Health data
 
-The server does not store or log the journey. Development uses synthetic journeys only.
+The server does not store or log the journey. It also does not log the message of an unexpected failure, because the message can contain journey data. Development uses synthetic journeys only.
 
 ## Check against AIlixir's integration needs
 
@@ -144,7 +147,8 @@ For AIlixir:
 1. Which journey format does the real app send, and does it fit `timeline.json`?
 2. May `get_source` return abstracts and full texts to the app, depending on the licence of the source?
 3. How does the AIlixir backend connect to the server, and how does it authenticate?
+4. Does the app need an `error_code` for invalid input too, or is the plain text enough?
 
 For the team:
 
-4. Is `keyword` the right default until the evaluation in #11 has results?
+5. Is `keyword` the right default until the evaluation in #11 has results?
