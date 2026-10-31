@@ -47,6 +47,7 @@ The Python crawler and the TypeScript matcher are separate projects with their o
 
 2. Run the tools: `pnpm typecheck`, `pnpm test`, `pnpm lint`
 3. Add a dependency to one package: `pnpm --filter @matcher/indexer add <package>`. Add shared dev tools to the root with `pnpm add -w -D <package>`.
+4. Start the MCP server: `pnpm --filter @matcher/mcp-server start`. See [`Documentation/mcp-interface.md`](Documentation/mcp-interface.md).
 
 ### GitHub CI
 
