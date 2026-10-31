@@ -7,11 +7,11 @@ Something something something
 
 ## Development setup
 
-The Python crawler and the TypeScript matcher are separate projects with their own lockfiles. Commit `crawler/uv.lock` and `matcher/pnpm-lock.yaml` with every dependency change.
+The Python scraper and the TypeScript matcher are separate projects with their own lockfiles. Commit `scraper/uv.lock` and `matcher/pnpm-lock.yaml` with every dependency change.
 
 | Folder | Language | Package manager | Content |
 |---|---|---|---|
-| `crawler/` | Python 3.12 | [uv](https://docs.astral.sh/uv/) | Source crawlers |
+| `scraper/` | Python 3.12 | [uv](https://docs.astral.sh/uv/) | PubMed, arXiv and YouTube metadata scrapers |
 | `matcher/indexer/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Index builder |
 | `matcher/mcp-server/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | MCP server |
 
@@ -24,12 +24,12 @@ The Python crawler and the TypeScript matcher are separate projects with their o
 | [Node.js](https://nodejs.org/en/download) | 24 LTS |
 | [pnpm](https://pnpm.io/installation) | 12, pinned in `matcher/package.json` |
 
-### Python (`crawler/`)
+### Python (`scraper/`)
 
-1. Install the locked dependencies into `crawler/.venv`:
+1. Install the locked dependencies into `scraper/.venv`:
 
    ```sh
-   cd crawler
+   cd scraper
    uv sync --locked
    ```
 
@@ -57,7 +57,7 @@ See [`Documentation/github-ci.md`](Documentation/github-ci.md).
 After installing both projects, run from the repository root:
 
 ```sh
-uv run --project crawler python scripts/dependencies.py
+uv run --project scraper python scripts/dependencies.py
 ```
 
 It writes all direct dependencies with version, licence and scope to `out/dependencies.tsv`. The `Context` and `Comment` columns stay empty; fill them in afterwards, for example with your coding agent.

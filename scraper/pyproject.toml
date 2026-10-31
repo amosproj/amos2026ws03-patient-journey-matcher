@@ -1,0 +1,43 @@
+[project]
+name = "scraper"
+version = "0.1.0"
+description = "Metadata-only PubMed, arXiv, and YouTube scrapers"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "arxiv>=4.0.0",
+    "biopython>=1.88",
+    "crawlee>=1.11.0",
+    "google-api-python-client>=2.201.0",
+    "pydantic>=2.14.1",
+    "python-dotenv>=1.2.1",
+]
+
+[project.scripts]
+scraper = "scraper.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.13,<0.14"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "mypy>=2.4.0",
+    "pytest>=9.2.0",
+    "ruff>=0.17.3",
+]
+
+[tool.mypy]
+strict = true
+ignore_missing_imports = true
+plugins = ["pydantic.mypy"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]

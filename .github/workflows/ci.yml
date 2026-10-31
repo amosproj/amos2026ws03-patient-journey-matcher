@@ -10,11 +10,11 @@ permissions:
   contents: read
 
 jobs:
-  crawler:
+  scraper:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: crawler
+        working-directory: scraper
     steps:
       - uses: actions/checkout@v7
       # setup-uv publishes no major-version tags, so this pin is bumped by hand

@@ -24,7 +24,7 @@ __pycache__/
 .mypy_cache/
 
 # Crawlee run data (request queues, datasets)
-crawler/storage/
+scraper/storage/
 
 # Secrets
 .env
