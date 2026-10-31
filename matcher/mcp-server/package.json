@@ -3,9 +3,15 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "scripts": {
+    "start": "node src/index.ts"
+  },
   "dependencies": {
     "@modelcontextprotocol/node": "^2.1.2",
     "@modelcontextprotocol/server": "^2.4.0",
     "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@modelcontextprotocol/client": "^2.4.0"
   }
 }
