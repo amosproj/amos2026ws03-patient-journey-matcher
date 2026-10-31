@@ -27,7 +27,7 @@ Legend: orange = Python component, blue = TypeScript component, grey = PostgreSQ
 
 ## 2 Code components (layers)
 
-How the code in this repository is organised. Each layer only uses the layers below it. Inside our code, interface modules call domain modules, and domain modules call infrastructure modules. The folder names are the planned layout; today the repository holds `crawler/` (empty uv project), `matcher/` (pnpm workspace with empty `indexer` and `mcp-server` packages), `backend/`, `Documentation/` and `Deliverables/`.
+How the code in this repository is organised. Each layer only uses the layers below it. Inside our code, interface modules call domain modules, and domain modules call infrastructure modules. The folder names are the planned layout; today the repository holds `scraper/` (the Python source component), `matcher/` (a pnpm workspace with `indexer` and `mcp-server` packages), `backend/`, `Documentation/` and `Deliverables/`.
 
 ![Code components](code-components.svg)
 
@@ -37,9 +37,9 @@ Legend: orange = Python module, blue = TypeScript package, darker blue = algorit
 
 | SS26 code (`backend/…`) | Target | How |
 |---|---|---|
-| `scrapers/…/PubMed`, `Archive` (arXiv), `YouTube` (official API part) | `crawler/sources/` | Reuse the search and parsing code. Requests go through Crawlee. PDF downloads are dropped; chunking and embedding move to the indexer. |
-| `scrapers/…/BaseScraper` (stable IDs, dedup) | `crawler/sources/` base class | Adapt: split fetching and parsing from indexing. |
-| `scrapers/key_words/*.csv`, `scrapers/topics.py` | `crawler/topics/` | Reuse as seed queries, converted to one YAML file per disease area. |
+| `scrapers/…/PubMed`, `Archive` (arXiv), `YouTube` (official API part) | `scraper/src/scraper/sources/` | Reused in issue #27. Requests go through Crawlee. PDF downloads, transcript scraping, chunking and embedding were dropped. |
+| `scrapers/…/BaseScraper` (stable IDs, dedup) | `scraper/src/scraper/sources/base.py` | Adapted in issue #27: fetching and parsing are separated from indexing, with a shared typed metadata record. |
+| `scrapers/key_words/*.csv`, `scrapers/topics.py` | `scraper/topics/`, `scraper/src/scraper/topics.py` | Reused as seed queries; conversion to one YAML file per disease area remains future work. |
 | `workers/pipeline/graph/medical_schema.py` | `matcher/algorithms/graph` | Port the entity and relation types to TypeScript. |
 | `api/chat_pipeline/paper_retriever.py`, `availability.py`, `astra_client.py`, `reranker_client.py` | `matcher/core`, `download` | Port the result shape, timeouts and the circuit breaker. AstraDB and reranking clients only if we keep those services ([open](#5-open-points)). |
 | `workers/connections/gemini_client.py` | `matcher/llm` | Port the pacing and retry conventions. |
@@ -104,7 +104,7 @@ Basis: **Partner** = project description or AIlixir · **#5** = [crawler evaluat
 
 ### Code view
 
-The layers follow the lecture: platform at the bottom, third-party frameworks on top of it, our application code on top of those. The crawler (Python) and the matcher (TypeScript) share no code. Their only contracts are the database schema in `db/` and the journey JSON Schema in `schemas/`, so both sides can be built and tested on their own. Each algorithm is a plug-in that implements the `Indexer` and `Matcher` interfaces from `core`; a fourth approach would not change the server. `backend/` holds the SS26 code copied in #13. It is not built; the table in section 2 lists where its parts move.
+The layers follow the lecture: platform at the bottom, third-party frameworks on top of it, our application code on top of those. The scraper (Python) and the matcher (TypeScript) share no code. Their only contracts are the database schema in `db/` and the journey JSON Schema in `schemas/`, so both sides can be built and tested on their own. Each algorithm is a plug-in that implements the `Indexer` and `Matcher` interfaces from `core`; a fourth approach would not change the server. `backend/` holds the remaining SS26 code copied in #13. It is not built; migrated components are deleted from it.
 
 ### Choices and reasons
 

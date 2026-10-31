@@ -47,12 +47,13 @@ The legacy `Backend/workers/pipeline/ocr/` and Cypher exporter are not required 
 
 ## Which code part should we keep?
 
-Under `Backend/scrapers/`, retain:
+Issue #27 migrated the retained source-ingestion code from `Backend/scrapers/`
+to the standalone `scraper/` uv project:
 
-- **PubMed discovery and parsing:** `src/backend/Scrapers/PubMed/pub_med.py`.
-- **Reusable ingestion behavior:** selected logic from `src/backend/Scrapers/BaseScraper/base_scraper.py` for raw records, stable identifiers, deduplication, chunking, embeddings, and indexing.
-- **Batch coordination:** selected logic from `src/backend/Orchestrator/orchestrator.py` and `run_monthly.py`, adapted to the new project's sources and execution environment.
-- **Source provenance:** identifiers, titles, dates, URLs, source types, and domain metadata carried into indexed chunks.
+- **PubMed discovery and parsing:** `scraper/src/scraper/sources/pubmed.py`.
+- **arXiv and YouTube discovery and parsing:** `scraper/src/scraper/sources/arxiv.py` and `youtube.py`; YouTube uses the official API only.
+- **Reusable ingestion behavior:** `scraper/src/scraper/sources/base.py`, the typed metadata contract, and the Crawlee runner preserve stable identifiers, request deduplication, and retries.
+- **Source provenance:** identifiers, titles, dates, URLs, source types, authors, keywords, and query terms are retained in each metadata record.
 
 The current flow is discovery → fetching → raw JSON storage → chunking → embedding → AstraDB indexing → processing-index updates. It builds an external corpus separately from patient-document processing.
 

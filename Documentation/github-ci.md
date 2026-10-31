@@ -4,7 +4,7 @@
 
 Each job runs its commands in order and stops at the first failure. They are the same commands as in the [README](../README.md#development-setup), so you can run them locally before you push.
 
-## `crawler` job (Python, in `crawler/`)
+## `scraper` job (Python, in `scraper/`)
 
 | Command | Why |
 |---|---|
@@ -26,6 +26,6 @@ Each job runs its commands in order and stops at the first failure. They are the
 ## Limitations
 
 - `backend/` is not checked. It is copied SS26 code that does not build yet (#27).
-- The tests are smoke tests that only import the packages and their main dependencies.
+- The scraper tests cover the shared metadata contract and source parsers with in-memory API-shaped responses. They do not call live source APIs.
 - There is no vulnerability or licence scan.
-- A failed check does not block merging until a repository admin makes `crawler` and `matcher` required status checks for `main`.
+- A failed check does not block merging until a repository admin makes `scraper` and `matcher` required status checks for `main`.

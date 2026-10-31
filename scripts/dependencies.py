@@ -1,10 +1,10 @@
-"""Write the direct dependencies of crawler/ and matcher/ to out/dependencies.tsv.
+"""Write the direct dependencies of scraper/ and matcher/ to out/dependencies.tsv.
 
 out/ is gitignored. Versions and licences come from the installed packages, so
-run `uv sync --locked` in crawler/ and `pnpm install --frozen-lockfile` in
+run `uv sync --locked` in scraper/ and `pnpm install --frozen-lockfile` in
 matcher/ first. From the repository root:
 
-    uv run --project crawler python scripts/dependencies.py
+    uv run --project scraper python scripts/dependencies.py
 """
 
 import json
@@ -17,7 +17,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 
 def python_dependencies():
-    pyproject = tomllib.loads((ROOT / "crawler/pyproject.toml").read_text())
+    pyproject = tomllib.loads((ROOT / "scraper/pyproject.toml").read_text())
     groups = {
         "runtime": pyproject["project"]["dependencies"],
         "dev": pyproject["dependency-groups"]["dev"],
