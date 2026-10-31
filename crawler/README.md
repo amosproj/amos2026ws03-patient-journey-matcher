@@ -1,4 +1,4 @@
-# Source scraper
+# Source crawler
 
 Standalone metadata scrapers for PubMed, arXiv, and YouTube. This component was
 migrated from `backend/scrapers/` for issue #27 and has its own uv project and
@@ -15,11 +15,11 @@ responsibilities in the current architecture.
 Python 3.12 and uv 0.13 or newer are required.
 
 ```sh
-cd scraper
+cd crawler
 uv sync --locked
 ```
 
-Set local configuration in `scraper/.env`. The scraper loads this ignored file
+Set local configuration in `crawler/.env`. The crawler loads this ignored file
 automatically and does not overwrite variables already set in the process environment.
 
 | Variable | Source | Required |
@@ -41,9 +41,9 @@ duplicates, and retries failed handlers up to three times.
 Each command writes one JSON object per source result to standard output:
 
 ```sh
-uv run scraper pubmed "prostate cancer" --max-results 10 --since 2026-01-01
-uv run scraper arxiv "prostate cancer" --max-results 10 --query-mode and
-uv run scraper youtube @NationalCancerInstitute --max-results 10
+uv run crawler pubmed "prostate cancer" --max-results 10 --since 2026-01-01
+uv run crawler arxiv "prostate cancer" --max-results 10 --query-mode and
+uv run crawler youtube @NationalCancerInstitute --max-results 10
 ```
 
 YouTube accepts a channel ID, `/channel/` URL, `@handle`, or legacy `/user/`
@@ -56,7 +56,7 @@ The Python API exposes the same flow:
 ```python
 import asyncio
 
-from scraper import ScrapeRequest, SourceName, run_requests
+from crawler import ScrapeRequest, SourceName, run_requests
 
 documents = asyncio.run(
     run_requests(

@@ -5,14 +5,14 @@ from urllib.parse import urlparse
 
 from googleapiclient.discovery import build
 
-from scraper.models import (
+from crawler.models import (
     ScrapeRequest,
     SourceDocument,
     SourceName,
     SourceType,
     source_document_id,
 )
-from scraper.sources.base import BaseScraper
+from crawler.sources.base import BaseScraper
 
 
 class YouTubeScraper(BaseScraper):

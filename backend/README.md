@@ -23,7 +23,7 @@ Code copied from the SS26 AIlixir project for issue #13. It is the starting poin
 Everything remaining is byte-for-byte as in `88ea71a`, except:
 
 1. `api/main.py`: the chat and voice routers are not part of the plan, so their two imports and `include_router` calls are removed.
-2. Issue #27 moved `scrapers/` into the independent [`../scraper/`](../scraper/) uv project and removed the legacy copy from `backend/`.
+2. Issue #27 moved `scrapers/` into the independent [`../crawler/`](../crawler/) uv project and removed the legacy copy from `backend/`.
 
 ## Not copied
 

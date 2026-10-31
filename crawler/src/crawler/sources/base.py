@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-from scraper.models import ScrapeRequest, SourceDocument, SourceName
+from crawler.models import ScrapeRequest, SourceDocument, SourceName
 
 
 class BaseScraper(ABC):

@@ -4,13 +4,13 @@ import json
 from collections.abc import Sequence
 from datetime import date
 
-from scraper.models import ScrapeRequest, SourceName
-from scraper.runner import run_requests
+from crawler.models import ScrapeRequest, SourceName
+from crawler.runner import run_requests
 
 
 def parser() -> argparse.ArgumentParser:
     command = argparse.ArgumentParser(
-        prog="scraper", description="Scrape source metadata as JSON Lines."
+        prog="crawler", description="Crawl source metadata as JSON Lines."
     )
     subcommands = command.add_subparsers(dest="source", required=True)
 

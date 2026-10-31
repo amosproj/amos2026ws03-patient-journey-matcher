@@ -1,7 +1,7 @@
 from typing import Any
 
-from scraper.models import SourceName
-from scraper.sources.pubmed import PubMedScraper
+from crawler.models import SourceName
+from crawler.sources.pubmed import PubMedScraper
 
 
 class EntrezValue(str):

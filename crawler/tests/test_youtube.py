@@ -1,8 +1,8 @@
 from collections.abc import Callable
 from typing import Any
 
-from scraper.models import ScrapeRequest, SourceName
-from scraper.sources.youtube import YouTubeScraper
+from crawler.models import ScrapeRequest, SourceName
+from crawler.sources.youtube import YouTubeScraper
 
 
 class FakeCall:

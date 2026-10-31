@@ -1,5 +1,5 @@
-from scraper.cli import parser, request_from_args
-from scraper.models import SourceName
+from crawler.cli import parser, request_from_args
+from crawler.models import SourceName
 
 
 def test_cli_builds_pubmed_request() -> None:

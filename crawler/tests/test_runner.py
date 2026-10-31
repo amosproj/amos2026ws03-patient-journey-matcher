@@ -2,9 +2,9 @@ import asyncio
 
 import pytest
 
-from scraper.models import ScrapeRequest, SourceDocument, SourceName, SourceType
-from scraper.runner import ScrapeRunError, run_requests
-from scraper.sources.base import BaseScraper
+from crawler.models import ScrapeRequest, SourceDocument, SourceName, SourceType
+from crawler.runner import ScrapeRunError, run_requests
+from crawler.sources.base import BaseScraper
 
 
 class FakePubMedScraper(BaseScraper):

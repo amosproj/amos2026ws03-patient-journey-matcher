@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from scraper.models import ScrapeRequest, SourceName, source_document_id
+from crawler.models import ScrapeRequest, SourceName, source_document_id
 
 
 def test_source_document_id_is_stable_and_source_scoped() -> None:

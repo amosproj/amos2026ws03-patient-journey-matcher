@@ -1,5 +1,5 @@
 [project]
-name = "scraper"
+name = "crawler"
 version = "0.1.0"
 description = "Metadata-only PubMed, arXiv, and YouTube scrapers"
 readme = "README.md"
@@ -14,7 +14,7 @@ dependencies = [
 ]
 
 [project.scripts]
-scraper = "scraper.cli:main"
+crawler = "crawler.cli:main"
 
 [build-system]
 requires = ["uv_build>=0.13,<0.14"]

@@ -7,11 +7,11 @@ from crawlee import ConcurrencySettings, Request
 from crawlee.crawlers import BasicCrawler, BasicCrawlingContext
 from dotenv import load_dotenv
 
-from scraper.models import ScrapeRequest, SourceDocument, SourceName
-from scraper.sources.arxiv import ArxivScraper
-from scraper.sources.base import BaseScraper
-from scraper.sources.pubmed import PubMedScraper
-from scraper.sources.youtube import YouTubeScraper
+from crawler.models import ScrapeRequest, SourceDocument, SourceName
+from crawler.sources.arxiv import ArxivScraper
+from crawler.sources.base import BaseScraper
+from crawler.sources.pubmed import PubMedScraper
+from crawler.sources.youtube import YouTubeScraper
 
 SourceFactory = Callable[[SourceName], BaseScraper]
 
@@ -66,7 +66,7 @@ async def run_requests(
         fingerprint = hashlib.sha256(scrape_request.model_dump_json().encode("utf-8")).hexdigest()
         queue_requests.append(
             Request.from_url(
-                f"https://{scrape_request.source.value}.scraper.invalid/{fingerprint}",
+                f"https://{scrape_request.source.value}.crawler.invalid/{fingerprint}",
                 unique_key=fingerprint,
                 user_data={"scrape_request": serialized},
             )

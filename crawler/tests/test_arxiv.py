@@ -1,8 +1,8 @@
 from datetime import UTC, date, datetime
 from types import SimpleNamespace
 
-from scraper.models import SourceName
-from scraper.sources.arxiv import ArxivScraper
+from crawler.models import SourceName
+from crawler.sources.arxiv import ArxivScraper
 
 
 def test_build_query_keeps_the_legacy_date_filter() -> None:
