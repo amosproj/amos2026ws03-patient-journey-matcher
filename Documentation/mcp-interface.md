@@ -49,7 +49,7 @@ To compare the three algorithms, a client calls `match_journey` once per algorit
 | `events[].specialist` | string | no | |
 | `events[].parameters` | object | no | Event details such as `psa_value` or `decision` |
 
-**Most recent event.** This is the last event dated on or before `as_of`. If several events share that date, the last one in the list counts. Without `as_of`, it is the last event of the whole journey. `as_of` exists because generated journeys run years into the future, so a client may want to match against a point in the middle of a journey.
+**Most recent event.** This is the last event dated on or before `as_of`. If several events share that date, the last one in the list counts. Without `as_of`, it is the last event of the whole journey. An `as_of` earlier than every event is rejected, because then there is no most recent event. `as_of` exists because generated journeys run years into the future, so a client may want to match against a point in the middle of a journey.
 
 ### `match_journey` output
 

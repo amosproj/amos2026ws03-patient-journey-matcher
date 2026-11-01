@@ -103,6 +103,29 @@ test("rejects a journey without events", async () => {
   expect(received).toBeUndefined();
 });
 
+test("rejects an as_of earlier than every event", async () => {
+  const result = await client.callTool({
+    name: "match_journey",
+    arguments: { journey: { ...journey, as_of: "2026-10-30" } },
+  });
+
+  expect(result.isError).toBe(true);
+  expect(JSON.stringify(result.content)).toContain(
+    "as_of must not be earlier than the first event.",
+  );
+  expect(received).toBeUndefined();
+});
+
+test("accepts an as_of on the date of the first event", async () => {
+  const result = await client.callTool({
+    name: "match_journey",
+    arguments: { journey: { ...journey, as_of: "2026-10-31" } },
+  });
+
+  expect(result.isError).toBeFalsy();
+  expect(received?.journey.as_of).toBe("2026-10-31");
+});
+
 test("reports a known failure with a stable error code", async () => {
   const result = await client.callTool({
     name: "get_source",

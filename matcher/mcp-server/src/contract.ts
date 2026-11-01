@@ -11,11 +11,21 @@ export const journeyEventSchema = z.object({
   parameters: z.record(z.string(), z.unknown()).optional(),
 });
 
-export const patientJourneySchema = z.object({
-  patient_id: z.string().min(1),
-  as_of: z.iso.date().optional(),
-  events: z.array(journeyEventSchema).min(1).max(500),
-});
+// Without an event on or before as_of there is no most recent event to match.
+export const patientJourneySchema = z
+  .object({
+    patient_id: z.string().min(1),
+    as_of: z.iso.date().optional(),
+    events: z.array(journeyEventSchema).min(1).max(500),
+  })
+  .refine(
+    ({ as_of, events }) =>
+      as_of === undefined || events.some(({ date }) => date <= as_of),
+    {
+      path: ["as_of"],
+      message: "as_of must not be earlier than the first event.",
+    },
+  );
 
 export const algorithmSchema = z.enum(["keyword", "graph", "ai_summary"]);
 
