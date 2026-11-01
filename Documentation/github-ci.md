@@ -25,7 +25,7 @@ Each job runs its commands in order and stops at the first failure. They are the
 
 ## Limitations
 
-- `backend/` is not checked. It is copied SS26 code that does not build yet (#27).
+- `backend/` is not checked. It builds with `uv sync --locked` and has an import test (`uv run pytest` in `backend/`), but there is no CI job for it yet.
 - The tests are smoke tests that only import the packages and their main dependencies.
 - There is no vulnerability or licence scan.
 - A failed check does not block merging until a repository admin makes `crawler` and `matcher` required status checks for `main`.
