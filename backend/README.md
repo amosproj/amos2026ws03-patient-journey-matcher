@@ -49,7 +49,7 @@ The chat endpoint and its pipeline (contextualizer, answerer, titler), voice and
 
 - Installs with `uv sync --locked`, and every module imports without credentials (`uv run pytest`). Running the services needs credentials for Firebase and Firestore, GCS, Pub/Sub, Vertex AI, OpenAI, AstraDB and Neo4j; see `.env.example`. There are no functional tests or CI yet.
 - The adaptation work is listed under "What needs adaptation" in what-to-keep.md. Known issues found while reviewing the code:
-  - `scrapers/.../PubMed/pub_med.py` keeps only the first section of structured abstracts, loses the whole author list when a group author is present,.
+  - `scrapers/.../PubMed/pub_med.py` keeps only the first section of structured abstracts and loses the whole author list when a group author is present.
   - `scrapers/.../Archive/archive.py` creates a new arXiv client per call, which bypasses the client's 3-second delay between requests.
   - `scrapers/.../YouTube/you_tube.py` fetches transcripts through YouTube's internal player API, which conflicts with YouTube's terms of service.
   - The documents bucket is read as `GCS_BUCKET_NAME` by `shared/gcs.py` and as `GCS_DOCUMENTS_BUCKET` by `workers/connections/gcs.py`.
