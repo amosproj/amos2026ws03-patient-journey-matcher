@@ -11,7 +11,7 @@ The Python crawler and the TypeScript matcher are separate projects with their o
 
 | Folder | Language | Package manager | Content |
 |---|---|---|---|
-| `crawler/` | Python 3.12 | [uv](https://docs.astral.sh/uv/) | Source crawlers |
+| `crawler/` | Python 3.12 | [uv](https://docs.astral.sh/uv/) | PubMed, arXiv and YouTube source crawlers |
 | `matcher/indexer/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Index builder |
 | `matcher/mcp-server/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | MCP server |
 

@@ -1,12 +1,12 @@
 [project]
 name = "backend"
 version = "0.1.0"
-description = "API, workers and scrapers copied from SS26 AIlixir (see README.md)"
+description = "API and workers copied from SS26 AIlixir (see README.md)"
 requires-python = ">=3.12"
-# Merged from api/, workers/ and scrapers/requirements.txt. Where the files
-# disagreed, the stricter pin wins. google-cloud-pubsub was pinned to 2.27.1,
-# which needs protobuf<6 and so can't be installed with google-cloud-storage
-# 3.10.1; it is a lower bound here.
+# Merged from api/ and workers/requirements.txt. Where the files disagreed, the
+# stricter pin wins. google-cloud-pubsub was pinned to 2.27.1, which needs
+# protobuf<6 and so can't be installed with google-cloud-storage 3.10.1; it is
+# a lower bound here.
 dependencies = [
     # API and workers
     "email-validator==2.2.0",
@@ -28,12 +28,6 @@ dependencies = [
     "langchain-core>=0.2.6",
     "langchain-openai>=0.1.14",
     "langchain-text-splitters>=0.2.0",
-    # Scrapers
-    "arxiv>=2.1.0",
-    "biopython>=1.83",
-    "paperscraper>=0.2.11",
-    "pypdf>=4.2.0",
-    "requests>=2.31.0",
 ]
 
 [dependency-groups]
@@ -42,10 +36,9 @@ dev = [
 ]
 
 [tool.uv]
-# Not an installable package: api/, workers/ and shared/ are imported from
-# backend/, the scrapers from backend/scrapers/ (as `src.backend...`).
+# Not an installable package: api/, workers/ and shared/ are imported from backend/.
 package = false
 
 [tool.pytest.ini_options]
-pythonpath = [".", "scrapers"]
+pythonpath = ["."]
 testpaths = ["tests"]
