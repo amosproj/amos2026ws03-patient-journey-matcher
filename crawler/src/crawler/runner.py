@@ -54,7 +54,14 @@ async def run_requests(
         payload = ScrapeRequest.model_validate(context.request.user_data["scrape_request"])
         scraper = sources[payload.source]
         documents = await asyncio.to_thread(scraper.scrape, payload)
-        results.update((document.id, document) for document in documents)
+        for document in documents:
+            existing = results.get(document.id)
+            if existing is not None:
+                query_keywords = list(
+                    dict.fromkeys([*existing.query_keywords, *document.query_keywords])
+                )
+                document = document.model_copy(update={"query_keywords": query_keywords})
+            results[document.id] = document
 
     @crawler.failed_request_handler
     async def handle_failure(_context: BasicCrawlingContext, error: Exception) -> None:

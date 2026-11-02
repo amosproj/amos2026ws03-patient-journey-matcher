@@ -23,6 +23,7 @@ class FakePubMedScraper(BaseScraper):
                 source_id="1",
                 title=request.query or "",
                 url="https://pubmed.ncbi.nlm.nih.gov/1/",
+                query_keywords=[request.query] if request.query else [],
             )
         ]
 
@@ -37,6 +38,21 @@ def test_runner_uses_crawlee_queue_to_deduplicate_requests() -> None:
 
     assert scraper.calls == 1
     assert [document.id for document in documents] == ["pubmed:1"]
+
+
+def test_runner_merges_query_keywords_for_duplicate_documents() -> None:
+    scraper = FakePubMedScraper()
+    requests = [
+        ScrapeRequest(source=SourceName.PUBMED, query="a"),
+        ScrapeRequest(source=SourceName.PUBMED, query="b"),
+        ScrapeRequest(source=SourceName.PUBMED, query="a", max_results=20),
+    ]
+
+    documents = asyncio.run(run_requests(requests, source_factory=lambda _source: scraper))
+
+    assert scraper.calls == 3
+    assert len(documents) == 1
+    assert documents[0].query_keywords == ["a", "b"]
 
 
 class FailingScraper(BaseScraper):
