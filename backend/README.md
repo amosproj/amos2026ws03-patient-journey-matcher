@@ -2,6 +2,18 @@
 
 Code copied from the SS26 AIlixir project for issue #13. It is the starting point for the Patient Journey Matcher, not a working service yet. What we keep and why is described in [`../Documentation/reuse/what-to-keep.md`](../Documentation/reuse/what-to-keep.md).
 
+## Setup
+
+Python 3.12 or newer and [uv](https://docs.astral.sh/uv/). Run from this folder:
+
+```sh
+uv sync --locked      # install into backend/.venv
+uv run pytest         # import check for every module
+cp .env.example .env  # only needed to run the services
+```
+
+`api/`, `workers/` and `shared/` are imported from this folder (`uvicorn api.main:app`). Source collection now lives in the independent [`../crawler/`](../crawler/) project.
+
 ## Origin
 
 - Repository: https://github.com/amosproj/amos2026ss03-ailixir-intelligence
@@ -23,7 +35,9 @@ Code copied from the SS26 AIlixir project for issue #13. It is the starting poin
 Everything remaining is byte-for-byte as in `88ea71a`, except:
 
 1. `api/main.py`: the chat and voice routers are not part of the plan, so their two imports and `include_router` calls are removed.
-2. Issue #27 moved `scrapers/` into the independent [`../crawler/`](../crawler/) uv project and removed the legacy copy from `backend/`.
+2. Issue #27 replaced the separate `api/` and `workers/` requirements files with one `pyproject.toml` and `uv.lock`. `google-cloud-pubsub==2.27.1` needed protobuf<6 and could not be installed together with `google-cloud-storage==3.10.1`, so it is a lower bound now.
+3. Issue #27 added `.env.example`, which lists the variables the remaining backend code reads. Variables of code that was not copied (OCR, ElevenLabs, test users, Firebase web key) are omitted.
+4. Issue #27 moved `scrapers/` into the independent [`../crawler/`](../crawler/) uv project and removed the legacy copy and its dependencies from `backend/`.
 
 ## Not copied
 
@@ -31,8 +45,10 @@ The chat endpoint and its pipeline (contextualizer, answerer, titler), voice and
 
 ## Status
 
-- Not runnable as is. It needs credentials for Firebase and Firestore, GCS, Pub/Sub, Vertex AI, OpenAI, AstraDB and Neo4j; see `.env.example`. There are no tests or CI yet.
+- Installs with `uv sync --locked`, and every module imports without credentials (`uv run pytest`). Running the services needs credentials for Firebase and Firestore, GCS, Pub/Sub, Vertex AI, OpenAI, AstraDB and Neo4j; see `.env.example`. There are no functional tests or CI yet.
 - The adaptation work is listed under "What needs adaptation" in what-to-keep.md. Known issues found while reviewing the code:
+  - The documents bucket is read as `GCS_BUCKET_NAME` by `shared/gcs.py` and as `GCS_DOCUMENTS_BUCKET` by `workers/connections/gcs.py`.
+  - `shared/firestore.py` and `shared/gcs.py` both read `FIREBASE_KEY_RELATIVE_PATH` but default to different files.
   - `workers/pipeline/graph/builder.py` uses the current time when a document date cannot be parsed.
   - `workers/pipeline/graph/exporter.py` is optional; what-to-keep.md suggests removing it together with its fields.
 - For the SBOM: the Neo4j server is GPL-3.0.
