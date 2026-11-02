@@ -30,6 +30,7 @@ class PubMedScraper(BaseScraper):
         self._email = email.strip() if email else None
         self._api_key = api_key
         self._entrez = entrez
+        self._entrez.max_tries = 1
 
     @classmethod
     def from_env(cls) -> "PubMedScraper":

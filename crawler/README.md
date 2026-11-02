@@ -33,8 +33,9 @@ migration, `NCBI_EMAIL` and `YOUTUBE_DATA_API_V3` are
 accepted as deprecated aliases.
 
 arXiv does not need credentials. The shared arXiv client applies the required
-three-second delay and retries. Crawlee queues each scrape request, removes
-duplicates, and retries failed handlers up to three times.
+three-second delay. Crawlee queues each scrape request, removes duplicates, and
+retries connection failures, timeouts, and HTTP 5xx responses up to three times.
+Validation, lookup, and other permanent failures are recorded after one attempt.
 
 ## Run
 
@@ -50,6 +51,12 @@ YouTube accepts a channel ID, `/channel/` URL, `@handle`, or legacy `/user/`
 URL. It uses only YouTube Data API v3 endpoints. The returned metadata includes
 `refresh_after`, 30 days after retrieval, so persistence can comply with the
 YouTube data-retention constraint.
+
+Every document keeps the source value in `published_at`. For consistent matcher
+filtering and sorting, it also includes `published_on` as an ISO date and
+`published_precision` as `day`, `month`, or `year`. Month-only and year-only
+source dates normalize to the first day of that period without losing their
+original precision.
 
 The Python API exposes the same flow:
 

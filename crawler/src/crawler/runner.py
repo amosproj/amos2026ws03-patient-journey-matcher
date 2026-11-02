@@ -2,10 +2,13 @@ import asyncio
 import hashlib
 from collections.abc import Callable, Iterable
 from pathlib import Path
+from urllib.error import HTTPError as UrlHttpError
 
+from arxiv import HTTPError as ArxivHttpError
 from crawlee import ConcurrencySettings, Request
 from crawlee.crawlers import BasicCrawler, BasicCrawlingContext
 from dotenv import load_dotenv
+from googleapiclient.errors import HttpError as GoogleHttpError
 
 from crawler.models import ScrapeRequest, SourceDocument, SourceName
 from crawler.sources.arxiv import ArxivScraper
@@ -17,7 +20,18 @@ SourceFactory = Callable[[SourceName], BaseScraper]
 
 
 class ScrapeRunError(RuntimeError):
-    """Raised after Crawlee exhausts retries for at least one request."""
+    """Raised when at least one source request fails."""
+
+
+def _is_retryable_error(error: Exception) -> bool:
+    """Retry only network failures, timeouts, and HTTP 5xx responses."""
+    if isinstance(error, ArxivHttpError):
+        return 500 <= int(error.status) < 600
+    if isinstance(error, GoogleHttpError):
+        return 500 <= int(error.status_code) < 600
+    if isinstance(error, UrlHttpError):
+        return 500 <= error.code < 600
+    return isinstance(error, OSError)
 
 
 def source_from_env(source: SourceName) -> BaseScraper:
@@ -38,7 +52,7 @@ async def run_requests(
     requests = list(scrape_requests)
     sources = {request.source: source_factory(request.source) for request in requests}
     results: dict[str, SourceDocument] = {}
-    failures: list[Exception] = []
+    failures: list[tuple[Exception, int, bool]] = []
     crawler = BasicCrawler(
         max_request_retries=3,
         use_session_pool=False,
@@ -53,7 +67,13 @@ async def run_requests(
     async def handle(context: BasicCrawlingContext) -> None:
         payload = ScrapeRequest.model_validate(context.request.user_data["scrape_request"])
         scraper = sources[payload.source]
-        documents = await asyncio.to_thread(scraper.scrape, payload)
+        try:
+            documents = await asyncio.to_thread(scraper.scrape, payload)
+        except Exception as error:
+            if _is_retryable_error(error):
+                raise
+            failures.append((error, 0, True))
+            return
         for document in documents:
             existing = results.get(document.id)
             if existing is not None:
@@ -64,8 +84,8 @@ async def run_requests(
             results[document.id] = document
 
     @crawler.failed_request_handler
-    async def handle_failure(_context: BasicCrawlingContext, error: Exception) -> None:
-        failures.append(error)
+    async def handle_failure(context: BasicCrawlingContext, error: Exception) -> None:
+        failures.append((error, context.request.retry_count, False))
 
     queue_requests = []
     for scrape_request in requests:
@@ -80,7 +100,17 @@ async def run_requests(
         )
     await crawler.run(queue_requests)
     if failures:
-        raise ScrapeRunError(
-            f"{len(failures)} scrape request(s) failed after retries: {failures[0]}"
-        ) from failures[0]
+        messages = []
+        permanent = [failure for failure in failures if failure[2]]
+        exhausted = [failure for failure in failures if not failure[2]]
+        if permanent:
+            messages.append(
+                f"{len(permanent)} scrape request(s) failed without retry: {permanent[0][0]}"
+            )
+        if exhausted:
+            messages.append(
+                f"{len(exhausted)} scrape request(s) failed after "
+                f"{exhausted[0][1]} retries: {exhausted[0][0]}"
+            )
+        raise ScrapeRunError("; ".join(messages)) from failures[0][0]
     return list(results.values())

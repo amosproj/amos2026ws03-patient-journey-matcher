@@ -18,7 +18,7 @@ class ArxivScraper(BaseScraper):
     source = SourceName.ARXIV
 
     def __init__(self, *, client: Any | None = None) -> None:
-        self._client = client or arxiv.Client(page_size=100, delay_seconds=3, num_retries=3)
+        self._client = client or arxiv.Client(page_size=100, delay_seconds=3, num_retries=0)
 
     def scrape(self, request: ScrapeRequest) -> list[SourceDocument]:
         if request.source is not self.source or not request.query:

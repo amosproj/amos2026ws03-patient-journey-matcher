@@ -58,12 +58,40 @@ def test_runner_merges_query_keywords_for_duplicate_documents() -> None:
 class FailingScraper(BaseScraper):
     source = SourceName.PUBMED
 
+    def __init__(self) -> None:
+        self.calls = 0
+
     def scrape(self, _request: ScrapeRequest) -> list[SourceDocument]:
+        self.calls += 1
         raise ConnectionError("source unavailable")
 
 
 def test_runner_raises_after_crawlee_exhausts_retries() -> None:
+    scraper = FailingScraper()
     request = ScrapeRequest(source=SourceName.PUBMED, query="failure test")
 
-    with pytest.raises(ScrapeRunError, match="failed after retries"):
-        asyncio.run(run_requests([request], source_factory=lambda _source: FailingScraper()))
+    with pytest.raises(ScrapeRunError, match="failed after 3 retries"):
+        asyncio.run(run_requests([request], source_factory=lambda _source: scraper))
+
+    assert scraper.calls == 4
+
+
+class InvalidScraper(BaseScraper):
+    source = SourceName.PUBMED
+
+    def __init__(self) -> None:
+        self.calls = 0
+
+    def scrape(self, _request: ScrapeRequest) -> list[SourceDocument]:
+        self.calls += 1
+        raise ValueError("channel not found")
+
+
+def test_runner_does_not_retry_permanent_errors() -> None:
+    scraper = InvalidScraper()
+    request = ScrapeRequest(source=SourceName.PUBMED, query="invalid test")
+
+    with pytest.raises(ScrapeRunError, match="failed without retry: channel not found"):
+        asyncio.run(run_requests([request], source_factory=lambda _source: scraper))
+
+    assert scraper.calls == 1

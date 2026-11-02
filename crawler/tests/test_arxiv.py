@@ -5,6 +5,12 @@ from crawler.models import SourceName
 from crawler.sources.arxiv import ArxivScraper
 
 
+def test_default_client_delegates_retries_to_the_runner() -> None:
+    scraper = ArxivScraper()
+
+    assert scraper._client.num_retries == 0
+
+
 def test_build_query_keeps_the_legacy_date_filter() -> None:
     query = ArxivScraper.build_query("prostate cancer", "and", date(2026, 1, 2))
     assert query == (
