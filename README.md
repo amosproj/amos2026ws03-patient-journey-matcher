@@ -61,3 +61,7 @@ uv run --project crawler python scripts/dependencies.py
 ```
 
 It writes all direct dependencies with version, licence and scope to `out/dependencies.tsv`. The `Context` and `Comment` columns stay empty; fill them in afterwards, for example with your coding agent.
+
+### PostgreSQL 
+
+See [`Documentation/database.md`](Documentation/database.md).
