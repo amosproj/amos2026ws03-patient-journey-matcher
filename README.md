@@ -23,6 +23,11 @@ The Python crawler and the TypeScript matcher are separate projects with their o
 | [uv](https://docs.astral.sh/uv/getting-started/installation/) | 0.13 or newer |
 | [Node.js](https://nodejs.org/en/download) | 24 LTS |
 | [pnpm](https://pnpm.io/installation) | 12, pinned in `matcher/package.json` |
+| [Make](https://www.gnu.org/software/make/) | any recent |
+
+### Build, test and start
+
+See [`Documentation/build.md`](Documentation/build.md).
 
 ### Python (`crawler/`)
 
