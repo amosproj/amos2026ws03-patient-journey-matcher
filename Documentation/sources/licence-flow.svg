@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="40 0 900 500" width="900" height="500" role="img" aria-labelledby="licence-flow-title licence-flow-desc">
+  <title id="licence-flow-title">Licence check before a full text is used</title>
+  <desc id="licence-flow-desc">The crawler stores each record's licence; when a full text is needed for indexing, an AI summary or passing it on, the allow-list decides whether download() fetches it, PMC files are checked again, and otherwise only the stored metadata is used.</desc>
+  <style>
+    text { font-family: "Helvetica Neue", Helvetica, "Segoe UI", "Noto Sans", Arial, sans-serif; fill: #374151; }
+    .n { font-size: 12.5px; font-weight: 600; fill: #111827; }
+    .s { font-size: 10px; fill: #6b7280; }
+    .c { font-size: 10px; fill: #111827; font-family: Menlo, "DejaVu Sans Mono", "Noto Sans Mono", Consolas, monospace; }
+    .t { font-size: 10px; fill: #9ca3af; font-family: Menlo, "DejaVu Sans Mono", "Noto Sans Mono", Consolas, monospace; }
+    .al { font-size: 8.5px; font-weight: 600; letter-spacing: 0.08em; fill: #6b7280; }
+    .step { fill: #ffffff; stroke: #9ca3af; stroke-width: 1; }
+    .end { fill: #f8f9fa; stroke: #9ca3af; stroke-width: 1; }
+    .dec { fill: #ffffff; stroke: #9ca3af; stroke-width: 1; }
+    .focal { fill: #f5f8fd; stroke: #2348a8; stroke-width: 1.3; }
+    .e { fill: none; stroke: #6b7280; stroke-width: 1.1; }
+    .m { fill: #ffffff; }
+  </style>
+  <defs>
+    <marker id="licence-flow-arrow" viewBox="0 0 10 10" refX="9.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6b7280"/>
+    </marker>
+  </defs>
+  <rect x="40" y="0" width="900" height="500" fill="#ffffff"/>
+
+  <!-- connectors first -->
+  <path class="e" d="M170 60 V88" marker-end="url(#licence-flow-arrow)"/>
+  <path class="e" d="M170 172 V200" marker-end="url(#licence-flow-arrow)"/>
+  <path class="e" d="M260 234 H372" marker-end="url(#licence-flow-arrow)"/>
+  <path class="e" d="M588 234 H700" marker-end="url(#licence-flow-arrow)"/>
+  <path class="e" d="M800 268 V300" marker-end="url(#licence-flow-arrow)"/>
+  <path class="e" d="M800 412 V440" marker-end="url(#licence-flow-arrow)"/>
+  <path class="e" d="M480 290 V440" marker-end="url(#licence-flow-arrow)"/>
+  <path class="e" d="M692 356 H548 Q540 356 540 364 V440" marker-end="url(#licence-flow-arrow)"/>
+
+  <!-- connector labels -->
+  <rect class="m" x="630" y="216" width="28" height="12" rx="2"/>
+  <text class="al" x="644" y="225" text-anchor="middle">YES</text>
+  <rect class="m" x="808" y="420" width="28" height="12" rx="2"/>
+  <text class="al" x="822" y="429" text-anchor="middle">YES</text>
+  <rect class="m" x="410" y="350" width="62" height="12" rx="2"/>
+  <text class="al" x="441" y="359" text-anchor="middle">NO OR ASK</text>
+  <rect class="m" x="604" y="338" width="24" height="12" rx="2"/>
+  <text class="al" x="616" y="347" text-anchor="middle">NO</text>
+
+  <!-- start -->
+  <rect class="end" x="80" y="24" width="180" height="36" rx="18"/>
+  <text class="n" x="170" y="46.5" text-anchor="middle">Record crawled</text>
+
+  <!-- crawler stores the licence -->
+  <rect class="step" x="80" y="88" width="180" height="84" rx="6"/>
+  <g text-anchor="middle">
+    <text class="n" x="170" y="110">Crawler stores licence</text>
+    <text x="170" y="130"><tspan class="c">licence</tspan><tspan class="t" dx="6">text</tspan></text>
+    <text class="s" x="170" y="146">SPDX ID or own code</text>
+    <text class="s" x="170" y="160">empty means unknown</text>
+  </g>
+
+  <!-- a use needs the text -->
+  <rect class="step" x="80" y="200" width="180" height="68" rx="6"/>
+  <g text-anchor="middle">
+    <text class="n" x="170" y="222">A use needs the text</text>
+    <text class="s" x="170" y="240">indexing, AI summary or</text>
+    <text class="s" x="170" y="254">passing the original on</text>
+  </g>
+
+  <!-- decision: allowed for this use? (focal) -->
+  <polygon class="focal" points="480,178 588,234 480,290 372,234"/>
+  <g text-anchor="middle">
+    <text class="n" x="480" y="228">Allowed for</text>
+    <text class="n" x="480" y="244">this use?</text>
+    <text class="s" x="480" y="262">allow-list below</text>
+  </g>
+
+  <!-- fetch -->
+  <rect class="step" x="700" y="200" width="200" height="68" rx="6"/>
+  <g text-anchor="middle">
+    <text class="n" x="800" y="222">Fetch the full text</text>
+    <text class="c" x="800" y="240">download()</text>
+    <text class="s" x="800" y="256">from full_text, in memory</text>
+  </g>
+
+  <!-- decision: licence in the file -->
+  <polygon class="dec" points="800,300 908,356 800,412 692,356"/>
+  <g text-anchor="middle">
+    <text class="n" x="800" y="350">Licence in file</text>
+    <text class="n" x="800" y="366">still allowed?</text>
+    <text class="s" x="800" y="382">PMC JATS</text>
+  </g>
+
+  <!-- ends -->
+  <rect class="end" x="710" y="440" width="180" height="36" rx="18"/>
+  <text class="n" x="800" y="462.5" text-anchor="middle">Use the full text</text>
+
+  <rect class="end" x="380" y="440" width="200" height="48" rx="24"/>
+  <g text-anchor="middle">
+    <text class="n" x="480" y="460">Use metadata only</text>
+    <text class="s" x="480" y="476">get_source adds the link</text>
+  </g>
+</svg>

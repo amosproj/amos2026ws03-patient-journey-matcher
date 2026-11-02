@@ -1,0 +1,209 @@
+<!doctype html>
+<!-- Source of pipeline-overview.pdf. Regenerate from this folder with:
+     chromium --headless --no-pdf-header-footer --print-to-pdf=pipeline-overview.pdf pipeline-overview.html -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Source pipeline overview</title>
+<style>
+  @page { size: A4; margin: 14mm; }
+  :root {
+    --ink: #111827; --text: #374151; --muted: #6b7280;
+    --line: #e7e9ee; --rule: #cfd4dc; --accent: #2348a8; --tint: #f3f6fd; --code: #f2f3f5;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: #ffffff; color: var(--text); }
+  body {
+    font-family: "Helvetica Neue", Helvetica, "Segoe UI", "Noto Sans", Arial, sans-serif;
+    font-size: 8.4pt;
+    line-height: 1.45;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .page { width: 182mm; height: 268mm; overflow: hidden; display: flex; flex-direction: column; break-after: page; }
+  .page:last-of-type { break-after: auto; }
+  @media screen {
+    body { background: #eef0f3; padding: 14mm 0; }
+    .page { background: #ffffff; margin: 0 auto 28mm; box-shadow: 0 0 0 14mm #ffffff, 0 0 0 calc(14mm + 0.5px) #dde1e7; }
+  }
+  .head, .foot { flex: none; display: flex; justify-content: space-between; align-items: baseline; font-size: 6.8pt; color: var(--muted); }
+  .head { border-bottom: 0.5pt solid var(--line); padding-bottom: 2mm; margin-bottom: 6mm; }
+  .head b { color: var(--ink); }
+  .foot { border-top: 0.5pt solid var(--line); padding-top: 1.6mm; margin-top: auto; }
+  .foot span:last-child { white-space: nowrap; margin-left: 4mm; }
+  h1 { font-size: 16pt; line-height: 1.15; margin: 0 0 1.6mm; font-weight: 600; color: var(--ink); letter-spacing: -0.01em; }
+  h1 .num { color: var(--muted); font-weight: 500; margin-right: 2.6mm; }
+  .lede { margin: 0 0 4mm; color: var(--muted); font-size: 8.8pt; }
+  h2 { font-size: 9pt; font-weight: 600; color: var(--ink); margin: 5.2mm 0 1.8mm; }
+  p { margin: 0 0 1.4mm; }
+  ul, ol { margin: 0 0 1.4mm; padding-left: 4.4mm; }
+  li { margin: 0 0 1mm; }
+  li::marker { color: var(--muted); }
+  b { color: var(--ink); font-weight: 600; }
+  code { font-family: Menlo, "DejaVu Sans Mono", "Noto Sans Mono", Consolas, monospace; font-size: 0.84em; color: var(--ink); background: var(--code); padding: 0.1mm 0.35mm; border-radius: 0.6mm; }
+  img.diagram { display: block; width: 100%; height: auto; }
+  .legend { display: flex; flex-wrap: wrap; gap: 1.2mm 4.5mm; font-size: 7pt; color: var(--muted); border-top: 0.5pt solid var(--line); padding-top: 2mm; margin: 2.4mm 0 3mm; }
+  .legend span { display: inline-flex; align-items: center; gap: 1.4mm; }
+  .sw { display: inline-block; width: 4mm; height: 2.6mm; border-radius: 0.8mm; border: 0.75pt solid; }
+  .sw.py { background: #fdf8f1; border-color: #d6a771; }
+  .sw.ts { background: #f5f8fd; border-color: #a7b8de; }
+  .sw.db { background: #f8f9fa; border-color: #c4cad3; }
+  .sw.ext { background: #ffffff; border-color: #b8bec8; border-style: dashed; }
+  .sw.out { background: #fafafa; border-color: #b8bec8; border-style: dotted; }
+  .ln { display: inline-block; width: 6mm; border-top: 0.9pt solid #6b7280; }
+  .ln.r { border-top-style: dashed; }
+  table { width: 100%; border-collapse: collapse; font-size: 7.3pt; line-height: 1.35; }
+  th, td { text-align: left; vertical-align: top; padding: 1mm 1.8mm 1mm 0; border-bottom: 0.5pt solid var(--line); }
+  th { font-size: 6.3pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); border-bottom: 0.75pt solid var(--rule); padding-top: 0; }
+  td:first-child { font-weight: 600; color: var(--ink); white-space: nowrap; }
+  table.wrap td:first-child { white-space: normal; }
+  tbody tr:last-child td { border-bottom: none; }
+  .note { font-size: 7pt; color: var(--muted); margin-top: 1.6mm; }
+  .box { background: var(--tint); border-left: 1.5pt solid var(--accent); border-radius: 0 1mm 1mm 0; padding: 2.6mm 3.2mm 1.2mm; margin-top: 5mm; }
+  .box h2 { margin-top: 0; }
+  .rules { margin-top: 3mm; }
+  table.mx { table-layout: fixed; font-size: 7.1pt; }
+  table.mx th, table.mx td { padding: 0.75mm 1.6mm 0.75mm 0; }
+  table.mx td:first-child { color: var(--muted); font-weight: 500; white-space: normal; }
+  table.mx tr.g td { font-size: 6.3pt; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink); padding-top: 1.8mm; border-bottom: 0.75pt solid var(--rule); }
+  .ic { display: inline-block; width: 2.5mm; height: 2.5mm; vertical-align: -0.45mm; margin-right: 0.8mm; }
+  .na { color: #9ca3af; font-size: 0.92em; margin-right: 0.8mm; }
+  .keys { font-size: 7pt; color: var(--muted); margin-top: 1.6mm; }
+  .keys .ic, .keys .na { margin-left: 2.6mm; }
+  .keys .ic:first-child { margin-left: 0; }
+  img.flow { width: 88%; margin: 1mm auto 2mm; }
+  table.tight { font-size: 7pt; }
+  table.tight th, table.tight td { padding-top: 0.8mm; padding-bottom: 0.8mm; }
+  .lede code { white-space: nowrap; }
+</style>
+</head>
+<body>
+
+<!-- Page 1: pipeline -->
+<section class="page">
+  <div class="head"><span><b>Patient Journey Matcher</b> · Source pipeline (#6)</span><span>AMOS WS 2026/27 · Team 3 · 01.11.2026</span></div>
+  <h1><span class="num">1</span>Pipeline: crawl, index, match</h1>
+  <p class="lede">Reference for the next pages: how a source record moves from the source API to an MCP result. Full texts are never stored.</p>
+
+  <img class="diagram" src="pipeline.svg" alt="Source pipeline: crawler stores metadata in documents; a shared download() module checks the licence and fetches the full text into memory; the indexer uses it to write three indexes; the MCP server returns sources with IDs and links, and on request one source's text through the same download() module">
+
+  <div class="legend">
+    <span><i class="sw py"></i>Python component</span>
+    <span><i class="sw ts"></i>TypeScript component</span>
+    <span><i class="sw db"></i>PostgreSQL table</span>
+    <span><i class="sw ext"></i>external service</span>
+    <span><i class="sw out"></i>outside our system</span>
+    <span><i class="ln"></i>data flow</span>
+    <span><i class="ln r"></i>held in memory, not stored</span>
+  </div>
+
+  <h2>What <code>documents</code> stores, so the full source can be fetched later</h2>
+  <table class="wrap">
+    <colgroup><col style="width:14%"><col style="width:50%"><col style="width:36%"></colgroup>
+    <thead><tr><th>Purpose</th><th>Fields</th><th>Used for</th></tr></thead>
+    <tbody>
+      <tr><td>Identity</td><td><code>id</code> = <code>&lt;source&gt;:&lt;native_id&gt;</code>, <code>source</code>, <code>version</code></td><td>Stable across versions; the MCP <code>source_id</code></td></tr>
+      <tr><td>Matching</td><td><code>content_type</code>, <code>title</code>, <code>authors</code>, <code>venue</code>, <code>summary</code>, <code>subjects</code>, <code>language</code>, <code>published_at</code></td><td>All indexes; the only text when the licence blocks the full source</td></tr>
+      <tr><td>Fetching</td><td><code>licence</code>; <code>full_text</code> locators in fetch order, each with URL, media type, size and checksum</td><td><code>download()</code> checks the licence and fetches without another lookup</td></tr>
+      <tr><td>Traceability</td><td><code>canonical_url</code>, <code>doi</code>, <code>external_ids</code>, <code>found_by</code>, <code>retrieved_at</code></td><td>Every result leads back to its source, query and fetch date</td></tr>
+      <tr><td>Retention</td><td><code>source_updated_at</code>, <code>expires_at</code></td><td>Re-index on change; YouTube rows refreshed or deleted within 30 days</td></tr>
+    </tbody>
+  </table>
+
+  <ul class="rules">
+    <li><b>Never stored:</b> full texts, PDFs, audio, video and transcripts. <code>download()</code> holds them in memory only; podcast show notes are cut to 1,000 characters.</li>
+    <li><b>No full-text cache.</b> Index rows carry <code>document_id</code> and <code>version</code> and are rebuilt when the version changes. Feeds are polled with a conditional GET (<code>ETag</code>, <code>Last-Modified</code>).</li>
+    <li><b>MCP server:</b> <code>match_journey</code> returns sources from the indexes; <code>get_source</code> fetches one source again through <code>download()</code>.</li>
+  </ul>
+
+  <div class="foot"><span>Full schema and field paths: <code>Documentation/sources/README.md</code> §2 and the source pages.</span><span>1 / 3</span></div>
+</section>
+
+<!-- Page 2: sources -->
+<section class="page">
+  <div class="head"><span><b>Patient Journey Matcher</b> · Source pipeline (#6)</span><span>AMOS WS 2026/27 · Team 3 · 01.11.2026</span></div>
+  <h1><span class="num">2</span>Sources</h1>
+  <p class="lede">What each source provides, checked against the live documentation and with live requests on 01.11.2026.</p>
+
+  <table class="mx">
+    <colgroup><col style="width:15.4%"><col style="width:14.1%"><col style="width:14.1%"><col style="width:14.1%"><col style="width:14.1%"><col style="width:14.1%"><col style="width:14.1%"></colgroup>
+    <thead><tr><th></th><th>PubMed</th><th>PMC</th><th>arXiv</th><th>Zenodo</th><th>YouTube</th><th>Podcasts</th></tr></thead>
+    <tbody>
+      <tr><td>Role</td><td><b>Primary</b>, peer-reviewed journals</td><td><b>Primary</b>, full texts for PubMed</td><td>Secondary, preprints, no review</td><td>Secondary, grey literature, no review</td><td>Complementary, curated channels</td><td>Complementary, curated feeds</td></tr>
+      <tr class="g"><td colspan="7">Metadata for matching</td></tr>
+      <tr><td>Title</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td><span class="na">n/a</span>from PubMed</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td></tr>
+      <tr><td>Abstract, description</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>abstract</td><td><span class="na">n/a</span></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>abstract</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>description</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>description, chapters</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="partly"><circle cx="6" cy="6" r="4.3" fill="none" stroke="#b45309" stroke-width="1.3"/><path d="M6 1.7a4.3 4.3 0 0 1 0 8.6z" fill="#b45309"/></svg>show notes, cut to 1,000 chars</td></tr>
+      <tr><td>Authors</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td><span class="na">n/a</span></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>with ORCID</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="partly"><circle cx="6" cy="6" r="4.3" fill="none" stroke="#b45309" stroke-width="1.3"/><path d="M6 1.7a4.3 4.3 0 0 1 0 8.6z" fill="#b45309"/></svg>channel</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="partly"><circle cx="6" cy="6" r="4.3" fill="none" stroke="#b45309" stroke-width="1.3"/><path d="M6 1.7a4.3 4.3 0 0 1 0 8.6z" fill="#b45309"/></svg>host, rare</td></tr>
+      <tr><td>Venue</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>journal</td><td><span class="na">n/a</span></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="partly"><circle cx="6" cy="6" r="4.3" fill="none" stroke="#b45309" stroke-width="1.3"/><path d="M6 1.7a4.3 4.3 0 0 1 0 8.6z" fill="#b45309"/></svg><code>journal_ref</code></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="no"><path d="M3.3 3.3 8.7 8.7M8.7 3.3 3.3 8.7" fill="none" stroke="#b91c1c" stroke-width="1.8" stroke-linecap="round"/></svg></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>channel</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>show</td></tr>
+      <tr><td>Subjects</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>MeSH</td><td><span class="na">n/a</span></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>categories</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="partly"><circle cx="6" cy="6" r="4.3" fill="none" stroke="#b45309" stroke-width="1.3"/><path d="M6 1.7a4.3 4.3 0 0 1 0 8.6z" fill="#b45309"/></svg>some MeSH</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="partly"><circle cx="6" cy="6" r="4.3" fill="none" stroke="#b45309" stroke-width="1.3"/><path d="M6 1.7a4.3 4.3 0 0 1 0 8.6z" fill="#b45309"/></svg>tags</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="no"><path d="M3.3 3.3 8.7 8.7M8.7 3.3 3.3 8.7" fill="none" stroke="#b91c1c" stroke-width="1.8" stroke-linecap="round"/></svg>curated topics</td></tr>
+      <tr><td><code>content_type</code></td><td><code>journal_article</code>, publication types</td><td><span class="na">n/a</span></td><td><code>preprint</code></td><td>7 resource types</td><td><code>video</code></td><td><code>podcast_episode</code></td></tr>
+      <tr><td>Published date</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td><span class="na">n/a</span></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td></tr>
+      <tr><td>Duration</td><td><span class="na">n/a</span></td><td><span class="na">n/a</span></td><td><span class="na">n/a</span></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="partly"><circle cx="6" cy="6" r="4.3" fill="none" stroke="#b45309" stroke-width="1.3"/><path d="M6 1.7a4.3 4.3 0 0 1 0 8.6z" fill="#b45309"/></svg>videos</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td></tr>
+      <tr><td>DOI</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="partly"><circle cx="6" cy="6" r="4.3" fill="none" stroke="#b45309" stroke-width="1.3"/><path d="M6 1.7a4.3 4.3 0 0 1 0 8.6z" fill="#b45309"/></svg></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="partly"><circle cx="6" cy="6" r="4.3" fill="none" stroke="#b45309" stroke-width="1.3"/><path d="M6 1.7a4.3 4.3 0 0 1 0 8.6z" fill="#b45309"/></svg></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="partly"><circle cx="6" cy="6" r="4.3" fill="none" stroke="#b45309" stroke-width="1.3"/><path d="M6 1.7a4.3 4.3 0 0 1 0 8.6z" fill="#b45309"/></svg>journal DOI</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>own DOI</td><td><span class="na">n/a</span></td><td><span class="na">n/a</span>cited in notes</td></tr>
+      <tr><td>Versions</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="no"><path d="M3.3 3.3 8.7 8.7M8.7 3.3 3.3 8.7" fill="none" stroke="#b91c1c" stroke-width="1.8" stroke-linecap="round"/></svg></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>concept ID</td><td><span class="na">n/a</span></td><td><span class="na">n/a</span></td></tr>
+      <tr><td>References</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>list, <code>elink</code></td><td><span class="na">n/a</span></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="partly"><circle cx="6" cy="6" r="4.3" fill="none" stroke="#b45309" stroke-width="1.3"/><path d="M6 1.7a4.3 4.3 0 0 1 0 8.6z" fill="#b45309"/></svg>Semantic Scholar</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="partly"><circle cx="6" cy="6" r="4.3" fill="none" stroke="#b45309" stroke-width="1.3"/><path d="M6 1.7a4.3 4.3 0 0 1 0 8.6z" fill="#b45309"/></svg>sparse</td><td><span class="na">n/a</span></td><td><span class="na">n/a</span></td></tr>
+      <tr class="g"><td colspan="7">Full source</td></tr>
+      <tr><td>Licence field</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="no"><path d="M3.3 3.3 8.7 8.7M8.7 3.3 3.3 8.7" fill="none" stroke="#b91c1c" stroke-width="1.8" stroke-linecap="round"/></svg>see PMC</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><code>license_code</code></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>OAI-PMH, 1 request per paper</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><code>metadata.rights</code></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="partly"><circle cx="6" cy="6" r="4.3" fill="none" stroke="#b45309" stroke-width="1.3"/><path d="M6 1.7a4.3 4.3 0 0 1 0 8.6z" fill="#b45309"/></svg><code>status.license</code>, not our use</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="partly"><circle cx="6" cy="6" r="4.3" fill="none" stroke="#b45309" stroke-width="1.3"/><path d="M6 1.7a4.3 4.3 0 0 1 0 8.6z" fill="#b45309"/></svg><code>copyright</code> only</td></tr>
+      <tr><td>Full text</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="no"><path d="M3.3 3.3 8.7 8.7M8.7 3.3 3.3 8.7" fill="none" stroke="#b91c1c" stroke-width="1.8" stroke-linecap="round"/></svg>via PMCID</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>JATS XML</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>HTML, else PDF</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>files, size, MD5</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="no"><path d="M3.3 3.3 8.7 8.7M8.7 3.3 3.3 8.7" fill="none" stroke="#b91c1c" stroke-width="1.8" stroke-linecap="round"/></svg></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="partly"><circle cx="6" cy="6" r="4.3" fill="none" stroke="#b45309" stroke-width="1.3"/><path d="M6 1.7a4.3 4.3 0 0 1 0 8.6z" fill="#b45309"/></svg>transcript in 1 of 6 feeds</td></tr>
+      <tr class="g"><td colspan="7">Existing connectors</td></tr>
+      <tr><td>SS26 (<code>backend/</code>)</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="no"><path d="M3.3 3.3 8.7 8.7M8.7 3.3 3.3 8.7" fill="none" stroke="#b91c1c" stroke-width="1.8" stroke-linecap="round"/></svg>stores PDF text</td><td><span class="na">n/a</span></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="no"><path d="M3.3 3.3 8.7 8.7M8.7 3.3 3.3 8.7" fill="none" stroke="#b91c1c" stroke-width="1.8" stroke-linecap="round"/></svg>stores PDF text</td><td><span class="na">n/a</span></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="no"><path d="M3.3 3.3 8.7 8.7M8.7 3.3 3.3 8.7" fill="none" stroke="#b91c1c" stroke-width="1.8" stroke-linecap="round"/></svg>scrapes captions</td><td><span class="na">n/a</span></td></tr>
+      <tr><td>#27 (not merged)</td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="partly"><circle cx="6" cy="6" r="4.3" fill="none" stroke="#b45309" stroke-width="1.3"/><path d="M6 1.7a4.3 4.3 0 0 1 0 8.6z" fill="#b45309"/></svg>no PMCID, <code>pdat</code> filter</td><td><span class="na">n/a</span></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="partly"><circle cx="6" cy="6" r="4.3" fill="none" stroke="#b45309" stroke-width="1.3"/><path d="M6 1.7a4.3 4.3 0 0 1 0 8.6z" fill="#b45309"/></svg>version in ID, no licence</td><td><span class="na">n/a</span></td><td><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="partly"><circle cx="6" cy="6" r="4.3" fill="none" stroke="#b45309" stroke-width="1.3"/><path d="M6 1.7a4.3 4.3 0 0 1 0 8.6z" fill="#b45309"/></svg>no <code>status</code>, no refresh job</td><td><span class="na">n/a</span></td></tr>
+      <tr class="g"><td colspan="7">Size, for context</td></tr>
+      <tr><td>Scope</td><td>41.4 M citations</td><td>about 8 M article versions</td><td>about 8,300 a year, medical</td><td>3,241 for <code>prostate AND cancer</code></td><td>26 curated channels</td><td>6 feeds, 715 h</td></tr>
+    </tbody>
+  </table>
+  <p class="keys"><svg class="ic" viewBox="0 0 12 12" role="img" aria-label="yes"><path d="M2.4 6.4 5 8.9 9.7 3.3" fill="none" stroke="#15803d" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>yes <svg class="ic" viewBox="0 0 12 12" role="img" aria-label="partly"><circle cx="6" cy="6" r="4.3" fill="none" stroke="#b45309" stroke-width="1.3"/><path d="M6 1.7a4.3 4.3 0 0 1 0 8.6z" fill="#b45309"/></svg>partly <svg class="ic" viewBox="0 0 12 12" role="img" aria-label="no"><path d="M3.3 3.3 8.7 8.7M8.7 3.3 3.3 8.7" fill="none" stroke="#b91c1c" stroke-width="1.8" stroke-linecap="round"/></svg>no, or breaks the metadata-only rule <span class="na">n/a</span>not applicable</p>
+
+  <h2>Full-text route and limits</h2>
+  <table class="tight">
+    <colgroup><col style="width:12%"><col style="width:24%"><col style="width:15%"><col style="width:20%"><col style="width:9%"><col style="width:20%"></colgroup>
+    <thead><tr><th>Source</th><th>Full-text route</th><th>Checked before fetching</th><th>Request limit</th><th>Cap per query</th><th>Terms that affect us</th></tr></thead>
+    <tbody>
+      <tr><td>PubMed + PMC</td><td>PMC S3 <code>PMC&lt;n&gt;.&lt;v&gt;.xml</code> via the PMCID: JATS XML, 60–275 KB, no login</td><td><code>license_code</code></td><td>10 requests/s per key, 3 without; 429 above. S3: none published</td><td>9,999 IDs</td><td>Name NLM; keep data current or mark it as possibly outdated</td></tr>
+      <tr><td>arXiv</td><td><code>arxiv.org/html/&lt;id&gt;v&lt;n&gt;</code>, else <code>/pdf/</code>; PDF needs a text extractor</td><td>licence</td><td>API and OAI-PMH: 1 request per 3 s, one connection. Pages: 15 s crawl delay</td><td>30,000</td><td>Personal and research use; no serving of e-prints from our servers</td></tr>
+      <tr><td>Zenodo</td><td>File download from the record: PDF, DOCX, PPTX, MP4; up to 50 GB per record</td><td>open access, licence, media type, size; MD5 after download</td><td>30 searches/min, also with a token; 133 record and file requests/min</td><td>10,000</td><td>Respect each record's licence; non-military use only</td></tr>
+      <tr><td>YouTube</td><td>None: no transcripts or files. Gemini on the video URL is not cleared</td><td>–</td><td>10,000 units/day plus 100 <code>search.list</code> calls/day</td><td>500 per channel search</td><td>Refresh or delete stored data within 30 days; no view counts in scores; label as YouTube, never merge</td></tr>
+      <tr><td>Podcasts</td><td><code>podcast:transcript</code> (VTT, SRT, HTML), else show notes. Speech-to-text undecided</td><td>copyright</td><td>None published; one conditional GET per feed and day</td><td>–</td><td>No feed grants a licence</td></tr>
+    </tbody>
+  </table>
+  <p class="note">Limits apply per key or host and are shared by the crawler, the indexer and the MCP server. Queries above the cap are split by date.</p>
+
+  <div class="foot"><span>Details, field paths and connector reviews: <code>Documentation/sources/&lt;source&gt;.md</code>.</span><span>2 / 3</span></div>
+</section>
+
+<!-- Page 3: licences -->
+<section class="page">
+  <div class="head"><span><b>Patient Journey Matcher</b> · Source pipeline (#6)</span><span>AMOS WS 2026/27 · Team 3 · 01.11.2026</span></div>
+  <h1><span class="num">3</span>Licence handling</h1>
+  <p class="lede">The matcher is a non-commercial university project for now. Free to read is not the same as licensed, so every full text passes a licence check before use. <code>licence</code> holds an SPDX ID (<code>CC-BY-4.0</code>) or our own code (<code>arxiv-nonexclusive-1.0</code>, <code>pmc-tdm</code>, <code>youtube-standard</code>, <code>all-rights-reserved</code>).</p>
+
+  <h2>Why at use time, not in the crawler</h2>
+  <ul>
+    <li>The licence covers the full text, not the metadata (arXiv and Zenodo metadata is CC0, PubMed under NLM terms). Every record stays findable and linkable.</li>
+    <li>Most records have no licence when crawled: PubMed without a PMCID, all podcasts.</li>
+    <li>Each licence has three permissions, and open or future decisions (commercial use) change them. A new allow-list means re-indexing, not re-crawling. The crawler filters only for relevance.</li>
+  </ul>
+  <img class="diagram flow" src="licence-flow.svg" alt="Licence check: the crawler stores the licence; when a use needs the full text, the allow-list decides; if allowed, download() fetches it and PMC files are checked again; otherwise only metadata is used and get_source adds the link">
+
+  <h2>Allow-list proposal (not legal advice)</h2>
+  <table class="wrap">
+    <colgroup><col style="width:24%"><col style="width:17%"><col style="width:17%"><col style="width:24%"><col style="width:18%"></colgroup>
+    <thead><tr><th>Licence</th><th>Keyword, graph, AI index</th><th>AI summary shown to users</th><th>Original passed on</th><th>If used commercially later</th></tr></thead>
+    <tbody>
+      <tr><td>CC0, CC BY, public domain</td><td>yes</td><td>yes, with credit</td><td>yes, with credit</td><td>same</td></tr>
+      <tr><td>CC BY-SA, CC BY-ND</td><td>yes</td><td>ask</td><td>SA: same licence; ND: unchanged only</td><td>same</td></tr>
+      <tr><td>NC licences (CC BY-NC, -NC-SA, -NC-ND)</td><td>yes</td><td>as the licence without NC</td><td>as the licence without NC</td><td>no</td></tr>
+      <tr><td>PMC <code>TDM</code>, arXiv default licence</td><td>yes (text mining, research use)</td><td>ask</td><td>no, link only</td><td>ask</td></tr>
+      <tr><td>All rights reserved, unknown</td><td>ask</td><td>no</td><td>no, link only</td><td>ask</td></tr>
+    </tbody>
+  </table>
+
+  <h2>Where it matters</h2>
+  <p>Licences differ per record, even inside one source: PMC mixes CC BY and NC in one bucket, 8 % of a Zenodo sample and 16 % of an arXiv sample are NC, about a third of medical arXiv papers carry only arXiv's own licence, and no podcast feed grants one. YouTube's 30-day rule applies whatever <code>status.license</code> says.</p>
+
+  <div class="foot"><span>Open questions: <code>Documentation/sources/open-questions.md</code>. Licence details: <code>Documentation/sources/README.md</code> §3.</span><span>3 / 3</span></div>
+</section>
+
+</body>
+</html>
