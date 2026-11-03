@@ -1,0 +1,220 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 672" width="1000" height="672" role="img" aria-labelledby="pipeline-title pipeline-desc">
+  <title id="pipeline-title">Source pipeline: crawl, index, match</title>
+  <desc id="pipeline-desc">The crawler stores metadata, licence and full-text URLs in the documents table. A shared download() module checks the licence, fetches the full text into memory and extracts it. The indexer uses it to write the keyword, graph and AI summary indexes. The MCP server matches a journey against one index and returns sources, and on request returns one source's text through the same download() module.</desc>
+  <style>
+    text { font-family: "Helvetica Neue", Helvetica, "Segoe UI", "Noto Sans", Arial, sans-serif; fill: #374151; }
+    .n { font-size: 13px; font-weight: 600; fill: #111827; }
+    .nm { font-size: 12.5px; font-weight: 700; fill: #111827; font-family: Menlo, "DejaVu Sans Mono", "Noto Sans Mono", Consolas, monospace; }
+    .b { font-size: 11px; }
+    .s { font-size: 10px; fill: #6b7280; }
+    .c { font-size: 10px; font-family: Menlo, "DejaVu Sans Mono", "Noto Sans Mono", Consolas, monospace; }
+    .k { font-weight: 700; fill: #111827; }
+    .t { font-size: 10px; fill: #9ca3af; font-family: Menlo, "DejaVu Sans Mono", "Noto Sans Mono", Consolas, monospace; }
+    .tag { font-size: 7.5px; letter-spacing: 0.08em; fill: #6b7280; font-family: Menlo, "DejaVu Sans Mono", "Noto Sans Mono", Consolas, monospace; }
+    .al { font-size: 8.5px; font-weight: 600; letter-spacing: 0.08em; fill: #6b7280; }
+    .py { fill: #fdf8f1; stroke: #d6a771; stroke-width: 1; }
+    .ts { fill: #f5f8fd; stroke: #a7b8de; stroke-width: 1; }
+    .db { fill: #f8f9fa; stroke: #c4cad3; stroke-width: 1; }
+    .ext { fill: #ffffff; stroke: #b8bec8; stroke-width: 1; stroke-dasharray: 4 3; }
+    .out { fill: #fbfbfc; stroke: #b8bec8; stroke-width: 1; stroke-dasharray: 1.5 3; stroke-linecap: round; }
+    .tg { fill: none; stroke: #c4cad3; stroke-width: 0.8; }
+    .hr { stroke: #e3e6ea; stroke-width: 0.8; }
+    .e { fill: none; stroke: #6b7280; stroke-width: 1.1; }
+    .r { stroke-dasharray: 4 3; }
+    .m { fill: #ffffff; }
+  </style>
+  <defs>
+    <marker id="pipeline-arrow" viewBox="0 0 10 10" refX="9.5" refY="5" markerWidth="5.5" markerHeight="5.5" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6b7280"/>
+    </marker>
+  </defs>
+  <rect width="1000" height="672" fill="#ffffff"/>
+
+  <!-- connectors first, so boxes sit on top -->
+  <path class="e" d="M90 132 V180" marker-end="url(#pipeline-arrow)"/>
+  <path class="e r" d="M496 132 V180" marker-end="url(#pipeline-arrow)"/>
+  <path class="e" d="M160 256 H200" marker-end="url(#pipeline-arrow)"/>
+  <path class="e" d="M364 420 H404" marker-end="url(#pipeline-arrow)"/>
+  <path class="e r" d="M496 276 V324" marker-end="url(#pipeline-arrow)"/>
+  <path class="e r" d="M776 228 H830 Q838 228 838 236 V324" marker-end="url(#pipeline-arrow)"/>
+  <path class="e" d="M588 366 H628" marker-end="url(#pipeline-arrow)"/>
+  <path class="e" d="M588 466 H628" marker-end="url(#pipeline-arrow)"/>
+  <path class="e" d="M588 566 H628" marker-end="url(#pipeline-arrow)"/>
+  <path class="e" d="M776 366 H816" marker-end="url(#pipeline-arrow)"/>
+  <path class="e" d="M776 466 H816" marker-end="url(#pipeline-arrow)"/>
+  <path class="e" d="M776 566 H816" marker-end="url(#pipeline-arrow)"/>
+  <path class="e" d="M860 132 V324" marker-end="url(#pipeline-arrow)"/>
+  <path class="e" d="M940 324 V132" marker-end="url(#pipeline-arrow)"/>
+  <path class="e" d="M282 520 V632 Q282 640 290 640 H890 Q898 640 898 632 V608" marker-end="url(#pipeline-arrow)"/>
+
+  <!-- connector labels -->
+  <rect class="m" x="98" y="150" width="58" height="12" rx="2"/>
+  <text class="al" x="127" y="159" text-anchor="middle">METADATA</text>
+  <rect class="m" x="504" y="150" width="58" height="12" rx="2"/>
+  <text class="al" x="533" y="159" text-anchor="middle">FULL TEXT</text>
+  <rect class="m" x="790" y="150" width="62" height="12" rx="2"/>
+  <text class="al" x="821" y="159" text-anchor="middle">JOURNEY</text>
+  <rect class="m" x="782" y="166" width="70" height="12" rx="2"/>
+  <text class="al" x="817" y="175" text-anchor="middle">SOURCE_ID</text>
+  <rect class="m" x="948" y="150" width="48" height="12" rx="2"/>
+  <text class="al" x="972" y="159" text-anchor="middle">SOURCES</text>
+  <rect class="m" x="948" y="166" width="30" height="12" rx="2"/>
+  <text class="al" x="963" y="175" text-anchor="middle">TEXT</text>
+  <rect class="m" x="556" y="648" width="68" height="12" rx="2"/>
+  <text class="al" x="590" y="657" text-anchor="middle">ROWS BY ID</text>
+
+  <!-- source APIs -->
+  <rect class="ext" x="20" y="20" width="568" height="112" rx="8"/>
+  <rect class="tg" x="28" y="28" width="52" height="12" rx="2"/>
+  <text class="tag" x="54" y="37" text-anchor="middle">EXTERNAL</text>
+  <text class="n" x="304" y="48" text-anchor="middle">Source APIs and feeds</text>
+  <line class="hr" x1="28" y1="60" x2="580" y2="60"/>
+  <text class="b" x="150" y="82">PubMed E-utilities</text>
+  <text class="b" x="150" y="100">PMC S3 bucket</text>
+  <text class="b" x="150" y="118">arXiv API and OAI-PMH</text>
+  <text class="b" x="340" y="82">Zenodo REST API</text>
+  <text class="b" x="340" y="100">YouTube Data API v3</text>
+  <text class="b" x="340" y="118">Podcast RSS feeds</text>
+
+  <!-- client -->
+  <rect class="out" x="628" y="20" width="352" height="112" rx="8"/>
+  <rect class="tg" x="636" y="28" width="40" height="12" rx="2"/>
+  <text class="tag" x="656" y="37" text-anchor="middle">CLIENT</text>
+  <text class="n" x="804" y="48" text-anchor="middle">AIlixir app backend</text>
+  <line class="hr" x1="636" y1="60" x2="972" y2="60"/>
+  <text class="c" x="804" y="86" text-anchor="middle">match_journey(journey) → sources</text>
+  <text class="c" x="804" y="106" text-anchor="middle">get_source(source_id) → text</text>
+
+  <!-- crawler -->
+  <rect class="py" x="20" y="180" width="140" height="152" rx="8"/>
+  <rect class="tg" x="28" y="188" width="40" height="12" rx="2"/>
+  <text class="tag" x="48" y="197" text-anchor="middle">PYTHON</text>
+  <g text-anchor="middle">
+    <text class="n" x="90" y="220">Crawler</text>
+    <text class="s" x="90" y="236">daily batch job</text>
+    <text class="b" x="90" y="266">queries each source</text>
+    <text class="b" x="90" y="282">with the topic list</text>
+    <text class="b" x="90" y="298">upserts one row</text>
+    <text class="b" x="90" y="314">per record</text>
+  </g>
+  <line class="hr" x1="28" y1="246" x2="152" y2="246"/>
+
+  <!-- documents table -->
+  <rect class="db" x="200" y="180" width="164" height="340" rx="8"/>
+  <rect class="tg" x="208" y="188" width="52" height="12" rx="2"/>
+  <text class="tag" x="234" y="197" text-anchor="middle">POSTGRES</text>
+  <text class="nm" x="282" y="220" text-anchor="middle">documents</text>
+  <text class="s" x="282" y="236" text-anchor="middle">one row per record</text>
+  <line class="hr" x1="208" y1="246" x2="356" y2="246"/>
+  <text class="c k" x="210" y="264">id</text>
+  <text class="c" x="210" y="277">native_id</text>
+  <text class="c" x="210" y="290">source</text>
+  <text class="c" x="210" y="303">version</text>
+  <text class="c" x="210" y="316">content_type</text>
+  <text class="c" x="210" y="329">title</text>
+  <text class="c" x="210" y="342">summary</text>
+  <text class="c" x="210" y="355">authors</text>
+  <text class="c" x="210" y="368">subjects</text>
+  <text class="c" x="210" y="381">published_at</text>
+  <text class="c" x="210" y="394">canonical_url</text>
+  <text class="c" x="210" y="407">doi</text>
+  <text class="c" x="210" y="420">external_ids</text>
+  <text class="c k" x="210" y="433">licence</text>
+  <text class="c k" x="210" y="446">full_text</text>
+  <text class="c" x="210" y="459">found_by</text>
+  <text class="c" x="210" y="472">retrieved_at</text>
+  <text class="c" x="210" y="485">expires_at</text>
+  <g text-anchor="end">
+    <text class="t" x="354" y="264">text</text>
+    <text class="t" x="354" y="277">text</text>
+    <text class="t" x="354" y="290">text</text>
+    <text class="t" x="354" y="303">text</text>
+    <text class="t" x="354" y="316">text</text>
+    <text class="t" x="354" y="329">text</text>
+    <text class="t" x="354" y="342">text</text>
+    <text class="t" x="354" y="355">jsonb</text>
+    <text class="t" x="354" y="368">jsonb</text>
+    <text class="t" x="354" y="381">date</text>
+    <text class="t" x="354" y="394">text</text>
+    <text class="t" x="354" y="407">text</text>
+    <text class="t" x="354" y="420">jsonb</text>
+    <text class="t" x="354" y="433">text</text>
+    <text class="t" x="354" y="446">jsonb</text>
+    <text class="t" x="354" y="459">jsonb</text>
+    <text class="t" x="354" y="472">timestamptz</text>
+    <text class="t" x="354" y="485">timestamptz</text>
+  </g>
+  <text class="s" x="282" y="506" text-anchor="middle">7 more fields, see README §2</text>
+
+  <!-- download() -->
+  <rect class="ts" x="404" y="180" width="372" height="96" rx="8"/>
+  <rect class="tg" x="412" y="188" width="62" height="12" rx="2"/>
+  <text class="tag" x="443" y="197" text-anchor="middle">TYPESCRIPT</text>
+  <text class="nm" x="590" y="206" text-anchor="middle">download()</text>
+  <text class="s" x="590" y="222" text-anchor="middle">used by the indexer and the MCP server</text>
+  <line class="hr" x1="412" y1="232" x2="768" y2="232"/>
+  <text class="b" x="432" y="252"><tspan class="s">1</tspan><tspan x="444">check the licence for the use</tspan></text>
+  <text class="b" x="432" y="268"><tspan class="s">2</tspan><tspan x="444">fetch the full_text URLs</tspan></text>
+  <text class="b" x="612" y="252"><tspan class="s">3</tspan><tspan x="624">extract the plain text</tspan></text>
+  <text class="b" x="612" y="268"><tspan class="s">4</tspan><tspan x="624">keep it in memory only</tspan></text>
+
+  <!-- indexer -->
+  <rect class="ts" x="404" y="324" width="184" height="284" rx="8"/>
+  <rect class="tg" x="412" y="332" width="62" height="12" rx="2"/>
+  <text class="tag" x="443" y="341" text-anchor="middle">TYPESCRIPT</text>
+  <g text-anchor="middle">
+    <text class="n" x="496" y="364">Indexer</text>
+    <text class="s" x="496" y="380">batch job after each crawl</text>
+    <text class="b" x="496" y="410">reads new or changed rows</text>
+    <text class="b" x="496" y="426">gets text from download()</text>
+    <text class="b" x="496" y="442">else uses the metadata</text>
+    <text class="b" x="496" y="466">writes index entries</text>
+    <text class="b" x="496" y="482">keyed by document_id</text>
+    <text class="b" x="496" y="498">and version</text>
+    <text class="s" x="496" y="592">text discarded afterwards</text>
+  </g>
+  <line class="hr" x1="412" y1="390" x2="580" y2="390"/>
+
+  <!-- three indexes -->
+  <rect class="db" x="628" y="324" width="148" height="84" rx="8"/>
+  <rect class="db" x="628" y="424" width="148" height="84" rx="8"/>
+  <rect class="db" x="628" y="524" width="148" height="84" rx="8"/>
+  <g text-anchor="middle">
+    <text class="n" x="702" y="350">Keyword index</text>
+    <text class="n" x="702" y="450">Graph index</text>
+    <text class="n" x="702" y="550">AI summary index</text>
+  </g>
+  <line class="hr" x1="636" y1="360" x2="768" y2="360"/>
+  <line class="hr" x1="636" y1="460" x2="768" y2="460"/>
+  <line class="hr" x1="636" y1="560" x2="768" y2="560"/>
+  <text class="c" x="638" y="378">terms</text>
+  <text class="t" x="766" y="378" text-anchor="end">tsvector</text>
+  <text class="s" x="702" y="396" text-anchor="middle">ranked with BM25</text>
+  <text class="c" x="638" y="478">concepts</text>
+  <text class="t" x="766" y="478" text-anchor="end">table</text>
+  <text class="c" x="638" y="494">relations</text>
+  <text class="t" x="766" y="494" text-anchor="end">table</text>
+  <text class="c" x="638" y="578">summary</text>
+  <text class="t" x="766" y="578" text-anchor="end">text</text>
+  <text class="c" x="638" y="594">embedding</text>
+  <text class="t" x="766" y="594" text-anchor="end">vector</text>
+
+  <!-- MCP server -->
+  <rect class="ts" x="816" y="324" width="164" height="284" rx="8"/>
+  <rect class="tg" x="824" y="332" width="62" height="12" rx="2"/>
+  <text class="tag" x="855" y="341" text-anchor="middle">TYPESCRIPT</text>
+  <g text-anchor="middle">
+    <text class="n" x="898" y="364">MCP server</text>
+    <text class="s" x="898" y="380">on request</text>
+    <text class="c k" x="898" y="410">match_journey</text>
+    <text class="b" x="898" y="426">focus: latest event</text>
+    <text class="b" x="898" y="442">searches one index</text>
+    <text class="b" x="898" y="458">returns ranked sources</text>
+    <text class="c k" x="898" y="486">get_source</text>
+    <text class="b" x="898" y="502">looks up one row</text>
+    <text class="b" x="898" y="518">text from download()</text>
+    <text class="b" x="898" y="534">else metadata and link</text>
+    <text class="s" x="898" y="592">nothing stored</text>
+  </g>
+  <line class="hr" x1="824" y1="390" x2="972" y2="390"/>
+</svg>
