@@ -1,13 +1,20 @@
 [project]
 name = "crawler"
 version = "0.1.0"
-description = "Source crawlers that write document metadata to Postgres"
+description = "Metadata-only PubMed, arXiv, and YouTube scrapers"
+readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
-    "asyncpg>=0.32.0",
+    "arxiv>=4.0.0",
+    "biopython>=1.88",
     "crawlee>=1.11.0",
+    "google-api-python-client>=2.201.0",
     "pydantic>=2.14.1",
+    "python-dotenv>=1.2.1",
 ]
+
+[project.scripts]
+crawler = "crawler.cli:main"
 
 [build-system]
 requires = ["uv_build>=0.13,<0.14"]
@@ -22,4 +29,15 @@ dev = [
 
 [tool.mypy]
 strict = true
+ignore_missing_imports = true
 plugins = ["pydantic.mypy"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]

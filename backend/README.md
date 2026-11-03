@@ -12,12 +12,12 @@ uv run pytest         # import check for every module
 cp .env.example .env  # only needed to run the services
 ```
 
-`api/`, `workers/` and `shared/` are imported from this folder (`uvicorn api.main:app`). The scrapers are imported as `src.backend...` from `scrapers/`, see [`scrapers/README.md`](scrapers/README.md).
+`api/`, `workers/` and `shared/` are imported from this folder (`uvicorn api.main:app`). Source collection now lives in the independent [`../crawler/`](../crawler/) project.
 
 ## Origin
 
 - Repository: https://github.com/amosproj/amos2026ss03-ailixir-intelligence
-- Commit: `88ea71a`. `scrapers/topics.py` comes from `05b6c2c^`, because SS26 deleted it later.
+- Commit: `88ea71a`.
 - Licence: MIT, Copyright (c) 2021 The AMOS Projects, the same as this repository. See [`../NOTICE`](../NOTICE).
 - Paths mirror the original `Backend/` folder, so `backend/<path>` here is `Backend/<path>` there.
 
@@ -25,7 +25,6 @@ cp .env.example .env  # only needed to run the services
 
 | Folder | Content | Section in what-to-keep.md |
 |---|---|---|
-| `scrapers/` | PubMed, arXiv and YouTube scrapers, base scraper, orchestrator, monthly runner, keyword and channel lists, disease topic map | Source ingestion |
 | `api/chat_pipeline/` | Paper retrieval, AstraDB client, Vertex AI ranking client, availability and circuit breaker, patient-graph retriever, Graphiti client | Literature retrieval and reranking; patient-document processing |
 | `api/` | Document endpoints, authentication, request-ID middleware, error envelope | Patient-document processing |
 | `workers/` | Document event handler, document pipeline, multimodal extraction and prompts, medical ontology, graph builder, Cypher exporter, service connections | Patient-document processing; shared data and service connections |
@@ -33,13 +32,12 @@ cp .env.example .env  # only needed to run the services
 
 ## Changes against the original
 
-Everything is byte-for-byte as in `88ea71a`, except:
+Everything remaining is byte-for-byte as in `88ea71a`, except:
 
-1. `scrapers/src/backend/Scrapers/YouTube/you_tube.py`: the hard-coded API key is removed and read from `YOUTUBE_INNERTUBE_KEY`.
-2. `scrapers/src/backend/__init__.py`: the working-directory search stops at the filesystem root, where it could loop forever, and the package no longer writes a `.env` file on import.
-3. `api/main.py`: the chat and voice routers are not part of the plan, so their two imports and `include_router` calls are removed.
-4. Issue #27: `api/`, `workers/` and `scrapers/requirements.txt` are replaced by one `pyproject.toml` and `uv.lock`. `google-cloud-pubsub==2.27.1` needed protobuf<6 and could not be installed together with `google-cloud-storage==3.10.1`, so it is a lower bound now.
-5. Issue #27: `.env.example` and `scrapers/.env.template` are merged into `.env.example`, which lists every variable the code reads. Variables of code that was not copied (OCR, ElevenLabs, test users, Firebase web key) are removed.
+1. `api/main.py`: the chat and voice routers are not part of the plan, so their two imports and `include_router` calls are removed.
+2. Issue #27 replaced the separate `api/` and `workers/` requirements files with one `pyproject.toml` and `uv.lock`. `google-cloud-pubsub==2.27.1` needed protobuf<6 and could not be installed together with `google-cloud-storage==3.10.1`, so it is a lower bound now.
+3. Issue #27 added `.env.example`, which lists the variables the remaining backend code reads. Variables of code that was not copied (OCR, ElevenLabs, test users, Firebase web key) are omitted.
+4. Issue #27 moved `scrapers/` into the independent [`../crawler/`](../crawler/) uv project and removed the legacy copy and its dependencies from `backend/`.
 
 ## Not copied
 
@@ -49,11 +47,8 @@ The chat endpoint and its pipeline (contextualizer, answerer, titler), voice and
 
 - Installs with `uv sync --locked`, and every module imports without credentials (`uv run pytest`). Running the services needs credentials for Firebase and Firestore, GCS, Pub/Sub, Vertex AI, OpenAI, AstraDB and Neo4j; see `.env.example`. There are no functional tests or CI yet.
 - The adaptation work is listed under "What needs adaptation" in what-to-keep.md. Known issues found while reviewing the code:
-  - `scrapers/.../PubMed/pub_med.py` keeps only the first section of structured abstracts and loses the whole author list when a group author is present.
-  - `scrapers/.../Archive/archive.py` creates a new arXiv client per call, which bypasses the client's 3-second delay between requests.
-  - `scrapers/.../YouTube/you_tube.py` fetches transcripts through YouTube's internal player API, which conflicts with YouTube's terms of service.
   - The documents bucket is read as `GCS_BUCKET_NAME` by `shared/gcs.py` and as `GCS_DOCUMENTS_BUCKET` by `workers/connections/gcs.py`.
   - `shared/firestore.py` and `shared/gcs.py` both read `FIREBASE_KEY_RELATIVE_PATH` but default to different files.
   - `workers/pipeline/graph/builder.py` uses the current time when a document date cannot be parsed.
   - `workers/pipeline/graph/exporter.py` is optional; what-to-keep.md suggests removing it together with its fields.
-- For the SBOM: the Neo4j server is GPL-3.0, and the dependencies of `paperscraper` (PDF download in `pub_med.py`) still need a licence check.
+- For the SBOM: the Neo4j server is GPL-3.0.

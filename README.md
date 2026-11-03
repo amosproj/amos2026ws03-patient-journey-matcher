@@ -11,7 +11,7 @@ The Python crawler and the TypeScript matcher are separate projects with their o
 
 | Folder | Language | Package manager | Content |
 |---|---|---|---|
-| `crawler/` | Python 3.12 | [uv](https://docs.astral.sh/uv/) | Source crawlers |
+| `crawler/` | Python 3.12 | [uv](https://docs.astral.sh/uv/) | PubMed, arXiv and YouTube source crawlers |
 | `matcher/indexer/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Index builder |
 | `matcher/mcp-server/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | MCP server |
 
@@ -23,6 +23,11 @@ The Python crawler and the TypeScript matcher are separate projects with their o
 | [uv](https://docs.astral.sh/uv/getting-started/installation/) | 0.13 or newer |
 | [Node.js](https://nodejs.org/en/download) | 24 LTS |
 | [pnpm](https://pnpm.io/installation) | 12, pinned in `matcher/package.json` |
+| [Make](https://www.gnu.org/software/make/) | any recent |
+
+### Build, test and start
+
+See [`Documentation/build.md`](Documentation/build.md).
 
 ### Python (`crawler/`)
 
@@ -47,6 +52,7 @@ The Python crawler and the TypeScript matcher are separate projects with their o
 
 2. Run the tools: `pnpm typecheck`, `pnpm test`, `pnpm lint`
 3. Add a dependency to one package: `pnpm --filter @matcher/indexer add <package>`. Add shared dev tools to the root with `pnpm add -w -D <package>`.
+4. Start the MCP server: `pnpm --filter @matcher/mcp-server start`. See [`Documentation/mcp-interface.md`](Documentation/mcp-interface.md).
 
 ### GitHub CI
 
