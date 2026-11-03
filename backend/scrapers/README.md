@@ -24,17 +24,17 @@ channels CSV ─┘  (config.json)  (per target)  (arXiv/PubMed/    split   embe
 
 ## Setup
 
-Python 3.11 (matches the Docker image and CI).
+Dependencies are part of the backend project, see [`../README.md`](../README.md#setup).
+Install them and create the environment file from `backend/`:
 
-```powershell
-python -m venv .venv
-.\.venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-Copy-Item .env.template .env
+```sh
+uv sync --locked
+cp .env.example .env
 ```
 
-Fill in the OpenAI and AstraDB values in `.env`. `YOUTUBE_DATA_API_V3` is only
-needed for YouTube scraping.
+Fill in the OpenAI and AstraDB values in `backend/.env`. `YOUTUBE_DATA_API_V3` is only
+needed for YouTube scraping. Run the commands below from `backend/scrapers/` with
+`uv run`, for example `uv run python -m src.backend.Orchestrator.main`.
 
 ## Configure and run
 
