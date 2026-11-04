@@ -111,7 +111,7 @@ Request budgets, shared per key or host by crawler, indexer and MCP server:
 ## 6 Traceability
 
 - `id`, `native_id`, `version`, `canonical_url`, `doi`, `external_ids` identify the source; `found_by`, `retrieved_at` say how and when it came in.
-- IDs are stable across versions (arXiv without `vN`, Zenodo concept ID). Both existing connectors put the arXiv version in the key.
+- IDs are stable across versions (arXiv without `vN`, Zenodo concept ID). The SS26 connector put the arXiv version in the key; the crawler strips it since #23.
 - Duplicates are linked, not merged: grouped at query time by DOI, then PMCID or PMID, then title hash. Zenodo copies match only via `related_identifiers` or title hash.
 - YouTube is never merged with other data; each item is labelled as YouTube.
 

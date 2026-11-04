@@ -21,7 +21,7 @@ Both use the `arxiv` package (4.0.2 current; #27 pins it).
 
 - **SS26** `backend/scrapers/…/Archive`: stores PDF text; new client per call, so the 3 s delay is lost.
 - **#27** `crawler/src/crawler/sources/arxiv.py` (not merged): metadata only, one shared client, concurrency 1.
-- **Both:** `vN` in the row ID, so each version creates a new row; no `updated`, no licence.
+- **Both:** no `updated`, no licence. SS26 keeps `vN` in the row ID; the crawler strips it since #23.
 
 ## Fields
 

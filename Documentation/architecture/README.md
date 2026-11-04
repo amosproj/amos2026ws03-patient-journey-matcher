@@ -39,7 +39,7 @@ Legend: orange = Python module, blue = TypeScript package, darker blue = algorit
 |---|---|---|
 | `scrapers/…/PubMed`, `Archive` (arXiv), `YouTube` (official API part) | `crawler/src/crawler/sources/` | Reused in issue #27. Requests go through Crawlee. PDF downloads, transcript scraping, chunking and embedding were dropped. |
 | `scrapers/…/BaseScraper` (stable IDs, dedup) | `crawler/src/crawler/sources/base.py` | Adapted in issue #27: fetching and parsing are separated from indexing, with a shared typed metadata record. |
-| `scrapers/key_words/*.csv`, `scrapers/topics.py` | `crawler/topics/`, `crawler/src/crawler/topics.py` | Reused as seed queries; conversion to one YAML file per disease area remains future work. |
+| `scrapers/key_words/*.csv`, `scrapers/topics.py` | `crawler/topics/*.yaml`, `crawler/src/crawler/seeds.py` | Reused as seed queries; converted to one YAML file per disease area in issue #23. |
 | `workers/pipeline/graph/medical_schema.py` | `matcher/algorithms/graph` | Port the entity and relation types to TypeScript. |
 | `api/chat_pipeline/paper_retriever.py`, `availability.py`, `astra_client.py`, `reranker_client.py` | `matcher/core`, `download` | Port the result shape, timeouts and the circuit breaker. AstraDB and reranking clients only if we keep those services ([open](#5-open-points)). |
 | `workers/connections/gemini_client.py` | `matcher/llm` | Port the pacing and retry conventions. |
@@ -63,6 +63,7 @@ Basis: **Partner** = project description or AIlixir · **#5** = [crawler evaluat
 | google-api-python-client | 2.201 | YouTube Data API, official API only | Apache-2.0 | #5 |
 | feedparser | 6.0 | Podcast RSS feeds | BSD-2-Clause | Proposal |
 | pydantic | 2.14 | Validating source records | MIT | #13 |
+| PyYAML | 6.0 | Topic files with the seed queries | MIT | Proposal |
 | asyncpg | 0.32 | Writing to `documents` | Apache-2.0 | Proposal |
 | **Storage** | | | | |
 | PostgreSQL | 18 | `documents`, run log, three index schemas | PostgreSQL | #5, Proposal |
