@@ -37,7 +37,7 @@ class YouTubeScraper(BaseScraper):
             raise ValueError("YouTube requires a YouTube request with a channel")
         channel_id = self.resolve_channel_id(request.channel)
         video_ids = self.video_ids(channel_id, request.max_results)
-        return self.video_details(video_ids, request.channel)
+        return self.video_details(video_ids)
 
     def resolve_channel_id(self, reference: str) -> str:
         value = reference.strip().rstrip("/")
@@ -89,7 +89,7 @@ class YouTubeScraper(BaseScraper):
                 break
         return identifiers[:limit]
 
-    def video_details(self, video_ids: list[str], query: str) -> list[SourceDocument]:
+    def video_details(self, video_ids: list[str]) -> list[SourceDocument]:
         documents: list[SourceDocument] = []
         retrieved_at = datetime.now(UTC)
         for offset in range(0, len(video_ids), 50):
@@ -122,7 +122,6 @@ class YouTubeScraper(BaseScraper):
                         or None,
                         view_count=int(view_count) if view_count is not None else None,
                         keywords=keywords,
-                        query_keywords=[query],
                         retrieved_at=retrieved_at,
                         refresh_after=retrieved_at + timedelta(days=30),
                     )

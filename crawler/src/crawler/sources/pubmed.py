@@ -14,6 +14,32 @@ from crawler.models import (
 )
 from crawler.sources.base import BaseScraper
 
+EFETCH_BATCH_SIZE = 200
+"""IDs per efetch call; NCBI asks for batches and Biopython switches to POST for long lists."""
+
+_PMID = re.compile(r"[1-9][0-9]{0,9}")
+
+
+def is_pmid(value: str) -> bool:
+    return _PMID.fullmatch(value) is not None
+
+
+def ncbi_credentials_from_env() -> tuple[str | None, str | None]:
+    email = os.getenv("NCBI_ENTREZ_EMAIL") or os.getenv("NCBI_EMAIL") or ""
+    return email.strip() or None, os.getenv("NCBI_API_KEY") or None
+
+
+def configure_entrez(entrez: Any, email: str | None, api_key: str | None) -> None:
+    """Set the NCBI identification, which Biopython keeps in module-global state.
+
+    The scraper and the link extractor share that state, so both call this before each
+    request. `max_tries=1` leaves retries to Crawlee.
+    """
+    entrez.email = email
+    entrez.tool = "patient-journey-matcher"
+    entrez.api_key = api_key or None
+    entrez.max_tries = 1
+
 
 class PubMedScraper(BaseScraper):
     """PubMed discovery and XML metadata parsing adapted from the legacy scraper."""
@@ -28,22 +54,25 @@ class PubMedScraper(BaseScraper):
         entrez: Any = Entrez,
     ) -> None:
         self._email = email.strip() if email else None
-        self._api_key = api_key
+        self._api_key = api_key or None
         self._entrez = entrez
         self._entrez.max_tries = 1
 
     @classmethod
     def from_env(cls) -> "PubMedScraper":
-        email = os.getenv("NCBI_ENTREZ_EMAIL") or os.getenv("NCBI_EMAIL") or ""
-        return cls(email=email or None, api_key=os.getenv("NCBI_API_KEY"))
+        email, api_key = ncbi_credentials_from_env()
+        return cls(email=email, api_key=api_key)
 
     def scrape(self, request: ScrapeRequest) -> list[SourceDocument]:
-        if request.source is not self.source or not request.query:
-            raise ValueError("PubMed requires a PubMed request with a query")
+        if request.source is not self.source:
+            raise ValueError("PubMed scraper received a request for another source")
+        configure_entrez(self._entrez, self._email, self._api_key)
+        identifiers = request.ids if request.is_lookup else self._search(request)
+        return self._fetch(identifiers)
 
-        self._entrez.email = self._email
-        self._entrez.tool = "patient-journey-matcher"
-        self._entrez.api_key = self._api_key or None
+    def _search(self, request: ScrapeRequest) -> list[str]:
+        if not request.query:
+            raise ValueError("PubMed search requires a query")
         search_arguments: dict[str, Any] = {
             "db": "pubmed",
             "sort": "pub date" if request.since else "relevance",
@@ -60,26 +89,26 @@ class PubMedScraper(BaseScraper):
 
         search_handle = self._entrez.esearch(**search_arguments)
         try:
-            identifiers = [str(value) for value in self._entrez.read(search_handle)["IdList"]]
+            return [str(value) for value in self._entrez.read(search_handle)["IdList"]]
         finally:
             search_handle.close()
-        if not identifiers:
-            return []
 
-        fetch_handle = self._entrez.efetch(db="pubmed", id=",".join(identifiers), retmode="xml")
-        try:
-            response = self._entrez.read(fetch_handle)
-        finally:
-            fetch_handle.close()
-
-        articles = response.get("PubmedArticle", [])
-        query_keywords = [request.query]
-        return [self.parse_article(article, query_keywords) for article in articles]
+    def _fetch(self, identifiers: Sequence[str]) -> list[SourceDocument]:
+        documents: list[SourceDocument] = []
+        for offset in range(0, len(identifiers), EFETCH_BATCH_SIZE):
+            batch = identifiers[offset : offset + EFETCH_BATCH_SIZE]
+            fetch_handle = self._entrez.efetch(db="pubmed", id=",".join(batch), retmode="xml")
+            try:
+                response = self._entrez.read(fetch_handle)
+            finally:
+                fetch_handle.close()
+            documents.extend(
+                self.parse_article(article) for article in response.get("PubmedArticle", [])
+            )
+        return documents
 
     @classmethod
-    def parse_article(
-        cls, article_record: Mapping[str, Any], query_keywords: list[str]
-    ) -> SourceDocument:
+    def parse_article(cls, article_record: Mapping[str, Any]) -> SourceDocument:
         citation = article_record["MedlineCitation"]
         article = citation["Article"]
         source_id = str(citation["PMID"])
@@ -104,7 +133,6 @@ class PubMedScraper(BaseScraper):
             doi=doi,
             journal=journal,
             keywords=keywords,
-            query_keywords=query_keywords,
         )
 
     @staticmethod
