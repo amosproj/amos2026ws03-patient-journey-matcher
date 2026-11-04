@@ -1,4 +1,6 @@
-.PHONY: build test start
+.PHONY: build test start debug
+
+PORT ?= 8765
 
 build:
 	cd crawler && uv sync --locked
@@ -15,3 +17,6 @@ test: build
 
 start: build
 	cd matcher && pnpm --filter @matcher/mcp-server start
+
+debug:
+	cd crawler && uv run --locked python ../debug/crawler/server.py --port $(PORT)

@@ -26,6 +26,9 @@ __pycache__/
 # Crawlee run data (request queues, datasets)
 crawler/storage/
 
+# Runs saved by the crawler debug UI
+debug/crawler/runs/
+
 # Secrets
 .env
 
