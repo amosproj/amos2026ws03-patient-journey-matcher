@@ -1,0 +1,26 @@
+Title	URL	Assignees	Status	Estimated size	Real size	Labels
+Implement Crawlee-based collection framework	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/23		Product Backlog			Sprint 4 Candidate
+Create & obtain synthetic patient test journeys	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/14		Product Backlog			Sprint 4 Candidate
+Design matching evaluation criteria	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/11		Product Backlog			Sprint 4 Candidate
+Implement keyword-based matching baseline	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/8		Product Backlog			Sprint 4 Candidate
+Implement MCP server functionality	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/40		Product Backlog			Sprint 4 Candidate
+Investigate AIlixir UI Interface Integration Feasibility	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/38		Product Backlog			Sprint 4 Candidate
+Display Patient Journey Matcher Feedback in AIlixir UI	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/39		Product Backlog			Sprint 4 Candidate
+Define journey matcher architecture	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/4		Product Backlog			
+Research graph-based matching	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/10		Product Backlog			
+Research AI-based matching and summarization	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/9		Product Backlog			
+Establish automated testing and project documentation	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/12		Product Backlog			
+Investigate additional matching approaches	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/37		Product Backlog			
+Define MCP server inputs and outputs	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/7	munirad7s, ZiadMeligy	In Progress	3		
+Setup Python and TypeScript Package Management	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/24	ermancekic, robin38n	Awaiting Review	2		
+Automated checks with GitHub Actions	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/26	erentasken, ermancekic, robin38n	Awaiting Review	5		
+Review indexing requirements for external resources	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/6	nizi0015, robin38n	Awaiting Review	3		
+PostgreSQL Setup with Docker Compose	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/25	nizi0015	Awaiting Review	2		
+Make the current codebase buildable	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/27	erentasken, munirad7s, ZiadMeligy	Awaiting Review	8		
+Evaluate JValue Crawler integration	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/5	ermancekic, robin38n	Feature Archive	5	5	
+Identify reusable components & clean up legacy codebase	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/13	erentasken, munirad7s, nizi0015, ZiadMeligy	Feature Archive	8	8	
+Create initial Software Architecture Description PDF	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/15	erentasken, ermancekic, munirad7s, nizi0015, robin38n, ZiadMeligy	Feature Archive	5	5	
+Document Software Bill of Materials (SBOM)	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/16	robin38n	Feature Archive	1	2	
+Define patient journey input format	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/1		Feature Archive			
+Review existing structure, dependencies & tests	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/3		Feature Archive			
+Import existing Ailixir codebase	https://github.com/amosproj/amos2026ws03-patient-journey-matcher/issues/2		Feature Archive	2		
