@@ -111,6 +111,7 @@ class YouTubeScraper(BaseScraper):
                         id=source_document_id(self.source, source_id),
                         source=self.source,
                         source_type=SourceType.VIDEO,
+                        content_type="video",
                         source_id=source_id,
                         title=str(snippet.get("title", "")).strip(),
                         url=f"https://www.youtube.com/watch?v={source_id}",

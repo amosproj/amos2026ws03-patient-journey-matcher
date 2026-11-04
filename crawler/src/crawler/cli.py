@@ -23,21 +23,27 @@ def parser() -> argparse.ArgumentParser:
     )
     subcommands = command.add_subparsers(dest="source", required=True)
 
-    for name in (SourceName.PUBMED.value, SourceName.ARXIV.value):
-        paper = subcommands.add_parser(name, help=f"search {name} and follow references")
+    searches = {
+        SourceName.PUBMED: "search PubMed and follow references",
+        SourceName.ARXIV: "search arXiv and follow references",
+        SourceName.ZENODO: "search Zenodo (papers, posters, presentations, videos)",
+    }
+    for source, help_text in searches.items():
+        paper = subcommands.add_parser(source.value, help=help_text)
         seeds = paper.add_mutually_exclusive_group(required=True)
         seeds.add_argument("query", nargs="?", help="one search query")
         _add_topic_argument(seeds)
         paper.add_argument("--max-results", type=int, default=10, help="results per query")
-        paper.add_argument("--since", type=date.fromisoformat, help="only papers since this date")
-        paper.add_argument(
-            "--max-depth",
-            type=int,
-            default=1,
-            help="levels of references to follow; 0 collects the search results only",
-        )
+        paper.add_argument("--since", type=date.fromisoformat, help="only records since this date")
+        if source is not SourceName.ZENODO:
+            paper.add_argument(
+                "--max-depth",
+                type=int,
+                default=1,
+                help="levels of references to follow; 0 collects the search results only",
+            )
         _add_max_requests_argument(paper)
-        if name == SourceName.ARXIV.value:
+        if source is not SourceName.PUBMED:
             paper.add_argument("--query-mode", choices=("and", "or", "raw"), default="and")
 
     youtube = subcommands.add_parser(SourceName.YOUTUBE.value, help="list channel videos")
@@ -97,7 +103,7 @@ def requests_from_args(
                 query_mode=query_mode,
             )
         ]
-        # A raw arXiv query has operators and fields, so it cannot double as a filter term.
+        # A raw query has operators and fields, so it cannot double as a filter term.
         terms = [] if query_mode == "raw" else [arguments.query]
     options = CollectionOptions(
         max_depth=getattr(arguments, "max_depth", 0),

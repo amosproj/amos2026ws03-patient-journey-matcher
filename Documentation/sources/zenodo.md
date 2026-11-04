@@ -16,7 +16,7 @@ CERN's general repository (InvenioRDM). Anything can be uploaded, nothing is rev
 
 ## Connectors
 
-None. The SS26 stable ID pattern (`<source>:<native_id>`) and DOI/title-hash dedup apply.
+`crawler/src/crawler/sources/zenodo.py`: search only, metadata only, the resource types below, 25 results per page, 2 s between searches. The SS26 stable ID pattern (`<source>:<native_id>`) applies.
 
 ## Fields
 

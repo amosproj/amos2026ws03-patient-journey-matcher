@@ -6,12 +6,22 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 PublishedPrecision = Literal["day", "month", "year"]
 RequestKind = Literal["search", "channel", "lookup", "references"]
+ContentType = Literal[
+    "journal_article",
+    "preprint",
+    "conference_paper",
+    "poster",
+    "presentation",
+    "report",
+    "video",
+]
 
 
 class SourceName(StrEnum):
     PUBMED = "pubmed"
     ARXIV = "arxiv"
     YOUTUBE = "youtube"
+    ZENODO = "zenodo"
 
 
 class SourceType(StrEnum):
@@ -61,8 +71,10 @@ class ScrapeRequest(BaseModel):
             return self
         if self.channel:
             raise ValueError("channel is only valid for YouTube")
+        if self.source is SourceName.ZENODO and self.ids:
+            raise ValueError("Zenodo requests take a query only")
         if not self.query and not self.ids:
-            raise ValueError("query or ids is required for PubMed and arXiv")
+            raise ValueError("query or ids is required for PubMed, arXiv and Zenodo")
         if self.query and self.ids:
             raise ValueError("a request takes either a query or ids, not both")
         return self
@@ -78,6 +90,7 @@ class SourceDocument(BaseModel):
     id: str
     source: SourceName
     source_type: SourceType
+    content_type: ContentType | None = None
     source_id: str
     version: str | None = None
     title: str

@@ -1,7 +1,7 @@
 [project]
 name = "crawler"
 version = "0.1.0"
-description = "Metadata-only PubMed, arXiv, and YouTube scrapers"
+description = "Metadata-only PubMed, arXiv, Zenodo, and YouTube scrapers"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

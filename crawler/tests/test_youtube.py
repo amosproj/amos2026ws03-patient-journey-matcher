@@ -91,6 +91,7 @@ def test_scrape_uses_only_official_metadata_endpoints() -> None:
     assert len(documents) == 1
     document = documents[0]
     assert document.id == "youtube:video-1"
+    assert document.content_type == "video"
     assert document.description == "Official channel description"
     assert document.abstract is None
     assert document.channel_id == "UC-example"

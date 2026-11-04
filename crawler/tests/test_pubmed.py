@@ -55,6 +55,7 @@ def test_parse_article_preserves_structured_abstract_and_group_authors() -> None
     document = PubMedScraper.parse_article(record)
 
     assert document.id == "pubmed:4242"
+    assert document.content_type == "journal_article"
     assert document.source is SourceName.PUBMED
     assert document.title == "A useful result"
     assert document.abstract == ("METHODS: How the study was run\nRESULTS: What the study found")

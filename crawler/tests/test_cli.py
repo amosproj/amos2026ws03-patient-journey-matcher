@@ -41,6 +41,21 @@ def test_cli_builds_pubmed_request() -> None:
     assert options.topic_terms == ("prostate cancer",)
 
 
+def test_cli_builds_zenodo_request_without_reference_following() -> None:
+    arguments = parser().parse_args(
+        ["zenodo", "prostate cancer", "--since", "2026-01-01", "--query-mode", "or"]
+    )
+
+    [request], options = requests_from_args(arguments)
+
+    assert request.source is SourceName.ZENODO
+    assert request.query_mode == "or"
+    assert request.since is not None
+    assert options.max_depth == 0
+    with pytest.raises(SystemExit):
+        parser().parse_args(["zenodo", "prostate cancer", "--max-depth", "1"])
+
+
 def test_raw_arxiv_queries_have_no_topic_filter() -> None:
     arguments = parser().parse_args(["arxiv", 'ti:"prostate"', "--query-mode", "raw"])
 

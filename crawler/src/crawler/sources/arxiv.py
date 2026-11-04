@@ -115,6 +115,7 @@ class ArxivScraper(BaseScraper):
             id=source_document_id(cls.source, source_id),
             source=cls.source,
             source_type=SourceType.PAPER,
+            content_type="preprint",
             source_id=source_id,
             version=version,
             title=str(result.title).strip(),

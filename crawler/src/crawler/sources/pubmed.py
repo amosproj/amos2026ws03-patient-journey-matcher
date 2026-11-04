@@ -124,6 +124,7 @@ class PubMedScraper(BaseScraper):
             id=source_document_id(cls.source, source_id),
             source=cls.source,
             source_type=SourceType.PAPER,
+            content_type="journal_article",
             source_id=source_id,
             title=title,
             url=f"https://pubmed.ncbi.nlm.nih.gov/{source_id}/",

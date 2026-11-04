@@ -1,6 +1,6 @@
 # Source crawler
 
-Collects metadata from PubMed, arXiv and YouTube with Crawlee and follows the references
+Collects metadata from PubMed, arXiv, Zenodo and YouTube with Crawlee and follows the references
 of the papers it finds ([architecture](../Deliverables/sprint-02/crawler-evaluation.md)).
 It writes JSON Lines to stdout and stores nothing; writing to the `documents` table is
 #41. Metadata only: no PDFs, full texts or transcripts.
@@ -19,12 +19,15 @@ cp .env.example .env   # fill in the keys you need
 | `SEMANTIC_SCHOLAR_API_KEY` | arXiv references; without it most requests get HTTP 429 |
 | `YOUTUBE_API_KEY` | YouTube; required |
 
+Zenodo needs no key.
+
 ## Run
 
 ```sh
 uv run crawler pubmed "prostate cancer" --max-results 10
 uv run crawler pubmed --topic prostate_cancer
 uv run crawler arxiv --topic prostate_cancer --max-depth 0
+uv run crawler zenodo --topic prostate_cancer
 uv run crawler youtube --topic prostate_cancer
 ```
 
@@ -43,7 +46,7 @@ One YAML file per disease area in `topics/`. The file name is the topic ID.
 id: prostate_cancer
 label: Prostate cancer
 terms: [prostate cancer, prostatic neoplasm]        # topic filter for cited papers
-queries: [prostate cancer, prostate cancer biopsy]  # PubMed and arXiv
+queries: [prostate cancer, prostate cancer biopsy]  # PubMed, arXiv, Zenodo
 channels:                                           # YouTube
   - name: ZERO Prostate Cancer
     url: https://www.youtube.com/channel/UC5TTkqc3lQcej4XnTXz4MqQ
@@ -55,7 +58,7 @@ One Crawlee queue holds three kinds of request:
 
 1. **Seeds:** one search or channel listing per query or channel.
 2. **References** of the collected papers (link extractor): PubMed via NCBI ELink, arXiv
-   via Semantic Scholar. YouTube has none.
+   via Semantic Scholar. YouTube and Zenodo have none.
 3. **Lookups** of the cited papers, in batches.
 
 The rules for what gets fetched are in `src/crawler/frontier.py`. Each paper is fetched
@@ -67,6 +70,9 @@ how it was found: `{topic, query}` or `{cited_by}`.
 Network errors, timeouts, HTTP 429 and HTTP 5xx are retried three times, after 2, 4 and
 8 seconds or the source's `Retry-After`. Other errors are not retried. A failed request
 is listed in the summary and does not discard the other records.
+
+Zenodo returns journal articles, preprints, conference papers, reports, posters, presentations
+and videos; other record types are skipped.
 
 The record fields are defined by `SourceDocument` in `src/crawler/models.py`. YouTube
 records have `refresh_after` (30 days after retrieval) for YouTube's retention rule.

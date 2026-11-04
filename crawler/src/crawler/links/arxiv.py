@@ -7,6 +7,7 @@ from urllib.parse import quote
 
 from pydantic import BaseModel, Field
 
+from crawler.http import Fetch, Pacer, urlopen_bytes
 from crawler.links.base import LinkExtractor
 from crawler.models import SourceName
 from crawler.sources.arxiv import is_arxiv_id, split_version
@@ -16,8 +17,6 @@ REFERENCES_URL = (
     "https://api.semanticscholar.org/graph/v1/paper/ARXIV:{arxiv_id}/references"
     "?fields=externalIds&limit=1000"
 )
-
-Fetch = Callable[[urllib.request.Request, float], bytes]
 
 
 class _CitedPaper(BaseModel):
@@ -30,12 +29,6 @@ class _Reference(BaseModel):
 
 class _ReferencesPage(BaseModel):
     data: list[_Reference] | None = None
-
-
-def _urlopen(request: urllib.request.Request, timeout: float) -> bytes:
-    with urllib.request.urlopen(request, timeout=timeout) as response:
-        body: bytes = response.read()
-    return body
 
 
 class ArxivLinkExtractor(LinkExtractor):
@@ -51,7 +44,7 @@ class ArxivLinkExtractor(LinkExtractor):
         self,
         api_key: str | None = None,
         *,
-        fetch: Fetch = _urlopen,
+        fetch: Fetch = urlopen_bytes,
         sleep: Callable[[float], None] = time.sleep,
         clock: Callable[[], float] = time.monotonic,
         min_interval: float = 1.0,
@@ -59,11 +52,8 @@ class ArxivLinkExtractor(LinkExtractor):
     ) -> None:
         self._api_key = api_key or None
         self._fetch = fetch
-        self._sleep = sleep
-        self._clock = clock
-        self._min_interval = min_interval
+        self._pacer = Pacer(min_interval, sleep=sleep, clock=clock)
         self._timeout = timeout
-        self._last_call: float | None = None
 
     @classmethod
     def from_env(cls) -> "ArxivLinkExtractor":
@@ -93,14 +83,8 @@ class ArxivLinkExtractor(LinkExtractor):
         return list(dict.fromkeys(cited))
 
     def _get(self, url: str) -> bytes:
-        if self._last_call is not None:
-            wait = self._min_interval - (self._clock() - self._last_call)
-            if wait > 0:
-                self._sleep(wait)
         headers = {"User-Agent": USER_AGENT, "Accept": "application/json"}
         if self._api_key:
             headers["x-api-key"] = self._api_key
-        try:
+        with self._pacer:
             return self._fetch(urllib.request.Request(url, headers=headers), self._timeout)
-        finally:
-            self._last_call = self._clock()

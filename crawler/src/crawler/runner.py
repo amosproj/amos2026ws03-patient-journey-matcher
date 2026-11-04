@@ -35,6 +35,7 @@ from crawler.sources.arxiv import ArxivScraper
 from crawler.sources.base import NETWORK_TIMEOUT_SECONDS, BaseScraper
 from crawler.sources.pubmed import EFETCH_BATCH_SIZE, PubMedScraper
 from crawler.sources.youtube import YouTubeScraper
+from crawler.sources.zenodo import ZenodoScraper
 
 __all__ = [
     "CollectionOptions",
@@ -125,6 +126,8 @@ def source_from_env(source: SourceName) -> BaseScraper:
         return PubMedScraper.from_env()
     if source is SourceName.ARXIV:
         return ArxivScraper()
+    if source is SourceName.ZENODO:
+        return ZenodoScraper()
     return YouTubeScraper.from_env()
 
 

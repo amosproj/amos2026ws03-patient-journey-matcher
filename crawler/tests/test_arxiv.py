@@ -56,6 +56,7 @@ def test_parse_result_returns_metadata_without_downloading_a_pdf() -> None:
     assert document.id == "arxiv:2610.12345"
     assert document.source_id == "2610.12345"
     assert document.version == "1"
+    assert document.content_type == "preprint"
     assert document.source is SourceName.ARXIV
     assert document.url == "https://arxiv.org/abs/2610.12345"
     assert document.authors == ["Ada Lovelace"]
