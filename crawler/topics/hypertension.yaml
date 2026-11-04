@@ -1,0 +1,21 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: hypertension
+label: Essential hypertension
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - hypertension
+  - high blood pressure
+
+# PubMed and arXiv search queries.
+queries:
+  - essential hypertension
+  - high blood pressure treatment
+
+# Not used by the crawler. Kept for mapping a patient's diagnosis onto this topic.
+icd_prefixes: [I10]
+aliases:
+  - hypertension
+  - high blood pressure
+  - hypertonie
+  - bluthochdruck

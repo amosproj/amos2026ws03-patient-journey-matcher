@@ -1,0 +1,74 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: bladder_cancer
+label: Bladder cancer
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - bladder cancer
+  - bladder carcinoma
+  - bladder neoplasm
+  - urothelial carcinoma
+  - urothelial cancer
+  - transitional cell carcinoma
+  - MIBC
+  - NMIBC
+  - UTUC
+
+# PubMed and arXiv search queries.
+queries:
+  # Disease
+  - bladder cancer
+  - urothelial carcinoma
+  - transitional cell carcinoma
+  - muscle invasive bladder cancer
+  - MIBC
+  - non muscle invasive bladder cancer
+  - NMIBC
+  - high-grade bladder cancer
+  - metastatic bladder cancer
+  - upper tract urothelial carcinoma
+  - UTUC
+  # Diagnosis and screening
+  - bladder cancer hematuria
+  - bladder cancer cystoscopy
+  - bladder cancer urine cytology
+  - bladder cancer TURBT
+  - bladder cancer CT urography
+  - bladder cancer MRI
+  - bladder cancer molecular biomarkers
+  - bladder cancer urinary biomarkers
+  # Treatment
+  - bladder cancer BCG therapy
+  - bladder cancer intravesical therapy
+  - bladder cancer gemcitabine
+  - bladder cancer mitomycin C
+  - bladder cancer radical cystectomy
+  - bladder cancer partial cystectomy
+  - bladder cancer urinary diversion
+  - bladder cancer ileal conduit
+  - bladder cancer neobladder
+  - bladder cancer continent diversion
+  - bladder cancer chemotherapy
+  - bladder cancer cisplatin
+  - bladder cancer immunotherapy
+  - bladder cancer checkpoint inhibitor
+  - bladder cancer pembrolizumab
+  - bladder cancer nivolumab
+  - bladder cancer avelumab
+  - bladder cancer enfortumab vedotin
+  - bladder cancer erdafitinib
+  - bladder cancer FGFR inhibitor
+  - bladder cancer clinical trial
+
+# YouTube channels.
+channels:
+  - name: Bladder Cancer Advocacy Network (BCAN)
+    url: https://www.youtube.com/channel/UC_V4H4rpxRceEFR2LzfvhQQ
+  - name: American Urological Association (AUA)
+    url: https://www.youtube.com/channel/UCTyj0qXIIaqiU_Sa9P4Ow8w
+  - name: European Association of Urology (EAU)
+    url: https://www.youtube.com/channel/UCuBt1xdv2n7GPawh7lcqDRA
+  - name: Urology Care Foundation
+    url: https://www.youtube.com/channel/UCHCZ1sbVTYhpM1qmKFiOJJQ
+  - name: Cancer Research UK
+    url: https://www.youtube.com/channel/UC01cT8kXmbVH6-mzwaa2qIQ

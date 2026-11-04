@@ -1,0 +1,30 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+# YouTube only: channels about cancer in general, nutrition and lifestyle.
+id: general_cancer
+label: Cancer in general
+
+channels:
+  - name: American Society of Clinical Oncology (ASCO)
+    url: https://www.youtube.com/channel/UCdN18S7Vfm3Rs_BPTs4CFkw
+  - name: National Cancer Institute (NCI)
+    url: https://www.youtube.com/channel/UCRVdFy0DLWhIApG8LWDzV1w
+  - name: MD Anderson Cancer Center
+    url: https://www.youtube.com/channel/UCMla9EyQDlPXUBsWOwmMqZg
+  - name: Mayo Clinic
+    url: https://www.youtube.com/channel/UC8fQzKHIhSoZeSq3bwQx4mw
+  - name: Memorial Sloan Kettering Cancer Center
+    url: https://www.youtube.com/channel/UC7CfDrRVN3yMVq7gq17hZdQ
+  - name: Dana-Farber Cancer Institute
+    url: https://www.youtube.com/channel/UCmo02peDKZvgpJj3TT2Jt_A
+  - name: Cleveland Clinic
+    url: https://www.youtube.com/channel/UCxyiSz4m161Z6frOsFxJpgw
+  - name: Macmillan Cancer Support
+    url: https://www.youtube.com/channel/UCrG_xSjSf5TtFDZGexsS4dQ
+  - name: Cancer Research UK
+    url: https://www.youtube.com/channel/UC01cT8kXmbVH6-mzwaa2qIQ
+  - name: The Oncology Dietitian
+    url: https://www.youtube.com/channel/UCG4NSKCNHZYu54rFzvzZE4Q
+  - name: NutritionFacts.org
+    url: https://www.youtube.com/channel/UCddn8dUxYdgJz3Qr5mjADtA
+  - name: American Institute for Cancer Research (AICR)
+    url: https://www.youtube.com/channel/UCVMd2_87ji2uAsfxyiKjveg

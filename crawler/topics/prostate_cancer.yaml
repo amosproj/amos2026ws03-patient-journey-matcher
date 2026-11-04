@@ -1,0 +1,94 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: prostate_cancer
+label: Prostate cancer
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - prostate cancer
+  - prostate carcinoma
+  - prostate adenocarcinoma
+  - prostatic neoplasm
+  - prostatic carcinoma
+  - prostatic adenocarcinoma
+  - adenocarcinoma of the prostate
+  - mCRPC
+  - nmCRPC
+
+# PubMed and arXiv search queries.
+queries:
+  # Disease
+  - prostate cancer
+  - prostatic neoplasm
+  - prostatic carcinoma
+  - adenocarcinoma of the prostate
+  - localized prostate cancer
+  - advanced prostate cancer
+  - metastatic prostate cancer
+  - castration-sensitive prostate cancer
+  - castration-resistant prostate cancer
+  - mCRPC
+  - nmCRPC
+  - high-risk prostate cancer
+  - low-risk prostate cancer
+  - prostate cancer biochemical recurrence
+  - prostate cancer PSA recurrence
+  # Diagnosis and screening
+  - prostate cancer PSA
+  - prostate specific antigen
+  - prostate cancer PSMA PET
+  - prostate cancer MRI
+  - prostate cancer multiparametric MRI
+  - prostate cancer biopsy
+  - prostate cancer Gleason score
+  - prostate cancer ISUP grade
+  - prostate cancer active surveillance
+  - prostate cancer risk stratification
+  - prostate cancer genomic testing
+  # Treatment
+  - radical prostatectomy
+  - robotic prostatectomy
+  - prostate cancer radiation therapy
+  - prostate cancer brachytherapy
+  - prostate cancer SBRT
+  - prostate cancer androgen deprivation therapy
+  - prostate cancer ADT
+  - prostate cancer hormone therapy
+  - prostate cancer enzalutamide
+  - prostate cancer abiraterone
+  - prostate cancer apalutamide
+  - prostate cancer darolutamide
+  - prostate cancer chemotherapy
+  - prostate cancer docetaxel
+  - prostate cancer cabazitaxel
+  - prostate cancer PARP inhibitor
+  - prostate cancer olaparib
+  - prostate cancer rucaparib
+  - prostate cancer radioligand therapy
+  - prostate cancer Lu177 PSMA
+  - prostate cancer immunotherapy
+  - prostate cancer clinical trial
+
+# YouTube channels.
+channels:
+  - name: Prostate Cancer Research Institute (PCRI)
+    url: https://www.youtube.com/channel/UCPYrfTJMCTfhBNZxb31Z1tg
+  - name: Prostate Cancer Foundation (PCF)
+    url: https://www.youtube.com/channel/UCIDj9VHBN-Ly-NYp9itgMxg
+  - name: ZERO Prostate Cancer
+    url: https://www.youtube.com/channel/UC5TTkqc3lQcej4XnTXz4MqQ
+  - name: The Urology Foundation
+    url: https://www.youtube.com/channel/UCLBZ58KNfk6oVwutySwqzjw
+  - name: European Association of Urology (EAU)
+    url: https://www.youtube.com/channel/UCuBt1xdv2n7GPawh7lcqDRA
+  - name: American Urological Association (AUA)
+    url: https://www.youtube.com/channel/UCTyj0qXIIaqiU_Sa9P4Ow8w
+
+# Not used by the crawler. Kept for mapping a patient's diagnosis onto this topic.
+icd_prefixes: [C61]
+aliases:
+  - prostate cancer
+  - prostate carcinoma
+  - prostate adenocarcinoma
+  - prostatakarzinom
+  - prostata-ca
+  - prostatakrebs
