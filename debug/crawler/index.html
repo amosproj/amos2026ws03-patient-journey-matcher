@@ -180,6 +180,9 @@ td.found { min-width: 190px; }
 .detail .note { background: var(--code); border-radius: 6px; padding: 8px 10px; color: var(--muted); font-size: 12px; margin: 10px 0; }
 .detail pre { background: var(--code); padding: 10px; border-radius: 6px; font-size: 11px; overflow: auto; max-height: 360px; }
 .kw { display: inline-block; font-size: 11px; background: var(--code); border-radius: 4px; padding: 1px 6px; margin: 0 4px 4px 0; }
+.kw.major { font-weight: 700; color: var(--accent); }
+.thumb { display: block; width: 100%; max-width: 320px; border-radius: 6px; margin: 6px 0 4px; }
+.detail dl.extra { grid-template-columns: 110px 1fr; font-size: 12px; color: var(--muted); }
 </style>
 </head>
 <body>
@@ -193,12 +196,13 @@ td.found { min-width: 190px; }
   <aside class="side">
     <form id="form" autocomplete="off">
       <div class="field">
-        <span>Source <i class="info" tabindex="0" data-tip="Which source to search. PubMed and arXiv return papers and follow their reference lists. Zenodo returns articles, preprints, conference papers, reports, posters, presentations and videos, without references. YouTube lists a channel's latest videos (needs YOUTUBE_API_KEY).">i</i></span>
+        <span>Source <i class="info" tabindex="0" data-tip="Which source to search. PubMed and arXiv return papers and follow their reference lists. Zenodo returns articles, preprints, conference papers, reports, posters, presentations and videos, without references. YouTube lists a channel's latest public videos (needs YOUTUBE_API_KEY). Podcasts lists the episodes of curated RSS feeds.">i</i></span>
         <div class="seg" id="source">
           <button type="button" data-value="pubmed" class="active">PubMed</button>
           <button type="button" data-value="arxiv">arXiv</button>
           <button type="button" data-value="zenodo">Zenodo</button>
           <button type="button" data-value="youtube">YouTube</button>
+          <button type="button" data-value="podcast">Podcasts</button>
         </div>
       </div>
       <div class="field" style="margin-top:12px">
@@ -209,7 +213,8 @@ td.found { min-width: 190px; }
         </div>
       </div>
       <div class="field" id="query-field" style="margin-top:8px">
-        <input type="text" id="query" value="prostate cancer" placeholder="Search query">
+        <input type="text" id="query" value="prostate cancer" placeholder="Search query" list="feed-keys">
+        <datalist id="feed-keys"></datalist>
       </div>
       <div class="field" id="topic-field" style="margin-top:8px; display:none">
         <div class="topics" id="topics"></div>
@@ -218,7 +223,7 @@ td.found { min-width: 190px; }
         <label class="field"><span>Max results <i class="info" tabindex="0" data-tip="Results per search, or videos per channel. Only applies to the seeds: every paper in their reference lists is fetched.">i</i></span><input type="number" id="max_results" value="3" min="1"></label>
         <label class="field" data-sources="pubmed arxiv"><span>Max depth <i class="info" tabindex="0" data-tip="How many levels of reference lists to follow. 0 = search results only, 1 = plus the papers in their reference lists, 2 = plus those papers' reference lists. Each level multiplies the requests.">i</i></span><input type="number" id="max_depth" value="1" min="0"></label>
         <label class="field"><span>Max requests <i class="info" tabindex="0" data-tip="Safety cap for testing: the run stops after this many Crawlee requests. A search, a reference request and a lookup batch count as one each. Empty = no limit.">i</i></span><input type="number" id="max_requests" min="1" placeholder="no limit"></label>
-        <label class="field" data-sources="pubmed arxiv zenodo"><span>Since <i class="info" tabindex="0" data-tip="Only papers published on or after this date. Applies to the search only, not to cited papers.">i</i></span><input type="date" id="since"></label>
+        <label class="field" data-sources="pubmed arxiv zenodo youtube podcast"><span>Since <i class="info" tabindex="0" data-tip="Only records added to the source on or after this date: PubMed entry date, arXiv first submission, Zenodo last change, YouTube upload, podcast episode date. Applies to the seeds, not to cited papers.">i</i></span><input type="date" id="since"></label>
         <label class="field" data-sources="arxiv zenodo" style="display:none"><span>Query mode <i class="info" tabindex="0" data-tip="and = every word must match, or = any word is enough, raw = the query goes to the source as is, e.g. ti:&quot;prostate&quot; AND cat:q-bio for arXiv or metadata.title:prostate for Zenodo (Zenodo still keeps only the useful record types). Raw queries have no topic filter.">i</i></span>
           <select id="query_mode"><option>and</option><option>or</option><option>raw</option></select>
         </label>
@@ -265,7 +270,7 @@ td.found { min-width: 190px; }
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Origin</th><th>ID</th><th>Type</th><th>Title</th><th>Published</th><th>Found by</th></tr></thead>
+            <thead><tr><th>Origin</th><th>ID</th><th>Type</th><th>Title</th><th>Published</th><th>Licence</th><th>Found by</th></tr></thead>
             <tbody id="docs"></tbody>
           </table>
         </div>
@@ -618,6 +623,25 @@ function renderBadges() {
 }
 
 const typeLabel = (contentType) => contentType ? contentType.replace("_", " ") : "";
+const fmtDuration = (seconds) => `${Math.floor(seconds / 3600) ? `${Math.floor(seconds / 3600)} h ` : ""}${Math.floor((seconds % 3600) / 60)} min ${seconds % 60} s`;
+const fmtBytes = (bytes) => bytes >= 1048576 ? `${(bytes / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`;
+
+function authorList(authors) {
+  const shown = authors.slice(0, 8).map((author, index) => [
+    index ? ", " : "",
+    author.name,
+    author.orcid ? h("a", { href: `https://orcid.org/${author.orcid}`, target: "_blank", rel: "noopener", title: author.affiliation || "ORCID" }, " ⓘ") : null,
+  ]);
+  return h("span", {}, ...shown.flat(), authors.length > 8 ? ` … (+${authors.length - 8})` : "");
+}
+
+function externalLink(key, value) {
+  const links = {
+    pmcid: `https://pmc.ncbi.nlm.nih.gov/articles/${value}/`,
+    concept_doi: `https://doi.org/${value}`,
+  };
+  return links[key] ? h("a", { href: links[key], target: "_blank", rel: "noopener" }, value) : value;
+}
 
 function foundBySummary(doc) {
   const queries = doc.found_by.filter((entry) => "query" in entry).map((entry) => entry.topic ? `${entry.query} [${entry.topic}]` : entry.query);
@@ -628,7 +652,7 @@ function foundBySummary(doc) {
 function docRows() {
   if (state.result) {
     const rows = state.result.documents.map((doc) => ({
-      id: doc.id, title: doc.title, published: doc.published_on || "", type: typeLabel(doc.content_type),
+      id: doc.id, title: doc.title, published: doc.published_on || "", type: typeLabel(doc.content_type), licence: doc.licence || "",
       origin: doc.found_by.some((entry) => "query" in entry) ? "seed" : "cited",
       foundBy: foundBySummary(doc),
     }));
@@ -650,7 +674,7 @@ function renderDocs() {
   const rows = docRows().filter((row) => (!origin || row.origin === origin) && (!needle || row.id.toLowerCase().includes(needle) || (row.title || "").toLowerCase().includes(needle)));
   const body = $("#docs");
   if (!rows.length) {
-    body.replaceChildren(h("tr", {}, h("td", { colspan: 6, class: "small" }, state.view ? "No documents" : "No run selected yet")));
+    body.replaceChildren(h("tr", {}, h("td", { colspan: 7, class: "small" }, state.view ? "No documents" : "No run selected yet")));
   } else {
     const fragment = document.createDocumentFragment();
     for (const row of rows.slice(0, ROW_LIMIT)) {
@@ -660,6 +684,7 @@ function renderDocs() {
         h("td", { class: "small" }, row.type || "–"),
         h("td", {}, row.title || "–"),
         h("td", { class: "small" }, row.published),
+        h("td", { class: "small" }, row.licence || "–"),
         h("td", { class: "small found" }, row.foundBy),
       ));
     }
@@ -714,12 +739,20 @@ function selectDoc(id) {
   if (url) rows.push(["Link", h("a", { href: url, target: "_blank", rel: "noopener" }, "Open source ↗")]);
   if (doc) {
     if (doc.content_type) rows.push(["Type", typeLabel(doc.content_type)]);
+    if (doc.publication_types?.length) rows.push(["Publication types", doc.publication_types.join(", ")]);
     if (doc.published_at) rows.push(["Published", `${doc.published_on} (${doc.published_precision})`]);
-    if (doc.authors?.length) rows.push(["Authors", doc.authors.slice(0, 8).join(", ") + (doc.authors.length > 8 ? ` … (+${doc.authors.length - 8})` : "")]);
-    if (doc.journal) rows.push(["Journal", doc.journal]);
+    if (doc.source_updated_at) rows.push(["Updated at source", doc.source_updated_at.slice(0, 10)]);
+    if (doc.authors?.length) rows.push(["Authors", authorList(doc.authors)]);
+    if (doc.journal) rows.push([doc.source === "podcast" ? "Show" : "Journal", doc.journal]);
+    if (doc.language) rows.push(["Language", doc.language]);
+    if (doc.duration_seconds != null) rows.push(["Duration", fmtDuration(doc.duration_seconds)]);
+    rows.push(["Licence", doc.licence || "unknown"]);
     if (doc.version) rows.push(["Version", doc.version]);
-    if (doc.doi) rows.push(["DOI", doc.doi]);
+    if (doc.doi) rows.push(["DOI", h("a", { href: `https://doi.org/${doc.doi}`, target: "_blank", rel: "noopener" }, doc.doi)]);
     if (doc.channel_id) rows.push(["Channel", doc.channel_id]);
+    const ids = Object.entries(doc.external_ids || {});
+    if (ids.length) rows.push(["External IDs", h("div", { class: "links" }, ...ids.map(([key, value]) => h("span", {}, `${key}: `, externalLink(key, value))))]);
+    if (doc.full_text?.length) rows.push([`Full text (${doc.full_text.length})`, h("div", { class: "links" }, ...doc.full_text.map((locator) => h("a", { href: locator.url, target: "_blank", rel: "noopener" }, [locator.kind, locator.media_type, locator.size ? fmtBytes(locator.size) : null, locator.language].filter(Boolean).join(" · "))))]);
     const queries = doc.found_by.filter((entry) => "query" in entry);
     if (queries.length) rows.push(["Found by", h("div", { class: "links" }, ...queries.map((entry) => h("span", {}, `Search “${entry.query}”${entry.topic ? ` (topic ${entry.topic})` : ""}`)))]);
   }
@@ -730,12 +763,15 @@ function selectDoc(id) {
   parts.push(h("dl", {}, ...rows.flatMap(([label, value]) => [h("dt", {}, label), h("dd", {}, value)])));
   if (kind === "dropped") {
     const terms = state.options?.topic_terms || [];
-    parts.push(h("div", { class: "note" }, "Fetched as a cited paper but dropped: none of the topic terms is in its title, abstract or keywords.", terms.length ? h("br") : null, terms.length ? `Terms: ${terms.join(", ")}` : null));
+    parts.push(h("div", { class: "note" }, "Fetched as a cited paper but dropped: none of the topic terms is in its title, abstract or subjects.", terms.length ? h("br") : null, terms.length ? `Terms: ${terms.join(", ")}` : null));
   }
   if (doc) {
     const text = doc.abstract || doc.description;
     if (text) parts.push(h("dt", { style: "color:var(--muted);font-size:12px;margin-top:6px" }, doc.abstract ? "Abstract" : "Description"), h("p", { class: "abstract" }, text.length > 1500 ? `${text.slice(0, 1500)} …` : text));
-    if (doc.keywords?.length) parts.push(h("div", {}, ...doc.keywords.slice(0, 30).map((keyword) => h("span", { class: "kw" }, keyword))));
+    if (doc.extra?.thumbnail) parts.splice(3, 0, h("img", { class: "thumb", src: doc.extra.thumbnail, alt: "", loading: "lazy" }));
+    const extra = Object.entries(doc.extra || {}).filter(([key]) => key !== "thumbnail");
+    if (extra.length) parts.push(h("dl", { class: "extra" }, ...extra.flatMap(([key, value]) => [h("dt", {}, key.replaceAll("_", " ")), h("dd", {}, typeof value === "object" ? JSON.stringify(value) : String(value))])));
+    if (doc.subjects?.length) parts.push(h("div", {}, ...doc.subjects.slice(0, 40).map((subject) => h("span", { class: `kw${subject.major ? " major" : ""}`, title: [subject.scheme, subject.id].filter(Boolean).join(" ") }, subject.label))));
     parts.push(h("details", {}, h("summary", {}, "Raw data (JSON)"), h("pre", {}, JSON.stringify(doc, null, 2))));
   } else if (!state.result) {
     parts.push(h("div", { class: "note" }, "All fields appear when the run is done."));
@@ -943,7 +979,7 @@ function updateCommand() {
   const add = (flag, value) => { if (value != null && value !== "") argv.push(flag, String(value)); };
   add("--max-results", body.max_results);
   if (["pubmed", "arxiv"].includes(body.source)) add("--max-depth", body.max_depth);
-  if (body.source !== "youtube") add("--since", body.since);
+  add("--since", body.since);
   if (["arxiv", "zenodo"].includes(body.source)) add("--query-mode", body.query_mode);
   add("--max-requests", body.max_requests);
   if (body.mode === "topic") for (const topic of body.topics) argv.push("--topic", topic);
@@ -959,9 +995,11 @@ function updateForm() {
   $("#query-field").style.display = state.mode === "query" ? "" : "none";
   $("#topic-field").style.display = state.mode === "topic" ? "" : "none";
   const query = $("#query");
-  query.placeholder = youtube ? "Channel: @handle, channel ID or URL" : "Search query";
-  if (youtube && query.value === "prostate cancer") query.value = "@NationalCancerInstitute";
-  if (!youtube && query.value === "@NationalCancerInstitute") query.value = "prostate cancer";
+  const defaults = { youtube: "UCRVdFy0DLWhIApG8LWDzV1w", podcast: "jco" };
+  const placeholders = { youtube: "Channel: @handle, channel ID or URL", podcast: "Feed key, e.g. jco" };
+  query.placeholder = placeholders[state.source] || "Search query";
+  if (["prostate cancer", ...Object.values(defaults)].includes(query.value)) query.value = defaults[state.source] || "prostate cancer";
+  $("#feed-keys").replaceChildren(...(state.source === "podcast" ? state.meta?.feeds || [] : []).map((feed) => h("option", { value: feed.key }, `${feed.name} (${feed.audience})`)));
   renderTopics();
   updateCommand();
 }
@@ -970,11 +1008,12 @@ function renderTopics() {
   const box = $("#topics");
   const checked = new Set([...box.querySelectorAll("input:checked")].map((input) => input.value));
   const topics = state.meta?.topics || [];
-  const youtube = state.source === "youtube";
+  const units = { youtube: ["channels", "channel", "channels"], podcast: ["podcasts", "feed", "feeds"] };
+  const [field, one, many] = units[state.source] || ["queries", "query", "queries"];
   box.replaceChildren(...topics.map((topic) => {
-    const count = youtube ? topic.channels : topic.queries;
+    const count = topic[field] || 0;
     const usable = !topic.error && count > 0;
-    const unit = youtube ? (count === 1 ? "channel" : "channels") : (count === 1 ? "query" : "queries");
+    const unit = count === 1 ? one : many;
     return h("label", { class: usable ? null : "disabled", title: topic.error || (topic.terms?.length ? `Filter terms: ${topic.terms.join(", ")}` : "") },
       h("input", { type: "checkbox", value: topic.id, disabled: !usable, checked: usable && checked.has(topic.id), onchange: updateCommand }),
       h("span", {}, topic.label),

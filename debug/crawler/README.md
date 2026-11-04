@@ -9,7 +9,7 @@ make debug PORT=9000   # on another port
 
 Without Make: `cd crawler && uv run python ../debug/crawler/server.py`.
 
-- Start and stop runs for PubMed, arXiv, Zenodo and YouTube, with one query or topic files.
+- Start and stop runs for PubMed, arXiv, Zenodo, YouTube and podcasts, with one query or topic files.
 - Watch every source call live: searches, reference lookups, retries and backoff.
 - Inspect the documents, the citation graph, the failures and each record's JSON.
 - Finished runs are kept in `debug/crawler/runs/` (gitignored) and can be reopened or downloaded as JSONL.

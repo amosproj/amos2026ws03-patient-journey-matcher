@@ -121,8 +121,8 @@ class TracedScraper:
     def scrape(self, request: Any) -> Any:
         if request.is_lookup:
             kind, detail = "lookup", f"{len(request.ids)} IDs"
-        elif request.channel:
-            kind, detail = "channel", request.channel
+        elif request.channel or request.feed:
+            kind, detail = "channel", request.seed_label
         else:
             kind, detail = "search", request.query
         base = {"kind": kind, "source": request.source.value, "detail": detail}
@@ -326,7 +326,7 @@ def delete_run(run_id: str) -> bool:
 
 def build_argv(body: dict[str, Any]) -> list[str]:
     source = body.get("source")
-    if source not in ("pubmed", "arxiv", "zenodo", "youtube"):
+    if source not in ("pubmed", "arxiv", "zenodo", "youtube", "podcast"):
         raise ValueError("Unknown source")
     argv = [source]
 
@@ -337,8 +337,7 @@ def build_argv(body: dict[str, Any]) -> list[str]:
     add("--max-results", body.get("max_results"))
     if source in ("pubmed", "arxiv"):
         add("--max-depth", body.get("max_depth"))
-    if source != "youtube":
-        add("--since", body.get("since"))
+    add("--since", body.get("since"))
     if source in ("arxiv", "zenodo"):
         add("--query-mode", body.get("query_mode"))
     add("--max-requests", body.get("max_requests"))
@@ -373,6 +372,7 @@ def parse_run(argv: list[str]) -> tuple[list[Any], Any]:
 
 def meta() -> dict[str, Any]:
     topics = []
+    feeds: dict[str, dict[str, str]] = {}
     for path in sorted(TOPICS_DIR.glob("*.yaml")):
         try:
             topic = load_topic(path)
@@ -385,15 +385,21 @@ def meta() -> dict[str, Any]:
                 "label": topic.label,
                 "queries": len(topic.queries),
                 "channels": len(topic.channels),
+                "podcasts": len(topic.podcasts),
                 "terms": topic.terms,
             }
         )
+        for feed in topic.podcasts:
+            feeds.setdefault(
+                feed.key, {"key": feed.key, "name": feed.name, "audience": feed.audience}
+            )
     env = refresh_env() if CURRENT is None else {k: bool(os.environ.get(k)) for k in ENV_KEYS}
     return {
         "env": env,
         "env_file": str(ENV_FILE),
         "env_file_exists": ENV_FILE.exists(),
         "topics": topics,
+        "feeds": list(feeds.values()),
         "running": CURRENT.id if CURRENT is not None else None,
     }
 
