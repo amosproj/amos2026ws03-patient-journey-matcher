@@ -1,5 +1,5 @@
 # Seeds for one disease area. Schema: crawler/README.md#topic-files
-# YouTube only: channels about cancer in general, nutrition and lifestyle.
+# Cancer in general: YouTube channels (incl. nutrition and lifestyle) and oncology podcasts.
 id: general_cancer
 label: Cancer in general
 
@@ -28,3 +28,34 @@ channels:
     url: https://www.youtube.com/channel/UCddn8dUxYdgJz3Qr5mjADtA
   - name: American Institute for Cancer Research (AICR)
     url: https://www.youtube.com/channel/UCVMd2_87ji2uAsfxyiKjveg
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: jco
+    name: Journal of Clinical Oncology (JCO) Podcast
+    url: https://jcopodcast.libsyn.com/rss
+    publisher: American Society of Clinical Oncology (ASCO)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of ASCO's peer-reviewed Journal of Clinical Oncology.
+  - key: cancer_net
+    name: Cancer.Net Podcast
+    url: https://cancernet.libsyn.com/rss
+    publisher: American Society of Clinical Oncology (ASCO)
+    audience: patients
+    language: en
+    trusted_because: ASCO's podcast for people with cancer; no new episodes since March 2024.
+  - key: asco_daily_news
+    name: ASCO Daily News
+    url: https://ascodailynews.libsyn.com/rss
+    publisher: American Society of Clinical Oncology (ASCO)
+    audience: clinicians
+    language: en
+    trusted_because: ASCO's news podcast on oncology research and meetings.
+  - key: lancet_oncology
+    name: The Lancet Oncology in conversation with
+    url: https://feed.podbean.com/lancetonc/feed.xml
+    publisher: The Lancet Group
+    audience: clinicians
+    language: en
+    trusted_because: Interviews from the peer-reviewed journal The Lancet Oncology.

@@ -175,4 +175,34 @@ def test_main_exits_with_2_for_a_broken_topic_file(
         main(["pubmed", "--topic", str(broken)])
 
     assert exit_info.value.code == 2
-    assert "at least one query or channel" in capsys.readouterr().err
+    assert "at least one query, channel or podcast" in capsys.readouterr().err
+
+
+def test_podcast_runs_take_a_curated_feed_key() -> None:
+    [request], options = requests_from_args(
+        parser().parse_args(["podcast", "jco", "--max-results", "5", "--since", "2026-10-01"])
+    )
+
+    assert request.source is SourceName.PODCAST
+    assert request.feed is not None
+    assert request.feed.url == "https://jcopodcast.libsyn.com/rss"
+    assert request.max_results == 5
+    assert options.max_depth == 0
+
+
+def test_unknown_podcast_feeds_are_a_configuration_error(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    with pytest.raises(SystemExit) as exit_info:
+        main(["podcast", "no_such_feed"])
+
+    assert exit_info.value.code == 2
+    assert "unknown podcast feed" in capsys.readouterr().err
+
+
+def test_youtube_runs_accept_since() -> None:
+    [request], _options = requests_from_args(
+        parser().parse_args(["youtube", "@NationalCancerInstitute", "--since", "2026-10-01"])
+    )
+
+    assert request.since is not None

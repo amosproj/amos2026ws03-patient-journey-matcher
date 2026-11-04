@@ -13,7 +13,7 @@ from pathlib import Path
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
 
-from crawler.models import ScrapeRequest, SourceName
+from crawler.models import PodcastFeed, ScrapeRequest, SourceName
 
 TOPICS_DIR = Path(__file__).resolve().parents[2] / "topics"
 
@@ -32,7 +32,7 @@ class Channel(BaseModel):
 
 
 class Topic(BaseModel):
-    """One disease area: search queries, YouTube channels and the terms of the topic filter."""
+    """One disease area: search queries, YouTube channels, podcast feeds, filter terms."""
 
     model_config = ConfigDict(extra="forbid", frozen=True)
 
@@ -41,6 +41,7 @@ class Topic(BaseModel):
     terms: list[str] = Field(default_factory=list)
     queries: list[str] = Field(default_factory=list)
     channels: list[Channel] = Field(default_factory=list)
+    podcasts: list[PodcastFeed] = Field(default_factory=list)
     icd_prefixes: list[str] = Field(default_factory=list)
     aliases: list[str] = Field(default_factory=list)
 
@@ -48,8 +49,8 @@ class Topic(BaseModel):
     def validate_seeds(self) -> "Topic":
         if not _SLUG.fullmatch(self.id):
             raise ValueError(f"id must be lower case words joined by '_': {self.id!r}")
-        if not self.queries and not self.channels:
-            raise ValueError("a topic needs at least one query or channel")
+        if not self.queries and not self.channels and not self.podcasts:
+            raise ValueError("a topic needs at least one query, channel or podcast")
         if self.queries and not self.terms:
             raise ValueError("a topic with queries needs terms for the topic filter")
         for field in ("terms", "queries", "aliases", "icd_prefixes"):
@@ -61,6 +62,9 @@ class Topic(BaseModel):
         urls = [channel.url for channel in self.channels]
         if len(set(urls)) != len(urls):
             raise ValueError("channels must not contain duplicate URLs")
+        keys = [feed.key for feed in self.podcasts]
+        if len(set(keys)) != len(keys):
+            raise ValueError("podcasts must not contain duplicate keys")
         return self
 
 
@@ -97,17 +101,20 @@ def seed_requests(
     since: date | None = None,
     query_mode: str = "and",
 ) -> list[ScrapeRequest]:
-    """Turn the queries (PubMed, arXiv) or channels (YouTube) of the topics into requests.
+    """Turn the queries, channels (YouTube) or feeds (podcasts) of the topics into requests.
 
-    A query or channel that several topics share becomes one request for all of them.
+    A query, channel or feed that several topics share becomes one request for all of them.
     """
     seeds: dict[str, list[str]] = {}
+    feeds: dict[str, PodcastFeed] = {}
     for topic in topics:
-        values = (
-            [channel.url for channel in topic.channels]
-            if source is SourceName.YOUTUBE
-            else topic.queries
-        )
+        if source is SourceName.YOUTUBE:
+            values = [channel.url for channel in topic.channels]
+        elif source is SourceName.PODCAST:
+            feeds.update((feed.key, feed) for feed in topic.podcasts)
+            values = [feed.key for feed in topic.podcasts]
+        else:
+            values = topic.queries
         for value in values:
             topic_ids = seeds.setdefault(value, [])
             if topic.id not in topic_ids:
@@ -117,8 +124,21 @@ def seed_requests(
         raise TopicFileError(f"no {source.value} seeds in topic(s): {names}")
     if source is SourceName.YOUTUBE:
         return [
-            ScrapeRequest(source=source, channel=url, topics=topic_ids, max_results=max_results)
+            ScrapeRequest(
+                source=source, channel=url, topics=topic_ids, max_results=max_results, since=since
+            )
             for url, topic_ids in seeds.items()
+        ]
+    if source is SourceName.PODCAST:
+        return [
+            ScrapeRequest(
+                source=source,
+                feed=feeds[key],
+                topics=topic_ids,
+                max_results=max_results,
+                since=since,
+            )
+            for key, topic_ids in seeds.items()
         ]
     return [
         ScrapeRequest(
@@ -131,6 +151,20 @@ def seed_requests(
         )
         for query, topic_ids in seeds.items()
     ]
+
+
+def bundled_topics() -> list[Topic]:
+    return [load_topic(path) for path in sorted(TOPICS_DIR.glob("*.yaml"))]
+
+
+def find_podcast(key: str) -> tuple[PodcastFeed, list[str]]:
+    """A curated feed by key, with the IDs of the bundled topics that list it."""
+    matches = [
+        (feed, topic.id) for topic in bundled_topics() for feed in topic.podcasts if feed.key == key
+    ]
+    if not matches:
+        raise TopicFileError(f"unknown podcast feed {key!r}; add it to a topic file first")
+    return matches[0][0], [topic_id for _feed, topic_id in matches]
 
 
 def topic_terms(topics: Iterable[Topic]) -> list[str]:

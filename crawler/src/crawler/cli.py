@@ -10,7 +10,9 @@ from pydantic import ValidationError
 
 from crawler.models import CollectionResult, ScrapeRequest, SourceName
 from crawler.runner import CollectionOptions, CollectionSetupError, run_requests
-from crawler.seeds import TopicFileError, load_topic, seed_requests, topic_terms
+from crawler.seeds import TopicFileError, find_podcast, load_topic, seed_requests, topic_terms
+
+SINCE_HELP = "only records added to the source since this date (YYYY-MM-DD)"
 
 
 def parser() -> argparse.ArgumentParser:
@@ -34,7 +36,7 @@ def parser() -> argparse.ArgumentParser:
         seeds.add_argument("query", nargs="?", help="one search query")
         _add_topic_argument(seeds)
         paper.add_argument("--max-results", type=int, default=10, help="results per query")
-        paper.add_argument("--since", type=date.fromisoformat, help="only records since this date")
+        paper.add_argument("--since", type=date.fromisoformat, help=SINCE_HELP)
         if source is not SourceName.ZENODO:
             paper.add_argument(
                 "--max-depth",
@@ -51,7 +53,16 @@ def parser() -> argparse.ArgumentParser:
     seeds.add_argument("channel", nargs="?", help="channel ID, URL, @handle, or legacy username")
     _add_topic_argument(seeds)
     youtube.add_argument("--max-results", type=int, default=10, help="videos per channel")
+    youtube.add_argument("--since", type=date.fromisoformat, help=SINCE_HELP)
     _add_max_requests_argument(youtube)
+
+    podcast = subcommands.add_parser(SourceName.PODCAST.value, help="list podcast episodes")
+    seeds = podcast.add_mutually_exclusive_group(required=True)
+    seeds.add_argument("feed", nargs="?", help="feed key from a topic file, e.g. jco")
+    _add_topic_argument(seeds)
+    podcast.add_argument("--max-results", type=int, default=10, help="episodes per feed")
+    podcast.add_argument("--since", type=date.fromisoformat, help=SINCE_HELP)
+    _add_max_requests_argument(podcast)
     return command
 
 
@@ -89,8 +100,17 @@ def requests_from_args(
     elif source is SourceName.YOUTUBE:
         seeds = [
             ScrapeRequest(
-                source=source, channel=arguments.channel, max_results=arguments.max_results
+                source=source,
+                channel=arguments.channel,
+                max_results=arguments.max_results,
+                since=since,
             )
+        ]
+        terms = []
+    elif source is SourceName.PODCAST:
+        feed, _topic_ids = find_podcast(arguments.feed)
+        seeds = [
+            ScrapeRequest(source=source, feed=feed, max_results=arguments.max_results, since=since)
         ]
         terms = []
     else:

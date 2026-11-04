@@ -33,6 +33,7 @@ from crawler.models import (
 from crawler.sources.arxiv import LOOKUP_BATCH_SIZE as ARXIV_LOOKUP_BATCH_SIZE
 from crawler.sources.arxiv import ArxivScraper
 from crawler.sources.base import NETWORK_TIMEOUT_SECONDS, BaseScraper
+from crawler.sources.podcast import PodcastScraper
 from crawler.sources.pubmed import EFETCH_BATCH_SIZE, PubMedScraper
 from crawler.sources.youtube import YouTubeScraper
 from crawler.sources.zenodo import ZenodoScraper
@@ -128,6 +129,8 @@ def source_from_env(source: SourceName) -> BaseScraper:
         return ArxivScraper()
     if source is SourceName.ZENODO:
         return ZenodoScraper()
+    if source is SourceName.PODCAST:
+        return PodcastScraper()
     return YouTubeScraper.from_env()
 
 
@@ -147,7 +150,7 @@ def _create[T](factory: Callable[[SourceName], T], source: SourceName) -> T:
 
 
 def _seed_kind(request: ScrapeRequest) -> RequestKind:
-    if request.source is SourceName.YOUTUBE:
+    if request.source in {SourceName.YOUTUBE, SourceName.PODCAST}:
         return "channel"
     return "lookup" if request.is_lookup else "search"
 
@@ -171,7 +174,7 @@ def _describe(task: CrawlTask) -> str:
         return _summarize_ids(task.ids)
     if task.request.is_lookup:
         return _summarize_ids(task.request.ids)
-    return task.request.query or task.request.channel or ""
+    return task.request.seed_label
 
 
 def _describe_error(error: BaseException) -> str:

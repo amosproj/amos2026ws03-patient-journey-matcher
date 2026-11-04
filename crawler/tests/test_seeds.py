@@ -7,6 +7,8 @@ from crawler.models import SourceName
 from crawler.seeds import (
     TOPICS_DIR,
     TopicFileError,
+    bundled_topics,
+    find_podcast,
     load_topic,
     seed_requests,
     topic_path,
@@ -46,7 +48,7 @@ def test_load_topic_reads_a_topic_file(tmp_path: Path) -> None:
     ("name", "content", "message"),
     [
         ("other_name", DEMO_TOPIC, "does not match the file name"),
-        ("demo_topic", "id: demo_topic\nlabel: Demo\n", "at least one query or channel"),
+        ("demo_topic", "id: demo_topic\nlabel: Demo\n", "at least one query, channel or podcast"),
         ("demo_topic", "id: demo_topic\nlabel: Demo\nqueries: [a]\n", "needs terms"),
         ("demo_topic", DEMO_TOPIC + "keywords: [a]\n", "Extra inputs are not permitted"),
         ("demo_topic", "id: demo_topic\nlabel: Demo\nterms: [a]\nqueries: [a, ' ']\n", "blank"),
@@ -126,3 +128,52 @@ def test_seed_requests_use_channels_for_youtube(tmp_path: Path) -> None:
 def test_seed_requests_fail_when_a_topic_has_no_seeds_for_the_source() -> None:
     with pytest.raises(TopicFileError, match="no pubmed seeds"):
         seed_requests([load_topic("general_cancer")], SourceName.PUBMED)
+
+
+PODCAST_TOPIC = """
+id: podcast_topic
+label: Podcasts
+podcasts:
+  - key: jco
+    name: JCO Podcast
+    url: https://jcopodcast.libsyn.com/rss
+    publisher: ASCO
+    audience: clinicians
+"""
+
+
+def test_seed_requests_use_feeds_for_podcasts(tmp_path: Path) -> None:
+    first = load_topic(write_topic(tmp_path, "podcast_topic", PODCAST_TOPIC))
+    second = load_topic(
+        write_topic(tmp_path, "other_topic", PODCAST_TOPIC.replace("podcast_topic", "other_topic"))
+    )
+
+    [request] = seed_requests([first, second], SourceName.PODCAST, since=date(2026, 1, 1))
+
+    assert request.feed is not None
+    assert request.feed.key == "jco"
+    assert request.topics == ["podcast_topic", "other_topic"]
+    assert request.since == date(2026, 1, 1)
+
+
+def test_podcast_keys_must_be_unique_and_valid(tmp_path: Path) -> None:
+    duplicate = PODCAST_TOPIC + PODCAST_TOPIC.split("podcasts:\n", 1)[1]
+    with pytest.raises(TopicFileError, match="duplicate keys"):
+        load_topic(write_topic(tmp_path, "podcast_topic", duplicate))
+    with pytest.raises(TopicFileError, match="key"):
+        load_topic(
+            write_topic(
+                tmp_path, "podcast_topic", PODCAST_TOPIC.replace("key: jco", "key: JCO Podcast")
+            )
+        )
+
+
+def test_every_bundled_podcast_key_maps_to_one_url() -> None:
+    feeds = [feed for topic in bundled_topics() for feed in topic.podcasts]
+
+    assert len(feeds) == 6
+    urls = {feed.key: feed.url for feed in feeds}
+    assert len(urls) == len({feed.key for feed in feeds})
+    feed, topic_ids = find_podcast("nejm_this_week")
+    assert feed.publisher == "NEJM Group"
+    assert topic_ids == ["general_medicine"]
