@@ -44,7 +44,7 @@ def is_valid_native_id(source: SourceName, native_id: str) -> bool:
 
 
 class TopicFilter:
-    """Keeps a cited document if a topic term occurs in its title, abstract or keywords.
+    """Keeps a cited document if a topic term occurs in its title, abstract or subjects.
 
     Matching ignores case and punctuation, needs whole words, and accepts a plural `s` or
     `es` on the last word, so `prostatic neoplasm` matches the MeSH heading
@@ -57,7 +57,12 @@ class TopicFilter:
     def matches(self, document: SourceDocument) -> bool:
         if not self.terms:
             return True
-        fields = [document.title, document.abstract, document.description, *document.keywords]
+        fields = [
+            document.title,
+            document.abstract,
+            document.description,
+            *(subject.label for subject in document.subjects),
+        ]
         return any(self._contains_term(field) for field in fields if field)
 
     def _contains_term(self, field: str) -> bool:
@@ -195,7 +200,7 @@ class Frontier:
     def _query_provenance(request: ScrapeRequest) -> list[FoundBy]:
         if request.is_lookup:
             return []
-        query = request.query or request.channel or ""
+        query = request.seed_label
         if not request.topics:
             return [QueryProvenance(query=query)]
         return [QueryProvenance(topic=topic, query=query) for topic in request.topics]

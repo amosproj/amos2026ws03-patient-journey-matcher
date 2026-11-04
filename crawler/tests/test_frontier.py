@@ -8,6 +8,7 @@ from crawler.models import (
     SourceDocument,
     SourceName,
     SourceType,
+    Subject,
     source_document_id,
 )
 
@@ -18,7 +19,7 @@ def paper(
     *,
     source: SourceName = SourceName.PUBMED,
     abstract: str | None = None,
-    keywords: list[str] | None = None,
+    subjects: list[str] | None = None,
 ) -> SourceDocument:
     return SourceDocument(
         id=source_document_id(source, native_id),
@@ -28,7 +29,7 @@ def paper(
         title=title,
         url=f"https://example.test/{native_id}",
         abstract=abstract,
-        keywords=keywords or [],
+        subjects=[Subject(scheme="mesh", label=label) for label in subjects or []],
     )
 
 
@@ -37,12 +38,12 @@ def paper(
     [
         (["prostate cancer"], paper("1", "PROSTATE CANCER in men"), True),
         (["castration-resistant"], paper("1", "Castration resistant disease"), True),
-        (["prostatic neoplasm"], paper("1", "x", keywords=["Prostatic Neoplasms"]), True),
+        (["prostatic neoplasm"], paper("1", "x", subjects=["Prostatic Neoplasms"]), True),
         (["prostate cancer"], paper("1", "x", abstract="We treat prostate cancer."), True),
         (["ADT"], paper("1", "ADT and survival"), True),
         (["ADT"], paper("1", "Adtech in hospitals"), False),
         (["prostate cancer"], paper("1", "Cardiology outcomes"), False),
-        (["prostate cancer"], paper("1", "x", keywords=["prostate", "cancer care"]), False),
+        (["prostate cancer"], paper("1", "x", subjects=["prostate", "cancer care"]), False),
         ([], paper("1", "Cardiology outcomes"), True),
         (["  "], paper("1", "Cardiology outcomes"), True),
     ],

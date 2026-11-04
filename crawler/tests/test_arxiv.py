@@ -1,14 +1,23 @@
+import urllib.request
 from collections.abc import Iterator
-from datetime import UTC, date, datetime
+from datetime import UTC, date, datetime, timedelta
+from email.message import Message
 from types import SimpleNamespace
 from typing import Any
+from urllib.error import HTTPError
 
 import arxiv
 import pytest
 import requests
 
-from crawler.models import ScrapeRequest, SourceName
-from crawler.sources.arxiv import ArxivScraper, is_arxiv_id, split_version
+from crawler.models import Author, FullTextLocator, ScrapeRequest, SourceName, Subject
+from crawler.sources.arxiv import (
+    DEFAULT_LICENCE,
+    ArxivScraper,
+    is_arxiv_id,
+    parse_licence,
+    split_version,
+)
 
 
 def test_default_client_delegates_retries_to_the_runner() -> None:
@@ -42,12 +51,18 @@ def test_parse_result_returns_metadata_without_downloading_a_pdf() -> None:
     result = SimpleNamespace(
         get_short_id=lambda: "2610.12345v1",
         categories=["cs.AI", "q-bio.QM", "cs.AI"],
+        primary_category="q-bio.QM",
         doi="10.1000/arxiv",
-        title="Clinical matching",
+        title="Clinical\n  matching",
         entry_id="https://arxiv.org/abs/2610.12345v1",
-        authors=[SimpleNamespace(name="Ada Lovelace")],
+        authors=[
+            SimpleNamespace(name="Ada Lovelace", affiliation=["Analytical Engine Lab"]),
+            SimpleNamespace(name="Charles Babbage", affiliation=[]),
+        ],
         summary="An abstract",
+        comment="12 pages",
         published=datetime(2026, 10, 31, tzinfo=UTC),
+        updated=datetime(2026, 11, 2, tzinfo=UTC),
         journal_ref=None,
     )
 
@@ -59,8 +74,26 @@ def test_parse_result_returns_metadata_without_downloading_a_pdf() -> None:
     assert document.content_type == "preprint"
     assert document.source is SourceName.ARXIV
     assert document.url == "https://arxiv.org/abs/2610.12345"
-    assert document.authors == ["Ada Lovelace"]
-    assert document.keywords == ["cs.AI", "q-bio.QM"]
+    assert document.title == "Clinical matching"
+    assert document.authors == [
+        Author(name="Ada Lovelace", affiliation="Analytical Engine Lab"),
+        Author(name="Charles Babbage"),
+    ]
+    assert document.subjects == [
+        Subject(scheme="arxiv", id="cs.AI", label="cs.AI", major=False),
+        Subject(scheme="arxiv", id="q-bio.QM", label="q-bio.QM", major=True),
+    ]
+    assert document.source_updated_at == datetime(2026, 11, 2, tzinfo=UTC)
+    assert document.full_text == [
+        FullTextLocator(
+            kind="html", url="https://arxiv.org/html/2610.12345v1", media_type="text/html"
+        ),
+        FullTextLocator(
+            kind="pdf", url="https://arxiv.org/pdf/2610.12345v1", media_type="application/pdf"
+        ),
+    ]
+    assert document.extra == {"comment": "12 pages"}
+    assert document.licence is None
 
 
 @pytest.mark.parametrize(
@@ -109,7 +142,7 @@ class FakeClient:
 
 def test_lookup_keeps_results_when_arxiv_leaves_out_unknown_ids() -> None:
     client = FakeClient(found={"2610.00001", "2610.00003"})
-    scraper = ArxivScraper(client=client)
+    scraper = ArxivScraper(client=client, licences=False)
 
     documents = scraper.scrape(
         ScrapeRequest(source=SourceName.ARXIV, ids=["2610.00001", "2610.00002", "2610.00003"])
@@ -126,7 +159,9 @@ def test_lookup_asks_for_at_most_100_ids_per_query() -> None:
     ids = [f"2610.{number:05d}" for number in range(250)]
     client = FakeClient(found=set(ids))
 
-    documents = ArxivScraper(client=client).scrape(ScrapeRequest(source=SourceName.ARXIV, ids=ids))
+    documents = ArxivScraper(client=client, licences=False).scrape(
+        ScrapeRequest(source=SourceName.ARXIV, ids=ids)
+    )
 
     assert [len(search.id_list) for search in client.searches] == [100, 100, 50]
     assert len(documents) == 250
@@ -144,3 +179,99 @@ def test_default_client_sends_requests_with_a_timeout(monkeypatch: pytest.Monkey
     ArxivScraper()._client._session.get("https://export.arxiv.org/api/query")
 
     assert sent["timeout"] == 60.0
+
+
+def oai_record(licence: str | None) -> bytes:
+    """Shaped like an OAI-PMH GetRecord answer with metadataPrefix=arXiv."""
+    element = f"<license>{licence}</license>" if licence else ""
+    return (
+        '<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/"><GetRecord><record><metadata>'
+        f'<arXiv xmlns="http://arxiv.org/OAI/arXiv/"><id>2106.15928</id>{element}</arXiv>'
+        "</metadata></record></GetRecord></OAI-PMH>"
+    ).encode()
+
+
+@pytest.mark.parametrize(
+    ("licence", "expected"),
+    [
+        ("http://creativecommons.org/licenses/by-nc-nd/4.0/", "CC-BY-NC-ND-4.0"),
+        ("http://creativecommons.org/licenses/by/4.0/", "CC-BY-4.0"),
+        ("http://creativecommons.org/publicdomain/zero/1.0/", "CC0-1.0"),
+        ("http://arxiv.org/licenses/nonexclusive-distrib/1.0/", DEFAULT_LICENCE),
+        (None, DEFAULT_LICENCE),
+    ],
+)
+def test_parse_licence(licence: str | None, expected: str) -> None:
+    assert parse_licence(oai_record(licence)) == expected
+
+
+def test_unknown_ids_have_no_licence() -> None:
+    error = (
+        b'<OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/">'
+        b'<error code="idDoesNotExist">unknown</error></OAI-PMH>'
+    )
+    assert parse_licence(error) is None
+
+
+class FakeOai:
+    def __init__(self, answers: list[bytes | HTTPError]) -> None:
+        self.answers = answers
+        self.urls: list[str] = []
+
+    def __call__(self, request: urllib.request.Request, timeout: float) -> bytes:
+        self.urls.append(request.full_url)
+        answer = self.answers.pop(0)
+        if isinstance(answer, HTTPError):
+            raise answer
+        return answer
+
+
+class Clock:
+    def __init__(self) -> None:
+        self.now = datetime(2026, 11, 4, 12, 0, 0)
+        self.sleeps: list[float] = []
+
+    def time(self) -> datetime:
+        return self.now
+
+    def sleep(self, seconds: float) -> None:
+        self.sleeps.append(seconds)
+        self.now += timedelta(seconds=seconds)
+
+
+def scraper_with_oai(oai: FakeOai, clock: Clock) -> ArxivScraper:
+    client = FakeClient(found={"2610.00001", "2610.00002"})
+    return ArxivScraper(client=client, fetch=oai, sleep=clock.sleep, now=clock.time)
+
+
+def test_licences_come_from_oai_pmh_three_seconds_apart() -> None:
+    oai = FakeOai([oai_record("http://creativecommons.org/licenses/by/4.0/"), oai_record(None)])
+    clock = Clock()
+
+    documents = scraper_with_oai(oai, clock).scrape(
+        ScrapeRequest(source=SourceName.ARXIV, ids=["2610.00001", "2610.00002"])
+    )
+
+    assert [document.licence for document in documents] == ["CC-BY-4.0", DEFAULT_LICENCE]
+    assert "identifier=oai%3AarXiv.org%3A2610.00001" in oai.urls[0]
+    assert clock.sleeps == [3.0]
+
+
+def test_a_failed_licence_lookup_leaves_the_licence_unknown() -> None:
+    busy = Message()
+    busy["Retry-After"] = "5"
+    oai = FakeOai(
+        [
+            HTTPError("https://oaipmh.arxiv.org/oai", 503, "busy", busy, None),
+            oai_record("http://creativecommons.org/licenses/by/4.0/"),
+            HTTPError("https://oaipmh.arxiv.org/oai", 500, "error", Message(), None),
+        ]
+    )
+    clock = Clock()
+
+    documents = scraper_with_oai(oai, clock).scrape(
+        ScrapeRequest(source=SourceName.ARXIV, ids=["2610.00001", "2610.00002"])
+    )
+
+    assert [document.licence for document in documents] == ["CC-BY-4.0", None]
+    assert 5.0 in clock.sleeps

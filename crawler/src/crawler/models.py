@@ -2,7 +2,7 @@ from datetime import UTC, date, datetime
 from enum import StrEnum
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, JsonValue, model_validator
 
 PublishedPrecision = Literal["day", "month", "year"]
 RequestKind = Literal["search", "channel", "lookup", "references"]
@@ -14,6 +14,7 @@ ContentType = Literal[
     "presentation",
     "report",
     "video",
+    "podcast_episode",
 ]
 
 
@@ -22,11 +23,53 @@ class SourceName(StrEnum):
     ARXIV = "arxiv"
     YOUTUBE = "youtube"
     ZENODO = "zenodo"
+    PODCAST = "podcast"
 
 
 class SourceType(StrEnum):
     PAPER = "paper"
     VIDEO = "video"
+    AUDIO = "audio"
+
+
+class Author(BaseModel):
+    name: str
+    orcid: str | None = None
+    affiliation: str | None = None
+
+
+class Subject(BaseModel):
+    """A subject heading or keyword, e.g. MeSH `{scheme: mesh, id: D011471, major: true}`."""
+
+    scheme: str
+    label: str
+    id: str | None = None
+    major: bool | None = None
+
+
+class FullTextLocator(BaseModel):
+    """Where the indexer can fetch the full text; locators are listed in fetch order."""
+
+    kind: str
+    url: str
+    media_type: str | None = None
+    size: int | None = None
+    checksum: str | None = None
+    language: str | None = None
+
+
+class PodcastFeed(BaseModel):
+    """One hand-curated podcast feed; `key` is part of every episode ID, so never reuse it."""
+
+    model_config = ConfigDict(frozen=True, extra="forbid")
+
+    key: str = Field(pattern=r"^[a-z0-9]+(_[a-z0-9]+)*$")
+    name: str = Field(min_length=1)
+    url: str = Field(pattern=r"^https?://")
+    publisher: str = Field(min_length=1)
+    audience: Literal["clinicians", "patients"]
+    language: str | None = None
+    trusted_because: str | None = None
 
 
 class QueryProvenance(BaseModel):
@@ -50,11 +93,12 @@ FoundBy = QueryProvenance | CitationProvenance
 
 
 class ScrapeRequest(BaseModel):
-    """One unit of source work: a search, a channel listing, or a lookup by IDs."""
+    """One unit of source work: a search, a channel or feed listing, or a lookup by IDs."""
 
     source: SourceName
     query: str | None = None
     channel: str | None = None
+    feed: PodcastFeed | None = None
     ids: list[str] = Field(default_factory=list)
     topics: list[str] = Field(default_factory=list)
     max_results: int = Field(default=10, ge=1, le=10_000)
@@ -66,11 +110,19 @@ class ScrapeRequest(BaseModel):
         if self.source is SourceName.YOUTUBE:
             if not self.channel:
                 raise ValueError("channel is required for YouTube")
-            if self.query or self.ids:
+            if self.query or self.ids or self.feed:
                 raise ValueError("YouTube requests take a channel only")
+            return self
+        if self.source is SourceName.PODCAST:
+            if not self.feed:
+                raise ValueError("feed is required for podcasts")
+            if self.query or self.ids or self.channel:
+                raise ValueError("podcast requests take a feed only")
             return self
         if self.channel:
             raise ValueError("channel is only valid for YouTube")
+        if self.feed:
+            raise ValueError("feed is only valid for podcasts")
         if self.source is SourceName.ZENODO and self.ids:
             raise ValueError("Zenodo requests take a query only")
         if not self.query and not self.ids:
@@ -82,6 +134,11 @@ class ScrapeRequest(BaseModel):
     @property
     def is_lookup(self) -> bool:
         return bool(self.ids)
+
+    @property
+    def seed_label(self) -> str:
+        """The query, channel or feed key this request was seeded with."""
+        return self.query or self.channel or (self.feed.key if self.feed else "")
 
 
 class SourceDocument(BaseModel):
@@ -95,18 +152,28 @@ class SourceDocument(BaseModel):
     version: str | None = None
     title: str
     url: str
-    authors: list[str] = Field(default_factory=list)
+    authors: list[Author] = Field(default_factory=list)
     abstract: str | None = None
     description: str | None = None
+    language: str | None = None
+    """BCP 47 tag, e.g. `en` or `en-GB`."""
     published_at: str | None = None
     published_on: date | None = None
     published_precision: PublishedPrecision | None = None
+    source_updated_at: datetime | None = None
     doi: str | None = None
     journal: str | None = None
+    """Journal, show or other venue."""
+    publication_types: list[str] = Field(default_factory=list)
+    subjects: list[Subject] = Field(default_factory=list)
     channel_id: str | None = None
-    duration: str | None = None
-    view_count: int | None = None
-    keywords: list[str] = Field(default_factory=list)
+    duration_seconds: int | None = None
+    licence: str | None = None
+    """SPDX ID (`CC-BY-4.0`) or own code (`arxiv-nonexclusive-1.0`, `pmc-tdm`,
+    `youtube-standard`, `all-rights-reserved`); empty means unknown."""
+    full_text: list[FullTextLocator] = Field(default_factory=list)
+    external_ids: dict[str, str] = Field(default_factory=dict)
+    extra: dict[str, JsonValue] = Field(default_factory=dict)
     found_by: list[FoundBy] = Field(default_factory=list)
     retrieved_at: datetime = Field(default_factory=lambda: datetime.now(UTC))
     refresh_after: datetime | None = None

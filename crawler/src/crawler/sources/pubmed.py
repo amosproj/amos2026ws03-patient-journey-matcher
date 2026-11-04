@@ -1,23 +1,37 @@
 import os
 import re
 from collections.abc import Mapping, Sequence
+from datetime import UTC, datetime
 from typing import Any
 
 from Bio import Entrez
+from pydantic import JsonValue
 
 from crawler.models import (
+    Author,
     ScrapeRequest,
     SourceDocument,
     SourceName,
     SourceType,
+    Subject,
     source_document_id,
 )
 from crawler.sources.base import BaseScraper
+from crawler.sources.fields import bare_orcid, language_tag
+from crawler.sources.pmc import PmcClient
 
 EFETCH_BATCH_SIZE = 200
 """IDs per efetch call; NCBI asks for batches and Biopython switches to POST for long lists."""
+MAX_SEARCH_RESULTS = 9_999
+"""PubMed returns at most this many IDs per search."""
 
 _PMID = re.compile(r"[1-9][0-9]{0,9}")
+_MONTHS = {
+    name: number
+    for number, name in enumerate(
+        ("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"), 1
+    )
+}
 
 
 def is_pmid(value: str) -> bool:
@@ -41,8 +55,18 @@ def configure_entrez(entrez: Any, email: str | None, api_key: str | None) -> Non
     entrez.max_tries = 1
 
 
+def _attributes(value: Any) -> Mapping[str, Any]:
+    attributes = getattr(value, "attributes", None)
+    return attributes if isinstance(attributes, Mapping) else {}
+
+
+def _major(value: Any) -> bool | None:
+    flag = _attributes(value).get("MajorTopicYN")
+    return None if flag is None else flag == "Y"
+
+
 class PubMedScraper(BaseScraper):
-    """PubMed discovery and XML metadata parsing adapted from the legacy scraper."""
+    """PubMed discovery and XML metadata parsing; PMC adds licence and full text."""
 
     source = SourceName.PUBMED
 
@@ -52,23 +76,28 @@ class PubMedScraper(BaseScraper):
         api_key: str | None = None,
         *,
         entrez: Any = Entrez,
+        pmc: PmcClient | None = None,
     ) -> None:
         self._email = email.strip() if email else None
         self._api_key = api_key or None
         self._entrez = entrez
         self._entrez.max_tries = 1
+        self._pmc = pmc
 
     @classmethod
     def from_env(cls) -> "PubMedScraper":
         email, api_key = ncbi_credentials_from_env()
-        return cls(email=email, api_key=api_key)
+        return cls(email=email, api_key=api_key, pmc=PmcClient())
 
     def scrape(self, request: ScrapeRequest) -> list[SourceDocument]:
         if request.source is not self.source:
             raise ValueError("PubMed scraper received a request for another source")
         configure_entrez(self._entrez, self._email, self._api_key)
         identifiers = request.ids if request.is_lookup else self._search(request)
-        return self._fetch(identifiers)
+        documents = self._fetch(identifiers)
+        if self._pmc is not None:
+            documents = [self._pmc.enrich(document) for document in documents]
+        return documents
 
     def _search(self, request: ScrapeRequest) -> list[str]:
         if not request.query:
@@ -76,15 +105,16 @@ class PubMedScraper(BaseScraper):
         search_arguments: dict[str, Any] = {
             "db": "pubmed",
             "sort": "pub date" if request.since else "relevance",
-            "retmax": request.max_results,
+            "retmax": min(request.max_results, MAX_SEARCH_RESULTS),
             "retmode": "xml",
             "term": request.query,
         }
         if request.since:
+            # Entry date: when the record reached PubMed, so late-indexed papers are not missed.
             search_arguments.update(
                 mindate=request.since.strftime("%Y/%m/%d"),
                 maxdate="3000/12/31",
-                datetype="pdat",
+                datetype="edat",
             )
 
         search_handle = self._entrez.esearch(**search_arguments)
@@ -111,39 +141,50 @@ class PubMedScraper(BaseScraper):
     def parse_article(cls, article_record: Mapping[str, Any]) -> SourceDocument:
         citation = article_record["MedlineCitation"]
         article = citation["Article"]
+        pubmed_data = article_record.get("PubmedData", {})
         source_id = str(citation["PMID"])
-        title = str(article.get("ArticleTitle", "")).strip().removesuffix(".")
-        doi = cls._doi(article_record)
-        abstract = cls._abstract(article)
-        authors = cls._authors(article)
-        published_at = cls._publication_date(article)
-        journal = str(article.get("Journal", {}).get("Title", "")).strip() or None
-        keywords = cls._keywords(citation)
-
+        article_ids = cls._article_ids(pubmed_data)
+        languages = article.get("Language", [])
         return SourceDocument(
             id=source_document_id(cls.source, source_id),
             source=cls.source,
             source_type=SourceType.PAPER,
             content_type="journal_article",
             source_id=source_id,
-            title=title,
+            version=_attributes(citation["PMID"]).get("Version"),
+            title=str(article.get("ArticleTitle", "")).strip().removesuffix("."),
             url=f"https://pubmed.ncbi.nlm.nih.gov/{source_id}/",
-            authors=authors,
-            abstract=abstract or None,
-            published_at=published_at,
-            doi=doi,
-            journal=journal,
-            keywords=keywords,
+            authors=cls._authors(article),
+            abstract=cls._abstract(article) or None,
+            language=language_tag(languages[0]) if languages else None,
+            published_at=cls._publication_date(article),
+            source_updated_at=cls._date_time(citation.get("DateRevised")),
+            doi=article_ids.get("doi"),
+            journal=str(article.get("Journal", {}).get("Title", "")).strip() or None,
+            publication_types=[
+                str(value).strip()
+                for value in article.get("PublicationTypeList", [])
+                if str(value).strip()
+            ],
+            subjects=cls._subjects(citation),
+            external_ids={
+                name: article_ids[key]
+                for key, name in (("pmc", "pmcid"), ("mid", "nihms"))
+                if key in article_ids
+            },
+            extra=cls._extra(citation, article, pubmed_data),
         )
 
     @staticmethod
-    def _doi(record: Mapping[str, Any]) -> str | None:
-        pubmed_data = record.get("PubmedData", {})
+    def _article_ids(pubmed_data: Mapping[str, Any]) -> dict[str, str]:
+        """`ArticleIdList` by `IdType`, e.g. doi, pmc, mid."""
+        ids: dict[str, str] = {}
         for value in pubmed_data.get("ArticleIdList", []):
-            attributes = getattr(value, "attributes", {})
-            if attributes.get("IdType") == "doi":
-                return str(value).strip() or None
-        return None
+            id_type = _attributes(value).get("IdType")
+            text = str(value).strip()
+            if id_type and text and id_type not in ids:
+                ids[str(id_type)] = text
+        return ids
 
     @staticmethod
     def _abstract(article: Mapping[str, Any]) -> str:
@@ -153,24 +194,114 @@ class PubMedScraper(BaseScraper):
             text = str(section).strip()
             if not text:
                 continue
-            label = str(getattr(section, "attributes", {}).get("Label", "")).strip()
+            label = str(_attributes(section).get("Label", "")).strip()
             rendered.append(f"{label}: {text}" if label else text)
         return "\n".join(rendered)
 
     @staticmethod
-    def _authors(article: Mapping[str, Any]) -> list[str]:
-        authors: list[str] = []
+    def _authors(article: Mapping[str, Any]) -> list[Author]:
+        authors: list[Author] = []
         for author in article.get("AuthorList", []):
-            collective = str(author.get("CollectiveName", "")).strip()
-            if collective:
-                authors.append(collective)
+            name = str(author.get("CollectiveName", "")).strip()
+            if not name:
+                given = str(author.get("ForeName") or author.get("Initials") or "").strip()
+                family = str(author.get("LastName", "")).strip()
+                name = " ".join(part for part in (given, family) if part)
+            if not name:
                 continue
-            given = str(author.get("ForeName") or author.get("Initials") or "").strip()
-            family = str(author.get("LastName", "")).strip()
-            name = " ".join(part for part in (given, family) if part)
-            if name:
-                authors.append(name)
+            orcid = next(
+                (
+                    bare_orcid(value)
+                    for value in author.get("Identifier", [])
+                    if _attributes(value).get("Source") == "ORCID"
+                ),
+                None,
+            )
+            affiliations = author.get("AffiliationInfo", [])
+            affiliation = (
+                str(affiliations[0].get("Affiliation", "")).strip() if affiliations else ""
+            )
+            authors.append(Author(name=name, orcid=orcid, affiliation=affiliation or None))
         return authors
+
+    @staticmethod
+    def _subjects(citation: Mapping[str, Any]) -> list[Subject]:
+        subjects: list[Subject] = []
+        for heading in citation.get("MeshHeadingList", []):
+            descriptor = heading.get("DescriptorName")
+            label = str(descriptor or "").strip()
+            if not label:
+                continue
+            descriptor_id = _attributes(descriptor).get("UI")
+            qualifiers = list(heading.get("QualifierName", []))
+            # A heading is a major topic if the descriptor or one of its qualifiers is.
+            flags = [_major(descriptor), *(_major(qualifier) for qualifier in qualifiers)]
+            known = [flag for flag in flags if flag is not None]
+            major = any(known) if known else None
+            subjects.append(Subject(scheme="mesh", id=descriptor_id, label=label, major=major))
+            for qualifier in qualifiers:
+                qualifier_id = _attributes(qualifier).get("UI")
+                subjects.append(
+                    Subject(
+                        scheme="mesh",
+                        id=f"{descriptor_id}{qualifier_id}"
+                        if descriptor_id and qualifier_id
+                        else None,
+                        label=f"{label}/{str(qualifier).strip()}",
+                        major=_major(qualifier),
+                    )
+                )
+        for chemical in citation.get("ChemicalList", []):
+            substance = chemical.get("NameOfSubstance")
+            if str(substance or "").strip():
+                subjects.append(
+                    Subject(
+                        scheme="mesh",
+                        id=_attributes(substance).get("UI"),
+                        label=str(substance).strip(),
+                    )
+                )
+        for keyword_list in citation.get("KeywordList", []):
+            for keyword in keyword_list:
+                if str(keyword).strip():
+                    subjects.append(
+                        Subject(scheme="keyword", label=str(keyword).strip(), major=_major(keyword))
+                    )
+        unique: dict[tuple[str, str | None, str], Subject] = {}
+        for subject in subjects:
+            unique.setdefault((subject.scheme, subject.id, subject.label), subject)
+        return list(unique.values())
+
+    @classmethod
+    def _extra(
+        cls, citation: Any, article: Mapping[str, Any], pubmed_data: Mapping[str, Any]
+    ) -> dict[str, JsonValue]:
+        extra: dict[str, JsonValue] = {}
+        status = _attributes(citation).get("Status")
+        if status:
+            extra["status"] = str(status)
+        for history_date in pubmed_data.get("History", []):
+            status_name = _attributes(history_date).get("PubStatus")
+            if status_name in {"entrez", "pmc-release"}:
+                parsed = cls._date_time(history_date)
+                if parsed:
+                    key = "entrez_date" if status_name == "entrez" else "pmc_release_date"
+                    extra[key] = parsed.date().isoformat()
+        copyright_notice = str(article.get("Abstract", {}).get("CopyrightInformation", "")).strip()
+        if copyright_notice:
+            extra["copyright"] = copyright_notice
+        return extra
+
+    @staticmethod
+    def _date_time(parts: Any) -> datetime | None:
+        if not isinstance(parts, Mapping):
+            return None
+        try:
+            return datetime(
+                int(parts["Year"]), int(parts.get("Month", 1)), int(parts.get("Day", 1)), tzinfo=UTC
+            )
+        except (KeyError, TypeError, ValueError):
+            return None
 
     @staticmethod
     def _publication_date(article: Mapping[str, Any]) -> str | None:
@@ -200,35 +331,4 @@ class PubMedScraper(BaseScraper):
     def _month_number(value: str) -> int | None:
         if value.isdigit() and 1 <= int(value) <= 12:
             return int(value)
-        months = {
-            "jan": 1,
-            "feb": 2,
-            "mar": 3,
-            "apr": 4,
-            "may": 5,
-            "jun": 6,
-            "jul": 7,
-            "aug": 8,
-            "sep": 9,
-            "oct": 10,
-            "nov": 11,
-            "dec": 12,
-        }
-        return months.get(value[:3].lower())
-
-    @staticmethod
-    def _keywords(citation: Mapping[str, Any]) -> list[str]:
-        keywords: set[str] = set()
-        for heading in citation.get("MeshHeadingList", []):
-            descriptor = str(heading.get("DescriptorName", "")).strip()
-            if descriptor:
-                keywords.add(descriptor)
-            keywords.update(
-                str(value).strip()
-                for value in heading.get("QualifierName", [])
-                if str(value).strip()
-            )
-        keyword_lists: Sequence[Sequence[Any]] = citation.get("KeywordList", [])
-        for keyword_list in keyword_lists:
-            keywords.update(str(value).strip() for value in keyword_list if str(value).strip())
-        return sorted(keywords)
+        return _MONTHS.get(value[:3].lower())

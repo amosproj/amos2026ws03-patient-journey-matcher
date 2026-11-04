@@ -1,25 +1,49 @@
 import json
 import urllib.request
-from datetime import date
+from datetime import UTC, date, datetime
 from typing import Any
 from urllib.parse import parse_qs, urlparse
 
 import pytest
 from pydantic import ValidationError
 
-from crawler.models import ScrapeRequest, SourceName, SourceType
-from crawler.sources.zenodo import ZenodoScraper
+from crawler.models import Author, FullTextLocator, ScrapeRequest, SourceName, SourceType, Subject
+from crawler.sources.zenodo import ZenodoScraper, zenodo_licence
 
 
 def record(
-    record_id: str, resource_type: str = "publication-article", **metadata: Any
+    record_id: str,
+    resource_type: str = "publication-article",
+    access_status: str = "open",
+    **metadata: Any,
 ) -> dict[str, Any]:
     """Shaped like a hit of the InvenioRDM search API (application/vnd.inveniordm.v1+json)."""
     return {
         "id": record_id,
+        "updated": "2024-08-22T19:47:58.972700+00:00",
+        "access": {"status": access_status, "embargo": {"active": False, "reason": None}},
+        "files": {
+            "enabled": True,
+            "default_preview": "slides.pdf",
+            "entries": {
+                "data.csv": {
+                    "key": "data.csv",
+                    "size": 10,
+                    "mimetype": "text/csv",
+                    "checksum": "md5:1",
+                },
+                "slides.pdf": {
+                    "key": "slides.pdf",
+                    "size": 559751,
+                    "mimetype": "application/pdf",
+                    "checksum": "md5:ae75",
+                },
+            },
+        },
         "parent": {
             "id": f"{record_id}0",
             "pids": {"doi": {"identifier": f"10.5281/zenodo.{record_id}0"}},
+            "communities": {"entries": [{"slug": "oncology"}]},
         },
         "pids": {"doi": {"identifier": f"10.5281/ZENODO.{record_id}", "provider": "datacite"}},
         "links": {"self_html": f"https://zenodo.org/records/{record_id}"},
@@ -31,9 +55,25 @@ def record(
             "resource_type": {"id": resource_type, "title": {"en": "Journal article"}},
             "publication_date": "2022-08-31",
             "creators": [
-                {"person_or_org": {"type": "personal", "name": "Rakhi Pareek"}},
+                {
+                    "person_or_org": {
+                        "type": "personal",
+                        "name": "Rakhi Pareek",
+                        "identifiers": [{"identifier": "0000-0002-2548-780X", "scheme": "orcid"}],
+                    },
+                    "affiliations": [{"name": "SMS Medical College, Jaipur"}],
+                },
                 {"person_or_org": {"type": "organizational", "name": "Study Group"}},
                 {"person_or_org": {"name": ""}},
+            ],
+            "languages": [{"id": "eng", "title": {"en": "English"}}],
+            "rights": [{"id": "cc-by-4.0", "props": {"scheme": "spdx"}}],
+            "related_identifiers": [
+                {
+                    "identifier": "10.1000/journal.123",
+                    "scheme": "doi",
+                    "relation_type": {"id": "isidenticalto"},
+                }
             ],
             "description": (
                 "<p><strong>Background:&nbsp;</strong>Prostate cancer is common.</p>"
@@ -86,13 +126,70 @@ def test_parse_record_uses_the_concept_id_and_keeps_the_version() -> None:
     assert document.content_type == "journal_article"
     assert document.url == "https://zenodo.org/records/13363178"
     assert document.title == "Serum phosphorus in prostate cancer"
-    assert document.authors == ["Rakhi Pareek", "Study Group"]
+    assert document.authors == [
+        Author(
+            name="Rakhi Pareek",
+            orcid="0000-0002-2548-780X",
+            affiliation="SMS Medical College, Jaipur",
+        ),
+        Author(name="Study Group"),
+    ]
     assert document.description == "Background: Prostate cancer is common.\nResults & outlook"
     assert document.abstract is None
-    assert document.keywords == ["Prostatic Neoplasms", "Calcium"]
+    assert document.subjects == [
+        Subject(scheme="mesh", id="D011471", label="Prostatic Neoplasms"),
+        Subject(scheme="keyword", label="Calcium"),
+    ]
     assert document.doi == "10.5281/zenodo.13363178"
     assert document.journal == "International Journal of Clinical Research"
     assert document.published_on == date(2022, 8, 31)
+    assert document.source_updated_at == datetime(2024, 8, 22, 19, 47, 58, 972700, tzinfo=UTC)
+    assert document.language == "en"
+    assert document.licence == "CC-BY-4.0"
+    assert document.external_ids == {"concept_doi": "10.5281/zenodo.133631780"}
+    assert document.extra == {
+        "access_status": "open",
+        "communities": ["oncology"],
+        "related_identifiers": [
+            {"identifier": "10.1000/journal.123", "scheme": "doi", "relation": "isidenticalto"}
+        ],
+    }
+
+
+def test_open_records_list_their_files_with_the_preview_first() -> None:
+    document = ZenodoScraper.parse_record(record("7"))
+
+    assert document.full_text == [
+        FullTextLocator(
+            kind="file",
+            url="https://zenodo.org/api/records/7/files/slides.pdf/content",
+            media_type="application/pdf",
+            size=559751,
+            checksum="md5:ae75",
+        ),
+        FullTextLocator(
+            kind="file",
+            url="https://zenodo.org/api/records/7/files/data.csv/content",
+            media_type="text/csv",
+            size=10,
+            checksum="md5:1",
+        ),
+    ]
+
+
+def test_restricted_or_embargoed_records_have_no_files() -> None:
+    document = ZenodoScraper.parse_record(record("7", access_status="restricted"))
+
+    assert document.full_text == []
+    assert document.extra["access_status"] == "restricted"
+
+
+@pytest.mark.parametrize(
+    ("rights_id", "expected"),
+    [("cc-by-4.0", "CC-BY-4.0"), ("cc0-1.0", "CC0-1.0"), ("mit", "mit"), (None, None)],
+)
+def test_zenodo_licence(rights_id: str | None, expected: str | None) -> None:
+    assert zenodo_licence(rights_id) == expected
 
 
 def test_videos_are_videos() -> None:
@@ -130,7 +227,7 @@ def test_queries_join_terms_with_and_and_keep_only_useful_types() -> None:
         '("prostate" AND "cancer" AND "biopsy") AND metadata.resource_type.id:('
     )
     assert "publication-preprint OR " in query and "dataset" not in query
-    assert query.endswith(" AND metadata.publication_date:[2026-01-02 TO *]")
+    assert query.endswith(" AND updated:[2026-01-02 TO *]")
     assert ZenodoScraper.build_query("a b", "or", None).startswith('("a" OR "b") AND')
     assert ZenodoScraper.build_query("metadata.title:prostate", "raw", None).startswith(
         "(metadata.title:prostate) AND"

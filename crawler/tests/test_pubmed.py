@@ -1,7 +1,8 @@
+from datetime import UTC, date, datetime
 from typing import Any
 
-from crawler.models import ScrapeRequest, SourceName
-from crawler.sources.pubmed import PubMedScraper, is_pmid
+from crawler.models import Author, ScrapeRequest, SourceDocument, SourceName, Subject
+from crawler.sources.pubmed import MAX_SEARCH_RESULTS, PubMedScraper, is_pmid
 
 
 class EntrezValue(str):
@@ -17,52 +18,129 @@ def test_contact_email_is_optional_for_low_volume_requests() -> None:
     PubMedScraper()
 
 
-def test_parse_article_preserves_structured_abstract_and_group_authors() -> None:
+class EntrezDict(dict[str, Any]):
+    def __init__(self, values: dict[str, Any], **attributes: str) -> None:
+        super().__init__(values)
+        self.attributes = attributes
+
+
+class EntrezList(list[Any]):
+    def __init__(self, values: list[Any], **attributes: str) -> None:
+        super().__init__(values)
+        self.attributes = attributes
+
+
+def test_parse_article_reads_every_field_we_store() -> None:
     record: dict[str, Any] = {
-        "MedlineCitation": {
-            "PMID": "4242",
-            "Article": {
-                "ArticleTitle": "A useful result.",
-                "Abstract": {
-                    "AbstractText": [
-                        EntrezValue("How the study was run", Label="METHODS"),
-                        EntrezValue("What the study found", Label="RESULTS"),
-                    ]
+        "MedlineCitation": EntrezDict(
+            {
+                "PMID": EntrezValue("4242", Version="1"),
+                "DateRevised": {"Year": "2026", "Month": "11", "Day": "02"},
+                "Article": {
+                    "ArticleTitle": "A useful result.",
+                    "Abstract": {
+                        "AbstractText": [
+                            EntrezValue("How the study was run", Label="METHODS"),
+                            EntrezValue("What the study found", Label="RESULTS"),
+                        ],
+                        "CopyrightInformation": "© 2026 The Authors.",
+                    },
+                    "AuthorList": [
+                        {
+                            "ForeName": "Ada",
+                            "LastName": "Lovelace",
+                            "Identifier": [
+                                EntrezValue("https://orcid.org/0000-0002-1825-0097", Source="ORCID")
+                            ],
+                            "AffiliationInfo": [{"Affiliation": "Analytical Engine Lab, London."}],
+                        },
+                        {"CollectiveName": "Study Group"},
+                    ],
+                    "Language": ["ger"],
+                    "PublicationTypeList": [
+                        EntrezValue("Journal Article", UI="D016428"),
+                        EntrezValue("Review", UI="D016454"),
+                    ],
+                    "ArticleDate": [{"Year": "2026", "Month": "10", "Day": "31"}],
+                    "Journal": {"Title": "Medical Journal", "JournalIssue": {}},
                 },
-                "AuthorList": [
-                    {"ForeName": "Ada", "LastName": "Lovelace"},
-                    {"CollectiveName": "Study Group"},
+                "MeshHeadingList": [
+                    {
+                        "DescriptorName": EntrezValue(
+                            "Prostatic Neoplasms", UI="D011471", MajorTopicYN="N"
+                        ),
+                        "QualifierName": [EntrezValue("therapy", UI="Q000628", MajorTopicYN="Y")],
+                    },
+                    {
+                        "DescriptorName": EntrezValue("Humans", UI="D006801", MajorTopicYN="N"),
+                        "QualifierName": [],
+                    },
                 ],
-                "ArticleDate": [{"Year": "2026", "Month": "10", "Day": "31"}],
-                "Journal": {"Title": "Medical Journal", "JournalIssue": {}},
+                "ChemicalList": [
+                    {
+                        "RegistryNumber": "0",
+                        "NameOfSubstance": EntrezValue("Antineoplastic Agents", UI="D000970"),
+                    }
+                ],
+                "KeywordList": [
+                    EntrezList([EntrezValue("Patient Education", MajorTopicYN="N")], Owner="NOTNLM")
+                ],
             },
-            "MeshHeadingList": [
-                {
-                    "DescriptorName": "Prostatic Neoplasms",
-                    "QualifierName": ["therapy"],
-                }
-            ],
-            "KeywordList": [["Patient Education"]],
-        },
+            Status="MEDLINE",
+        ),
         "PubmedData": {
             "ArticleIdList": [
                 EntrezValue("4242", IdType="pubmed"),
                 EntrezValue("10.1000/example", IdType="doi"),
-            ]
+                EntrezValue("PMC1234567", IdType="pmc"),
+                EntrezValue("NIHMS99", IdType="mid"),
+            ],
+            "History": [
+                EntrezDict({"Year": "2026", "Month": "10", "Day": "30"}, PubStatus="entrez"),
+                EntrezDict({"Year": "2027", "Month": "10", "Day": "31"}, PubStatus="pmc-release"),
+            ],
         },
     }
 
     document = PubMedScraper.parse_article(record)
 
     assert document.id == "pubmed:4242"
+    assert document.version == "1"
     assert document.content_type == "journal_article"
     assert document.source is SourceName.PUBMED
     assert document.title == "A useful result"
     assert document.abstract == ("METHODS: How the study was run\nRESULTS: What the study found")
-    assert document.authors == ["Ada Lovelace", "Study Group"]
+    assert document.authors == [
+        Author(
+            name="Ada Lovelace",
+            orcid="0000-0002-1825-0097",
+            affiliation="Analytical Engine Lab, London.",
+        ),
+        Author(name="Study Group"),
+    ]
+    assert document.language == "de"
     assert document.published_at == "2026-10-31"
+    assert document.source_updated_at == datetime(2026, 11, 2, tzinfo=UTC)
     assert document.doi == "10.1000/example"
-    assert document.keywords == ["Patient Education", "Prostatic Neoplasms", "therapy"]
+    assert document.publication_types == ["Journal Article", "Review"]
+    assert document.subjects == [
+        Subject(scheme="mesh", id="D011471", label="Prostatic Neoplasms", major=True),
+        Subject(
+            scheme="mesh", id="D011471Q000628", label="Prostatic Neoplasms/therapy", major=True
+        ),
+        Subject(scheme="mesh", id="D006801", label="Humans", major=False),
+        Subject(scheme="mesh", id="D000970", label="Antineoplastic Agents"),
+        Subject(scheme="keyword", label="Patient Education", major=False),
+    ]
+    assert document.external_ids == {"pmcid": "PMC1234567", "nihms": "NIHMS99"}
+    assert document.extra == {
+        "status": "MEDLINE",
+        "entrez_date": "2026-10-30",
+        "pmc_release_date": "2027-10-31",
+        "copyright": "© 2026 The Authors.",
+    }
+    assert document.licence is None
+    assert document.full_text == []
 
 
 def test_parse_article_supports_medline_year_only_dates() -> None:
@@ -135,3 +213,38 @@ def test_pmid_validation() -> None:
     assert not is_pmid("0123")
     assert not is_pmid("PMC123")
     assert not is_pmid("")
+
+
+def test_searches_since_a_date_use_the_entry_date_and_stay_below_the_id_cap() -> None:
+    entrez = FakeEntrez([])
+    scraper = PubMedScraper(entrez=entrez)
+
+    scraper.scrape(
+        ScrapeRequest(
+            source=SourceName.PUBMED, query="q", max_results=10_000, since=date(2026, 1, 2)
+        )
+    )
+
+    [(_call, arguments)] = entrez.calls
+    assert arguments["datetype"] == "edat"
+    assert arguments["mindate"] == "2026/01/02"
+    assert arguments["retmax"] == MAX_SEARCH_RESULTS
+
+
+class FakePmc:
+    def __init__(self) -> None:
+        self.enriched: list[str] = []
+
+    def enrich(self, document: SourceDocument) -> SourceDocument:
+        self.enriched.append(document.id)
+        return document.model_copy(update={"licence": "CC-BY"})
+
+
+def test_pmc_enriches_every_fetched_record() -> None:
+    pmc = FakePmc()
+    scraper = PubMedScraper(entrez=FakeEntrez(["1", "2"]), pmc=pmc)  # type: ignore[arg-type]
+
+    documents = scraper.scrape(ScrapeRequest(source=SourceName.PUBMED, query="q"))
+
+    assert pmc.enriched == ["pubmed:1", "pubmed:2"]
+    assert {document.licence for document in documents} == {"CC-BY"}

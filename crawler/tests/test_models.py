@@ -144,3 +144,23 @@ def test_document_rejects_an_invalid_publication_date() -> None:
             url="https://example.test/1",
             published_at="31 October 2026",
         )
+
+
+def test_podcast_requests_take_a_feed_only() -> None:
+    feed = {
+        "key": "jco",
+        "name": "JCO Podcast",
+        "url": "https://jcopodcast.libsyn.com/rss",
+        "publisher": "ASCO",
+        "audience": "clinicians",
+    }
+
+    request = ScrapeRequest.model_validate({"source": "podcast", "feed": feed})
+
+    assert request.seed_label == "jco"
+    with pytest.raises(ValidationError, match="feed is required for podcasts"):
+        ScrapeRequest.model_validate({"source": "podcast"})
+    with pytest.raises(ValidationError, match="feed only"):
+        ScrapeRequest.model_validate({"source": "podcast", "feed": feed, "query": "q"})
+    with pytest.raises(ValidationError, match="feed is only valid for podcasts"):
+        ScrapeRequest.model_validate({"source": "pubmed", "query": "q", "feed": feed})
