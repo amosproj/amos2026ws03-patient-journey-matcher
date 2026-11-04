@@ -16,7 +16,7 @@ Use `efetch` with `retmode=xml`, batched via the History server (`usehistory=y`)
 ## Connectors
 
 - **SS26** `backend/scrapers/…/PubMed`: stores publisher PDF text (breaks metadata-only); keeps only the first abstract section; fails on `CollectiveName`; reads keywords from the wrong element; filters by `pdat`.
-- **#27** `crawler/src/crawler/sources/pubmed.py` (not merged): metadata only, parses correctly. Missing PMCID, publication types, language, MeSH UIs and major flags, entry and revision dates. Asks for 10,000 IDs (max 9,999), one `efetch` for all IDs, filters by `pdat`.
+- **crawler** `crawler/src/crawler/sources/pubmed.py`: the fields below, incl. PMCID, publication types, language, MeSH UIs and major flags, revision and entry dates; efetch in batches of 200, at most 9,999 IDs, `--since` by entry date. PMC adds licence and full text.
 
 ## Fields
 

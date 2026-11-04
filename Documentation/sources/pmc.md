@@ -17,7 +17,7 @@ Automated retrieval only via S3, OAI-PMH, E-utilities (`db=pmc`) and BioC.
 ## Connectors
 
 - **SS26:** ignores PMCID and licence; fetches publisher PDFs via the DOI.
-- **#27:** no PMC yet. The PMCID is in the `ArticleIdList` it already reads.
+- **crawler:** the PubMed crawler makes the two requests below for every record with a PMCID (`crawler/src/crawler/sources/pmc.py`).
 
 ## Fields
 

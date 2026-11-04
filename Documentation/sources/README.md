@@ -9,11 +9,11 @@ Findings for #6, checked 01.11.2026 against live docs and live requests. Follows
 | Source | Role | Page | Offers | Full source for the indexer | Existing connector |
 |---|---|---|---|---|---|
 | PubMed | primary | [`pubmed.md`](pubmed.md) | 41.4 M citations, abstracts, MeSH | Via PMC if there is a PMCID | SS26, #27 |
-| PMC | primary | [`pmc.md`](pmc.md) | About 8 M full-text article versions on S3 | JATS XML | none |
+| PMC | primary | [`pmc.md`](pmc.md) | About 8 M full-text article versions on S3 | JATS XML | crawler |
 | arXiv | secondary | [`arxiv.md`](arxiv.md) | Preprints, about 8,300 a year in medical categories | HTML, else PDF | SS26, #27 |
 | Zenodo | secondary | [`zenodo.md`](zenodo.md) | Any research output, no review | Files: PDF, DOCX, PPTX, MP4 | crawler |
 | YouTube | complementary | [`youtube.md`](youtube.md) | Metadata of 26 curated channels | None: description and chapters only | SS26, #27 |
-| Podcasts | complementary | [`podcasts.md`](podcasts.md) | 6 curated RSS feeds | Transcript file (rare), else show notes | none |
+| Podcasts | complementary | [`podcasts.md`](podcasts.md) | 6 curated RSS feeds | Transcript file (rare), else show notes | crawler |
 
 Primary: peer-reviewed core. Secondary: preprints and grey literature. Complementary: curated formats for patients.
 
@@ -91,7 +91,7 @@ Per the proposal on `feature/7-mcp-interface` (#7). Reads `documents` and the in
 - **Index rows** carry `document_id` and `version`; deleted with the document, rebuilt on a new version.
 - **Crawler state** (not in `documents`): curated lists (topics, channels, [feeds](podcasts.md#curated-feed-list)); per feed URL, `ETag`, `Last-Modified`, last status; per channel the uploads playlist ID.
 - **Retention:** YouTube data, IDs included, refreshed or deleted within 30 days (III.E.4.d); gone videos deleted with their index rows; no view counts, never in a score (III.E.4.h). PubMed kept current or flagged as possibly outdated. No limit elsewhere.
-- **New since last run:** PubMed `datetype=edat` (both connectors use `pdat`); arXiv `submittedDate` (`lastUpdatedDate` silently acts as `submittedDate`); Zenodo `updated:[… TO *]`; YouTube uploads playlist to `videoPublishedAt`; podcasts conditional GET.
+- **New since last run:** PubMed `datetype=edat` (the crawler's `--since`); arXiv `submittedDate` (`lastUpdatedDate` silently acts as `submittedDate`); Zenodo `updated:[… TO *]`; YouTube uploads playlist to `videoPublishedAt`; podcasts conditional GET.
 - **Caps per query:** PubMed 9,999, Zenodo 10,000, arXiv 30,000; split by date.
 - **Identification:** User-Agent with app, version, repo URL, team contact. NCBI also `tool` and `email`. Zenodo may block generic agents.
 - **Attribution:** name NLM; arXiv line "Thank you to arXiv for use of its open access interoperability."; credit CC BY; label YouTube items with unchanged title, thumbnail, channel; no NLM, PMC or arXiv logos.

@@ -20,8 +20,8 @@ Terms: show "Thank you to arXiv for use of its open access interoperability."; n
 Both use the `arxiv` package (4.0.2 current; #27 pins it).
 
 - **SS26** `backend/scrapers/…/Archive`: stores PDF text; new client per call, so the 3 s delay is lost.
-- **#27** `crawler/src/crawler/sources/arxiv.py` (not merged): metadata only, one shared client, concurrency 1.
-- **Both:** no `updated`, no licence. SS26 keeps `vN` in the row ID; the crawler strips it since #23.
+- **crawler** `crawler/src/crawler/sources/arxiv.py`: metadata only, one shared client, version-less IDs, `updated`, HTML and PDF locators, licence from OAI-PMH (one `GetRecord` per paper in the same 3 s budget).
+- **SS26:** `vN` in the row ID, no `updated`, no licence.
 
 ## Fields
 

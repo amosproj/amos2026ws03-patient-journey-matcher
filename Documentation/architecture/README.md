@@ -61,7 +61,6 @@ Basis: **Partner** = project description or AIlixir · **#5** = [crawler evaluat
 | Biopython (Entrez) | 1.88 | PubMed search and record parsing | Biopython (BSD-style) | #13 |
 | arxiv | 4.0 | arXiv API client | MIT | #13 |
 | google-api-python-client | 2.201 | YouTube Data API, official API only | Apache-2.0 | #5 |
-| feedparser | 6.0 | Podcast RSS feeds | BSD-2-Clause | Proposal |
 | pydantic | 2.14 | Validating source records | MIT | #13 |
 | PyYAML | 6.0 | Topic files with the seed queries | MIT | Proposal |
 | asyncpg | 0.32 | Writing to `documents` | Apache-2.0 | Proposal |
@@ -91,6 +90,7 @@ Basis: **Partner** = project description or AIlixir · **#5** = [crawler evaluat
 - **JValue crawler:** built for bulk files in FTP folder trees, supports none of our sources, needs RabbitMQ, MinIO and Kubernetes (#5).
 - **Neo4j, Graphiti:** the Neo4j server is GPL-3.0. The patient graph stays with AIlixir; our graph index uses Postgres tables.
 - **psycopg:** LGPL-3.0, so we use asyncpg.
+- **feedparser:** garbles the `podcast:*` tags; the crawler reads RSS with the Python standard library.
 - **paperscraper, pypdf, YouTube caption scraping:** we store metadata only, and the caption scraping breaks YouTube's terms.
 - **Firebase, Firestore, Cloud Storage, Pub/Sub:** AIlixir app infrastructure, only needed if we take over document upload.
 
