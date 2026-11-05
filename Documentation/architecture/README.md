@@ -49,7 +49,7 @@ Legend: orange = Python module, blue = TypeScript package, darker blue = algorit
 
 The first-level technologies we build on, grouped by layer. Versions are the current releases on 27.10.2026. The lockfiles pin exact versions, and the bill of materials in the planning document (#16) is the binding list. Course rule: no copyleft licences in the product.
 
-Basis: **Partner** = project description or AIlixir · **#5** = [crawler evaluation](../../Deliverables/sprint-02/crawler-evaluation.md) · **#13** = [reuse plan](../reuse/what-to-keep.md) · **Proposal** = this document, to be confirmed in review.
+Basis: **Partner** = project description or AIlixir · **#5** = [crawler evaluation](../../Deliverables/sprint-02/crawler-evaluation.md) · **#13** = [reuse plan](../reuse/what-to-keep.md) · **In use** = already used in the code · **Proposal** = this document, to be confirmed in review.
 
 | Technology | Version | Used for | Licence | Basis |
 |---|---|---|---|---|
@@ -62,25 +62,25 @@ Basis: **Partner** = project description or AIlixir · **#5** = [crawler evaluat
 | arxiv | 4.0 | arXiv API client | MIT | #13 |
 | google-api-python-client | 2.201 | YouTube Data API, official API only | Apache-2.0 | #5 |
 | pydantic | 2.14 | Validating source records | MIT | #13 |
-| PyYAML | 6.0 | Topic files with the seed queries | MIT | Proposal |
+| PyYAML | 6.0 | Topic files with the seed queries | MIT | In use |
 | asyncpg | 0.32 | Writing to `documents` | Apache-2.0 | Proposal |
 | **Storage** | | | | |
-| PostgreSQL | 18 | `documents`, run log, three index schemas | PostgreSQL | #5, Proposal |
+| PostgreSQL | 18 | `documents`, run log, three index schemas | PostgreSQL | #5, In use |
 | Postgres full-text search | built in | Keyword index: term statistics and ranking | PostgreSQL | Proposal |
-| pgvector | 0.8 | Vectors for the AI summary index ([AstraDB is open](#5-open-points)) | PostgreSQL | Proposal |
+| pgvector | 0.8 | Vectors for the AI summary index ([AstraDB is open](#5-open-points)) | PostgreSQL | In use |
 | **Indexing, matching and MCP interface (TypeScript)** | | | | |
 | MCP TypeScript SDK v2 (`@modelcontextprotocol/server`, `@modelcontextprotocol/node`) | 2.4 | MCP server over Streamable HTTP | Apache-2.0 | Partner |
-| zod | 4.6 | Tool schemas and journey validation | MIT | Proposal |
-| pg (node-postgres) | 8.23 | Database access | MIT | Proposal |
+| zod | 4.6 | Tool schemas and journey validation | MIT | In use |
+| pg (node-postgres) | 8.23 | Database access | MIT | In use |
 | **AI services (hosted, keys from AIlixir)** | | | | |
 | Gemini via Vertex AI (`@google/genai`) | SDK 2.31 | Source summaries at index time | Apache-2.0 (SDK) | #13 |
 | OpenAI embeddings (`openai`) | SDK 7.45 | Vectors for the AI summary index | Apache-2.0 (SDK) | #13 |
 | **Build, test and delivery** | | | | |
-| Docker Compose | 5.6 | One command to build, one to start the demo | Apache-2.0 | Proposal |
-| uv · pnpm | 0.13 · 12.15 | Dependencies and lockfiles for the bill of materials | MIT / Apache-2.0 · MIT | Proposal |
-| pytest · Vitest · Ruff · Biome | 9.1 · 5.0 · 0.17 · 2.6 | Unit tests, linting and formatting | MIT; Biome also Apache-2.0 | Proposal |
-| mypy | 2.4 | Python type checks (strict, pydantic plugin) | MIT | Proposal |
-| GitHub Actions | service | Tests and lint on every pull request | service terms | Proposal |
+| Docker Compose | 5.6 | Local PostgreSQL with pgvector | Apache-2.0 | In use |
+| uv · pnpm | 0.13 · 12.15 | Dependencies and lockfiles for the bill of materials | MIT / Apache-2.0 · MIT | In use |
+| pytest · Vitest · Ruff · Biome | 9.1 · 5.0 · 0.17 · 2.6 | Unit tests, linting and formatting | MIT; Biome also Apache-2.0 | In use |
+| mypy | 2.4 | Python type checks (strict, pydantic plugin) | MIT | In use |
+| GitHub Actions | service | Tests and lint on every pull request | service terms | In use |
 | **Demo and test data** | | | | |
 | MCP Inspector | 2.12 | Demo client for reviews | MIT / Apache-2.0 | Proposal |
 | meddocgenerator (AIlixir) | main | Synthetic patient journeys | Apache-2.0, file headers to clarify | Partner |
