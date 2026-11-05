@@ -8,7 +8,7 @@ terms:
   - breast carcinoma
   - breast neoplasm
 
-# PubMed and arXiv search queries.
+# PubMed, arXiv and Zenodo search queries.
 queries:
   - breast cancer
   - breast carcinoma

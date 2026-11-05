@@ -7,7 +7,7 @@ terms:
   - hypertension
   - high blood pressure
 
-# PubMed and arXiv search queries.
+# PubMed, arXiv and Zenodo search queries.
 queries:
   - essential hypertension
   - high blood pressure treatment

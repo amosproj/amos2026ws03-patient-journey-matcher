@@ -14,7 +14,7 @@ terms:
   - mCRPC
   - nmCRPC
 
-# PubMed and arXiv search queries.
+# PubMed, arXiv and Zenodo search queries.
 queries:
   # Disease
   - prostate cancer

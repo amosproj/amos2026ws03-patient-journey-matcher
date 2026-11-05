@@ -22,7 +22,7 @@ terms: [prostate cancer, mCRPC]
 queries: [prostate cancer, prostate cancer biopsy]
 channels:
   - name: Demo channel
-    url: https://www.youtube.com/channel/UCdemo
+    url: https://www.youtube.com/channel/UCdemo0000000000000000ab
 """
 
 
@@ -38,7 +38,9 @@ def test_load_topic_reads_a_topic_file(tmp_path: Path) -> None:
     assert topic.id == "demo_topic"
     assert topic.terms == ["prostate cancer", "mCRPC"]
     assert topic.queries == ["prostate cancer", "prostate cancer biopsy"]
-    assert [channel.url for channel in topic.channels] == ["https://www.youtube.com/channel/UCdemo"]
+    assert [channel.url for channel in topic.channels] == [
+        "https://www.youtube.com/channel/UCdemo0000000000000000ab"
+    ]
 
 
 @pytest.mark.parametrize(
@@ -55,9 +57,15 @@ def test_load_topic_reads_a_topic_file(tmp_path: Path) -> None:
         (
             "demo_topic",
             "id: demo_topic\nlabel: Demo\nchannels:\n"
-            "  - {name: A, url: https://youtube.com/channel/UC1}\n"
-            "  - {name: B, url: https://youtube.com/channel/UC1}\n",
+            "  - {name: A, url: https://youtube.com/channel/UCdemo0000000000000000ab}\n"
+            "  - {name: B, url: https://youtube.com/channel/UCdemo0000000000000000ab}\n",
             "duplicate URLs",
+        ),
+        (
+            "demo_topic",
+            "id: demo_topic\nlabel: Demo\nchannels:\n"
+            "  - {name: A, url: 'https://www.youtube.com/watch?v=VC4g2l47rzc'}\n",
+            "not a channel URL",
         ),
     ],
 )
@@ -118,7 +126,7 @@ def test_seed_requests_use_channels_for_youtube(tmp_path: Path) -> None:
     [request] = seed_requests([topic], SourceName.YOUTUBE, max_results=3)
 
     assert request.source is SourceName.YOUTUBE
-    assert request.channel == "https://www.youtube.com/channel/UCdemo"
+    assert request.channel == "https://www.youtube.com/channel/UCdemo0000000000000000ab"
     assert request.topics == ["demo_topic"]
 
 
@@ -153,6 +161,63 @@ def test_seed_requests_use_feeds_for_podcasts(tmp_path: Path) -> None:
     assert request.since == date(2026, 1, 1)
 
 
+def test_one_podcast_key_cannot_name_two_feeds_across_topic_files(tmp_path: Path) -> None:
+    first = load_topic(write_topic(tmp_path, "podcast_topic", PODCAST_TOPIC))
+    other = PODCAST_TOPIC.replace("podcast_topic", "other_topic").replace(
+        "https://jcopodcast.libsyn.com/rss", "https://podcast.nejm.org/feed.xml"
+    )
+    second = load_topic(write_topic(tmp_path, "other_topic", other))
+
+    with pytest.raises(TopicFileError, match="'jco' names two feeds: .*libsyn.* and .*nejm"):
+        seed_requests([first, second], SourceName.PODCAST)
+
+
+def test_the_same_feed_with_other_details_is_still_one_feed(
+    tmp_path: Path, caplog: pytest.LogCaptureFixture
+) -> None:
+    # The README's example entry next to a bundled topic: same URL, shorter publisher name.
+    first = load_topic(write_topic(tmp_path, "podcast_topic", PODCAST_TOPIC))
+    other = PODCAST_TOPIC.replace("podcast_topic", "other_topic").replace(
+        "publisher: ASCO", "publisher: American Society of Clinical Oncology (ASCO)"
+    )
+    second = load_topic(write_topic(tmp_path, "other_topic", other))
+
+    [request] = seed_requests([first, second], SourceName.PODCAST)
+
+    assert request.feed is not None
+    assert request.feed.publisher == "ASCO"
+    assert request.topics == ["podcast_topic", "other_topic"]
+    assert "'jco': publisher differ" in caplog.text
+
+
+def test_topic_requests_that_are_invalid_name_their_topic_and_query(tmp_path: Path) -> None:
+    content = "id: demo_topic\nlabel: Demo\nterms: [a]\nqueries: [prostate, '\"']\n"
+    topic = load_topic(write_topic(tmp_path, "demo_topic", content))
+
+    with pytest.raises(TopicFileError, match="topic demo_topic, '\"': query has no words"):
+        seed_requests([topic], SourceName.ARXIV)
+
+
+def test_unreadable_topic_files_are_topic_errors(tmp_path: Path) -> None:
+    (tmp_path / "folder.yaml").mkdir()
+    latin = tmp_path / "latin_topic.yaml"
+    latin.write_bytes("id: latin_topic\nlabel: Caf\xe9\n".encode("latin-1"))
+
+    with pytest.raises(TopicFileError, match="cannot read topic file"):
+        load_topic(tmp_path / "folder.yaml")
+    with pytest.raises(TopicFileError, match="cannot read topic file"):
+        load_topic(latin)
+
+
+def test_schema_errors_in_topic_files_have_no_pydantic_dump(tmp_path: Path) -> None:
+    with pytest.raises(TopicFileError) as error_info:
+        load_topic(write_topic(tmp_path, "demo_topic", "id: demo_topic\nqueries: [a]\n"))
+
+    message = str(error_info.value)
+    assert "label: Field required" in message
+    assert "input_value" not in message and "pydantic.dev" not in message
+
+
 def test_podcast_keys_must_be_unique_and_valid(tmp_path: Path) -> None:
     duplicate = PODCAST_TOPIC + PODCAST_TOPIC.split("podcasts:\n", 1)[1]
     with pytest.raises(TopicFileError, match="duplicate keys"):
@@ -169,8 +234,10 @@ def test_every_bundled_podcast_key_maps_to_one_url() -> None:
     feeds = [feed for topic in bundled_topics() for feed in topic.podcasts]
 
     assert len(feeds) == 6
-    urls = {feed.key: feed.url for feed in feeds}
-    assert len(urls) == len({feed.key for feed in feeds})
+    urls: dict[str, set[str]] = {}
+    for feed in feeds:
+        urls.setdefault(feed.key, set()).add(feed.url)
+    assert all(len(feed_urls) == 1 for feed_urls in urls.values())
     feed, topic_ids = find_podcast("nejm_this_week")
     assert feed.publisher == "NEJM Group"
     assert topic_ids == ["general_medicine"]

@@ -5,19 +5,24 @@ They are the input of the architecture's scheduler. The files live in
 from the SS26 project.
 """
 
+import logging
 import re
 from collections.abc import Iterable, Sequence
 from datetime import date
 from pathlib import Path
+from typing import Any
 
 import yaml
-from pydantic import BaseModel, ConfigDict, Field, ValidationError, model_validator
+from pydantic import BaseModel, ConfigDict, Field, ValidationError, field_validator, model_validator
 
-from crawler.models import PodcastFeed, ScrapeRequest, SourceName
+from crawler.models import PodcastFeed, ScrapeRequest, SourceName, validation_message
+from crawler.sources.youtube import channel_lookup
 
 TOPICS_DIR = Path(__file__).resolve().parents[2] / "topics"
 
 _SLUG = re.compile(r"[a-z0-9]+(?:_[a-z0-9]+)*")
+
+logger = logging.getLogger(__name__)
 
 
 class TopicFileError(ValueError):
@@ -29,6 +34,12 @@ class Channel(BaseModel):
 
     name: str = Field(min_length=1)
     url: str = Field(min_length=1)
+
+    @field_validator("url")
+    @classmethod
+    def validate_url(cls, url: str) -> str:
+        channel_lookup(url)
+        return url
 
 
 class Topic(BaseModel):
@@ -80,12 +91,14 @@ def load_topic(reference: str | Path) -> Topic:
         data = yaml.safe_load(path.read_text(encoding="utf-8"))
     except FileNotFoundError as error:
         raise TopicFileError(f"topic file not found: {path}") from error
+    except (OSError, UnicodeDecodeError) as error:
+        raise TopicFileError(f"cannot read topic file {path}: {error}") from error
     except yaml.YAMLError as error:
         raise TopicFileError(f"{path}: invalid YAML: {error}") from error
     try:
         topic = Topic.model_validate(data)
     except ValidationError as error:
-        raise TopicFileError(f"{path}: {error}") from error
+        raise TopicFileError(f"{path}: {validation_message(error)}") from error
     if topic.id != path.stem:
         raise TopicFileError(f"{path}: id {topic.id!r} does not match the file name")
     return topic
@@ -104,12 +117,13 @@ def seed_requests(
     A query, channel or feed that several topics share becomes one request for all of them.
     """
     seeds: dict[str, list[str]] = {}
-    feeds: dict[str, PodcastFeed] = {}
+    feeds: dict[str, tuple[PodcastFeed, str]] = {}
     for topic in topics:
         if source is SourceName.YOUTUBE:
             values = [channel.url for channel in topic.channels]
         elif source is SourceName.PODCAST:
-            feeds.update((feed.key, feed) for feed in topic.podcasts)
+            for feed in topic.podcasts:
+                _add_feed(feeds, feed, topic.id)
             values = [feed.key for feed in topic.podcasts]
         else:
             values = topic.queries
@@ -120,35 +134,57 @@ def seed_requests(
     if not seeds:
         names = ", ".join(topic.id for topic in topics)
         raise TopicFileError(f"no {source.value} seeds in topic(s): {names}")
+    common: dict[str, Any] = {"source": source, "max_results": max_results, "since": since}
     if source is SourceName.YOUTUBE:
-        return [
-            ScrapeRequest(
-                source=source, channel=url, topics=topic_ids, max_results=max_results, since=since
-            )
-            for url, topic_ids in seeds.items()
-        ]
+        return [_request(url, topic_ids, channel=url, **common) for url, topic_ids in seeds.items()]
     if source is SourceName.PODCAST:
         return [
-            ScrapeRequest(
-                source=source,
-                feed=feeds[key],
-                topics=topic_ids,
-                max_results=max_results,
-                since=since,
-            )
+            _request(key, topic_ids, feed=feeds[key][0], **common)
             for key, topic_ids in seeds.items()
         ]
     return [
-        ScrapeRequest(
-            source=source,
-            query=query,
-            topics=topic_ids,
-            max_results=max_results,
-            since=since,
-            query_mode=query_mode,
-        )
+        _request(query, topic_ids, query=query, query_mode=query_mode, **common)
         for query, topic_ids in seeds.items()
     ]
+
+
+def _request(seed: str, topic_ids: list[str], **fields: Any) -> ScrapeRequest:
+    """A seed request; an invalid one names its topics and seed (`query has no words …`)."""
+    try:
+        return ScrapeRequest.model_validate({**fields, "topics": topic_ids})
+    except ValidationError as error:
+        raise TopicFileError(
+            f"topic {', '.join(topic_ids)}, {seed!r}: {validation_message(error)}"
+        ) from error
+
+
+def _add_feed(feeds: dict[str, tuple[PodcastFeed, str]], feed: PodcastFeed, topic_id: str) -> None:
+    """Note a topic's feed: one key must name one feed URL, as the key is in every episode ID.
+
+    The same URL with other details (another publisher wording, say) is still the same feed;
+    the first topic's entry wins and a warning shows the difference.
+    """
+    known, known_topic = feeds.setdefault(feed.key, (feed, topic_id))
+    if known.url != feed.url:
+        raise TopicFileError(
+            f"podcast key {feed.key!r} names two feeds: {known.url} ({known_topic}) and "
+            f"{feed.url} ({topic_id}); the key is part of every episode ID, so give each "
+            "feed its own key"
+        )
+    differing = [
+        name
+        for name in ("name", "publisher", "audience", "language")
+        if getattr(known, name) != getattr(feed, name)
+    ]
+    if differing:
+        logger.warning(
+            "podcast %r: %s differ between topics %s and %s; using the entry of %s",
+            feed.key,
+            ", ".join(differing),
+            known_topic,
+            topic_id,
+            known_topic,
+        )
 
 
 def bundled_topics() -> list[Topic]:
@@ -157,12 +193,16 @@ def bundled_topics() -> list[Topic]:
 
 def find_podcast(key: str) -> tuple[PodcastFeed, list[str]]:
     """A curated feed by key, with the IDs of the bundled topics that list it."""
-    matches = [
-        (feed, topic.id) for topic in bundled_topics() for feed in topic.podcasts if feed.key == key
-    ]
-    if not matches:
+    feeds: dict[str, tuple[PodcastFeed, str]] = {}
+    topic_ids: list[str] = []
+    for topic in bundled_topics():
+        for feed in topic.podcasts:
+            if feed.key == key:
+                _add_feed(feeds, feed, topic.id)
+                topic_ids.append(topic.id)
+    if not topic_ids:
         raise TopicFileError(f"unknown podcast feed {key!r}; add it to a topic file first")
-    return matches[0][0], [topic_id for _feed, topic_id in matches]
+    return feeds[key][0], topic_ids
 
 
 def topic_terms(topics: Iterable[Topic]) -> list[str]:
