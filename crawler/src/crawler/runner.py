@@ -27,7 +27,6 @@ from crawler.models import (
     RequestFailure,
     RequestKind,
     ScrapeRequest,
-    ScrapeRunError,
     SourceName,
 )
 from crawler.sources.arxiv import LOOKUP_BATCH_SIZE as ARXIV_LOOKUP_BATCH_SIZE
@@ -41,7 +40,6 @@ from crawler.sources.zenodo import ZenodoScraper
 __all__ = [
     "CollectionOptions",
     "CollectionSetupError",
-    "ScrapeRunError",
     "link_extractor_from_env",
     "run_requests",
     "source_from_env",
@@ -77,8 +75,6 @@ class CollectionOptions(BaseModel):
     retry_base_delay: float = Field(default=2.0, ge=0)
     retry_max_delay: float = Field(default=60.0, ge=0)
     handler_timeout: timedelta = timedelta(minutes=10)
-    lookup_batch_size: int | None = Field(default=None, ge=1)
-    """IDs per lookup request; defaults to the source's batch size."""
 
 
 class CrawlTask(BaseModel):
@@ -219,8 +215,8 @@ async def run_requests(
         topic_filter=TopicFilter(settings.topic_terms),
         known_ids=settings.known_ids,
         lookup_batch_size={
-            SourceName.PUBMED: settings.lookup_batch_size or EFETCH_BATCH_SIZE,
-            SourceName.ARXIV: settings.lookup_batch_size or ARXIV_LOOKUP_BATCH_SIZE,
+            SourceName.PUBMED: EFETCH_BATCH_SIZE,
+            SourceName.ARXIV: ARXIV_LOOKUP_BATCH_SIZE,
         },
     )
     failures: list[RequestFailure] = []

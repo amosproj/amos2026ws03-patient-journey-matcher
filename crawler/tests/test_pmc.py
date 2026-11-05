@@ -5,7 +5,7 @@ from urllib.error import HTTPError
 
 import pytest
 
-from crawler.models import FullTextLocator, SourceDocument, SourceName, SourceType
+from crawler.models import FullTextLocator, SourceDocument, SourceName
 from crawler.sources.pmc import PmcClient, pmc_licence
 
 BUCKET = "https://pmc-oa-opendata.s3.amazonaws.com"
@@ -60,7 +60,7 @@ def paper(pmcid: str | None) -> SourceDocument:
     return SourceDocument(
         id="pubmed:1",
         source=SourceName.PUBMED,
-        source_type=SourceType.PAPER,
+        content_type="journal_article",
         source_id="1",
         title="Paper",
         url="https://pubmed.ncbi.nlm.nih.gov/1/",

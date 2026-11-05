@@ -10,7 +10,6 @@ from crawler.models import (
     PodcastFeed,
     ScrapeRequest,
     SourceName,
-    SourceType,
 )
 from crawler.sources.podcast import SUMMARY_LIMIT, PodcastScraper
 
@@ -99,7 +98,6 @@ def test_episode_fields_follow_the_feed() -> None:
     assert fetch.requests[0].get_header("User-agent", "").startswith("patient-journey-matcher")
     assert first.id == "podcast:lancet_oncology:lancetonc.podbean.com/6cf59b4a"
     assert first.source is SourceName.PODCAST
-    assert first.source_type is SourceType.AUDIO
     assert first.content_type == "podcast_episode"
     assert first.title == "Iberdomide in multiple myeloma"
     assert first.url == "https://lancetonc.podbean.com/e/iberdomide"

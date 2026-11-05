@@ -26,12 +26,6 @@ class SourceName(StrEnum):
     PODCAST = "podcast"
 
 
-class SourceType(StrEnum):
-    PAPER = "paper"
-    VIDEO = "video"
-    AUDIO = "audio"
-
-
 class Author(BaseModel):
     name: str
     orcid: str | None = None
@@ -146,8 +140,7 @@ class SourceDocument(BaseModel):
 
     id: str
     source: SourceName
-    source_type: SourceType
-    content_type: ContentType | None = None
+    content_type: ContentType
     source_id: str
     version: str | None = None
     title: str
@@ -207,10 +200,6 @@ class SourceDocument(BaseModel):
             ) from error
 
 
-class ScrapeRunError(RuntimeError):
-    """Raised by `CollectionResult.raise_for_failures` when a run had failures."""
-
-
 class RequestFailure(BaseModel):
     """A queued request that failed permanently or ran out of retries."""
 
@@ -253,25 +242,6 @@ class CollectionResult(BaseModel):
     @property
     def ok(self) -> bool:
         return not self.failures and self.run_error is None
-
-    def raise_for_failures(self) -> None:
-        if self.run_error is not None:
-            raise ScrapeRunError(f"collection run aborted: {self.run_error}")
-        if not self.failures:
-            return
-        permanent = [failure for failure in self.failures if not failure.retryable]
-        exhausted = [failure for failure in self.failures if failure.retryable]
-        messages = []
-        if permanent:
-            messages.append(
-                f"{len(permanent)} request(s) failed without retry: {permanent[0].error}"
-            )
-        if exhausted:
-            messages.append(
-                f"{len(exhausted)} request(s) failed after "
-                f"{exhausted[0].retries} retries: {exhausted[0].error}"
-            )
-        raise ScrapeRunError("; ".join(messages))
 
 
 def source_document_id(source: SourceName, source_id: str) -> str:

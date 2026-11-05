@@ -141,7 +141,7 @@ class TracedScraper:
             count=len(documents),
             requested=len(request.ids) if request.is_lookup else None,
             docs=[
-                {"id": document.id, "title": document.title, "type": document.source_type.value}
+                {"id": document.id, "title": document.title, "type": document.content_type}
                 for document in documents
             ],
         )

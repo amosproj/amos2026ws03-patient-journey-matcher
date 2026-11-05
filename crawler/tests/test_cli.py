@@ -13,7 +13,6 @@ from crawler.models import (
     ScrapeRequest,
     SourceDocument,
     SourceName,
-    SourceType,
 )
 from crawler.runner import CollectionOptions
 
@@ -147,7 +146,7 @@ def document() -> SourceDocument:
     return SourceDocument(
         id="pubmed:1",
         source=SourceName.PUBMED,
-        source_type=SourceType.PAPER,
+        content_type="journal_article",
         source_id="1",
         title="Prostate cancer",
         url="https://pubmed.ncbi.nlm.nih.gov/1/",

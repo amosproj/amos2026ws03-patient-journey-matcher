@@ -7,7 +7,7 @@ from urllib.parse import parse_qs, urlparse
 import pytest
 from pydantic import ValidationError
 
-from crawler.models import Author, FullTextLocator, ScrapeRequest, SourceName, SourceType, Subject
+from crawler.models import Author, FullTextLocator, ScrapeRequest, SourceName, Subject
 from crawler.sources.zenodo import ZenodoScraper, zenodo_licence
 
 
@@ -122,7 +122,6 @@ def test_parse_record_uses_the_concept_id_and_keeps_the_version() -> None:
     assert document.source_id == "133631780"
     assert document.version == "13363178"
     assert document.source is SourceName.ZENODO
-    assert document.source_type is SourceType.PAPER
     assert document.content_type == "journal_article"
     assert document.url == "https://zenodo.org/records/13363178"
     assert document.title == "Serum phosphorus in prostate cancer"
@@ -192,11 +191,12 @@ def test_zenodo_licence(rights_id: str | None, expected: str | None) -> None:
     assert zenodo_licence(rights_id) == expected
 
 
-def test_videos_are_videos() -> None:
-    document = ZenodoScraper.parse_record(record("1", resource_type="video"))
+def test_videos_are_kept_and_other_resource_types_skipped() -> None:
+    video = ZenodoScraper.parse_record(record("1", resource_type="video"))
 
-    assert document.source_type is SourceType.VIDEO
-    assert document.content_type == "video"
+    assert video is not None
+    assert video.content_type == "video"
+    assert ZenodoScraper.parse_record(record("2", resource_type="dataset")) is None
 
 
 @pytest.mark.parametrize(

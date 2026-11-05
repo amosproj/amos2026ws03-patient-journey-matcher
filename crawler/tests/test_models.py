@@ -9,10 +9,8 @@ from crawler.models import (
     QueryProvenance,
     RequestFailure,
     ScrapeRequest,
-    ScrapeRunError,
     SourceDocument,
     SourceName,
-    SourceType,
     source_document_id,
 )
 
@@ -55,7 +53,7 @@ def test_found_by_dumps_to_the_documents_table_shapes() -> None:
     document = SourceDocument(
         id="pubmed:1",
         source=SourceName.PUBMED,
-        source_type=SourceType.PAPER,
+        content_type="journal_article",
         source_id="1",
         title="Provenance test",
         url="https://example.test/1",
@@ -88,15 +86,11 @@ def failure(retryable: bool) -> RequestFailure:
     )
 
 
-def test_result_raises_only_when_something_failed() -> None:
-    CollectionResult(documents=[]).raise_for_failures()
-
-    with pytest.raises(ScrapeRunError, match="1 request\\(s\\) failed after 3 retries"):
-        CollectionResult(documents=[], failures=[failure(True)]).raise_for_failures()
-    with pytest.raises(ScrapeRunError, match="failed without retry"):
-        CollectionResult(documents=[], failures=[failure(False)]).raise_for_failures()
-    with pytest.raises(ScrapeRunError, match="aborted"):
-        CollectionResult(documents=[], run_error="RuntimeError: boom").raise_for_failures()
+def test_result_is_ok_only_without_failures() -> None:
+    assert CollectionResult(documents=[]).ok
+    assert not CollectionResult(documents=[], failures=[failure(True)]).ok
+    assert not CollectionResult(documents=[], failures=[failure(False)]).ok
+    assert not CollectionResult(documents=[], run_error="RuntimeError: boom").ok
 
 
 @pytest.mark.parametrize(
@@ -118,7 +112,7 @@ def test_document_normalizes_source_publication_dates(
     document = SourceDocument(
         id="pubmed:1",
         source=SourceName.PUBMED,
-        source_type=SourceType.PAPER,
+        content_type="journal_article",
         source_id="1",
         title="Publication date test",
         url="https://example.test/1",
@@ -138,7 +132,7 @@ def test_document_rejects_an_invalid_publication_date() -> None:
         SourceDocument(
             id="pubmed:1",
             source=SourceName.PUBMED,
-            source_type=SourceType.PAPER,
+            content_type="journal_article",
             source_id="1",
             title="Invalid publication date test",
             url="https://example.test/1",

@@ -12,13 +12,13 @@ from crawler.models import (
     CitationProvenance,
     CollectionResult,
     CollectionStats,
+    ContentType,
     FoundBy,
     QueryProvenance,
     RequestFailure,
     ScrapeRequest,
     SourceDocument,
     SourceName,
-    SourceType,
     source_document_id,
 )
 from crawler.sources.arxiv import is_arxiv_id
@@ -26,6 +26,10 @@ from crawler.sources.pubmed import is_pmid
 
 REFERENCES_BATCH_SIZE = 100
 """Citing papers per reference request (one ELink call, or one Semantic Scholar call each)."""
+PAPER_TYPES: frozenset[ContentType] = frozenset(
+    {"journal_article", "preprint", "conference_paper", "report"}
+)
+"""Content types whose references are followed."""
 
 _NON_WORD = re.compile(r"[\W_]+")
 
@@ -133,7 +137,7 @@ class Frontier:
             if (
                 expand
                 and depth < self._max_depth
-                and document.source_type is SourceType.PAPER
+                and document.content_type in PAPER_TYPES
                 and document.id not in self._expanded
             ):
                 self._expanded.add(document.id)

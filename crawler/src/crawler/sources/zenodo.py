@@ -17,7 +17,6 @@ from crawler.models import (
     ScrapeRequest,
     SourceDocument,
     SourceName,
-    SourceType,
     Subject,
     source_document_id,
 )
@@ -86,7 +85,11 @@ class ZenodoScraper(BaseScraper):
         page = 1
         while len(documents) < request.max_results and page * size <= RESULT_WINDOW:
             records = self._search(query, sort, size, page)
-            documents.extend(self.parse_record(record) for record in records)
+            documents.extend(
+                document
+                for record in records
+                if (document := self.parse_record(record)) is not None
+            )
             if len(records) < size:
                 break
             page += 1
@@ -118,12 +121,16 @@ class ZenodoScraper(BaseScraper):
         return [hit for hit in hits if isinstance(hit, dict) and hit.get("id")]
 
     @classmethod
-    def parse_record(cls, record: Mapping[str, Any]) -> SourceDocument:
+    def parse_record(cls, record: Mapping[str, Any]) -> SourceDocument | None:
+        """None for resource types we do not collect."""
         metadata = record.get("metadata") or {}
+        resource_type = str((metadata.get("resource_type") or {}).get("id") or "")
+        content_type = CONTENT_TYPES.get(resource_type)
+        if content_type is None:
+            return None
         parent = record.get("parent") or {}
         record_id = str(record["id"])
         concept_id = str(parent.get("id") or record_id)
-        resource_type = str((metadata.get("resource_type") or {}).get("id") or "")
         doi = normalize_doi(((record.get("pids") or {}).get("doi") or {}).get("identifier"))
         concept_doi = normalize_doi(((parent.get("pids") or {}).get("doi") or {}).get("identifier"))
         journal = ((record.get("custom_fields") or {}).get("journal:journal") or {}).get("title")
@@ -132,8 +139,7 @@ class ZenodoScraper(BaseScraper):
         return SourceDocument(
             id=source_document_id(cls.source, concept_id),
             source=cls.source,
-            source_type=SourceType.VIDEO if resource_type == "video" else SourceType.PAPER,
-            content_type=CONTENT_TYPES.get(resource_type),
+            content_type=content_type,
             source_id=concept_id,
             version=record_id,
             title=str(metadata.get("title") or "").strip(),

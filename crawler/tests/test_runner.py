@@ -11,10 +11,8 @@ from crawler.models import (
     CollectionResult,
     QueryProvenance,
     ScrapeRequest,
-    ScrapeRunError,
     SourceDocument,
     SourceName,
-    SourceType,
     source_document_id,
 )
 from crawler.runner import CollectionOptions, CollectionSetupError, run_requests
@@ -25,7 +23,7 @@ def paper(native_id: str, title: str = "Outcomes in prostate cancer") -> SourceD
     return SourceDocument(
         id=source_document_id(SourceName.PUBMED, native_id),
         source=SourceName.PUBMED,
-        source_type=SourceType.PAPER,
+        content_type="journal_article",
         source_id=native_id,
         title=title,
         url=f"https://pubmed.ncbi.nlm.nih.gov/{native_id}/",
@@ -202,8 +200,7 @@ def test_a_failed_request_keeps_the_documents_of_the_others() -> None:
     )
     assert result.stats.finished_requests == 1
     assert result.stats.failed_requests == 1
-    with pytest.raises(ScrapeRunError, match="failed after 3 retries"):
-        result.raise_for_failures()
+    assert not result.ok
 
 
 def test_permanent_errors_are_not_retried() -> None:
@@ -217,8 +214,6 @@ def test_permanent_errors_are_not_retried() -> None:
     [failure] = result.failures
     assert failure.retryable is False
     assert failure.error == "ValueError: channel not found"
-    with pytest.raises(ScrapeRunError, match="failed without retry: ValueError"):
-        result.raise_for_failures()
 
 
 def test_references_are_looked_up_once_and_off_topic_papers_are_dropped() -> None:
@@ -254,7 +249,7 @@ def test_cited_papers_are_looked_up_in_batches() -> None:
     cited = [str(pmid) for pmid in range(100, 550)]
     scraper = FakeScraper(searches={"q": ["1"]}, records={pmid: paper(pmid) for pmid in cited})
 
-    result = collect([search("q")], scraper, FakeExtractor({"1": cited}), lookup_batch_size=200)
+    result = collect([search("q")], scraper, FakeExtractor({"1": cited}))
 
     assert [len(batch) for batch in scraper.lookups] == [200, 200, 50]
     assert result.stats.documents == 451

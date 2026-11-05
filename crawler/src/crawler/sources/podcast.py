@@ -24,7 +24,6 @@ from crawler.models import (
     ScrapeRequest,
     SourceDocument,
     SourceName,
-    SourceType,
     source_document_id,
 )
 from crawler.sources.base import NETWORK_TIMEOUT_SECONDS, USER_AGENT, BaseScraper
@@ -131,7 +130,6 @@ class PodcastScraper(BaseScraper):
         return SourceDocument(
             id=source_document_id(cls.source, native_id),
             source=cls.source,
-            source_type=SourceType.AUDIO,
             content_type="podcast_episode",
             source_id=native_id,
             title=text(item, "title"),

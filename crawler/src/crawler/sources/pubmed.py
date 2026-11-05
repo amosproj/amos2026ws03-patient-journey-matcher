@@ -12,7 +12,6 @@ from crawler.models import (
     ScrapeRequest,
     SourceDocument,
     SourceName,
-    SourceType,
     Subject,
     source_document_id,
 )
@@ -52,7 +51,7 @@ def inline_text(value: object) -> str:
 
 
 def ncbi_credentials_from_env() -> tuple[str | None, str | None]:
-    email = os.getenv("NCBI_ENTREZ_EMAIL") or os.getenv("NCBI_EMAIL") or ""
+    email = os.getenv("NCBI_ENTREZ_EMAIL") or ""
     return email.strip() or None, os.getenv("NCBI_API_KEY") or None
 
 
@@ -94,7 +93,6 @@ class PubMedScraper(BaseScraper):
         self._email = email.strip() if email else None
         self._api_key = api_key or None
         self._entrez = entrez
-        self._entrez.max_tries = 1
         self._pmc = pmc
 
     @classmethod
@@ -161,7 +159,6 @@ class PubMedScraper(BaseScraper):
         return SourceDocument(
             id=source_document_id(cls.source, source_id),
             source=cls.source,
-            source_type=SourceType.PAPER,
             content_type="journal_article",
             source_id=source_id,
             version=_attributes(citation["PMID"]).get("Version"),

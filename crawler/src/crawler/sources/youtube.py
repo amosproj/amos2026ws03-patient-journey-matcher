@@ -11,7 +11,6 @@ from crawler.models import (
     ScrapeRequest,
     SourceDocument,
     SourceName,
-    SourceType,
     Subject,
     source_document_id,
 )
@@ -42,7 +41,7 @@ class YouTubeScraper(BaseScraper):
 
     @classmethod
     def from_env(cls) -> "YouTubeScraper":
-        api_key = os.getenv("YOUTUBE_API_KEY") or os.getenv("YOUTUBE_DATA_API_V3") or ""
+        api_key = os.getenv("YOUTUBE_API_KEY") or ""
         return cls(api_key)
 
     def scrape(self, request: ScrapeRequest) -> list[SourceDocument]:
@@ -147,7 +146,6 @@ class YouTubeScraper(BaseScraper):
         return SourceDocument(
             id=source_document_id(cls.source, source_id),
             source=cls.source,
-            source_type=SourceType.VIDEO,
             content_type="video",
             source_id=source_id,
             title=str(snippet.get("title", "")).strip(),

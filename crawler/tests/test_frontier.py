@@ -3,11 +3,11 @@ import pytest
 from crawler.frontier import Frontier, TopicFilter
 from crawler.models import (
     CitationProvenance,
+    ContentType,
     QueryProvenance,
     ScrapeRequest,
     SourceDocument,
     SourceName,
-    SourceType,
     Subject,
     source_document_id,
 )
@@ -18,13 +18,14 @@ def paper(
     title: str = "Outcomes in prostate cancer",
     *,
     source: SourceName = SourceName.PUBMED,
+    content_type: ContentType = "journal_article",
     abstract: str | None = None,
     subjects: list[str] | None = None,
 ) -> SourceDocument:
     return SourceDocument(
         id=source_document_id(source, native_id),
         source=source,
-        source_type=SourceType.PAPER,
+        content_type=content_type,
         source_id=native_id,
         title=title,
         url=f"https://example.test/{native_id}",
@@ -75,6 +76,15 @@ def test_seed_documents_are_expanded_once_and_never_filtered() -> None:
     assert first == [["1", "2"]]
     assert again == []
     assert state.stats.skipped_off_topic == 0
+
+
+def test_only_papers_have_their_references_followed() -> None:
+    state = frontier()
+
+    assert state.add_documents(SEED, 0, [paper("1", content_type="video")], expand=True) == []
+    assert state.add_documents(SEED, 0, [paper("2", content_type="preprint")], expand=True) == [
+        ["2"]
+    ]
 
 
 def test_documents_are_not_expanded_at_the_maximum_depth() -> None:
