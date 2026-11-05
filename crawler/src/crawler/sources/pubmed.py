@@ -4,7 +4,6 @@ import re
 import xml.etree.ElementTree as ET
 from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
-from http.client import HTTPException
 from typing import Any
 
 from Bio import Entrez
@@ -117,11 +116,12 @@ class PubMedScraper(BaseScraper):
 
     @staticmethod
     def _enrich(pmc: PmcClient, document: SourceDocument) -> SourceDocument:
-        """Best effort: a failed PMC lookup leaves the record without licence and full text
-        instead of failing the request with every record already fetched."""
+        """Network errors fail the request, so Crawlee retries it: a record that only looks
+        as if PMC did not have it would lose its licence and full text for good. A broken
+        PMC answer for one record leaves just that record without them."""
         try:
             return pmc.enrich(document)
-        except (OSError, HTTPException, ET.ParseError, ValueError) as error:
+        except (ET.ParseError, ValueError) as error:
             logger.warning("PMC lookup failed for %s: %s", document.id, error)
             return document
 
@@ -130,18 +130,21 @@ class PubMedScraper(BaseScraper):
             raise ValueError("PubMed search requires a query")
         search_arguments: dict[str, Any] = {
             "db": "pubmed",
-            "sort": "pub date" if request.since else "relevance",
             "retmax": min(request.max_results, MAX_SEARCH_RESULTS),
             "retmode": "xml",
             "term": request.query,
         }
         if request.since:
-            # Entry date: when the record reached PubMed, so late-indexed papers are not missed.
+            # Entry date: when the record reached PubMed, so late-indexed papers are not
+            # missed. Without `sort`, PubMed lists the newest entries first, so a capped
+            # search keeps them too; a publication date sort would put them last.
             search_arguments.update(
                 mindate=request.since.strftime("%Y/%m/%d"),
                 maxdate="3000/12/31",
                 datetype="edat",
             )
+        else:
+            search_arguments["sort"] = "relevance"
 
         search_handle = self._entrez.esearch(**search_arguments)
         try:
@@ -150,6 +153,7 @@ class PubMedScraper(BaseScraper):
             search_handle.close()
 
     def _fetch(self, identifiers: Sequence[str]) -> list[SourceDocument]:
+        """Articles and books (Biopython lists them apart), in the order of the IDs."""
         documents: list[SourceDocument] = []
         for offset in range(0, len(identifiers), EFETCH_BATCH_SIZE):
             batch = identifiers[offset : offset + EFETCH_BATCH_SIZE]
@@ -158,9 +162,13 @@ class PubMedScraper(BaseScraper):
                 response = self._entrez.read(fetch_handle)
             finally:
                 fetch_handle.close()
-            documents.extend(
-                self.parse_article(article) for article in response.get("PubmedArticle", [])
-            )
+            parsed = [
+                *(self.parse_article(article) for article in response.get("PubmedArticle", [])),
+                *(self.parse_book(book) for book in response.get("PubmedBookArticle", [])),
+            ]
+            position = {pmid: index for index, pmid in enumerate(batch)}
+            parsed.sort(key=lambda document: position.get(document.source_id, len(batch)))
+            documents.extend(parsed)
         return documents
 
     @classmethod
@@ -199,6 +207,61 @@ class PubMedScraper(BaseScraper):
             },
             extra=cls._extra(citation, article, pubmed_data),
         )
+
+    @classmethod
+    def parse_book(cls, book_record: Mapping[str, Any]) -> SourceDocument:
+        """A book or book chapter of NCBI Bookshelf, e.g. StatPearls or the PDQ summaries."""
+        document = book_record["BookDocument"]
+        book = document.get("Book", {})
+        book_data = book_record.get("PubmedBookData", {})
+        source_id = str(document["PMID"])
+        article_ids = {**cls._article_ids(book_data), **cls._article_ids(document)}
+        languages = document.get("Language", [])
+        book_title = inline_text(book.get("BookTitle"))
+        title = inline_text(document.get("ArticleTitle")) or book_title
+        return SourceDocument(
+            id=source_document_id(cls.source, source_id),
+            source=cls.source,
+            content_type="book",
+            source_id=source_id,
+            version=_attributes(document["PMID"]).get("Version"),
+            title=title.removesuffix("."),
+            url=f"https://pubmed.ncbi.nlm.nih.gov/{source_id}/",
+            authors=cls._book_authors(document, book),
+            abstract=cls._abstract(document) or None,
+            language=language_tag(languages[0]) if languages else None,
+            # The chapter's own date, which PubMed cites; the book's date is when it started.
+            published_at=cls._date_string(document.get("ContributionDate") or book.get("PubDate")),
+            source_updated_at=cls._date_time(
+                document.get("DateRevised") or document.get("ContributionDate")
+            ),
+            doi=normalize_doi(article_ids.get("doi")),
+            journal=book_title or None,
+            publication_types=[
+                str(value).strip()
+                for value in document.get("PublicationType", [])
+                if str(value).strip()
+            ],
+            subjects=cls._subjects(document),
+            external_ids={"bookshelf_id": article_ids["bookaccession"]}
+            if "bookaccession" in article_ids
+            else {},
+            extra=cls._extra(document, document, book_data),
+        )
+
+    @classmethod
+    def _book_authors(cls, document: Mapping[str, Any], book: Mapping[str, Any]) -> list[Author]:
+        """The chapter's authors, else the book's; editors are not authors."""
+        for container in (document, book):
+            authors = [
+                author
+                for author_list in container.get("AuthorList", [])
+                if _attributes(author_list).get("Type", "authors") == "authors"
+                for author in author_list
+            ]
+            if authors:
+                return cls._authors({"AuthorList": authors})
+        return []
 
     @staticmethod
     def _article_ids(pubmed_data: Mapping[str, Any]) -> dict[str, str]:
@@ -325,15 +388,18 @@ class PubMedScraper(BaseScraper):
         except (KeyError, TypeError, ValueError):
             return None
 
-    @staticmethod
-    def _publication_date(article: Mapping[str, Any]) -> str | None:
+    @classmethod
+    def _publication_date(cls, article: Mapping[str, Any]) -> str | None:
         article_dates = article.get("ArticleDate", [])
-        date_parts: Mapping[str, Any]
         if article_dates:
-            date_parts = article_dates[0]
-        else:
-            date_parts = article.get("Journal", {}).get("JournalIssue", {}).get("PubDate", {})
+            return cls._date_string(article_dates[0])
+        return cls._date_string(article.get("Journal", {}).get("JournalIssue", {}).get("PubDate"))
 
+    @staticmethod
+    def _date_string(date_parts: Mapping[str, Any] | None) -> str | None:
+        """`{Year, Month, Day}` or `{MedlineDate}` → `2026-10-31`, `2026-10` or `2026`."""
+        if not date_parts:
+            return None
         year = str(date_parts.get("Year", "")).strip()
         month = str(date_parts.get("Month", "")).strip()
         day = str(date_parts.get("Day", "")).strip()

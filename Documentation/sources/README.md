@@ -27,7 +27,7 @@ Table `documents`, one row per source record. PMC has no rows; it fills the PubM
 | `source` | text | yes | `pubmed`, `arxiv`, `zenodo`, `youtube`, `podcast` |
 | `native_id` | text | yes | ID in the source, no version suffix |
 | `version` | text | | Version the row describes |
-| `content_type` | text | yes | `journal_article`, `preprint`, `conference_paper`, `poster`, `presentation`, `report`, `video`, `podcast_episode` |
+| `content_type` | text | yes | `journal_article`, `preprint`, `conference_paper`, `poster`, `presentation`, `report`, `book`, `video`, `podcast_episode` |
 | `publication_types` | text[] | | Source labels, e.g. PubMed `Review` |
 | `title` | text | yes | Plain text |
 | `authors` | jsonb | yes | `[{name, orcid, affiliation}]`; channel or host for media |
@@ -81,7 +81,7 @@ Per the proposal on `feature/7-mcp-interface` (#7). Reads `documents` and the in
 - `get_source(source_id)`: `source_id` = `documents.id`. Calls `download()` with the "passes the original on" column and the stored `version`. Not allowed: abstract or description plus link. Deleted row (e.g. YouTube after 30 days): `SOURCE_NOT_FOUND`. Shares the request budgets with the indexer.
 - Field mapping: `id` → `source_id`; `canonical_url` → `url`; `published_at` + `published_precision` → `published_date` (`2026`, `2026-09`, `2026-09-13`); `authors[].name` → `authors`; `source`, `title`, `licence` unchanged.
 - Needed in #7, not made here:
-  1. Replace `source_type` (`paper`, `preprint`, `video`, `podcast`) with `content_type` and its 8 values, in results and the filter. The values come from the source labels, so no mapping is needed.
+  1. Replace `source_type` (`paper`, `preprint`, `video`, `podcast`) with `content_type` and its 9 values, in results and the filter. The values come from the source labels, so no mapping is needed.
   2. Add `content_kind: description` (Zenodo, YouTube, show notes). Keep `abstract`; `summary` would clash with the AI summary approach.
   3. Document the fallback: abstract or description plus `url`, not an error.
 

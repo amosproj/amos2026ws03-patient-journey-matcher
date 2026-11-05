@@ -5,6 +5,7 @@ from email.message import Message
 from typing import Any
 from urllib.error import HTTPError
 
+import pytest
 from Bio import Entrez
 
 from crawler.models import Author, ScrapeRequest, SourceDocument, SourceName, Subject
@@ -271,6 +272,18 @@ def test_searches_since_a_date_use_the_entry_date_and_stay_below_the_id_cap() ->
     assert arguments["datetype"] == "edat"
     assert arguments["mindate"] == "2026/01/02"
     assert arguments["retmax"] == MAX_SEARCH_RESULTS
+    # PubMed's default order is the newest entry first, so a capped search keeps the papers
+    # indexed late; sorting by publication date would cut exactly those.
+    assert "sort" not in arguments
+
+
+def test_searches_without_since_rank_by_relevance() -> None:
+    entrez = FakeEntrez([])
+
+    PubMedScraper(entrez=entrez).scrape(ScrapeRequest(source=SourceName.PUBMED, query="q"))
+
+    [(_call, arguments)] = entrez.calls
+    assert arguments["sort"] == "relevance"
 
 
 class FakePmc:
@@ -295,15 +308,103 @@ def test_pmc_enriches_every_fetched_record() -> None:
     assert {document.licence for document in documents} == {"CC-BY"}
 
 
-def test_a_failed_pmc_lookup_keeps_the_record_without_licence() -> None:
-    failing = {"pubmed:1": HTTPError("https://pmc", 503, "Slow Down", Message(), None)}
-    pmc = FakePmc({**failing, "pubmed:2": ET.ParseError("truncated")})
+def test_a_broken_pmc_answer_keeps_the_record_without_licence() -> None:
+    pmc = FakePmc({"pubmed:2": ET.ParseError("truncated")})
     scraper = PubMedScraper(entrez=FakeEntrez(["1", "2", "3"]), pmc=pmc)  # type: ignore[arg-type]
 
     documents = scraper.scrape(ScrapeRequest(source=SourceName.PUBMED, query="q"))
 
     assert [(document.id, document.licence) for document in documents] == [
-        ("pubmed:1", None),
+        ("pubmed:1", "CC-BY"),
         ("pubmed:2", None),
         ("pubmed:3", "CC-BY"),
+    ]
+
+
+def test_a_pmc_network_error_fails_the_request_so_it_is_retried() -> None:
+    # Swallowed, it would leave a record that looks as if PMC did not have it.
+    pmc = FakePmc({"pubmed:1": HTTPError("https://pmc", 503, "Slow Down", Message(), None)})
+    scraper = PubMedScraper(entrez=FakeEntrez(["1", "2"]), pmc=pmc)  # type: ignore[arg-type]
+
+    with pytest.raises(HTTPError):
+        scraper.scrape(ScrapeRequest(source=SourceName.PUBMED, query="q"))
+
+
+BOOK_CHAPTER = (
+    b'<?xml version="1.0" ?>'
+    b'<!DOCTYPE PubmedArticleSet PUBLIC "-//NLM//DTD PubMedArticle, 1st January 2025//EN"'
+    b' "https://dtd.nlm.nih.gov/ncbi/pubmed/out/pubmed_250101.dtd">'
+    b"<PubmedArticleSet><PubmedBookArticle><BookDocument>"
+    b'<PMID Version="1">26389471</PMID>'
+    b'<ArticleIdList><ArticleId IdType="bookaccession">NBK66036</ArticleId></ArticleIdList>'
+    b"<Book><Publisher><PublisherName>National Cancer Institute (US)</PublisherName>"
+    b"</Publisher><BookTitle>PDQ Cancer Information Summaries</BookTitle>"
+    b"<PubDate><Year>2002</Year></PubDate>"
+    b'<AuthorList Type="editors"><Author><LastName>Editor</LastName><ForeName>Ed</ForeName>'
+    b"</Author></AuthorList></Book>"
+    b"<ArticleTitle>Prostate Cancer Treatment (PDQ&#xae;): Health Professional Version"
+    b"</ArticleTitle><Language>eng</Language>"
+    b'<AuthorList Type="authors"><Author><CollectiveName>PDQ Adult Treatment Editorial Board'
+    b"</CollectiveName></Author></AuthorList>"
+    b'<PublicationType UI="D016454">Review</PublicationType>'
+    b"<Abstract><AbstractText>This PDQ summary is about prostate cancer treatment."
+    b"</AbstractText><CopyrightInformation>Public domain</CopyrightInformation></Abstract>"
+    b'<KeywordList Owner="NOTNLM"><Keyword MajorTopicYN="N">prostate cancer</Keyword>'
+    b'</KeywordList><KeywordList Owner="NLM"><Keyword MajorTopicYN="N">prostate cancer'
+    b"</Keyword></KeywordList>"
+    b"<ContributionDate><Year>2025</Year><Month>2</Month><Day>13</Day></ContributionDate>"
+    b"</BookDocument><PubmedBookData><History>"
+    b'<PubMedPubDate PubStatus="entrez"><Year>2025</Year><Month>2</Month><Day>13</Day>'
+    b"</PubMedPubDate></History><PublicationStatus>ppublish</PublicationStatus>"
+    b'<ArticleIdList><ArticleId IdType="pubmed">26389471</ArticleId></ArticleIdList>'
+    b"</PubmedBookData></PubmedBookArticle></PubmedArticleSet>"
+)
+
+
+def test_book_chapters_are_parsed_like_articles() -> None:
+    # Real Biopython output, so the repeated author lists keep their `Type`.
+    record = Entrez.read(io.BytesIO(BOOK_CHAPTER))
+
+    document = PubMedScraper.parse_book(record["PubmedBookArticle"][0])
+
+    assert document.id == "pubmed:26389471"
+    assert document.content_type == "book"
+    assert document.version == "1"
+    assert document.title == "Prostate Cancer Treatment (PDQ®): Health Professional Version"
+    assert document.url == "https://pubmed.ncbi.nlm.nih.gov/26389471/"
+    assert document.authors == [Author(name="PDQ Adult Treatment Editorial Board")]
+    assert document.abstract == "This PDQ summary is about prostate cancer treatment."
+    assert document.language == "en"
+    assert document.published_at == "2025-02-13"
+    assert document.source_updated_at == datetime(2025, 2, 13, tzinfo=UTC)
+    assert document.journal == "PDQ Cancer Information Summaries"
+    assert document.publication_types == ["Review"]
+    assert document.subjects == [Subject(scheme="keyword", label="prostate cancer", major=False)]
+    assert document.external_ids == {"bookshelf_id": "NBK66036"}
+    assert document.extra == {"entrez_date": "2025-02-13", "copyright": "Public domain"}
+
+
+class FakeEntrezWithBooks(FakeEntrez):
+    """Biopython lists articles and books apart, whatever the order of the IDs."""
+
+    def efetch(self, **arguments: Any) -> FakeHandle:
+        self.calls.append(("efetch", arguments))
+        book = Entrez.read(io.BytesIO(BOOK_CHAPTER))["PubmedBookArticle"][0]
+        return FakeHandle(
+            {
+                "PubmedArticle": [minimal_article("1"), minimal_article("2")],
+                "PubmedBookArticle": [book],
+            }
+        )
+
+
+def test_search_results_keep_books_and_the_order_of_the_ids() -> None:
+    scraper = PubMedScraper(entrez=FakeEntrezWithBooks(["1", "26389471", "2"]))
+
+    documents = scraper.scrape(ScrapeRequest(source=SourceName.PUBMED, query="q"))
+
+    assert [(document.id, document.content_type) for document in documents] == [
+        ("pubmed:1", "journal_article"),
+        ("pubmed:26389471", "book"),
+        ("pubmed:2", "journal_article"),
     ]
