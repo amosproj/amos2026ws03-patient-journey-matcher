@@ -5,6 +5,7 @@ import logging
 import sys
 from collections.abc import Sequence
 from datetime import date
+from pathlib import Path
 
 from pydantic import ValidationError
 
@@ -13,6 +14,10 @@ from crawler.runner import CollectionOptions, CollectionSetupError, run_requests
 from crawler.seeds import TopicFileError, find_podcast, load_topic, seed_requests, topic_terms
 
 SINCE_HELP = "only records added to the source since this date (YYYY-MM-DD)"
+KNOWN_IDS_HELP = (
+    "IDs of stored documents, one per line (pubmed:12345) or the JSON Lines output of a run; "
+    "cited papers among them are not fetched again"
+)
 
 
 def parser() -> argparse.ArgumentParser:
@@ -43,6 +48,9 @@ def parser() -> argparse.ArgumentParser:
                 type=int,
                 default=1,
                 help="levels of references to follow; 0 collects the search results only",
+            )
+            paper.add_argument(
+                "--known-ids", type=known_ids_file, metavar="FILE", help=KNOWN_IDS_HELP
             )
         _add_max_requests_argument(paper)
         if source is not SourceName.PUBMED:
@@ -79,6 +87,43 @@ def _add_max_requests_argument(command: argparse.ArgumentParser) -> None:
     command.add_argument(
         "--max-requests", type=int, help="stop after this many queued requests (safety cap)"
     )
+
+
+def known_ids_file(value: str) -> frozenset[str]:
+    """Read a `--known-ids` file; blank lines and lines starting with `#` are skipped."""
+    path = Path(value)
+    try:
+        lines = path.read_text(encoding="utf-8").splitlines()
+    except (OSError, UnicodeDecodeError) as error:
+        raise argparse.ArgumentTypeError(f"cannot read {path}: {error}") from error
+    ids: set[str] = set()
+    for number, line in enumerate(lines, 1):
+        text = line.strip()
+        if not text or text.startswith("#"):
+            continue
+        document_id = _document_id(text)
+        if document_id is None:
+            raise argparse.ArgumentTypeError(
+                f"{path}, line {number}: expected a document ID such as pubmed:12345 "
+                "or a JSON record with an id"
+            )
+        ids.add(document_id)
+    return frozenset(ids)
+
+
+def _document_id(line: str) -> str | None:
+    """`pubmed:12345` as it is, or the `id` of a JSON record from the output of a run."""
+    value: object = line
+    if line.startswith("{"):
+        try:
+            record = json.loads(line)
+        except json.JSONDecodeError:
+            return None
+        value = record.get("id") if isinstance(record, dict) else None
+    if not isinstance(value, str):
+        return None
+    source, _, native_id = value.partition(":")
+    return value if source in SourceName and native_id else None
 
 
 def requests_from_args(
@@ -128,6 +173,7 @@ def requests_from_args(
     options = CollectionOptions(
         max_depth=getattr(arguments, "max_depth", 0),
         topic_terms=tuple(terms),
+        known_ids=getattr(arguments, "known_ids", None) or frozenset(),
         max_requests=arguments.max_requests,
     )
     return seeds, options

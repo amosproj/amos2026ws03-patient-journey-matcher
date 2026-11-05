@@ -52,8 +52,44 @@ def test_cli_builds_zenodo_request_without_reference_following() -> None:
     assert request.query_mode == "or"
     assert request.since is not None
     assert options.max_depth == 0
-    with pytest.raises(SystemExit):
-        parser().parse_args(["zenodo", "prostate cancer", "--max-depth", "1"])
+    for option in (["--max-depth", "1"], ["--known-ids", "known.txt"]):
+        with pytest.raises(SystemExit):
+            parser().parse_args(["zenodo", "prostate cancer", *option])
+
+
+def test_known_ids_come_from_a_list_or_from_the_output_of_a_run(tmp_path: Path) -> None:
+    known = tmp_path / "known.jsonl"
+    record = json.dumps({"id": "pubmed:2", "title": "Prostate cancer"})
+    known.write_text(f"# stored earlier\npubmed:1\n\n{record}\n", encoding="utf-8")
+
+    _requests, options = requests_from_args(
+        parser().parse_args(["pubmed", "prostate cancer", "--known-ids", str(known)])
+    )
+
+    assert options.known_ids == {"pubmed:1", "pubmed:2"}
+
+
+@pytest.mark.parametrize(
+    ("content", "message"),
+    [
+        (None, "cannot read"),
+        ("12345\n", "line 1: expected a document ID"),
+        ('pubmed:1\n{"title": "no id"}\n', "line 2: expected a document ID"),
+        ("{broken json\n", "line 1: expected a document ID"),
+    ],
+)
+def test_a_broken_known_ids_file_is_a_usage_error(
+    tmp_path: Path, capsys: pytest.CaptureFixture[str], content: str | None, message: str
+) -> None:
+    known = tmp_path / "known.txt"
+    if content is not None:
+        known.write_text(content, encoding="utf-8")
+
+    with pytest.raises(SystemExit) as exit_info:
+        parser().parse_args(["arxiv", "prostate cancer", "--known-ids", str(known)])
+
+    assert exit_info.value.code == 2
+    assert message in capsys.readouterr().err
 
 
 def test_raw_arxiv_queries_have_no_topic_filter() -> None:
