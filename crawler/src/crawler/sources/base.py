@@ -1,3 +1,4 @@
+import re
 from abc import ABC, abstractmethod
 
 from crawler.models import ScrapeRequest, SourceDocument, SourceName
@@ -9,6 +10,15 @@ USER_AGENT = (
     "patient-journey-matcher/0.1 "
     "(+https://github.com/amosproj/amos2026ws03-patient-journey-matcher)"
 )
+
+_SECRET_PARAMETER = re.compile(
+    r"([?&](?:key|api_key|apikey|access_token|token)=)[^&#\s\"'<>)]+", re.IGNORECASE
+)
+
+
+def redact_secrets(text: str) -> str:
+    """Replace API keys in the URLs of a text, e.g. an error message, with `<redacted>`."""
+    return _SECRET_PARAMETER.sub(r"\1<redacted>", text)
 
 
 class BaseScraper(ABC):

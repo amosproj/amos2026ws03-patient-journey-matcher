@@ -4,6 +4,7 @@ import logging
 import socket
 from collections.abc import Awaitable, Callable, Iterable, Sequence
 from datetime import timedelta
+from http.client import HTTPException
 from pathlib import Path
 from urllib.error import HTTPError as UrlHttpError
 from uuid import uuid4
@@ -12,6 +13,7 @@ from arxiv import HTTPError as ArxivHttpError
 from arxiv import UnexpectedEmptyPageError
 from crawlee import ConcurrencySettings, Request
 from crawlee.crawlers import BasicCrawler, BasicCrawlingContext
+from crawlee.errors import UserHandlerTimeoutError
 from crawlee.storage_clients import MemoryStorageClient
 from crawlee.storages import RequestQueue
 from dotenv import load_dotenv
@@ -32,7 +34,7 @@ from crawler.models import (
 )
 from crawler.sources.arxiv import LOOKUP_BATCH_SIZE as ARXIV_LOOKUP_BATCH_SIZE
 from crawler.sources.arxiv import ArxivScraper
-from crawler.sources.base import NETWORK_TIMEOUT_SECONDS, BaseScraper
+from crawler.sources.base import NETWORK_TIMEOUT_SECONDS, BaseScraper, redact_secrets
 from crawler.sources.podcast import PodcastScraper
 from crawler.sources.pubmed import EFETCH_BATCH_SIZE, PubMedScraper
 from crawler.sources.youtube import YouTubeScraper
@@ -109,16 +111,24 @@ def _is_retryable_error(error: Exception) -> bool:
         return _retryable_status(error.code)
     if isinstance(error, UnexpectedEmptyPageError):
         return True
-    return isinstance(error, OSError)
+    # `HTTPException`: a broken or cut-off response, e.g. `IncompleteRead`.
+    return isinstance(error, OSError | HTTPException)
 
 
 def _retry_after(error: Exception) -> float | None:
-    """Seconds to wait from a `Retry-After` header, if the source sent one."""
+    """Seconds to wait from the `Retry-After` header of an HTTP 429 or 503 response.
+
+    Zenodo sends the header with every response, as the time until its rate limit resets,
+    so for other statuses it is no reason to wait.
+    """
+    status: int | None = None
     value: object = None
     if isinstance(error, UrlHttpError) and error.headers is not None:
-        value = error.headers.get("Retry-After")
+        status, value = error.code, error.headers.get("Retry-After")
     elif isinstance(error, GoogleHttpError):
-        value = error.resp.get("retry-after")
+        status, value = int(error.status_code), error.resp.get("retry-after")
+    if status not in {429, 503}:
+        return None
     if isinstance(value, str) and value.strip().isdigit():
         return float(value.strip())
     return None
@@ -180,7 +190,14 @@ def _describe(task: CrawlTask) -> str:
 
 
 def _describe_error(error: BaseException) -> str:
-    return f"{type(error).__name__}: {error}"
+    """Type and message of an error; API keys in URLs are redacted, should a source leak one.
+
+    Crawlee wraps a `TimeoutError` raised by a source (a read timeout) in its own error with
+    a generic message, so the source's error is shown instead.
+    """
+    if isinstance(error, UserHandlerTimeoutError) and error.__cause__ is not None:
+        error = error.__cause__
+    return redact_secrets(f"{type(error).__name__}: {error}")
 
 
 def _handler_timeout(seeds: Sequence[ScrapeRequest], settings: CollectionOptions) -> timedelta:

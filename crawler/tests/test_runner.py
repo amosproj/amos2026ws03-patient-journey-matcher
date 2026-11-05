@@ -1,11 +1,14 @@
 import asyncio
+import logging
 import threading
 import time
 from collections.abc import Sequence
 from email.message import Message
 from urllib.error import HTTPError
 
+import httplib2
 import pytest
+from googleapiclient.errors import HttpError as GoogleHttpError
 
 from crawler.links.base import LinkExtractor
 from crawler.models import (
@@ -18,7 +21,7 @@ from crawler.models import (
     source_document_id,
 )
 from crawler.runner import CollectionOptions, CollectionSetupError, run_requests
-from crawler.sources.base import BaseScraper
+from crawler.sources.base import BaseScraper, redact_secrets
 
 
 def paper(native_id: str, title: str = "Outcomes in prostate cancer") -> SourceDocument:
@@ -195,6 +198,44 @@ def test_rate_limits_are_retried_and_retry_after_wins() -> None:
 
     assert sleep.delays == [7.0, 4.0]
     assert result.ok
+
+
+def test_retry_after_only_counts_for_rate_limits_and_unavailable_servers() -> None:
+    # Zenodo sends Retry-After with every response, as the time until its quota resets.
+    errors: list[Exception] = [http_error(500, retry_after="60"), http_error(503, "7")]
+    scraper = FakeScraper(searches={"q": ["1"]}, errors={"q": errors})
+    sleep = RecordingSleep()
+
+    result = collect([search("q")], scraper, sleep=sleep, max_depth=0)
+
+    assert sleep.delays == [2.0, 7.0]
+    assert result.ok
+
+
+def youtube_error(status: int) -> GoogleHttpError:
+    """The YouTube client puts the request URL, API key included, into every error."""
+    return GoogleHttpError(
+        httplib2.Response({"status": status}),
+        b'{"error": {"message": "Request contains an invalid argument."}}',
+        uri="https://youtube.googleapis.com/youtube/v3/channels?part=id&key=SECRET-KEY&alt=json",
+    )
+
+
+def test_api_keys_in_errors_are_redacted(caplog: pytest.LogCaptureFixture) -> None:
+    errors: list[Exception] = [youtube_error(503), youtube_error(400)]
+    scraper = FakeScraper(searches={"q": ["1"]}, errors={"q": errors})
+
+    with caplog.at_level(logging.WARNING, logger="crawler.runner"):
+        result = collect([search("q")], scraper, max_depth=0)
+
+    [failure] = result.failures
+    assert "key=<redacted>&alt=json" in failure.error
+    retry_logs = [
+        record.getMessage() for record in caplog.records if record.name == "crawler.runner"
+    ]
+    assert len(retry_logs) == 1
+    assert "key=<redacted>" in retry_logs[0]
+    assert "SECRET-KEY" not in failure.error + retry_logs[0]
 
 
 def test_backoff_is_capped() -> None:
@@ -399,3 +440,27 @@ def test_missing_credentials_fail_before_the_crawl() -> None:
 
     with pytest.raises(CollectionSetupError, match="YOUTUBE_API_KEY"):
         asyncio.run(run_requests([search("q")], source_factory=missing_key))
+
+
+def test_read_timeouts_are_reported_with_their_own_message() -> None:
+    errors: list[Exception] = [TimeoutError("The read operation timed out") for _ in range(4)]
+    scraper = FakeScraper(searches={"q": ["1"]}, errors={"q": errors})
+
+    result = collect([search("q")], scraper, max_depth=0)
+
+    [failure] = result.failures
+    assert failure.error == "TimeoutError: The read operation timed out"
+    assert failure.retries == 3
+
+
+@pytest.mark.parametrize(
+    ("text", "expected"),
+    [
+        ("GET /v3?part=id&key=AIza-x_1&alt=json", "GET /v3?part=id&key=<redacted>&alt=json"),
+        ("(url: /x?apikey=abc123)", "(url: /x?apikey=<redacted>)"),
+        ("/x?token=abc#top", "/x?token=<redacted>#top"),
+        ("/x?pageToken=CAoQAA", "/x?pageToken=CAoQAA"),
+    ],
+)
+def test_redact_secrets(text: str, expected: str) -> None:
+    assert redact_secrets(text) == expected
