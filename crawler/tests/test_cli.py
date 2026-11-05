@@ -37,7 +37,17 @@ def test_cli_builds_pubmed_request() -> None:
     assert request.max_results == 3
     assert request.since is not None
     assert options.max_depth == 1
-    assert options.topic_terms == ("prostate cancer",)
+    assert options.topic_terms == ()
+
+
+@pytest.mark.parametrize(("mode", "match_all"), [("and", True), ("or", False)])
+def test_the_words_of_an_arxiv_query_filter_cited_papers(mode: str, match_all: bool) -> None:
+    arguments = parser().parse_args(["arxiv", "prostate cancer", "--query-mode", mode])
+
+    _requests, options = requests_from_args(arguments)
+
+    assert options.topic_terms == ("prostate", "cancer")
+    assert options.match_all_terms is match_all
 
 
 def test_cli_builds_zenodo_request_without_reference_following() -> None:
@@ -66,6 +76,18 @@ def test_known_ids_come_from_a_list_or_from_the_output_of_a_run(tmp_path: Path) 
     )
 
     assert options.known_ids == {"pubmed:1", "pubmed:2"}
+
+
+def test_known_arxiv_ids_lose_their_version(tmp_path: Path) -> None:
+    known = tmp_path / "known.jsonl"
+    record = json.dumps({"id": "arxiv:hep-th/9901001v1"})
+    known.write_text(f"arxiv:2101.00001v2\narxiv:2101.00002\n{record}\n", encoding="utf-8")
+
+    _requests, options = requests_from_args(
+        parser().parse_args(["arxiv", "prostate cancer", "--known-ids", str(known)])
+    )
+
+    assert options.known_ids == {"arxiv:2101.00001", "arxiv:2101.00002", "arxiv:hep-th/9901001"}
 
 
 @pytest.mark.parametrize(

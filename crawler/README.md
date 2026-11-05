@@ -21,6 +21,10 @@ uv run crawler pubmed --topic prostate_cancer
 Sources: `pubmed`, `arxiv`, `zenodo`, `youtube`, `podcast`. `uv run crawler <source> --help`
 lists the options. Each output line is a `SourceDocument` (`src/crawler/models.py`).
 
+Cited papers are kept only if they match the topic filter: the topic's `terms`, or for a
+single arXiv query its words (all of them; any with `--query-mode or`). Single PubMed and
+`raw` queries keep every cited paper.
+
 ## Topic files
 
 One YAML file per disease area in `topics/`; the file name is the ID.

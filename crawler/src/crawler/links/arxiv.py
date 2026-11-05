@@ -13,6 +13,9 @@ from crawler.models import SourceName
 from crawler.sources.arxiv import is_arxiv_id, split_version
 from crawler.sources.base import NETWORK_TIMEOUT_SECONDS, USER_AGENT
 
+REFERENCES_BATCH_SIZE = 1
+"""Papers per reference request. Semantic Scholar takes one paper per call, so a failed
+call is retried on its own instead of with the calls already made for other papers."""
 REFERENCES_URL = (
     "https://api.semanticscholar.org/graph/v1/paper/ARXIV:{arxiv_id}/references"
     "?fields=externalIds&limit=1000"

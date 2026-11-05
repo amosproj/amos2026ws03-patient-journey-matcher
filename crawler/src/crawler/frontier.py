@@ -25,7 +25,7 @@ from crawler.sources.arxiv import is_arxiv_id
 from crawler.sources.pubmed import is_pmid
 
 REFERENCES_BATCH_SIZE = 100
-"""Citing papers per reference request (one ELink call, or one Semantic Scholar call each)."""
+"""Citing papers per reference request unless the source sets its own; one ELink call."""
 PAPER_TYPES: frozenset[ContentType] = frozenset(
     {"journal_article", "preprint", "conference_paper", "report"}
 )
@@ -48,33 +48,37 @@ def is_valid_native_id(source: SourceName, native_id: str) -> bool:
 
 
 class TopicFilter:
-    """Keeps a cited document if a topic term occurs in its title, abstract or subjects.
+    """Keeps a cited document if a topic term (with `match_all`, every term) occurs in its
+    title, abstract or subjects.
 
     Matching ignores case and punctuation, needs whole words, and accepts a plural `s` or
     `es` on the last word, so `prostatic neoplasm` matches the MeSH heading
     `Prostatic Neoplasms` and `ADT` does not match `adtech`. No terms means no filter.
     """
 
-    def __init__(self, terms: Iterable[str]) -> None:
+    def __init__(self, terms: Iterable[str], *, match_all: bool = False) -> None:
         self.terms = [term for term in dict.fromkeys(map(normalize_text, terms)) if term]
+        self.match_all = match_all
 
     def matches(self, document: SourceDocument) -> bool:
         if not self.terms:
             return True
         fields = [
-            document.title,
-            document.abstract,
-            document.description,
-            *(subject.label for subject in document.subjects),
+            f" {normalize_text(field)} "
+            for field in (
+                document.title,
+                document.abstract,
+                document.description,
+                *(subject.label for subject in document.subjects),
+            )
+            if field
         ]
-        return any(self._contains_term(field) for field in fields if field)
+        found = (any(self._contains(field, term) for field in fields) for term in self.terms)
+        return all(found) if self.match_all else any(found)
 
-    def _contains_term(self, field: str) -> bool:
-        text = f" {normalize_text(field)} "
-        return any(
-            f" {term} " in text or f" {term}s " in text or f" {term}es " in text
-            for term in self.terms
-        )
+    @staticmethod
+    def _contains(text: str, term: str) -> bool:
+        return f" {term} " in text or f" {term}s " in text or f" {term}es " in text
 
 
 def _batches(values: Sequence[str], size: int) -> list[list[str]]:
@@ -99,11 +103,13 @@ class Frontier:
         topic_filter: TopicFilter,
         known_ids: AbstractSet[str] = frozenset(),
         lookup_batch_size: Mapping[SourceName, int] | None = None,
+        references_batch_size: Mapping[SourceName, int] | None = None,
     ) -> None:
         self._max_depth = max_depth
         self._topic_filter = topic_filter
         self._known_ids = known_ids
         self._lookup_batch_size = dict(lookup_batch_size or {})
+        self._references_batch_size = dict(references_batch_size or {})
         self._documents: dict[str, SourceDocument] = {}
         self._expanded: set[str] = set()
         self._claimed: set[str] = set()
@@ -142,7 +148,9 @@ class Frontier:
             ):
                 self._expanded.add(document.id)
                 to_expand.append(document.source_id)
-        return _batches(to_expand, REFERENCES_BATCH_SIZE)
+        return _batches(
+            to_expand, self._references_batch_size.get(request.source, REFERENCES_BATCH_SIZE)
+        )
 
     def add_references(
         self, source: SourceName, cited: Mapping[str, Sequence[str]]

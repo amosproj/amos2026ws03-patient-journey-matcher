@@ -38,6 +38,8 @@ RUNS_DIR = HERE / "runs"
 ENV_KEYS = ("NCBI_ENTREZ_EMAIL", "NCBI_API_KEY", "SEMANTIC_SCHOLAR_API_KEY", "YOUTUBE_API_KEY")
 SHELL_KEYS = {key for key in ENV_KEYS if os.environ.get(key)}
 RUN_ID = re.compile(r"[0-9A-Za-z-]+")
+ALLOWED_HOSTS: set[str] = set()
+"""`Host` header values of this server, set in main(); other hosts are DNS rebinding."""
 
 LOCK = threading.Lock()
 CURRENT: "Run | None" = None
@@ -422,12 +424,31 @@ class Handler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
+    def refuse_foreign(self, *, changes_state: bool) -> bool:
+        """Answer 403 to requests another website can make the browser send.
+
+        A foreign `Host` is DNS rebinding. A foreign `Origin` is a cross-site request, and a
+        body that is not JSON could come from a cross-site form without a CORS preflight.
+        """
+        origin = self.headers.get("Origin")
+        content_type = (self.headers.get("Content-Type") or "").partition(";")[0].strip()
+        foreign = (
+            self.headers.get("Host") not in ALLOWED_HOSTS
+            or (origin is not None and origin.removeprefix("http://") not in ALLOWED_HOSTS)
+            or (changes_state and content_type.lower() != "application/json")
+        )
+        if foreign:
+            self.send_json({"error": "Forbidden"}, 403)
+        return foreign
+
     def read_json(self) -> dict[str, Any]:
         length = int(self.headers.get("Content-Length") or 0)
         data = json.loads(self.rfile.read(length) or b"{}")
         return data if isinstance(data, dict) else {}
 
     def do_GET(self) -> None:
+        if self.refuse_foreign(changes_state=False):
+            return
         url = urlparse(self.path)
         path = url.path
         if path in ("/", "/index.html"):
@@ -465,6 +486,8 @@ class Handler(BaseHTTPRequestHandler):
             self.send_json({"error": "not found"}, 404)
 
     def do_POST(self) -> None:
+        if self.refuse_foreign(changes_state=True):
+            return
         path = urlparse(self.path).path
         if path == "/api/runs":
             self.start_run()
@@ -481,6 +504,8 @@ class Handler(BaseHTTPRequestHandler):
             self.send_json({"error": "not found"}, 404)
 
     def do_DELETE(self) -> None:
+        if self.refuse_foreign(changes_state=True):
+            return
         path = urlparse(self.path).path
         if path == "/api/runs":
             self.send_json({"deleted": delete_all_runs()})
@@ -566,6 +591,10 @@ def main() -> None:
     runner_logger.propagate = False
     warnings.showwarning = show_warning
 
+    host = f"[{arguments.host}]" if ":" in arguments.host else arguments.host
+    ALLOWED_HOSTS.update(
+        f"{name}:{arguments.port}" for name in (host, "127.0.0.1", "localhost", "[::1]")
+    )
     refresh_env()
     load_summaries()
     server = ThreadingHTTPServer((arguments.host, arguments.port), Handler)

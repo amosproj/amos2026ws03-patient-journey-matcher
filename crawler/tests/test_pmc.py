@@ -127,7 +127,7 @@ def test_records_outside_the_bucket_stay_unchanged() -> None:
     assert bucket.urls == [list_url("PMC404")]
 
 
-def test_server_errors_reach_the_runner_for_a_retry() -> None:
+def test_server_errors_are_raised() -> None:
     class Failing(FakeBucket):
         def __call__(self, request: urllib.request.Request, timeout: float) -> bytes:
             raise HTTPError(request.full_url, 503, "Slow Down", Message(), None)

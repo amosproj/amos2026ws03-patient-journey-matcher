@@ -18,7 +18,8 @@ from dotenv import load_dotenv
 from googleapiclient.errors import HttpError as GoogleHttpError
 from pydantic import BaseModel, ConfigDict, Field
 
-from crawler.frontier import Frontier, TopicFilter
+from crawler.frontier import REFERENCES_BATCH_SIZE, Frontier, TopicFilter
+from crawler.links.arxiv import REFERENCES_BATCH_SIZE as ARXIV_REFERENCES_BATCH_SIZE
 from crawler.links.arxiv import ArxivLinkExtractor
 from crawler.links.base import LinkExtractor
 from crawler.links.pubmed import PubMedLinkExtractor
@@ -67,6 +68,8 @@ class CollectionOptions(BaseModel):
     """How many levels of references to follow; 0 collects the seeds only."""
     topic_terms: tuple[str, ...] = ()
     """Terms a cited paper must contain to be kept; empty keeps every cited paper."""
+    match_all_terms: bool = False
+    """Keep a cited paper only if it contains every topic term, not just one."""
     known_ids: frozenset[str] = frozenset()
     """Document IDs stored by earlier runs; cited papers among them are not fetched again."""
     max_requests: int | None = Field(default=None, ge=1)
@@ -75,6 +78,9 @@ class CollectionOptions(BaseModel):
     retry_base_delay: float = Field(default=2.0, ge=0)
     retry_max_delay: float = Field(default=60.0, ge=0)
     handler_timeout: timedelta = timedelta(minutes=10)
+    """Time limit of one request, before `item_timeout` is added for each item."""
+    item_timeout: timedelta = timedelta(seconds=10)
+    """Extra time per item of the largest request; arXiv spends about 3 s per paper."""
 
 
 class CrawlTask(BaseModel):
@@ -177,10 +183,30 @@ def _describe_error(error: BaseException) -> str:
     return f"{type(error).__name__}: {error}"
 
 
-async def _attempt[T](context: BasicCrawlingContext, work: Awaitable[T]) -> T:
-    """Await source work; mark permanent errors so Crawlee does not retry them."""
+def _handler_timeout(seeds: Sequence[ScrapeRequest], settings: CollectionOptions) -> timedelta:
+    """The time limit for every request of the run, sized for its largest request.
+
+    Sources make paced calls per item (arXiv one licence call per paper, 3 s apart), so a
+    request's run time grows with the number of items it returns.
+    """
+    sizes = [len(seed.ids) if seed.is_lookup else seed.max_results for seed in seeds]
+    if settings.max_depth > 0:
+        sizes += [REFERENCES_BATCH_SIZE, EFETCH_BATCH_SIZE, ARXIV_LOOKUP_BATCH_SIZE]
+    return settings.handler_timeout + settings.item_timeout * max(sizes, default=0)
+
+
+async def _attempt[A, T](context: BasicCrawlingContext, call: Callable[[A], T], argument: A) -> T:
+    """Run a source call in a worker thread; mark errors that a retry cannot fix."""
+    work = asyncio.ensure_future(asyncio.to_thread(call, argument))
     try:
-        return await work
+        return await asyncio.shield(work)
+    except asyncio.CancelledError:
+        # The request timed out or the run was cancelled, but the thread cannot be stopped.
+        # Wait for it, so the next request never shares the source's pacing with it, and
+        # do not repeat its work.
+        context.request.no_retry = True
+        await asyncio.wait([work])
+        raise
     except Exception as error:
         if not _is_retryable_error(error):
             context.request.no_retry = True
@@ -212,12 +238,13 @@ async def run_requests(
     }
     frontier = Frontier(
         max_depth=settings.max_depth,
-        topic_filter=TopicFilter(settings.topic_terms),
+        topic_filter=TopicFilter(settings.topic_terms, match_all=settings.match_all_terms),
         known_ids=settings.known_ids,
         lookup_batch_size={
             SourceName.PUBMED: EFETCH_BATCH_SIZE,
             SourceName.ARXIV: ARXIV_LOOKUP_BATCH_SIZE,
         },
+        references_batch_size={SourceName.ARXIV: ARXIV_REFERENCES_BATCH_SIZE},
     )
     failures: list[RequestFailure] = []
     queued: set[str] = set()
@@ -232,7 +259,7 @@ async def run_requests(
         storage_client=storage_client,
         max_request_retries=settings.max_retries,
         max_requests_per_crawl=settings.max_requests,
-        request_handler_timeout=settings.handler_timeout,
+        request_handler_timeout=_handler_timeout(seed_list, settings),
         use_session_pool=False,
         abort_on_error=False,
         configure_logging=False,
@@ -246,7 +273,7 @@ async def run_requests(
             raise ValueError(f"{task.kind} task without a source request")
         request = task.request
         scraper = scrapers[task.source]
-        documents = await _attempt(context, asyncio.to_thread(scraper.scrape, request))
+        documents = await _attempt(context, scraper.scrape, request)
         # The fallible work is done. Update the run state, then return the follow-ups;
         # Crawlee adds them only after the handler succeeds, so a failed attempt leaves
         # no trace in either.
@@ -264,7 +291,7 @@ async def run_requests(
         extractor = extractors.get(task.source)
         if extractor is None:
             raise ValueError(f"no link extractor for {task.source.value}")
-        cited = await _attempt(context, asyncio.to_thread(extractor.cited_ids, task.ids))
+        cited = await _attempt(context, extractor.cited_ids, task.ids)
         batches = frontier.add_references(task.source, cited)
         return [
             _queue_request(
@@ -322,7 +349,7 @@ async def run_requests(
                 depth=task.depth,
                 error=_describe_error(error),
                 retries=context.request.retry_count,
-                retryable=_is_retryable_error(error),
+                retryable=not context.request.no_retry,
             )
         )
         settled.add(context.request.unique_key)

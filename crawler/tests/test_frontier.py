@@ -53,6 +53,20 @@ def test_topic_filter(terms: list[str], document: SourceDocument, expected: bool
     assert TopicFilter(terms).matches(document) is expected
 
 
+@pytest.mark.parametrize(
+    ("document", "expected"),
+    [
+        (paper("1", "Radiotherapy", abstract="Outcomes in prostate cancer"), True),
+        (paper("1", "Prostate cancer outcomes"), False),
+    ],
+)
+def test_topic_filter_can_require_every_term(document: SourceDocument, expected: bool) -> None:
+    terms = ["prostate", "cancer", "radiotherapy"]
+
+    assert TopicFilter(terms, match_all=True).matches(document) is expected
+    assert TopicFilter(terms).matches(document) is True
+
+
 def frontier(**overrides: object) -> Frontier:
     settings: dict[str, object] = {
         "max_depth": 1,
@@ -85,6 +99,17 @@ def test_only_papers_have_their_references_followed() -> None:
     assert state.add_documents(SEED, 0, [paper("2", content_type="preprint")], expand=True) == [
         ["2"]
     ]
+
+
+def test_a_source_can_request_references_in_smaller_batches() -> None:
+    state = frontier(references_batch_size={SourceName.ARXIV: 1})
+    seed = ScrapeRequest(source=SourceName.ARXIV, query="prostate cancer")
+    papers = [
+        paper(native_id, source=SourceName.ARXIV, content_type="preprint")
+        for native_id in ("2601.00001", "2601.00002")
+    ]
+
+    assert state.add_documents(seed, 0, papers, expand=True) == [["2601.00001"], ["2601.00002"]]
 
 
 def test_documents_are_not_expanded_at_the_maximum_depth() -> None:

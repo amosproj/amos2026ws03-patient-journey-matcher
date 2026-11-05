@@ -1,4 +1,6 @@
 import asyncio
+import threading
+import time
 from collections.abc import Sequence
 from email.message import Message
 from urllib.error import HTTPError
@@ -58,6 +60,28 @@ class FakeScraper(BaseScraper):
     @property
     def lookups(self) -> list[list[str]]:
         return [request.ids for request in self.calls if request.is_lookup]
+
+
+class SlowScraper(FakeScraper):
+    """Sleeps per query and records calls that start while another one still runs."""
+
+    def __init__(self, delays: dict[str, float], **arguments: object) -> None:
+        super().__init__(**arguments)  # type: ignore[arg-type]
+        self.delays = delays
+        self.running = 0
+        self.overlaps = 0
+        self._lock = threading.Lock()
+
+    def scrape(self, request: ScrapeRequest) -> list[SourceDocument]:
+        with self._lock:
+            self.overlaps += self.running > 0
+            self.running += 1
+        try:
+            time.sleep(self.delays.get(request.query or "", 0))
+            return super().scrape(request)
+        finally:
+            with self._lock:
+                self.running -= 1
 
 
 class FakeExtractor(LinkExtractor):
@@ -180,6 +204,39 @@ def test_backoff_is_capped() -> None:
     collect([search("q")], scraper, sleep=sleep, max_depth=0, retry_max_delay=30)
 
     assert sleep.delays == [30.0]
+
+
+def test_a_timed_out_request_is_not_retried_and_never_overlaps_the_next() -> None:
+    scraper = SlowScraper({"slow": 0.6}, searches={"slow": ["1"], "fast": ["2"]})
+
+    result = collect(
+        [search("slow"), search("fast")],
+        scraper,
+        max_depth=0,
+        handler_timeout=0.2,
+        item_timeout=0,
+    )
+
+    assert [request.query for request in scraper.calls] == ["slow", "fast"]
+    assert scraper.overlaps == 0
+    assert [document.id for document in result.documents] == ["pubmed:2"]
+    [failure] = result.failures
+    assert (failure.detail, failure.retries, failure.retryable) == ("slow", 0, False)
+    assert failure.error.startswith("TimeoutError")
+
+
+def test_the_time_limit_grows_with_the_largest_request() -> None:
+    scraper = SlowScraper({"q": 0.4}, searches={"q": ["1"]})
+
+    result = collect(
+        [search("q", max_results=10)],
+        scraper,
+        max_depth=0,
+        handler_timeout=0.2,
+        item_timeout=0.05,
+    )
+
+    assert result.ok
 
 
 def test_a_failed_request_keeps_the_documents_of_the_others() -> None:

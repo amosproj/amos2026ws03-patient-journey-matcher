@@ -9,9 +9,10 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
-from crawler.models import CollectionResult, ScrapeRequest, SourceName
+from crawler.models import CollectionResult, ScrapeRequest, SourceName, source_document_id
 from crawler.runner import CollectionOptions, CollectionSetupError, run_requests
 from crawler.seeds import TopicFileError, find_podcast, load_topic, seed_requests, topic_terms
+from crawler.sources.arxiv import split_version
 
 SINCE_HELP = "only records added to the source since this date (YYYY-MM-DD)"
 KNOWN_IDS_HELP = (
@@ -112,7 +113,11 @@ def known_ids_file(value: str) -> frozenset[str]:
 
 
 def _document_id(line: str) -> str | None:
-    """`pubmed:12345` as it is, or the `id` of a JSON record from the output of a run."""
+    """`pubmed:12345`, or the `id` of a JSON record from the output of a run.
+
+    arXiv IDs lose their version, as in the IDs the crawler compares them with; older runs
+    wrote `arxiv:2101.00001v2`.
+    """
     value: object = line
     if line.startswith("{"):
         try:
@@ -123,7 +128,11 @@ def _document_id(line: str) -> str | None:
     if not isinstance(value, str):
         return None
     source, _, native_id = value.partition(":")
-    return value if source in SourceName and native_id else None
+    if source not in SourceName or not native_id:
+        return None
+    if source == SourceName.ARXIV:
+        return source_document_id(SourceName.ARXIV, split_version(native_id)[0])
+    return value
 
 
 def requests_from_args(
@@ -132,6 +141,7 @@ def requests_from_args(
     source = SourceName(arguments.source)
     query_mode: str = getattr(arguments, "query_mode", "and")
     since: date | None = getattr(arguments, "since", None)
+    match_all = False
     if arguments.topic:
         topics = [load_topic(reference) for reference in arguments.topic]
         seeds = seed_requests(
@@ -168,11 +178,16 @@ def requests_from_args(
                 query_mode=query_mode,
             )
         ]
-        # A raw query has operators and fields, so it cannot double as a filter term.
-        terms = [] if query_mode == "raw" else [arguments.query]
+        # The query words double as the topic filter, all of them in `and` mode. Not for a
+        # raw query (operators and fields) or PubMed, which maps words to MeSH headings
+        # (`prostate cancer` to `Prostatic Neoplasms`): their words would drop on-topic papers.
+        no_filter = source is SourceName.PUBMED or query_mode == "raw"
+        terms = [] if no_filter else arguments.query.split()
+        match_all = query_mode == "and"
     options = CollectionOptions(
         max_depth=getattr(arguments, "max_depth", 0),
         topic_terms=tuple(terms),
+        match_all_terms=match_all,
         known_ids=getattr(arguments, "known_ids", None) or frozenset(),
         max_requests=arguments.max_requests,
     )

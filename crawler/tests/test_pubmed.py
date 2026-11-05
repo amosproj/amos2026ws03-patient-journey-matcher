@@ -1,6 +1,9 @@
 import io
+import xml.etree.ElementTree as ET
 from datetime import UTC, date, datetime
+from email.message import Message
 from typing import Any
+from urllib.error import HTTPError
 
 from Bio import Entrez
 
@@ -271,11 +274,14 @@ def test_searches_since_a_date_use_the_entry_date_and_stay_below_the_id_cap() ->
 
 
 class FakePmc:
-    def __init__(self) -> None:
+    def __init__(self, failing: dict[str, Exception] | None = None) -> None:
         self.enriched: list[str] = []
+        self.failing = failing or {}
 
     def enrich(self, document: SourceDocument) -> SourceDocument:
         self.enriched.append(document.id)
+        if document.id in self.failing:
+            raise self.failing[document.id]
         return document.model_copy(update={"licence": "CC-BY"})
 
 
@@ -287,3 +293,17 @@ def test_pmc_enriches_every_fetched_record() -> None:
 
     assert pmc.enriched == ["pubmed:1", "pubmed:2"]
     assert {document.licence for document in documents} == {"CC-BY"}
+
+
+def test_a_failed_pmc_lookup_keeps_the_record_without_licence() -> None:
+    failing = {"pubmed:1": HTTPError("https://pmc", 503, "Slow Down", Message(), None)}
+    pmc = FakePmc({**failing, "pubmed:2": ET.ParseError("truncated")})
+    scraper = PubMedScraper(entrez=FakeEntrez(["1", "2", "3"]), pmc=pmc)  # type: ignore[arg-type]
+
+    documents = scraper.scrape(ScrapeRequest(source=SourceName.PUBMED, query="q"))
+
+    assert [(document.id, document.licence) for document in documents] == [
+        ("pubmed:1", None),
+        ("pubmed:2", None),
+        ("pubmed:3", "CC-BY"),
+    ]

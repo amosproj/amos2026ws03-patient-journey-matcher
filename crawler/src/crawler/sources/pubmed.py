@@ -1,7 +1,10 @@
+import logging
 import os
 import re
+import xml.etree.ElementTree as ET
 from collections.abc import Mapping, Sequence
 from datetime import UTC, datetime
+from http.client import HTTPException
 from typing import Any
 
 from Bio import Entrez
@@ -18,6 +21,8 @@ from crawler.models import (
 from crawler.sources.base import BaseScraper
 from crawler.sources.fields import bare_orcid, language_tag, normalize_doi
 from crawler.sources.pmc import PmcClient
+
+logger = logging.getLogger(__name__)
 
 EFETCH_BATCH_SIZE = 200
 """IDs per efetch call; NCBI asks for batches and Biopython switches to POST for long lists."""
@@ -106,9 +111,19 @@ class PubMedScraper(BaseScraper):
         configure_entrez(self._entrez, self._email, self._api_key)
         identifiers = request.ids if request.is_lookup else self._search(request)
         documents = self._fetch(identifiers)
-        if self._pmc is not None:
-            documents = [self._pmc.enrich(document) for document in documents]
-        return documents
+        if self._pmc is None:
+            return documents
+        return [self._enrich(self._pmc, document) for document in documents]
+
+    @staticmethod
+    def _enrich(pmc: PmcClient, document: SourceDocument) -> SourceDocument:
+        """Best effort: a failed PMC lookup leaves the record without licence and full text
+        instead of failing the request with every record already fetched."""
+        try:
+            return pmc.enrich(document)
+        except (OSError, HTTPException, ET.ParseError, ValueError) as error:
+            logger.warning("PMC lookup failed for %s: %s", document.id, error)
+            return document
 
     def _search(self, request: ScrapeRequest) -> list[str]:
         if not request.query:
