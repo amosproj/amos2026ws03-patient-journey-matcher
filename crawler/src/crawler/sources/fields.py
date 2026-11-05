@@ -3,8 +3,28 @@
 import html
 import re
 
+_HIDDEN = re.compile(r"<(script|style)\b[^>]*>.*?</\1\s*>", re.IGNORECASE | re.DOTALL)
 _LINE_BREAK = re.compile(r"<\s*(?:br|/p|/div|/li|/h[1-6])\b[^>]*>", re.IGNORECASE)
+_INLINE_TAG = re.compile(
+    r"</?(?:a|abbr|b|cite|code|em|font|i|mark|small|span|strong|sub|sup|u)\b[^>]*>",
+    re.IGNORECASE,
+)
+"""Tags inside a line of text: `<b>J</b>ournal` is one word."""
 _TAG = re.compile(r"<[^>]+>")
+# Some records hold escaped markup (`&lt;span style=…&gt;`), which only shows up as tags
+# once unescaped. In that text `<` can also be a comparison (`p<0.05`, `x<i and y>`), so
+# only known tags go: Word's and other long names leniently (their attributes come broken),
+# one-letter names only in strict form.
+_ESCAPED_INLINE = re.compile(
+    r"</?(?:span|font|o:p|strong|em|sup|sub)\b[^<>]*>"
+    r"|</?[abiu](?:\s+[\w:-]+=\"[^\"]*\")*\s*>",
+    re.IGNORECASE,
+)
+_ESCAPED_BLOCK = re.compile(
+    r"</?(?:div|br|li|ul|ol|table|tbody|tr|td|th|h[1-6]|blockquote)\b[^<>]*>"
+    r"|</?p(?:\s+[\w:-]+=\"[^\"]*\")*\s*/?>",
+    re.IGNORECASE,
+)
 _ORCID = re.compile(r"[0-9]{4}-[0-9]{4}-[0-9]{4}-[0-9]{3}[0-9X]")
 _ISO_DURATION = re.compile(
     r"P(?:(?P<days>[0-9]+)D)?(?:T(?:(?P<hours>[0-9]+)H)?(?:(?P<minutes>[0-9]+)M)?"
@@ -87,7 +107,10 @@ def plain_text(value: object) -> str | None:
     """Turn HTML into plain text, one paragraph per line."""
     if not value:
         return None
-    text = html.unescape(_TAG.sub(" ", _LINE_BREAK.sub("\n", str(value))))
+    markup = _LINE_BREAK.sub("\n", _HIDDEN.sub(" ", str(value)))
+    text = html.unescape(_TAG.sub(" ", _INLINE_TAG.sub("", markup)))
+    if "<" in text:
+        text = _ESCAPED_BLOCK.sub("\n", _ESCAPED_INLINE.sub("", text))
     lines = (" ".join(line.split()) for line in text.splitlines())
     return "\n".join(line for line in lines if line) or None
 

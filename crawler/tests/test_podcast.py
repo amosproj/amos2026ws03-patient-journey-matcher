@@ -166,3 +166,59 @@ def test_newest_episodes_first_with_since_and_max_results() -> None:
 def test_a_broken_feed_is_a_permanent_error() -> None:
     with pytest.raises(ValueError, match="not valid XML"):
         scrape(FakeFeed(b"<html>Moved</html"))
+
+
+def feed(*items: str) -> bytes:
+    return (
+        '<?xml version="1.0"?><rss version="2.0"><channel><title>Show</title>'
+        + "".join(items)
+        + "</channel></rss>"
+    ).encode()
+
+
+def item(guid: str, published: str, notes: str = "") -> str:
+    return (
+        f"<item><title>{guid}</title><guid>{guid}</guid><pubDate>{published}</pubDate>"
+        f"<description><![CDATA[{notes}]]></description></item>"
+    )
+
+
+def test_episodes_of_one_day_are_ordered_by_time_even_in_an_oldest_first_feed() -> None:
+    body = feed(
+        item("morning", "Mon, 05 Oct 2026 08:00:00 +0000"),
+        item("evening", "Mon, 05 Oct 2026 18:00:00 +0000"),
+        item("utc", "Mon, 06 Oct 2026 01:00:00 -0000"),
+    )
+
+    episodes = scrape(FakeFeed(body))
+
+    assert [episode.title for episode in episodes] == ["utc", "evening", "morning"]
+    assert episodes[0].published_at == "2026-10-06T01:00:00+00:00"
+    assert [episode.title for episode in scrape(FakeFeed(body), max_results=1)] == ["utc"]
+
+
+def test_an_episode_listed_twice_keeps_its_newest_entry_and_one_slot() -> None:
+    body = feed(
+        item("same-guid", "Mon, 05 Oct 2026 08:00:00 +0000"),
+        item("other", "Wed, 07 Oct 2026 08:00:00 +0000"),
+        item("same-guid", "Thu, 15 Oct 2026 08:00:00 +0000"),
+    )
+
+    episodes = scrape(FakeFeed(body), max_results=2)
+
+    assert [(episode.title, str(episode.published_on)) for episode in episodes] == [
+        ("same-guid", "2026-10-15"),
+        ("other", "2026-10-07"),
+    ]
+
+
+def test_dois_hidden_in_encoded_redirect_links_are_found() -> None:
+    link = (
+        "https://eur01.safelinks.protection.outlook.com/?url=https%3A%2F%2Fdoi.org%2F"
+        "10.1200%2FJCO-25-01693&amp;data=05%7C02%7Csomeone%40asco.org"
+    )
+    body = feed(item("e1", "Mon, 05 Oct 2026 08:00:00 +0000", f'<a href="{link}">paper</a>'))
+
+    [episode] = scrape(FakeFeed(body))
+
+    assert episode.extra["dois"] == ["10.1200/JCO-25-01693"]

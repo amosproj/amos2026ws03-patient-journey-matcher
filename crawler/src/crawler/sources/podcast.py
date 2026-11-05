@@ -10,9 +10,10 @@ import time
 import urllib.request
 import xml.etree.ElementTree as ET
 from collections.abc import Callable
-from datetime import date
+from datetime import UTC, datetime
 from email.utils import parsedate_to_datetime
 from typing import Any
+from urllib.parse import unquote
 
 from pydantic import JsonValue
 
@@ -38,6 +39,14 @@ SUMMARY_LIMIT = 1_000
 """Show notes can be full transcripts (ASCO), so the crawler keeps only the start."""
 
 _DOI = re.compile(r"\b10\.[0-9]{4,9}/[^\s\"'<>]+")
+_LINK_SUFFIX = re.compile(r"(?:/(?:full|abstract|pdf|epdf|epub|fulltext)|\.full|\.pdf)$", re.I)
+"""What publisher links add after the DOI: Cochrane `…pub2/full`, medRxiv `…v1.full.pdf`."""
+_DOI_IN_LINK = (
+    re.compile(r"(?P<doi>10\.1101/[0-9.]+)v[0-9]+"),
+    re.compile(r"(?P<doi>10\.1093/[^/]+/[^/]+)/[0-9]+"),
+)
+"""Links that add to the DOI: bioRxiv and medRxiv the version (`…20076042v1`), Oxford
+Academic its article number (`10.1093/oncolo/oyae187/7718961`)."""
 
 
 class PodcastScraper(BaseScraper):
@@ -85,9 +94,12 @@ class PodcastScraper(BaseScraper):
                 for episode in episodes
                 if episode.published_on and episode.published_on >= request.since
             ]
-        # Newest first; episodes without a date go last.
-        episodes.sort(key=lambda episode: episode.published_on or date.min, reverse=True)
-        return episodes[: request.max_results]
+        # Newest first, by time, not by day; episodes without a date go last. An episode
+        # listed twice (same GUID) keeps its newest entry.
+        newest: dict[str, SourceDocument] = {}
+        for episode in sorted(episodes, key=_published_instant, reverse=True):
+            newest.setdefault(episode.id, episode)
+        return list(newest.values())[: request.max_results]
 
     @classmethod
     def parse_episode(
@@ -123,8 +135,11 @@ class PodcastScraper(BaseScraper):
         chapters = item.find("podcast:chapters", NAMESPACES)
         if chapters is not None and chapters.get("url"):
             extra["chapters_url"] = chapters.get("url")
-        # DOIs usually sit in links of the show notes, so search the HTML, not the text.
-        dois: list[JsonValue] = list(dict.fromkeys(map(_clean_doi, _DOI.findall(raw_notes))))
+        # DOIs usually sit in links of the show notes, so search the HTML, not the text;
+        # decoded, as redirect links carry them encoded (`url=https%3A%2F%2Fdoi.org%2F10.`).
+        dois: list[JsonValue] = list(
+            dict.fromkeys(map(_clean_doi, _DOI.findall(unquote(raw_notes))))
+        )
         if dois:
             extra["dois"] = dois
         return SourceDocument(
@@ -162,9 +177,13 @@ class PodcastScraper(BaseScraper):
         if not value:
             return None
         try:
-            return parsedate_to_datetime(value).isoformat()
+            published = parsedate_to_datetime(value)
         except (TypeError, ValueError):
             return None
+        if published.tzinfo is None:
+            # `-0000`: the time is UTC, the local zone unknown (RFC 5322).
+            published = published.replace(tzinfo=UTC)
+        return published.isoformat()
 
     @staticmethod
     def _licence(item: ET.Element, channel: ET.Element) -> str | None:
@@ -202,11 +221,25 @@ class PodcastScraper(BaseScraper):
 
 
 def _clean_doi(value: str) -> str:
-    """Drop link parameters and sentence punctuation; keep brackets that belong to the DOI."""
-    value = html.unescape(value).split("?")[0].split("#")[0].rstrip(".,;:")
+    """Drop link parameters, what links add after the DOI and sentence punctuation; keep
+    brackets that belong to the DOI."""
+    value = re.split(r"[?#&]", html.unescape(value))[0].rstrip(".,;:")
     while value.endswith(")") and value.count(")") > value.count("("):
         value = value[:-1].rstrip(".,;:")
+    while (shorter := _LINK_SUFFIX.sub("", value)) != value:
+        value = shorter
+    for pattern in _DOI_IN_LINK:
+        if match := pattern.fullmatch(value):
+            value = match["doi"]
     return value
+
+
+def _published_instant(episode: SourceDocument) -> datetime:
+    """When the episode came out, for sorting; episodes without a date sort last."""
+    if not episode.published_at:
+        return datetime.min.replace(tzinfo=UTC)
+    published = datetime.fromisoformat(episode.published_at)
+    return published if published.tzinfo else published.replace(tzinfo=UTC)
 
 
 def _text(element: ET.Element, path: str) -> str:

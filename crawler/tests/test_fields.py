@@ -18,6 +18,24 @@ def test_plain_text_keeps_paragraphs_and_unescapes_entities() -> None:
     assert plain_text("") is None
 
 
+def test_plain_text_drops_scripts_and_styles_and_keeps_words_whole() -> None:
+    html = (
+        "<style>.x{color:red}</style><script>var a = 1;</script>"
+        '<p><b>J</b>ournal of <a href="https://example.test">Oncology</a>, <i>bold</i>.</p>'
+    )
+
+    assert plain_text(html) == "Journal of Oncology, bold."
+
+
+def test_plain_text_drops_escaped_markup_but_keeps_comparisons() -> None:
+    # Zenodo 14464542: Word markup stored escaped, with broken quotes in the style attribute.
+    word = '&lt;span style="font-family: ";Calisto MT";; mso-ansi-language: EN-US;"&gt;Welcome'
+    escaped = f"<p>{word}&lt;/span&gt;&lt;o:p&gt;&lt;/o:p&gt;&lt;/p&gt;&lt;p&gt;Two&lt;/p&gt;</p>"
+
+    assert plain_text(escaped) == "Welcome\nTwo"
+    assert plain_text("<p>p&lt;0.05 and x&lt;i and y&gt;j</p>") == "p<0.05 and x<i and y>j"
+
+
 def test_truncate_cuts_at_a_word_boundary() -> None:
     assert truncate("short", 10) == "short"
     assert truncate("one two three four", 12) == "one two…"
@@ -95,6 +113,15 @@ def test_clock_duration_seconds(value: str, expected: int | None) -> None:
         ("10.1000/xyz),", "10.1000/xyz"),
         ("10.1000/a(b)", "10.1000/a(b)"),
         ("10.1200/JCO-26-00042?af=R&amp;x=1", "10.1200/JCO-26-00042"),
+        ("10.1002/14651858.CD015385.pub2/full", "10.1002/14651858.CD015385.pub2"),
+        ("10.1101/2021.12.23.21268326v1.full.pdf", "10.1101/2021.12.23.21268326"),
+        ("10.1101/2020.04.23.20076042v1", "10.1101/2020.04.23.20076042"),
+        ("10.3389/fonc.2021.123456/full", "10.3389/fonc.2021.123456"),
+        ("10.1200/JCO-25-01693&data=05|02|someone@asco.org", "10.1200/JCO-25-01693"),
+        ("10.6084/m9.figshare.123.v1", "10.6084/m9.figshare.123.v1"),
+        ("10.1093/oncolo/oyae187/7718961", "10.1093/oncolo/oyae187"),
+        ("10.1093/eurheartj/ehz754/5602478", "10.1093/eurheartj/ehz754"),
+        ("10.1093/jnci/djw123", "10.1093/jnci/djw123"),
     ],
 )
 def test_clean_doi(value: str, expected: str) -> None:
