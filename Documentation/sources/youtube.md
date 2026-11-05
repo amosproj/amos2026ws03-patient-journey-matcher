@@ -9,7 +9,7 @@ Data API v3: metadata of public videos and channels. No transcripts of others' v
 | Call | Use | Quota |
 |---|---|---|
 | `channels.list` | Uploads playlist ID of a curated channel | 1 unit |
-| `playlistItems.list` | Uploads, newest first; no date filter, stop at `contentDetails.videoPublishedAt` | 1 unit per 50 |
+| `playlistItems.list` | Uploads in upload order, so a video made public late sits deeper; no date filter: skip uploads with an earlier `contentDetails.videoPublishedAt`, stop after 50 in a row | 1 unit per 50 |
 | `videos.list` | Metadata, 50 IDs per call | 1 unit |
 | `search.list` | Not needed for curated channels | Own 100 calls/day since 01.06.2026; 500 videos per channel search |
 | `captions.list`, `captions.download` | Need OAuth and edit rights | Not usable |
