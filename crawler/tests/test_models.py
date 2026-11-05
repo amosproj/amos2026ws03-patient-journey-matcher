@@ -41,6 +41,28 @@ def test_request_rejects_mixed_inputs(arguments: dict[str, object], message: str
         ScrapeRequest.model_validate(arguments)
 
 
+@pytest.mark.parametrize(
+    ("arguments", "message"),
+    [
+        ({"source": "zenodo", "query": "   "}, "query or ids is required"),
+        ({"source": "youtube", "channel": "  "}, "channel is required"),
+        ({"source": "arxiv", "query": '" \\'}, "no words to search for"),
+        ({"source": "zenodo", "query": "title:(prostate", "query_mode": "raw"}, "unclosed"),
+    ],
+)
+def test_request_rejects_queries_that_would_search_for_nothing(
+    arguments: dict[str, object], message: str
+) -> None:
+    with pytest.raises(ValidationError, match=message):
+        ScrapeRequest.model_validate(arguments)
+
+
+def test_request_drops_whitespace_around_the_query() -> None:
+    assert ScrapeRequest(source=SourceName.PUBMED, query="  prostate cancer ").query == (
+        "prostate cancer"
+    )
+
+
 def test_request_with_ids_is_a_lookup() -> None:
     lookup = ScrapeRequest(source=SourceName.ARXIV, ids=["2610.12345"])
     search = ScrapeRequest(source=SourceName.ARXIV, query="prostate cancer")

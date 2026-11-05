@@ -5,6 +5,7 @@ import urllib.request
 import xml.etree.ElementTree as ET
 from collections.abc import Callable, Sequence
 from datetime import datetime
+from http.client import HTTPException
 from typing import Any
 from urllib.error import HTTPError
 from urllib.parse import urlencode
@@ -23,6 +24,7 @@ from crawler.models import (
     Subject,
     source_document_id,
 )
+from crawler.queries import query_words
 from crawler.sources.base import NETWORK_TIMEOUT_SECONDS, USER_AGENT, BaseScraper
 from crawler.sources.fields import creative_commons_licence, normalize_doi
 
@@ -175,7 +177,7 @@ class ArxivScraper(BaseScraper):
                     self._sleep(min(float(retry_after), 30.0))
                     continue
                 logger.warning("arXiv licence lookup failed for %s: %s", arxiv_id, error)
-            except (OSError, ET.ParseError) as error:
+            except (OSError, HTTPException, ET.ParseError) as error:
                 logger.warning("arXiv licence lookup failed for %s: %s", arxiv_id, error)
             finally:
                 self._mark_call()
@@ -202,9 +204,8 @@ class ArxivScraper(BaseScraper):
         if mode == "raw":
             rendered = query
         else:
-            terms = query.split()
             operator = " AND " if mode == "and" else " OR "
-            rendered = operator.join(f'all:"{term}"' for term in terms)
+            rendered = operator.join(f'all:"{word}"' for word in query_words(query))
         if since:
             compact_date = since.strftime("%Y%m%d")
             rendered = f"({rendered}) AND submittedDate:[{compact_date}0000 TO 300012312359]"

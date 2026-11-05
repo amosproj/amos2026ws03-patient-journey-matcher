@@ -23,7 +23,7 @@ terms: [prostate cancer]
 queries: [prostate cancer, prostate cancer biopsy]
 channels:
   - name: Demo channel
-    url: https://www.youtube.com/channel/UCdemo
+    url: https://www.youtube.com/channel/UCdemo0000000000000000ab
 """
 
 
@@ -113,6 +113,67 @@ def test_a_broken_known_ids_file_is_a_usage_error(
     assert message in capsys.readouterr().err
 
 
+def test_quotes_in_an_arxiv_query_are_not_part_of_the_filter_words() -> None:
+    arguments = parser().parse_args(["arxiv", '"prostate cancer" biopsy'])
+
+    _requests, options = requests_from_args(arguments)
+
+    assert options.topic_terms == ("prostate", "cancer", "biopsy")
+
+
+@pytest.mark.parametrize(
+    ("argv", "message"),
+    [
+        (["pubmed", "q", "--max-results", "0"], "--max-results: must be from 1 to 10000, got 0"),
+        (["pubmed", "q", "--max-results", "abc"], "--max-results: not a whole number: 'abc'"),
+        (["arxiv", "q", "--max-depth", "-1"], "--max-depth: must be >= 0, got -1"),
+        (["zenodo", "q", "--max-requests", "0"], "--max-requests: must be >= 1, got 0"),
+        (["zenodo", "   "], "argument query: must not be blank"),
+        (["youtube", " "], "argument channel: not a YouTube channel: ' '"),
+        (["youtube", "https://www.youtube.com/watch?v=x"], "argument channel: not a channel URL"),
+    ],
+)
+def test_bad_numbers_and_blank_inputs_are_usage_errors(
+    capsys: pytest.CaptureFixture[str], argv: list[str], message: str
+) -> None:
+    with pytest.raises(SystemExit) as exit_info:
+        parser().parse_args(argv)
+
+    assert exit_info.value.code == 2
+    assert message in capsys.readouterr().err
+
+
+def test_invalid_requests_are_usage_errors_without_the_pydantic_dump(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    with pytest.raises(SystemExit) as exit_info:
+        main(["zenodo", "title:(prostate", "--query-mode", "raw"])
+
+    assert exit_info.value.code == 2
+    error = capsys.readouterr().err
+    assert "crawler zenodo: error: broken raw query: unclosed '('" in error
+    assert "pydantic" not in error and "input_value" not in error
+
+
+def test_a_query_of_lone_symbols_is_a_usage_error(capsys: pytest.CaptureFixture[str]) -> None:
+    with pytest.raises(SystemExit) as exit_info:
+        main(["arxiv", "- &"])
+
+    assert exit_info.value.code == 2
+    assert "crawler arxiv: error: query has no words to search for" in capsys.readouterr().err
+
+
+def test_known_ids_files_may_start_with_a_byte_order_mark(tmp_path: Path) -> None:
+    known = tmp_path / "known.txt"
+    known.write_text("\ufeffpubmed:1\npubmed:2\n", encoding="utf-8")
+
+    _requests, options = requests_from_args(
+        parser().parse_args(["pubmed", "prostate cancer", "--known-ids", str(known)])
+    )
+
+    assert options.known_ids == {"pubmed:1", "pubmed:2"}
+
+
 def test_raw_arxiv_queries_have_no_topic_filter() -> None:
     arguments = parser().parse_args(["arxiv", 'ti:"prostate"', "--query-mode", "raw"])
 
@@ -160,7 +221,9 @@ def test_youtube_topic_runs_seed_the_channels(tmp_path: Path) -> None:
         parser().parse_args(["youtube", "--topic", str(topic_file)])
     )
 
-    assert [request.channel for request in requests] == ["https://www.youtube.com/channel/UCdemo"]
+    assert [request.channel for request in requests] == [
+        "https://www.youtube.com/channel/UCdemo0000000000000000ab"
+    ]
     assert options.max_depth == 0
 
 
@@ -196,6 +259,7 @@ def test_main_prints_json_lines_and_a_summary(
     assert exit_code == 0
     assert [json.loads(line)["id"] for line in output.out.splitlines()] == ["pubmed:1"]
     assert "collected 1 document(s)" in output.err
+    assert "0 queued for lookup" in output.err
 
 
 def test_main_exits_with_1_and_lists_failures_but_still_prints_documents(

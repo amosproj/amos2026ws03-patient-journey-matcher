@@ -229,6 +229,7 @@ def test_queries_join_terms_with_and_and_keep_only_useful_types() -> None:
     assert "publication-preprint OR " in query and "dataset" not in query
     assert query.endswith(" AND updated:[2026-01-02 TO *]")
     assert ZenodoScraper.build_query("a b", "or", None).startswith('("a" OR "b") AND')
+    assert ZenodoScraper.build_query("prostate\\", "and", None).startswith('("prostate") AND')
     assert ZenodoScraper.build_query("metadata.title:prostate", "raw", None).startswith(
         "(metadata.title:prostate) AND"
     )
@@ -275,3 +276,44 @@ def test_searches_are_at_least_two_seconds_apart() -> None:
 def test_zenodo_requests_take_a_query_only() -> None:
     with pytest.raises(ValidationError, match="Zenodo requests take a query only"):
         ScrapeRequest(source=SourceName.ZENODO, ids=["123"])
+
+
+def answer(hits: list[dict[str, Any]], buckets: list[tuple[str, int]]) -> FakeZenodo:
+    """One search answer with resource type aggregations, as Zenodo sends them."""
+    body = {
+        "hits": {"hits": hits, "total": 4_706_294},
+        "aggregations": {
+            "resource_type": {"buckets": [{"key": k, "doc_count": n} for k, n in buckets]}
+        },
+    }
+
+    class Fetch(FakeZenodo):
+        def __call__(self, request: urllib.request.Request, timeout: float) -> bytes:
+            self.requests.append(request)
+            return json.dumps(body).encode()
+
+    return Fetch([])
+
+
+def test_a_query_that_zenodo_ignored_is_an_error_not_arbitrary_records() -> None:
+    # `prostate AND`: Zenodo drops the whole query, type filter included, without an error.
+    api = answer([record("1")], [("publication", 3_104_885), ("dataset", 556_623)])
+
+    with pytest.raises(ValueError, match="Zenodo ignored the query"):
+        ZenodoScraper(fetch=api, sleep=no_sleep).scrape(search("prostate AND", query_mode="raw"))
+    assert len(api.requests) == 1
+
+
+def test_records_of_excluded_types_reveal_an_ignored_query_too() -> None:
+    api = FakeZenodo([[record("1"), record("2", resource_type="software")]])
+
+    with pytest.raises(ValueError, match="Zenodo ignored the query"):
+        ZenodoScraper(fetch=api, sleep=no_sleep).scrape(search(max_results=2))
+
+
+def test_answers_with_only_collected_types_are_kept() -> None:
+    api = answer([record("1")], [("publication", 3746), ("video", 55), ("poster", 51)])
+
+    documents = ZenodoScraper(fetch=api, sleep=no_sleep).scrape(search(max_results=1))
+
+    assert [document.version for document in documents] == ["1"]

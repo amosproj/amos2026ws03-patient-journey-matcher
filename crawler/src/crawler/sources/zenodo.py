@@ -20,6 +20,7 @@ from crawler.models import (
     Subject,
     source_document_id,
 )
+from crawler.queries import query_words
 from crawler.sources.base import NETWORK_TIMEOUT_SECONDS, USER_AGENT, BaseScraper
 from crawler.sources.fields import bare_orcid, language_tag, normalize_doi, plain_text
 
@@ -39,8 +40,35 @@ CONTENT_TYPES: dict[str, ContentType] = {
     "video": "video",
 }
 """Zenodo resource types we collect; datasets, software and the like are skipped."""
+RESOURCE_GROUPS = frozenset(resource_type.split("-")[0] for resource_type in CONTENT_TYPES)
+"""Top-level types of the collected ones, as Zenodo counts them in the search aggregations."""
 
 _DATE = re.compile(r"[0-9]{4}(-[0-9]{2}(-[0-9]{2})?)?")
+
+
+def ignores_type_filter(data: Mapping[str, Any]) -> bool:
+    """Whether a search answer holds records of types the query excludes.
+
+    Every query carries the type filter, so such records mean that Zenodo dropped the whole
+    query: it answers a syntax error (`prostate AND`) with arbitrary records, not HTTP 400.
+    The aggregations show it even when the page itself happens to hold allowed types only.
+    """
+    aggregations = data.get("aggregations") or {}
+    buckets = (aggregations.get("resource_type") or {}).get("buckets") or []
+    if any(
+        isinstance(bucket, dict)
+        and bucket.get("doc_count")
+        and bucket.get("key") not in RESOURCE_GROUPS
+        for bucket in buckets
+    ):
+        return True
+    hits = (data.get("hits") or {}).get("hits") or []
+    types = (
+        str(((hit.get("metadata") or {}).get("resource_type") or {}).get("id") or "")
+        for hit in hits
+        if isinstance(hit, dict)
+    )
+    return any(resource_type and resource_type not in CONTENT_TYPES for resource_type in types)
 
 
 def zenodo_licence(rights_id: object) -> str | None:
@@ -101,9 +129,8 @@ class ZenodoScraper(BaseScraper):
         if mode == "raw":
             rendered = query
         else:
-            terms = [term.replace('"', "") for term in query.split()]
             operator = " AND " if mode == "and" else " OR "
-            rendered = operator.join(f'"{term}"' for term in terms if term)
+            rendered = operator.join(f'"{word}"' for word in query_words(query))
         types = " OR ".join(CONTENT_TYPES)
         rendered = f"({rendered}) AND metadata.resource_type.id:({types})"
         if since:
@@ -117,7 +144,12 @@ class ZenodoScraper(BaseScraper):
         request = urllib.request.Request(f"{SEARCH_URL}?{parameters}", headers=headers)
         with self._pacer:
             body = self._fetch(request, self._timeout)
-        hits = (json.loads(body).get("hits") or {}).get("hits") or []
+        data = json.loads(body)
+        if ignores_type_filter(data):
+            raise ValueError(
+                "Zenodo ignored the query and returned arbitrary records; check its syntax"
+            )
+        hits = (data.get("hits") or {}).get("hits") or []
         return [hit for hit in hits if isinstance(hit, dict) and hit.get("id")]
 
     @classmethod

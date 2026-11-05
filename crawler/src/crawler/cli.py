@@ -3,22 +3,76 @@ import asyncio
 import json
 import logging
 import sys
-from collections.abc import Sequence
+from collections.abc import Callable, Sequence
 from datetime import date
 from pathlib import Path
+from typing import NoReturn
 
 from pydantic import ValidationError
 
-from crawler.models import CollectionResult, ScrapeRequest, SourceName, source_document_id
+from crawler.models import (
+    MAX_RESULTS,
+    CollectionResult,
+    ScrapeRequest,
+    SourceName,
+    source_document_id,
+    validation_message,
+)
+from crawler.queries import query_words
 from crawler.runner import CollectionOptions, CollectionSetupError, run_requests
 from crawler.seeds import TopicFileError, find_podcast, load_topic, seed_requests, topic_terms
 from crawler.sources.arxiv import split_version
+from crawler.sources.youtube import channel_lookup
 
-SINCE_HELP = "only records added to the source since this date (YYYY-MM-DD)"
+SINCE_HELP = {
+    SourceName.PUBMED: "only search results PubMed added since this date (YYYY-MM-DD); "
+    "cited papers are not filtered",
+    SourceName.ARXIV: "only search results submitted since this date (YYYY-MM-DD); "
+    "cited papers are not filtered",
+    SourceName.ZENODO: "only records added or changed since this date (YYYY-MM-DD)",
+    SourceName.YOUTUBE: "only videos published since this date (YYYY-MM-DD)",
+    SourceName.PODCAST: "only episodes published since this date (YYYY-MM-DD)",
+}
 KNOWN_IDS_HELP = (
     "IDs of stored documents, one per line (pubmed:12345) or the JSON Lines output of a run; "
     "cited papers among them are not fetched again"
 )
+QUERY_MODE_HELP = (
+    "and: every word, or: any word (quotes, backslashes and lone symbols are ignored); "
+    "raw: the source's own query syntax"
+)
+
+
+def whole_number(minimum: int, maximum: int | None = None) -> Callable[[str], int]:
+    """An argparse type for a whole number within bounds."""
+
+    def parse(value: str) -> int:
+        try:
+            number = int(value)
+        except ValueError:
+            raise argparse.ArgumentTypeError(f"not a whole number: {value!r}") from None
+        if number < minimum or (maximum is not None and number > maximum):
+            bounds = f"from {minimum} to {maximum}" if maximum is not None else f">= {minimum}"
+            raise argparse.ArgumentTypeError(f"must be {bounds}, got {number}")
+        return number
+
+    return parse
+
+
+def non_blank(value: str) -> str:
+    """An argparse type for a query or feed key: not just whitespace."""
+    if not value.strip():
+        raise argparse.ArgumentTypeError("must not be blank")
+    return value.strip()
+
+
+def youtube_channel(value: str) -> str:
+    """An argparse type for a channel reference that the Data API can resolve."""
+    try:
+        channel_lookup(value)
+    except ValueError as error:
+        raise argparse.ArgumentTypeError(str(error)) from None
+    return value.strip()
 
 
 def parser() -> argparse.ArgumentParser:
@@ -38,15 +92,16 @@ def parser() -> argparse.ArgumentParser:
     }
     for source, help_text in searches.items():
         paper = subcommands.add_parser(source.value, help=help_text)
+        paper.set_defaults(subcommand=paper)
         seeds = paper.add_mutually_exclusive_group(required=True)
-        seeds.add_argument("query", nargs="?", help="one search query")
+        seeds.add_argument("query", nargs="?", type=non_blank, help="one search query")
         _add_topic_argument(seeds)
-        paper.add_argument("--max-results", type=int, default=10, help="results per query")
-        paper.add_argument("--since", type=date.fromisoformat, help=SINCE_HELP)
+        _add_max_results_argument(paper, "results per query")
+        paper.add_argument("--since", type=date.fromisoformat, help=SINCE_HELP[source])
         if source is not SourceName.ZENODO:
             paper.add_argument(
                 "--max-depth",
-                type=int,
+                type=whole_number(0),
                 default=1,
                 help="levels of references to follow; 0 collects the search results only",
             )
@@ -55,22 +110,33 @@ def parser() -> argparse.ArgumentParser:
             )
         _add_max_requests_argument(paper)
         if source is not SourceName.PUBMED:
-            paper.add_argument("--query-mode", choices=("and", "or", "raw"), default="and")
+            paper.add_argument(
+                "--query-mode", choices=("and", "or", "raw"), default="and", help=QUERY_MODE_HELP
+            )
 
     youtube = subcommands.add_parser(SourceName.YOUTUBE.value, help="list channel videos")
+    youtube.set_defaults(subcommand=youtube)
     seeds = youtube.add_mutually_exclusive_group(required=True)
-    seeds.add_argument("channel", nargs="?", help="channel ID, URL, @handle, or legacy username")
+    seeds.add_argument(
+        "channel",
+        nargs="?",
+        type=youtube_channel,
+        help="channel ID, channel URL, @handle, or legacy username",
+    )
     _add_topic_argument(seeds)
-    youtube.add_argument("--max-results", type=int, default=10, help="videos per channel")
-    youtube.add_argument("--since", type=date.fromisoformat, help=SINCE_HELP)
+    _add_max_results_argument(youtube, "videos per channel")
+    youtube.add_argument("--since", type=date.fromisoformat, help=SINCE_HELP[SourceName.YOUTUBE])
     _add_max_requests_argument(youtube)
 
     podcast = subcommands.add_parser(SourceName.PODCAST.value, help="list podcast episodes")
+    podcast.set_defaults(subcommand=podcast)
     seeds = podcast.add_mutually_exclusive_group(required=True)
-    seeds.add_argument("feed", nargs="?", help="feed key from a topic file, e.g. jco")
+    seeds.add_argument(
+        "feed", nargs="?", type=non_blank, help="feed key from a topic file, e.g. jco"
+    )
     _add_topic_argument(seeds)
-    podcast.add_argument("--max-results", type=int, default=10, help="episodes per feed")
-    podcast.add_argument("--since", type=date.fromisoformat, help=SINCE_HELP)
+    _add_max_results_argument(podcast, "episodes per feed")
+    podcast.add_argument("--since", type=date.fromisoformat, help=SINCE_HELP[SourceName.PODCAST])
     _add_max_requests_argument(podcast)
     return command
 
@@ -84,9 +150,17 @@ def _add_topic_argument(group: argparse._MutuallyExclusiveGroup) -> None:
     )
 
 
+def _add_max_results_argument(command: argparse.ArgumentParser, help_text: str) -> None:
+    command.add_argument(
+        "--max-results", type=whole_number(1, MAX_RESULTS), default=10, help=help_text
+    )
+
+
 def _add_max_requests_argument(command: argparse.ArgumentParser) -> None:
     command.add_argument(
-        "--max-requests", type=int, help="stop after this many queued requests (safety cap)"
+        "--max-requests",
+        type=whole_number(1),
+        help="stop after this many requests (safety cap)",
     )
 
 
@@ -94,7 +168,7 @@ def known_ids_file(value: str) -> frozenset[str]:
     """Read a `--known-ids` file; blank lines and lines starting with `#` are skipped."""
     path = Path(value)
     try:
-        lines = path.read_text(encoding="utf-8").splitlines()
+        lines = path.read_text(encoding="utf-8-sig").splitlines()
     except (OSError, UnicodeDecodeError) as error:
         raise argparse.ArgumentTypeError(f"cannot read {path}: {error}") from error
     ids: set[str] = set()
@@ -182,7 +256,7 @@ def requests_from_args(
         # raw query (operators and fields) or PubMed, which maps words to MeSH headings
         # (`prostate cancer` to `Prostatic Neoplasms`): their words would drop on-topic papers.
         no_filter = source is SourceName.PUBMED or query_mode == "raw"
-        terms = [] if no_filter else arguments.query.split()
+        terms = [] if no_filter else query_words(arguments.query)
         match_all = query_mode == "and"
     options = CollectionOptions(
         max_depth=getattr(arguments, "max_depth", 0),
@@ -194,11 +268,19 @@ def requests_from_args(
     return seeds, options
 
 
+def _usage_error(
+    command: argparse.ArgumentParser, arguments: argparse.Namespace, message: str
+) -> NoReturn:
+    """Exit 2 with the usage of the subcommand, as argparse does for its own errors."""
+    subcommand: argparse.ArgumentParser = getattr(arguments, "subcommand", command)
+    subcommand.error(message)
+
+
 def summary(result: CollectionResult) -> str:
     stats = result.stats
     lines = [
         f"collected {stats.documents} document(s) from {stats.seed_requests} seed request(s)",
-        f"references: {stats.references_found} found, {stats.lookups_queued} looked up, "
+        f"references: {stats.references_found} found, {stats.lookups_queued} queued for lookup, "
         f"{stats.lookups_missing} not returned by the source",
         f"skipped: {stats.skipped_duplicate} duplicate, {stats.skipped_known} known, "
         f"{stats.skipped_invalid} invalid, {stats.skipped_off_topic} off-topic",
@@ -226,8 +308,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         seeds, options = requests_from_args(arguments)
         result = asyncio.run(run_requests(seeds, options=options))
-    except (TopicFileError, CollectionSetupError, ValidationError) as error:
-        command.error(str(error))
+    except (TopicFileError, CollectionSetupError) as error:
+        _usage_error(command, arguments, str(error))
+    except ValidationError as error:
+        _usage_error(command, arguments, validation_message(error))
     for document in result.documents:
         print(json.dumps(document.model_dump(mode="json"), ensure_ascii=False))
     print(summary(result), file=sys.stderr)

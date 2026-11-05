@@ -2,6 +2,7 @@ import urllib.request
 from collections.abc import Iterator
 from datetime import UTC, date, datetime, timedelta
 from email.message import Message
+from http.client import IncompleteRead
 from types import SimpleNamespace
 from typing import Any
 from urllib.error import HTTPError
@@ -31,6 +32,12 @@ def test_build_query_keeps_the_legacy_date_filter() -> None:
     assert query == (
         '(all:"prostate" AND all:"cancer") AND submittedDate:[202601020000 TO 300012312359]'
     )
+
+
+def test_quotes_in_a_query_do_not_break_the_quoted_words() -> None:
+    query = ArxivScraper.build_query('"breast cancer" mammography\\', "and", None)
+
+    assert query == 'all:"breast" AND all:"cancer" AND all:"mammography"'
 
 
 def arxiv_result(short_id: str, title: str = "Clinical matching") -> SimpleNamespace:
@@ -215,14 +222,14 @@ def test_unknown_ids_have_no_licence() -> None:
 
 
 class FakeOai:
-    def __init__(self, answers: list[bytes | HTTPError]) -> None:
+    def __init__(self, answers: list[bytes | Exception]) -> None:
         self.answers = answers
         self.urls: list[str] = []
 
     def __call__(self, request: urllib.request.Request, timeout: float) -> bytes:
         self.urls.append(request.full_url)
         answer = self.answers.pop(0)
-        if isinstance(answer, HTTPError):
+        if isinstance(answer, Exception):
             raise answer
         return answer
 
@@ -276,3 +283,15 @@ def test_a_failed_licence_lookup_leaves_the_licence_unknown() -> None:
 
     assert [document.licence for document in documents] == ["CC-BY-4.0", None]
     assert 5.0 in clock.sleeps
+
+
+def test_a_cut_off_licence_answer_leaves_only_the_licence_unknown() -> None:
+    oai = FakeOai(
+        [IncompleteRead(b"<OAI-PMH"), oai_record("http://creativecommons.org/licenses/by/4.0/")]
+    )
+
+    documents = scraper_with_oai(oai, Clock()).scrape(
+        ScrapeRequest(source=SourceName.ARXIV, ids=["2610.00001", "2610.00002"])
+    )
+
+    assert [document.licence for document in documents] == [None, "CC-BY-4.0"]

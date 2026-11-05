@@ -2,8 +2,20 @@ from datetime import UTC, date, datetime
 from enum import StrEnum
 from typing import Literal
 
-from pydantic import BaseModel, ConfigDict, Field, JsonValue, model_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    JsonValue,
+    ValidationError,
+    field_validator,
+    model_validator,
+)
 
+from crawler.queries import query_words, raw_query_error
+
+MAX_RESULTS = 10_000
+"""Upper bound of `max_results`, the results of one seed request."""
 PublishedPrecision = Literal["day", "month", "year"]
 RequestKind = Literal["search", "channel", "lookup", "references"]
 ContentType = Literal[
@@ -13,6 +25,7 @@ ContentType = Literal[
     "poster",
     "presentation",
     "report",
+    "book",
     "video",
     "podcast_episode",
 ]
@@ -95,9 +108,17 @@ class ScrapeRequest(BaseModel):
     feed: PodcastFeed | None = None
     ids: list[str] = Field(default_factory=list)
     topics: list[str] = Field(default_factory=list)
-    max_results: int = Field(default=10, ge=1, le=10_000)
+    max_results: int = Field(default=10, ge=1, le=MAX_RESULTS)
     since: date | None = None
     query_mode: str = Field(default="and", pattern="^(and|or|raw)$")
+
+    @field_validator("query", "channel")
+    @classmethod
+    def strip_whitespace(cls, value: str | None) -> str | None:
+        """A query or channel of whitespace only counts as missing."""
+        if value is None:
+            return None
+        return value.strip() or None
 
     @model_validator(mode="after")
     def validate_source_input(self) -> "ScrapeRequest":
@@ -123,6 +144,12 @@ class ScrapeRequest(BaseModel):
             raise ValueError("query or ids is required for PubMed, arXiv and Zenodo")
         if self.query and self.ids:
             raise ValueError("a request takes either a query or ids, not both")
+        if self.query and self.query_mode == "raw":
+            problem = raw_query_error(self.query)
+            if problem:
+                raise ValueError(f"broken raw query: {problem}")
+        elif self.query and not query_words(self.query):
+            raise ValueError("query has no words to search for")
         return self
 
     @property
@@ -242,6 +269,16 @@ class CollectionResult(BaseModel):
     @property
     def ok(self) -> bool:
         return not self.failures and self.run_error is None
+
+
+def validation_message(error: ValidationError) -> str:
+    """Pydantic's messages without the input dump and the documentation links."""
+    messages = []
+    for item in error.errors():
+        message = str(item["msg"]).removeprefix("Value error, ")
+        location = ".".join(str(part) for part in item["loc"])
+        messages.append(f"{location}: {message}" if location else message)
+    return "; ".join(messages)
 
 
 def source_document_id(source: SourceName, source_id: str) -> str:
