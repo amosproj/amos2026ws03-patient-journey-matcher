@@ -22,7 +22,7 @@ from crawler.models import (
     source_document_id,
 )
 from crawler.sources.base import NETWORK_TIMEOUT_SECONDS, USER_AGENT, BaseScraper
-from crawler.sources.fields import bare_orcid, language_tag, plain_text
+from crawler.sources.fields import bare_orcid, language_tag, normalize_doi, plain_text
 
 SEARCH_URL = "https://zenodo.org/api/records"
 PAGE_SIZE = 25
@@ -124,8 +124,8 @@ class ZenodoScraper(BaseScraper):
         record_id = str(record["id"])
         concept_id = str(parent.get("id") or record_id)
         resource_type = str((metadata.get("resource_type") or {}).get("id") or "")
-        doi = ((record.get("pids") or {}).get("doi") or {}).get("identifier")
-        concept_doi = ((parent.get("pids") or {}).get("doi") or {}).get("identifier")
+        doi = normalize_doi(((record.get("pids") or {}).get("doi") or {}).get("identifier"))
+        concept_doi = normalize_doi(((parent.get("pids") or {}).get("doi") or {}).get("identifier"))
         journal = ((record.get("custom_fields") or {}).get("journal:journal") or {}).get("title")
         rights = metadata.get("rights") or []
         languages = metadata.get("languages") or []
@@ -144,12 +144,12 @@ class ZenodoScraper(BaseScraper):
             language=language_tag(languages[0].get("id")) if languages else None,
             published_at=cls._publication_date(metadata.get("publication_date")),
             source_updated_at=record.get("updated"),
-            doi=str(doi).strip().lower() or None if doi else None,
+            doi=doi,
             journal=str(journal).strip() or None if journal else None,
             subjects=cls._subjects(metadata),
             licence=zenodo_licence(rights[0].get("id")) if rights else None,
             full_text=cls._files(record, record_id),
-            external_ids={"concept_doi": str(concept_doi).lower()} if concept_doi else {},
+            external_ids={"concept_doi": concept_doi} if concept_doi else {},
             extra=cls._extra(record),
         )
 

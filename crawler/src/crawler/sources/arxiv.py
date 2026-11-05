@@ -25,7 +25,7 @@ from crawler.models import (
     source_document_id,
 )
 from crawler.sources.base import NETWORK_TIMEOUT_SECONDS, USER_AGENT, BaseScraper
-from crawler.sources.fields import creative_commons_licence
+from crawler.sources.fields import creative_commons_licence, normalize_doi
 
 logger = logging.getLogger(__name__)
 
@@ -216,7 +216,7 @@ class ArxivScraper(BaseScraper):
         source_id, version = split_version(str(result.get_short_id()))
         primary = getattr(result, "primary_category", None)
         categories = sorted(set(result.categories or []))
-        doi = str(result.doi).strip() if result.doi else None
+        doi = normalize_doi(result.doi)
         versioned = f"{source_id}v{version}" if version else source_id
         extra: dict[str, JsonValue] = {}
         comment = str(getattr(result, "comment", None) or "").strip()

@@ -14,6 +14,7 @@ _CC_URL = re.compile(
     r"creativecommons\.org/(?:licenses/(?P<terms>[a-z-]+)|publicdomain/(?P<domain>zero|mark))"
     r"/(?P<version>[0-9.]+)"
 )
+_DOI_PREFIX = re.compile(r"^(?:https?://(?:dx\.)?doi\.org/|doi:)\s*", re.IGNORECASE)
 
 # ISO 639-2 (bibliographic and terminology) and ISO 639-3 codes that have a two-letter tag.
 _TWO_LETTER = {
@@ -122,6 +123,12 @@ def creative_commons_licence(url: object) -> str | None:
     if match["domain"] == "mark":
         return "PDM-1.0"
     return f"CC-{match['terms'].upper()}-{match['version']}"
+
+
+def normalize_doi(value: object) -> str | None:
+    """`https://doi.org/10.1000/ABC` → `10.1000/abc`; DOIs ignore case, so compare them lower."""
+    doi = _DOI_PREFIX.sub("", str(value or "").strip()).strip().lower()
+    return doi or None
 
 
 def bare_orcid(value: object) -> str | None:

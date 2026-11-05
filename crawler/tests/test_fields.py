@@ -6,6 +6,7 @@ from crawler.sources.fields import (
     creative_commons_licence,
     iso8601_duration_seconds,
     language_tag,
+    normalize_doi,
     plain_text,
     truncate,
 )
@@ -51,6 +52,21 @@ def test_language_tag(code: str | None, expected: str | None) -> None:
 )
 def test_creative_commons_licence(url: str, expected: str | None) -> None:
     assert creative_commons_licence(url) == expected
+
+
+@pytest.mark.parametrize(
+    ("value", "expected"),
+    [
+        ("10.1016/J.EURURO.2026.01.001", "10.1016/j.eururo.2026.01.001"),
+        ("https://doi.org/10.5281/ZENODO.42", "10.5281/zenodo.42"),
+        ("http://dx.doi.org/10.1000/X ", "10.1000/x"),
+        ("doi: 10.1000/X", "10.1000/x"),
+        ("", None),
+        (None, None),
+    ],
+)
+def test_normalize_doi(value: str | None, expected: str | None) -> None:
+    assert normalize_doi(value) == expected
 
 
 def test_bare_orcid() -> None:

@@ -1,5 +1,8 @@
+import io
 from datetime import UTC, date, datetime
 from typing import Any
+
+from Bio import Entrez
 
 from crawler.models import Author, ScrapeRequest, SourceDocument, SourceName, Subject
 from crawler.sources.pubmed import MAX_SEARCH_RESULTS, PubMedScraper, is_pmid
@@ -146,6 +149,42 @@ def test_parse_article_reads_every_field_we_store() -> None:
 def test_parse_article_supports_medline_year_only_dates() -> None:
     article = {"Journal": {"JournalIssue": {"PubDate": {"MedlineDate": "2024 Winter"}}}}
     assert PubMedScraper._publication_date(article) == "2024"
+
+
+ARTICLE_WITH_MARKUP = (
+    b'<?xml version="1.0" ?>'
+    b'<!DOCTYPE PubmedArticleSet PUBLIC "-//NLM//DTD PubMedArticle, 1st January 2025//EN"'
+    b' "https://dtd.nlm.nih.gov/ncbi/pubmed/out/pubmed_250101.dtd">'
+    b"<PubmedArticleSet><PubmedArticle>"
+    b'<MedlineCitation Status="MEDLINE" Owner="NLM"><PMID Version="1">4242</PMID>'
+    b'<Article PubModel="Print">'
+    b'<Journal><JournalIssue CitedMedium="Print"><PubDate><Year>2026</Year></PubDate>'
+    b"</JournalIssue><Title>Medical Journal</Title></Journal>"
+    b"<ArticleTitle>[<sup>177</sup>Lu]Lu-PSMA-617 in <i>BRCA2</i> carriers"
+    b" with PSA &lt;4 vs &gt;10 ng/mL.</ArticleTitle>"
+    b'<Abstract><AbstractText Label="RESULTS">Rate '
+    b'<mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML">'
+    b"<mml:mi>x</mml:mi><mml:mo>&lt;</mml:mo><mml:mn>2</mml:mn></mml:math>"
+    b" (p&lt;0.05) &amp; more.</AbstractText></Abstract>"
+    b"<Language>eng</Language></Article>"
+    b'<KeywordList Owner="NOTNLM"><Keyword MajorTopicYN="N"><i>BRCA2</i></Keyword></KeywordList>'
+    b"</MedlineCitation>"
+    b'<PubmedData><ArticleIdList><ArticleId IdType="doi">10.1016/J.EURURO.2026.01.001</ArticleId>'
+    b"</ArticleIdList></PubmedData>"
+    b"</PubmedArticle></PubmedArticleSet>"
+)
+
+
+def test_parse_article_drops_inline_markup_but_keeps_the_text_around_it() -> None:
+    # Real Biopython output: tags stay raw, `&lt;` comes back as `<`. The DTD is bundled.
+    record = Entrez.read(io.BytesIO(ARTICLE_WITH_MARKUP))
+
+    document = PubMedScraper.parse_article(record["PubmedArticle"][0])
+
+    assert document.title == "[177Lu]Lu-PSMA-617 in BRCA2 carriers with PSA <4 vs >10 ng/mL"
+    assert document.abstract == "RESULTS: Rate x<2 (p<0.05) & more."
+    assert document.subjects == [Subject(scheme="keyword", label="BRCA2", major=False)]
+    assert document.doi == "10.1016/j.eururo.2026.01.001"
 
 
 def minimal_article(pmid: str) -> dict[str, Any]:

@@ -17,7 +17,7 @@ from crawler.models import (
     source_document_id,
 )
 from crawler.sources.base import BaseScraper
-from crawler.sources.fields import bare_orcid, language_tag
+from crawler.sources.fields import bare_orcid, language_tag, normalize_doi
 from crawler.sources.pmc import PmcClient
 
 EFETCH_BATCH_SIZE = 200
@@ -26,6 +26,13 @@ MAX_SEARCH_RESULTS = 9_999
 """PubMed returns at most this many IDs per search."""
 
 _PMID = re.compile(r"[1-9][0-9]{0,9}")
+# Biopython keeps the formatting tags and MathML of mixed-content elements (title, abstract,
+# keywords, affiliations) as raw tags, but leaves the text unescaped (`p<0.05`). So only
+# these tags are removed, never everything between `<` and `>`.
+_MARKUP_TAG = re.compile(
+    r'</?(?:b|i|u|sup|sub|DispFormula|semantics|m[a-z]+)(?:\s+[\w:-]+="[^"]*")*\s*/?>'
+)
+_MATH_ANNOTATION = re.compile(r"<annotation(?:-xml)?\b.*?</annotation(?:-xml)?>", re.DOTALL)
 _MONTHS = {
     name: number
     for number, name in enumerate(
@@ -36,6 +43,12 @@ _MONTHS = {
 
 def is_pmid(value: str) -> bool:
     return _PMID.fullmatch(value) is not None
+
+
+def inline_text(value: object) -> str:
+    """Plain text of a mixed-content element: `<sup>177</sup>Lu` → `177Lu`; `p<0.05` stays."""
+    text = _MARKUP_TAG.sub("", _MATH_ANNOTATION.sub("", str(value or "")))
+    return " ".join(text.split())
 
 
 def ncbi_credentials_from_env() -> tuple[str | None, str | None]:
@@ -152,14 +165,14 @@ class PubMedScraper(BaseScraper):
             content_type="journal_article",
             source_id=source_id,
             version=_attributes(citation["PMID"]).get("Version"),
-            title=str(article.get("ArticleTitle", "")).strip().removesuffix("."),
+            title=inline_text(article.get("ArticleTitle")).removesuffix("."),
             url=f"https://pubmed.ncbi.nlm.nih.gov/{source_id}/",
             authors=cls._authors(article),
             abstract=cls._abstract(article) or None,
             language=language_tag(languages[0]) if languages else None,
             published_at=cls._publication_date(article),
             source_updated_at=cls._date_time(citation.get("DateRevised")),
-            doi=article_ids.get("doi"),
+            doi=normalize_doi(article_ids.get("doi")),
             journal=str(article.get("Journal", {}).get("Title", "")).strip() or None,
             publication_types=[
                 str(value).strip()
@@ -191,7 +204,7 @@ class PubMedScraper(BaseScraper):
         sections = article.get("Abstract", {}).get("AbstractText", [])
         rendered: list[str] = []
         for section in sections:
-            text = str(section).strip()
+            text = inline_text(section)
             if not text:
                 continue
             label = str(_attributes(section).get("Label", "")).strip()
@@ -202,7 +215,7 @@ class PubMedScraper(BaseScraper):
     def _authors(article: Mapping[str, Any]) -> list[Author]:
         authors: list[Author] = []
         for author in article.get("AuthorList", []):
-            name = str(author.get("CollectiveName", "")).strip()
+            name = inline_text(author.get("CollectiveName"))
             if not name:
                 given = str(author.get("ForeName") or author.get("Initials") or "").strip()
                 family = str(author.get("LastName", "")).strip()
@@ -218,9 +231,7 @@ class PubMedScraper(BaseScraper):
                 None,
             )
             affiliations = author.get("AffiliationInfo", [])
-            affiliation = (
-                str(affiliations[0].get("Affiliation", "")).strip() if affiliations else ""
-            )
+            affiliation = inline_text(affiliations[0].get("Affiliation")) if affiliations else ""
             authors.append(Author(name=name, orcid=orcid, affiliation=affiliation or None))
         return authors
 
@@ -263,10 +274,9 @@ class PubMedScraper(BaseScraper):
                 )
         for keyword_list in citation.get("KeywordList", []):
             for keyword in keyword_list:
-                if str(keyword).strip():
-                    subjects.append(
-                        Subject(scheme="keyword", label=str(keyword).strip(), major=_major(keyword))
-                    )
+                label = inline_text(keyword)
+                if label:
+                    subjects.append(Subject(scheme="keyword", label=label, major=_major(keyword)))
         unique: dict[tuple[str, str | None, str], Subject] = {}
         for subject in subjects:
             unique.setdefault((subject.scheme, subject.id, subject.label), subject)

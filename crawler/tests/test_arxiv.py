@@ -52,7 +52,7 @@ def test_parse_result_returns_metadata_without_downloading_a_pdf() -> None:
         get_short_id=lambda: "2610.12345v1",
         categories=["cs.AI", "q-bio.QM", "cs.AI"],
         primary_category="q-bio.QM",
-        doi="10.1000/arxiv",
+        doi="10.1000/ArXiv.42",
         title="Clinical\n  matching",
         entry_id="https://arxiv.org/abs/2610.12345v1",
         authors=[
@@ -74,6 +74,7 @@ def test_parse_result_returns_metadata_without_downloading_a_pdf() -> None:
     assert document.content_type == "preprint"
     assert document.source is SourceName.ARXIV
     assert document.url == "https://arxiv.org/abs/2610.12345"
+    assert document.doi == "10.1000/arxiv.42"
     assert document.title == "Clinical matching"
     assert document.authors == [
         Author(name="Ada Lovelace", affiliation="Analytical Engine Lab"),
