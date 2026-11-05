@@ -23,8 +23,6 @@ queries: [prostate cancer, prostate cancer biopsy]
 channels:
   - name: Demo channel
     url: https://www.youtube.com/channel/UCdemo
-icd_prefixes: [C61]
-aliases: [prostatakrebs]
 """
 
 
@@ -41,7 +39,6 @@ def test_load_topic_reads_a_topic_file(tmp_path: Path) -> None:
     assert topic.terms == ["prostate cancer", "mCRPC"]
     assert topic.queries == ["prostate cancer", "prostate cancer biopsy"]
     assert [channel.url for channel in topic.channels] == ["https://www.youtube.com/channel/UCdemo"]
-    assert topic.icd_prefixes == ["C61"]
 
 
 @pytest.mark.parametrize(

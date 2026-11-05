@@ -42,8 +42,6 @@ class Topic(BaseModel):
     queries: list[str] = Field(default_factory=list)
     channels: list[Channel] = Field(default_factory=list)
     podcasts: list[PodcastFeed] = Field(default_factory=list)
-    icd_prefixes: list[str] = Field(default_factory=list)
-    aliases: list[str] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def validate_seeds(self) -> "Topic":
@@ -53,7 +51,7 @@ class Topic(BaseModel):
             raise ValueError("a topic needs at least one query, channel or podcast")
         if self.queries and not self.terms:
             raise ValueError("a topic with queries needs terms for the topic filter")
-        for field in ("terms", "queries", "aliases", "icd_prefixes"):
+        for field in ("terms", "queries"):
             values: list[str] = getattr(self, field)
             if any(not value.strip() for value in values):
                 raise ValueError(f"{field} must not contain blank entries")

@@ -12,11 +12,3 @@ terms:
 queries:
   - breast cancer
   - breast carcinoma
-
-# Not used by the crawler. Kept for mapping a patient's diagnosis onto this topic.
-icd_prefixes: [C50]
-aliases:
-  - breast cancer
-  - breast carcinoma
-  - mammakarzinom
-  - brustkrebs

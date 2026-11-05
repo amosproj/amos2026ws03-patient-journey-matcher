@@ -11,11 +11,3 @@ terms:
 queries:
   - essential hypertension
   - high blood pressure treatment
-
-# Not used by the crawler. Kept for mapping a patient's diagnosis onto this topic.
-icd_prefixes: [I10]
-aliases:
-  - hypertension
-  - high blood pressure
-  - hypertonie
-  - bluthochdruck

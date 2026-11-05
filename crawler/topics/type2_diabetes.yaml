@@ -11,12 +11,3 @@ terms:
 queries:
   - type 2 diabetes mellitus
   - type 2 diabetes management
-
-# Not used by the crawler. Kept for mapping a patient's diagnosis onto this topic.
-icd_prefixes: [E11]
-aliases:
-  - type 2 diabetes
-  - diabetes mellitus type 2
-  - diabetes mellitus typ 2
-  - typ-2-diabetes
-  - zuckerkrankheit

@@ -82,13 +82,3 @@ channels:
     url: https://www.youtube.com/channel/UCuBt1xdv2n7GPawh7lcqDRA
   - name: American Urological Association (AUA)
     url: https://www.youtube.com/channel/UCTyj0qXIIaqiU_Sa9P4Ow8w
-
-# Not used by the crawler. Kept for mapping a patient's diagnosis onto this topic.
-icd_prefixes: [C61]
-aliases:
-  - prostate cancer
-  - prostate carcinoma
-  - prostate adenocarcinoma
-  - prostatakarzinom
-  - prostata-ca
-  - prostatakrebs
