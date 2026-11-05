@@ -17,7 +17,7 @@ Automated retrieval only via S3, OAI-PMH, E-utilities (`db=pmc`) and BioC.
 ## Connectors
 
 - **SS26:** ignores PMCID and licence; fetches publisher PDFs via the DOI.
-- **crawler:** the PubMed crawler makes the two requests below for every record with a PMCID (`crawler/src/crawler/sources/pmc.py`).
+- **crawler** `crawler/src/crawler/sources/pmc.py`: the two requests below for every PubMed record with a PMCID.
 
 ## Fields
 
@@ -33,7 +33,7 @@ Several versions: prefer a non-manuscript with an allowed licence, then the high
 | `external_ids.pmcid` | PubMed `ArticleId[@IdType="pmc"]` | Not from the reference list |
 | `external_ids.pmc_version` | Listing or JSON `version` | Part of the S3 key |
 | `external_ids.nihms` | JSON `mid` | Manuscripts |
-| `licence` | JSON `license_code` | CC codes → SPDX; `TDM` → `pmc-tdm`; `null` → empty |
+| `licence` | JSON `license_code` | `CC BY-NC` → `CC-BY-NC` (PMC gives no version); `TDM` → `pmc-tdm`; `null` → empty |
 | `full_text` | `PMC<n>.<v>/PMC<n>.<v>.xml`; MD5 from `?md5=` in JSON `xml_url` | JATS XML |
 | `extra` | JSON `is_manuscript`, `is_retracted`, `is_historical_ocr` | |
 

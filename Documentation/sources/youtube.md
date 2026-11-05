@@ -19,7 +19,7 @@ Default 10,000 units/day plus the 100 `search.list` calls, reset at midnight Pac
 ## Connectors
 
 - **SS26** `backend/scrapers/…/YouTube`: captions via the internal player API (scraping, III.E.6, III.I.8); stores transcripts and view counts forever. Drop that part.
-- **crawler** `crawler/src/crawler/sources/youtube.py`: official API, `part=snippet,contentDetails,status`; public videos only, no live or upcoming streams; licence, language, thumbnail, `--since` cutoff; no statistics; `refresh_after` = +30 days. The refresh-or-delete job belongs to storage (#41).
+- **crawler** `crawler/src/crawler/sources/youtube.py`: official API, the fields below, no statistics. The refresh-or-delete job is #41.
 
 ## Fields
 

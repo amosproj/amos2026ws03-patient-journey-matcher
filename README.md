@@ -12,7 +12,7 @@ The Python crawler and the TypeScript matcher are separate projects with their o
 | Folder | Language | Package manager | Content |
 |---|---|---|---|
 | `crawler/` | Python 3.12 | [uv](https://docs.astral.sh/uv/) | PubMed, arXiv, Zenodo, YouTube and podcast crawlers |
-| `debug/crawler/` | Python 3.12, HTML | uses `crawler/` | Debug UI for the crawler |
+| `debug/crawler/` | Python 3.12, HTML | uses `crawler/` | [Debug UI](debug/crawler/README.md) for the crawler |
 | `matcher/indexer/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Index builder |
 | `matcher/mcp-server/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | MCP server |
 
@@ -29,14 +29,6 @@ The Python crawler and the TypeScript matcher are separate projects with their o
 ### Build, test and start
 
 See [`Documentation/build.md`](Documentation/build.md).
-
-### Debugging the crawler
-
-```sh
-make debug   # then open http://127.0.0.1:8765
-```
-
-A local web UI to start crawler runs and watch them live: every source call, the collected documents, the citation graph and the failures. See [`debug/crawler/README.md`](debug/crawler/README.md).
 
 ### Python (`crawler/`)
 

@@ -42,7 +42,7 @@ Table `documents`, one row per source record. PMC has no rows; it fills the PubM
 | `canonical_url` | text | yes | Page shown to users |
 | `doi` | text | | Lower case, no `https://doi.org/` |
 | `external_ids` | jsonb | | e.g. `pmcid`, `pmc_version`, `nihms`, `concept_doi`, `channel_id`, `feed_key` |
-| `licence` | text | | SPDX ID or own code (`arxiv-nonexclusive-1.0`, `pmc-tdm`, `youtube-standard`, `all-rights-reserved`); empty = unknown |
+| `licence` | text | | SPDX ID, PMC's CC code without version (`CC-BY-NC`), or own code (`arxiv-nonexclusive-1.0`, `pmc-tdm`, `youtube-standard`, `all-rights-reserved`); empty = unknown |
 | `full_text` | jsonb | | Locators in fetch order: `[{kind, url, media_type, size, checksum}]` |
 | `found_by` | jsonb | yes | `[{topic, query}]` or `[{cited_by: <id>}]` |
 | `retrieved_at` | timestamptz | yes | Last successful fetch |
@@ -91,7 +91,7 @@ Per the proposal on `feature/7-mcp-interface` (#7). Reads `documents` and the in
 - **Index rows** carry `document_id` and `version`; deleted with the document, rebuilt on a new version.
 - **Crawler state** (not in `documents`): curated lists (topics, channels, [feeds](podcasts.md#curated-feed-list)); per feed URL, `ETag`, `Last-Modified`, last status; per channel the uploads playlist ID.
 - **Retention:** YouTube data, IDs included, refreshed or deleted within 30 days (III.E.4.d); gone videos deleted with their index rows; no view counts, never in a score (III.E.4.h). PubMed kept current or flagged as possibly outdated. No limit elsewhere.
-- **New since last run:** PubMed `datetype=edat` (the crawler's `--since`); arXiv `submittedDate` (`lastUpdatedDate` silently acts as `submittedDate`); Zenodo `updated:[… TO *]`; YouTube uploads playlist to `videoPublishedAt`; podcasts conditional GET.
+- **New since last run:** PubMed `datetype=edat`; arXiv `submittedDate` (`lastUpdatedDate` silently acts as `submittedDate`); Zenodo `updated:[… TO *]`; YouTube uploads playlist to `videoPublishedAt`; podcasts conditional GET.
 - **Caps per query:** PubMed 9,999, Zenodo 10,000, arXiv 30,000; split by date.
 - **Identification:** User-Agent with app, version, repo URL, team contact. NCBI also `tool` and `email`. Zenodo may block generic agents.
 - **Attribution:** name NLM; arXiv line "Thank you to arXiv for use of its open access interoperability."; credit CC BY; label YouTube items with unchanged title, thumbnail, channel; no NLM, PMC or arXiv logos.
@@ -111,7 +111,7 @@ Request budgets, shared per key or host by crawler, indexer and MCP server:
 ## 6 Traceability
 
 - `id`, `native_id`, `version`, `canonical_url`, `doi`, `external_ids` identify the source; `found_by`, `retrieved_at` say how and when it came in.
-- IDs are stable across versions (arXiv without `vN`, Zenodo concept ID). The SS26 connector put the arXiv version in the key; the crawler strips it since #23.
+- IDs are stable across versions (arXiv without `vN`, Zenodo concept ID).
 - Duplicates are linked, not merged: grouped at query time by DOI, then PMCID or PMID, then title hash. Zenodo copies match only via `related_identifiers` or title hash.
 - YouTube is never merged with other data; each item is labelled as YouTube.
 

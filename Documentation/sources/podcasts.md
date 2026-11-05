@@ -17,7 +17,7 @@ All English, unique `guid` on every item, 304 on conditional GET. None uses `pod
 
 ## Connectors
 
-**crawler** `crawler/src/crawler/sources/podcast.py`: the fields below, read with the standard library (feedparser garbles `podcast:*` tags). The feeds are listed in the topic files (`podcasts:`). Conditional GET and redirect handling need the feed state table and are not done yet.
+**crawler** `crawler/src/crawler/sources/podcast.py`: the fields below, read with the standard library; feeds in the topic files (`podcasts:`). Conditional GET and redirects need the feed state table and are not done yet.
 
 ## Fields
 

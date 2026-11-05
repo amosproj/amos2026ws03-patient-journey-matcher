@@ -27,7 +27,8 @@ _LICENCES = {"CC0": "CC0-1.0", "TDM": "pmc-tdm"}
 
 
 def pmc_licence(code: object) -> str | None:
-    """`CC BY-NC` → `CC-BY-NC`; `TDM` (text mining only) → `pmc-tdm`; none → unknown."""
+    """`CC BY-NC` → `CC-BY-NC` (PMC gives no version); `TDM` (text mining only) → `pmc-tdm`;
+    none → unknown."""
     if not code:
         return None
     value = str(code).strip()

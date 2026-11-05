@@ -169,8 +169,9 @@ class SourceDocument(BaseModel):
     channel_id: str | None = None
     duration_seconds: int | None = None
     licence: str | None = None
-    """SPDX ID (`CC-BY-4.0`) or own code (`arxiv-nonexclusive-1.0`, `pmc-tdm`,
-    `youtube-standard`, `all-rights-reserved`); empty means unknown."""
+    """SPDX ID (`CC-BY-4.0`), PMC's CC code without version (`CC-BY-NC`) or own code
+    (`arxiv-nonexclusive-1.0`, `pmc-tdm`, `youtube-standard`, `all-rights-reserved`);
+    empty means unknown."""
     full_text: list[FullTextLocator] = Field(default_factory=list)
     external_ids: dict[str, str] = Field(default_factory=dict)
     extra: dict[str, JsonValue] = Field(default_factory=dict)
