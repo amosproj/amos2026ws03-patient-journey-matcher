@@ -1,0 +1,1157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Crawler Debug</title>
+<style>
+:root {
+  --bg: #f5f6f8; --panel: #ffffff; --text: #1d2127; --muted: #6a7280; --line: #e3e6ea;
+  --accent: #2f6fde; --seed: #2f6fde; --cited: #1f9d55; --dropped: #a2a9b4;
+  --error: #d64545; --warn: #c27c0e; --hover: #f0f3f8; --code: #f2f4f7;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #101216; --panel: #171a20; --text: #e4e7eb; --muted: #949ba6; --line: #2a2f38;
+    --accent: #6ea2ff; --seed: #6ea2ff; --cited: #48c47c; --dropped: #5d6470;
+    --error: #ff7b7b; --warn: #f0b44c; --hover: #1e232b; --code: #1d2129;
+  }
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  margin: 0; font: 13px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--bg); color: var(--text);
+  display: grid; grid-template-rows: auto 1fr; overflow: hidden;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+button, input, select { font: inherit; color: inherit; }
+header {
+  display: flex; align-items: center; gap: 14px; padding: 10px 16px;
+  background: var(--panel); border-bottom: 1px solid var(--line);
+}
+header h1 { margin: 0; font-size: 15px; font-weight: 650; }
+.chips { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.chip {
+  font-size: 11px; padding: 2px 8px; border-radius: 999px;
+  border: 1px solid var(--line); color: var(--muted);
+}
+.chip.on { color: var(--cited); border-color: color-mix(in srgb, var(--cited) 50%, transparent); }
+.hint { color: var(--warn); font-size: 12px; }
+.status { margin-left: auto; display: flex; align-items: center; gap: 8px; font-weight: 600; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--dropped); }
+.status.running .dot { background: var(--accent); animation: pulse 1s infinite; }
+.status.finished .dot { background: var(--cited); }
+.status.failed .dot, .status.cancelled .dot { background: var(--error); }
+@keyframes pulse { 50% { opacity: .3; } }
+
+.layout { display: grid; grid-template-columns: 330px 1fr; min-height: 0; }
+.side {
+  background: var(--panel); border-right: 1px solid var(--line);
+  overflow: auto; padding: 14px 16px; display: flex; flex-direction: column; gap: 14px;
+}
+.side-head { display: flex; align-items: baseline; justify-content: space-between; margin-top: 4px; }
+.side h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 0; }
+.link-button { border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 12px; padding: 0; }
+.link-button:hover { color: var(--error); }
+.link-button.armed { color: var(--error); font-weight: 600; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field > span { font-size: 12px; color: var(--muted); }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
+.seg button { border: 0; background: transparent; padding: 6px 4px; cursor: pointer; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button.active { background: var(--accent); color: #fff; }
+input[type=text], input[type=number], input[type=date], select {
+  width: 100%; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel);
+}
+input:focus, select:focus { outline: 2px solid color-mix(in srgb, var(--accent) 40%, transparent); border-color: var(--accent); }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.topics { display: flex; flex-direction: column; gap: 2px; max-height: 220px; overflow: auto; border: 1px solid var(--line); border-radius: 6px; padding: 4px; }
+.topics label { display: flex; gap: 8px; align-items: baseline; padding: 4px 6px; border-radius: 5px; cursor: pointer; }
+.topics label:hover { background: var(--hover); }
+.topics label.disabled { opacity: .45; cursor: default; }
+.topics small { color: var(--muted); margin-left: auto; white-space: nowrap; }
+.buttons { display: flex; gap: 8px; }
+.buttons button { flex: 1; padding: 8px; border-radius: 7px; border: 1px solid var(--line); background: var(--panel); cursor: pointer; font-weight: 600; }
+.buttons button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.buttons button:disabled { opacity: .45; cursor: default; }
+.cmd { display: block; font: 11.5px ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--code); padding: 7px 8px; border-radius: 6px; word-break: break-all; color: var(--muted); }
+.error { color: var(--error); font-size: 12px; }
+
+.runs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.runs li {
+  padding: 7px 8px; border-radius: 6px; cursor: pointer; border: 1px solid transparent;
+  display: grid; grid-template-columns: auto 1fr auto auto; gap: 2px 8px; align-items: center;
+}
+.runs li:hover { background: var(--hover); }
+.runs li.active { border-color: var(--accent); background: var(--hover); }
+.runs li.empty { cursor: default; color: var(--muted); display: block; }
+.runs .when { font-weight: 600; }
+.runs .what { grid-column: 2 / 5; color: var(--muted); font: 11px ui-monospace, Menlo, monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.runs .count { color: var(--muted); font-size: 12px; }
+.runs .del {
+  border: 1px solid transparent; background: none; color: var(--muted); cursor: pointer;
+  font-size: 12px; padding: 0 5px; border-radius: 5px; line-height: 18px;
+}
+.runs .del:hover { color: var(--error); border-color: var(--line); }
+.runs .del.armed { color: #fff; background: var(--error); border-color: var(--error); }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--dropped); grid-row: 1 / 3; }
+.status-dot.finished { background: var(--cited); }
+.status-dot.running { background: var(--accent); animation: pulse 1s infinite; }
+.status-dot.failed, .status-dot.cancelled { background: var(--error); }
+
+main { display: grid; grid-template-rows: auto auto 1fr; min-width: 0; min-height: 0; }
+.stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; padding: 12px 16px 4px; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
+.card b { display: block; font-size: 18px; font-variant-numeric: tabular-nums; }
+.card span { font-size: 11.5px; color: var(--muted); }
+.card.bad b { color: var(--error); }
+.card.muted b { color: var(--muted); }
+.tabs { display: flex; gap: 2px; padding: 8px 16px 0; border-bottom: 1px solid var(--line); }
+.tabs button { border: 0; background: none; padding: 8px 12px; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
+.tabs button.active { color: var(--text); border-bottom-color: var(--accent); font-weight: 600; }
+.tabs .badge { font-size: 11px; background: var(--code); border-radius: 999px; padding: 0 6px; margin-left: 4px; }
+.tabs .badge.bad { background: var(--error); color: #fff; }
+.content { position: relative; min-height: 0; overflow: hidden; }
+.tab { position: absolute; inset: 0; display: none; }
+.tab.active { display: flex; flex-direction: column; }
+.empty { color: var(--muted); padding: 40px; text-align: center; }
+
+.log { flex: 1; overflow: auto; padding: 8px 16px; font: 12px/1.6 ui-monospace, SFMono-Regular, Menlo, monospace; }
+.log div { display: grid; grid-template-columns: 58px 1fr; gap: 10px; white-space: pre-wrap; word-break: break-word; }
+.log div.empty { display: block; }
+.log .t { color: var(--muted); text-align: right; }
+.log .start { color: var(--muted); }
+.log .ok { color: var(--text); }
+.log .err { color: var(--error); }
+.log .warn { color: var(--warn); }
+.log .run { font-weight: 700; color: var(--accent); }
+.log-tools { display: flex; gap: 12px; align-items: center; padding: 6px 16px; border-bottom: 1px solid var(--line); color: var(--muted); font-size: 12px; }
+
+.toolbar { display: flex; gap: 8px; align-items: center; padding: 8px 16px; border-bottom: 1px solid var(--line); }
+.toolbar input[type=text] { max-width: 320px; }
+.toolbar select { width: auto; }
+.toolbar .spacer { flex: 1; }
+.toolbar .muted { color: var(--muted); font-size: 12px; }
+.table-wrap { flex: 1; overflow: auto; }
+table { width: 100%; border-collapse: collapse; }
+th { position: sticky; top: 0; background: var(--panel); text-align: left; font-weight: 600; font-size: 12px; color: var(--muted); padding: 7px 10px; border-bottom: 1px solid var(--line); z-index: 1; }
+td { padding: 6px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tbody tr { cursor: pointer; }
+tbody tr:hover { background: var(--hover); }
+tbody tr.selected { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+td.id { font: 11.5px ui-monospace, Menlo, monospace; white-space: nowrap; }
+td.small { color: var(--muted); font-size: 12px; }
+td.found { min-width: 190px; }
+.pill { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 999px; color: #fff; white-space: nowrap; }
+.pill.seed { background: var(--seed); }
+.pill.cited { background: var(--cited); }
+.pill.dropped { background: var(--dropped); }
+
+#tab-graph canvas { flex: 1; width: 100%; height: 100%; display: block; cursor: grab; }
+#tab-graph canvas.dragging { cursor: grabbing; }
+.legend { position: absolute; left: 16px; bottom: 12px; display: flex; gap: 14px; background: color-mix(in srgb, var(--panel) 85%, transparent); padding: 6px 10px; border-radius: 6px; border: 1px solid var(--line); font-size: 12px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
+.graph-note { position: absolute; right: 16px; bottom: 12px; color: var(--muted); font-size: 12px; }
+.info {
+  display: inline-grid; place-items: center; width: 14px; height: 14px; margin-left: 3px;
+  border: 1px solid currentColor; border-radius: 50%; font: italic 600 9.5px/1 Georgia, serif;
+  color: var(--muted); cursor: help; vertical-align: 1px; user-select: none;
+}
+.info:hover, .info:focus { color: var(--accent); outline: none; }
+.tip {
+  position: fixed; z-index: 50; max-width: 280px; padding: 8px 10px; border-radius: 7px;
+  background: var(--text); color: var(--bg); font-size: 12px; line-height: 1.45;
+  box-shadow: 0 6px 20px rgba(0,0,0,.18); pointer-events: none; display: none;
+}
+.tooltip { position: absolute; pointer-events: none; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; max-width: 380px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.12); display: none; z-index: 5; }
+
+.detail { position: absolute; top: 0; right: 0; bottom: 0; width: min(440px, 92%); background: var(--panel); border-left: 1px solid var(--line); box-shadow: -8px 0 24px rgba(0,0,0,.08); overflow: auto; padding: 16px 18px; z-index: 10; display: none; }
+.detail.open { display: block; }
+.detail h3 { margin: 6px 0 10px; font-size: 15px; line-height: 1.35; }
+.detail .close { position: absolute; top: 10px; right: 12px; border: 0; background: none; font-size: 18px; cursor: pointer; color: var(--muted); }
+.detail dl { display: grid; grid-template-columns: 110px 1fr; gap: 6px 10px; margin: 12px 0; }
+.detail dt { color: var(--muted); font-size: 12px; }
+.detail dd { margin: 0; word-break: break-word; }
+.detail .links { display: flex; flex-direction: column; gap: 3px; }
+.detail .links a { cursor: pointer; }
+.detail .abstract { white-space: pre-wrap; color: var(--text); font-size: 12.5px; }
+.detail .note { background: var(--code); border-radius: 6px; padding: 8px 10px; color: var(--muted); font-size: 12px; margin: 10px 0; }
+.detail pre { background: var(--code); padding: 10px; border-radius: 6px; font-size: 11px; overflow: auto; max-height: 360px; }
+.kw { display: inline-block; font-size: 11px; background: var(--code); border-radius: 4px; padding: 1px 6px; margin: 0 4px 4px 0; }
+.kw.major { font-weight: 700; color: var(--accent); }
+.thumb { display: block; width: 100%; max-width: 320px; border-radius: 6px; margin: 6px 0 4px; }
+.detail dl.extra { grid-template-columns: 110px 1fr; font-size: 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Crawler Debug</h1>
+  <div class="chips" id="env"></div>
+  <div class="status" id="status"><span class="dot"></span><span id="status-text">ready</span></div>
+</header>
+
+<div class="layout">
+  <aside class="side">
+    <form id="form" autocomplete="off">
+      <div class="field">
+        <span>Source <i class="info" tabindex="0" data-tip="Which source to search. PubMed and arXiv return papers and follow their reference lists. Zenodo returns articles, preprints, conference papers, reports, posters, presentations and videos, without references. YouTube lists a channel's latest public videos (needs YOUTUBE_API_KEY). Podcasts lists the episodes of curated RSS feeds.">i</i></span>
+        <div class="seg" id="source">
+          <button type="button" data-value="pubmed" class="active">PubMed</button>
+          <button type="button" data-value="arxiv">arXiv</button>
+          <button type="button" data-value="zenodo">Zenodo</button>
+          <button type="button" data-value="youtube">YouTube</button>
+          <button type="button" data-value="podcast">Podcasts</button>
+        </div>
+      </div>
+      <div class="field" style="margin-top:12px">
+        <span>Seeds <i class="info" tabindex="0" data-tip="What the run starts from. Query: one search (a channel for YouTube); the whole query is also the topic filter for cited papers. Topic file: all queries or channels from crawler/topics/*.yaml; the filter uses the file's terms.">i</i></span>
+        <div class="seg" id="mode">
+          <button type="button" data-value="query" class="active">Query</button>
+          <button type="button" data-value="topic">Topic file</button>
+        </div>
+      </div>
+      <div class="field" id="query-field" style="margin-top:8px">
+        <input type="text" id="query" value="prostate cancer" placeholder="Search query" list="feed-keys">
+        <datalist id="feed-keys"></datalist>
+      </div>
+      <div class="field" id="topic-field" style="margin-top:8px; display:none">
+        <div class="topics" id="topics"></div>
+      </div>
+      <div class="grid2" style="margin-top:12px">
+        <label class="field"><span>Max results <i class="info" tabindex="0" data-tip="Results per search, or videos per channel. Only applies to the seeds: every paper in their reference lists is fetched.">i</i></span><input type="number" id="max_results" value="3" min="1"></label>
+        <label class="field" data-sources="pubmed arxiv"><span>Max depth <i class="info" tabindex="0" data-tip="How many levels of reference lists to follow. 0 = search results only, 1 = plus the papers in their reference lists, 2 = plus those papers' reference lists. Each level multiplies the requests.">i</i></span><input type="number" id="max_depth" value="1" min="0"></label>
+        <label class="field"><span>Max requests <i class="info" tabindex="0" data-tip="Safety cap for testing: the run stops after this many Crawlee requests. A search, a reference request and a lookup batch count as one each. Empty = no limit.">i</i></span><input type="number" id="max_requests" min="1" placeholder="no limit"></label>
+        <label class="field" data-sources="pubmed arxiv zenodo youtube podcast"><span>Since <i class="info" tabindex="0" data-tip="Only records added to the source on or after this date: PubMed entry date, arXiv first submission, Zenodo last change, YouTube upload, podcast episode date. Applies to the seeds, not to cited papers.">i</i></span><input type="date" id="since"></label>
+        <label class="field" data-sources="arxiv zenodo" style="display:none"><span>Query mode <i class="info" tabindex="0" data-tip="and = every word must match, or = any word is enough, raw = the query goes to the source as is, e.g. ti:&quot;prostate&quot; AND cat:q-bio for arXiv or metadata.title:prostate for Zenodo (Zenodo still keeps only the useful record types). Raw queries have no topic filter.">i</i></span>
+          <select id="query_mode"><option>and</option><option>or</option><option>raw</option></select>
+        </label>
+      </div>
+      <div class="error" id="form-error" style="margin-top:8px"></div>
+      <div class="buttons" style="margin-top:8px">
+        <button type="submit" class="primary" id="start">Start</button>
+        <button type="button" id="stop" disabled>Stop</button>
+      </div>
+      <code class="cmd" id="cmd" style="margin-top:10px" title="The same run in the terminal"></code>
+    </form>
+    <div class="side-head">
+      <h2>Runs</h2>
+      <button type="button" class="link-button" id="clear-runs" title="Delete all finished runs">Clear all</button>
+    </div>
+    <ul class="runs" id="runs"></ul>
+  </aside>
+
+  <main>
+    <div class="stats" id="stats"></div>
+    <nav class="tabs" id="tabs">
+      <button data-tab="live" class="active">Live log</button>
+      <button data-tab="docs">Documents <span class="badge" id="docs-count">0</span></button>
+      <button data-tab="graph">Citation graph</button>
+      <button data-tab="failures">Failures <span class="badge" id="fail-count">0</span></button>
+    </nav>
+    <div class="content">
+      <section class="tab active" id="tab-live">
+        <div class="log-tools"><label><input type="checkbox" id="show-starts"> Show request starts</label><label><input type="checkbox" id="follow" checked> Follow</label><span id="run-command"></span></div>
+        <div class="log" id="log"><div class="empty">Start a run on the left or pick an earlier one.</div></div>
+      </section>
+      <section class="tab" id="tab-docs">
+        <div class="toolbar">
+          <input type="text" id="filter" placeholder="Filter by title or ID">
+          <select id="origin-filter">
+            <option value="">All</option>
+            <option value="seed">Search results</option>
+            <option value="cited">Cited</option>
+            <option value="dropped">Dropped (off-topic)</option>
+          </select>
+          <span class="muted" id="docs-shown"></span>
+          <span class="spacer"></span>
+          <a id="download" style="display:none">Download JSONL</a>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Origin</th><th>ID</th><th>Type</th><th>Title</th><th>Published</th><th>Licence</th><th>Found by</th></tr></thead>
+            <tbody id="docs"></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="tab" id="tab-graph">
+        <canvas id="graph"></canvas>
+        <div class="legend">
+          <span><i style="background:var(--seed)"></i>Search result</span>
+          <span><i style="background:var(--cited)"></i>Cited, kept</span>
+          <span><i style="background:var(--dropped)"></i>Dropped (off-topic)</span>
+        </div>
+        <div class="graph-note" id="graph-note">Scroll = zoom · Drag = pan · Click = details</div>
+        <div class="tooltip" id="tooltip"></div>
+      </section>
+      <section class="tab" id="tab-failures">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Kind</th><th>Source</th><th>Depth</th><th>Details</th><th>Error</th><th>Retries</th></tr></thead>
+            <tbody id="failures"></tbody>
+          </table>
+        </div>
+      </section>
+      <aside class="detail" id="detail"></aside>
+    </div>
+  </main>
+</div>
+
+<div class="tip" id="tip"></div>
+<script>
+"use strict";
+const $ = (selector) => document.querySelector(selector);
+
+function h(tag, attrs, ...children) {
+  const node = document.createElement(tag);
+  for (const [key, value] of Object.entries(attrs || {})) {
+    if (value == null || value === false) continue;
+    if (key === "class") node.className = value;
+    else if (key.startsWith("on")) node.addEventListener(key.slice(2), value);
+    else node.setAttribute(key, value === true ? "" : value);
+  }
+  for (const child of children.flat()) {
+    if (child == null || child === false) continue;
+    node.append(child instanceof Node ? child : document.createTextNode(String(child)));
+  }
+  return node;
+}
+
+async function api(path, options = {}) {
+  const response = await fetch(path, { headers: { "Content-Type": "application/json" }, ...options });
+  const data = await response.json().catch(() => ({}));
+  if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+  return data;
+}
+
+const plural = (count, word) => `${count} ${word}${count === 1 ? "" : "s"}`;
+const fmtSeconds = (s) => s == null ? "–" : s < 60 ? `${s.toFixed(1)} s` : `${Math.floor(s / 60)} min ${Math.round(s % 60)} s`;
+const fmtClock = (iso) => new Date(iso).toLocaleTimeString("en-GB", { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+const fmtDay = (iso) => new Date(iso).toLocaleDateString("en-GB", { day: "2-digit", month: "short" });
+const ORIGIN_LABEL = { seed: "Search result", cited: "Cited", dropped: "Dropped" };
+
+function urlFor(id) {
+  if (!id) return null;
+  const [source, ...rest] = id.split(":");
+  const native = rest.join(":");
+  if (source === "pubmed") return `https://pubmed.ncbi.nlm.nih.gov/${native}/`;
+  if (source === "arxiv") return `https://arxiv.org/abs/${native}`;
+  if (source === "zenodo") return `https://zenodo.org/records/${native}`;
+  if (source === "youtube") return `https://www.youtube.com/watch?v=${native}`;
+  return null;
+}
+
+// Delete buttons ask once more: the first click arms them, a second click within 3 s deletes.
+function armOrRun(button, label, action) {
+  if (button.dataset.armed) { action(); return; }
+  const original = button.textContent;
+  button.dataset.armed = "1";
+  button.textContent = label;
+  button.classList.add("armed");
+  setTimeout(() => {
+    delete button.dataset.armed;
+    button.textContent = original;
+    button.classList.remove("armed");
+  }, 3000);
+}
+
+// ── State ──────────────────────────────────────────────────────────────────────
+const state = {
+  meta: null, source: "pubmed", mode: "query", runs: [],
+  view: null, run: null, stream: null, liveStart: null,
+  counters: null, result: null, options: null, command: "",
+  selected: null, tab: "live", renderQueued: false,
+};
+
+const graph = {
+  nodes: new Map(), edges: [], edgeKeys: new Set(),
+  scale: 1, ox: 0, oy: 0, alpha: 1, dirty: true,
+  hover: null, drag: null, width: 0, height: 0, dpr: 1,
+};
+
+function freshCounters() {
+  const kinds = {};
+  for (const kind of ["search", "channel", "lookup", "references"]) kinds[kind] = { started: 0, done: 0, errors: 0 };
+  return { kinds, fetched: 0, references: 0, retries: 0, waited: 0, seeds: 0, t: 0 };
+}
+
+function resetView() {
+  state.counters = freshCounters();
+  state.result = null; state.options = null; state.command = ""; state.selected = null; state.run = null;
+  graph.nodes.clear(); graph.edges = []; graph.edgeKeys.clear();
+  graph.scale = 1; graph.ox = 0; graph.oy = 0; graph.alpha = 1; graph.dirty = true;
+  $("#log").replaceChildren();
+  $("#run-command").textContent = "";
+  closeDetail();
+}
+
+function showEmptyView() {
+  closeStream();
+  state.view = null;
+  state.liveStart = null;
+  resetView();
+  $("#log").replaceChildren(h("div", { class: "empty" }, "Start a run on the left or pick an earlier one."));
+  setStatus("idle");
+  scheduleRender();
+}
+
+// ── Graph data ────────────────────────────────────────────────────────────────
+function addNode(id, title, kind, force = false) {
+  let node = graph.nodes.get(id);
+  if (!node) {
+    const angle = Math.random() * Math.PI * 2;
+    const radius = 30 + Math.random() * 120;
+    node = { id, title, kind, x: Math.cos(angle) * radius, y: Math.sin(angle) * radius, vx: 0, vy: 0 };
+    graph.nodes.set(id, node);
+    graph.alpha = Math.max(graph.alpha, 0.6);
+  } else {
+    if (title) node.title = title;
+    if (force || node.kind !== "seed") node.kind = kind;
+  }
+  graph.dirty = true;
+  return node;
+}
+
+function addEdge(from, to) {
+  const key = `${from}|${to}`;
+  if (graph.edgeKeys.has(key)) return;
+  graph.edgeKeys.add(key);
+  graph.edges.push([from, to]);
+  graph.alpha = Math.max(graph.alpha, 0.4);
+  graph.dirty = true;
+}
+
+function citingOf(id) { return graph.edges.filter(([, to]) => to === id).map(([from]) => from); }
+function citedBy(id) { return graph.edges.filter(([from]) => from === id).map(([, to]) => to).filter((to) => graph.nodes.has(to)); }
+
+// ── Events ────────────────────────────────────────────────────────────────────
+function applyEvent(event) {
+  const c = state.counters;
+  c.t = event.t;
+  const kind = c.kinds[event.kind];
+  switch (event.type) {
+    case "run_started":
+      c.seeds = event.seeds; state.options = event.options; state.command = event.command;
+      $("#run-command").textContent = event.command;
+      break;
+    case "request_start": if (kind) kind.started++; break;
+    case "request_done":
+      if (kind) kind.done++;
+      if (event.kind === "references") {
+        c.references += event.count;
+        for (const [from, targets] of Object.entries(event.edges || {})) for (const to of targets) addEdge(from, to);
+      } else {
+        c.fetched += event.count;
+        for (const doc of event.docs || []) addNode(doc.id, doc.title, event.kind === "lookup" ? "cited" : "seed");
+      }
+      break;
+    case "request_error": if (kind) kind.errors++; break;
+    case "retry": c.retries++; break;
+    case "backoff": c.waited += event.seconds; break;
+  }
+  appendLog(event);
+  scheduleRender();
+}
+
+function applyResult(result) {
+  state.result = result;
+  const kept = new Set();
+  for (const doc of result.documents) {
+    kept.add(doc.id);
+    const isSeed = doc.found_by.some((entry) => "query" in entry);
+    addNode(doc.id, doc.title, isSeed ? "seed" : "cited", true);
+    for (const entry of doc.found_by) if (entry.cited_by) addEdge(entry.cited_by, doc.id);
+  }
+  for (const node of graph.nodes.values()) if (!kept.has(node.id)) node.kind = "dropped";
+  scheduleRender();
+}
+
+const LOG_LIMIT = 4000;
+function logText(event) {
+  const where = [event.kind, event.source, event.detail].filter(Boolean).join(" ");
+  switch (event.type) {
+    case "run_started": return ["run", `Start: ${event.command} (${plural(event.seeds, "seed request")})`];
+    case "request_start": return ["start", `→ ${where}`];
+    case "request_done":
+      if (event.kind === "references") return ["ok", `✓ ${where} → ${plural(event.count, "cited ID")} (${event.seconds} s)`];
+      return ["ok", `✓ ${where} → ${event.count}${event.requested ? ` of ${event.requested}` : ""} document${event.count === 1 ? "" : "s"} (${event.seconds} s)`];
+    case "request_error": return ["err", `✗ ${where}: ${event.error} (${event.seconds} s)`];
+    case "retry": return ["warn", `↻ ${event.message}`];
+    case "backoff": return ["warn", `   waiting ${event.seconds} s`];
+    case "warning": return ["warn", `⚠ ${event.message}`];
+    case "cancel_requested": return ["warn", "Stop requested …"];
+    case "run_finished": return ["run", `Done: ${plural(event.documents, "document")}, ${plural(event.failures, "failed request")}${event.run_error ? `, aborted: ${event.run_error}` : ""}`];
+    case "run_cancelled": return ["err", `Run stopped${event.documents != null ? `: ${plural(event.documents, "document")} so far` : ""}`];
+    case "run_failed": return ["err", `Run failed: ${event.error}`];
+    default: return ["start", JSON.stringify(event)];
+  }
+}
+
+function appendLog(event) {
+  const log = $("#log");
+  if (log.firstElementChild?.classList.contains("empty")) log.replaceChildren();
+  const [cls, text] = logText(event);
+  const line = h("div", { class: cls, "data-type": event.type }, h("span", { class: "t" }, `${event.t.toFixed(1)} s`), h("span", {}, text));
+  if (event.type === "request_start" && !$("#show-starts").checked) line.style.display = "none";
+  log.append(line);
+  while (log.childElementCount > LOG_LIMIT) log.firstElementChild.remove();
+  if ($("#follow").checked && state.tab === "live") log.scrollTop = log.scrollHeight;
+}
+
+// ── Streaming ─────────────────────────────────────────────────────────────────
+function closeStream() {
+  if (state.stream) { state.stream.close(); state.stream = null; }
+}
+
+function openStream(id, from = 0) {
+  closeStream();
+  const stream = new EventSource(`/api/events?run=${encodeURIComponent(id)}&from=${from}`);
+  state.stream = stream;
+  stream.onmessage = (message) => { if (state.view === id) applyEvent(JSON.parse(message.data)); };
+  stream.addEventListener("end", () => { stream.close(); finishView(id); });
+  stream.onerror = () => { if (stream.readyState === EventSource.CLOSED) finishView(id); };
+}
+
+async function finishView(id) {
+  closeStream();
+  try {
+    const data = await api(`/api/runs/${id}`);
+    if (state.view !== id) return;
+    state.run = data;
+    if (data.result && !state.result) applyResult(data.result);
+  } catch (error) { /* the run may have been deleted */ }
+  state.liveStart = null;
+  setStatus(state.run ? state.run.status : "idle");
+  setRunning(false);
+  await refreshRuns();
+  scheduleRender();
+}
+
+async function viewRun(id, live) {
+  closeStream();
+  resetView();
+  state.view = id;
+  highlightRun();
+  if (live) {
+    state.liveStart = performance.now();
+    setStatus("running");
+    openStream(id, 0);
+    return;
+  }
+  const data = await api(`/api/runs/${id}`);
+  if (state.view !== id) return;
+  state.run = data;
+  for (const event of data.events) applyEvent(event);
+  if (data.result) applyResult(data.result);
+  if (data.status === "running") {
+    state.liveStart = performance.now() - (data.events.at(-1)?.t || 0) * 1000;
+    setStatus("running"); setRunning(true);
+    openStream(id, data.events.length);
+  } else {
+    state.liveStart = null;
+    setStatus(data.status);
+  }
+  const log = $("#log");
+  log.scrollTop = log.scrollHeight;
+  scheduleRender();
+}
+
+// ── Rendering ─────────────────────────────────────────────────────────────────
+function scheduleRender() {
+  if (state.renderQueued) return;
+  state.renderQueued = true;
+  requestAnimationFrame(() => {
+    state.renderQueued = false;
+    renderStats();
+    renderBadges();
+    if (state.tab === "docs") renderDocs();
+    if (state.tab === "failures") renderFailures();
+  });
+}
+
+function card(label, value, cls) { return h("div", { class: `card ${cls || ""}` }, h("b", {}, value ?? "–"), h("span", {}, label)); }
+
+function renderStats() {
+  const box = $("#stats");
+  const s = state.result?.stats;
+  if (s) {
+    box.replaceChildren(
+      card("Documents", s.documents),
+      card("Seed requests", s.seed_requests),
+      card("References found", s.references_found),
+      card("Looked up", s.lookups_queued),
+      card("Not returned by source", s.lookups_missing, s.lookups_missing ? "" : "muted"),
+      card("Dropped off-topic", s.skipped_off_topic, s.skipped_off_topic ? "" : "muted"),
+      card("Duplicates skipped", s.skipped_duplicate, "muted"),
+      card("Known / invalid", `${s.skipped_known} / ${s.skipped_invalid}`, "muted"),
+      card("Requests ok", s.finished_requests),
+      card("Failed", s.failed_requests, s.failed_requests ? "bad" : "muted"),
+      card("Not processed", s.unprocessed_requests, s.unprocessed_requests ? "" : "muted"),
+      card("Duration", fmtSeconds(state.run?.duration)),
+    );
+    return;
+  }
+  const c = state.counters;
+  if (!c || !state.view) { box.replaceChildren(card("Documents", "–", "muted"), card("References", "–", "muted"), card("Requests", "–", "muted")); return; }
+  const kinds = Object.values(c.kinds);
+  const started = kinds.reduce((sum, k) => sum + k.started, 0);
+  const done = kinds.reduce((sum, k) => sum + k.done, 0);
+  const errors = kinds.reduce((sum, k) => sum + k.errors, 0);
+  const elapsed = state.liveStart ? (performance.now() - state.liveStart) / 1000 : c.t;
+  box.replaceChildren(
+    card("Documents fetched", c.fetched),
+    card("Seed requests", c.seeds),
+    card("Cited IDs found", c.references),
+    card("Source calls ok", `${done} / ${started}`),
+    card("Failed attempts", errors, errors ? "bad" : "muted"),
+    card("Retries", c.retries, c.retries ? "" : "muted"),
+    card("Backoff wait", fmtSeconds(c.waited), c.waited ? "" : "muted"),
+    card("Elapsed", fmtSeconds(elapsed)),
+  );
+}
+
+function renderBadges() {
+  $("#docs-count").textContent = state.result ? state.result.documents.length : graph.nodes.size;
+  const failures = state.result ? state.result.failures.length : (state.counters ? Object.values(state.counters.kinds).reduce((sum, k) => sum + k.errors, 0) : 0);
+  const badge = $("#fail-count");
+  badge.textContent = failures;
+  badge.classList.toggle("bad", failures > 0);
+  const download = $("#download");
+  if (state.result && state.view) { download.style.display = ""; download.href = `/api/runs/${state.view}/jsonl`; }
+  else download.style.display = "none";
+}
+
+const typeLabel = (contentType) => contentType ? contentType.replace("_", " ") : "";
+const fmtDuration = (seconds) => `${Math.floor(seconds / 3600) ? `${Math.floor(seconds / 3600)} h ` : ""}${Math.floor((seconds % 3600) / 60)} min ${seconds % 60} s`;
+const fmtBytes = (bytes) => bytes >= 1048576 ? `${(bytes / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1024))} KB`;
+
+function authorList(authors) {
+  const shown = authors.slice(0, 8).map((author, index) => [
+    index ? ", " : "",
+    author.name,
+    author.orcid ? h("a", { href: `https://orcid.org/${author.orcid}`, target: "_blank", rel: "noopener", title: author.affiliation || "ORCID" }, " ⓘ") : null,
+  ]);
+  return h("span", {}, ...shown.flat(), authors.length > 8 ? ` … (+${authors.length - 8})` : "");
+}
+
+function externalLink(key, value) {
+  const links = {
+    pmcid: `https://pmc.ncbi.nlm.nih.gov/articles/${value}/`,
+    concept_doi: `https://doi.org/${value}`,
+  };
+  return links[key] ? h("a", { href: links[key], target: "_blank", rel: "noopener" }, value) : value;
+}
+
+function foundBySummary(doc) {
+  const queries = doc.found_by.filter((entry) => "query" in entry).map((entry) => entry.topic ? `${entry.query} [${entry.topic}]` : entry.query);
+  const cited = doc.found_by.filter((entry) => entry.cited_by).length;
+  return [queries.length ? `Search: ${queries.join(", ")}` : null, cited ? `cited by ${cited}` : null].filter(Boolean).join(" · ");
+}
+
+function docRows() {
+  if (state.result) {
+    const rows = state.result.documents.map((doc) => ({
+      id: doc.id, title: doc.title, published: doc.published_on || "", type: typeLabel(doc.content_type), licence: doc.licence || "",
+      origin: doc.found_by.some((entry) => "query" in entry) ? "seed" : "cited",
+      foundBy: foundBySummary(doc),
+    }));
+    for (const node of graph.nodes.values()) {
+      if (node.kind === "dropped") rows.push({ id: node.id, title: node.title, published: "", origin: "dropped", foundBy: `cited by ${citingOf(node.id).length}` });
+    }
+    return rows;
+  }
+  return [...graph.nodes.values()].map((node) => ({
+    id: node.id, title: node.title, published: "", origin: node.kind,
+    foundBy: node.kind === "cited" ? `cited by ${citingOf(node.id).length}` : "",
+  }));
+}
+
+const ROW_LIMIT = 2000;
+function renderDocs() {
+  const needle = $("#filter").value.trim().toLowerCase();
+  const origin = $("#origin-filter").value;
+  const rows = docRows().filter((row) => (!origin || row.origin === origin) && (!needle || row.id.toLowerCase().includes(needle) || (row.title || "").toLowerCase().includes(needle)));
+  const body = $("#docs");
+  if (!rows.length) {
+    body.replaceChildren(h("tr", {}, h("td", { colspan: 7, class: "small" }, state.view ? "No documents" : "No run selected yet")));
+  } else {
+    const fragment = document.createDocumentFragment();
+    for (const row of rows.slice(0, ROW_LIMIT)) {
+      fragment.append(h("tr", { class: row.id === state.selected ? "selected" : null, onclick: () => selectDoc(row.id) },
+        h("td", {}, h("span", { class: `pill ${row.origin}` }, ORIGIN_LABEL[row.origin])),
+        h("td", { class: "id" }, row.id),
+        h("td", { class: "small" }, row.type || "–"),
+        h("td", {}, row.title || "–"),
+        h("td", { class: "small" }, row.published),
+        h("td", { class: "small" }, row.licence || "–"),
+        h("td", { class: "small found" }, row.foundBy),
+      ));
+    }
+    body.replaceChildren(fragment);
+  }
+  $("#docs-shown").textContent = rows.length > ROW_LIMIT ? `${ROW_LIMIT} of ${rows.length} shown` : `${rows.length} shown`;
+}
+
+function renderFailures() {
+  const body = $("#failures");
+  if (state.result) {
+    const failures = state.result.failures;
+    if (!failures.length && !state.result.run_error) { body.replaceChildren(h("tr", {}, h("td", { colspan: 6, class: "small" }, "No failures"))); return; }
+    const rows = failures.map((failure) => h("tr", {},
+      h("td", {}, failure.kind), h("td", {}, failure.source), h("td", {}, failure.depth),
+      h("td", { class: "small" }, failure.detail), h("td", {}, failure.error),
+      h("td", { class: "small" }, failure.retryable ? `${failure.retries} (gave up)` : "none (permanent)"),
+    ));
+    if (state.result.run_error) rows.push(h("tr", {}, h("td", { colspan: 4 }, "Run aborted"), h("td", { colspan: 2 }, state.result.run_error)));
+    body.replaceChildren(...rows);
+    return;
+  }
+  const errors = [...$("#log").querySelectorAll('[data-type="request_error"]')].map((line) => line.lastChild.textContent);
+  body.replaceChildren(errors.length
+    ? h("tr", {}, h("td", { colspan: 6, class: "small" }, "The run is still in progress. Failed attempts so far:", h("br"), ...errors.flatMap((text) => [text, h("br")])))
+    : h("tr", {}, h("td", { colspan: 6, class: "small" }, state.view ? "No failures" : "No run selected yet")));
+}
+
+// ── Detail panel ──────────────────────────────────────────────────────────────
+function closeDetail() { $("#detail").classList.remove("open"); state.selected = null; graph.dirty = true; }
+
+function docLink(id) {
+  const node = graph.nodes.get(id);
+  const label = node && node.title ? `${id} – ${node.title}` : id;
+  return graph.nodes.has(id) ? h("a", { onclick: () => selectDoc(id) }, label) : h("span", {}, label);
+}
+
+function selectDoc(id) {
+  if (!id) return;
+  state.selected = id;
+  graph.dirty = true;
+  const doc = state.result?.documents.find((entry) => entry.id === id);
+  const node = graph.nodes.get(id);
+  const kind = doc ? (doc.found_by.some((entry) => "query" in entry) ? "seed" : "cited") : node?.kind || "cited";
+  const url = doc?.url || urlFor(id);
+  const parts = [
+    h("button", { class: "close", title: "Close", onclick: closeDetail }, "×"),
+    h("span", { class: `pill ${kind}` }, ORIGIN_LABEL[kind]),
+    h("h3", {}, doc?.title || node?.title || id),
+  ];
+  const rows = [["ID", id]];
+  if (url) rows.push(["Link", h("a", { href: url, target: "_blank", rel: "noopener" }, "Open source ↗")]);
+  if (doc) {
+    if (doc.content_type) rows.push(["Type", typeLabel(doc.content_type)]);
+    if (doc.publication_types?.length) rows.push(["Publication types", doc.publication_types.join(", ")]);
+    if (doc.published_at) rows.push(["Published", `${doc.published_on} (${doc.published_precision})`]);
+    if (doc.source_updated_at) rows.push(["Updated at source", doc.source_updated_at.slice(0, 10)]);
+    if (doc.authors?.length) rows.push(["Authors", authorList(doc.authors)]);
+    if (doc.journal) rows.push([doc.source === "podcast" ? "Show" : "Journal", doc.journal]);
+    if (doc.language) rows.push(["Language", doc.language]);
+    if (doc.duration_seconds != null) rows.push(["Duration", fmtDuration(doc.duration_seconds)]);
+    rows.push(["Licence", doc.licence || "unknown"]);
+    if (doc.version) rows.push(["Version", doc.version]);
+    if (doc.doi) rows.push(["DOI", h("a", { href: `https://doi.org/${doc.doi}`, target: "_blank", rel: "noopener" }, doc.doi)]);
+    if (doc.channel_id) rows.push(["Channel", doc.channel_id]);
+    const ids = Object.entries(doc.external_ids || {});
+    if (ids.length) rows.push(["External IDs", h("div", { class: "links" }, ...ids.map(([key, value]) => h("span", {}, `${key}: `, externalLink(key, value))))]);
+    if (doc.full_text?.length) rows.push([`Full text (${doc.full_text.length})`, h("div", { class: "links" }, ...doc.full_text.map((locator) => h("a", { href: locator.url, target: "_blank", rel: "noopener" }, [locator.kind, locator.media_type, locator.size ? fmtBytes(locator.size) : null, locator.language].filter(Boolean).join(" · "))))]);
+    const queries = doc.found_by.filter((entry) => "query" in entry);
+    if (queries.length) rows.push(["Found by", h("div", { class: "links" }, ...queries.map((entry) => h("span", {}, `Search “${entry.query}”${entry.topic ? ` (topic ${entry.topic})` : ""}`)))]);
+  }
+  const citing = doc ? doc.found_by.filter((entry) => entry.cited_by).map((entry) => entry.cited_by) : citingOf(id);
+  if (citing.length) rows.push([`Cited by (${citing.length})`, h("div", { class: "links" }, ...citing.map(docLink))]);
+  const cites = citedBy(id);
+  if (cites.length) rows.push([`Cites (${cites.length})`, h("div", { class: "links" }, ...cites.slice(0, 50).map(docLink), cites.length > 50 ? h("span", {}, `… +${cites.length - 50}`) : null)]);
+  parts.push(h("dl", {}, ...rows.flatMap(([label, value]) => [h("dt", {}, label), h("dd", {}, value)])));
+  if (kind === "dropped") {
+    const terms = state.options?.topic_terms || [];
+    parts.push(h("div", { class: "note" }, "Fetched as a cited paper but dropped: none of the topic terms is in its title, abstract or subjects.", terms.length ? h("br") : null, terms.length ? `Terms: ${terms.join(", ")}` : null));
+  }
+  if (doc) {
+    const text = doc.abstract || doc.description;
+    if (text) parts.push(h("dt", { style: "color:var(--muted);font-size:12px;margin-top:6px" }, doc.abstract ? "Abstract" : "Description"), h("p", { class: "abstract" }, text.length > 1500 ? `${text.slice(0, 1500)} …` : text));
+    if (doc.extra?.thumbnail) parts.splice(3, 0, h("img", { class: "thumb", src: doc.extra.thumbnail, alt: "", loading: "lazy" }));
+    const extra = Object.entries(doc.extra || {}).filter(([key]) => key !== "thumbnail");
+    if (extra.length) parts.push(h("dl", { class: "extra" }, ...extra.flatMap(([key, value]) => [h("dt", {}, key.replaceAll("_", " ")), h("dd", {}, typeof value === "object" ? JSON.stringify(value) : String(value))])));
+    if (doc.subjects?.length) parts.push(h("div", {}, ...doc.subjects.slice(0, 40).map((subject) => h("span", { class: `kw${subject.major ? " major" : ""}`, title: [subject.scheme, subject.id].filter(Boolean).join(" ") }, subject.label))));
+    parts.push(h("details", {}, h("summary", {}, "Raw data (JSON)"), h("pre", {}, JSON.stringify(doc, null, 2))));
+  } else if (!state.result) {
+    parts.push(h("div", { class: "note" }, "All fields appear when the run is done."));
+  }
+  const panel = $("#detail");
+  panel.replaceChildren(...parts);
+  panel.classList.add("open");
+  panel.scrollTop = 0;
+  if (state.tab === "docs") renderDocs();
+}
+
+// ── Graph view ────────────────────────────────────────────────────────────────
+const canvas = $("#graph");
+const ctx = canvas.getContext("2d");
+const NODE_LIMIT = 2500;
+
+function cssVar(name) { return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+function resizeCanvas() {
+  const rect = canvas.parentElement.getBoundingClientRect();
+  graph.dpr = window.devicePixelRatio || 1;
+  graph.width = rect.width; graph.height = rect.height;
+  canvas.width = Math.max(1, rect.width * graph.dpr);
+  canvas.height = Math.max(1, rect.height * graph.dpr);
+  graph.dirty = true;
+}
+
+function visibleNodes() {
+  const nodes = [...graph.nodes.values()];
+  return nodes.length > NODE_LIMIT ? nodes.slice(0, NODE_LIMIT) : nodes;
+}
+
+function simulate() {
+  const nodes = visibleNodes();
+  const k = graph.alpha;
+  for (let i = 0; i < nodes.length; i++) {
+    const a = nodes[i];
+    for (let j = i + 1; j < nodes.length; j++) {
+      const b = nodes[j];
+      let dx = b.x - a.x, dy = b.y - a.y, d2 = dx * dx + dy * dy;
+      // Seeds push each other apart over any distance, so their citation clusters separate.
+      const seeds = a.kind === "seed" && b.kind === "seed";
+      if (d2 > 25000 && !seeds) continue;
+      if (d2 < 0.01) { dx = Math.random() - 0.5; dy = Math.random() - 0.5; d2 = 0.5; }
+      const force = ((seeds ? 3000 : 120) * k) / d2;
+      a.vx -= dx * force; a.vy -= dy * force; b.vx += dx * force; b.vy += dy * force;
+    }
+  }
+  for (const [from, to] of graph.edges) {
+    const a = graph.nodes.get(from), b = graph.nodes.get(to);
+    if (!a || !b) continue;
+    const dx = b.x - a.x, dy = b.y - a.y;
+    const distance = Math.sqrt(dx * dx + dy * dy) || 1;
+    const force = ((distance - 35) * 0.04 * k) / distance;
+    a.vx += dx * force; a.vy += dy * force; b.vx -= dx * force; b.vy -= dy * force;
+  }
+  for (const node of nodes) {
+    node.vx -= node.x * 0.004 * k; node.vy -= node.y * 0.004 * k;
+    node.x += Math.max(-20, Math.min(20, node.vx)); node.y += Math.max(-20, Math.min(20, node.vy));
+    node.vx *= 0.55; node.vy *= 0.55;
+  }
+  graph.alpha *= 0.985;
+  graph.dirty = true;
+}
+
+function radius(node) { return node.kind === "seed" ? 6 : 3.6; }
+
+function draw() {
+  const { width, height, dpr } = graph;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, width, height);
+  if (!graph.nodes.size) {
+    ctx.fillStyle = cssVar("--muted"); ctx.font = "13px system-ui"; ctx.textAlign = "center";
+    ctx.fillText(state.view ? "No documents yet" : "No run selected yet", width / 2, height / 2);
+    return;
+  }
+  ctx.translate(width / 2 + graph.ox, height / 2 + graph.oy);
+  ctx.scale(graph.scale, graph.scale);
+  const focus = state.selected || graph.hover;
+  ctx.lineWidth = 0.7 / graph.scale;
+  ctx.strokeStyle = cssVar("--line");
+  ctx.beginPath();
+  const highlighted = [];
+  for (const [from, to] of graph.edges) {
+    const a = graph.nodes.get(from), b = graph.nodes.get(to);
+    if (!a || !b) continue;
+    if (focus && (from === focus || to === focus)) { highlighted.push([a, b]); continue; }
+    ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+  }
+  ctx.stroke();
+  if (highlighted.length) {
+    ctx.strokeStyle = cssVar("--accent"); ctx.lineWidth = 1.6 / graph.scale;
+    ctx.beginPath();
+    for (const [a, b] of highlighted) { ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); }
+    ctx.stroke();
+  }
+  const colors = { seed: cssVar("--seed"), cited: cssVar("--cited"), dropped: cssVar("--dropped") };
+  for (const node of visibleNodes()) {
+    ctx.beginPath();
+    ctx.arc(node.x, node.y, radius(node), 0, Math.PI * 2);
+    ctx.fillStyle = colors[node.kind] || colors.cited;
+    ctx.fill();
+    if (node.id === focus) { ctx.lineWidth = 2 / graph.scale; ctx.strokeStyle = cssVar("--text"); ctx.stroke(); }
+  }
+}
+
+function worldPoint(event) {
+  const rect = canvas.getBoundingClientRect();
+  const sx = event.clientX - rect.left, sy = event.clientY - rect.top;
+  return { sx, sy, x: (sx - graph.width / 2 - graph.ox) / graph.scale, y: (sy - graph.height / 2 - graph.oy) / graph.scale };
+}
+
+function nodeAt(point) {
+  let best = null, bestDistance = Infinity;
+  for (const node of visibleNodes()) {
+    const dx = node.x - point.x, dy = node.y - point.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    if (distance < radius(node) + 4 / graph.scale && distance < bestDistance) { best = node; bestDistance = distance; }
+  }
+  return best;
+}
+
+canvas.addEventListener("mousedown", (event) => {
+  const point = worldPoint(event);
+  graph.drag = { sx: point.sx, sy: point.sy, ox: graph.ox, oy: graph.oy, moved: false, node: nodeAt(point) };
+  canvas.classList.add("dragging");
+});
+window.addEventListener("mouseup", () => {
+  if (graph.drag && !graph.drag.moved) {
+    if (graph.drag.node) selectDoc(graph.drag.node.id); else closeDetail();
+  }
+  graph.drag = null;
+  canvas.classList.remove("dragging");
+});
+canvas.addEventListener("mousemove", (event) => {
+  const point = worldPoint(event);
+  if (graph.drag) {
+    const dx = point.sx - graph.drag.sx, dy = point.sy - graph.drag.sy;
+    if (Math.abs(dx) + Math.abs(dy) > 3) graph.drag.moved = true;
+    if (graph.drag.moved) { graph.ox = graph.drag.ox + dx; graph.oy = graph.drag.oy + dy; graph.dirty = true; }
+    return;
+  }
+  const node = nodeAt(point);
+  const tooltip = $("#tooltip");
+  if ((node?.id || null) !== graph.hover) { graph.hover = node?.id || null; graph.dirty = true; }
+  if (node) {
+    tooltip.replaceChildren(h("b", {}, ORIGIN_LABEL[node.kind]), " · ", node.id, h("br"), node.title || "");
+    tooltip.style.display = "block";
+    tooltip.style.left = `${Math.min(point.sx + 14, graph.width - 300)}px`;
+    tooltip.style.top = `${point.sy + 14}px`;
+  } else tooltip.style.display = "none";
+});
+canvas.addEventListener("mouseleave", () => { $("#tooltip").style.display = "none"; graph.hover = null; graph.dirty = true; });
+canvas.addEventListener("wheel", (event) => {
+  event.preventDefault();
+  const point = worldPoint(event);
+  const scale = Math.max(0.1, Math.min(8, graph.scale * Math.exp(-event.deltaY * 0.0015)));
+  graph.ox = point.sx - graph.width / 2 - point.x * scale;
+  graph.oy = point.sy - graph.height / 2 - point.y * scale;
+  graph.scale = scale;
+  graph.dirty = true;
+}, { passive: false });
+
+function frame() {
+  if (state.tab === "graph") {
+    if (graph.alpha > 0.01) simulate();
+    if (graph.dirty) { draw(); graph.dirty = false; }
+    const hidden = graph.nodes.size - visibleNodes().length;
+    $("#graph-note").textContent = hidden > 0
+      ? `${plural(hidden, "node")} hidden (limit ${NODE_LIMIT})`
+      : "Scroll = zoom · Drag = pan · Click = details";
+  }
+  requestAnimationFrame(frame);
+}
+
+// ── Form ──────────────────────────────────────────────────────────────────────
+function setupSeg(id, onChange) {
+  for (const button of document.querySelectorAll(`#${id} button`)) {
+    button.addEventListener("click", () => {
+      for (const other of document.querySelectorAll(`#${id} button`)) other.classList.toggle("active", other === button);
+      onChange(button.dataset.value);
+    });
+  }
+}
+
+function formBody() {
+  const number = (id) => { const value = $(`#${id}`).value; return value === "" ? null : Number(value); };
+  return {
+    source: state.source, mode: state.mode,
+    query: $("#query").value,
+    topics: [...document.querySelectorAll("#topics input:checked")].map((input) => input.value),
+    max_results: number("max_results"),
+    max_depth: number("max_depth"),
+    max_requests: number("max_requests"),
+    since: $("#since").value || null,
+    query_mode: $("#query_mode").value,
+  };
+}
+
+function shellQuote(value) { return /^[\w@%+=:,./-]+$/.test(value) ? value : `'${value.replace(/'/g, `'\\''`)}'`; }
+
+function updateCommand() {
+  const body = formBody();
+  const argv = [body.source];
+  const add = (flag, value) => { if (value != null && value !== "") argv.push(flag, String(value)); };
+  add("--max-results", body.max_results);
+  if (["pubmed", "arxiv"].includes(body.source)) add("--max-depth", body.max_depth);
+  add("--since", body.since);
+  if (["arxiv", "zenodo"].includes(body.source)) add("--query-mode", body.query_mode);
+  add("--max-requests", body.max_requests);
+  if (body.mode === "topic") for (const topic of body.topics) argv.push("--topic", topic);
+  else if (body.query.trim()) argv.push(body.query.trim());
+  $("#cmd").textContent = `uv run crawler ${argv.map(shellQuote).join(" ")}`;
+}
+
+function updateForm() {
+  const youtube = state.source === "youtube";
+  for (const element of document.querySelectorAll("[data-sources]")) {
+    element.style.display = element.dataset.sources.split(" ").includes(state.source) ? "" : "none";
+  }
+  $("#query-field").style.display = state.mode === "query" ? "" : "none";
+  $("#topic-field").style.display = state.mode === "topic" ? "" : "none";
+  const query = $("#query");
+  const defaults = { youtube: "UCRVdFy0DLWhIApG8LWDzV1w", podcast: "jco" };
+  const placeholders = { youtube: "Channel: @handle, channel ID or URL", podcast: "Feed key, e.g. jco" };
+  query.placeholder = placeholders[state.source] || "Search query";
+  if (["prostate cancer", ...Object.values(defaults)].includes(query.value)) query.value = defaults[state.source] || "prostate cancer";
+  $("#feed-keys").replaceChildren(...(state.source === "podcast" ? state.meta?.feeds || [] : []).map((feed) => h("option", { value: feed.key }, `${feed.name} (${feed.audience})`)));
+  renderTopics();
+  updateCommand();
+}
+
+function renderTopics() {
+  const box = $("#topics");
+  const checked = new Set([...box.querySelectorAll("input:checked")].map((input) => input.value));
+  const topics = state.meta?.topics || [];
+  const units = { youtube: ["channels", "channel", "channels"], podcast: ["podcasts", "feed", "feeds"] };
+  const [field, one, many] = units[state.source] || ["queries", "query", "queries"];
+  box.replaceChildren(...topics.map((topic) => {
+    const count = topic[field] || 0;
+    const usable = !topic.error && count > 0;
+    const unit = count === 1 ? one : many;
+    return h("label", { class: usable ? null : "disabled", title: topic.error || (topic.terms?.length ? `Filter terms: ${topic.terms.join(", ")}` : "") },
+      h("input", { type: "checkbox", value: topic.id, disabled: !usable, checked: usable && checked.has(topic.id), onchange: updateCommand }),
+      h("span", {}, topic.label),
+      h("small", {}, topic.error ? "error" : `${count} ${unit}`));
+  }));
+}
+
+function renderEnv() {
+  const env = state.meta?.env || {};
+  const labels = { NCBI_ENTREZ_EMAIL: "NCBI email", NCBI_API_KEY: "NCBI key", SEMANTIC_SCHOLAR_API_KEY: "Semantic Scholar", YOUTUBE_API_KEY: "YouTube" };
+  const chips = Object.entries(labels).map(([key, label]) => h("span", { class: `chip ${env[key] ? "on" : ""}`, title: `${key} is ${env[key] ? "set" : "not set"}` }, `${env[key] ? "✓" : "–"} ${label}`));
+  if (state.meta && !state.meta.env_file_exists) chips.push(h("span", { class: "hint", title: state.meta.env_file }, "crawler/.env missing (cp .env.example .env)"));
+  $("#env").replaceChildren(...chips);
+}
+
+function setStatus(status) {
+  const labels = { idle: "ready", running: "running …", finished: "done", failed: "failed", cancelled: "stopped" };
+  $("#status").className = `status ${status}`;
+  $("#status-text").textContent = labels[status] || status;
+}
+
+function setRunning(running) {
+  $("#start").disabled = running;
+  $("#stop").disabled = !running;
+}
+
+async function deleteRun(id) {
+  await api(`/api/runs/${id}`, { method: "DELETE" });
+  if (state.view === id) showEmptyView();
+  await refreshRuns();
+}
+
+async function refreshRuns() {
+  state.runs = await api("/api/runs");
+  const list = $("#runs");
+  $("#clear-runs").style.visibility = state.runs.some((run) => run.status !== "running") ? "visible" : "hidden";
+  if (!state.runs.length) { list.replaceChildren(h("li", { class: "empty" }, "No runs yet")); return; }
+  list.replaceChildren(...state.runs.map((run) => {
+    const running = run.status === "running";
+    const count = running ? "running" : run.documents != null ? plural(run.documents, "doc") : run.status;
+    const remove = running ? h("span") : h("button", {
+      class: "del", type: "button", title: "Delete this run",
+      onclick: (event) => { event.stopPropagation(); armOrRun(event.currentTarget, "Delete?", () => deleteRun(run.id)); },
+    }, "✕");
+    return h("li", { "data-id": run.id, onclick: () => viewRun(run.id, false), title: run.command },
+      h("span", { class: `status-dot ${run.status}` }),
+      h("span", { class: "when" }, `${fmtDay(run.started_at)} ${fmtClock(run.started_at)}`),
+      h("span", { class: "count" }, count),
+      remove,
+      h("span", { class: "what" }, run.command.replace(/^uv run crawler /, "")),
+    );
+  }));
+  highlightRun();
+}
+
+function highlightRun() {
+  for (const item of document.querySelectorAll("#runs li")) item.classList.toggle("active", item.dataset.id === state.view);
+}
+
+function switchTab(tab) {
+  state.tab = tab;
+  history.replaceState(null, "", tab === "live" ? location.pathname : `#${tab}`);
+  for (const button of document.querySelectorAll("#tabs button")) button.classList.toggle("active", button.dataset.tab === tab);
+  for (const section of document.querySelectorAll(".tab")) section.classList.toggle("active", section.id === `tab-${tab}`);
+  if (tab === "graph") resizeCanvas();
+  if (tab === "live") { const log = $("#log"); log.scrollTop = log.scrollHeight; }
+  scheduleRender();
+}
+
+$("#form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  $("#form-error").textContent = "";
+  try {
+    const started = await api("/api/runs", { method: "POST", body: JSON.stringify(formBody()) });
+    setRunning(true);
+    await viewRun(started.id, true);
+    switchTab("live");
+    refreshRuns();
+  } catch (error) {
+    $("#form-error").textContent = error.message;
+  }
+});
+$("#stop").addEventListener("click", async () => {
+  try { await api("/api/cancel", { method: "POST" }); } catch (error) { $("#form-error").textContent = error.message; }
+});
+$("#clear-runs").addEventListener("click", (event) => armOrRun(event.currentTarget, "Delete all runs?", async () => {
+  const viewingRunning = state.runs.some((run) => run.id === state.view && run.status === "running");
+  await api("/api/runs", { method: "DELETE" });
+  if (state.view && !viewingRunning) showEmptyView();
+  await refreshRuns();
+}));
+for (const id of ["query", "max_results", "max_depth", "max_requests", "since", "query_mode"]) $(`#${id}`).addEventListener("input", updateCommand);
+for (const button of document.querySelectorAll("#tabs button")) button.addEventListener("click", () => switchTab(button.dataset.tab));
+$("#filter").addEventListener("input", () => renderDocs());
+$("#origin-filter").addEventListener("change", () => renderDocs());
+$("#show-starts").addEventListener("change", (event) => {
+  for (const line of document.querySelectorAll('#log [data-type="request_start"]')) line.style.display = event.target.checked ? "" : "none";
+});
+window.addEventListener("resize", () => { if (state.tab === "graph") resizeCanvas(); });
+document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeDetail(); });
+setInterval(() => { if (state.liveStart && !state.result) renderStats(); }, 500);
+
+// Info icons: one fixed tooltip, so the side panel's scroll area cannot clip it.
+function showTip(icon) {
+  const tip = $("#tip");
+  tip.textContent = icon.dataset.tip;
+  tip.style.display = "block";
+  const rect = icon.getBoundingClientRect();
+  const left = Math.min(rect.right + 8, window.innerWidth - tip.offsetWidth - 8);
+  const top = Math.min(rect.top - 6, window.innerHeight - tip.offsetHeight - 8);
+  tip.style.left = `${left}px`;
+  tip.style.top = `${Math.max(8, top)}px`;
+}
+for (const icon of document.querySelectorAll(".info")) {
+  icon.addEventListener("mouseenter", () => showTip(icon));
+  icon.addEventListener("focus", () => showTip(icon));
+  icon.addEventListener("mouseleave", () => { $("#tip").style.display = "none"; });
+  icon.addEventListener("blur", () => { $("#tip").style.display = "none"; });
+  icon.addEventListener("click", (event) => event.preventDefault());
+}
+
+setupSeg("source", (value) => { state.source = value; updateForm(); });
+setupSeg("mode", (value) => { state.mode = value; updateForm(); });
+
+async function init() {
+  state.meta = await api("/api/meta");
+  renderEnv();
+  updateForm();
+  await refreshRuns();
+  scheduleRender();
+  if (state.meta.running) { setRunning(true); viewRun(state.meta.running, false); }
+  else if (state.runs.length) viewRun(state.runs[0].id, false);
+  setInterval(async () => { if (!state.liveStart) { try { state.meta = await api("/api/meta"); renderEnv(); } catch (error) { /* server restarting */ } } }, 10000);
+  const tab = location.hash.slice(1);
+  if (["live", "docs", "graph", "failures"].includes(tab)) switchTab(tab);
+  requestAnimationFrame(frame);
+}
+init().catch((error) => { $("#log").replaceChildren(h("div", { class: "err" }, `Server not reachable: ${error.message}`)); });
+</script>
+</body>
+</html>

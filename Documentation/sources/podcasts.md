@@ -17,7 +17,7 @@ All English, unique `guid` on every item, 304 on conditional GET. None uses `pod
 
 ## Connectors
 
-None. SS26 only names a podcast target and the Vosk model in `backend/scrapers/data/config.json`. feedparser 6.0.14 (BSD-2-Clause) is current but garbles `podcast:*` tags; read those from the XML.
+**crawler** `crawler/src/crawler/sources/podcast.py`: the fields below, read with the standard library; feeds in the topic files (`podcasts:`). Conditional GET and redirects need the feed state table and are not done yet.
 
 ## Fields
 

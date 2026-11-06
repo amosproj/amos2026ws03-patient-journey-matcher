@@ -1,0 +1,21 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+# Podcasts only: general medical journals that cover every disease area.
+id: general_medicine
+label: General medicine
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: nejm_this_week
+    name: NEJM This Week
+    url: https://podcast.nejm.org/nejm_audio_summaries.xml
+    publisher: NEJM Group
+    audience: clinicians
+    language: en
+    trusted_because: Weekly audio summaries of the peer-reviewed New England Journal of Medicine.
+  - key: bmj_medicine_science
+    name: Medicine and Science from The BMJ
+    url: https://feed.podbean.com/thebmjpodcast/feed.xml
+    publisher: BMJ
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the peer-reviewed BMJ on medical research and practice.

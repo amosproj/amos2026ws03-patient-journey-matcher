@@ -16,7 +16,7 @@ Use `efetch` with `retmode=xml`, batched via the History server (`usehistory=y`)
 ## Connectors
 
 - **SS26** `backend/scrapers/…/PubMed`: stores publisher PDF text (breaks metadata-only); keeps only the first abstract section; fails on `CollectiveName`; reads keywords from the wrong element; filters by `pdat`.
-- **#27** `crawler/src/crawler/sources/pubmed.py` (not merged): metadata only, parses correctly. Missing PMCID, publication types, language, MeSH UIs and major flags, entry and revision dates. Asks for 10,000 IDs (max 9,999), one `efetch` for all IDs, filters by `pdat`.
+- **crawler** `crawler/src/crawler/sources/pubmed.py`: the fields below; `--since` by entry date; PMC adds licence and full text.
 
 ## Fields
 
@@ -26,7 +26,7 @@ Use `efetch` with `retmode=xml`, batched via the History server (`usehistory=y`)
 |---|---|---|
 | `native_id` | `MC/PMID` | Never reused; `id` = `pubmed:<PMID>` |
 | `version` | `MC/PMID/@Version` | Usually 1 |
-| `content_type` | constant `journal_article` | |
+| `content_type` | `journal_article`; `book` for `PubmedBookArticle` | Books and chapters of NCBI Bookshelf (StatPearls, PDQ): `BookDocument` instead of `MC`, venue `Book/BookTitle`, date `ContributionDate`, `bookaccession` → `external_ids.bookshelf_id` |
 | `publication_types` | `MC/Article/PublicationTypeList/PublicationType` | Match on `@UI` (MeSH 2026 renamed some) |
 | `title` | `MC/Article/ArticleTitle` | Strip inline tags |
 | `authors` | `MC/Article/AuthorList/Author`: `LastName` + `ForeName` or `CollectiveName`; `Identifier[@Source="ORCID"]`; `AffiliationInfo` | |

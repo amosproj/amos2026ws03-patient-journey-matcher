@@ -3,7 +3,9 @@ Copyright (c) 2021 The AMOS Projects
 
 This repository contains code copied from amosproj/amos2026ss03-ailixir-intelligence
 (https://github.com/amosproj/amos2026ss03-ailixir-intelligence), commit 88ea71a,
-and crawler/src/crawler/topics.py from commit 05b6c2c^ of the same repository.
+and its topics.py disease list from commit 05b6c2c^ of the same repository. The
+topic files in crawler/topics/ are converted from that list and from the keyword
+and channel lists of commit 88ea71a.
 
 That code is licensed under the MIT License, Copyright (c) 2021 The AMOS Projects,
 the same licence as this repository (see LICENSE). The copied files are under

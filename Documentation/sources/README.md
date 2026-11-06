@@ -9,11 +9,11 @@ Findings for #6, checked 01.11.2026 against live docs and live requests. Follows
 | Source | Role | Page | Offers | Full source for the indexer | Existing connector |
 |---|---|---|---|---|---|
 | PubMed | primary | [`pubmed.md`](pubmed.md) | 41.4 M citations, abstracts, MeSH | Via PMC if there is a PMCID | SS26, #27 |
-| PMC | primary | [`pmc.md`](pmc.md) | About 8 M full-text article versions on S3 | JATS XML | none |
+| PMC | primary | [`pmc.md`](pmc.md) | About 8 M full-text article versions on S3 | JATS XML | crawler |
 | arXiv | secondary | [`arxiv.md`](arxiv.md) | Preprints, about 8,300 a year in medical categories | HTML, else PDF | SS26, #27 |
-| Zenodo | secondary | [`zenodo.md`](zenodo.md) | Any research output, no review | Files: PDF, DOCX, PPTX, MP4 | none |
+| Zenodo | secondary | [`zenodo.md`](zenodo.md) | Any research output, no review | Files: PDF, DOCX, PPTX, MP4 | crawler |
 | YouTube | complementary | [`youtube.md`](youtube.md) | Metadata of 26 curated channels | None: description and chapters only | SS26, #27 |
-| Podcasts | complementary | [`podcasts.md`](podcasts.md) | 6 curated RSS feeds | Transcript file (rare), else show notes | none |
+| Podcasts | complementary | [`podcasts.md`](podcasts.md) | 6 curated RSS feeds | Transcript file (rare), else show notes | crawler |
 
 Primary: peer-reviewed core. Secondary: preprints and grey literature. Complementary: curated formats for patients.
 
@@ -27,7 +27,7 @@ Table `documents`, one row per source record. PMC has no rows; it fills the PubM
 | `source` | text | yes | `pubmed`, `arxiv`, `zenodo`, `youtube`, `podcast` |
 | `native_id` | text | yes | ID in the source, no version suffix |
 | `version` | text | | Version the row describes |
-| `content_type` | text | yes | `journal_article`, `preprint`, `conference_paper`, `poster`, `presentation`, `report`, `video`, `podcast_episode` |
+| `content_type` | text | yes | `journal_article`, `preprint`, `conference_paper`, `poster`, `presentation`, `report`, `book`, `video`, `podcast_episode` |
 | `publication_types` | text[] | | Source labels, e.g. PubMed `Review` |
 | `title` | text | yes | Plain text |
 | `authors` | jsonb | yes | `[{name, orcid, affiliation}]`; channel or host for media |
@@ -42,7 +42,7 @@ Table `documents`, one row per source record. PMC has no rows; it fills the PubM
 | `canonical_url` | text | yes | Page shown to users |
 | `doi` | text | | Lower case, no `https://doi.org/` |
 | `external_ids` | jsonb | | e.g. `pmcid`, `pmc_version`, `nihms`, `concept_doi`, `channel_id`, `feed_key` |
-| `licence` | text | | SPDX ID or own code (`arxiv-nonexclusive-1.0`, `pmc-tdm`, `youtube-standard`, `all-rights-reserved`); empty = unknown |
+| `licence` | text | | SPDX ID, PMC's CC code without version (`CC-BY-NC`), or own code (`arxiv-nonexclusive-1.0`, `pmc-tdm`, `youtube-standard`, `all-rights-reserved`); empty = unknown |
 | `full_text` | jsonb | | Locators in fetch order: `[{kind, url, media_type, size, checksum}]` |
 | `found_by` | jsonb | yes | `[{topic, query}]` or `[{cited_by: <id>}]` |
 | `retrieved_at` | timestamptz | yes | Last successful fetch |
@@ -81,7 +81,7 @@ Per the proposal on `feature/7-mcp-interface` (#7). Reads `documents` and the in
 - `get_source(source_id)`: `source_id` = `documents.id`. Calls `download()` with the "passes the original on" column and the stored `version`. Not allowed: abstract or description plus link. Deleted row (e.g. YouTube after 30 days): `SOURCE_NOT_FOUND`. Shares the request budgets with the indexer.
 - Field mapping: `id` → `source_id`; `canonical_url` → `url`; `published_at` + `published_precision` → `published_date` (`2026`, `2026-09`, `2026-09-13`); `authors[].name` → `authors`; `source`, `title`, `licence` unchanged.
 - Needed in #7, not made here:
-  1. Replace `source_type` (`paper`, `preprint`, `video`, `podcast`) with `content_type` and its 8 values, in results and the filter. The values come from the source labels, so no mapping is needed.
+  1. Replace `source_type` (`paper`, `preprint`, `video`, `podcast`) with `content_type` and its 9 values, in results and the filter. The values come from the source labels, so no mapping is needed.
   2. Add `content_kind: description` (Zenodo, YouTube, show notes). Keep `abstract`; `summary` would clash with the AI summary approach.
   3. Document the fallback: abstract or description plus `url`, not an error.
 
@@ -91,7 +91,7 @@ Per the proposal on `feature/7-mcp-interface` (#7). Reads `documents` and the in
 - **Index rows** carry `document_id` and `version`; deleted with the document, rebuilt on a new version.
 - **Crawler state** (not in `documents`): curated lists (topics, channels, [feeds](podcasts.md#curated-feed-list)); per feed URL, `ETag`, `Last-Modified`, last status; per channel the uploads playlist ID.
 - **Retention:** YouTube data, IDs included, refreshed or deleted within 30 days (III.E.4.d); gone videos deleted with their index rows; no view counts, never in a score (III.E.4.h). PubMed kept current or flagged as possibly outdated. No limit elsewhere.
-- **New since last run:** PubMed `datetype=edat` (both connectors use `pdat`); arXiv `submittedDate` (`lastUpdatedDate` silently acts as `submittedDate`); Zenodo `updated:[… TO *]`; YouTube uploads playlist to `videoPublishedAt`; podcasts conditional GET.
+- **New since last run:** PubMed `datetype=edat`; arXiv `submittedDate` (`lastUpdatedDate` silently acts as `submittedDate`); Zenodo `updated:[… TO *]`; YouTube uploads playlist to `videoPublishedAt`; podcasts conditional GET.
 - **Caps per query:** PubMed 9,999, Zenodo 10,000, arXiv 30,000; split by date.
 - **Identification:** User-Agent with app, version, repo URL, team contact. NCBI also `tool` and `email`. Zenodo may block generic agents.
 - **Attribution:** name NLM; arXiv line "Thank you to arXiv for use of its open access interoperability."; credit CC BY; label YouTube items with unchanged title, thumbnail, channel; no NLM, PMC or arXiv logos.
@@ -111,7 +111,7 @@ Request budgets, shared per key or host by crawler, indexer and MCP server:
 ## 6 Traceability
 
 - `id`, `native_id`, `version`, `canonical_url`, `doi`, `external_ids` identify the source; `found_by`, `retrieved_at` say how and when it came in.
-- IDs are stable across versions (arXiv without `vN`, Zenodo concept ID). Both existing connectors put the arXiv version in the key.
+- IDs are stable across versions (arXiv without `vN`, Zenodo concept ID).
 - Duplicates are linked, not merged: grouped at query time by DOI, then PMCID or PMID, then title hash. Zenodo copies match only via `related_identifiers` or title hash.
 - YouTube is never merged with other data; each item is labelled as YouTube.
 

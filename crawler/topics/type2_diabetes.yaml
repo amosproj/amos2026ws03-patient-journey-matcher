@@ -1,0 +1,13 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: type2_diabetes
+label: Type 2 diabetes mellitus
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - type 2 diabetes
+  - diabetes mellitus type 2
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  - type 2 diabetes mellitus
+  - type 2 diabetes management

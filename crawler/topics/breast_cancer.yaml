@@ -1,0 +1,14 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: breast_cancer
+label: Breast cancer
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - breast cancer
+  - breast carcinoma
+  - breast neoplasm
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  - breast cancer
+  - breast carcinoma

@@ -53,7 +53,7 @@ to the standalone `crawler/` uv project:
 - **PubMed discovery and parsing:** `crawler/src/crawler/sources/pubmed.py`.
 - **arXiv and YouTube discovery and parsing:** `crawler/src/crawler/sources/arxiv.py` and `youtube.py`; YouTube uses the official API only.
 - **Reusable ingestion behavior:** `crawler/src/crawler/sources/base.py`, the typed metadata contract, and the Crawlee runner preserve stable identifiers, request deduplication, and retries.
-- **Source provenance:** identifiers, titles, dates, URLs, source types, authors, keywords, and query terms are retained in each metadata record.
+- **Source provenance:** identifiers, titles, dates, URLs, source types, authors, and keywords are retained in each metadata record, together with how it was found (`found_by`).
 
 The current flow is discovery → fetching → raw JSON storage → chunking → embedding → AstraDB indexing → processing-index updates. It builds an external corpus separately from patient-document processing.
 

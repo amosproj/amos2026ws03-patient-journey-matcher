@@ -3,7 +3,13 @@
 </p>
 
 # Patient Journey Matcher (AMOS WS 2026)
-Something something something
+The Patient Journey Matcher is an MCP server for the AIlixir app. A client sends a patient journey, a dated list of events such as diagnoses and operations, and gets back research papers, preprints, YouTube videos and podcast episodes that fit the most recent points in that journey.
+
+- **Crawler (Python):** indexes PubMed, arXiv, Zenodo, YouTube and podcast feeds in advance. It stores only metadata and links in PostgreSQL, never the full texts.
+- **Indexer (TypeScript):** downloads each text again, keeps it in memory and builds three competing indexes: word statistics, a graph of medical entities and relations, and AI summaries.
+- **MCP server (TypeScript):** matches the journey against the indexes and returns the best sources with links to the originals.
+
+Details: [software architecture](Documentation/architecture/software-architecture.html).
 
 ## Development setup
 
@@ -11,7 +17,8 @@ The Python crawler and the TypeScript matcher are separate projects with their o
 
 | Folder | Language | Package manager | Content |
 |---|---|---|---|
-| `crawler/` | Python 3.12 | [uv](https://docs.astral.sh/uv/) | PubMed, arXiv and YouTube source crawlers |
+| `crawler/` | Python 3.12 | [uv](https://docs.astral.sh/uv/) | PubMed, arXiv, Zenodo, YouTube and podcast crawlers |
+| `debug/crawler/` | Python 3.12, HTML | uses `crawler/` | [Debug UI](debug/crawler/README.md) for the crawler |
 | `matcher/indexer/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Index builder |
 | `matcher/mcp-server/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | MCP server |
 
@@ -53,6 +60,15 @@ See [`Documentation/build.md`](Documentation/build.md).
 2. Run the tools: `pnpm typecheck`, `pnpm test`, `pnpm lint`
 3. Add a dependency to one package: `pnpm --filter @matcher/indexer add <package>`. Add shared dev tools to the root with `pnpm add -w -D <package>`.
 4. Start the MCP server: `pnpm --filter @matcher/mcp-server start`. See [`Documentation/mcp-interface.md`](Documentation/mcp-interface.md).
+
+#### Testing the MCP server
+
+Start the server (step 4 above), then test it with the [MCP Inspector](https://github.com/modelcontextprotocol/inspector) in a second terminal:
+
+```sh
+# Web UI, connected to our server
+npx @modelcontextprotocol/inspector --transport http --server-url http://127.0.0.1:3000/mcp
+```
 
 ### GitHub CI
 
