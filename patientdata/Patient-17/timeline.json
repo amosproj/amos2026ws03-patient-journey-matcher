@@ -1,0 +1,484 @@
+{
+  "patient_id": "Patient-17",
+  "pathway_id": "p07",
+  "start_date": "2026-11-06",
+  "events": [
+    {
+      "id": "e01",
+      "type": "referral",
+      "label": "Notfallvorstellung wegen Knochenschmerzen und PSA-Anstieg",
+      "date": "2026-11-06",
+      "specialist": "hausarzt",
+      "parameters": {
+        "reason": "Knochenschmerzen, PSA stark erhöht",
+        "psa_trend": "stable",
+        "psa_value": 101.1,
+        "psa_display": "101,1 ng/ml"
+      },
+      "documents": [
+        "ueberweisungsbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e02",
+      "type": "lab_test",
+      "label": "PSA, alkalische Phosphatase, LDH",
+      "date": "2026-11-08",
+      "specialist": "urologie",
+      "parameters": {
+        "test": "PSA",
+        "unit": "ng/ml",
+        "value_source": "initial_psa",
+        "additional_tests": [
+          "AP",
+          "LDH",
+          "Hb"
+        ],
+        "psa_trend": "stable",
+        "psa_value": 101.1,
+        "psa_display": "101,1 ng/ml"
+      },
+      "documents": [
+        "laborbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e03",
+      "type": "biopsy",
+      "label": "Stanzbiopsie der Prostata",
+      "date": "2026-11-19",
+      "specialist": "urologie",
+      "parameters": {
+        "cores_total": 12,
+        "gleason_primary": 4,
+        "gleason_secondary": 5,
+        "psa_trend": "stable",
+        "psa_value": 101.1,
+        "psa_display": "101,1 ng/ml"
+      },
+      "documents": [
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e04",
+      "type": "staging_workup",
+      "label": "Knochenszintigraphie und CT-Thorax/Abdomen/Becken",
+      "date": "2026-12-03",
+      "specialist": "nuklearmedizin",
+      "parameters": {
+        "modality": "Szintigraphie",
+        "finding": "Multiple Knochenmetastasen (Wirbelsäule, Becken, Rippen)",
+        "bone_mets": true,
+        "lymph_node_mets": true,
+        "psa_trend": "stable",
+        "psa_value": 101.1,
+        "psa_display": "101,1 ng/ml"
+      },
+      "documents": [
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e05",
+      "type": "tumor_board",
+      "label": "Tumorkonferenz: Metastasiertes Prostatakarzinom",
+      "date": "2026-12-16",
+      "specialist": "urologie",
+      "parameters": {
+        "decision": "adt_plus_chemotherapy",
+        "participants": [
+          "urologie",
+          "onkologie",
+          "nuklearmedizin",
+          "pathologie"
+        ],
+        "rationale": "mHSPC Gleason 9, PSA > 100 – ADT + Docetaxel (STAMPEDE-Protokoll)",
+        "psa_trend": "stable",
+        "psa_value": 101.1,
+        "psa_display": "101,1 ng/ml"
+      },
+      "documents": [
+        "tumorkonferenzprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e06",
+      "type": "systemic_therapy",
+      "label": "Beginn ADT: Leuprorelin + Docetaxel 6 Zyklen",
+      "date": "2026-12-27",
+      "specialist": "onkologie",
+      "parameters": {
+        "drugs": [
+          "Leuprorelin 3-Monats-Depot",
+          "Docetaxel 75 mg/m²"
+        ],
+        "cycles": 6,
+        "interval_days": 21,
+        "psa_trend": "stable",
+        "psa_value": 101.1,
+        "psa_display": "101,1 ng/ml"
+      },
+      "documents": [
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e07",
+      "type": "hospital_admission",
+      "label": "Stationäre Aufnahme für Chemotherapie",
+      "date": "2026-12-27",
+      "specialist": "onkologie",
+      "parameters": {
+        "reason": "Docetaxel-Chemotherapie Zyklus 1",
+        "psa_trend": "stable",
+        "psa_value": 101.1,
+        "psa_display": "101,1 ng/ml"
+      },
+      "documents": [
+        "einweisungsbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e08",
+      "type": "hospital_discharge",
+      "label": "Entlassung nach Chemotherapie-Zyklus",
+      "date": "2026-12-30",
+      "specialist": "onkologie",
+      "parameters": {
+        "diagnosis": "mCSPC unter ADT + Docetaxel",
+        "psa_trend": "stable",
+        "psa_value": 95.5,
+        "psa_display": "95,5 ng/ml"
+      },
+      "documents": [
+        "entlassungsbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e09",
+      "type": "followup",
+      "label": "Verlaufskontrolle unter ADT + Docetaxel",
+      "date": "2027-01-20",
+      "specialist": "onkologie",
+      "parameters": {
+        "psa_trend": "declining",
+        "psa_value": 64.5,
+        "psa_display": "64,5 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 0
+    },
+    {
+      "id": "e10",
+      "type": "followup",
+      "label": "Verlaufskontrolle unter ADT + Docetaxel",
+      "date": "2027-02-10",
+      "specialist": "onkologie",
+      "parameters": {
+        "psa_trend": "declining",
+        "psa_value": 44.1,
+        "psa_display": "44,1 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 1
+    },
+    {
+      "id": "e11",
+      "type": "followup",
+      "label": "Verlaufskontrolle unter ADT + Docetaxel",
+      "date": "2027-03-03",
+      "specialist": "onkologie",
+      "parameters": {
+        "psa_trend": "declining",
+        "psa_value": 30.7,
+        "psa_display": "30,7 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 2
+    },
+    {
+      "id": "e12",
+      "type": "followup",
+      "label": "Verlaufskontrolle unter ADT + Docetaxel",
+      "date": "2027-03-24",
+      "specialist": "onkologie",
+      "parameters": {
+        "psa_trend": "declining",
+        "psa_value": 21.9,
+        "psa_display": "21,9 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 3
+    },
+    {
+      "id": "e13",
+      "type": "followup",
+      "label": "Verlaufskontrolle unter ADT + Docetaxel",
+      "date": "2027-04-14",
+      "specialist": "onkologie",
+      "parameters": {
+        "psa_trend": "declining",
+        "psa_value": 16.1,
+        "psa_display": "16,1 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 4
+    },
+    {
+      "id": "e14",
+      "type": "followup",
+      "label": "Verlaufskontrolle unter ADT + Docetaxel",
+      "date": "2027-05-05",
+      "specialist": "onkologie",
+      "parameters": {
+        "psa_trend": "declining",
+        "psa_value": 12.3,
+        "psa_display": "12,3 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 5
+    },
+    {
+      "id": "e15",
+      "type": "followup",
+      "label": "Reguläre PSA-Verlaufskontrolle",
+      "date": "2027-08-26",
+      "specialist": "urologie",
+      "parameters": {
+        "psa_trend": "declining",
+        "psa_value": 5.8,
+        "psa_display": "5,8 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e16",
+      "type": "progression",
+      "label": "Kastrationsresistenz: PSA-Anstieg trotz ADT",
+      "date": "2028-02-14",
+      "specialist": "onkologie",
+      "parameters": {
+        "psa_event": "castration_resistance",
+        "testosterone_castrate": true,
+        "psa_trend": "stable",
+        "psa_value": 5.1,
+        "psa_display": "5,1 ng/ml"
+      },
+      "documents": [
+        "arztbrief",
+        "laborbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e17",
+      "type": "tumor_board",
+      "label": "Re-Tumorkonferenz: mCRPC – Radium-223",
+      "date": "2028-02-25",
+      "specialist": "onkologie",
+      "parameters": {
+        "decision": "radium_223",
+        "participants": [
+          "onkologie",
+          "nuklearmedizin",
+          "urologie"
+        ],
+        "psa_trend": "stable",
+        "psa_value": 5.1,
+        "psa_display": "5,1 ng/ml"
+      },
+      "documents": [
+        "tumorkonferenzprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e18",
+      "type": "nuclear_medicine",
+      "label": "Radium-223-Therapie (6 Zyklen à 4 Wochen)",
+      "date": "2028-03-24",
+      "specialist": "nuklearmedizin",
+      "parameters": {
+        "drug": "Radium-223 (Xofigo) 55 kBq/kg",
+        "indication": "Symptomatische Knochenmetastasen, mCRPC",
+        "psa_trend": "rising",
+        "psa_value": 6.5,
+        "psa_display": "6,5 ng/ml"
+      },
+      "documents": [
+        "arztbrief",
+        "laborbericht",
+        "verlaufsbericht"
+      ],
+      "repeat_index": 0
+    },
+    {
+      "id": "e19",
+      "type": "nuclear_medicine",
+      "label": "Radium-223-Therapie (6 Zyklen à 4 Wochen)",
+      "date": "2028-04-21",
+      "specialist": "nuklearmedizin",
+      "parameters": {
+        "drug": "Radium-223 (Xofigo) 55 kBq/kg",
+        "indication": "Symptomatische Knochenmetastasen, mCRPC",
+        "psa_trend": "rising",
+        "psa_value": 8.4,
+        "psa_display": "8,4 ng/ml"
+      },
+      "documents": [
+        "arztbrief",
+        "laborbericht",
+        "verlaufsbericht"
+      ],
+      "repeat_index": 1
+    },
+    {
+      "id": "e20",
+      "type": "nuclear_medicine",
+      "label": "Radium-223-Therapie (6 Zyklen à 4 Wochen)",
+      "date": "2028-05-19",
+      "specialist": "nuklearmedizin",
+      "parameters": {
+        "drug": "Radium-223 (Xofigo) 55 kBq/kg",
+        "indication": "Symptomatische Knochenmetastasen, mCRPC",
+        "psa_trend": "rising",
+        "psa_value": 10.9,
+        "psa_display": "10,9 ng/ml"
+      },
+      "documents": [
+        "arztbrief",
+        "laborbericht",
+        "verlaufsbericht"
+      ],
+      "repeat_index": 2
+    },
+    {
+      "id": "e21",
+      "type": "nuclear_medicine",
+      "label": "Radium-223-Therapie (6 Zyklen à 4 Wochen)",
+      "date": "2028-06-16",
+      "specialist": "nuklearmedizin",
+      "parameters": {
+        "drug": "Radium-223 (Xofigo) 55 kBq/kg",
+        "indication": "Symptomatische Knochenmetastasen, mCRPC",
+        "psa_trend": "rising",
+        "psa_value": 14.0,
+        "psa_display": "14,0 ng/ml"
+      },
+      "documents": [
+        "arztbrief",
+        "laborbericht",
+        "verlaufsbericht"
+      ],
+      "repeat_index": 3
+    },
+    {
+      "id": "e22",
+      "type": "nuclear_medicine",
+      "label": "Radium-223-Therapie (6 Zyklen à 4 Wochen)",
+      "date": "2028-07-14",
+      "specialist": "nuklearmedizin",
+      "parameters": {
+        "drug": "Radium-223 (Xofigo) 55 kBq/kg",
+        "indication": "Symptomatische Knochenmetastasen, mCRPC",
+        "psa_trend": "rising",
+        "psa_value": 18.1,
+        "psa_display": "18,1 ng/ml"
+      },
+      "documents": [
+        "arztbrief",
+        "laborbericht",
+        "verlaufsbericht"
+      ],
+      "repeat_index": 4
+    },
+    {
+      "id": "e23",
+      "type": "nuclear_medicine",
+      "label": "Radium-223-Therapie (6 Zyklen à 4 Wochen)",
+      "date": "2028-08-11",
+      "specialist": "nuklearmedizin",
+      "parameters": {
+        "drug": "Radium-223 (Xofigo) 55 kBq/kg",
+        "indication": "Symptomatische Knochenmetastasen, mCRPC",
+        "psa_trend": "rising",
+        "psa_value": 23.4,
+        "psa_display": "23,4 ng/ml"
+      },
+      "documents": [
+        "arztbrief",
+        "laborbericht",
+        "verlaufsbericht"
+      ],
+      "repeat_index": 5
+    },
+    {
+      "id": "e24",
+      "type": "palliative",
+      "label": "Palliativmedizinisches Konsil und Schmerztherapie",
+      "date": "2028-09-27",
+      "specialist": "palliativmedizin",
+      "parameters": {
+        "pain_management": true,
+        "who_step": 2,
+        "psa_trend": "rising",
+        "psa_value": 35.8,
+        "psa_display": "35,8 ng/ml"
+      },
+      "documents": [
+        "palliativbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e25",
+      "type": "palliative",
+      "label": "Finaler palliativmedizinischer Bericht / Verstorben",
+      "date": "2028-10-21",
+      "specialist": "palliativmedizin",
+      "parameters": {
+        "is_terminal": true,
+        "patient_deceased": true,
+        "cause_of_death": "Progressives metastasiertes kastrationsresistentes Prostatakarzinom",
+        "psa_trend": "rising",
+        "psa_value": 44.6,
+        "psa_display": "44,6 ng/ml"
+      },
+      "documents": [
+        "palliativbericht"
+      ],
+      "repeat_index": null
+    }
+  ]
+}

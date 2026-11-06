@@ -1,0 +1,270 @@
+{
+  "patient_id": "Patient-16",
+  "pathway_id": "p06",
+  "start_date": "2026-11-06",
+  "events": [
+    {
+      "id": "e01",
+      "type": "referral",
+      "label": "Überweisung zur Urologie",
+      "date": "2026-11-06",
+      "specialist": "hausarzt",
+      "parameters": {
+        "reason": "Miktionsbeschwerden und erhöhter PSA",
+        "psa_trend": "stable",
+        "psa_value": 20.0,
+        "psa_display": "20,0 ng/ml"
+      },
+      "documents": [
+        "ueberweisungsbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e02",
+      "type": "lab_test",
+      "label": "PSA-Erstbefund",
+      "date": "2026-11-12",
+      "specialist": "urologie",
+      "parameters": {
+        "test": "PSA",
+        "unit": "ng/ml",
+        "value_source": "initial_psa",
+        "psa_trend": "stable",
+        "psa_value": 20.0,
+        "psa_display": "20,0 ng/ml"
+      },
+      "documents": [
+        "laborbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e03",
+      "type": "imaging",
+      "label": "Multiparametrische MRT der Prostata",
+      "date": "2026-11-27",
+      "specialist": "radiologie",
+      "parameters": {
+        "modality": "mpMRI",
+        "region": "Prostata",
+        "finding": "PI-RADS 5 – hochgradiger Verdacht auf Prostatakarzinom",
+        "pi_rads": 5,
+        "psa_trend": "stable",
+        "psa_value": 20.0,
+        "psa_display": "20,0 ng/ml"
+      },
+      "documents": [
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e04",
+      "type": "biopsy",
+      "label": "Stanzbiopsie",
+      "date": "2026-12-11",
+      "specialist": "urologie",
+      "parameters": {
+        "cores_total": 12,
+        "gleason_primary": 4,
+        "gleason_secondary": 3,
+        "psa_trend": "stable",
+        "psa_value": 20.0,
+        "psa_display": "20,0 ng/ml"
+      },
+      "documents": [
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e05",
+      "type": "tumor_board",
+      "label": "Tumorkonferenz: Primäre Radiotherapie",
+      "date": "2026-12-19",
+      "specialist": "urologie",
+      "parameters": {
+        "decision": "primary_radiotherapy_plus_adt",
+        "participants": [
+          "urologie",
+          "strahlentherapie",
+          "onkologie",
+          "pathologie"
+        ],
+        "rationale": "Gleason 4+3, cT2b – primäre RT+ADT als Alternative zur RPE",
+        "psa_trend": "stable",
+        "psa_value": 20.0,
+        "psa_display": "20,0 ng/ml"
+      },
+      "documents": [
+        "tumorkonferenzprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e06",
+      "type": "treatment_decision",
+      "label": "Therapieentscheidung: IMRT + ADT",
+      "date": "2026-12-27",
+      "specialist": "urologie",
+      "parameters": {
+        "decision": "imrt_plus_adt",
+        "psa_trend": "stable",
+        "psa_value": 20.0,
+        "psa_display": "20,0 ng/ml"
+      },
+      "documents": [
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e07",
+      "type": "systemic_therapy",
+      "label": "Beginn ADT: Goserelin 3-Monats-Depot",
+      "date": "2027-01-08",
+      "specialist": "onkologie",
+      "parameters": {
+        "drug": "Goserelin 10.8 mg 3-Monats-Depot",
+        "duration_months": 30,
+        "psa_trend": "stable",
+        "psa_value": 17.4,
+        "psa_display": "17,4 ng/ml"
+      },
+      "documents": [
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e08",
+      "type": "radiation",
+      "label": "Externe Strahlentherapie (IMRT 76 Gy auf Prostata)",
+      "date": "2027-02-05",
+      "specialist": "strahlentherapie",
+      "parameters": {
+        "technique": "IMRT",
+        "target": "Prostata und Samenblasen",
+        "total_dose_gy": 76,
+        "fractions": 38,
+        "duration_weeks": 8,
+        "psa_trend": "declining",
+        "psa_value": 9.5,
+        "psa_display": "9,5 ng/ml"
+      },
+      "documents": [
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e09",
+      "type": "followup",
+      "label": "Verlaufskontrolle unter/nach RT+ADT (PSA-Nadir)",
+      "date": "2027-05-06",
+      "specialist": "urologie",
+      "parameters": {
+        "psa_trend": "declining",
+        "psa_nadir_expected": true,
+        "psa_value": 1.6,
+        "psa_display": "1,6 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 0
+    },
+    {
+      "id": "e10",
+      "type": "followup",
+      "label": "Verlaufskontrolle unter/nach RT+ADT (PSA-Nadir)",
+      "date": "2027-08-21",
+      "specialist": "urologie",
+      "parameters": {
+        "psa_trend": "declining",
+        "psa_nadir_expected": true,
+        "psa_value": 0.51,
+        "psa_display": "0,5 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 1
+    },
+    {
+      "id": "e11",
+      "type": "followup",
+      "label": "Verlaufskontrolle unter/nach RT+ADT (PSA-Nadir)",
+      "date": "2027-12-07",
+      "specialist": "urologie",
+      "parameters": {
+        "psa_trend": "declining",
+        "psa_nadir_expected": true,
+        "psa_value": 0.41,
+        "psa_display": "0,4 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 2
+    },
+    {
+      "id": "e12",
+      "type": "followup",
+      "label": "Verlaufskontrolle unter/nach RT+ADT (PSA-Nadir)",
+      "date": "2028-06-02",
+      "specialist": "urologie",
+      "parameters": {
+        "psa_trend": "stable",
+        "psa_nadir_expected": true,
+        "psa_value": 0.4,
+        "psa_display": "0,4 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 3
+    },
+    {
+      "id": "e13",
+      "type": "followup",
+      "label": "Verlaufskontrolle unter/nach RT+ADT (PSA-Nadir)",
+      "date": "2028-10-21",
+      "specialist": "urologie",
+      "parameters": {
+        "psa_trend": "stable",
+        "psa_nadir_expected": true,
+        "psa_value": 0.4,
+        "psa_display": "0,4 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 4
+    },
+    {
+      "id": "e14",
+      "type": "followup",
+      "label": "Verlaufskontrolle unter/nach RT+ADT (PSA-Nadir)",
+      "date": "2029-03-22",
+      "specialist": "urologie",
+      "parameters": {
+        "psa_trend": "stable",
+        "psa_nadir_expected": true,
+        "psa_value": 0.4,
+        "psa_display": "0,4 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 5
+    }
+  ]
+}
