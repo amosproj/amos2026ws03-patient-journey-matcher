@@ -1,0 +1,199 @@
+{
+  "patient_id": "Patient-11",
+  "pathway_id": "p01",
+  "start_date": "2026-11-06",
+  "events": [
+    {
+      "id": "e01",
+      "type": "referral",
+      "label": "Überweisung vom Hausarzt zur Urologie wegen erhöhtem PSA-Wert",
+      "date": "2026-11-06",
+      "specialist": "hausarzt",
+      "parameters": {
+        "reason": "Erhöhter PSA-Wert beim Screening",
+        "psa_trend": "stable",
+        "psa_value": 6.3,
+        "psa_display": "6,3 ng/ml"
+      },
+      "documents": [
+        "ueberweisungsbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e02",
+      "type": "lab_test",
+      "label": "PSA-Erstbefund in der urologischen Praxis",
+      "date": "2026-11-12",
+      "specialist": "urologie",
+      "parameters": {
+        "test": "PSA",
+        "unit": "ng/ml",
+        "value_source": "initial_psa",
+        "psa_trend": "stable",
+        "psa_value": 6.3,
+        "psa_display": "6,3 ng/ml"
+      },
+      "documents": [
+        "laborbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e03",
+      "type": "imaging",
+      "label": "MRT der Prostata (multiparametrisch)",
+      "date": "2026-12-09",
+      "specialist": "radiologie",
+      "parameters": {
+        "modality": "MRT",
+        "region": "Prostata",
+        "finding": "PI-RADS 3",
+        "pi_rads": 3,
+        "psa_trend": "stable",
+        "psa_value": 6.3,
+        "psa_display": "6,3 ng/ml"
+      },
+      "documents": [
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e04",
+      "type": "biopsy",
+      "label": "Transrektale Stanzbiopsie der Prostata (12 Stanzen)",
+      "date": "2026-12-30",
+      "specialist": "urologie",
+      "parameters": {
+        "cores_total": 12,
+        "cores_positive_range": [
+          1,
+          3
+        ],
+        "gleason_primary": 3,
+        "gleason_secondary": 3,
+        "psa_trend": "stable",
+        "psa_value": 6.4,
+        "psa_display": "6,4 ng/ml"
+      },
+      "documents": [
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e05",
+      "type": "tumor_board",
+      "label": "Interdisziplinäre Tumorkonferenz Prostata",
+      "date": "2027-01-11",
+      "specialist": "urologie",
+      "parameters": {
+        "decision": "active_surveillance",
+        "participants": [
+          "urologie",
+          "radiologie",
+          "pathologie"
+        ],
+        "rationale": "Gleason 3+3, cT1c, PSA < 10 ng/ml – EAU-Niedrigrisiko, aktive Überwachung empfohlen",
+        "psa_trend": "stable",
+        "psa_value": 6.4,
+        "psa_display": "6,4 ng/ml"
+      },
+      "documents": [
+        "tumorkonferenzprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e06",
+      "type": "treatment_decision",
+      "label": "Aufklärungsgespräch und Therapieentscheidung: Aktive Überwachung",
+      "date": "2027-01-16",
+      "specialist": "urologie",
+      "parameters": {
+        "decision": "active_surveillance",
+        "guideline": "S3-Leitlinie Prostatakarzinom 2021",
+        "psa_trend": "stable",
+        "psa_value": 6.4,
+        "psa_display": "6,4 ng/ml"
+      },
+      "documents": [
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e07",
+      "type": "followup",
+      "label": "AS-Verlaufskontrolle (PSA-Kontrolle, ggf. MRT)",
+      "date": "2027-04-16",
+      "specialist": "urologie",
+      "parameters": {
+        "psa_trend": "stable",
+        "includes_mrt": false,
+        "psa_value": 6.5,
+        "psa_display": "6,5 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 0
+    },
+    {
+      "id": "e08",
+      "type": "followup",
+      "label": "AS-Verlaufskontrolle (PSA-Kontrolle, ggf. MRT)",
+      "date": "2027-10-06",
+      "specialist": "urologie",
+      "parameters": {
+        "psa_trend": "stable",
+        "includes_mrt": false,
+        "psa_value": 6.7,
+        "psa_display": "6,7 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 1
+    },
+    {
+      "id": "e09",
+      "type": "followup",
+      "label": "AS-Verlaufskontrolle (PSA-Kontrolle, ggf. MRT)",
+      "date": "2028-02-24",
+      "specialist": "urologie",
+      "parameters": {
+        "psa_trend": "stable",
+        "includes_mrt": false,
+        "psa_value": 6.8,
+        "psa_display": "6,8 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 2
+    },
+    {
+      "id": "e10",
+      "type": "followup",
+      "label": "AS-Verlaufskontrolle (PSA-Kontrolle, ggf. MRT)",
+      "date": "2028-07-24",
+      "specialist": "urologie",
+      "parameters": {
+        "psa_trend": "stable",
+        "includes_mrt": false,
+        "psa_value": 7.0,
+        "psa_display": "7,0 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 3
+    }
+  ]
+}
