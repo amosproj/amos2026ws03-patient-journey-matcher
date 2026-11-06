@@ -99,7 +99,7 @@ Basis: **Partner** = project description or AIlixir · **#5** = [crawler evaluat
 ### Runtime view
 
 1. **Crawling.** A daily cron job starts one crawler container per source with the queries from a topic file. The crawler searches the source API, follows a paper's references one level deep, and upserts the metadata into `documents` (`--store`, see [storage and retrieval](../storage.md)). It stores metadata and links only, never full texts.
-2. **Indexing.** After each crawl, the indexer reads the new documents, fetches each text with `download()`, keeps it in memory, and writes three separate indexes: keyword, graph and AI summary. Only the AI summary builder calls an LLM, and only with public source text.
+2. **Indexing.** After each crawl, the indexer reads the new or changed documents, fetches each text with `download()`, keeps it in memory, and writes three separate indexes: keyword, graph and AI summary. Only the AI summary builder calls an LLM, and only with public source text.
 3. **Query.** A client calls an MCP tool with the journey. The journey reader validates it and builds one journey state: the latest event is the focus, and older events are context. How much older events count is still to be tested (#11). All three matchers get the same state, so their results can be compared fairly.
 4. **Answer.** The result assembler merges and ranks the hits and adds the metadata and links from `documents`. When the client asks for one source, `download()` fetches the original again and passes it on without storing it.
 
