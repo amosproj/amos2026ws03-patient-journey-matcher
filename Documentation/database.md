@@ -51,16 +51,22 @@ Open a SQL shell inside the container (use the values from your `.env`):
 docker compose exec postgres psql -U amos -d patient_journey_matcher
 ```
 
-Type `\q` to leave. Connection URL for clients running on your machine (asyncpg, node-postgres):
+Type `\q` to leave. Connection URL for clients running on your machine (asyncpg, node-postgres), e.g. `DATABASE_URL` in `crawler/.env`:
 
 ```
-postgresql://amos:<password>@localhost:5432/patient_journey_matcher
+postgresql://amos:<password>@127.0.0.1:5432/patient_journey_matcher
 ```
 
-When a component runs as a container in the same Compose file, use the host `postgres` instead of `localhost`.
+Use `127.0.0.1`, not `localhost`: the port is published on IPv4 only. URL-encode special characters in the password. When a component runs as a container in the same Compose file, use the host `postgres` instead.
 
 ### Data and initialization
 
 - Data is stored in the Docker volume `pgdata` and survives `stop`, `down` and restarts. Only `down -v` deletes it.
-- SQL files in `db/init/` run once on the first start with an empty volume. They enable the `vector` extension and will later create the shared schemas. After changing them, reset with `docker compose down -v` and start again.
+- SQL files in `db/init/` run once on the first start with an empty volume. They enable the `vector` extension and create the tables `documents` and `crawl_runs` ([storage and retrieval](storage.md)).
+- `make db` starts the database and applies `db/init/` again, so an existing volume gets new tables without a reset. Without make (works in Bash and PowerShell):
+
+  ```bash
+  docker compose up -d --wait
+  docker compose exec -T postgres sh -ec 'for f in /docker-entrypoint-initdb.d/*.sql; do PGOPTIONS=--client-min-messages=warning psql -v ON_ERROR_STOP=1 -q -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f "$f"; done'
+  ```
 - Use only synthetic patient data. The database is for development only.

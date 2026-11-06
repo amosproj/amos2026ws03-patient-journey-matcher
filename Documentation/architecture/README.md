@@ -22,12 +22,12 @@ What runs and who calls whom. Ingestion runs as scheduled batch jobs, all data i
 Legend: orange = Python component, blue = TypeScript component, grey = PostgreSQL table or schema, dashed = external service, dotted grey = outside our system. Solid arrow = call or write, dashed arrow = read.
 
 - Every lane runs as containers from one Docker Compose file: PostgreSQL, one crawler container per source, the indexer job and the MCP server.
-- Each table has one writer. The crawler writes `documents`, the indexer writes the three indexes, and the MCP server only reads.
+- Each table has one writer. The crawler writes `documents` and its run log `crawl_runs`, the indexer writes the three indexes, and the MCP server only reads.
 - `download()` is one TypeScript module used by the indexer and the MCP server. Full texts stay in memory and are never written to the database.
 
 ## 2 Code components (layers)
 
-How the code in this repository is organised. Each layer only uses the layers below it. Inside our code, interface modules call domain modules, and domain modules call infrastructure modules. The folder names are the planned layout; today the repository holds `crawler/` (the Python source component), `matcher/` (a pnpm workspace with `indexer` and `mcp-server` packages), `backend/`, `Documentation/` and `Deliverables/`.
+How the code in this repository is organised. Each layer only uses the layers below it. Inside our code, interface modules call domain modules, and domain modules call infrastructure modules. The folder names are the planned layout; today the repository holds `crawler/` (the Python source component), `matcher/` (a pnpm workspace with `db`, `indexer` and `mcp-server` packages), `backend/`, `Documentation/` and `Deliverables/`.
 
 ![Code components](code-components.svg)
 
@@ -63,7 +63,7 @@ Basis: **Partner** = project description or AIlixir · **#5** = [crawler evaluat
 | google-api-python-client | 2.201 | YouTube Data API, official API only | Apache-2.0 | #5 |
 | pydantic | 2.14 | Validating source records | MIT | #13 |
 | PyYAML | 6.0 | Topic files with the seed queries | MIT | In use |
-| asyncpg | 0.32 | Writing to `documents` | Apache-2.0 | Proposal |
+| asyncpg | 0.32 | Writing to `documents` | Apache-2.0 | #41, In use |
 | **Storage** | | | | |
 | PostgreSQL | 18 | `documents`, run log, three index schemas | PostgreSQL | #5, In use |
 | Postgres full-text search | built in | Keyword index: term statistics and ranking | PostgreSQL | Proposal |
@@ -98,7 +98,7 @@ Basis: **Partner** = project description or AIlixir · **#5** = [crawler evaluat
 
 ### Runtime view
 
-1. **Crawling.** A daily cron job starts one crawler container per source with the queries from a topic file. The crawler searches the source API, follows a paper's references one level deep, and upserts the metadata into `documents`. It stores metadata and links only, never full texts.
+1. **Crawling.** A daily cron job starts one crawler container per source with the queries from a topic file. The crawler searches the source API, follows a paper's references one level deep, and upserts the metadata into `documents` (`--store`, see [storage and retrieval](../storage.md)). It stores metadata and links only, never full texts.
 2. **Indexing.** After each crawl, the indexer reads the new documents, fetches each text with `download()`, keeps it in memory, and writes three separate indexes: keyword, graph and AI summary. Only the AI summary builder calls an LLM, and only with public source text.
 3. **Query.** A client calls an MCP tool with the journey. The journey reader validates it and builds one journey state: the latest event is the focus, and older events are context. How much older events count is still to be tested (#11). All three matchers get the same state, so their results can be compared fairly.
 4. **Answer.** The result assembler merges and ranks the hits and adds the metadata and links from `documents`. When the client asks for one source, `download()` fetches the original again and passes it on without storing it.

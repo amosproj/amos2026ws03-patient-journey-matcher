@@ -8,6 +8,7 @@ Run these commands from the repository root. You need the tools listed under [Pr
 | `make test` | Builds, then runs the same checks as [CI](github-ci.md) |
 | `make start` | Builds, then starts the MCP server on `http://127.0.0.1:3000/mcp` |
 | `make debug` | Starts the [crawler debug UI](../debug/crawler/README.md) on `http://127.0.0.1:8765` |
+| `make db` | Starts the [database](database.md) and applies `db/init/`; needs the root `.env` |
 
 Make only calls the `uv` and `pnpm` commands from the [README](../README.md#development-setup), so you can still run them directly.
 

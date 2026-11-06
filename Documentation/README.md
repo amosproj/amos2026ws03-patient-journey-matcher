@@ -7,3 +7,5 @@ Build, user, and technical documentation
 [Build, test and start](build.md)
 
 [External sources: metadata, storage and indexing](sources/README.md)
+
+[Resource storage and retrieval](storage.md)

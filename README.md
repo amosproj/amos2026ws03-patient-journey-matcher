@@ -19,6 +19,7 @@ The Python crawler and the TypeScript matcher are separate projects with their o
 |---|---|---|---|
 | `crawler/` | Python 3.12 | [uv](https://docs.astral.sh/uv/) | PubMed, arXiv, Zenodo, YouTube and podcast crawlers |
 | `debug/crawler/` | Python 3.12, HTML | uses `crawler/` | [Debug UI](debug/crawler/README.md) for the crawler |
+| `matcher/db/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Reads the stored sources ([storage](Documentation/storage.md)) |
 | `matcher/indexer/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Index builder |
 | `matcher/mcp-server/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | MCP server |
 
@@ -57,7 +58,7 @@ See [`Documentation/build.md`](Documentation/build.md).
    pnpm install --frozen-lockfile
    ```
 
-2. Run the tools: `pnpm typecheck`, `pnpm test`, `pnpm lint`
+2. Run the tools: `pnpm typecheck`, `pnpm test`, `pnpm lint`. The `@matcher/db` database tests are skipped unless `TEST_DATABASE_URL` points to a PostgreSQL database.
 3. Add a dependency to one package: `pnpm --filter @matcher/indexer add <package>`. Add shared dev tools to the root with `pnpm add -w -D <package>`.
 4. Start the MCP server: `pnpm --filter @matcher/mcp-server start`. See [`Documentation/mcp-interface.md`](Documentation/mcp-interface.md).
 

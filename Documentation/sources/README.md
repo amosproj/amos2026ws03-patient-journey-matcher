@@ -49,6 +49,8 @@ Table `documents`, one row per source record. PMC has no rows; it fills the PubM
 | `expires_at` | timestamptz | | YouTube only: `retrieved_at` + 30 days |
 | `extra` | jsonb | | Source-specific fields, see source pages |
 
+Implemented in [`db/init/02-documents.sql`](../../db/init/02-documents.sql) (#41), with `created_at` and `changed_at` added and `published_at`/`published_precision` optional: [storage and retrieval](../storage.md).
+
 ## 3 Indexing
 
 The indexer (and `get_source`) checks `licence` against the allow-list for the use, tries the `full_text` locators in order and keeps the text in memory. Not allowed: title, summary and subjects from the row only.
@@ -90,7 +92,7 @@ Per the proposal on `feature/7-mcp-interface` (#7). Reads `documents` and the in
 - **Stored:** the `documents` row and index rows only. Never full texts, PDFs, audio, video or transcripts. ASCO show notes contain transcripts, so the crawler cuts them.
 - **Index rows** carry `document_id` and `version`; deleted with the document, rebuilt on a new version.
 - **Crawler state** (not in `documents`): curated lists (topics, channels, [feeds](podcasts.md#curated-feed-list)); per feed URL, `ETag`, `Last-Modified`, last status; per channel the uploads playlist ID.
-- **Retention:** YouTube data, IDs included, refreshed or deleted within 30 days (III.E.4.d); gone videos deleted with their index rows; no view counts, never in a score (III.E.4.h). PubMed kept current or flagged as possibly outdated. No limit elsewhere.
+- **Retention:** YouTube data, IDs included, refreshed or deleted within 30 days (III.E.4.d); gone videos deleted with their index rows; no view counts, never in a score (III.E.4.h). PubMed kept current or flagged as possibly outdated. No limit elsewhere. Each store run deletes rows past `expires_at` ([storage](../storage.md)).
 - **New since last run:** PubMed `datetype=edat`; arXiv `submittedDate` (`lastUpdatedDate` silently acts as `submittedDate`); Zenodo `updated:[… TO *]`; YouTube uploads playlist to `videoPublishedAt`; podcasts conditional GET.
 - **Caps per query:** PubMed 9,999, Zenodo 10,000, arXiv 30,000; split by date.
 - **Identification:** User-Agent with app, version, repo URL, team contact. NCBI also `tool` and `email`. Zenodo may block generic agents.
