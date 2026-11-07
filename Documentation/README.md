@@ -4,6 +4,8 @@ Build, user, and technical documentation
 
 [MCP interface](mcp-interface.md)
 
+[Matching evaluation](matching-evaluation.md)
+
 [Build, test and start](build.md)
 
 [External sources: metadata, storage and indexing](sources/README.md)

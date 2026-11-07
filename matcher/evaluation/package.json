@@ -1,0 +1,12 @@
+{
+  "name": "@matcher/evaluation",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "evaluate": "node src/cli.ts"
+  },
+  "dependencies": {
+    "zod": "^4.6.7"
+  }
+}

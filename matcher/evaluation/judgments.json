@@ -1,0 +1,570 @@
+{
+  "version": 1,
+  "journeys": "Synthetic journeys from #14, branch feat/nizi0015/create_synthetic_patient_data_14, folder patientdata/",
+  "scale": {
+    "3": "Fits the focus: the current situation, an ongoing treatment or its side effects, or the likely next step",
+    "2": "Fits the context: an older event that still matters, a trend, or the disease state",
+    "1": "Right disease, but generic, a past phase, or a different situation",
+    "0": "Wrong disease or population, a phase that does not apply to this patient"
+  },
+  "points": [
+    {
+      "id": "patient-1-e07",
+      "journey": "Patient-1",
+      "pathway_id": "p01",
+      "as_of": "2027-04-27",
+      "focus_event_id": "e07",
+      "focus": "First follow-up under active surveillance, PSA stable",
+      "context": [
+        {
+          "event_id": "e04",
+          "why": "Gleason 3+3 in 1 to 3 of 12 cores: low risk"
+        },
+        {
+          "event_id": "e06",
+          "why": "The patient chose active surveillance instead of treatment"
+        }
+      ],
+      "judgments": [
+        {
+          "source_id": "pubmed:37109015",
+          "title": "Active Surveillance for Prostate Cancer: Past, Current, and Future Trends",
+          "grade": 3,
+          "note": "active surveillance, his current care"
+        },
+        {
+          "source_id": "pubmed:33655428",
+          "title": "Active surveillance for prostate cancer: selection criteria, guidelines, and outcomes",
+          "grade": 3,
+          "note": "who stays on active surveillance and how it is monitored"
+        },
+        {
+          "source_id": "pubmed:34503059",
+          "title": "Biomarker in Active Surveillance for Prostate Cancer: A Systematic Review",
+          "grade": 2,
+          "note": "biomarkers used during active surveillance, technical"
+        },
+        {
+          "source_id": "pubmed:36225285",
+          "title": "Active surveillance versus nonradical treatment for low-risk men with prostate cancer: a review",
+          "grade": 2,
+          "note": "other options for low-risk cancer"
+        },
+        {
+          "source_id": "pubmed:34319588",
+          "title": "Can patients with low-risk prostate cancer really benefit from radical treatment?: A systematic review and network meta-analysis",
+          "grade": 2,
+          "note": "radical treatment for low risk, background to his choice"
+        },
+        {
+          "source_id": "pubmed:39076107",
+          "title": "High-Dose Intravenous Vitamin C Combined with Docetaxel in Men with Metastatic Castration-Resistant Prostate Cancer: A Randomized Placebo-Controlled Phase II Trial",
+          "grade": 0,
+          "note": "chemotherapy for metastatic castration-resistant disease, wrong phase"
+        },
+        {
+          "source_id": "pubmed:39665585",
+          "title": "Active Monitoring With or Without Endocrine Therapy for Low-Risk Ductal Carcinoma In Situ: The COMET Randomized Clinical Trial",
+          "grade": 0,
+          "note": "breast DCIS, shares the words active monitoring"
+        }
+      ],
+      "reviewed_by": []
+    },
+    {
+      "id": "patient-2-e08",
+      "journey": "Patient-2",
+      "pathway_id": "p02",
+      "as_of": "2027-04-17",
+      "focus_event_id": "e08",
+      "focus": "Follow-up under primary hormone therapy (ADT): PSA, testosterone and bone density",
+      "context": [
+        {
+          "event_id": "e03",
+          "why": "Gleason 4+4: high risk"
+        },
+        {
+          "event_id": "e07",
+          "why": "Leuprorelin and bicalutamide for 24 months, side effects continue"
+        }
+      ],
+      "judgments": [
+        {
+          "source_id": "pubmed:35491331",
+          "title": "Nursing Considerations for Androgen Deprivation Therapy and Bone Health in Men Affected by Prostate Cancer",
+          "grade": 3,
+          "note": "bone health under ADT, written for nurses and patients"
+        },
+        {
+          "source_id": "pubmed:32101695",
+          "title": "Androgen deprivation therapy: indications, methods of utilization, side effects and their management",
+          "grade": 3,
+          "note": "ADT side effects and how to manage them"
+        },
+        {
+          "source_id": "pubmed:36349380",
+          "title": "Cardiometabolic side effects of androgen deprivation therapy in prostate cancer",
+          "grade": 3,
+          "note": "heart and metabolism side effects of his ongoing ADT"
+        },
+        {
+          "source_id": "pubmed:38383277",
+          "title": "Risk of Fractures and Falls in Men with Advanced or Metastatic Prostate Cancer Receiving Androgen Deprivation Therapy and Treated with Novel Androgen Receptor Signalling Inhibitors: A Systematic Review and Meta-analysis of Randomised Controlled Trials",
+          "grade": 2,
+          "note": "fractures under ADT, but in metastatic patients with newer drugs"
+        },
+        {
+          "source_id": "pubmed:30266309",
+          "title": "Effect on Survival of Androgen Deprivation Therapy Alone Compared to Androgen Deprivation Therapy Combined with Concurrent Radiation Therapy to the Prostate in Patients with Primary Bone Metastatic Prostate Cancer in a Prospective Randomised Clinical Trial: Data from the HORRAD Trial",
+          "grade": 2,
+          "note": "ADT alone or with radiotherapy, background to his treatment"
+        },
+        {
+          "source_id": "pubmed:29692262",
+          "title": "Active Surveillance for Low-risk Prostate Cancer: Are All Criteria Similar?",
+          "grade": 0,
+          "note": "active surveillance for low risk, he is high risk on ADT"
+        }
+      ],
+      "reviewed_by": []
+    },
+    {
+      "id": "patient-3-e10",
+      "journey": "Patient-3",
+      "pathway_id": "p03",
+      "as_of": "2027-04-06",
+      "focus_event_id": "e10",
+      "focus": "First PSA check after robot-assisted radical prostatectomy, PSA undetectable",
+      "context": [
+        {
+          "event_id": "e07",
+          "why": "Nerve-sparing surgery: continence and erectile function still matter"
+        },
+        {
+          "event_id": "e08",
+          "why": "pT2 R0, Gleason 3+4, no positive lymph nodes: low recurrence risk"
+        }
+      ],
+      "judgments": [
+        {
+          "source_id": "pubmed:36065059",
+          "title": "Survivorship in prostate cancer following robotic assisted radical prostatectomy-the time to act is now!",
+          "grade": 3,
+          "note": "life after robotic prostatectomy"
+        },
+        {
+          "source_id": "pubmed:40952272",
+          "title": "Quality of Life in Prostate Cancer Patients Following Radical Prostatectomy: A Systematic Review and Meta-Analysis",
+          "grade": 3,
+          "note": "quality of life after prostatectomy"
+        },
+        {
+          "source_id": "pubmed:39104234",
+          "title": "Pelvic Floor Muscle Exercises can Effectively Improve Urinary Incontinence after Radical Prostatectomy: Systematic Review and Meta-Analysis Based on Randomised Controlled Trials",
+          "grade": 2,
+          "note": "pelvic floor training for incontinence after surgery"
+        },
+        {
+          "source_id": "pubmed:39607183",
+          "title": "Phosphodiesterase-5 inhibitors for erectile function rehabilitation in patients undergoing nerve sparing radical prostatectomy: a scoping review",
+          "grade": 2,
+          "note": "erectile rehabilitation after nerve-sparing surgery"
+        },
+        {
+          "source_id": "pubmed:35024944",
+          "title": "Management of patients with a persistently elevated PSA after radical prostatectomy: a narrative review",
+          "grade": 1,
+          "note": "PSA that stays high after surgery, his PSA is undetectable"
+        },
+        {
+          "source_id": "pubmed:31629656",
+          "title": "Short-term androgen deprivation therapy combined with radiotherapy as salvage treatment after radical prostatectomy for prostate cancer (GETUG-AFU 16): a 112-month follow-up of a phase 3, randomised trial",
+          "grade": 1,
+          "note": "salvage treatment after a recurrence, not his situation now"
+        },
+        {
+          "source_id": "pubmed:32760622",
+          "title": "Review of 177Lu-PSMA-617 in Patients With Metastatic Castration-Resistant Prostate Cancer",
+          "grade": 0,
+          "note": "PSMA radioligand therapy for metastatic disease, wrong phase"
+        }
+      ],
+      "reviewed_by": []
+    },
+    {
+      "id": "patient-4-e11",
+      "journey": "Patient-4",
+      "pathway_id": "p04",
+      "as_of": "2027-06-16",
+      "focus_event_id": "e11",
+      "focus": "Follow-up after adjuvant radiotherapy of the prostate bed",
+      "context": [
+        {
+          "event_id": "e08",
+          "why": "pT3a R1, Gleason 4+3: positive margin was the reason for radiotherapy"
+        },
+        {
+          "event_id": "e10",
+          "why": "Adjuvant IMRT 64 Gy, late side effects possible"
+        }
+      ],
+      "judgments": [
+        {
+          "source_id": "pubmed:31375279",
+          "title": "Randomised Trial of Adjuvant Radiotherapy Following Radical Prostatectomy Versus Radical Prostatectomy Alone in Prostate Cancer Patients with Positive Margins or Extracapsular Extension",
+          "grade": 3,
+          "note": "adjuvant radiotherapy for positive margins, his exact situation"
+        },
+        {
+          "source_id": "pubmed:33002437",
+          "title": "Adjuvant radiotherapy versus early salvage radiotherapy following radical prostatectomy (TROG 08.03/ANZUP RAVES): a randomised, controlled, phase 3, non-inferiority trial",
+          "grade": 2,
+          "note": "adjuvant versus early salvage radiotherapy, background to the decision"
+        },
+        {
+          "source_id": "pubmed:33002438",
+          "title": "Adjuvant radiotherapy versus early salvage radiotherapy plus short-term androgen deprivation therapy in men with localised prostate cancer after radical prostatectomy (GETUG-AFU 17): a randomised, phase 3 trial",
+          "grade": 2,
+          "note": "adjuvant versus early salvage radiotherapy with ADT"
+        },
+        {
+          "source_id": "pubmed:29970100",
+          "title": "Positive surgical margin is associated with biochemical recurrence risk following radical prostatectomy: a meta-analysis from high-quality retrospective cohort studies",
+          "grade": 2,
+          "note": "positive margins and recurrence risk"
+        },
+        {
+          "source_id": "pubmed:35136289",
+          "title": "Focal therapy for localized prostate cancer - Current status",
+          "grade": 0,
+          "note": "focal therapy is not an option after prostatectomy"
+        }
+      ],
+      "reviewed_by": []
+    },
+    {
+      "id": "patient-5-e15",
+      "journey": "Patient-5",
+      "pathway_id": "p05",
+      "as_of": "2028-12-25",
+      "focus_event_id": "e15",
+      "focus": "Biochemical recurrence after radical prostatectomy, PSA rising to 0.95 ng/ml",
+      "context": [
+        {
+          "event_id": "e07",
+          "why": "Radical prostatectomy, so salvage options apply"
+        },
+        {
+          "event_id": "e10",
+          "why": "PSA trend: undetectable after surgery, now rising"
+        }
+      ],
+      "judgments": [
+        {
+          "source_id": "pubmed:38421253",
+          "title": "Salvage Therapy for Prostate Cancer: AUA/ASTRO/SUO Guideline Part I: Introduction and Treatment Decision-Making at the Time of Suspected Biochemical Recurrence after Radical Prostatectomy",
+          "grade": 3,
+          "note": "guideline on decisions at biochemical recurrence"
+        },
+        {
+          "source_id": "pubmed:42489991",
+          "title": "Early Identification and Management of Biochemical Recurrence Following Radical Prostatectomy",
+          "grade": 3,
+          "note": "biochemical recurrence after prostatectomy"
+        },
+        {
+          "source_id": "pubmed:35440642",
+          "title": "The impact of PSMA PET on the treatment and outcomes of men with biochemical recurrence of prostate cancer: a systematic review and meta-analysis",
+          "grade": 3,
+          "note": "PSMA PET at recurrence, the likely next step"
+        },
+        {
+          "source_id": "pubmed:35569466",
+          "title": "The addition of androgen deprivation therapy and pelvic lymph node treatment to prostate bed salvage radiotherapy (NRG Oncology/RTOG 0534 SPPORT): an international, multicentre, randomised phase 3 trial",
+          "grade": 3,
+          "note": "salvage radiotherapy with ADT, the likely next treatment"
+        },
+        {
+          "source_id": "pubmed:39090221",
+          "title": "PSA screening for prostate cancer in the United States: 30 years of controversy",
+          "grade": 0,
+          "note": "PSA screening, a phase long past"
+        }
+      ],
+      "reviewed_by": []
+    },
+    {
+      "id": "patient-6-e09",
+      "journey": "Patient-6",
+      "pathway_id": "p06",
+      "as_of": "2027-05-05",
+      "focus_event_id": "e09",
+      "focus": "Follow-up during and after radiotherapy plus ADT, PSA falling",
+      "context": [
+        {
+          "event_id": "e04",
+          "why": "Gleason 4+3: intermediate to high risk"
+        },
+        {
+          "event_id": "e07",
+          "why": "Goserelin for 30 months, side effects continue"
+        }
+      ],
+      "judgments": [
+        {
+          "source_id": "pubmed:35051385",
+          "title": "Androgen deprivation therapy use and duration with definitive radiotherapy for localised prostate cancer: an individual patient data meta-analysis",
+          "grade": 3,
+          "note": "how long ADT should run with radiotherapy, his treatment"
+        },
+        {
+          "source_id": "pubmed:41264309",
+          "title": "Optimal Duration of Androgen Deprivation Therapy With Definitive Radiotherapy for Localized Prostate Cancer: A Meta-Analysis",
+          "grade": 3,
+          "note": "ADT duration with definitive radiotherapy"
+        },
+        {
+          "source_id": "pubmed:35470648",
+          "title": "Androgen deprivation therapy and cardiovascular risk in prostate cancer",
+          "grade": 3,
+          "note": "heart risk of his ongoing ADT"
+        },
+        {
+          "source_id": "pubmed:38763153",
+          "title": "Duration of androgen deprivation therapy with postoperative radiotherapy for prostate cancer: a comparison of long-course versus short-course androgen deprivation therapy in the RADICALS-HD randomised trial",
+          "grade": 1,
+          "note": "ADT with radiotherapy after surgery, he had no surgery"
+        },
+        {
+          "source_id": "pubmed:37721644",
+          "title": "Robot-assisted versus open radical prostatectomy: a systematic review and meta-analysis of prospective studies",
+          "grade": 0,
+          "note": "robotic versus open surgery, he chose radiotherapy"
+        }
+      ],
+      "reviewed_by": []
+    },
+    {
+      "id": "patient-7-e16",
+      "journey": "Patient-7",
+      "pathway_id": "p07",
+      "as_of": "2028-01-04",
+      "focus_event_id": "e16",
+      "focus": "Tumor board for castration-resistant disease with bone metastases: radium-223 planned",
+      "context": [
+        {
+          "event_id": "e04",
+          "why": "Many bone metastases: bone pain and fractures matter"
+        },
+        {
+          "event_id": "e15",
+          "why": "PSA rising although testosterone is suppressed: castration resistance"
+        }
+      ],
+      "judgments": [
+        {
+          "source_id": "pubmed:27793893",
+          "title": "Radium-223: Insight and Perspectives in Bone-metastatic Castration-resistant Prostate Cancer",
+          "grade": 3,
+          "note": "radium-223 for bone-metastatic castration-resistant disease"
+        },
+        {
+          "source_id": "pubmed:30738780",
+          "title": "Addition of radium-223 to abiraterone acetate and prednisone or prednisolone in patients with castration-resistant prostate cancer and bone metastases (ERA 223): a randomised, double-blind, placebo-controlled, phase 3 trial",
+          "grade": 2,
+          "note": "radium-223 combined with abiraterone, a combination he does not get"
+        },
+        {
+          "source_id": "pubmed:40450503",
+          "title": "Enzalutamide plus radium-223 in metastatic castration-resistant prostate cancer: results of the EORTC 1333/PEACE-3 trial",
+          "grade": 2,
+          "note": "radium-223 combined with enzalutamide"
+        },
+        {
+          "source_id": "pubmed:34304921",
+          "title": "Prostate Cancer with Bone Metastases: Addressing Chronic Pain from the Perspective of the Radiation Oncology Nurse Practitioner",
+          "grade": 2,
+          "note": "bone pain from metastases"
+        },
+        {
+          "source_id": "pubmed:32884090",
+          "title": "Bone targeted therapy and skeletal related events in the era of enzalutamide and abiraterone acetate for castration resistant prostate cancer with bone metastases",
+          "grade": 2,
+          "note": "bone-protecting therapy and fractures"
+        },
+        {
+          "source_id": "pubmed:35811293",
+          "title": "Addition of Docetaxel to Androgen Receptor Axis-targeted Therapy and Androgen Deprivation Therapy in Metastatic Hormone-sensitive Prostate Cancer: A Network Meta-analysis",
+          "grade": 1,
+          "note": "docetaxel in hormone-sensitive disease, a past phase for him"
+        },
+        {
+          "source_id": "pubmed:33655428",
+          "title": "Active surveillance for prostate cancer: selection criteria, guidelines, and outcomes",
+          "grade": 0,
+          "note": "active surveillance, the wrong end of the disease"
+        }
+      ],
+      "reviewed_by": []
+    },
+    {
+      "id": "patient-8-e18",
+      "journey": "Patient-8",
+      "pathway_id": "p08",
+      "as_of": "2030-08-19",
+      "focus_event_id": "e18",
+      "focus": "PSA rising under enzalutamide in castration-resistant disease",
+      "context": [
+        {
+          "event_id": "e06",
+          "why": "Abiraterone already used in the hormone-sensitive phase"
+        },
+        {
+          "event_id": "e17",
+          "why": "Enzalutamide as second line, now with rising PSA"
+        }
+      ],
+      "judgments": [
+        {
+          "source_id": "pubmed:36870797",
+          "title": "Re: Continuous Enzalutamide After Progression of Metastatic Castration-resistant Prostate Cancer Treated with Docetaxel (PRESIDE): An International, Randomised, Phase 3b Study",
+          "grade": 3,
+          "note": "continuing enzalutamide after progression"
+        },
+        {
+          "source_id": "pubmed:41981710",
+          "title": "Phase II Trial of Opaganib Addition in Metastatic Castration-Resistant Prostate Cancer After Disease Progression on Abiraterone or Enzalutamide",
+          "grade": 2,
+          "note": "experimental drug after progression on enzalutamide or abiraterone"
+        },
+        {
+          "source_id": "pubmed:39275993",
+          "title": "Current uses and resistance mechanisms of enzalutamide in prostate cancer treatment",
+          "grade": 2,
+          "note": "enzalutamide use and resistance, partly lab research"
+        },
+        {
+          "source_id": "pubmed:37263338",
+          "title": "Non-coding RNAs in enzalutamide resistance of castration-resistant prostate cancer",
+          "grade": 1,
+          "note": "molecular mechanisms only, no patient outcomes"
+        },
+        {
+          "source_id": "pubmed:29263421",
+          "title": "The evolving landscape of metastatic hormone-sensitive prostate cancer: a critical review of the evidence for adding docetaxel or abiraterone to androgen deprivation",
+          "grade": 1,
+          "note": "abiraterone or docetaxel in hormone-sensitive disease, a past phase"
+        },
+        {
+          "source_id": "pubmed:31110967",
+          "title": "Long-Term Clinical Outcomes of Radical Prostatectomy versus Watchful Waiting in Localized Prostate Cancer Patients: A Systematic Review and Meta-Analysis",
+          "grade": 0,
+          "note": "surgery for localized cancer, wrong phase"
+        }
+      ],
+      "reviewed_by": []
+    },
+    {
+      "id": "patient-9-e15",
+      "journey": "Patient-9",
+      "pathway_id": "p09",
+      "as_of": "2028-12-14",
+      "focus_event_id": "e15",
+      "focus": "Tumor board after recurrence: salvage radiotherapy with short ADT",
+      "context": [
+        {
+          "event_id": "e13",
+          "why": "PSA rising after prostatectomy: biochemical recurrence"
+        },
+        {
+          "event_id": "e14",
+          "why": "PSMA PET: local recurrence in the prostate bed, no distant metastases"
+        }
+      ],
+      "judgments": [
+        {
+          "source_id": "pubmed:40985821",
+          "title": "Hormone Therapy With Salvage Radiotherapy After Radical Prostatectomy: A Systematic Review and Meta-Analysis",
+          "grade": 3,
+          "note": "hormone therapy with salvage radiotherapy after prostatectomy"
+        },
+        {
+          "source_id": "pubmed:35569466",
+          "title": "The addition of androgen deprivation therapy and pelvic lymph node treatment to prostate bed salvage radiotherapy (NRG Oncology/RTOG 0534 SPPORT): an international, multicentre, randomised phase 3 trial",
+          "grade": 3,
+          "note": "salvage radiotherapy with ADT"
+        },
+        {
+          "source_id": "pubmed:30920593",
+          "title": "Assessment of 68Ga-PSMA-11 PET Accuracy in Localizing Recurrent Prostate Cancer: A Prospective Single-Arm Clinical Trial",
+          "grade": 2,
+          "note": "how well PSMA PET finds a recurrence"
+        },
+        {
+          "source_id": "pubmed:34247896",
+          "title": "OLIGOPELVIS GETUG P07, a Multicenter Phase II Trial of Combined High-dose Salvage Radiotherapy and Hormone Therapy in Oligorecurrent Pelvic Node Relapses in Prostate Cancer",
+          "grade": 1,
+          "note": "salvage treatment for pelvic lymph node relapse, his relapse is local"
+        },
+        {
+          "source_id": "pubmed:27174603",
+          "title": "Low-dose rate brachytherapy with I-125 seeds has an excellent 5-year outcome with few side effects in patients with low-risk prostate cancer",
+          "grade": 0,
+          "note": "brachytherapy for untreated low-risk cancer"
+        }
+      ],
+      "reviewed_by": []
+    },
+    {
+      "id": "patient-10-e12",
+      "journey": "Patient-10",
+      "pathway_id": "p10",
+      "as_of": "2028-06-21",
+      "focus_event_id": "e12",
+      "focus": "Progression under the PARP inhibitor olaparib in metastatic disease with a BRCA2 mutation",
+      "context": [
+        {
+          "event_id": "e04",
+          "why": "Liver and bone metastases"
+        },
+        {
+          "event_id": "e05",
+          "why": "Germline BRCA2 mutation: guides treatment and matters for the family"
+        }
+      ],
+      "judgments": [
+        {
+          "source_id": "pubmed:38043558",
+          "title": "Overall survival with [(177)Lu]Lu-PSMA-617 versus cabazitaxel in metastatic castration-resistant prostate cancer (TheraP): secondary outcomes of a randomised, open-label, phase 2 trial",
+          "grade": 3,
+          "note": "Lu-PSMA versus cabazitaxel, the options after progression"
+        },
+        {
+          "source_id": "pubmed:40086424",
+          "title": "Deciphering the mechanisms of PARP inhibitor resistance in prostate cancer: Implications for precision medicine",
+          "grade": 2,
+          "note": "why PARP inhibitors stop working in prostate cancer, technical"
+        },
+        {
+          "source_id": "pubmed:31915789",
+          "title": "BRCA2 gene mutation and prostate cancer risk. Comprehensive review and update",
+          "grade": 2,
+          "note": "BRCA2 and prostate cancer"
+        },
+        {
+          "source_id": "pubmed:36318705",
+          "title": "Olaparib Efficacy in Patients with Metastatic Castration-resistant Prostate Cancer and BRCA1, BRCA2, or ATM Alterations Identified by Testing Circulating Tumor DNA",
+          "grade": 2,
+          "note": "olaparib by BRCA1, BRCA2 or ATM status"
+        },
+        {
+          "source_id": "pubmed:34081848",
+          "title": "Adjuvant Olaparib for Patients with BRCA1- or BRCA2-Mutated Breast Cancer",
+          "grade": 0,
+          "note": "olaparib for breast cancer, shares BRCA and olaparib"
+        }
+      ],
+      "reviewed_by": []
+    }
+  ]
+}
