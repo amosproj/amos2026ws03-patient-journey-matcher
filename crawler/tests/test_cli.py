@@ -1,12 +1,13 @@
 import io
 import json
 import sys
-from collections.abc import Iterable
+from collections.abc import Iterable, Sequence
+from datetime import UTC, date, datetime
 from pathlib import Path
 
 import pytest
 
-from crawler import cli
+from crawler import cli, seeds
 from crawler.cli import main, parser, requests_from_args
 from crawler.models import (
     CollectionResult,
@@ -27,6 +28,13 @@ queries: [prostate cancer, prostate cancer biopsy]
 channels:
   - name: Demo channel
     url: https://www.youtube.com/channel/UCdemo0000000000000000ab
+"""
+FIELD = """
+id: demo_field
+label: Demo field
+channels:
+  - name: Field channel
+    url: https://www.youtube.com/channel/UCdemo0000000000000000cd
 """
 
 
@@ -134,6 +142,7 @@ def test_quotes_in_an_arxiv_query_are_not_part_of_the_filter_words() -> None:
         (["zenodo", "   "], "argument query: must not be blank"),
         (["youtube", " "], "argument channel: not a YouTube channel: ' '"),
         (["youtube", "https://www.youtube.com/watch?v=x"], "argument channel: not a channel URL"),
+        (["pubmed", "q", "--since", "5.11.2026"], "--since: expected YYYY-MM-DD or auto"),
     ],
 )
 def test_bad_numbers_and_blank_inputs_are_usage_errors(
@@ -190,6 +199,8 @@ def test_raw_arxiv_queries_have_no_topic_filter() -> None:
     [
         ["pubmed"],
         ["pubmed", "prostate cancer", "--topic", "prostate_cancer"],
+        ["pubmed", "prostate cancer", "--all-topics"],
+        ["pubmed", "--topic", "prostate_cancer", "--all-topics"],
         ["youtube"],
     ],
 )
@@ -198,6 +209,29 @@ def test_a_query_and_a_topic_are_mutually_exclusive_and_one_is_required(argv: li
         parser().parse_args(argv)
 
     assert exit_info.value.code == 2
+
+
+def test_all_topics_seed_every_topic_file_with_seeds_for_the_source(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    (tmp_path / "demo_topic.yaml").write_text(TOPIC, encoding="utf-8")
+    (tmp_path / "demo_field.yaml").write_text(FIELD, encoding="utf-8")
+    monkeypatch.setattr(seeds, "TOPICS_DIR", tmp_path)
+
+    papers, options = requests_from_args(parser().parse_args(["pubmed", "--all-topics"]))
+    videos, _options = requests_from_args(parser().parse_args(["youtube", "--all-topics"]))
+
+    assert [(request.query, request.topics) for request in papers] == [
+        ("prostate cancer", ["demo_topic"]),
+        ("prostate cancer biopsy", ["demo_topic"]),
+    ]
+    assert options.topic_terms == ("prostate cancer",)
+    assert [request.topics for request in videos] == [["demo_field"], ["demo_topic"]]
+
+
+def test_since_takes_a_date_or_auto() -> None:
+    assert parser().parse_args(["pubmed", "q", "--since", "2026-11-05"]).since == date(2026, 11, 5)
+    assert parser().parse_args(["pubmed", "q", "--since", "auto"]).since == "auto"
 
 
 def test_topic_runs_seed_every_query_and_use_the_topic_terms(tmp_path: Path) -> None:
@@ -289,6 +323,38 @@ def test_main_exits_with_1_and_lists_failures_but_still_prints_documents(
     assert "without retry" in output.err
 
 
+def test_a_run_stopped_at_max_requests_exits_with_1(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    stats = CollectionStats(documents=1, unprocessed_requests=2)
+    result = CollectionResult(documents=[document()], stats=stats)
+    monkeypatch.setattr(cli, "run_requests", fake_run(result))
+
+    exit_code = main(["pubmed", "prostate cancer", "--max-requests", "1"])
+
+    assert exit_code == 1
+    assert "stopped at --max-requests: 2 request(s) not processed" in capsys.readouterr().err
+
+
+def test_seeds_that_reached_max_results_are_listed_but_do_not_fail_the_run(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    result = CollectionResult(
+        documents=[document()],
+        stats=CollectionStats(documents=1, max_results_reached=1),
+        max_results_reached=["prostate cancer"],
+    )
+    monkeypatch.setattr(cli, "run_requests", fake_run(result))
+
+    exit_code = main(["pubmed", "prostate cancer", "--since", "2026-11-05", "--max-results", "1"])
+
+    assert exit_code == 0
+    assert (
+        "reached --max-results: prostate cancer; older results of the --since period may be "
+        "missing" in capsys.readouterr().err
+    )
+
+
 def test_main_exits_with_2_for_a_broken_topic_file(
     tmp_path: Path, capsys: pytest.CaptureFixture[str]
 ) -> None:
@@ -340,21 +406,25 @@ class FakeStore:
         result: CollectionResult,
         *,
         stored: frozenset[str] = frozenset(),
+        last_runs: dict[str, datetime] | None = None,
         prepare_error: str | None = None,
         save_error: str | None = None,
     ) -> None:
         self.result = result
         self.stored = stored
+        self.last_runs = last_runs or {}
         self.prepare_error = prepare_error
         self.save_error = save_error
         self.calls: list[str] = []
         self.load_ids: bool | None = None
+        self.seeds: list[ScrapeRequest] = []
         self.options: CollectionOptions | None = None
         self.run: RunInfo | None = None
 
     def install(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setattr(cli, "database_url", lambda: "postgresql://test/db")
         monkeypatch.setattr(cli, "prepare_store", self.prepare_store)
+        monkeypatch.setattr(cli, "last_successful_runs", self.last_successful_runs)
         monkeypatch.setattr(cli, "run_requests", self.run_requests)
         monkeypatch.setattr(cli, "save_result", self.save_result)
 
@@ -367,10 +437,17 @@ class FakeStore:
             raise StoreError(self.prepare_error)
         return self.stored
 
+    async def last_successful_runs(
+        self, _url: str, _source: SourceName, topics: Sequence[str]
+    ) -> dict[str, datetime]:
+        self.calls.append("last_runs")
+        return {topic: start for topic, start in self.last_runs.items() if topic in topics}
+
     async def run_requests(
-        self, _seeds: Iterable[ScrapeRequest], *, options: CollectionOptions
+        self, seeds: Iterable[ScrapeRequest], *, options: CollectionOptions
     ) -> CollectionResult:
         self.calls.append("run")
+        self.seeds = list(seeds)
         self.options = options
         return self.result
 
@@ -404,7 +481,7 @@ def test_main_without_store_never_touches_the_database(
         raise AssertionError("the database must not be used without --store")
 
     monkeypatch.setattr(cli, "run_requests", fake_run(CollectionResult(documents=[document()])))
-    for name in ("database_url", "prepare_store", "save_result"):
+    for name in ("database_url", "prepare_store", "last_successful_runs", "save_result"):
         monkeypatch.setattr(cli, name, forbidden)
 
     assert main(["pubmed", "prostate cancer"]) == 0
@@ -434,6 +511,67 @@ def test_main_with_store_checks_first_then_crawls_then_stores(
     assert fake.run.topics == ["demo_topic"]
     assert fake.run.arguments == ["pubmed", "--topic", str(topic), "--store"]
     assert fake.run.started_at <= fake.run.finished_at
+
+
+def test_since_auto_starts_two_days_before_the_last_successful_run(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    topic = tmp_path / "demo_topic.yaml"
+    topic.write_text(TOPIC, encoding="utf-8")
+    fake = FakeStore(
+        CollectionResult(documents=[]),
+        last_runs={"demo_topic": datetime(2026, 11, 7, 3, 0, tzinfo=UTC)},
+    )
+    fake.install(monkeypatch)
+    argv = ["pubmed", "--topic", str(topic), "--since", "auto", "--store"]
+
+    assert main(argv) == 0
+
+    assert fake.calls == ["prepare", "last_runs", "run", "save"]
+    assert [seed.since for seed in fake.seeds] == [date(2026, 11, 5), date(2026, 11, 5)]
+    assert fake.run is not None
+    assert fake.run.arguments == argv
+    assert "since auto: 2026-11-05" in capsys.readouterr().err
+
+
+def test_since_auto_needs_a_successful_run_of_every_topic(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    topic = tmp_path / "demo_topic.yaml"
+    topic.write_text(TOPIC, encoding="utf-8")
+    fake = FakeStore(CollectionResult(documents=[]))
+    fake.install(monkeypatch)
+
+    with pytest.raises(SystemExit) as exit_info:
+        main(["pubmed", "--topic", str(topic), "--since", "auto", "--store"])
+
+    assert exit_info.value.code == 2
+    assert "no successful run with --store yet for demo_topic" in capsys.readouterr().err
+    assert fake.calls == ["prepare", "last_runs"]
+
+
+@pytest.mark.parametrize(
+    ("argv", "message"),
+    [
+        (["pubmed", "--all-topics", "--since", "auto"], "--since auto needs --store"),
+        (["pubmed", "q", "--since", "auto", "--store"], "needs --topic or --all-topics"),
+    ],
+)
+def test_since_auto_needs_store_and_topics(
+    argv: list[str],
+    message: str,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    fake = FakeStore(CollectionResult(documents=[]))
+    fake.install(monkeypatch)
+
+    with pytest.raises(SystemExit) as exit_info:
+        main(argv)
+
+    assert exit_info.value.code == 2
+    assert message in capsys.readouterr().err
+    assert fake.calls == []
 
 
 def test_stored_ids_join_the_known_ids_when_references_are_followed(

@@ -7,9 +7,9 @@ and read. The crawler is the only writer of `documents` and `crawl_runs`.
 import json
 import os
 import re
-from collections.abc import AsyncIterator
+from collections.abc import AsyncIterator, Mapping, Sequence
 from contextlib import asynccontextmanager, suppress
-from datetime import UTC, datetime
+from datetime import UTC, date, datetime, timedelta
 from typing import Any
 
 import asyncpg
@@ -22,17 +22,23 @@ from crawler.runner import ENV_FILE
 __all__ = [
     "COLUMNS",
     "DATABASE_URL",
+    "RESUME_OVERLAP",
     "RunInfo",
     "StoreError",
     "StoreReport",
     "database_url",
     "document_row",
+    "last_successful_runs",
     "prepare_store",
+    "resume_date",
     "save_result",
 ]
 
 DATABASE_URL = "DATABASE_URL"
 CONNECT_TIMEOUT_SECONDS = 10
+RESUME_OVERLAP = timedelta(days=2)
+"""`--since auto` starts this long before the last successful run: sources add some records late
+and date them in their own time zone. Documents found again are only refreshed."""
 # Every store transaction holds this lock, so parallel runs neither deadlock on shared rows nor
 # miscount what they changed.
 STORE_LOCK = 41
@@ -75,7 +81,8 @@ _URL_PASSWORD = re.compile(r"(\w+://[^:/@\s]*:)[^@\s]*@")
 
 
 class StoreError(Exception):
-    """The database is not configured or not reachable, lacks the schema, or refused a write."""
+    """The database is not configured or not reachable, lacks the schema, refused a write, or
+    has no run for `--since auto` to continue from."""
 
 
 class RunInfo(BaseModel):
@@ -170,6 +177,34 @@ async def prepare_store(url: str, source: SourceName, *, load_ids: bool) -> froz
         except _DATABASE_ERRORS as error:
             raise StoreError(f"cannot read from the database: {_describe(error)}") from error
     return frozenset(str(row["id"]) for row in rows)
+
+
+async def last_successful_runs(
+    url: str, source: SourceName, topics: Sequence[str]
+) -> dict[str, datetime]:
+    """When the last successful run of `source` started, per topic; topics without one are left
+    out."""
+    async with _connect(url) as connection:
+        try:
+            rows = await connection.fetch(_LAST_RUNS, source.value, list(topics))
+        except _DATABASE_ERRORS as error:
+            raise StoreError(f"cannot read from the database: {_describe(error)}") from error
+    return {str(row["topic"]): row["started_at"] for row in rows}
+
+
+def resume_date(last_runs: Mapping[str, datetime], topics: Sequence[str]) -> date:
+    """The date `--since auto` stands for: `RESUME_OVERLAP` before the oldest of the topics' last
+    successful runs, so no topic misses a day. A topic without one needs a run without `--since`
+    first."""
+    missing = [topic for topic in topics if topic not in last_runs]
+    if missing:
+        more = f" and {len(missing) - 5} more" if len(missing) > 5 else ""
+        raise StoreError(
+            f"--since auto: no successful run with --store yet for {', '.join(missing[:5])}"
+            f"{more}; run them once without --since first"
+        )
+    oldest = min(last_runs[topic] for topic in topics)
+    return (oldest - RESUME_OVERLAP).astimezone(UTC).date()
 
 
 async def save_result(url: str, result: CollectionResult, run: RunInfo) -> StoreReport:
@@ -279,6 +314,13 @@ WHERE d.id = cited.id AND NOT d.found_by @> cited.found_by
 """
 
 _EXPIRE = "DELETE FROM documents WHERE expires_at < now()"
+
+_LAST_RUNS = """
+SELECT topic, max(started_at) AS started_at
+FROM crawl_runs, unnest(topics) AS topic
+WHERE source = $1 AND ok AND topic = ANY($2::text[])
+GROUP BY topic
+"""
 
 _LOG_RUN = """
 INSERT INTO crawl_runs (

@@ -18,10 +18,16 @@ cp .env.example .env   # fill in the keys you need
 uv run crawler pubmed "prostate cancer" --max-results 10
 uv run crawler pubmed --topic prostate_cancer
 uv run crawler pubmed --topic prostate_cancer --store   # needs DATABASE_URL and `make db`
+uv run crawler pubmed --all-topics --since auto --max-results 1000 --store   # scheduled
 ```
 
 Sources: `pubmed`, `arxiv`, `zenodo`, `youtube`, `podcast`. `uv run crawler <source> --help`
 lists the options. Each output line is a `SourceDocument` (`src/crawler/models.py`).
+
+`--since auto` continues from each topic's last successful `--store` run, 2 days earlier; a
+topic needs one run without `--since` first. With `--since`, sources return the newest results
+first, so `--max-results` only caps them: the summary lists every seed that reached the cap. A
+run stopped by `--max-requests` exits with 1 and does not count as successful.
 
 Cited papers are kept only if they match the topic filter: the topic's `terms`, or for a
 single arXiv query its words (all of them; any with `--query-mode or`). Single PubMed and

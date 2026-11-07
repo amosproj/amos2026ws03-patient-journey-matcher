@@ -21,7 +21,14 @@ from crawler.models import (
     SourceDocument,
     SourceName,
 )
-from crawler.store import RunInfo, StoreError, StoreReport, prepare_store, save_result
+from crawler.store import (
+    RunInfo,
+    StoreError,
+    StoreReport,
+    last_successful_runs,
+    prepare_store,
+    save_result,
+)
 
 pytestmark = pytest.mark.postgres
 
@@ -331,6 +338,46 @@ def test_a_failed_save_stores_nothing(url: str) -> None:
 
     assert query(url, "SELECT count(*) AS n FROM documents") == [{"n": 0}]
     assert query(url, "SELECT count(*) AS n FROM crawl_runs") == [{"n": 0}]
+
+
+def log_run(
+    url: str,
+    topics: list[str],
+    started_at: datetime,
+    *,
+    ok: bool = True,
+    source: SourceName = SourceName.PUBMED,
+) -> None:
+    failure = RequestFailure(
+        kind="search",
+        source=source,
+        detail="q",
+        depth=0,
+        error="HTTPError: HTTP Error 500",
+        retries=3,
+        retryable=True,
+    )
+    result = CollectionResult(documents=[], failures=[] if ok else [failure])
+    run = RunInfo(
+        source=source,
+        topics=topics,
+        arguments=[source.value, "--store"],
+        started_at=started_at,
+        finished_at=started_at + timedelta(minutes=5),
+    )
+    asyncio.run(save_result(url, result, run))
+
+
+def test_last_successful_runs_are_per_topic_and_source(url: str) -> None:
+    log_run(url, ["a", "b"], RETRIEVED)
+    log_run(url, ["a"], RETRIEVED + timedelta(days=1))
+    log_run(url, ["b"], RETRIEVED + timedelta(days=2), ok=False)
+    log_run(url, ["b"], RETRIEVED + timedelta(days=3), source=SourceName.ARXIV)
+    log_run(url, ["c"], RETRIEVED)
+
+    last = asyncio.run(last_successful_runs(url, SourceName.PUBMED, ["a", "b", "d"]))
+
+    assert last == {"a": RETRIEVED + timedelta(days=1), "b": RETRIEVED}
 
 
 def test_duplicates_by_doi_and_the_last_run_of_a_source(url: str) -> None:

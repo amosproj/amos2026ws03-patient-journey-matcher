@@ -15,7 +15,7 @@ flowchart LR
 | Table | Written by | Read by |
 |---|---|---|
 | `documents` | crawler | indexer, MCP server |
-| `crawl_runs` | crawler | people; a later scheduler |
+| `crawl_runs` | crawler | crawler (`--since auto`), people |
 | index tables | indexer (not built yet) | MCP server |
 
 ## Storing

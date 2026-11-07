@@ -780,6 +780,7 @@ function renderStats() {
       card("Requests ok", s.finished_requests),
       card("Failed", s.failed_requests, s.failed_requests ? "bad" : "muted"),
       card("Not processed", s.unprocessed_requests, s.unprocessed_requests ? "" : "muted"),
+      card("Reached max results", s.max_results_reached, s.max_results_reached ? "" : "muted"),
       card("Duration", fmtSeconds(state.run?.duration)),
     );
     return;

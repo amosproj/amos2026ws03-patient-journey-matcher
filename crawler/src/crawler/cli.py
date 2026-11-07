@@ -21,18 +21,34 @@ from crawler.models import (
 )
 from crawler.queries import query_words
 from crawler.runner import CollectionOptions, CollectionSetupError, run_requests
-from crawler.seeds import TopicFileError, find_podcast, load_topic, seed_requests, topic_terms
+from crawler.seeds import (
+    TopicFileError,
+    bundled_topics,
+    find_podcast,
+    load_topic,
+    seed_requests,
+    topic_terms,
+)
 from crawler.sources.arxiv import split_version
 from crawler.sources.youtube import channel_lookup
 from crawler.store import (
+    RESUME_OVERLAP,
     RunInfo,
     StoreError,
     StoreReport,
     database_url,
+    last_successful_runs,
     prepare_store,
+    resume_date,
     save_result,
 )
 
+AUTO = "auto"
+"""`--since auto`: continue from the topics' last successful run with `--store`."""
+SINCE_AUTO_HELP = (
+    f"auto: from {RESUME_OVERLAP.days} days before the topics' last successful run with --store "
+    "(needs --store and --topic or --all-topics)"
+)
 SINCE_HELP = {
     SourceName.PUBMED: "only search results PubMed added since this date (YYYY-MM-DD); "
     "cited papers are not filtered",
@@ -86,13 +102,23 @@ def youtube_channel(value: str) -> str:
     return value.strip()
 
 
+def since_date(value: str) -> date | str:
+    """An argparse type for `--since`: a date (YYYY-MM-DD) or `auto`."""
+    if value.strip() == AUTO:
+        return AUTO
+    try:
+        return date.fromisoformat(value.strip())
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"expected YYYY-MM-DD or auto, got {value!r}") from None
+
+
 def parser() -> argparse.ArgumentParser:
     command = argparse.ArgumentParser(
         prog="crawler",
         description=(
             "Collect source metadata as JSON Lines on stdout. A summary of the run goes to "
-            "stderr. Exit code 1 means at least one request failed or, with --store, storing "
-            "failed."
+            "stderr. Exit code 1 means at least one request failed or was not processed "
+            "(--max-requests) or, with --store, storing failed."
         ),
     )
     subcommands = command.add_subparsers(dest="source", required=True)
@@ -107,9 +133,9 @@ def parser() -> argparse.ArgumentParser:
         paper.set_defaults(subcommand=paper)
         seeds = paper.add_mutually_exclusive_group(required=True)
         seeds.add_argument("query", nargs="?", type=non_blank, help="one search query")
-        _add_topic_argument(seeds)
+        _add_topic_arguments(seeds)
         _add_max_results_argument(paper, "results per query")
-        paper.add_argument("--since", type=date.fromisoformat, help=SINCE_HELP[source])
+        _add_since_argument(paper, source)
         if source is not SourceName.ZENODO:
             paper.add_argument(
                 "--max-depth",
@@ -138,9 +164,9 @@ def parser() -> argparse.ArgumentParser:
         type=youtube_channel,
         help="channel ID, channel URL, @handle, or legacy username",
     )
-    _add_topic_argument(seeds)
+    _add_topic_arguments(seeds)
     _add_max_results_argument(youtube, "videos per channel")
-    youtube.add_argument("--since", type=date.fromisoformat, help=SINCE_HELP[SourceName.YOUTUBE])
+    _add_since_argument(youtube, SourceName.YOUTUBE)
     _add_max_requests_argument(youtube)
     _add_store_argument(youtube, STORE_HELP)
 
@@ -150,20 +176,23 @@ def parser() -> argparse.ArgumentParser:
     seeds.add_argument(
         "feed", nargs="?", type=non_blank, help="feed key from a topic file, e.g. jco"
     )
-    _add_topic_argument(seeds)
+    _add_topic_arguments(seeds)
     _add_max_results_argument(podcast, "episodes per feed")
-    podcast.add_argument("--since", type=date.fromisoformat, help=SINCE_HELP[SourceName.PODCAST])
+    _add_since_argument(podcast, SourceName.PODCAST)
     _add_max_requests_argument(podcast)
     _add_store_argument(podcast, STORE_HELP)
     return command
 
 
-def _add_topic_argument(group: argparse._MutuallyExclusiveGroup) -> None:
+def _add_topic_arguments(group: argparse._MutuallyExclusiveGroup) -> None:
     group.add_argument(
         "--topic",
         action="append",
         metavar="ID_OR_PATH",
         help="topic file: an ID from crawler/topics/ or a path to a YAML file; repeatable",
+    )
+    group.add_argument(
+        "--all-topics", action="store_true", help="every topic file in crawler/topics/"
     )
 
 
@@ -173,11 +202,17 @@ def _add_max_results_argument(command: argparse.ArgumentParser, help_text: str) 
     )
 
 
+def _add_since_argument(command: argparse.ArgumentParser, source: SourceName) -> None:
+    command.add_argument(
+        "--since", type=since_date, help=f"{SINCE_HELP[source]}; {SINCE_AUTO_HELP}"
+    )
+
+
 def _add_max_requests_argument(command: argparse.ArgumentParser) -> None:
     command.add_argument(
         "--max-requests",
         type=whole_number(1),
-        help="stop after this many requests (safety cap)",
+        help="stop after this many requests (safety cap); the run then exits with 1",
     )
 
 
@@ -235,10 +270,15 @@ def requests_from_args(
 ) -> tuple[list[ScrapeRequest], CollectionOptions]:
     source = SourceName(arguments.source)
     query_mode: str = getattr(arguments, "query_mode", "and")
-    since: date | None = getattr(arguments, "since", None)
+    # `auto` is resolved by `main` from the stored runs, once the topics of the seeds are known.
+    since_argument = getattr(arguments, "since", None)
+    since = since_argument if isinstance(since_argument, date) else None
     match_all = False
-    if arguments.topic:
-        topics = [load_topic(reference) for reference in arguments.topic]
+    if arguments.topic or arguments.all_topics:
+        if arguments.all_topics:
+            topics = bundled_topics()
+        else:
+            topics = [load_topic(reference) for reference in arguments.topic]
         seeds = seed_requests(
             topics,
             source,
@@ -289,6 +329,11 @@ def requests_from_args(
     return seeds, options
 
 
+def _topics(seeds: Sequence[ScrapeRequest]) -> list[str]:
+    """The topics of the seeds, in seed order and without duplicates."""
+    return list(dict.fromkeys(topic for seed in seeds for topic in seed.topics))
+
+
 def _usage_error(
     command: argparse.ArgumentParser, arguments: argparse.Namespace, message: str
 ) -> NoReturn:
@@ -314,8 +359,16 @@ def summary(result: CollectionResult) -> str:
             f"failed {failure.kind} {failure.source.value} (depth {failure.depth}) "
             f"{failure.detail}: {failure.error} ({outcome})"
         )
+    for seed in result.max_results_reached:
+        lines.append(
+            f"reached --max-results: {seed}; older results of the --since period may be missing"
+        )
     if result.run_error:
         lines.append(f"run aborted: {result.run_error}")
+    elif stats.unprocessed_requests:
+        lines.append(
+            f"stopped at --max-requests: {stats.unprocessed_requests} request(s) not processed"
+        )
     return "\n".join(lines)
 
 
@@ -335,6 +388,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     # in one line and the summary lists every failure, so keep Crawlee quiet.
     logging.getLogger("crawlee").setLevel(logging.CRITICAL)
     source = SourceName(arguments.source)
+    resume = arguments.since == AUTO
+    if resume and not arguments.store:
+        _usage_error(command, arguments, "--since auto needs --store, whose runs it continues")
+    if resume and not (arguments.topic or arguments.all_topics):
+        _usage_error(command, arguments, "--since auto needs --topic or --all-topics")
     url: str | None = None
     try:
         seeds, options = requests_from_args(arguments)
@@ -343,6 +401,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             url = database_url()
             stored = asyncio.run(prepare_store(url, source, load_ids=options.max_depth > 0))
             options = options.model_copy(update={"known_ids": options.known_ids | stored})
+            if resume:
+                topics = _topics(seeds)
+                last_runs = asyncio.run(last_successful_runs(url, source, topics))
+                since = resume_date(last_runs, topics)
+                seeds = [seed.model_copy(update={"since": since}) for seed in seeds]
+                print(f"since auto: {since.isoformat()}", file=sys.stderr)
         started_at = datetime.now(UTC)
         result = asyncio.run(run_requests(seeds, options=options))
         finished_at = datetime.now(UTC)
@@ -360,7 +424,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         # Stored only after the output is printed, so a failed store loses none of the run.
         run = RunInfo(
             source=source,
-            topics=list(dict.fromkeys(topic for seed in seeds for topic in seed.topics)),
+            topics=_topics(seeds),
             arguments=list(sys.argv[1:] if argv is None else argv),
             started_at=started_at,
             finished_at=finished_at,
