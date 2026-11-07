@@ -48,7 +48,7 @@ test("shows a stored document with the fields of a tool result", () => {
     source_id: "pubmed:42745507",
     title: "Salvage radiotherapy after radical prostatectomy",
     source: "pubmed",
-    source_type: "paper",
+    content_type: "journal_article",
     url: "https://pubmed.ncbi.nlm.nih.gov/42745507/",
     published_date: "2026-09",
     authors: ["A. Author", "B. Author"],
@@ -56,27 +56,6 @@ test("shows a stored document with the fields of a tool result", () => {
   });
   expect(sourceReferenceSchema.parse(reference)).toEqual(reference);
 });
-
-test.each([
-  ["journal_article", "paper"],
-  ["conference_paper", "paper"],
-  ["poster", "paper"],
-  ["presentation", "paper"],
-  ["report", "paper"],
-  ["book", "paper"],
-  ["preprint", "preprint"],
-  ["video", "video"],
-  ["podcast_episode", "podcast"],
-] as const)(
-  "shows content type %s as source type %s",
-  (contentType, sourceType) => {
-    const reference = toSourceReference(
-      document({ content_type: contentType }),
-    );
-
-    expect(reference.source_type).toBe(sourceType);
-  },
-);
 
 test("leaves out the date and licence a document does not have", () => {
   const reference = toSourceReference(
@@ -92,7 +71,7 @@ test("leaves out the date and licence a document does not have", () => {
     source_id: "pubmed:42745507",
     title: "Salvage radiotherapy after radical prostatectomy",
     source: "pubmed",
-    source_type: "paper",
+    content_type: "journal_article",
     url: "https://pubmed.ncbi.nlm.nih.gov/42745507/",
     authors: [],
   });

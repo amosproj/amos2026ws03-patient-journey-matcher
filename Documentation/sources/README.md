@@ -81,11 +81,10 @@ Per the proposal on `feature/7-mcp-interface` (#7). Reads `documents` and the in
 
 - `match_journey`: index rows carry `document_id`, so each hit resolves to its row.
 - `get_source(source_id)`: `source_id` = `documents.id`. Calls `download()` with the "passes the original on" column and the stored `version`. Not allowed: abstract or description plus link. Deleted row (e.g. YouTube after 30 days): `SOURCE_NOT_FOUND`. Shares the request budgets with the indexer.
-- Field mapping: `id` → `source_id`; `canonical_url` → `url`; `published_at` + `published_precision` → `published_date` (`2026`, `2026-09`, `2026-09-13`); `authors[].name` → `authors`; `source`, `title`, `licence` unchanged.
+- Field mapping: `id` → `source_id`; `canonical_url` → `url`; `published_at` + `published_precision` → `published_date` (`2026`, `2026-09`, `2026-09-13`); `authors[].name` → `authors`; `source`, `title`, `content_type`, `licence` unchanged.
 - Needed in #7, not made here:
-  1. Replace `source_type` (`paper`, `preprint`, `video`, `podcast`) with `content_type` and its 9 values, in results and the filter. The values come from the source labels, so no mapping is needed.
-  2. Add `content_kind: description` (Zenodo, YouTube, show notes). Keep `abstract`; `summary` would clash with the AI summary approach.
-  3. Document the fallback: abstract or description plus `url`, not an error.
+  1. Add `content_kind: description` (Zenodo, YouTube, show notes). Keep `abstract`; `summary` would clash with the AI summary approach.
+  2. Document the fallback: abstract or description plus `url`, not an error.
 
 ## 5 Storage, limits and retention
 
