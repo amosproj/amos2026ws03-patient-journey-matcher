@@ -1,0 +1,66 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: insomnia
+label: Insomnia
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - insomnia
+  - insomniac
+  - sleeplessness
+  - Sleep Initiation and Maintenance Disorders
+  - CBT-I
+  - CBTi
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - insomnia
+  - chronic insomnia
+  - insomnia disorder
+  - acute insomnia
+  - insomnia in older adults
+  - insomnia in adolescents
+  - insomnia menopause
+  - insomnia cancer survivors
+  - comorbid insomnia and sleep apnea
+  - insomnia depression
+  - insomnia chronic pain
+  # Diagnosis and screening
+  - insomnia diagnosis
+  - insomnia diagnostic criteria
+  - insomnia severity index
+  - insomnia sleep diary
+  - insomnia actigraphy
+  - insomnia screening
+  # Treatment
+  - insomnia cognitive behavioral therapy
+  - insomnia digital cognitive behavioral therapy
+  - insomnia sleep restriction therapy
+  - insomnia stimulus control
+  - insomnia sleep hygiene
+  - insomnia brief behavioral treatment
+  - insomnia orexin receptor antagonists
+  - insomnia daridorexant
+  - insomnia lemborexant
+  - insomnia suvorexant
+  - insomnia zolpidem
+  - insomnia eszopiclone
+  - insomnia ramelteon
+  - insomnia benzodiazepine receptor agonists
+  - insomnia doxepin
+  - insomnia melatonin
+  - insomnia hypnotic tapering
+  # Living with
+  - insomnia self-management
+  - insomnia quality of life
+  - insomnia daytime functioning
+  - insomnia relapse prevention
+  - insomnia stepped care
+  - insomnia primary care
+
+# YouTube channels.
+channels:
+  - name: European Sleep Research Society (ESRS)
+    url: https://www.youtube.com/channel/UC-Vhxqzq0w5ncHcuAgPfQAw
+  - name: Sleep Health Foundation
+    url: https://www.youtube.com/channel/UCQmURqwYj9L9koYxKyrTxTA

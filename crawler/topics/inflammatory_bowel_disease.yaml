@@ -1,0 +1,83 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: inflammatory_bowel_disease
+label: Inflammatory bowel disease
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - inflammatory bowel disease
+  - IBD
+  - Crohn disease
+  - Crohn's disease
+  - Crohns disease
+  - ulcerative colitis
+  - Colitis, Ulcerative
+  - pouchitis
+  - regional enteritis
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - inflammatory bowel disease
+  - Crohn disease
+  - ulcerative colitis
+  - pediatric inflammatory bowel disease
+  - acute severe ulcerative colitis
+  - perianal Crohn disease
+  - inflammatory bowel disease extraintestinal manifestations
+  # Diagnosis and screening
+  - inflammatory bowel disease fecal calprotectin
+  - inflammatory bowel disease endoscopy
+  - Crohn disease MR enterography
+  - Crohn disease intestinal ultrasound
+  - inflammatory bowel disease treat-to-target
+  - inflammatory bowel disease dysplasia surveillance
+  # Treatment
+  - IBD therapeutic drug monitoring
+  - ulcerative colitis mesalazine
+  - inflammatory bowel disease thiopurines
+  - Crohn disease methotrexate
+  - inflammatory bowel disease infliximab
+  - inflammatory bowel disease adalimumab
+  - inflammatory bowel disease vedolizumab
+  - inflammatory bowel disease ustekinumab
+  - inflammatory bowel disease risankizumab
+  - ulcerative colitis mirikizumab
+  - inflammatory bowel disease guselkumab
+  - inflammatory bowel disease upadacitinib
+  - ulcerative colitis tofacitinib
+  - ulcerative colitis S1P modulators
+  - Crohn disease exclusive enteral nutrition
+  - Crohn disease ileocecal resection
+  - ulcerative colitis colectomy
+  - ulcerative colitis ileal pouch
+  - pouchitis
+  - inflammatory bowel disease ostomy
+  # Living with
+  - IBD quality of life
+  - inflammatory bowel disease diet
+  - inflammatory bowel disease fatigue
+  - inflammatory bowel disease depression anxiety
+  - inflammatory bowel disease pregnancy
+  - inflammatory bowel disease transition adolescents
+  - inflammatory bowel disease self-management
+
+# YouTube channels.
+channels:
+  - name: Crohn's & Colitis Foundation
+    url: https://www.youtube.com/channel/UCx6FU405bG0_5MOEEZTjKbQ
+  - name: Crohn's & Colitis UK
+    url: https://www.youtube.com/channel/UCBsfWOtERbO6sfVuhMrxrTg
+  - name: Crohn's & Colitis Australia (CCA)
+    url: https://www.youtube.com/channel/UCosFQeKbTBEVPfuDmVcmB3w
+  - name: Ileostomy and Internal Pouch Association (IA)
+    url: https://www.youtube.com/channel/UCVJTYpi9gvbUNsbMZItU3OA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: crohns_colitis_uk_podcast
+    name: "Crohn's & Colitis UK - The Podcast"
+    url: https://feeds.acast.com/public/shows/656dcfb3f3fe6c00127c3105
+    publisher: Crohn's & Colitis UK
+    audience: patients
+    language: en
+    trusted_because: Official podcast of the UK charity for people with Crohn's disease and ulcerative colitis, with personal stories of life with IBD and surgery.

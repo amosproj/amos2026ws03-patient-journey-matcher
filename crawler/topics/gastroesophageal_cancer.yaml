@@ -1,0 +1,75 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: gastroesophageal_cancer
+label: Stomach and oesophageal cancer
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - gastric cancer
+  - stomach cancer
+  - gastric adenocarcinoma
+  - gastric carcinoma
+  - stomach neoplasm
+  - esophageal cancer
+  - oesophageal cancer
+  - esophageal neoplasm
+  - esophageal adenocarcinoma
+  - oesophageal adenocarcinoma
+  - esophageal squamous cell carcinoma
+  - oesophageal squamous cell carcinoma
+  - gastroesophageal junction adenocarcinoma
+  - gastroesophageal junction cancer
+  - gastroesophageal cancer
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - gastric cancer
+  - stomach cancer
+  - early gastric cancer
+  - advanced gastric cancer
+  - gastric cancer peritoneal metastasis
+  - hereditary diffuse gastric cancer
+  - esophageal cancer
+  - oesophageal cancer
+  - esophageal adenocarcinoma
+  - esophageal squamous cell carcinoma
+  - gastroesophageal junction cancer
+  # Diagnosis and screening
+  - gastric cancer screening
+  - gastric cancer Helicobacter pylori
+  - gastric cancer staging
+  - gastric cancer HER2
+  - gastric cancer PD-L1
+  - gastric cancer claudin 18.2
+  - esophageal cancer screening
+  - esophageal cancer staging
+  # Treatment
+  - gastric cancer gastrectomy
+  - gastric cancer D2 lymphadenectomy
+  - early gastric cancer endoscopic submucosal dissection
+  - gastric cancer perioperative chemotherapy
+  - gastric cancer immunotherapy
+  - gastric cancer trastuzumab deruxtecan
+  - gastric cancer zolbetuximab
+  - gastric cancer ramucirumab
+  - esophageal cancer esophagectomy
+  - esophageal cancer neoadjuvant chemoradiotherapy
+  - esophageal cancer definitive chemoradiotherapy
+  - esophageal cancer adjuvant nivolumab
+  - esophageal cancer immunotherapy
+  - esophageal cancer endoscopic resection
+  # Living with
+  - gastric cancer postgastrectomy syndrome
+  - gastric cancer nutrition
+  - gastric cancer quality of life
+  - gastric cancer palliative care
+  - esophageal cancer dysphagia
+  - esophageal cancer nutrition
+  - esophageal cancer quality of life
+
+# YouTube channels.
+channels:
+  - name: Hope for Stomach Cancer
+    url: https://www.youtube.com/channel/UCO78U45EsZtjqx6uKegMzwA
+  - name: Debbie's Dream Foundation
+    url: https://www.youtube.com/channel/UCcug53kZ119sWaJSBlBJYfA

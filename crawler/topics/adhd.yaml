@@ -1,0 +1,86 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: adhd
+label: ADHD
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - ADHD
+  - attention deficit hyperactivity disorder
+  - attention deficit and hyperactivity disorder
+  - Attention Deficit Disorder with Hyperactivity
+  - attention deficit disorder
+  - hyperkinetic disorder
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - ADHD
+  - attention deficit hyperactivity disorder
+  - adult ADHD
+  - ADHD in children
+  - ADHD in adolescents
+  - ADHD in women
+  - ADHD predominantly inattentive
+  - ADHD comorbidity
+  - ADHD substance use disorder
+  # Diagnosis and screening
+  - ADHD diagnosis
+  - ADHD screening
+  - ADHD adult self-report scale
+  - ADHD Conners rating scale
+  - ADHD diagnostic interview
+  - ADHD differential diagnosis
+  - adult ADHD late diagnosis
+  # Treatment
+  - ADHD treatment guidelines
+  - ADHD stimulant medication
+  - ADHD methylphenidate
+  - ADHD lisdexamfetamine
+  - ADHD dexamfetamine
+  - ADHD atomoxetine
+  - ADHD guanfacine
+  - ADHD clonidine
+  - ADHD non-stimulant medication
+  - ADHD medication side effects
+  - ADHD medication pregnancy
+  - ADHD behavioral parent training
+  - ADHD cognitive behavioral therapy
+  - ADHD psychoeducation
+  - ADHD school interventions
+  # Living with
+  - ADHD school performance
+  - ADHD college students
+  - ADHD employment
+  - ADHD relationships
+  - ADHD quality of life
+  - ADHD parenting stress
+  - ADHD long-term outcomes
+  - ADHD transition adult services
+
+# YouTube channels.
+channels:
+  - name: Children and Adults with Attention-Deficit/Hyperactivity Disorder (CHADD)
+    url: https://www.youtube.com/channel/UCtIdw4TxJHT8XUlPBvYZD7A
+  - name: ADHD UK
+    url: https://www.youtube.com/channel/UCUNwB38b5CCIF7i9oeHVHMg
+  - name: ADHD Europe
+    url: https://www.youtube.com/channel/UC4PNzbOhYlZTPfIXRn4p6fA
+  - name: American Professional Society of ADHD and Related Disorders (APSARD)
+    url: https://www.youtube.com/channel/UCWXqkdqmd1j7KyRckQM4Ybw
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: chadd_all_things_adhd
+    name: All Things ADHD
+    url: https://podcasts.chadd.org/feed.xml
+    publisher: Children and Adults with Attention-Deficit/Hyperactivity Disorder (CHADD)
+    audience: patients
+    language: en
+    trusted_because: Official podcast of CHADD, the national nonprofit for people with ADHD, with expert interviews on ADHD across the lifespan.
+  - key: adhd_uk_podcast
+    name: ADHDUK podcast
+    url: https://api.riverside.com/hosting/yhBgIXYF.rss
+    publisher: ADHD UK
+    audience: patients
+    language: en
+    trusted_because: Official podcast of the charity ADHD UK, presented by its trustees and ambassadors, among them a paediatrician, with clinicians and researchers as guests.

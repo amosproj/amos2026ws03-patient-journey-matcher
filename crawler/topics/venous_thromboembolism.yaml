@@ -1,0 +1,93 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: venous_thromboembolism
+label: Venous thromboembolism
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - venous thromboembolism
+  - venous thromboembolic
+  - VTE
+  - deep vein thrombosis
+  - deep venous thrombosis
+  - DVT
+  - venous thrombosis
+  - pulmonary embolism
+  - pulmonary thromboembolism
+  - cancer-associated thrombosis
+  - postthrombotic syndrome
+  - post-thrombotic syndrome
+  - chronic thromboembolic pulmonary hypertension
+  - CTEPH
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - venous thromboembolism
+  - deep vein thrombosis
+  - pulmonary embolism
+  - superficial venous thrombosis
+  - upper extremity deep vein thrombosis
+  - isolated distal deep vein thrombosis
+  - subsegmental pulmonary embolism
+  - cancer-associated thrombosis
+  - recurrent venous thromboembolism
+  - venous thromboembolism pregnancy
+  - chronic thromboembolic pulmonary hypertension
+  - post-thrombotic syndrome
+  # Diagnosis and screening
+  - venous thromboembolism D-dimer
+  - deep vein thrombosis compression ultrasound
+  - pulmonary embolism CT pulmonary angiography
+  - pulmonary embolism clinical probability
+  - pulmonary embolism risk stratification
+  - venous thromboembolism risk assessment
+  # Treatment
+  - venous thromboembolism anticoagulation
+  - venous thromboembolism direct oral anticoagulants
+  - venous thromboembolism apixaban
+  - venous thromboembolism rivaroxaban
+  - venous thromboembolism heparin
+  - venous thromboembolism extended anticoagulation
+  - cancer-associated thrombosis anticoagulation
+  - venous thromboembolism prophylaxis
+  - pulmonary embolism thrombolysis
+  - pulmonary embolism catheter-directed therapy
+  - deep vein thrombosis catheter-directed thrombolysis
+  - vena cava filter venous thromboembolism
+  - CTEPH pulmonary endarterectomy
+  - CTEPH balloon pulmonary angioplasty
+  - chronic thromboembolic pulmonary hypertension riociguat
+  # Living with
+  - venous thromboembolism quality of life
+  - venous thromboembolism long-term outcomes
+  - post-thrombotic syndrome compression stockings
+  - post-pulmonary embolism syndrome
+  - venous thromboembolism patient education
+  - venous thromboembolism medication adherence
+  - deep vein thrombosis physical activity
+
+# YouTube channels.
+channels:
+  - name: National Blood Clot Alliance (NBCA)
+    url: https://www.youtube.com/channel/UC18QBRxq2Ac5dO4eOgmj9dQ
+  - name: Thrombosis UK
+    url: https://www.youtube.com/channel/UCjIjARwJxLEsXGemJw2Z2XQ
+  - name: Thrombosis Canada
+    url: https://www.youtube.com/channel/UCEQj9HUFHEh8V4NLDGuOFQA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: taking_a_breath_stop_the_clot
+    name: "Taking a Breath: A Stop the Clot Podcast"
+    url: https://feeds.transistor.fm/stop-the-clot
+    publisher: National Blood Clot Alliance (NBCA)
+    audience: patients
+    language: en
+    trusted_because: Survivor stories about blood clots from the National Blood Clot Alliance, a US patient organisation that raises awareness of clot risks and symptoms.
+  - key: clot_conversations
+    name: CLOT Conversations
+    url: https://rss.buzzsprout.com/1946680.rss
+    publisher: Thrombosis Canada
+    audience: clinicians
+    language: en
+    trusted_because: Thrombosis Canada, the national network of thrombosis experts behind the Canadian clinical guides, discusses new trials and guidelines in thrombosis and anticoagulation.

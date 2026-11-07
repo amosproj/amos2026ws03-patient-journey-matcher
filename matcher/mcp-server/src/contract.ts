@@ -81,4 +81,5 @@ export const sourceContentSchema = sourceReferenceSchema.extend({
 
 export type MatchJourneyInput = z.output<typeof matchJourneyInputSchema>;
 export type MatchResult = z.output<typeof matchResultSchema>;
+export type SourceReference = z.output<typeof sourceReferenceSchema>;
 export type SourceContent = z.output<typeof sourceContentSchema>;

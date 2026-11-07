@@ -1,0 +1,97 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: sexually_transmitted_infections
+label: Sexually transmitted infections
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - sexually transmitted infection
+  - sexually transmitted disease
+  - STI
+  - chlamydia
+  - gonorrhea
+  - gonorrhoea
+  - syphilis
+  - genital herpes
+  - trichomoniasis
+  - human papillomavirus
+  - HPV infection
+  - mpox
+  - monkeypox
+  - Mycoplasma genitalium
+  - genital warts
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - sexually transmitted infections
+  - chlamydia infection
+  - uncomplicated gonorrhea
+  - early syphilis
+  - congenital syphilis
+  - syphilis neurological complications
+  - genital herpes
+  - trichomoniasis
+  - Mycoplasma genitalium
+  - human papillomavirus infection
+  - mpox
+  - chlamydia lymphogranuloma venereum
+  - chlamydia pelvic inflammatory disease
+  # Diagnosis and screening
+  - chlamydia screening
+  - chlamydia gonorrhea nucleic acid amplification
+  - syphilis serological testing
+  - syphilis point-of-care testing
+  - human papillomavirus testing
+  - sexually transmitted infection screening
+  - sexually transmitted infection partner notification
+  - genital herpes diagnosis
+  # Treatment
+  - chlamydia doxycycline
+  - gonorrhea ceftriaxone
+  - gonorrhea antimicrobial resistance
+  - gonorrhea meningococcal B vaccine
+  - syphilis benzathine penicillin
+  - genital herpes valaciclovir
+  - trichomoniasis metronidazole
+  - Mycoplasma genitalium moxifloxacin
+  - genital warts imiquimod
+  - human papillomavirus vaccination
+  - mpox vaccine
+  - mpox tecovirimat
+  - sexually transmitted infection doxycycline prophylaxis
+  - sexually transmitted infection expedited partner therapy
+  # Living with
+  - sexually transmitted infection stigma
+  - sexually transmitted infections adolescents
+  - sexually transmitted infection reinfection
+  - genital herpes psychosocial
+  - sexually transmitted infection sexual health education
+
+# YouTube channels.
+channels:
+  - name: American Sexual Health Association (ASHA)
+    url: https://www.youtube.com/channel/UCooi_pDXUOUiC_GE-hFAfXg
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: sti_journal_podcast
+    name: STI Podcast
+    url: https://feed.podbean.com/stibmj/feed.xml
+    publisher: BMJ Group
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the peer-reviewed journal Sexually Transmitted Infections, published by BMJ.
+  - key: asha_sex_plus_health
+    name: Sex+Health
+    url: https://rss.libsyn.com/shows/566590/destinations/4899740.xml
+    publisher: American Sexual Health Association (ASHA)
+    audience: patients
+    language: en
+    trusted_because: Podcast of ASHA, a US nonprofit for sexual health education, with experts on STIs and sexual health.
+  - key: stashh_sexy_health
+    name: Sexy Health with STASHH
+    url: https://anchor.fm/s/c5eb1124/podcast/rss
+    publisher: Students and Trainees Association for Sexual Health and HIV (STASHH)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of STASHH, the trainee group affiliated with the British Association for Sexual Health and HIV (BASHH), on sexual health and HIV medicine.

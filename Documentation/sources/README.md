@@ -12,8 +12,8 @@ Findings for #6, checked 01.11.2026 against live docs and live requests. Follows
 | PMC | primary | [`pmc.md`](pmc.md) | About 8 M full-text article versions on S3 | JATS XML | crawler |
 | arXiv | secondary | [`arxiv.md`](arxiv.md) | Preprints, about 8,300 a year in medical categories | HTML, else PDF | SS26, #27 |
 | Zenodo | secondary | [`zenodo.md`](zenodo.md) | Any research output, no review | Files: PDF, DOCX, PPTX, MP4 | crawler |
-| YouTube | complementary | [`youtube.md`](youtube.md) | Metadata of 26 curated channels | None: description and chapters only | SS26, #27 |
-| Podcasts | complementary | [`podcasts.md`](podcasts.md) | 6 curated RSS feeds | Transcript file (rare), else show notes | crawler |
+| YouTube | complementary | [`youtube.md`](youtube.md) | Metadata of curated channels | None: description and chapters only | SS26, #27 |
+| Podcasts | complementary | [`podcasts.md`](podcasts.md) | Curated RSS feeds | Transcript file (rare), else show notes | crawler |
 
 Primary: peer-reviewed core. Secondary: preprints and grey literature. Complementary: curated formats for patients.
 
@@ -48,6 +48,8 @@ Table `documents`, one row per source record. PMC has no rows; it fills the PubM
 | `retrieved_at` | timestamptz | yes | Last successful fetch |
 | `expires_at` | timestamptz | | YouTube only: `retrieved_at` + 30 days |
 | `extra` | jsonb | | Source-specific fields, see source pages |
+
+Implemented in [`db/init/02-documents.sql`](../../db/init/02-documents.sql) (#41), with `created_at` and `changed_at` added and `published_at`/`published_precision` optional: [storage and retrieval](../storage.md).
 
 ## 3 Indexing
 
@@ -88,9 +90,9 @@ Per the proposal on `feature/7-mcp-interface` (#7). Reads `documents` and the in
 ## 5 Storage, limits and retention
 
 - **Stored:** the `documents` row and index rows only. Never full texts, PDFs, audio, video or transcripts. ASCO show notes contain transcripts, so the crawler cuts them.
-- **Index rows** carry `document_id` and `version`; deleted with the document, rebuilt on a new version.
+- **Index rows** carry `document_id`, `version` and `document_changed_at`; deleted with the document, rebuilt when the row changes ([storage](../storage.md)).
 - **Crawler state** (not in `documents`): curated lists (topics, channels, [feeds](podcasts.md#curated-feed-list)); per feed URL, `ETag`, `Last-Modified`, last status; per channel the uploads playlist ID.
-- **Retention:** YouTube data, IDs included, refreshed or deleted within 30 days (III.E.4.d); gone videos deleted with their index rows; no view counts, never in a score (III.E.4.h). PubMed kept current or flagged as possibly outdated. No limit elsewhere.
+- **Retention:** YouTube data, IDs included, refreshed or deleted within 30 days (III.E.4.d); gone videos deleted with their index rows; no view counts, never in a score (III.E.4.h). PubMed kept current or flagged as possibly outdated. No limit elsewhere. Each store run deletes rows past `expires_at` ([storage](../storage.md)).
 - **New since last run:** PubMed `datetype=edat`; arXiv `submittedDate` (`lastUpdatedDate` silently acts as `submittedDate`); Zenodo `updated:[… TO *]`; YouTube uploads playlist to `videoPublishedAt`; podcasts conditional GET.
 - **Caps per query:** PubMed 9,999, Zenodo 10,000, arXiv 30,000; split by date.
 - **Identification:** User-Agent with app, version, repo URL, team contact. NCBI also `tool` and `email`. Zenodo may block generic agents.

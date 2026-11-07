@@ -1,0 +1,87 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: lymphoma
+label: Lymphoma
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - lymphoma
+  - Hodgkin lymphoma
+  - Hodgkin's lymphoma
+  - Hodgkin Disease
+  - non-Hodgkin lymphoma
+  - non-Hodgkin's lymphoma
+  - diffuse large B-cell lymphoma
+  - follicular lymphoma
+  - mantle cell lymphoma
+  - marginal zone lymphoma
+  - DLBCL
+  - Lymphoma, Non-Hodgkin
+  - Lymphoma, Large B-Cell, Diffuse
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - lymphoma
+  - Hodgkin lymphoma
+  - non-Hodgkin lymphoma
+  - diffuse large B-cell lymphoma
+  - follicular lymphoma
+  - mantle cell lymphoma
+  - marginal zone lymphoma
+  - peripheral T-cell lymphoma
+  - primary central nervous system lymphoma
+  - cutaneous T-cell lymphoma
+  # Diagnosis and screening
+  - lymphoma diagnosis
+  - lymphoma lymph node biopsy
+  - lymphoma PET CT
+  - lymphoma Lugano classification
+  - lymphoma International Prognostic Index
+  - Hodgkin lymphoma interim PET
+  # Treatment
+  - diffuse large B-cell lymphoma R-CHOP
+  - DLBCL polatuzumab vedotin
+  - follicular lymphoma obinutuzumab
+  - follicular lymphoma bendamustine
+  - follicular lymphoma watchful waiting
+  - mantle cell lymphoma BTK inhibitor
+  - Hodgkin lymphoma ABVD
+  - Hodgkin lymphoma brentuximab vedotin
+  - Hodgkin lymphoma nivolumab
+  - lymphoma glofitamab
+  - lymphoma epcoritamab
+  - follicular lymphoma mosunetuzumab
+  - lymphoma CAR T-cell therapy
+  - lymphoma autologous stem cell transplantation
+  - lymphoma radiation therapy
+  - MALT lymphoma Helicobacter pylori
+  # Living with
+  - lymphoma survivors
+  - lymphoma quality of life
+  - lymphoma fatigue
+  - lymphoma fertility preservation
+  - Hodgkin lymphoma late effects
+  - lymphoma caregivers
+  - lymphoma exercise
+  - lymphoma follow-up imaging
+
+# YouTube channels.
+channels:
+  - name: Lymphoma Action
+    url: https://www.youtube.com/channel/UC6ifOX7qu9vhCX7YXeAwWMA
+  - name: Lymphoma Research Foundation (LRF)
+    url: https://www.youtube.com/channel/UCtne_KnvT-1sC9QgwH5xAwA
+  - name: Lymphoma Australia
+    url: https://www.youtube.com/channel/UCJY75uMHQj4TAFGQULJKaVw
+  - name: Lymphoma Coalition
+    url: https://www.youtube.com/channel/UCE57wHy-ASR57HkbsbYSLKg
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: lymphoma_voices
+    name: Lymphoma Voices
+    url: https://feeds.transistor.fm/lymphoma-voices
+    publisher: Lymphoma Action
+    audience: patients
+    language: en
+    trusted_because: Experts and people with lymphoma talk about living with the disease, from the UK lymphoma charity Lymphoma Action.

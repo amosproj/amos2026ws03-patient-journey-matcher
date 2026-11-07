@@ -1,0 +1,83 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: osteoarthritis
+label: Osteoarthritis
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - osteoarthritis
+  - osteoarthritic
+  - Osteoarthritis, Knee
+  - Osteoarthritis, Hip
+  - osteoarthrosis
+  - degenerative arthritis
+  - degenerative joint disease
+  - gonarthrosis
+  - coxarthrosis
+  - knee arthroplasty
+  - hip arthroplasty
+  - knee replacement
+  - hip replacement
+  - Arthroplasty, Replacement, Knee
+  - Arthroplasty, Replacement, Hip
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - osteoarthritis
+  - knee osteoarthritis
+  - hip osteoarthritis
+  - hand osteoarthritis
+  - thumb carpometacarpal osteoarthritis
+  - patellofemoral osteoarthritis
+  - post-traumatic osteoarthritis
+  - osteoarthritis progression
+  - osteoarthritis risk factors
+  # Diagnosis and screening
+  - osteoarthritis diagnosis
+  - osteoarthritis radiography
+  - osteoarthritis MRI
+  - osteoarthritis ultrasound
+  - osteoarthritis biomarkers
+  - knee osteoarthritis Kellgren Lawrence
+  # Treatment
+  - osteoarthritis exercise therapy
+  - osteoarthritis weight loss
+  - osteoarthritis NSAIDs
+  - osteoarthritis duloxetine
+  - osteoarthritis corticosteroid injection
+  - osteoarthritis tai chi
+  - knee osteoarthritis braces
+  - knee osteoarthritis high tibial osteotomy
+  - total knee replacement
+  - total hip replacement
+  - unicompartmental knee arthroplasty
+  - robotic knee arthroplasty
+  - total hip arthroplasty anterior approach
+  # Living with
+  - osteoarthritis self-management
+  - osteoarthritis patient education
+  - osteoarthritis work participation
+  - osteoarthritis quality of life
+  - knee replacement prehabilitation
+  - knee replacement rehabilitation
+  - hip replacement rehabilitation
+  - knee replacement persistent pain
+  - knee replacement caregivers
+  - hip replacement return to work
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: aahks_amplified
+    name: AAHKS Amplified
+    url: https://www.aahks.org/feed/podcast/
+    publisher: American Association of Hip and Knee Surgeons (AAHKS)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of AAHKS, the society of hip and knee replacement surgeons, on research, techniques and patient care.
+  - key: joa_the_cut
+    name: "The Journal of Arthroplasty's: The Cut"
+    url: https://www.aahks.org/feed/joa/
+    publisher: American Association of Hip and Knee Surgeons (AAHKS)
+    audience: clinicians
+    language: en
+    trusted_because: AAHKS podcast on articles of The Journal of Arthroplasty, the peer-reviewed journal on hip and knee replacement.

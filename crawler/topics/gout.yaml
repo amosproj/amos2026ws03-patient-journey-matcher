@@ -1,0 +1,70 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: gout
+label: Gout
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - gout
+  - gouty arthritis
+  - podagra
+  - hyperuricemia
+  - hyperuricaemia
+  - urate-lowering therapy
+  - monosodium urate
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - gout
+  - gouty arthritis
+  - tophaceous gout
+  - acute gout flare
+  - recurrent gout flares
+  - chronic gout
+  - hyperuricemia
+  - asymptomatic hyperuricemia
+  - gout cardiovascular disease
+  - gout chronic kidney disease
+  # Diagnosis and screening
+  - gout diagnosis
+  - gout classification criteria
+  - gout monosodium urate crystals
+  - gout dual-energy CT
+  - gout ultrasound
+  - gout serum urate
+  # Treatment
+  - gout urate-lowering therapy
+  - gout treat-to-target
+  - gout allopurinol
+  - gout febuxostat
+  - gout probenecid
+  - gout pegloticase
+  - gout colchicine
+  - gout NSAIDs
+  - gout glucocorticoids
+  - gout anakinra
+  - gout flare prophylaxis
+  # Living with
+  - gout diet
+  - gout alcohol
+  - gout weight loss
+  - gout self-management
+  - gout patient education
+  - gout medication adherence
+  - gout nurse-led care
+  - gout quality of life
+
+# YouTube channels.
+channels:
+  - name: Gout Education Society
+    url: https://www.youtube.com/channel/UCR--IBDBHOPvtpoRnZk5Xdw
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: kicking_gout_in_the_acid
+    name: Kicking Gout in the Acid
+    url: https://gouteducation.org/feed/podcast/
+    publisher: Gout Education Society
+    audience: patients
+    language: en
+    trusted_because: Podcast of the Gout Education Society, a nonprofit of health care professionals that educates the public about gout.

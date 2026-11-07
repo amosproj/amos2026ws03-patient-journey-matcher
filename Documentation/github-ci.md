@@ -12,7 +12,7 @@ Each job runs its commands in order and stops at the first failure. They are the
 | `uv run ruff check .` | Lint: finds bugs such as unused imports and undefined names. |
 | `uv run ruff format --check .` | Fails on unformatted code without changing any file, so formatting does not show up in later diffs. |
 | `uv run mypy src` | Strict type check, including Pydantic models. |
-| `uv run pytest` | Runs the tests in `tests/`. |
+| `uv run pytest` | Runs the tests in `tests/`. The store tests use a PostgreSQL service container (`pgvector/pgvector:pg18`) through `TEST_DATABASE_URL`. |
 
 ## `matcher` job (TypeScript, in `matcher/`)
 
@@ -21,7 +21,7 @@ Each job runs its commands in order and stops at the first failure. They are the
 | `pnpm install --frozen-lockfile` | Installs the exact versions from `pnpm-lock.yaml`. Fails if the lockfile does not match the `package.json` files. |
 | `pnpm lint` | Biome checks lint rules, formatting and import order without changing any file. |
 | `pnpm typecheck` | `tsc` type-checks all packages, including the tests. |
-| `pnpm test` | Runs the Vitest tests (`*.test.ts`) of all packages. |
+| `pnpm test` | Runs the Vitest tests (`*.test.ts`) of all packages. The `@matcher/db` tests use a PostgreSQL service container through `TEST_DATABASE_URL`. |
 
 ## Limitations
 

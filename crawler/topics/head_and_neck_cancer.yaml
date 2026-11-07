@@ -1,0 +1,79 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: head_and_neck_cancer
+label: Head and neck cancer
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - head and neck cancer
+  - head and neck neoplasm
+  - head and neck squamous cell carcinoma
+  - squamous cell carcinoma of head and neck
+  - HNSCC
+  - oral cancer
+  - oral cavity cancer
+  - mouth neoplasm
+  - oropharyngeal cancer
+  - oropharyngeal neoplasm
+  - laryngeal cancer
+  - laryngeal neoplasm
+  - hypopharyngeal cancer
+  - nasopharyngeal carcinoma
+  - salivary gland cancer
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - head and neck cancer
+  - HNSCC
+  - oral cancer
+  - oropharyngeal cancer
+  - HPV-positive oropharyngeal cancer
+  - laryngeal cancer
+  - hypopharyngeal cancer
+  - nasopharyngeal carcinoma
+  - salivary gland cancer
+  # Diagnosis and screening
+  - oral cancer screening
+  - head and neck cancer staging
+  - head and neck cancer PET
+  - oral cancer sentinel node biopsy
+  - nasopharyngeal carcinoma EBV DNA
+  - head and neck cancer PD-L1
+  # Treatment
+  - oral cancer neck dissection
+  - oropharyngeal cancer transoral robotic surgery
+  - head and neck cancer reconstruction
+  - head and neck cancer radiotherapy
+  - head and neck cancer chemoradiotherapy
+  - head and neck cancer cisplatin
+  - head and neck cancer cetuximab
+  - head and neck cancer pembrolizumab
+  - head and neck cancer nivolumab
+  - HNSCC neoadjuvant immunotherapy
+  - HNSCC induction chemotherapy
+  - oropharyngeal cancer de-escalation
+  - laryngeal cancer organ preservation
+  - laryngeal cancer laryngectomy
+  - nasopharyngeal carcinoma toripalimab
+  - nasopharyngeal carcinoma induction chemotherapy
+  # Living with
+  - head and neck cancer dysphagia
+  - head and neck cancer rehabilitation
+  - laryngeal cancer voice rehabilitation
+  - head and neck cancer xerostomia
+  - head and neck cancer mucositis
+  - head and neck cancer osteoradionecrosis
+  - head and neck cancer trismus
+  - head and neck cancer depression
+  - head and neck cancer survivorship
+
+# YouTube channels.
+channels:
+  - name: Head and Neck Cancer Alliance (HNCA)
+    url: https://www.youtube.com/channel/UC5vS5iFn7dzIeJRVTwk8Gng
+  - name: Head and Neck Cancer Australia (HANCA)
+    url: https://www.youtube.com/channel/UCcLckpUJRk7kiVmSeDc1q6g
+  - name: Support for People with Oral and Head and Neck Cancer (SPOHNC)
+    url: https://www.youtube.com/channel/UCauDpq-23RdDXkgERoXhuYQ
+  - name: Mouth Cancer Foundation
+    url: https://www.youtube.com/channel/UCOE9EjGA97kVJ76V2_qT6PA

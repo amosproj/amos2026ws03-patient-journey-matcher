@@ -1,0 +1,56 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: fibromyalgia
+label: Fibromyalgia
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - fibromyalgia
+  - fibromyalgic
+  - fibrositis
+  - chronic widespread pain
+  - nociplastic pain
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - fibromyalgia
+  - fibromyalgia syndrome
+  - fibromyalgia chronic widespread pain
+  - fibromyalgia central sensitization
+  - nociplastic pain
+  - juvenile fibromyalgia
+  - fibromyalgia pathophysiology
+  - fibromyalgia comorbidities
+  - fibromyalgia prevalence
+  # Diagnosis and screening
+  - fibromyalgia diagnosis
+  - fibromyalgia classification criteria
+  - fibromyalgia widespread pain index
+  - fibromyalgia symptom severity scale
+  - fibromyalgia differential diagnosis
+  - fibromyalgia FIQR
+  # Treatment
+  - fibromyalgia exercise therapy
+  - fibromyalgia aerobic exercise
+  - fibromyalgia strength training
+  - fibromyalgia cognitive behavioral therapy
+  - fibromyalgia patient education
+  - fibromyalgia mindfulness
+  - fibromyalgia acupuncture
+  - fibromyalgia tai chi
+  - fibromyalgia balneotherapy
+  - fibromyalgia amitriptyline
+  - fibromyalgia duloxetine
+  - fibromyalgia pregabalin
+  - fibromyalgia milnacipran
+  - fibromyalgia cyclobenzaprine
+  - fibromyalgia multidisciplinary treatment
+  # Living with
+  - fibromyalgia self-management
+  - fibromyalgia quality of life
+  - fibromyalgia sleep
+  - fibromyalgia fatigue
+  - fibromyalgia depression
+  - fibromyalgia work disability
+  - fibromyalgia pregnancy
+  - fibromyalgia caregivers

@@ -1,0 +1,104 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+# Cardiology in general: channels and podcasts of heart societies, charities and cardiac centres.
+id: general_cardiology
+label: Cardiology in general
+
+# YouTube channels.
+channels:
+  - name: American Heart Association (AHA)
+    url: https://www.youtube.com/channel/UCLiWQk8JzhNRcNiDKk4dpaw
+  - name: American College of Cardiology (ACC)
+    url: https://www.youtube.com/channel/UCg2IevGMLxUlNXop_B_ONSw
+  - name: European Society of Cardiology (ESC)
+    url: https://www.youtube.com/channel/UCQFROke6pM580dsxDpVPxpA
+  - name: British Heart Foundation (BHF)
+    url: https://www.youtube.com/channel/UC9J8xYJ7GyKl1VU1RMRXGIw
+  - name: National Heart Foundation of Australia (Heart Foundation)
+    url: https://www.youtube.com/channel/UCZphaWiCl8oyErXe_J2iuig
+  - name: National Heart, Lung, and Blood Institute (NHLBI)
+    url: https://www.youtube.com/channel/UCsuvTFTNyvxcartbMrVwoXw
+  - name: Texas Heart Institute
+    url: https://www.youtube.com/channel/UCEnSwJ7WjHSNbzmyTf3jYtQ
+  - name: Royal Papworth Hospital NHS Foundation Trust
+    url: https://www.youtube.com/channel/UCLtEt-gv2xNUEBYYKcFCalg
+  - name: Victor Chang Cardiac Research Institute
+    url: https://www.youtube.com/channel/UCp2JZKdj9jzyhM3rnf4NZvg
+  - name: Cardiomyopathy UK
+    url: https://www.youtube.com/channel/UChjKeE57VOHYeUVLqE-4QzA
+  - name: National Coalition for Women with Heart Disease (WomenHeart)
+    url: https://www.youtube.com/channel/UCtlZ2tLm8J4QScanzLrL1tQ
+  - name: Canadian Cardiovascular Society (CCS)
+    url: https://www.youtube.com/channel/UCVorDnvaLYZHBjRZ67yJOUg
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: circulation_on_the_run
+    name: Circulation on the Run
+    url: https://circulation.libsyn.com/rss
+    publisher: American Heart Association (AHA)
+    audience: clinicians
+    language: en
+    trusted_because: Weekly audio summary of Circulation, the peer-reviewed journal of the American Heart Association.
+  - key: aha_heartbeats
+    name: HeartBEATS from Lifelong Learning
+    url: https://heartbeats.libsyn.com/rss
+    publisher: American Heart Association (AHA)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast series curated by the American Heart Association in which experts explain current clinical science.
+  - key: jacc_specialty_journals
+    name: JACC Specialty Journals
+    url: https://rss.libsyn.com/shows/72510/destinations/311460.xml
+    publisher: American College of Cardiology (ACC)
+    audience: clinicians
+    language: en
+    trusted_because: Editors-in-chief of the peer-reviewed JACC specialty journals of the American College of Cardiology summarise key findings.
+  - key: acc_cardiacast
+    name: ACC CardiaCast
+    url: https://rss.libsyn.com/shows/120449/destinations/701818.xml
+    publisher: American College of Cardiology (ACC)
+    audience: clinicians
+    language: en
+    trusted_because: Clinical education from the American College of Cardiology with current research and interviews with cardiovascular experts.
+  - key: eagles_eye_view
+    name: "Eagle's Eye View: Your Weekly CV Update From ACC.org"
+    url: https://rss.libsyn.com/shows/104966/destinations/563201.xml
+    publisher: American College of Cardiology (ACC)
+    audience: clinicians
+    language: en
+    trusted_because: Weekly cardiovascular update from the American College of Cardiology on new guidelines and practice-changing research.
+  - key: esc_cardio_talk
+    name: ESC Cardio Talk
+    url: https://escardio.libsyn.com/rss
+    publisher: European Society of Cardiology (ESC)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the European Society of Cardiology, with experts on its journals, guidelines and research.
+  - key: heart_podcast
+    name: Heart Podcast
+    url: https://feed.podbean.com/heartbmj/feed.xml
+    publisher: BMJ Group
+    audience: clinicians
+    language: en
+    trusted_because: Interviews with authors of Heart, the peer-reviewed cardiology journal of BMJ Group.
+  - key: jama_cardiology
+    name: JAMA Cardiology Author Interviews
+    url: https://jamacardiologyauthorinterviews.libsyn.com/rss
+    publisher: JAMA Network
+    audience: clinicians
+    language: en
+    trusted_because: Interviews with authors of JAMA Cardiology, a peer-reviewed journal of the JAMA Network.
+  - key: love_your_heart
+    name: "Love Your Heart: A Cleveland Clinic Podcast"
+    url: https://rss.buzzsprout.com/2238076.rss
+    publisher: Cleveland Clinic Heart & Vascular Institute
+    audience: patients
+    language: en
+    trusted_because: Heart and vascular specialists of Cleveland Clinic explain prevention, tests and treatments to the public.
+  - key: ticker_tapes
+    name: The Ticker Tapes
+    url: https://feeds.acast.com/public/shows/5e301edcf93dd0d45115b556
+    publisher: British Heart Foundation (BHF)
+    audience: patients
+    language: en
+    trusted_because: Real stories of people living with heart and circulatory conditions, from the British Heart Foundation, the UK's leading heart charity.

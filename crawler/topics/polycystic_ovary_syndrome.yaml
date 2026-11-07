@@ -1,0 +1,72 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: polycystic_ovary_syndrome
+label: Polycystic ovary syndrome
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - polycystic ovary syndrome
+  - polycystic ovarian syndrome
+  - polycystic ovary disease
+  - polycystic ovarian disease
+  - polycystic ovaries
+  - polycystic ovarian morphology
+  - polyendocrine metabolic ovarian syndrome
+  - Stein-Leventhal syndrome
+  - PCOS
+  - PCOD
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - polycystic ovary syndrome
+  - polycystic ovarian syndrome
+  - PCOS
+  - polyendocrine metabolic ovarian syndrome
+  - polycystic ovary syndrome phenotypes
+  - polycystic ovary syndrome adolescents
+  - polycystic ovary syndrome hyperandrogenism
+  - polycystic ovary syndrome insulin resistance
+  - polycystic ovary syndrome genetics
+  # Diagnosis and screening
+  - polycystic ovary syndrome diagnosis
+  - polycystic ovary syndrome Rotterdam criteria
+  - polycystic ovary syndrome ultrasound
+  - polycystic ovary syndrome anti-Mullerian hormone
+  - polycystic ovary syndrome testosterone
+  - PCOS glucose tolerance test
+  - PCOS comorbidities screening
+  # Treatment
+  - polycystic ovary syndrome treatment
+  - PCOS lifestyle intervention
+  - PCOS weight loss
+  - PCOS metformin
+  - PCOS combined oral contraceptive
+  - PCOS letrozole
+  - PCOS clomiphene
+  - PCOS ovulation induction
+  - PCOS gonadotrophins
+  - PCOS IVF
+  - PCOS ovarian drilling
+  - PCOS anti-androgens
+  - PCOS inositol
+  - PCOS hirsutism
+  # Living with
+  - polycystic ovary syndrome fertility
+  - polycystic ovary syndrome pregnancy
+  - PCOS gestational diabetes
+  - PCOS quality of life
+  - PCOS depression anxiety
+  - PCOS cardiovascular risk
+  - PCOS type 2 diabetes
+  - PCOS endometrial hyperplasia
+  - PCOS self-management
+  - PCOS menopause
+
+# YouTube channels.
+channels:
+  - name: The National Polycystic Ovary Syndrome Association (PCOS Challenge)
+    url: https://www.youtube.com/channel/UCDAjI1gYri_LGiQk2HD4D5A
+  - name: Verity
+    url: https://www.youtube.com/channel/UCTJ1gaBRHWE6Z8uW7c2VQ1Q
+  - name: The PCOS Society, India
+    url: https://www.youtube.com/channel/UCCTXOOZmkEaAHFe86Ix6vaQ

@@ -1,0 +1,67 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: benign_prostatic_hyperplasia
+label: Benign prostatic hyperplasia
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - benign prostatic hyperplasia
+  - benign prostatic hypertrophy
+  - benign prostatic obstruction
+  - BPH
+  - Prostatic Hyperplasia
+  - prostatic enlargement
+  - enlarged prostate
+  - lower urinary tract symptoms
+  - LUTS
+  - bladder outlet obstruction
+  - transurethral resection of the prostate
+  - TURP
+  - HoLEP
+  - prostatic artery embolization
+  - prostatic artery embolisation
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - benign prostatic hyperplasia
+  - benign prostatic hypertrophy
+  - benign prostatic enlargement
+  - enlarged prostate
+  - benign prostatic obstruction
+  - male lower urinary tract symptoms
+  - bladder outlet obstruction men
+  - benign prostatic hyperplasia progression
+  - benign prostatic hyperplasia urinary retention
+  - benign prostatic hyperplasia nocturia
+  # Diagnosis and screening
+  - benign prostatic hyperplasia diagnosis
+  - benign prostatic hyperplasia symptom score
+  - benign prostatic hyperplasia uroflowmetry
+  - benign prostatic hyperplasia prostate volume
+  - benign prostatic hyperplasia PSA
+  - benign prostatic hyperplasia ultrasound
+  - benign prostatic hyperplasia urodynamics
+  # Treatment
+  - benign prostatic hyperplasia alpha blockers
+  - benign prostatic hyperplasia tamsulosin
+  - benign prostatic hyperplasia finasteride
+  - benign prostatic hyperplasia dutasteride
+  - benign prostatic hyperplasia tadalafil
+  - benign prostatic hyperplasia combination therapy
+  - benign prostatic hyperplasia anticholinergics
+  - benign prostatic hyperplasia mirabegron
+  - benign prostatic hyperplasia desmopressin
+  - transurethral resection of the prostate
+  - holmium laser enucleation prostate
+  - photoselective vaporization of the prostate
+  - prostatic urethral lift
+  - prostatic artery embolization
+  - benign prostatic hyperplasia aquablation
+  - benign prostatic hyperplasia water vapor
+  - benign prostatic hyperplasia simple prostatectomy
+  # Living with
+  - BPH quality of life
+  - BPH sexual function
+  - benign prostatic hyperplasia lifestyle
+  - benign prostatic hyperplasia watchful waiting
+  - benign prostatic hyperplasia long-term outcomes

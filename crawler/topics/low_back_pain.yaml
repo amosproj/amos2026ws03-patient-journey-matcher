@@ -1,0 +1,84 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: low_back_pain
+label: Low back pain
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - low back pain
+  - lower back pain
+  - sciatica
+  - spinal stenosis
+  - disc herniation
+  - disk herniation
+  - herniated disc
+  - herniated disk
+  - Intervertebral Disc Displacement
+  - spinal fusion
+  - spine surgery
+  - spinal surgery
+  - discectomy
+  - diskectomy
+  - failed back surgery syndrome
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - low back pain
+  - chronic low back pain
+  - acute low back pain
+  - nonspecific low back pain
+  - sciatica
+  - lumbar spinal stenosis
+  - lumbar disc herniation
+  - lumbar disc herniation cauda equina
+  - low back pain disc degeneration
+  - low back pain spondylolisthesis
+  # Diagnosis and screening
+  - low back pain diagnosis
+  - low back pain red flags
+  - low back pain imaging
+  - low back pain MRI
+  - low back pain STarT Back
+  - sciatica diagnosis
+  # Treatment
+  - low back pain exercise therapy
+  - low back pain physiotherapy
+  - low back pain spinal manipulation
+  - low back pain acupuncture
+  - low back pain cognitive behavioral therapy
+  - low back pain NSAIDs
+  - low back pain duloxetine
+  - sciatica epidural steroid injection
+  - lumbar disc herniation discectomy
+  - lumbar spinal stenosis decompression
+  - lumbar spinal fusion
+  - low back pain disc replacement
+  - failed back surgery syndrome
+  - low back pain spinal cord stimulation
+  - minimally invasive spine surgery
+  # Living with
+  - low back pain self-management
+  - low back pain neuroscience education
+  - low back pain return to work
+  - low back pain mindfulness
+  - low back pain yoga
+  - low back pain prevention
+  - spine surgery rehabilitation
+  - spinal fusion rehabilitation
+
+# YouTube channels.
+channels:
+  - name: North American Spine Society (NASS)
+    url: https://www.youtube.com/channel/UCz_TCINnycyU_NCrLVNInnQ
+  - name: Spine Society of Europe (EUROSPINE)
+    url: https://www.youtube.com/channel/UCrAaejU_79sX2DZCE3gBUgA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: nass_podcast
+    name: The NASS Podcast
+    url: https://anchor.fm/s/6cd0ef0/podcast/rss
+    publisher: North American Spine Society (NASS)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of NASS, a multidisciplinary medical society for spine care, on spine research and practice.

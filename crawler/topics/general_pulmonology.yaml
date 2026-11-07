@@ -1,0 +1,98 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+# Pulmonology in general: channels and podcasts of respiratory societies, journals and lung charities.
+id: general_pulmonology
+label: Pulmonology in general
+
+# YouTube channels.
+channels:
+  - name: American Thoracic Society (ATS)
+    url: https://www.youtube.com/channel/UCzbly6r1MKUnO0KfrD__yqg
+  - name: American College of Chest Physicians (CHEST)
+    url: https://www.youtube.com/channel/UC2A1upJRbav_hhyg1gLfPWg
+  - name: American Lung Association (ALA)
+    url: https://www.youtube.com/channel/UC7f9888CwQq-XmKYRGa7k_g
+  - name: Asthma + Lung UK
+    url: https://www.youtube.com/channel/UCTnLqNZvKl59GyrREHLKzyA
+  - name: European Lung Foundation (ELF)
+    url: https://www.youtube.com/channel/UCLd4kEScoQtBGhxVQAogNlQ
+  - name: Lung Foundation Australia
+    url: https://www.youtube.com/channel/UC1jdxQi0pQDYBG3iN1duYng
+  - name: Lung Health Foundation
+    url: https://www.youtube.com/channel/UCH4Ap1iIYRH9n0KSrT66v6Q
+  - name: Lung Saskatchewan (Lung Sask)
+    url: https://www.youtube.com/channel/UCjcHNmHBHrkl_3-GgqXc0Nw
+  - name: National Jewish Health
+    url: https://www.youtube.com/channel/UChWLRXRic72g_lJ9YSrITMA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: ats_breathe_easy
+    name: ATS Breathe Easy
+    url: https://feeds.transistor.fm/breathe-easy-podcasts
+    publisher: American Thoracic Society (ATS)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the ATS on pulmonary, critical care and sleep medicine, with guidelines, research and society news.
+  - key: ajrccm_out_of_the_blue
+    name: "Out of the Blue: An AJRCCM Podcast"
+    url: https://feeds.transistor.fm/out-of-the-blue-an-ajrccm-podcast
+    publisher: American Thoracic Society (ATS)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the American Journal of Respiratory and Critical Care Medicine, the ATS's peer-reviewed journal.
+  - key: annalsats_clinician_to_clinician
+    name: "Clinician to Clinician: An AnnalsATS Podcast"
+    url: https://feeds.transistor.fm/clinician-to-clinician-an-annalsats-podcast
+    publisher: American Thoracic Society (ATS)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the Annals of the American Thoracic Society, the ATS's peer-reviewed journal.
+  - key: chest_journal_podcasts
+    name: CHEST Journal Podcasts
+    url: https://feed.podbean.com/chestjournal/feed.xml
+    publisher: American College of Chest Physicians (CHEST)
+    audience: clinicians
+    language: en
+    trusted_because: Monthly discussions with the authors of articles in CHEST, the peer-reviewed journal of the American College of Chest Physicians.
+  - key: chest_pulse
+    name: CHEST Pulse
+    url: https://feed.podbean.com/chestpodcasts/feed.xml
+    publisher: American College of Chest Physicians (CHEST)
+    audience: clinicians
+    language: en
+    trusted_because: Official clinical podcast of the American College of Chest Physicians for pulmonary, critical care and sleep medicine.
+  - key: thorax_podcast
+    name: Thorax Podcast
+    url: https://feed.podbean.com/thoraxbmj/feed.xml
+    publisher: BMJ Group and British Thoracic Society (BTS)
+    audience: clinicians
+    language: en
+    trusted_because: Interviews with authors of Thorax, the peer-reviewed respiratory journal of BMJ and the British Thoracic Society.
+  - key: lancet_respiratory_medicine
+    name: The Lancet Respiratory Medicine in conversation with
+    url: https://feed.podbean.com/lancetrespmed/feed.xml
+    publisher: The Lancet Group
+    audience: clinicians
+    language: en
+    trusted_because: Editors of the peer-reviewed journal The Lancet Respiratory Medicine talk with authors about their research.
+  - key: ers_publications_podcasts
+    name: ERS Publications Podcasts
+    url: https://feeds.soundcloud.com/users/soundcloud:users:124832544/sounds.rss
+    publisher: European Respiratory Society (ERS)
+    audience: clinicians
+    language: en
+    trusted_because: Podcasts of the ERS on articles of the European Respiratory Journal and on the ERS Monograph series.
+  - key: bts_respiratory_futures
+    name: The Respiratory Futures Podcast
+    url: https://rss.buzzsprout.com/2311404.rss
+    publisher: British Thoracic Society (BTS)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the British Thoracic Society on respiratory care, clinical guidance and NICE and BTS recommendations.
+  - key: lung_sask_lets_talk_lungs
+    name: Let’s Talk Lungs Podcast
+    url: https://feed.podbean.com/lungsask/feed.xml
+    publisher: Lung Saskatchewan (Lung Sask)
+    audience: patients
+    language: en
+    trusted_because: Podcast of Lung Saskatchewan, a Canadian lung health charity, on lung disease, prevention and living well with lung disease.

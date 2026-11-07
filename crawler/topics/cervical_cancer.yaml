@@ -1,0 +1,80 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: cervical_cancer
+label: Cervical cancer
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - cervical cancer
+  - cervical carcinoma
+  - Uterine Cervical Neoplasms
+  - cancer of the cervix
+  - carcinoma of the cervix
+  - cervix cancer
+  - cervical adenocarcinoma
+  - cervical squamous cell carcinoma
+  - cervical intraepithelial neoplasia
+  - Uterine Cervical Dysplasia
+  - cervical screening
+  - HPV vaccination
+  - HPV vaccine
+  - Papillomavirus Vaccines
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - cervical cancer
+  - early-stage cervical cancer
+  - locally advanced cervical cancer
+  - recurrent cervical cancer
+  - metastatic cervical cancer
+  - cervical adenocarcinoma
+  - cervical intraepithelial neoplasia
+  # Diagnosis and screening
+  - cervical cancer screening
+  - cervical cancer HPV testing
+  - cervical cancer HPV self-sampling
+  - cervical cancer cytology
+  - cervical cancer colposcopy
+  - cervical cancer conization
+  - cervical cancer FIGO staging
+  - cervical cancer MRI
+  - cervical cancer HPV vaccination
+  - HPV vaccine single dose
+  - cervical cancer elimination
+  # Treatment
+  - cervical cancer radical hysterectomy
+  - cervical cancer simple hysterectomy
+  - cervical cancer radical trachelectomy
+  - cervical cancer sentinel node biopsy
+  - cervical cancer chemoradiotherapy
+  - cervical cancer brachytherapy
+  - cervical cancer induction chemotherapy
+  - cervical cancer pembrolizumab
+  - cervical cancer bevacizumab
+  - cervical cancer tisotumab vedotin
+  - cervical cancer cemiplimab
+  # Living with
+  - cervical cancer fertility preservation
+  - cervical cancer survivorship
+  - cervical cancer quality of life
+  - cervical cancer sexual function
+  - cervical cancer lymphedema
+  - cervical cancer late effects radiotherapy
+  - cervical cancer follow-up
+
+# YouTube channels.
+channels:
+  - name: Cervivor
+    url: https://www.youtube.com/channel/UCCa00A5D1ziZXEiVdcctuEw
+  - name: International Papillomavirus Society (IPVS)
+    url: https://www.youtube.com/channel/UC3z66mgUfICZVq-o8zmrjFQ
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: cervivor_podcast
+    name: Cervivor Podcast
+    url: https://anchor.fm/s/50dfaca0/podcast/rss
+    publisher: Cervivor, Inc.
+    audience: patients
+    language: en
+    trusted_because: Cervivor, a US nonprofit community of people affected by cervical cancer, shares survivor stories and expert advice on prevention, treatment and survivorship.

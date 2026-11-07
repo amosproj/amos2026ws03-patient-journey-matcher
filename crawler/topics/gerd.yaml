@@ -1,0 +1,85 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: gerd
+label: Gastroesophageal reflux disease
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - gastroesophageal reflux
+  - gastro-esophageal reflux
+  - gastro-oesophageal reflux
+  - GERD
+  - GORD
+  - acid reflux
+  - Esophagitis, Peptic
+  - reflux esophagitis
+  - Barrett esophagus
+  - Barrett's esophagus
+  - Barrett oesophagus
+  - Barrett's oesophagus
+  - fundoplication
+  - anti-reflux surgery
+  - antireflux surgery
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - gastroesophageal reflux disease
+  - GERD
+  - GORD
+  - erosive reflux esophagitis
+  - non-erosive gastroesophageal reflux disease
+  - refractory gastroesophageal reflux disease
+  - gastroesophageal reflux extraesophageal symptoms
+  - infant gastroesophageal reflux
+  - Barrett esophagus
+  - Barrett esophagus dysplasia
+  # Diagnosis and screening
+  - gastroesophageal reflux endoscopy
+  - gastroesophageal reflux pH impedance monitoring
+  - gastroesophageal reflux esophageal manometry
+  - gastroesophageal reflux Lyon consensus
+  - Barrett esophagus screening
+  - Barrett esophagus non-endoscopic screening
+  - Barrett esophagus surveillance
+  # Treatment
+  - gastroesophageal reflux proton pump inhibitors
+  - GERD proton pump inhibitor discontinuation
+  - gastroesophageal reflux vonoprazan
+  - gastroesophageal reflux potassium-competitive acid blockers
+  - gastroesophageal reflux famotidine
+  - gastroesophageal reflux alginate
+  - gastroesophageal reflux baclofen
+  - Nissen fundoplication
+  - laparoscopic antireflux surgery
+  - transoral incisionless fundoplication
+  - gastroesophageal reflux magnetic sphincter augmentation
+  - hiatal hernia repair fundoplication
+  - Barrett esophagus radiofrequency ablation
+  - Barrett esophagus endoscopic mucosal resection
+  - Barrett esophagus chemoprevention
+  # Living with
+  - gastroesophageal reflux diet
+  - gastroesophageal reflux lifestyle modification
+  - gastroesophageal reflux sleep
+  - gastroesophageal reflux quality of life
+  - gastroesophageal reflux pregnancy
+  - GERD proton pump inhibitor safety
+  - gastroesophageal reflux bariatric surgery
+  - antireflux surgery long-term outcomes
+
+# YouTube channels.
+channels:
+  - name: Heartburn Cancer UK (HCUK)
+    url: https://www.youtube.com/channel/UCVC2wP9N27tmNZCx2uwdD3w
+  - name: American Foregut Society (AFS)
+    url: https://www.youtube.com/channel/UCd-wrcpADHT-rEk9ywwgHtQ
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: afs_all_fore_guts
+    name: All Fore Guts!
+    url: https://feeds.redcircle.com/a3db7776-5d18-4a30-a925-40b4d3be04c4
+    publisher: American Foregut Society (AFS)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the American Foregut Society in which gastroenterologists and surgeons discuss reflux, anti-reflux surgery and other foregut conditions.

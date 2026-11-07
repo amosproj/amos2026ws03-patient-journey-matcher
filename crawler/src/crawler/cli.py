@@ -1,10 +1,11 @@
 import argparse
 import asyncio
+import io
 import json
 import logging
 import sys
 from collections.abc import Callable, Sequence
-from datetime import date
+from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import NoReturn
 
@@ -23,6 +24,14 @@ from crawler.runner import CollectionOptions, CollectionSetupError, run_requests
 from crawler.seeds import TopicFileError, find_podcast, load_topic, seed_requests, topic_terms
 from crawler.sources.arxiv import split_version
 from crawler.sources.youtube import channel_lookup
+from crawler.store import (
+    RunInfo,
+    StoreError,
+    StoreReport,
+    database_url,
+    prepare_store,
+    save_result,
+)
 
 SINCE_HELP = {
     SourceName.PUBMED: "only search results PubMed added since this date (YYYY-MM-DD); "
@@ -41,6 +50,8 @@ QUERY_MODE_HELP = (
     "and: every word, or: any word (quotes, backslashes and lone symbols are ignored); "
     "raw: the source's own query syntax"
 )
+STORE_HELP = "also upsert the documents into PostgreSQL (DATABASE_URL) and log the run"
+STORE_REFERENCES_HELP = f"{STORE_HELP}; cited papers stored before are not fetched again"
 
 
 def whole_number(minimum: int, maximum: int | None = None) -> Callable[[str], int]:
@@ -80,7 +91,8 @@ def parser() -> argparse.ArgumentParser:
         prog="crawler",
         description=(
             "Collect source metadata as JSON Lines on stdout. A summary of the run goes to "
-            "stderr. Exit code 1 means at least one request failed."
+            "stderr. Exit code 1 means at least one request failed or, with --store, storing "
+            "failed."
         ),
     )
     subcommands = command.add_subparsers(dest="source", required=True)
@@ -113,6 +125,9 @@ def parser() -> argparse.ArgumentParser:
             paper.add_argument(
                 "--query-mode", choices=("and", "or", "raw"), default="and", help=QUERY_MODE_HELP
             )
+        _add_store_argument(
+            paper, STORE_HELP if source is SourceName.ZENODO else STORE_REFERENCES_HELP
+        )
 
     youtube = subcommands.add_parser(SourceName.YOUTUBE.value, help="list channel videos")
     youtube.set_defaults(subcommand=youtube)
@@ -127,6 +142,7 @@ def parser() -> argparse.ArgumentParser:
     _add_max_results_argument(youtube, "videos per channel")
     youtube.add_argument("--since", type=date.fromisoformat, help=SINCE_HELP[SourceName.YOUTUBE])
     _add_max_requests_argument(youtube)
+    _add_store_argument(youtube, STORE_HELP)
 
     podcast = subcommands.add_parser(SourceName.PODCAST.value, help="list podcast episodes")
     podcast.set_defaults(subcommand=podcast)
@@ -138,6 +154,7 @@ def parser() -> argparse.ArgumentParser:
     _add_max_results_argument(podcast, "episodes per feed")
     podcast.add_argument("--since", type=date.fromisoformat, help=SINCE_HELP[SourceName.PODCAST])
     _add_max_requests_argument(podcast)
+    _add_store_argument(podcast, STORE_HELP)
     return command
 
 
@@ -162,6 +179,10 @@ def _add_max_requests_argument(command: argparse.ArgumentParser) -> None:
         type=whole_number(1),
         help="stop after this many requests (safety cap)",
     )
+
+
+def _add_store_argument(command: argparse.ArgumentParser, help_text: str) -> None:
+    command.add_argument("--store", action="store_true", help=help_text)
 
 
 def known_ids_file(value: str) -> frozenset[str]:
@@ -298,6 +319,14 @@ def summary(result: CollectionResult) -> str:
     return "\n".join(lines)
 
 
+def store_summary(report: StoreReport) -> str:
+    return (
+        f"stored (run {report.run_id}): {report.inserted} new, {report.changed} changed, "
+        f"{report.unchanged} unchanged; {report.cited} stored document(s) newly cited; "
+        f"{report.expired} expired deleted"
+    )
+
+
 def main(argv: Sequence[str] | None = None) -> int:
     command = parser()
     arguments = command.parse_args(argv)
@@ -305,16 +334,43 @@ def main(argv: Sequence[str] | None = None) -> int:
     # Crawlee logs every failed request with a full traceback. The runner logs each retry
     # in one line and the summary lists every failure, so keep Crawlee quiet.
     logging.getLogger("crawlee").setLevel(logging.CRITICAL)
+    source = SourceName(arguments.source)
+    url: str | None = None
     try:
         seeds, options = requests_from_args(arguments)
+        if arguments.store:
+            # Checked before the crawl, so a missing database costs no requests.
+            url = database_url()
+            stored = asyncio.run(prepare_store(url, source, load_ids=options.max_depth > 0))
+            options = options.model_copy(update={"known_ids": options.known_ids | stored})
+        started_at = datetime.now(UTC)
         result = asyncio.run(run_requests(seeds, options=options))
-    except (TopicFileError, CollectionSetupError) as error:
+        finished_at = datetime.now(UTC)
+    except (TopicFileError, CollectionSetupError, StoreError) as error:
         _usage_error(command, arguments, str(error))
     except ValidationError as error:
         _usage_error(command, arguments, validation_message(error))
+    if isinstance(sys.stdout, io.TextIOWrapper):
+        # JSON Lines are UTF-8; redirected on Windows, stdout would use the ANSI code page.
+        sys.stdout.reconfigure(encoding="utf-8")
     for document in result.documents:
         print(json.dumps(document.model_dump(mode="json"), ensure_ascii=False))
     print(summary(result), file=sys.stderr)
+    if url is not None:
+        # Stored only after the output is printed, so a failed store loses none of the run.
+        run = RunInfo(
+            source=source,
+            topics=list(dict.fromkeys(topic for seed in seeds for topic in seed.topics)),
+            arguments=list(sys.argv[1:] if argv is None else argv),
+            started_at=started_at,
+            finished_at=finished_at,
+        )
+        try:
+            report = asyncio.run(save_result(url, result, run))
+        except StoreError as error:
+            print(f"storing failed: {error}", file=sys.stderr)
+            return 1
+        print(store_summary(report), file=sys.stderr)
     return 0 if result.ok else 1
 
 

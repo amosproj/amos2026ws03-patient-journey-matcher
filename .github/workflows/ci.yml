@@ -15,6 +15,21 @@ jobs:
     defaults:
       run:
         working-directory: crawler
+    # For the store tests (tests/test_store_postgres.py); they apply db/init/ themselves.
+    services:
+      postgres:
+        image: pgvector/pgvector:pg18
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -h 127.0.0.1 -U postgres"
+          --health-interval 2s
+          --health-timeout 5s
+          --health-retries 30
+    env:
+      TEST_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/postgres
     steps:
       - uses: actions/checkout@v7
       # setup-uv publishes no major-version tags, so this pin is bumped by hand
@@ -30,6 +45,21 @@ jobs:
     defaults:
       run:
         working-directory: matcher
+    # For the @matcher/db tests (db/src/documents.test.ts); they apply db/init/ themselves.
+    services:
+      postgres:
+        image: pgvector/pgvector:pg18
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -h 127.0.0.1 -U postgres"
+          --health-interval 2s
+          --health-timeout 5s
+          --health-retries 30
+    env:
+      TEST_DATABASE_URL: postgresql://postgres:postgres@127.0.0.1:5432/postgres
     steps:
       - uses: actions/checkout@v7
       - uses: pnpm/action-setup@v6

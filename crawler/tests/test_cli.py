@@ -1,4 +1,6 @@
+import io
 import json
+import sys
 from collections.abc import Iterable
 from pathlib import Path
 
@@ -15,6 +17,7 @@ from crawler.models import (
     SourceName,
 )
 from crawler.runner import CollectionOptions
+from crawler.store import RunInfo, StoreError, StoreReport
 
 TOPIC = """
 id: demo_topic
@@ -327,3 +330,223 @@ def test_youtube_runs_accept_since() -> None:
     )
 
     assert request.since is not None
+
+
+class FakeStore:
+    """Stands in for the database calls of `main` and records them in order."""
+
+    def __init__(
+        self,
+        result: CollectionResult,
+        *,
+        stored: frozenset[str] = frozenset(),
+        prepare_error: str | None = None,
+        save_error: str | None = None,
+    ) -> None:
+        self.result = result
+        self.stored = stored
+        self.prepare_error = prepare_error
+        self.save_error = save_error
+        self.calls: list[str] = []
+        self.load_ids: bool | None = None
+        self.options: CollectionOptions | None = None
+        self.run: RunInfo | None = None
+
+    def install(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        monkeypatch.setattr(cli, "database_url", lambda: "postgresql://test/db")
+        monkeypatch.setattr(cli, "prepare_store", self.prepare_store)
+        monkeypatch.setattr(cli, "run_requests", self.run_requests)
+        monkeypatch.setattr(cli, "save_result", self.save_result)
+
+    async def prepare_store(
+        self, _url: str, _source: SourceName, *, load_ids: bool
+    ) -> frozenset[str]:
+        self.calls.append("prepare")
+        self.load_ids = load_ids
+        if self.prepare_error is not None:
+            raise StoreError(self.prepare_error)
+        return self.stored
+
+    async def run_requests(
+        self, _seeds: Iterable[ScrapeRequest], *, options: CollectionOptions
+    ) -> CollectionResult:
+        self.calls.append("run")
+        self.options = options
+        return self.result
+
+    async def save_result(self, _url: str, _result: CollectionResult, run: RunInfo) -> StoreReport:
+        self.calls.append("save")
+        self.run = run
+        if self.save_error is not None:
+            raise StoreError(self.save_error)
+        return StoreReport(run_id=7, inserted=1, changed=0, unchanged=0, cited=2, expired=0)
+
+
+@pytest.mark.parametrize(
+    "argv",
+    [
+        ["pubmed", "q"],
+        ["arxiv", "q"],
+        ["zenodo", "q"],
+        ["youtube", "@NationalCancerInstitute"],
+        ["podcast", "jco"],
+    ],
+)
+def test_every_subcommand_takes_store(argv: list[str]) -> None:
+    assert parser().parse_args([*argv, "--store"]).store
+    assert not parser().parse_args(argv).store
+
+
+def test_main_without_store_never_touches_the_database(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    def forbidden(*_args: object, **_kwargs: object) -> None:
+        raise AssertionError("the database must not be used without --store")
+
+    monkeypatch.setattr(cli, "run_requests", fake_run(CollectionResult(documents=[document()])))
+    for name in ("database_url", "prepare_store", "save_result"):
+        monkeypatch.setattr(cli, name, forbidden)
+
+    assert main(["pubmed", "prostate cancer"]) == 0
+    assert "stored" not in capsys.readouterr().err
+
+
+def test_main_with_store_checks_first_then_crawls_then_stores(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    topic = tmp_path / "demo_topic.yaml"
+    topic.write_text(TOPIC, encoding="utf-8")
+    fake = FakeStore(CollectionResult(documents=[document()], stats=CollectionStats(documents=1)))
+    fake.install(monkeypatch)
+
+    exit_code = main(["pubmed", "--topic", str(topic), "--store"])
+
+    output = capsys.readouterr()
+    assert exit_code == 0
+    assert fake.calls == ["prepare", "run", "save"]
+    assert [json.loads(line)["id"] for line in output.out.splitlines()] == ["pubmed:1"]
+    assert (
+        "stored (run 7): 1 new, 0 changed, 0 unchanged; 2 stored document(s) newly cited; "
+        "0 expired deleted" in output.err
+    )
+    assert fake.run is not None
+    assert fake.run.source is SourceName.PUBMED
+    assert fake.run.topics == ["demo_topic"]
+    assert fake.run.arguments == ["pubmed", "--topic", str(topic), "--store"]
+    assert fake.run.started_at <= fake.run.finished_at
+
+
+def test_stored_ids_join_the_known_ids_when_references_are_followed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    known = tmp_path / "known.txt"
+    known.write_text("pubmed:2\n", encoding="utf-8")
+    fake = FakeStore(CollectionResult(documents=[]), stored=frozenset({"pubmed:3"}))
+    fake.install(monkeypatch)
+
+    main(["pubmed", "q", "--known-ids", str(known), "--store"])
+
+    assert fake.load_ids is True
+    assert fake.options is not None
+    assert fake.options.known_ids == {"pubmed:2", "pubmed:3"}
+
+
+@pytest.mark.parametrize("argv", [["pubmed", "q", "--max-depth", "0"], ["podcast", "jco"]])
+def test_stored_ids_are_not_loaded_without_references(
+    argv: list[str], monkeypatch: pytest.MonkeyPatch
+) -> None:
+    fake = FakeStore(CollectionResult(documents=[]))
+    fake.install(monkeypatch)
+
+    main([*argv, "--store"])
+
+    assert fake.load_ids is False
+
+
+def test_a_missing_database_url_is_a_usage_error_before_the_crawl(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    fake = FakeStore(CollectionResult(documents=[]))
+    fake.install(monkeypatch)
+
+    def missing() -> str:
+        raise StoreError("DATABASE_URL is not set")
+
+    monkeypatch.setattr(cli, "database_url", missing)
+
+    with pytest.raises(SystemExit) as exit_info:
+        main(["pubmed", "q", "--store"])
+
+    assert exit_info.value.code == 2
+    assert "DATABASE_URL is not set" in capsys.readouterr().err
+    assert fake.calls == []
+
+
+def test_a_database_without_the_schema_is_a_usage_error_before_the_crawl(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    fake = FakeStore(
+        CollectionResult(documents=[]), prepare_error="the database has no documents table"
+    )
+    fake.install(monkeypatch)
+
+    with pytest.raises(SystemExit) as exit_info:
+        main(["pubmed", "q", "--store"])
+
+    assert exit_info.value.code == 2
+    assert "the database has no documents table" in capsys.readouterr().err
+    assert fake.calls == ["prepare"]
+
+
+def test_a_failed_store_still_prints_the_documents_and_exits_with_1(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    fake = FakeStore(
+        CollectionResult(documents=[document()]), save_error="cannot write to the database"
+    )
+    fake.install(monkeypatch)
+
+    exit_code = main(["pubmed", "q", "--store"])
+
+    output = capsys.readouterr()
+    assert exit_code == 1
+    assert fake.calls == ["prepare", "run", "save"]
+    assert [json.loads(line)["id"] for line in output.out.splitlines()] == ["pubmed:1"]
+    assert "storing failed: cannot write to the database" in output.err
+
+
+def test_runs_with_failures_are_stored_and_exit_with_1(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    failure = RequestFailure(
+        kind="search",
+        source=SourceName.PUBMED,
+        detail="q",
+        depth=0,
+        error="HTTPError: HTTP Error 500",
+        retries=3,
+        retryable=True,
+    )
+    fake = FakeStore(CollectionResult(documents=[document()], failures=[failure]))
+    fake.install(monkeypatch)
+
+    exit_code = main(["pubmed", "q", "--store"])
+
+    assert exit_code == 1
+    assert fake.calls == ["prepare", "run", "save"]
+    assert "stored (run 7)" in capsys.readouterr().err
+
+
+def test_json_lines_are_utf8_whatever_the_encoding_of_stdout(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    greek = document().model_copy(update={"title": "γ-H2AX foci"})
+    monkeypatch.setattr(cli, "run_requests", fake_run(CollectionResult(documents=[greek])))
+    buffer = io.BytesIO()
+    stdout = io.TextIOWrapper(buffer, encoding="cp1252")
+    monkeypatch.setattr(sys, "stdout", stdout)
+
+    assert main(["pubmed", "q"]) == 0
+
+    stdout.flush()
+    assert json.loads(buffer.getvalue().decode("utf-8"))["title"] == "γ-H2AX foci"

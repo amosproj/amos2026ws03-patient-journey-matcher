@@ -1,0 +1,83 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: kidney_cancer
+label: Kidney cancer
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - kidney cancer
+  - kidney carcinoma
+  - renal cancer
+  - renal carcinoma
+  - renal cell carcinoma
+  - renal cell cancer
+  - Carcinoma, Renal Cell
+  - Kidney Neoplasms
+  - renal mass
+  - RCC
+  - ccRCC
+  - mRCC
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - kidney cancer
+  - renal cell carcinoma
+  - clear cell renal cell carcinoma
+  - papillary renal cell carcinoma
+  - non-clear cell renal cell carcinoma
+  - metastatic renal cell carcinoma
+  - localized renal cell carcinoma
+  - small renal mass
+  # Diagnosis and screening
+  - renal mass biopsy
+  - renal cell carcinoma imaging
+  - renal cell carcinoma IMDC risk
+  - renal cell carcinoma biomarkers
+  - renal cell carcinoma von Hippel-Lindau
+  # Treatment
+  - kidney cancer partial nephrectomy
+  - kidney cancer radical nephrectomy
+  - kidney cancer cytoreductive nephrectomy
+  - small renal mass active surveillance
+  - kidney cancer thermal ablation
+  - kidney cancer stereotactic radiotherapy
+  - renal cell carcinoma adjuvant pembrolizumab
+  - renal cell carcinoma checkpoint inhibitor
+  - renal cell carcinoma nivolumab ipilimumab
+  - renal cell carcinoma pembrolizumab axitinib
+  - renal cell carcinoma nivolumab cabozantinib
+  - renal cell carcinoma lenvatinib pembrolizumab
+  - renal cell carcinoma cabozantinib
+  - renal cell carcinoma axitinib
+  - renal cell carcinoma sunitinib
+  - renal cell carcinoma pazopanib
+  - renal cell carcinoma tivozanib
+  - renal cell carcinoma belzutifan
+  # Living with
+  - kidney cancer survivorship
+  - kidney cancer quality of life
+  - kidney cancer chronic kidney disease
+  - kidney cancer follow-up
+  - renal cell carcinoma adverse events
+  - kidney cancer caregivers
+
+# YouTube channels.
+channels:
+  - name: KidneyCAN
+    url: https://www.youtube.com/channel/UCt12xhjGyU65kMVhRmzVBWw
+  - name: Kidney Cancer Association (KCA)
+    url: https://www.youtube.com/channel/UCRRkCVa1XjciMwIcWIIMaeQ
+  - name: Kidney Cancer UK
+    url: https://www.youtube.com/channel/UCYOOXUhq_PdByBLjks_zCyw
+  - name: Action Kidney Cancer
+    url: https://www.youtube.com/channel/UCiZHaVHYU7sZrep_07PPgNA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: kidney_cancer_unfiltered
+    name: Kidney Cancer Unfiltered
+    url: https://feeds.acast.com/public/shows/659da2dae5516f0015bf659b
+    publisher: Kidney Cancer Association (KCA)
+    audience: patients
+    language: en
+    trusted_because: The Kidney Cancer Association, a US kidney cancer patient organisation, covers the emotional and practical side of kidney cancer with patients, caregivers and clinicians.

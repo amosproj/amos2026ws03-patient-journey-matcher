@@ -1,0 +1,58 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: diverticular_disease
+label: Diverticular disease
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - diverticular disease
+  - diverticulitis
+  - diverticulosis
+  - Diverticulum, Colon
+  - colonic diverticula
+  - colonic diverticulum
+  - colon diverticula
+  - diverticular bleeding
+  - diverticular hemorrhage
+  - diverticular haemorrhage
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - diverticular disease
+  - diverticulitis
+  - diverticulosis
+  - acute diverticulitis
+  - uncomplicated diverticulitis
+  - complicated diverticulitis
+  - recurrent diverticulitis
+  - sigmoid diverticulitis
+  - right-sided diverticulitis
+  - diverticulitis abscess
+  - diverticular bleeding
+  - symptomatic uncomplicated diverticular disease
+  - diverticulitis immunocompromised patients
+  # Diagnosis and screening
+  - diverticulitis computed tomography
+  - diverticulitis ultrasound
+  - diverticulitis colonoscopy
+  - diverticulitis calprotectin
+  - diverticulitis Hinchey classification
+  # Treatment
+  - diverticulitis antibiotics
+  - diverticulitis conservative management
+  - diverticulitis outpatient management
+  - diverticulitis percutaneous drainage
+  - diverticulitis sigmoid colectomy
+  - diverticulitis laparoscopic lavage
+  - diverticulitis Hartmann procedure
+  - diverticulitis primary anastomosis
+  - diverticulitis elective surgery
+  - diverticular bleeding endoscopic hemostasis
+  - diverticular bleeding embolization
+  # Living with
+  - diverticulitis diet
+  - diverticular disease dietary fiber
+  - diverticulitis recurrence prevention
+  - diverticulitis risk factors
+  - diverticulitis quality of life
+  - diverticulitis follow-up
