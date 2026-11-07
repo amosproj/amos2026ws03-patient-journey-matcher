@@ -85,14 +85,14 @@ The same steps work for every matcher we add later.
    pnpm --filter @matcher/evaluation evaluate ../runs/keyword
    ```
 
-4. The runner lists the sources in the first 10 that have no grade yet ("Judge next"). Two people grade each one on their own, talk about every difference, and add the agreed grade to `judgments.json`.
+4. The runner lists the sources in the first 10 that have no grade yet ("Judge next"). Grade each one with the rules above and add it to `judgments.json`. If you are unsure, ask a second person.
 5. Run the evaluation again for all matchers, then compare the means.
 
 The test in `matcher/evaluation/src/evaluate.test.ts` checks that `judgments.json` stays valid after each edit.
 
 ## Status of the judgments
 
-The first 58 judgments (5 to 7 per point) are a draft, graded from PubMed titles. They use real PubMed records that a matcher can also find, with the `source_id` the crawler uses (`pubmed:<PMID>`). Before we trust them, two of us check each one against the abstract and add our names to `reviewed_by` for that point.
+The first 58 judgments (5 to 7 per point) were graded from the PubMed titles and spot-checked against the abstracts in review. They use real PubMed records that a matcher can also find, with the `source_id` the crawler uses (`pubmed:<PMID>`). If a grade turns out wrong, fix it in `judgments.json` with a short note.
 
 ## Open questions
 

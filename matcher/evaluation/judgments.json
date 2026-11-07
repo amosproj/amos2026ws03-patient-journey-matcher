@@ -68,8 +68,7 @@
           "grade": 0,
           "note": "breast DCIS, shares the words active monitoring"
         }
-      ],
-      "reviewed_by": []
+      ]
     },
     {
       "id": "patient-2-e08",
@@ -125,8 +124,7 @@
           "grade": 0,
           "note": "active surveillance for low risk, he is high risk on ADT"
         }
-      ],
-      "reviewed_by": []
+      ]
     },
     {
       "id": "patient-3-e10",
@@ -188,8 +186,7 @@
           "grade": 0,
           "note": "PSMA radioligand therapy for metastatic disease, wrong phase"
         }
-      ],
-      "reviewed_by": []
+      ]
     },
     {
       "id": "patient-4-e11",
@@ -239,8 +236,7 @@
           "grade": 0,
           "note": "focal therapy is not an option after prostatectomy"
         }
-      ],
-      "reviewed_by": []
+      ]
     },
     {
       "id": "patient-5-e15",
@@ -290,8 +286,7 @@
           "grade": 0,
           "note": "PSA screening, a phase long past"
         }
-      ],
-      "reviewed_by": []
+      ]
     },
     {
       "id": "patient-6-e09",
@@ -341,8 +336,7 @@
           "grade": 0,
           "note": "robotic versus open surgery, he chose radiotherapy"
         }
-      ],
-      "reviewed_by": []
+      ]
     },
     {
       "id": "patient-7-e16",
@@ -404,8 +398,7 @@
           "grade": 0,
           "note": "active surveillance, the wrong end of the disease"
         }
-      ],
-      "reviewed_by": []
+      ]
     },
     {
       "id": "patient-8-e18",
@@ -461,8 +454,7 @@
           "grade": 0,
           "note": "surgery for localized cancer, wrong phase"
         }
-      ],
-      "reviewed_by": []
+      ]
     },
     {
       "id": "patient-9-e15",
@@ -512,8 +504,7 @@
           "grade": 0,
           "note": "brachytherapy for untreated low-risk cancer"
         }
-      ],
-      "reviewed_by": []
+      ]
     },
     {
       "id": "patient-10-e12",
@@ -563,8 +554,7 @@
           "grade": 0,
           "note": "olaparib for breast cancer, shares BRCA and olaparib"
         }
-      ],
-      "reviewed_by": []
+      ]
     }
   ]
 }

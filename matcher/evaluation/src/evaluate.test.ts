@@ -8,7 +8,6 @@ const point = {
   focus_event_id: "e15",
   focus: "Biochemical recurrence",
   context: [],
-  reviewed_by: [],
 };
 
 const file: JudgmentFile = {

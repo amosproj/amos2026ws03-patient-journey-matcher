@@ -19,7 +19,6 @@ export const evaluationPointSchema = z.object({
       note: z.string().optional(),
     }),
   ),
-  reviewed_by: z.array(z.string()),
 });
 
 export const judgmentFileSchema = z.object({
