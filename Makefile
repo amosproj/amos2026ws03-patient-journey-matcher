@@ -1,12 +1,15 @@
-.PHONY: build test start debug db
+.PHONY: build test start debug db seed
 
 PORT ?= 8765
 
 # With the root .env, `make test` runs the database tests against the database from `make db`
-# instead of skipping them; a TEST_DATABASE_URL that is already set wins.
+# instead of skipping them, and `make seed` fills that database; a TEST_DATABASE_URL or
+# DATABASE_URL that is already set wins.
 ifneq ($(wildcard .env),)
 include .env
-export TEST_DATABASE_URL ?= postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@127.0.0.1:$(or $(POSTGRES_PORT),5432)/$(POSTGRES_DB)
+LOCAL_DATABASE_URL := postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@127.0.0.1:$(or $(POSTGRES_PORT),5432)/$(POSTGRES_DB)
+export TEST_DATABASE_URL ?= $(LOCAL_DATABASE_URL)
+seed: export DATABASE_URL ?= $(LOCAL_DATABASE_URL)
 endif
 
 build:
@@ -33,3 +36,8 @@ debug:
 db:
 	docker compose up -d --wait
 	docker compose exec -T postgres sh -ec 'for f in /docker-entrypoint-initdb.d/*.sql; do PGOPTIONS=--client-min-messages=warning psql -v ON_ERROR_STOP=1 -q -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -f "$$f"; done'
+
+# Starts the database like `make db`, then fills it with a sample crawl of every source (about
+# 6 minutes); see scripts/seed.py.
+seed: db
+	cd crawler && uv run --locked python ../scripts/seed.py

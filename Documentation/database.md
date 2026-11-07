@@ -69,4 +69,5 @@ Use `127.0.0.1`, not `localhost`: the port is published on IPv4 only. URL-encode
   docker compose up -d --wait
   docker compose exec -T postgres sh -ec 'for f in /docker-entrypoint-initdb.d/*.sql; do PGOPTIONS=--client-min-messages=warning psql -v ON_ERROR_STOP=1 -q -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f "$f"; done'
   ```
+- `make seed` fills the database with a sample crawl of every source (about 6 minutes), so the indexer and the MCP server can be developed against real documents.
 - Use only synthetic patient data. The database is for development only.
