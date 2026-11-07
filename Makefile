@@ -2,6 +2,13 @@
 
 PORT ?= 8765
 
+# With the root .env, `make test` runs the database tests against the database from `make db`
+# instead of skipping them; a TEST_DATABASE_URL that is already set wins.
+ifneq ($(wildcard .env),)
+include .env
+export TEST_DATABASE_URL ?= postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@127.0.0.1:$(or $(POSTGRES_PORT),5432)/$(POSTGRES_DB)
+endif
+
 build:
 	cd crawler && uv sync --locked
 	cd matcher && pnpm install --frozen-lockfile
