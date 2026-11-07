@@ -1,6 +1,6 @@
 # MCP interface
 
-Version 0.1, a proposal for #7. It is not yet confirmed by AIlixir, see [Open questions](#open-questions). The schemas in [`matcher/mcp-server/src/contract.ts`](../matcher/mcp-server/src/contract.ts) are the source of truth for field names and limits. No matcher exists yet, so both tools currently answer with the error code `NOT_AVAILABLE`.
+Version 0.2 for #7, reviewed with AIlixir in the partner meeting on 06.11.2026, see [Review with AIlixir](#review-with-ailixir). The schemas in [`matcher/mcp-server/src/contract.ts`](../matcher/mcp-server/src/contract.ts) are the source of truth for field names and limits. No matcher exists yet, so both tools currently answer with the error code `NOT_AVAILABLE`.
 
 All fields use `snake_case`, like the journey generator and the SS26 retrieval code.
 
@@ -35,7 +35,7 @@ To compare the three algorithms, a client calls `match_journey` once per algorit
 | `limit` | integer, 1 to 50 | no | Default 10 |
 | `source_types` | list of `paper`, `preprint`, `video`, `podcast` | no | Default: all types |
 
-`journey` has the format of the generator's `timeline.json`, so a generated journey can be sent unchanged. Other fields, such as `pathway_id`, `start_date` and `documents`, are dropped.
+`journey` has the format of the generator's `timeline.json`, so a generated journey can be sent unchanged. The real app will send its patient graph instead, see [Review with AIlixir](#review-with-ailixir). Other fields, such as `pathway_id`, `start_date` and `documents`, are dropped.
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
@@ -71,6 +71,8 @@ Each result holds the source reference and optional relevance information:
 | `source` | string | yes | Where the entry comes from, for example `pubmed`, `arxiv`, `zenodo`, `youtube` |
 | `source_type` | `paper`, `preprint`, `video`, `podcast` | yes | |
 | `url` | URL | yes | Link to the original |
+| `summary` | string | no | Short summary, abstract or description for the card in the app. Missing only if the source has none |
+| `image_url` | URL | no | Picture for the card, for example a video thumbnail |
 | `published_date` | string | no | As precise as the source provides it |
 | `authors` | list of strings | no | |
 | `licence` | string | no | |
@@ -92,6 +94,7 @@ Example:
       "source": "pubmed",
       "source_type": "paper",
       "url": "https://pubmed.ncbi.nlm.nih.gov/42745507/",
+      "summary": "When radiotherapy helps after PSA rises again.",
       "score": 1,
       "matched_terms": ["biochemical recurrence"]
     }
@@ -131,24 +134,34 @@ The SDK checks the input before a tool runs and the output after it. When a chec
 
 The server does not store or log the journey. It also does not log the message of an unexpected failure, because the message can contain journey data. Development uses synthetic journeys only.
 
+## Review with AIlixir
+
+Results of the partner meeting on 06.11.2026:
+
+- **Matching runs offline, not live.** AIlixir calls `match_journey` when a patient profile changes, for example when a new report comes in, or on a schedule. The tools keep no state, so this needs no change here.
+- **Input is the whole patient graph.** AIlixir will send the complete patient profile graph with entities, relationships and history, not `timeline.json`. Older events can stay relevant depending on the medical context and trends over time. The graph format follows from AIlixir's example data in #44. Until then `timeline.json` stays the input for generated journeys and tests.
+- **Output is a card.** Each result needs at least a title, a link and a short summary or abstract, and a picture if possible. That is why `summary` and `image_url` were added.
+
 ## Check against AIlixir's integration needs
 
 | Need | Basis | Status |
 |---|---|---|
 | Show a list of sources | `PaperReference` in the SS26 code (`title`, `source`, `source_type`, `published_date`, `url`) | Same field names. `url` is required here because we store only links to the originals |
+| Show a card in the "For you" section | Partner meeting 06.11. | `title`, `url`, `summary` and `image_url` |
 | Tell "nothing relevant" from "search failed" | `degraded` and `degraded_reason` in the SS26 `PaperRetrievalResult` | Same field names |
+| Match when the profile changes, not live | Partner meeting 06.11. | No state in the server, AIlixir decides when to call |
 | Send generated journeys | Generator `timeline.json` | Checked with one generated journey for each of the 10 pathways |
-| Send journeys of the real app | Unknown | Open |
+| Send journeys of the real app | Partner meeting 06.11.: the whole patient graph | Format follows in #44 with AIlixir's example data |
 
 ## Open questions
 
 For AIlixir:
 
-1. Which journey format does the real app send, and does it fit `timeline.json`?
+1. Which graph format does the app send, and does its export keep the event dates? Without dates there is no most recent event (#44).
 2. May `get_source` return abstracts and full texts to the app, depending on the licence of the source?
-3. How does the AIlixir backend connect to the server, and how does it authenticate?
-4. Does the app need an `error_code` for invalid input too, or is the plain text enough?
+3. Does the app need an `error_code` for invalid input too, or is the plain text enough?
 
 For the team:
 
+4. How does the AIlixir backend reach the server, and how does it authenticate? We decide this with the deployment (#42).
 5. Is `keyword` the right default until the evaluation in #11 has results?

@@ -43,6 +43,8 @@ const matchResult: MatchResult = {
       source: "pubmed",
       source_type: "paper",
       url: "https://pubmed.ncbi.nlm.nih.gov/42745507/",
+      summary: "When radiotherapy helps after PSA rises again.",
+      image_url: "https://example.org/salvage-radiotherapy.png",
       score: 1,
     },
   ],

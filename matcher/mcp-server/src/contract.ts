@@ -49,6 +49,8 @@ export const sourceReferenceSchema = z.object({
   source: z.string().min(1),
   source_type: sourceTypeSchema,
   url: z.url(),
+  summary: z.string().optional(),
+  image_url: z.url().optional(),
   published_date: z.string().optional(),
   authors: z.array(z.string()).optional(),
   licence: z.string().optional(),
