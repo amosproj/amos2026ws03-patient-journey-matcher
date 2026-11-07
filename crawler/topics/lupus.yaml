@@ -1,0 +1,79 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: lupus
+label: Lupus
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - lupus
+  - systemic lupus erythematosus
+  - Lupus Erythematosus, Systemic
+  - SLE
+  - lupus nephritis
+  - disseminated lupus erythematosus
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - systemic lupus erythematosus
+  - lupus nephritis
+  - childhood-onset systemic lupus erythematosus
+  - neuropsychiatric lupus
+  - systemic lupus erythematosus cardiovascular disease
+  - systemic lupus erythematosus antiphospholipid syndrome
+  - lupus flare
+  - lupus remission
+  - lupus low disease activity state
+  - lupus damage accrual
+  # Diagnosis and screening
+  - lupus classification criteria
+  - lupus antinuclear antibodies
+  - lupus anti-dsDNA antibodies
+  - lupus complement
+  - lupus biomarkers
+  - lupus disease activity SLEDAI
+  - lupus nephritis kidney biopsy
+  # Treatment
+  - lupus hydroxychloroquine
+  - lupus glucocorticoids
+  - lupus methotrexate
+  - lupus azathioprine
+  - lupus mycophenolate
+  - lupus cyclophosphamide
+  - lupus belimumab
+  - lupus anifrolumab
+  - lupus rituximab
+  - lupus nephritis voclosporin
+  - lupus nephritis calcineurin inhibitors
+  - lupus nephritis induction therapy
+  - lupus nephritis maintenance therapy
+  - lupus nephritis kidney transplantation
+  # Living with
+  - lupus pregnancy
+  - lupus fatigue
+  - lupus exercise
+  - lupus quality of life
+  - lupus self-management
+  - lupus vaccination
+  - lupus depression
+  - lupus caregivers
+
+# YouTube channels.
+channels:
+  - name: Lupus Foundation of America (LFA)
+    url: https://www.youtube.com/channel/UCPVIIwfYm5i5JniLtVhu1JA
+  - name: Lupus Research Alliance (LRA)
+    url: https://www.youtube.com/channel/UC6Hc7z2b5aDI0Cu9eiP5vqQ
+  - name: LUPUS UK
+    url: https://www.youtube.com/channel/UCOmVg4PqLYdGT-YWIXV8VcQ
+  - name: Lupus Canada
+    url: https://www.youtube.com/channel/UCUJmMgmOR7Yarkj-4nVi1nA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: lupus_expert_series
+    name: "Lupus: The Expert Series"
+    url: https://anchor.fm/s/12900a44/podcast/rss
+    publisher: Lupus Foundation of America (LFA)
+    audience: patients
+    language: en
+    trusted_because: Lupus specialists answer patients' questions in the podcast of the Lupus Foundation of America, a US charity.

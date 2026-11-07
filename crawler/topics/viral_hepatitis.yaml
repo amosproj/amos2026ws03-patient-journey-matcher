@@ -1,0 +1,85 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: viral_hepatitis
+label: Viral hepatitis
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - viral hepatitis
+  - Hepatitis, Viral, Human
+  - hepatitis B
+  - Hepatitis B, Chronic
+  - hepatitis B virus
+  - hepatitis C
+  - Hepatitis C, Chronic
+  - hepatitis C virus
+  - hepatitis D
+  - hepatitis delta
+  - hepatitis E
+  - hepatitis A virus
+  - HBV
+  - HCV
+  - HDV
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - viral hepatitis
+  - hepatitis B
+  - chronic hepatitis B
+  - occult hepatitis B
+  - hepatitis B reactivation
+  - hepatitis C
+  - chronic hepatitis C
+  - hepatitis D
+  - hepatitis A virus infection
+  - hepatitis E
+  # Diagnosis and screening
+  - hepatitis B screening
+  - hepatitis B surface antigen
+  - hepatitis B virus DNA
+  - chronic hepatitis B liver fibrosis
+  - hepatitis B hepatocellular carcinoma surveillance
+  - hepatitis C screening
+  - hepatitis C point-of-care testing
+  - hepatitis D screening
+  # Treatment
+  - hepatitis B antiviral therapy
+  - hepatitis B entecavir
+  - hepatitis B tenofovir
+  - hepatitis B peginterferon
+  - hepatitis B functional cure
+  - hepatitis B vaccination
+  - hepatitis B mother-to-child transmission
+  - hepatitis C direct-acting antivirals
+  - hepatitis C sofosbuvir velpatasvir
+  - hepatitis C glecaprevir pibrentasvir
+  - hepatitis D bulevirtide
+  - hepatitis A virus vaccine
+  - hepatitis E ribavirin
+  # Living with
+  - hepatitis B quality of life
+  - hepatitis C quality of life
+  - viral hepatitis stigma
+  - hepatitis B cirrhosis
+  - hepatitis C cirrhosis
+  - hepatitis C people injecting drugs
+  - hepatitis C reinfection
+  - hepatitis C linkage to care
+  - hepatitis B antiviral adherence
+
+# YouTube channels.
+channels:
+  - name: Hepatitis B Foundation
+    url: https://www.youtube.com/channel/UC6APFI3EY5amjTIcdndo4sQ
+  - name: World Hepatitis Alliance (WHA)
+    url: https://www.youtube.com/channel/UCD6NZ7hefnuMVRat1XJncTg
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: hepb_b_heppy
+    name: B Heppy
+    url: https://rss.buzzsprout.com/1729790.rss
+    publisher: Hepatitis B Foundation
+    audience: patients
+    language: en
+    trusted_because: Podcast of the Hepatitis B Foundation, a US nonprofit for research and patient support, with experts on hepatitis B and delta.

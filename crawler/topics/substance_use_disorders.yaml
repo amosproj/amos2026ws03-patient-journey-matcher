@@ -1,0 +1,103 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: substance_use_disorders
+label: Substance use disorders
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - substance use disorder
+  - Substance-Related Disorders
+  - alcohol use disorder
+  - Alcoholism
+  - opioid use disorder
+  - Opioid-Related Disorders
+  - opioid overdose
+  - stimulant use disorder
+  - Cocaine-Related Disorders
+  - Amphetamine-Related Disorders
+  - cannabis use disorder
+  - Marijuana Abuse
+  - Tobacco Use Disorder
+  - smoking cessation
+  - harm reduction
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - substance use disorder
+  - alcohol use disorder
+  - opioid use disorder
+  - opioid overdose
+  - stimulant use disorder
+  - cannabis use disorder
+  - tobacco use disorder
+  - adolescent substance use disorder
+  - harm reduction
+  # Diagnosis and screening
+  - substance use disorder screening
+  - alcohol use disorders identification test
+  - alcohol use disorder brief intervention
+  - alcohol use disorder withdrawal management
+  - opioid use disorder pregnancy
+  - substance use disorder comorbid depression
+  # Treatment
+  - medications for opioid use disorder
+  - opioid use disorder buprenorphine
+  - opioid use disorder methadone
+  - opioid use disorder naltrexone
+  - opioid use disorder emergency department
+  - opioid overdose naloxone
+  - alcohol use disorder naltrexone
+  - alcohol use disorder acamprosate
+  - alcohol use disorder disulfiram
+  - alcohol use disorder gabapentin
+  - alcoholism cognitive behavioral therapy
+  - substance use disorder motivational interviewing
+  - substance use disorder contingency management
+  - cannabis use disorder treatment
+  - smoking cessation varenicline
+  - smoking cessation nicotine replacement therapy
+  - smoking cessation cytisine
+  # Living with
+  - substance use disorder recovery support
+  - substance use disorder peer support
+  - substance use disorder relapse prevention
+  - alcohol use disorder mutual help
+  - substance use disorder family support
+  - substance use disorder employment
+  - substance use disorder wellbeing
+  - harm reduction syringe services
+
+# YouTube channels.
+channels:
+  - name: American Society of Addiction Medicine (ASAM)
+    url: https://www.youtube.com/channel/UCLLrwuP1G_-43CLBxDgWQbA
+  - name: Partnership to End Addiction
+    url: https://www.youtube.com/channel/UCQr_wgyFUxVhvITONsOXjew
+  - name: Addiction Policy Forum (APF)
+    url: https://www.youtube.com/channel/UCOfmklxbMw2jZt_7h07ejmw
+  - name: Action on Smoking and Health (ASH UK)
+    url: https://www.youtube.com/channel/UCBsD3xFwdUCc74B9iMGfGQw
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: addiction_audio
+    name: Addiction Audio
+    url: https://feeds.acast.com/public/shows/addiction-audio
+    publisher: Society for the Study of Addiction (SSA)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the peer-reviewed journal Addiction, published for the Society for the Study of Addiction, with interviews of the authors of new studies.
+  - key: asam_beyond_the_abstract
+    name: "Addiction Medicine: Beyond the Abstract"
+    url: https://feed.podbean.com/journal/feed.xml
+    publisher: American Society of Addiction Medicine (ASAM)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the Journal of Addiction Medicine, the peer-reviewed journal of ASAM, in which hosts interview the authors of published articles.
+  - key: smart_recovery_podcast
+    name: SMART Recovery Podcast
+    url: https://rss.libsyn.com/shows/28203/destinations/53107.xml
+    publisher: SMART Recovery
+    audience: patients
+    language: en
+    trusted_because: Official podcast of SMART Recovery, an established peer-support organisation for addiction recovery, with talks by experts in science-based treatment and recovery.

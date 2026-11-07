@@ -1,0 +1,72 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: heart_valve_disease
+label: Heart valve disease
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - heart valve disease
+  - valvular heart disease
+  - aortic valve stenosis
+  - aortic stenosis
+  - aortic valve insufficiency
+  - aortic regurgitation
+  - mitral valve insufficiency
+  - mitral regurgitation
+  - mitral stenosis
+  - tricuspid regurgitation
+  - aortic valve replacement
+  - transcatheter aortic valve implantation
+  - TAVI
+  - TAVR
+  - heart valve prosthesis
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - heart valve disease
+  - valvular heart disease
+  - aortic valve stenosis
+  - asymptomatic aortic stenosis
+  - low-flow low-gradient aortic stenosis
+  - aortic stenosis bicuspid valve
+  - aortic regurgitation
+  - mitral regurgitation
+  - degenerative mitral regurgitation
+  - secondary mitral regurgitation
+  - rheumatic mitral stenosis
+  - tricuspid regurgitation
+  - heart valve disease pregnancy
+  # Diagnosis and screening
+  - heart valve disease echocardiography
+  - aortic stenosis computed tomography
+  - aortic stenosis biomarkers
+  - aortic stenosis risk stratification
+  - mitral regurgitation severity quantification
+  - valvular heart disease screening
+  # Treatment
+  - aortic valve replacement
+  - transcatheter aortic valve implantation
+  - TAVI surgical aortic valve replacement
+  - TAVI low surgical risk
+  - TAVI conduction disturbances
+  - TAVI antithrombotic therapy
+  - mitral regurgitation valve repair
+  - mitral regurgitation transcatheter edge-to-edge repair
+  - tricuspid regurgitation transcatheter intervention
+  - mitral stenosis balloon valvuloplasty
+  - aortic regurgitation surgery
+  - heart valve prosthesis warfarin
+  - heart valve prosthesis degeneration
+  # Living with
+  - heart valve disease quality of life
+  - heart valve disease cardiac rehabilitation
+  - heart valve disease patient education
+  - valvular heart disease surveillance
+  - aortic valve replacement recovery
+  - aortic stenosis frailty
+  - heart valve prosthesis endocarditis prophylaxis
+
+# YouTube channels.
+channels:
+  - name: Heart Valve Voice
+    url: https://www.youtube.com/channel/UC69CFr3rri7fKslXbTdNlyg

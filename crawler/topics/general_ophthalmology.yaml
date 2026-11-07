@@ -1,0 +1,104 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+# Eye care in general: channels and podcasts of eye societies, eye hospitals, research charities and sight-loss charities.
+id: general_ophthalmology
+label: Ophthalmology in general
+
+# YouTube channels.
+channels:
+  - name: American Academy of Ophthalmology (AAO)
+    url: https://www.youtube.com/channel/UCy0K_Rd-grmLTT7dVGfF1Sg
+  - name: National Eye Institute (NEI)
+    url: https://www.youtube.com/channel/UCZ20vVCRAsGioM8EQ1SwshQ
+  - name: Prevent Blindness
+    url: https://www.youtube.com/channel/UC1IdlM_CmWTfJkkVPM8IMqQ
+  - name: Wills Eye Hospital
+    url: https://www.youtube.com/channel/UC9kP54KRx6-5ik6o199aiGw
+  - name: Bascom Palmer Eye Institute
+    url: https://www.youtube.com/channel/UCDBkXNgmUq_AG5nFPYPsfKQ
+  - name: John A. Moran Eye Center
+    url: https://www.youtube.com/channel/UCe5LGTBfVys22jcpt9NITPQ
+  - name: Moorfields Eye Hospital
+    url: https://www.youtube.com/channel/UCzifwsiF93tARyTrLIfGHJw
+  - name: L V Prasad Eye Institute (LVPEI)
+    url: https://www.youtube.com/channel/UCTgueyutCNdtdMBn7LXCJ4A
+  - name: Foundation Fighting Blindness (FFB)
+    url: https://www.youtube.com/channel/UCC5YzisEgOKdSiRU16Ya1mA
+  - name: American Society of Retina Specialists (ASRS)
+    url: https://www.youtube.com/channel/UCv2lOQzvIRhtgX3nxVR2akg
+  - name: Royal National Institute of Blind People (RNIB)
+    url: https://www.youtube.com/channel/UCSRRQcBAVfvgepWjNQp8Szw
+  - name: Fight for Sight
+    url: https://www.youtube.com/channel/UCW1NE1l1C1fIlSQrdCNINMw
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: aao_experts_insight
+    name: Experts InSight
+    url: https://aaopodcast.libsyn.com/rss
+    publisher: American Academy of Ophthalmology (AAO)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the American Academy of Ophthalmology, the professional society of eye physicians and surgeons, summarising research and practice updates.
+  - key: aao_ophthalmology_journal
+    name: Ophthalmology Journal
+    url: https://feeds.libsyn.com/399476/rss
+    publisher: American Academy of Ophthalmology (AAO)
+    audience: clinicians
+    language: en
+    trusted_because: Authors and editors of the Academy's peer-reviewed journals Ophthalmology, Ophthalmology Retina, Ophthalmology Glaucoma and Ophthalmology Science discuss their research.
+  - key: jama_ophthalmology_author_interviews
+    name: JAMA Ophthalmology Author Interviews
+    url: https://jamaophthalmologyauthorinterviews.libsyn.com/rss
+    publisher: JAMA Network
+    audience: clinicians
+    language: en
+    trusted_because: Authors discuss their articles in JAMA Ophthalmology, a peer-reviewed journal of the American Medical Association.
+  - key: asrs_jvrd_authors_forum
+    name: "ASRS's Journal of Vitreoretinal Diseases (JVRD) Author's Forum"
+    url: https://rss.buzzsprout.com/2209313.rss
+    publisher: American Society of Retina Specialists (ASRS)
+    audience: clinicians
+    language: en
+    trusted_because: Authors discuss their articles in the peer-reviewed Journal of VitreoRetinal Diseases, published by the American Society of Retina Specialists.
+  - key: prevent_blindness_focus_on_eye_health
+    name: Prevent Blindness Focus on Eye Health Podcast
+    url: https://feed.podbean.com/focusoneyehealth/feed.xml
+    publisher: Prevent Blindness
+    audience: patients
+    language: en
+    trusted_because: Monthly podcast of Prevent Blindness, a US nonprofit for eye health and safety, with eye care experts and people affected by vision loss.
+  - key: foundation_fighting_blindness
+    name: Foundation Fighting Blindness
+    url: https://feeds.soundcloud.com/users/soundcloud:users:363631640/sounds.rss
+    publisher: Foundation Fighting Blindness (FFB)
+    audience: patients
+    language: en
+    trusted_because: Podcast and audio news of the Foundation Fighting Blindness, a research charity for inherited retinal diseases, including its Eye on the Cure series.
+  - key: retina_uk
+    name: Retina UK
+    url: https://anchor.fm/s/c571c6c/podcast/rss
+    publisher: Retina UK
+    audience: patients
+    language: en
+    trusted_because: Podcasts and recorded webinars of Retina UK, the UK charity for people with inherited sight loss, with clinicians and people living with the conditions.
+  - key: aapos_little_eyes_big_topics
+    name: Little Eyes, Big Topics
+    url: https://feeds.libsyn.com/578155/rss
+    publisher: American Association for Pediatric Ophthalmology and Strabismus (AAPOS)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of AAPOS, the professional society for pediatric ophthalmology and strabismus, with experts in children's eye care.
+  - key: mayo_clinic_ophthalmology
+    name: Mayo Clinic Ophthalmology Podcast
+    url: https://feed.podbean.com/MayoClinicOphthalmology/feed.xml
+    publisher: Mayo Clinic
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the Mayo Clinic ophthalmology department on discoveries and practice, with expert guests from an academic medical centre.
+  - key: college_of_optometrists_eyepod
+    name: "EyePod: The optometry podcast"
+    url: https://anchor.fm/s/4e7dcc8/podcast/rss
+    publisher: College of Optometrists
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the College of Optometrists, the UK professional body for optometry, on clinical practice and eye care research.

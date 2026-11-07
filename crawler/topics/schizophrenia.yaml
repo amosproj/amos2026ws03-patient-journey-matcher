@@ -1,0 +1,63 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: schizophrenia
+label: Schizophrenia
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - schizophrenia
+  - schizophrenic
+  - psychosis
+  - psychotic disorder
+  - schizoaffective disorder
+  - schizophreniform disorder
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - schizophrenia
+  - psychosis
+  - psychotic disorder
+  - first-episode psychosis
+  - early psychosis
+  - clinical high risk psychosis
+  - schizoaffective disorder
+  - treatment-resistant schizophrenia
+  - schizophrenia negative symptoms
+  - schizophrenia cognitive impairment
+  - early-onset schizophrenia
+  # Diagnosis and screening
+  - schizophrenia diagnosis
+  - psychosis early detection
+  - schizophrenia PANSS
+  - schizophrenia biomarkers
+  - schizophrenia comorbid substance use
+  - schizophrenia physical health monitoring
+  # Treatment
+  - schizophrenia antipsychotics
+  - schizophrenia clozapine
+  - schizophrenia long-acting injectable
+  - schizophrenia aripiprazole
+  - schizophrenia olanzapine
+  - schizophrenia risperidone
+  - schizophrenia paliperidone
+  - schizophrenia cariprazine
+  - schizophrenia lurasidone
+  - psychosis cognitive behavioral therapy
+  - schizophrenia family intervention
+  - schizophrenia cognitive remediation
+  - first-episode psychosis coordinated specialty care
+  - schizophrenia supported employment
+  - schizophrenia electroconvulsive therapy
+  # Living with
+  - schizophrenia recovery
+  - schizophrenia relapse prevention
+  - schizophrenia quality of life
+  - schizophrenia caregivers
+  - schizophrenia medication adherence
+  - schizophrenia stigma
+  - schizophrenia social functioning
+
+# YouTube channels.
+channels:
+  - name: Schizophrenia & Psychosis Action Alliance (SPAA)
+    url: https://www.youtube.com/channel/UCf5SFodpZxK30gZ2ZcWq_Cw

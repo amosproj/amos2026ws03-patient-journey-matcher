@@ -29,7 +29,10 @@ single arXiv query its words (all of them; any with `--query-mode or`). Single P
 
 ## Topic files
 
-One YAML file per disease area in `topics/`; the file name is the ID.
+One YAML file per disease (`lung_cancer`) or field (`general_cardiology`: channels and podcasts
+only) in `topics/`; the file name is the ID. Channels and feeds come from institutions only
+(societies, journals, health agencies, hospitals, patient organisations), in English and active
+in the last two years; channels as `/channel/<ID>` URLs.
 
 ```yaml
 id: prostate_cancer

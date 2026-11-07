@@ -1,0 +1,101 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+# Women's health in general: channels and podcasts of obstetric, gynaecological, menopause and reproductive medicine societies and charities.
+id: general_womens_health
+label: Women's health in general
+
+# YouTube channels.
+channels:
+  - name: Every Stage Health by the American College of Obstetricians and Gynecologists (ACOG)
+    url: https://www.youtube.com/channel/UCbqPSwb3XrPp3_Ei0LpH_sw
+  - name: The Menopause Society
+    url: https://www.youtube.com/channel/UCRMvu8ucdVpLhaFQ6HRAVBg
+  - name: British Menopause Society (BMS)
+    url: https://www.youtube.com/channel/UCz9m2gNQgI-2QCawAzgWC7w
+  - name: International Menopause Society (IMS)
+    url: https://www.youtube.com/channel/UC-4OHO-C2exmMFhKwVFgX6A
+  - name: European Menopause and Andropause Society (EMAS)
+    url: https://www.youtube.com/channel/UCOQj115TKWCORe6-wdu4brg
+  - name: Society for Maternal-Fetal Medicine (SMFM)
+    url: https://www.youtube.com/channel/UCibz_HBlUBSOC91v-CMqCpw
+  - name: Royal Australian and New Zealand College of Obstetricians and Gynaecologists (RANZCOG)
+    url: https://www.youtube.com/channel/UCj2dFhxuctADrVO_CpJbt1Q
+  - name: College of Sexual and Reproductive Healthcare (CoSRH)
+    url: https://www.youtube.com/channel/UC3JzD1gxLHV1O6v0NacDGRg
+  - name: American Society for Reproductive Medicine (ASRM)
+    url: https://www.youtube.com/channel/UCGlJk7a1I3rqNcOoZZLARsg
+  - name: European Society of Human Reproduction and Embryology (ESHRE)
+    url: https://www.youtube.com/channel/UCgr_EdU4PhemCQI6-MS5y1A
+  - name: HHS Office on Women's Health (OWH)
+    url: https://www.youtube.com/channel/UCQGLiqGUZeeOjhcLE2-2NDA
+  - name: March of Dimes
+    url: https://www.youtube.com/channel/UC4c0YWRDCLoWxxWORH_zIkQ
+  - name: Black Women's Health Imperative (BWHI)
+    url: https://www.youtube.com/channel/UCW2-L_BOrWqlFa4Sr2oFw5g
+  - name: Preeclampsia Foundation
+    url: https://www.youtube.com/channel/UC-ZizI-cXDiDtHIAAxFhMTQ
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: acog_green_room
+    name: "The Green Room: A Podcast from Obstetrics & Gynecology"
+    url: https://feeds.feedburner.com/ObstetricsGynecologyPerspectives
+    publisher: Obstetrics & Gynecology (Green Journal) of the American College of Obstetricians and Gynecologists (ACOG)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of Obstetrics & Gynecology, the peer-reviewed Green Journal of ACOG, with interviews on its latest articles and ACOG guidance.
+  - key: rcog_podcast
+    name: RCOG Podcast
+    url: https://feeds.soundcloud.com/users/soundcloud:users:202475628/sounds.rss
+    publisher: Royal College of Obstetricians and Gynaecologists (RCOG)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the RCOG, the UK professional body for obstetrics and gynaecology; surgical-skills series and The Obstetrician & Gynaecologist journal podcasts.
+  - key: smfm_podcast_series
+    name: "SMFM's Podcast Series"
+    url: https://smfm2018.libsyn.com/rss
+    publisher: Society for Maternal-Fetal Medicine (SMFM)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the SMFM, the society of maternal-fetal medicine specialists, on high-risk pregnancy care and its consult series.
+  - key: ims_podcast
+    name: International Menopause Society Podcast
+    url: https://feed.podbean.com/internationalmenopausesociety/feed.xml
+    publisher: International Menopause Society (IMS)
+    audience: clinicians
+    language: en
+    trusted_because: Interviews with menopause experts from the IMS, the international professional society for menopause and midlife health; many episodes come in a version for women.
+  - key: emas_podcast_series
+    name: EMAS Podcast Series
+    url: https://rss.buzzsprout.com/2006490.rss
+    publisher: European Menopause and Andropause Society (EMAS)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of EMAS, the European society behind the journal Maturitas, on menopause care; newest episode September 2025.
+  - key: asrm_fertility_and_sterility_on_air
+    name: Fertility and Sterility On Air
+    url: https://rss.libsyn.com/shows/297920/destinations/2353235.xml
+    publisher: American Society for Reproductive Medicine (ASRM)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of Fertility and Sterility, the peer-reviewed journal of the ASRM, with author interviews on reproductive medicine.
+  - key: asrm_today
+    name: ASRM Today Podcast
+    url: https://rss.libsyn.com/shows/181937/destinations/1243742.xml
+    publisher: American Society for Reproductive Medicine (ASRM)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the ASRM on fertility care, family building and reproductive health policy.
+  - key: npwh_her_health_matters
+    name: Her Health Matters
+    url: https://feed.podbean.com/npwh/feed.xml
+    publisher: National Association of Nurse Practitioners in Women's Health (NPWH)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the NPWH, the professional association of women's health nurse practitioners, on menopause, pregnancy and gynaecological care.
+  - key: jean_hailes_podcast
+    name: The Jean Hailes podcast
+    url: https://jeanhailespod.libsyn.com/rss
+    publisher: Jean Hailes for Women's Health
+    audience: patients
+    language: en
+    trusted_because: Podcast of Jean Hailes for Women's Health, an Australian not-for-profit that turns research into health information for women; newest episode December 2024.

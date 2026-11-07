@@ -1,0 +1,67 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: fatty_liver_disease
+label: Fatty liver disease (MASLD and MASH)
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - fatty liver
+  - Non-alcoholic Fatty Liver Disease
+  - nonalcoholic fatty liver disease
+  - steatotic liver disease
+  - steatohepatitis
+  - hepatic steatosis
+  - MASLD
+  - MASH
+  - NAFLD
+  - NASH
+  - MAFLD
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - fatty liver disease
+  - MASLD
+  - metabolic dysfunction-associated steatotic liver disease
+  - metabolic dysfunction-associated steatohepatitis
+  - nonalcoholic fatty liver disease
+  - nonalcoholic steatohepatitis
+  - NAFLD
+  - lean fatty liver disease
+  - pediatric fatty liver disease
+  - fatty liver type 2 diabetes
+  - fatty liver disease cirrhosis
+  - fatty liver disease hepatocellular carcinoma
+  # Diagnosis and screening
+  - fatty liver disease screening
+  - fatty liver disease FIB-4
+  - MASLD enhanced liver fibrosis
+  - fatty liver disease transient elastography
+  - fatty liver MRI-PDFF
+  - fatty liver disease ultrasound
+  - fatty liver disease advanced fibrosis
+  - steatohepatitis liver biopsy
+  # Treatment
+  - fatty liver disease weight loss
+  - fatty liver disease lifestyle intervention
+  - fatty liver disease Mediterranean diet
+  - fatty liver disease exercise
+  - fatty liver disease bariatric surgery
+  - fatty liver disease semaglutide
+  - fatty liver GLP-1 receptor agonists
+  - fatty liver disease resmetirom
+  - fatty liver disease pioglitazone
+  - fatty liver disease vitamin E
+  - fatty liver disease SGLT2 inhibitors
+  - fatty liver disease statins
+  # Living with
+  - fatty liver quality of life
+  - fatty liver disease alcohol intake
+  - fatty liver disease cardiovascular risk
+  - fatty liver disease follow-up
+  - fatty liver disease patient education
+  - fatty liver disease primary care
+
+# YouTube channels.
+channels:
+  - name: Fatty Liver Foundation (FLF)
+    url: https://www.youtube.com/channel/UCaeUI6j14XD-aw_tWYK4KDQ

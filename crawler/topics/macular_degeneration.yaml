@@ -1,0 +1,87 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: macular_degeneration
+label: Age-related macular degeneration
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - macular degeneration
+  - age related macular degeneration
+  - Wet Macular Degeneration
+  - Geographic Atrophy
+  - age related maculopathy
+  - macular neovascularization
+  - Retinal Drusen
+  - nAMD
+  - AREDS
+  - AREDS2
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - macular degeneration
+  - age-related macular degeneration
+  - wet macular degeneration
+  - neovascular age-related macular degeneration
+  - dry macular degeneration
+  - geographic atrophy
+  - intermediate age-related macular degeneration
+  - macular neovascularization
+  - macular degeneration drusen
+  - macular degeneration risk factors
+  - macular degeneration progression
+  # Diagnosis and screening
+  - macular degeneration screening
+  - macular degeneration optical coherence tomography
+  - macular degeneration OCT angiography
+  - macular degeneration fundus autofluorescence
+  - macular degeneration home monitoring
+  - macular degeneration genetics
+  - macular degeneration artificial intelligence
+  # Treatment
+  - macular degeneration anti-VEGF
+  - macular degeneration intravitreal injection
+  - macular degeneration aflibercept
+  - macular degeneration ranibizumab
+  - macular degeneration bevacizumab
+  - macular degeneration faricimab
+  - macular degeneration brolucizumab
+  - macular degeneration treatment interval
+  - macular degeneration photodynamic therapy
+  - geographic atrophy complement inhibitor
+  - geographic atrophy pegcetacoplan
+  - geographic atrophy avacincaptad pegol
+  - macular degeneration AREDS supplements
+  - macular degeneration clinical trial
+  # Living with
+  - macular degeneration low vision rehabilitation
+  - macular degeneration quality of life
+  - macular degeneration depression
+  - macular degeneration Charles Bonnet syndrome
+  - macular degeneration caregivers
+  - macular degeneration treatment adherence
+
+# YouTube channels.
+channels:
+  - name: Macular Society
+    url: https://www.youtube.com/channel/UCT7FxgKt0ftcmBlXsFIdjVg
+  - name: American Macular Degeneration Foundation (AMDF)
+    url: https://www.youtube.com/channel/UCabXyk5Flog1Z4yuu2Ec9pg
+  - name: Macular Disease Foundation Australia (MDFA)
+    url: https://www.youtube.com/channel/UCZHzxiYu1YO2635zpDe57Hw
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: macular_society_my_macular_and_me
+    name: My Macular and Me
+    url: https://rss.buzzsprout.com/2135855.rss
+    publisher: Macular Society
+    audience: patients
+    language: en
+    trusted_because: Podcast of the Macular Society, the UK charity for people with macular disease, with clinicians, researchers and people living with sight loss.
+  - key: brightfocus_macular_chats
+    name: Macular Chats
+    url: https://feeds.blubrry.com/feeds/macular_degeneration_news_you.xml
+    publisher: BrightFocus Foundation
+    audience: patients
+    language: en
+    trusted_because: Conversations on macular degeneration research and care from BrightFocus, a nonprofit that funds eye and brain disease research.

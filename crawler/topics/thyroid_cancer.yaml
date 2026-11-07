@@ -1,0 +1,62 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: thyroid_cancer
+label: Thyroid cancer
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - thyroid cancer
+  - thyroid carcinoma
+  - thyroid neoplasm
+  - thyroid microcarcinoma
+  - cancer of the thyroid
+  - carcinoma of the thyroid
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - thyroid cancer
+  - papillary thyroid cancer
+  - follicular thyroid cancer
+  - medullary thyroid cancer
+  - anaplastic thyroid cancer
+  - differentiated thyroid cancer
+  - papillary thyroid microcarcinoma
+  - radioiodine-refractory thyroid cancer
+  - pediatric thyroid cancer
+  # Diagnosis and screening
+  - thyroid cancer ultrasound
+  - thyroid cancer fine-needle aspiration
+  - thyroid cancer molecular testing
+  - thyroid cancer thyroglobulin
+  - medullary thyroid cancer calcitonin
+  - medullary thyroid cancer RET
+  - thyroid cancer BRAF mutation
+  - thyroid cancer risk stratification
+  - thyroid cancer overdiagnosis
+  # Treatment
+  - thyroid cancer thyroidectomy
+  - thyroid cancer lobectomy
+  - thyroid cancer central neck dissection
+  - thyroid cancer active surveillance
+  - thyroid cancer radioactive iodine
+  - thyroid cancer thyrotropin alfa
+  - thyroid cancer TSH suppression
+  - papillary thyroid microcarcinoma ablation
+  - thyroid cancer lenvatinib
+  - thyroid cancer sorafenib
+  - thyroid cancer cabozantinib
+  - thyroid cancer selpercatinib
+  - medullary thyroid cancer vandetanib
+  - anaplastic thyroid cancer dabrafenib trametinib
+  # Living with
+  - thyroid cancer survivors
+  - thyroid cancer quality of life
+  - thyroid cancer follow-up
+  - thyroid cancer hypoparathyroidism
+  - thyroid cancer fear of recurrence
+  - thyroid cancer pregnancy
+
+# YouTube channels.
+channels:
+  - name: Thyroid Cancer Survivors' Association (ThyCa)
+    url: https://www.youtube.com/channel/UCyvMlIHymAh04orj8sVjNeg

@@ -1,0 +1,92 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+# Neurology in general: channels and podcasts of neurological societies, institutes and charities.
+id: general_neurology
+label: Neurology in general
+
+# YouTube channels.
+channels:
+  - name: American Academy of Neurology (AAN)
+    url: https://www.youtube.com/channel/UC-4D2FWJmdr5gjpDjiskf8g
+  - name: American Brain Foundation
+    url: https://www.youtube.com/channel/UCAw-47JW1sD8VLXw_NGzE7A
+  - name: American Neurological Association (ANA)
+    url: https://www.youtube.com/channel/UCQC5wgYHhIaRnrJ2aYmZtBw
+  - name: Child Neurology Foundation (CNF)
+    url: https://www.youtube.com/channel/UCawxME2yWbKEpZsJFZS2T1w
+  - name: Barrow Neurological Institute
+    url: https://www.youtube.com/channel/UCOkmZTdNgE2jTuqItaocbxQ
+  - name: Neurocritical Care Society (NCS)
+    url: https://www.youtube.com/channel/UCL7wxliB8NhvO3SIKTOp4zQ
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: neurology_podcast
+    name: Neurology® Podcast
+    url: https://neurology.libsyn.com/rss
+    publisher: American Academy of Neurology (AAN)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of Neurology, the peer-reviewed journal of the American Academy of Neurology.
+  - key: continuum_audio
+    name: Continuum Audio
+    url: https://continuumaudio.libsyn.com/rss
+    publisher: American Academy of Neurology (AAN)
+    audience: clinicians
+    language: en
+    trusted_because: Interviews with the authors of Continuum, the American Academy of Neurology's peer-reviewed clinical review journal.
+  - key: neurology_minute
+    name: Neurology Minute
+    url: https://neurologyminute.libsyn.com/rss
+    publisher: American Academy of Neurology (AAN)
+    audience: clinicians
+    language: en
+    trusted_because: Daily short summaries of neurology research and practice from the American Academy of Neurology.
+  - key: neurology_today_in_5
+    name: Neurology Today in 5
+    url: https://nteditorspicks.libsyn.com/rss
+    publisher: American Academy of Neurology (AAN)
+    audience: clinicians
+    language: en
+    trusted_because: The editor-in-chief of Neurology Today, the American Academy of Neurology's news publication, summarises each issue.
+  - key: brain_health_podcast
+    name: Brain Health Podcast
+    url: https://rss.libsyn.com/shows/404186/destinations/3339905.xml
+    publisher: American Academy of Neurology (AAN)
+    audience: patients
+    language: en
+    trusted_because: The American Academy of Neurology's podcast for people affected by neurological disease, formerly the Brain & Life Podcast.
+  - key: jama_neurology_author_interviews
+    name: JAMA Neurology Author Interviews
+    url: https://jamaneurologyauthorinterviews.libsyn.com/rss
+    publisher: JAMA Network
+    audience: clinicians
+    language: en
+    trusted_because: Interviews with authors of JAMA Neurology, the peer-reviewed neurology journal of the American Medical Association.
+  - key: lancet_neurology_in_conversation
+    name: The Lancet Neurology in conversation with
+    url: https://feed.podbean.com/lancetneur/feed.xml
+    publisher: The Lancet Group
+    audience: clinicians
+    language: en
+    trusted_because: Interviews from the peer-reviewed journal The Lancet Neurology.
+  - key: practical_neurology_podcast
+    name: Practical Neurology Podcast
+    url: https://feed.podbean.com/pnbmj/feed.xml
+    publisher: BMJ Group
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of Practical Neurology, a peer-reviewed BMJ journal for practising neurologists.
+  - key: ana_investigates
+    name: ANA Investigates
+    url: https://rss.libsyn.com/shows/203825/destinations/1457513.xml
+    publisher: American Neurological Association (ANA)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the American Neurological Association, the society behind the peer-reviewed journal Annals of Neurology.
+  - key: anpt_podcast
+    name: Academy of Neurologic Physical Therapy Podcast
+    url: https://podcasts.neuropt.org/feed/podcast/
+    publisher: Academy of Neurologic Physical Therapy (ANPT)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the Academy of Neurologic Physical Therapy, a section of the American Physical Therapy Association, on rehabilitation in neurological conditions.

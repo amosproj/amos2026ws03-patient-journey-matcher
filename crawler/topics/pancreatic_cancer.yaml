@@ -1,0 +1,84 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: pancreatic_cancer
+label: Pancreatic cancer
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - pancreatic cancer
+  - pancreatic carcinoma
+  - pancreatic neoplasm
+  - pancreatic ductal adenocarcinoma
+  - pancreatic adenocarcinoma
+  - cancer of the pancreas
+  - PDAC
+  - Carcinoma, Pancreatic Ductal
+  - pancreatic neuroendocrine tumor
+  - pancreatic neuroendocrine tumour
+  - pancreatic neuroendocrine neoplasm
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - pancreatic cancer
+  - pancreatic ductal adenocarcinoma
+  - resectable pancreatic cancer
+  - borderline resectable pancreatic cancer
+  - locally advanced pancreatic cancer
+  - metastatic pancreatic cancer
+  - familial pancreatic cancer
+  - pancreatic neuroendocrine tumor
+  # Diagnosis and screening
+  - pancreatic cancer early detection
+  - pancreatic cancer high-risk surveillance
+  - pancreatic cancer CA 19-9
+  - pancreatic cancer endoscopic ultrasound
+  - pancreatic cancer staging
+  - pancreatic cancer germline testing
+  - pancreatic cancer BRCA
+  - pancreatic cancer molecular profiling
+  # Treatment
+  - pancreaticoduodenectomy
+  - pancreatic cancer pancreatic fistula
+  - pancreatic cancer distal pancreatectomy
+  - pancreatic cancer minimally invasive pancreatectomy
+  - pancreatic cancer neoadjuvant therapy
+  - pancreatic cancer adjuvant chemotherapy
+  - pancreatic cancer FOLFIRINOX
+  - pancreatic cancer gemcitabine nab-paclitaxel
+  - pancreatic cancer liposomal irinotecan
+  - pancreatic cancer olaparib
+  - pancreatic cancer stereotactic body radiotherapy
+  - pancreatic cancer biliary drainage
+  - pancreatic neuroendocrine tumor treatment
+  # Living with
+  - pancreatic cancer pancreatic enzyme replacement
+  - pancreatic cancer cachexia
+  - pancreatic cancer nutrition
+  - pancreatic cancer pain
+  - pancreatic cancer palliative care
+  - pancreatic cancer quality of life
+  - pancreatic cancer venous thromboembolism
+  - pancreatic cancer prehabilitation
+  - pancreatic cancer survivors
+  - pancreatic cancer caregivers
+
+# YouTube channels.
+channels:
+  - name: Pancreatic Cancer Action Network (PanCAN)
+    url: https://www.youtube.com/channel/UCfgkTaIERYkraETfLHgvF2A
+  - name: Pancreatic Cancer UK
+    url: https://www.youtube.com/channel/UChpUnRtLfmbf0MnUInajnQg
+  - name: Let's Win! Pancreatic Cancer
+    url: https://www.youtube.com/channel/UC7CtbniXdAMEjQFzeh5zXfA
+  - name: Lustgarten Foundation
+    url: https://www.youtube.com/channel/UC3KhRzBy1ABjkeRrSEKXSMQ
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: lets_win_pancchat
+    name: PancChat Podcast with Alisyn Camerota
+    url: https://feeds.transistor.fm/pancchat-podcast-with-alisyn-camerota
+    publisher: Let's Win! Pancreatic Cancer
+    audience: patients
+    language: en
+    trusted_because: Let's Win! Pancreatic Cancer, a US patient-education nonprofit, hosts pancreatic cancer experts on treatment, clinical trials and living with the disease.

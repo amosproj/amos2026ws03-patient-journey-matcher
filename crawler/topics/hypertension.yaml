@@ -5,9 +5,71 @@ label: Essential hypertension
 # A cited paper is kept only if one of these terms is in its title, abstract or keywords.
 terms:
   - hypertension
+  - essential hypertension
+  - arterial hypertension
   - high blood pressure
+  - elevated blood pressure
+  - raised blood pressure
+  - hypertensive
 
 # PubMed, arXiv and Zenodo search queries.
 queries:
+  # Disease
   - essential hypertension
-  - high blood pressure treatment
+  - arterial hypertension
+  - resistant hypertension
+  - isolated systolic hypertension
+  - masked hypertension
+  - white coat hypertension
+  - secondary hypertension
+  - hypertensive emergency
+  - hypertension in older adults
+  - chronic hypertension pregnancy
+  # Diagnosis and screening
+  - hypertension screening
+  - hypertension blood pressure measurement
+  - hypertension ambulatory blood pressure
+  - hypertension home blood pressure
+  - hypertension cardiovascular risk
+  - hypertension target organ damage
+  - hypertension left ventricular hypertrophy
+  - hypertension primary aldosteronism
+  - hypertension renal artery stenosis
+  # Treatment
+  - hypertension lifestyle modification
+  - hypertension salt reduction
+  - hypertension DASH diet
+  - hypertension physical activity
+  - hypertension ACE inhibitors
+  - hypertension angiotensin receptor blockers
+  - hypertension calcium channel blockers
+  - hypertension thiazide diuretics
+  - hypertension chlorthalidone
+  - hypertension amlodipine
+  - hypertension spironolactone
+  - hypertension single pill combination
+  - hypertension renal denervation
+  - hypertension intensive blood pressure lowering
+  # Living with
+  - hypertension self-management
+  - hypertension medication adherence
+  - hypertension telemonitoring
+  - hypertension salt substitute
+  - hypertension quality of life
+  - hypertension patient education
+  - hypertension team-based care
+
+# YouTube channels.
+channels:
+  - name: Hypertension Canada
+    url: https://www.youtube.com/channel/UC0vHg7tQS8tgxdziIkpn5aA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: aha_unmet_needs_hypertension
+    name: Unmet Needs in Hypertension Treatment
+    url: https://rss.libsyn.com/shows/401519/destinations/3314888.xml
+    publisher: American Heart Association (AHA)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast series of the American Heart Association on improving blood pressure care along the hypertension patient journey.

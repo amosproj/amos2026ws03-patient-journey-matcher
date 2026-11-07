@@ -1,0 +1,73 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: ptsd
+label: Post-traumatic stress disorder
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - PTSD
+  - posttraumatic stress disorder
+  - post-traumatic stress disorder
+  - Stress Disorders, Post-Traumatic
+  - posttraumatic stress
+  - post-traumatic stress
+  - acute stress disorder
+  - Stress Disorders, Traumatic
+  - combat disorder
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - PTSD
+  - posttraumatic stress disorder
+  - complex PTSD
+  - acute stress disorder
+  - combat-related PTSD
+  - PTSD veterans
+  - PTSD children adolescents
+  - PTSD refugees
+  - PTSD sexual assault
+  - PTSD after childbirth
+  - PTSD intensive care survivors
+  # Diagnosis and screening
+  - PTSD diagnosis
+  - PTSD screening
+  - PTSD checklist PCL-5
+  - PTSD CAPS-5
+  - PTSD ICD-11
+  - PTSD biomarkers
+  - PTSD comorbid depression
+  # Treatment
+  - PTSD trauma-focused psychotherapy
+  - PTSD prolonged exposure
+  - PTSD cognitive processing therapy
+  - PTSD EMDR
+  - PTSD cognitive therapy
+  - PTSD narrative exposure therapy
+  - PTSD sertraline
+  - PTSD paroxetine
+  - PTSD venlafaxine
+  - PTSD prazosin
+  - PTSD internet-delivered therapy
+  - PTSD nightmares
+  # Living with
+  - PTSD recovery
+  - PTSD quality of life
+  - PTSD family support
+  - PTSD peer support
+  - PTSD suicide risk
+  - PTSD sleep
+  - PTSD chronic pain
+  - PTSD long-term outcomes
+
+# YouTube channels.
+channels:
+  - name: International Society for Traumatic Stress Studies (ISTSS)
+    url: https://www.youtube.com/channel/UCVJMZyxD_C4KDtXkHKqmZIw
+  - name: Make the Connection (U.S. Department of Veterans Affairs)
+    url: https://www.youtube.com/channel/UChw-XgHqS7H392xguKXzvAg
+  - name: National Child Traumatic Stress Network (NCTSN)
+    url: https://www.youtube.com/channel/UCK_wV_upjy8GxtewyWQe44Q
+  - name: Phoenix Australia
+    url: https://www.youtube.com/channel/UCkGF8G1IVaAP10b-qZlYKng
+  - name: Combat Stress
+    url: https://www.youtube.com/channel/UCQnoNbOVNf_Ggk5HQQokjqw

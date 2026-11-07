@@ -1,0 +1,94 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: hypercholesterolemia
+label: High cholesterol (hypercholesterolaemia)
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - hypercholesterolemia
+  - hypercholesterolaemia
+  - familial hypercholesterolemia
+  - familial hypercholesterolaemia
+  - Hyperlipoproteinemia Type II
+  - high cholesterol
+  - dyslipidemia
+  - dyslipidaemia
+  - hyperlipidemia
+  - hyperlipidaemia
+  - lipoprotein(a)
+  - lipid lowering
+  - cholesterol lowering
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - hypercholesterolemia
+  - familial hypercholesterolemia
+  - heterozygous familial hypercholesterolemia
+  - homozygous familial hypercholesterolemia
+  - dyslipidemia
+  - mixed dyslipidemia
+  - hyperlipidemia
+  - lipoprotein a
+  - hypercholesterolemia children
+  # Diagnosis and screening
+  - familial hypercholesterolemia screening
+  - familial hypercholesterolemia cascade screening
+  - familial hypercholesterolemia genetic testing
+  - familial hypercholesterolemia diagnostic criteria
+  - hypercholesterolemia cardiovascular risk assessment
+  - hypercholesterolemia coronary artery calcium
+  - dyslipidemia apolipoprotein B
+  - lipoprotein a testing
+  # Treatment
+  - hypercholesterolemia statin therapy
+  - hypercholesterolemia atorvastatin
+  - hypercholesterolemia rosuvastatin
+  - hypercholesterolemia ezetimibe
+  - hypercholesterolemia bempedoic acid
+  - hypercholesterolemia PCSK9 inhibitors
+  - hypercholesterolemia evolocumab
+  - hypercholesterolemia alirocumab
+  - hypercholesterolemia inclisiran
+  - homozygous familial hypercholesterolemia evinacumab
+  - familial hypercholesterolemia lipoprotein apheresis
+  - hypercholesterolemia statin intolerance
+  - hypercholesterolemia combination lipid-lowering therapy
+  - dyslipidemia fenofibrate
+  - lipoprotein a lowering
+  # Living with
+  - hypercholesterolemia diet
+  - hypercholesterolemia exercise
+  - hypercholesterolemia medication adherence
+  - hypercholesterolemia quality of life
+  - hypercholesterolemia self-management
+  - hypercholesterolemia patient education
+  - hypercholesterolemia shared decision making
+  - familial hypercholesterolemia pregnancy
+
+# YouTube channels.
+channels:
+  - name: Family Heart Foundation
+    url: https://www.youtube.com/channel/UCuLN0gMVce51g1PZ4_sjd1g
+  - name: FH Europe Foundation
+    url: https://www.youtube.com/channel/UCrpSVYN5fz_kNhLoowrAt-w
+  - name: National Lipid Association (NLA)
+    url: https://www.youtube.com/channel/UCK2D8VS3QmYX0Wm5YxEz9Wg
+  - name: HEART UK - The Cholesterol Charity
+    url: https://www.youtube.com/channel/UClp-B48ZQL1QtbfFjPL5Cgw
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: lipid_insights
+    name: Lipid Insights
+    url: https://rss.buzzsprout.com/945154.rss
+    publisher: National Lipid Association (NLA)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the National Lipid Association, the US society of lipid specialists, on research and guidelines in lipidology.
+  - key: atherotalk
+    name: AtheroTalk
+    url: https://anchor.fm/s/fc623480/podcast/rss
+    publisher: European Atherosclerosis Society (EAS)
+    audience: clinicians
+    language: en
+    trusted_because: In-depth interviews with leading researchers on atherosclerosis, lipids and cardiovascular prevention from the European Atherosclerosis Society.

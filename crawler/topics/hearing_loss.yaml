@@ -1,0 +1,91 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: hearing_loss
+label: Hearing loss
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - hearing loss
+  - hearing impairment
+  - hearing impaired
+  - hard of hearing
+  - deafness
+  - Hearing Loss, Sensorineural
+  - Hearing Loss, Noise-Induced
+  - Hearing Loss, Sudden
+  - presbycusis
+  - hearing aid
+  - cochlear implant
+  - cochlear implantation
+  - tinnitus
+  - otosclerosis
+  - ototoxicity
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - hearing loss
+  - sensorineural hearing loss
+  - conductive hearing loss
+  - age-related hearing loss
+  - presbycusis
+  - noise-induced hearing loss
+  - sudden sensorineural hearing loss
+  - unilateral hearing loss
+  - childhood hearing loss
+  - congenital hearing loss
+  - genetic hearing loss
+  - hearing loss ototoxicity
+  - otosclerosis
+  - tinnitus
+  - hearing loss dementia
+  # Diagnosis and screening
+  - hearing loss screening
+  - newborn hearing loss screening
+  - hearing loss audiometry
+  - hearing loss speech perception
+  - hearing loss auditory brainstem response
+  - hearing loss genetic testing
+  - hearing loss cognitive decline
+  # Treatment
+  - hearing aids
+  - hearing aid fitting
+  - cochlear implantation
+  - cochlear implant outcomes
+  - hearing loss bone conduction implant
+  - sudden hearing loss corticosteroids
+  - sudden hearing loss intratympanic steroid
+  - sudden hearing loss hyperbaric oxygen
+  - tinnitus cognitive behavioral therapy
+  - tinnitus hearing aids
+  - tinnitus sound therapy
+  - hearing loss aural rehabilitation
+  # Living with
+  - hearing loss quality of life
+  - hearing loss depression
+  - hearing loss social isolation
+  - hearing loss older adults
+  - hearing loss workplace
+  - tinnitus self-management
+
+# YouTube channels.
+channels:
+  - name: RNID
+    url: https://www.youtube.com/channel/UCxIGUYyS-EO8Xe-oGpmB87Q
+  - name: Hearing Loss Association of America (HLAA)
+    url: https://www.youtube.com/channel/UCVWhWkcOzwgEriSXdXagBHw
+  - name: Hearing Health Foundation (HHF)
+    url: https://www.youtube.com/channel/UCnovNi6gUQhJZXAJdXkdf9w
+  - name: National Deaf Children's Society (NDCS)
+    url: https://www.youtube.com/channel/UCi6DvQHbWiFqcQuNabqMO6w
+  - name: Ear Science Institute Australia
+    url: https://www.youtube.com/channel/UCJQVWQNnFDt8gdOT_S_0Seg
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: aaa_science_meets_the_sound_booth
+    name: Science Meets the Sound Booth
+    url: https://rss.buzzsprout.com/2570939.rss
+    publisher: American Academy of Audiology (AAA)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the American Academy of Audiology, the professional association of audiologists, on guidelines and research in hearing and balance care.

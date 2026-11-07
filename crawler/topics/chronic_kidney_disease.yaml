@@ -1,0 +1,103 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: chronic_kidney_disease
+label: Chronic kidney disease
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - chronic kidney disease
+  - CKD
+  - Renal Insufficiency, Chronic
+  - chronic renal failure
+  - Kidney Failure, Chronic
+  - end stage kidney disease
+  - end stage renal disease
+  - diabetic kidney disease
+  - Diabetic Nephropathies
+  - diabetic nephropathy
+  - dialysis
+  - hemodialysis
+  - haemodialysis
+  - kidney transplantation
+  - kidney transplant
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - chronic kidney disease
+  - chronic renal failure
+  - end stage kidney disease
+  - end stage renal disease
+  - diabetic kidney disease
+  - diabetic nephropathy
+  - chronic kidney disease progression
+  - chronic kidney disease cardiovascular risk
+  - chronic kidney disease anemia
+  - CKD mineral bone disorder
+  # Diagnosis and screening
+  - chronic kidney disease screening
+  - chronic kidney disease eGFR
+  - chronic kidney disease albuminuria
+  - chronic kidney disease cystatin C
+  - chronic kidney disease risk prediction
+  # Treatment
+  - chronic kidney disease SGLT2 inhibitors
+  - chronic kidney disease finerenone
+  - diabetic kidney disease semaglutide
+  - chronic kidney disease ACE inhibitors
+  - chronic kidney disease blood pressure
+  - chronic kidney disease statins
+  - chronic kidney disease potassium binders
+  - chronic kidney disease phosphate binders
+  - hemodialysis
+  - peritoneal dialysis
+  - hemodialysis vascular access
+  - dialysis initiation
+  - kidney transplantation
+  - kidney transplant immunosuppression
+  - kidney transplant rejection
+  - living donor kidney transplant
+  # Living with
+  - chronic kidney disease diet
+  - chronic kidney disease exercise
+  - CKD quality of life
+  - chronic kidney disease self-management
+  - chronic kidney disease depression
+  - chronic kidney disease pregnancy
+  - chronic kidney disease palliative care
+  - chronic kidney disease caregivers
+  - kidney transplant recipients follow-up
+
+# YouTube channels.
+channels:
+  - name: PKD Foundation
+    url: https://www.youtube.com/channel/UCm6tXx_aCDYxZK2GgkBMAJQ
+  - name: NephCure
+    url: https://www.youtube.com/channel/UCBlhH_LtQiKmkVpcIsEyWYg
+  - name: Home Dialysis Central (Medical Education Institute)
+    url: https://www.youtube.com/channel/UCcrwTeBAVIFw6G2M_6whWfQ
+  - name: National Kidney Registry (NKR)
+    url: https://www.youtube.com/channel/UCBZBdP9_JUWcOq-GYqzmHlQ
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: pkd_chronicles
+    name: "PKD Chronicles: Navigating Life with Polycystic Kidney Disease"
+    url: https://rss.libsyn.com/shows/579545/destinations/5022995.xml
+    publisher: PKD Foundation
+    audience: patients
+    language: en
+    trusted_because: Produced by the PKD Foundation, the US charity for polycystic kidney disease, with clinicians and people living with the disease.
+  - key: pdi_pd_exchange
+    name: "The #PDExchange Podcast"
+    url: https://anchor.fm/s/9f104d44/podcast/rss
+    publisher: Peritoneal Dialysis International (PDI)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the peer-reviewed journal Peritoneal Dialysis International, listed by the International Society for Peritoneal Dialysis.
+  - key: nkfi_journey_continues
+    name: The Journey Continues
+    url: https://feeds.transistor.fm/the-journey-continues
+    publisher: National Kidney Foundation of Illinois (NKFI)
+    audience: patients
+    language: en
+    trusted_because: Podcast of the National Kidney Foundation of Illinois, a kidney charity, with patients, living donors and care teams sharing their experience.

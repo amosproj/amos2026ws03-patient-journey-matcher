@@ -1,0 +1,61 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: irritable_bowel_syndrome
+label: Irritable bowel syndrome
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - irritable bowel syndrome
+  - IBS
+  - irritable bowel
+  - irritable colon
+  - mucous colitis
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - irritable bowel syndrome
+  - IBS-D
+  - IBS-C
+  - post-infectious irritable bowel syndrome
+  - pediatric irritable bowel syndrome
+  - irritable bowel syndrome SIBO
+  - irritable bowel syndrome gut-brain axis
+  - irritable bowel syndrome microbiome
+  - irritable bowel syndrome visceral hypersensitivity
+  # Diagnosis and screening
+  - irritable bowel syndrome diagnosis
+  - IBS Rome IV criteria
+  - irritable bowel syndrome fecal calprotectin
+  - irritable bowel syndrome colonoscopy
+  - irritable bowel syndrome breath testing
+  # Treatment
+  - IBS low FODMAP diet
+  - irritable bowel syndrome dietary fiber
+  - irritable bowel syndrome peppermint oil
+  - irritable bowel syndrome antispasmodics
+  - irritable bowel syndrome loperamide
+  - irritable bowel syndrome rifaximin
+  - irritable bowel syndrome eluxadoline
+  - irritable bowel syndrome alosetron
+  - irritable bowel syndrome linaclotide
+  - irritable bowel syndrome plecanatide
+  - irritable bowel syndrome lubiprostone
+  - irritable bowel syndrome tenapanor
+  - irritable bowel syndrome tricyclic antidepressants
+  - irritable bowel syndrome gut-directed hypnotherapy
+  - IBS cognitive behavioral therapy
+  - irritable bowel syndrome probiotics
+  # Living with
+  - IBS quality of life
+  - irritable bowel syndrome anxiety depression
+  - irritable bowel syndrome self-management
+  - irritable bowel syndrome exercise
+  - irritable bowel syndrome sleep
+  - irritable bowel syndrome digital therapeutics
+
+# YouTube channels.
+channels:
+  - name: International Foundation for Gastrointestinal Disorders (IFFGD)
+    url: https://www.youtube.com/channel/UCSlaE06rgTQK4flZyv9kqoQ
+  - name: Rome Foundation
+    url: https://www.youtube.com/channel/UCu4-TRmUcHhtt9IZgPUPcJQ

@@ -12,8 +12,8 @@ Findings for #6, checked 01.11.2026 against live docs and live requests. Follows
 | PMC | primary | [`pmc.md`](pmc.md) | About 8 M full-text article versions on S3 | JATS XML | crawler |
 | arXiv | secondary | [`arxiv.md`](arxiv.md) | Preprints, about 8,300 a year in medical categories | HTML, else PDF | SS26, #27 |
 | Zenodo | secondary | [`zenodo.md`](zenodo.md) | Any research output, no review | Files: PDF, DOCX, PPTX, MP4 | crawler |
-| YouTube | complementary | [`youtube.md`](youtube.md) | Metadata of 26 curated channels | None: description and chapters only | SS26, #27 |
-| Podcasts | complementary | [`podcasts.md`](podcasts.md) | 6 curated RSS feeds | Transcript file (rare), else show notes | crawler |
+| YouTube | complementary | [`youtube.md`](youtube.md) | Metadata of curated channels | None: description and chapters only | SS26, #27 |
+| Podcasts | complementary | [`podcasts.md`](podcasts.md) | Curated RSS feeds | Transcript file (rare), else show notes | crawler |
 
 Primary: peer-reviewed core. Secondary: preprints and grey literature. Complementary: curated formats for patients.
 

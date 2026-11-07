@@ -1,0 +1,94 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: urinary_incontinence
+label: Urinary incontinence
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - urinary incontinence
+  - Urinary Incontinence, Stress
+  - Urinary Incontinence, Urge
+  - Urinary Bladder, Overactive
+  - overactive bladder
+  - OAB
+  - stress incontinence
+  - urge incontinence
+  - urgency incontinence
+  - post prostatectomy incontinence
+  - postprostatectomy incontinence
+  - detrusor overactivity
+  - midurethral sling
+  - mid urethral sling
+  - artificial urinary sphincter
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - urinary incontinence
+  - stress urinary incontinence
+  - urge urinary incontinence
+  - urgency urinary incontinence
+  - mixed urinary incontinence
+  - overactive bladder
+  - detrusor overactivity
+  - urinary incontinence women
+  - urinary incontinence men
+  - post-prostatectomy incontinence
+  - urinary incontinence older adults
+  - postpartum urinary incontinence
+  # Diagnosis and screening
+  - urinary incontinence assessment
+  - urinary incontinence urodynamics
+  - urinary incontinence questionnaire
+  - urinary incontinence bladder diary
+  - overactive bladder diagnosis
+  # Treatment
+  - urinary incontinence pelvic floor training
+  - urinary incontinence bladder training
+  - urinary incontinence behavioral therapy
+  - overactive bladder anticholinergics
+  - overactive bladder mirabegron
+  - overactive bladder vibegron
+  - overactive bladder solifenacin
+  - overactive bladder botulinum toxin
+  - overactive bladder sacral neuromodulation
+  - overactive bladder tibial nerve stimulation
+  - stress urinary incontinence midurethral sling
+  - stress urinary incontinence urethral bulking
+  - stress urinary incontinence colposuspension
+  - post-prostatectomy incontinence artificial sphincter
+  - male urinary incontinence sling
+  - urinary incontinence pessary
+  # Living with
+  - urinary incontinence quality of life
+  - urinary incontinence self-management
+  - urinary incontinence lifestyle
+  - urinary incontinence weight loss
+  - urinary incontinence nursing home
+  - urinary incontinence sexual function
+  - urinary incontinence caregivers
+
+# YouTube channels.
+channels:
+  - name: International Continence Society (ICS)
+    url: https://www.youtube.com/channel/UCkPMfuQ-G_259SMeCJbKgHQ
+  - name: Continence Health Australia
+    url: https://www.youtube.com/channel/UCQKHX-ufKZzUtsDH_jYEGeA
+  - name: Society of Urodynamics, Female Pelvic Medicine & Urogenital Reconstruction (SUFU)
+    url: https://www.youtube.com/channel/UCFVjCUJhm3Skifsnlec_gaQ
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: nafc_life_without_leaks
+    name: Life Without Leaks
+    url: https://rss.buzzsprout.com/1981134.rss
+    publisher: National Association for Continence (NAFC)
+    audience: patients
+    language: en
+    trusted_because: Podcast of the National Association for Continence, a US patient charity for bladder and bowel control, with clinicians and patients.
+  - key: ics_podcast
+    name: ICS Podcast
+    url: https://rss.buzzsprout.com/1626442.rss
+    publisher: International Continence Society (ICS)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the International Continence Society on incontinence, lower urinary tract symptoms and pelvic floor care.

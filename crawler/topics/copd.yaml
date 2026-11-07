@@ -1,0 +1,86 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: copd
+label: Chronic obstructive pulmonary disease (COPD)
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - COPD
+  - AECOPD
+  - chronic obstructive pulmonary disease
+  - chronic obstructive lung disease
+  - chronic obstructive airway disease
+  - chronic obstructive airways disease
+  - chronic airflow obstruction
+  - Pulmonary Disease, Chronic Obstructive
+  - emphysema
+  - pulmonary emphysema
+  - chronic bronchitis
+  - Bronchitis, Chronic
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - COPD
+  - chronic obstructive pulmonary disease
+  - COPD exacerbation
+  - emphysema
+  - chronic bronchitis
+  - alpha-1 antitrypsin deficiency emphysema
+  - COPD never smokers
+  - early COPD
+  # Diagnosis and screening
+  - COPD diagnosis
+  - COPD spirometry
+  - COPD case finding
+  - COPD assessment test
+  - COPD blood eosinophils
+  - COPD chest CT
+  - COPD PRISm
+  # Treatment
+  - COPD dual bronchodilator therapy
+  - COPD triple therapy
+  - COPD inhaled corticosteroids
+  - COPD tiotropium
+  - COPD roflumilast
+  - COPD azithromycin
+  - COPD ensifentrine
+  - COPD dupilumab
+  - COPD mepolizumab
+  - COPD oxygen therapy
+  - COPD noninvasive ventilation
+  - COPD lung volume reduction
+  - COPD endobronchial valves
+  - COPD lung transplantation
+  - COPD smoking cessation
+  - COPD vaccination
+  # Living with
+  - COPD pulmonary rehabilitation
+  - COPD self-management
+  - COPD breathlessness
+  - COPD palliative care
+  - COPD anxiety depression
+  - COPD hospital readmission
+  - COPD quality of life
+  - COPD remote monitoring
+
+# YouTube channels.
+channels:
+  - name: COPD Foundation
+    url: https://www.youtube.com/channel/UCsL8hAkJ6Ma8KQzABJX_Y0g
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: copd_foundation_podcast
+    name: COPD Foundation Podcast
+    url: https://feed.podbean.com/copdfoundation/feed.xml
+    publisher: COPD Foundation
+    audience: patients
+    language: en
+    trusted_because: Official podcast of the COPD Foundation, a US patient organisation, with expert interviews on COPD care and treatment access.
+  - key: lung_health_champion
+    name: The Lung Health Champion
+    url: https://anchor.fm/s/110d8cbcc/podcast/rss
+    publisher: COPD Foundation
+    audience: patients
+    language: en
+    trusted_because: Podcast of the COPD Foundation with practical advice from experts and people living with COPD.

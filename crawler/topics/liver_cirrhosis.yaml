@@ -1,0 +1,73 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: liver_cirrhosis
+label: Liver cirrhosis
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - liver cirrhosis
+  - Liver Cirrhosis, Alcoholic
+  - cirrhosis
+  - cirrhotic
+  - alcohol-related liver disease
+  - alcohol-associated liver disease
+  - alcoholic liver disease
+  - alcoholic hepatitis
+  - alcohol-associated hepatitis
+  - portal hypertension
+  - Esophageal and Gastric Varices
+  - hepatic encephalopathy
+  - hepatorenal syndrome
+  - transjugular intrahepatic portosystemic shunt
+  - liver transplantation
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - liver cirrhosis
+  - compensated cirrhosis
+  - decompensated cirrhosis
+  - alcohol-related liver disease
+  - alcoholic hepatitis
+  - cirrhosis ascites
+  - cirrhosis esophageal varices
+  - cirrhosis portal hypertension
+  - cirrhosis hepatic encephalopathy
+  - cirrhosis hepatorenal syndrome
+  - cirrhosis spontaneous bacterial peritonitis
+  - cirrhosis acute-on-chronic liver failure
+  # Diagnosis and screening
+  - cirrhosis transient elastography
+  - cirrhosis noninvasive tests
+  - cirrhosis Child-Pugh score
+  - cirrhosis MELD score
+  - cirrhosis hepatic venous pressure gradient
+  - cirrhosis hepatocellular carcinoma surveillance
+  # Treatment
+  - cirrhosis albumin
+  - cirrhosis diuretics
+  - cirrhosis large-volume paracentesis
+  - cirrhosis carvedilol
+  - cirrhosis variceal band ligation
+  - cirrhosis terlipressin
+  - cirrhosis lactulose
+  - cirrhosis rifaximin
+  - cirrhosis antibiotic prophylaxis
+  - cirrhosis portal vein thrombosis anticoagulation
+  - transjugular intrahepatic portosystemic shunt
+  - cirrhosis liver transplantation
+  - alcoholic hepatitis prednisolone
+  # Living with
+  - cirrhosis quality of life
+  - cirrhosis nutrition
+  - cirrhosis sarcopenia
+  - cirrhosis frailty
+  - alcohol-related liver disease abstinence
+  - cirrhosis palliative care
+  - cirrhosis caregivers
+  - cirrhosis vaccination
+  - cirrhosis liver transplant recipients
+
+# YouTube channels.
+channels:
+  - name: Liver Transplantation Society of India (LTSI)
+    url: https://www.youtube.com/channel/UCwEHDR0DXVGvaPWn3fcqH5w

@@ -1,0 +1,70 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: liver_cancer
+label: Liver cancer
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - hepatocellular carcinoma
+  - hepatocellular cancer
+  - liver cancer
+  - liver carcinoma
+  - liver neoplasm
+  - liver cell carcinoma
+  - cancer of the liver
+  - Carcinoma, Hepatocellular
+  - HCC
+  - hepatoma
+  - cholangiocarcinoma
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - hepatocellular carcinoma
+  - liver cancer
+  - early-stage hepatocellular carcinoma
+  - intermediate-stage hepatocellular carcinoma
+  - advanced hepatocellular carcinoma
+  - hepatocellular carcinoma portal vein tumor thrombus
+  - hepatocellular carcinoma recurrence
+  - hepatocellular carcinoma cirrhosis
+  - hepatocellular carcinoma hepatitis B
+  - hepatocellular carcinoma MASLD
+  - intrahepatic cholangiocarcinoma
+  # Diagnosis and screening
+  - hepatocellular carcinoma surveillance
+  - hepatocellular carcinoma alpha-fetoprotein
+  - hepatocellular carcinoma LI-RADS
+  - hepatocellular carcinoma BCLC staging
+  # Treatment
+  - hepatocellular carcinoma hepatectomy
+  - hepatocellular carcinoma liver transplantation
+  - hepatocellular carcinoma ablation
+  - hepatocellular carcinoma transarterial chemoembolization
+  - hepatocellular carcinoma radioembolization
+  - hepatocellular carcinoma SBRT
+  - hepatocellular carcinoma systemic therapy
+  - hepatocellular carcinoma immunotherapy
+  - hepatocellular carcinoma atezolizumab bevacizumab
+  - hepatocellular carcinoma durvalumab tremelimumab
+  - hepatocellular carcinoma lenvatinib
+  - hepatocellular carcinoma tyrosine kinase inhibitor
+  - hepatocellular carcinoma adjuvant therapy
+  - intrahepatic cholangiocarcinoma resection
+  - cholangiocarcinoma durvalumab
+  - cholangiocarcinoma FGFR2
+  - cholangiocarcinoma ivosidenib
+  # Living with
+  - hepatocellular carcinoma quality of life
+  - hepatocellular carcinoma palliative care
+  - hepatocellular carcinoma nutrition
+  - hepatocellular carcinoma follow-up
+  - liver cancer caregivers
+
+# YouTube channels.
+channels:
+  - name: "Blue Faery: The Adrienne Wilson Liver Cancer Association"
+    url: https://www.youtube.com/channel/UC_1mIaQKYa3Lt6bE1mi9x1w
+  - name: Cholangiocarcinoma Foundation
+    url: https://www.youtube.com/channel/UCBa2G8qD-Fdck5kIuXgQi1w
+  - name: AMMF - The Cholangiocarcinoma Charity
+    url: https://www.youtube.com/channel/UCh-eVZ5es3KuK97nDM54NeA

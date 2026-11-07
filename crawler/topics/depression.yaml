@@ -1,0 +1,78 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: depression
+label: Depression
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - depression
+  - depressive disorder
+  - major depressive disorder
+  - Depressive Disorder, Major
+  - MDD
+  - treatment-resistant depression
+  - Depressive Disorder, Treatment-Resistant
+  - persistent depressive disorder
+  - Dysthymic Disorder
+  - dysthymia
+  - postpartum depression
+  - Depression, Postpartum
+  - postnatal depression
+  - seasonal affective disorder
+  - depressive symptoms
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - depression
+  - major depressive disorder
+  - persistent depressive disorder
+  - treatment-resistant depression
+  - postpartum depression
+  - perinatal depression
+  - late-life depression
+  - adolescent depression
+  - seasonal affective disorder
+  - psychotic depression
+  # Diagnosis and screening
+  - depression screening
+  - depression PHQ-9
+  - depression diagnosis
+  - Edinburgh Postnatal Depression Scale
+  # Treatment
+  - depression antidepressants
+  - depression SSRI
+  - depression sertraline
+  - depression escitalopram
+  - depression venlafaxine
+  - depression bupropion
+  - depression vortioxetine
+  - depression esketamine
+  - depression lithium augmentation
+  - depression antipsychotic augmentation
+  - depression cognitive behavioral therapy
+  - depression behavioral activation
+  - depression interpersonal psychotherapy
+  - depression mindfulness-based cognitive therapy
+  - depression electroconvulsive therapy
+  - depression transcranial magnetic stimulation
+  - depression exercise
+  - depression collaborative care
+  - postpartum depression zuranolone
+  - seasonal affective disorder light therapy
+  # Living with
+  - depression relapse prevention
+  - depression self-management
+  - depression quality of life
+  - depression family caregivers
+  - depression antidepressant discontinuation
+  - depression suicide prevention
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: psi_i_am_one
+    name: I AM ONE Podcast by Postpartum Support International
+    url: https://rss.buzzsprout.com/1940693.rss
+    publisher: Postpartum Support International (PSI)
+    audience: patients
+    language: en
+    trusted_because: Official podcast of Postpartum Support International, in which staff and volunteers share lived experience of perinatal mental health.

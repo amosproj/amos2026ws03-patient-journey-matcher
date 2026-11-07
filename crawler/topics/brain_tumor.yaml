@@ -1,0 +1,94 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: brain_tumor
+label: Brain tumor
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - brain tumor
+  - brain tumour
+  - brain cancer
+  - brain neoplasm
+  - glioma
+  - glioblastoma
+  - astrocytoma
+  - oligodendroglioma
+  - meningioma
+  - brain metastasis
+  - brain metastases
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - brain tumor
+  - glioma
+  - glioblastoma
+  - recurrent glioblastoma
+  - astrocytoma IDH-mutant
+  - oligodendroglioma
+  - low-grade glioma
+  - diffuse midline glioma
+  - meningioma
+  - brain metastases
+  # Diagnosis and screening
+  - glioma MRI
+  - glioma WHO classification
+  - glioblastoma MGMT promoter methylation
+  - oligodendroglioma 1p19q codeletion
+  - glioma amino acid PET
+  # Treatment
+  - glioma extent of resection
+  - glioma awake craniotomy
+  - glioblastoma aminolevulinic acid
+  - glioblastoma temozolomide
+  - glioblastoma radiotherapy
+  - glioblastoma tumor treating fields
+  - glioblastoma lomustine
+  - glioblastoma bevacizumab
+  - glioma vorasidenib
+  - glioma dabrafenib trametinib
+  - diffuse midline glioma dordaviprone
+  - oligodendroglioma PCV chemotherapy
+  - meningioma stereotactic radiosurgery
+  - meningioma observation
+  - brain metastases stereotactic radiosurgery
+  - brain metastases whole brain radiotherapy
+  - brain metastases immunotherapy
+  # Living with
+  - brain tumor cognitive function
+  - brain tumor epilepsy
+  - brain tumor rehabilitation
+  - brain tumor quality of life
+  - brain tumor fatigue
+  - brain tumor caregivers
+  - glioblastoma palliative care
+
+# YouTube channels.
+channels:
+  - name: American Brain Tumor Association (ABTA)
+    url: https://www.youtube.com/channel/UCsK91mnT112KibIFx8anlHQ
+  - name: European Association of Neuro-Oncology (EANO)
+    url: https://www.youtube.com/channel/UCKs2ZOHrvZ0FQ6s2YUT-LkA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: brain_tumour_charity_lets_talk_about_brain_tumours
+    name: Let's Talk About Brain Tumours
+    url: https://rss.buzzsprout.com/1727640.rss
+    publisher: The Brain Tumour Charity
+    audience: patients
+    language: en
+    trusted_because: Podcast of The Brain Tumour Charity, a UK charity that funds brain tumour research and supports patients, with people affected by brain tumours, researchers and advocates on diagnosis, treatment and support.
+  - key: neuro_oncology_the_podcast
+    name: "Neuro-Oncology: The Podcast"
+    url: https://soc-neuro-onc.libsyn.com/rss
+    publisher: Society for Neuro-Oncology (SNO)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the Society for Neuro-Oncology, with author interviews on papers from its peer-reviewed journal Neuro-Oncology and conversations with leading clinicians and scientists.
+  - key: ivy_brain_tumor_center_brain_tumor_talk
+    name: Brain Tumor Talk
+    url: https://rss.buzzsprout.com/2362848.rss
+    publisher: Ivy Brain Tumor Center
+    audience: patients
+    language: en
+    trusted_because: Podcast of the Ivy Brain Tumor Center, a brain tumor research and treatment centre at the Barrow Neurological Institute, with specialists, survivors and caregivers; no new episodes since January 2025.
