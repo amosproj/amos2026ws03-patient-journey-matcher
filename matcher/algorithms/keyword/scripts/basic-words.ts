@@ -1,18 +1,9 @@
-// Writes ../data/basic-words.json: common English words that are not medical. The keyword indexer
-// drops them from full texts, so the index keeps keywords only. Run it again when NLM publishes a
-// new MeSH year or the rule below changes, and commit the new list. From the repository root, with
-// the MeSH descriptors from https://nlmpubs.nlm.nih.gov/projects/mesh/MESH_FILES/xmlmesh/:
-//
+// Writes ../data/basic-words.json, the words the keyword index drops; rerun for a new MeSH year
+// (desc<year>.gz from https://nlmpubs.nlm.nih.gov/projects/mesh/MESH_FILES/xmlmesh/):
 //   node matcher/algorithms/keyword/scripts/basic-words.ts desc2026.gz
-//
-// A word is basic if it is among the 5,000 most frequent English words and is not medical.
-// Medical are:
-// - MeSH terms of one word in the tree branches A-H, M and N: anatomy, organisms, diseases, drugs,
-//   procedures, psychology, phenomena, disciplines, persons and health care (blood, surgery,
-//   patients, hospital);
-// - words of longer MeSH terms in A, C, D and E outside the 1,000 most frequent words (failure in
-//   "heart failure", survival, oral);
-// - words of two or three letters outside the 2,000 most frequent: mostly abbreviations (PSA, DRE).
+// Basic: the 5,000 most frequent English words, except medical ones: single-word MeSH terms
+// (branches A-H, M, N), words of longer MeSH terms (A, C, D, E) outside the top 1,000, and
+// two- or three-letter words outside the top 2,000 (abbreviations like PSA).
 import { createHash } from "node:crypto";
 import { createReadStream } from "node:fs";
 import { writeFile } from "node:fs/promises";
@@ -21,10 +12,10 @@ import { createGunzip, gunzipSync } from "node:zlib";
 import { decode } from "@msgpack/msgpack";
 import { Parser } from "htmlparser2";
 
-const COMMON = 5_000; // rarer words stay: drug names, abbreviations, also academic words
+const COMMON = 5_000; // rarer words always stay
 const FREQUENT = 1_000; // words of longer MeSH terms among these stay basic: "high", "level"
 const SHORT_FREQUENT = 2_000; // short words among these stay basic: "us", "or"
-// wordfreq's English frequencies (unchanged since wordfreq 2.5), pinned by commit and hash.
+// wordfreq's English frequencies, pinned by commit and hash.
 const WORDFREQ = "v3.2";
 const WORDFREQ_URL =
   "https://raw.githubusercontent.com/rspeer/wordfreq/42233e6c36ce792031bcccfa17cdd0cec9af5fa7/wordfreq/data/large_en.msgpack.gz";
@@ -40,7 +31,7 @@ async function frequentWords(count: number): Promise<string[]> {
   const hash = createHash("sha256").update(file).digest("hex");
   if (hash !== WORDFREQ_SHA256)
     throw new Error(`wordfreq data changed: ${hash}`);
-  // A header, then the words by frequency in steps of a centibel.
+  // A header, then the words, most frequent first.
   const [, ...steps] = decode(gunzipSync(file)) as [unknown, ...string[][]];
   // Without numbers of several digits, as wordfreq's top_n_list.
   return steps
@@ -136,12 +127,13 @@ const words = common.filter((word, index) => {
   return /\p{L}/u.test(word) && !medical && !abbreviation;
 });
 const list = {
-  description: `Basic English words, which the keyword index drops from full texts; most frequent first. Built by scripts/basic-words.ts from ${mesh}; do not edit.`,
-  changes: `The ${COMMON.toLocaleString("en")} most frequent English words of wordfreq, without the medical ones.`,
+  description:
+    "Common non-medical English words, most frequent first, dropped by the keyword index. Built by scripts/basic-words.ts; do not edit.",
+  changes: `Top ${COMMON.toLocaleString("en")} English words of wordfreq, minus medical words.`,
   licence: "CC BY-SA 4.0, https://creativecommons.org/licenses/by-sa/4.0/",
   credits: [
-    `Word frequencies: wordfreq ${WORDFREQ} by Robyn Speer, https://github.com/rspeer/wordfreq. They include the SUBTLEX word lists by Marc Brysbaert et al., freely available data (http://crr.ugent.be/programs-data/subtitle-frequencies), OpenSubtitles (http://www.opensubtitles.org), Google Books Ngrams (http://books.google.com/ngrams), Wikipedia and other sources listed by wordfreq.`,
-    `Medical words: Medical Subject Headings ${mesh.replace(/^desc/, "")} (${mesh}), courtesy of the U.S. National Library of Medicine (NLM). NLM does not endorse this project.`,
+    `Word frequencies: wordfreq ${WORDFREQ} by Robyn Speer (https://github.com/rspeer/wordfreq), including SUBTLEX by Marc Brysbaert et al. (freely available data), OpenSubtitles and the other sources wordfreq lists.`,
+    `Medical words: MeSH ${mesh.replace(/^desc/, "")}, courtesy of the U.S. National Library of Medicine; NLM does not endorse this project.`,
   ],
   words,
 };

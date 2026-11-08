@@ -15,6 +15,7 @@ export function createKeywordIndexer(
       log(`${count} new or changed document(s) indexed`);
       const counts = await indexFullTexts(db, downloader, (counts) => {
         const done = counts.indexed + counts.skipped + counts.failed;
+        // Progress every 50 documents; a first run takes about half an hour.
         if (done % 50 === 0) log(`full texts: ${done} read`);
       });
       log(

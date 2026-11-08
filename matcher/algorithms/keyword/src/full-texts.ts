@@ -1,6 +1,6 @@
 import { indexChangedDocuments, type Queryable } from "@matcher/db";
 import type { Downloader } from "@matcher/download";
-// Common English words that are not medical, most frequent first; sources and licence in the file.
+// Common non-medical English words, most frequent first.
 import basicWords from "../data/basic-words.json" with { type: "json" };
 import { createSchema } from "./schema.ts";
 import { ENGLISH_WORDS } from "./terms.ts";
@@ -11,11 +11,10 @@ const WORD = /[\p{L}\p{N}]+(?:['’-][\p{L}\p{N}]+)*/gu;
 // Enough for any paper; keeps the lexemes of a long book under Postgres' 1 MB tsvector limit.
 const MAX_WORDS = 50_000;
 const BASIC = new Set(basicWords.words);
-// "the", "and", "of"…: about 30% of the words of an English text, at most 10% of a text in the
-// other languages of the sources.
+// The 100 most frequent: about 30% of an English text's words, under 10% in other languages.
 const MOST_FREQUENT = new Set(basicWords.words.slice(0, 100));
 const MIN_ENGLISH_SHARE = 0.12;
-// shortcut: plural "s" only, so "rising" goes when the journey says "rise"; use stems if it matters.
+// shortcut: plural "s" only ("rising" goes for "rise"); use stems if needed.
 const JOURNEY_WORDS = new Set(
   ENGLISH_WORDS.flatMap((word) => [word, `${word}s`, word.replace(/s$/, "")]),
 );
@@ -79,10 +78,7 @@ export async function indexFullTexts(
   return counts;
 }
 
-/**
- * The keywords of an English text in lower case and alphabetical order, each as often as it
- * occurs: what BM25 counts, without numbers and basic words. Undefined for another language.
- */
+/** The keywords of an English text, sorted, each as often as it occurs; undefined for other languages. */
 export function keywords(text: string): string[] | undefined {
   const words = (
     text.toLowerCase().replaceAll("’", "'").match(WORD) ?? []

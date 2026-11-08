@@ -1,10 +1,10 @@
 {
-  "description": "Basic English words, which the keyword index drops from full texts; most frequent first. Built by scripts/basic-words.ts from desc2026; do not edit.",
-  "changes": "The 5,000 most frequent English words of wordfreq, without the medical ones.",
+  "description": "Common non-medical English words, most frequent first, dropped by the keyword index. Built by scripts/basic-words.ts; do not edit.",
+  "changes": "Top 5,000 English words of wordfreq, minus medical words.",
   "licence": "CC BY-SA 4.0, https://creativecommons.org/licenses/by-sa/4.0/",
   "credits": [
-    "Word frequencies: wordfreq v3.2 by Robyn Speer, https://github.com/rspeer/wordfreq. They include the SUBTLEX word lists by Marc Brysbaert et al., freely available data (http://crr.ugent.be/programs-data/subtitle-frequencies), OpenSubtitles (http://www.opensubtitles.org), Google Books Ngrams (http://books.google.com/ngrams), Wikipedia and other sources listed by wordfreq.",
-    "Medical words: Medical Subject Headings 2026 (desc2026), courtesy of the U.S. National Library of Medicine (NLM). NLM does not endorse this project."
+    "Word frequencies: wordfreq v3.2 by Robyn Speer (https://github.com/rspeer/wordfreq), including SUBTLEX by Marc Brysbaert et al. (freely available data), OpenSubtitles and the other sources wordfreq lists.",
+    "Medical words: MeSH 2026, courtesy of the U.S. National Library of Medicine; NLM does not endorse this project."
   ],
   "words": [
     "the",

@@ -10,7 +10,7 @@ The keyword baseline (#8): `match_journey` with `algorithm: keyword` ranks the s
 
 **Query.** The server cuts the journey at `as_of` ([MCP interface](mcp-interface.md#match_journey-input)): the latest event is the focus, every older event is context. For each event, the matcher takes the label, the text parameters and the names of `true` flags (`bone_mets` → bone metastases), and turns them into English terms:
 
-- German words of the synthetic journeys come from a term list in [`terms.ts`](../matcher/algorithms/keyword/src/terms.ts): `Knochenmetastasen` → bone metastases, `RPE` → radical prostatectomy.
+- German words of the synthetic journeys come from a term list in [`german-terms.json`](../matcher/algorithms/keyword/data/german-terms.json): `Knochenmetastasen` → bone metastases, `RPE` → radical prostatectomy.
 - Drug names and abbreviations pass unchanged (Olaparib, PSA, BRCA2). German function words, units and numbers are dropped.
 - No LLM or outside service sees the journey.
 
@@ -47,22 +47,22 @@ Downloads keep the [request budgets](sources/README.md#5-storage-limits-and-rete
 
 Check a run with `SELECT status, detail, count(*) FROM keyword.full_texts GROUP BY 1, 2 ORDER BY 3 DESC`.
 
-**Licences.** This approach reads the full text whatever its licence, also "all rights reserved" and unknown: the project stays non-profit and the index keeps keywords only. The decision holds for keyword matching only; other approaches decide for themselves ([sources §3](sources/README.md#3-indexing)).
+**Licences.** This approach reads full texts under any licence, also "all rights reserved": the project is non-profit and keeps keywords only. Other approaches decide for themselves ([sources §3](sources/README.md#3-indexing)).
 
 ## Keywords
 
-The index keeps every word that can be medical, also one a text names only once, and drops numbers and basic English words. Basic are the 5,000 most frequent English words of [wordfreq](https://github.com/rspeer/wordfreq), except:
+Full texts keep their medical words, even those named once; numbers and basic words go. Basic are the 5,000 most frequent English words of [wordfreq](https://github.com/rspeer/wordfreq), except:
 
-- MeSH terms of one word on anatomy, organisms, diseases, drugs, procedures, psychology, phenomena, disciplines, persons and health care (blood, surgery, patients, hospital);
-- words of longer MeSH terms on anatomy, diseases, drugs and procedures, outside the 1,000 most frequent words (failure as in heart failure, survival, oral);
-- words of two or three letters outside the 2,000 most frequent: mostly abbreviations (PSA, DRE, HF);
-- the words of the journey terms in [`terms.ts`](../matcher/algorithms/keyword/src/terms.ts), also with a plural "s" (follow, local, rise).
+- single-word MeSH terms in branches A–H, M and N (surgery, patients, hospital);
+- words of longer MeSH terms outside the top 1,000 (failure, survival);
+- two- or three-letter words outside the top 2,000: abbreviations (PSA, DRE);
+- the words of the [journey terms](../matcher/algorithms/keyword/data/german-terms.json), also with a plural "s".
 
-The list is [`basic-words.json`](../matcher/algorithms/keyword/data/basic-words.json), built by [`basic-words.ts`](../matcher/algorithms/keyword/scripts/basic-words.ts) from the MeSH descriptors ([NLM download](https://nlmpubs.nlm.nih.gov/projects/mesh/MESH_FILES/xmlmesh/), `desc2026.gz`) and wordfreq's English frequencies, which it downloads at a fixed version: `node matcher/algorithms/keyword/scripts/basic-words.ts desc2026.gz`. Run it again when NLM publishes a new MeSH year or the rule changes. On 50 stored texts it keeps 42 % of the words, about 610 different words per text, 470 of them named once or twice. Of 80 medical test words it drops one, "doctor". A changed list applies to new and changed documents; for all, empty `keyword.full_texts` and run `make index` again.
+[`basic-words.ts`](../matcher/algorithms/keyword/scripts/basic-words.ts) builds [`basic-words.json`](../matcher/algorithms/keyword/data/basic-words.json) from wordfreq and the MeSH descriptors (`desc2026.gz` from [NLM](https://nlmpubs.nlm.nih.gov/projects/mesh/MESH_FILES/xmlmesh/)); rerun it for a new MeSH year: `node matcher/algorithms/keyword/scripts/basic-words.ts desc2026.gz`. On 50 texts it keeps 42 % of the words; of 80 medical test words it drops only "doctor". A new list applies to changed documents; for all, empty `keyword.full_texts` and run `make index`.
 
-**English only.** A full text counts as English if the 100 most frequent English words make up at least 12 % of its words: about 30 % in English texts, at most 10 % in the Ukrainian, Spanish, Russian, German and other texts of the seed data. Texts in other languages are not indexed (`not English`); their metadata is.
+**English only.** A text counts as English if at least 12 % of its words are among the 100 most frequent English words (English texts: about 30 %, others: under 10 %). Other texts keep only their metadata (`not English`).
 
-**Credits.** Medical Subject Headings 2026, courtesy of the U.S. National Library of Medicine (NLM); NLM does not endorse this project. Word frequencies: wordfreq v3.2 by Robyn Speer, data under CC BY-SA 4.0, with the SUBTLEX word lists by Marc Brysbaert et al. (freely available data), OpenSubtitles and Google Books Ngrams. `basic-words.json` is shared under CC BY-SA 4.0 as well.
+**Credits.** MeSH 2026, courtesy of the U.S. National Library of Medicine; NLM does not endorse this project. Word frequencies: wordfreq v3.2 by Robyn Speer (CC BY-SA 4.0), including SUBTLEX by Marc Brysbaert et al. (freely available data), OpenSubtitles and the other sources wordfreq lists. `basic-words.json` is CC BY-SA 4.0 too.
 
 ## Run it
 
@@ -97,6 +97,6 @@ Only 6 of the 56 papers graded in #11 are in the seed data, so these are not yet
 - **No negation or values.** "Keine Fernmetastasen" (no distant metastases) becomes "distant metastases". "PSA rising" and "PSA falling" differ in one word; PSA values are ignored.
 - **The term list only covers the synthetic journeys.** Other German words pass through and match nothing. The format of the real app is still open (#44).
 - **Full texts for some documents only.** PubMed without a PMCID, most podcasts and all videos have metadata only. Not read yet: Word and PowerPoint files, audio and video (speech-to-text is undecided), podcast show notes. Scanned PDFs without a text layer give no text. The references cut needs an English heading.
-- **English only.** Full texts in other languages are not indexed, only their metadata, and match English journey terms poorly. A text that mixes languages counts by its share of frequent English words.
-- **Some medical words go.** The basic words include common words MeSH does not mark as medical ("doctor") and forms of journey words other than the plural ("rising" when the journey says "rise"). Rare words stay even when not medical: names, typos, words of other languages.
+- **English only.** Full texts in other languages are not indexed, only their metadata.
+- **Some medical words go:** common ones MeSH does not mark ("doctor") and journey word forms other than the plural ("rising" for "rise"). Rare non-medical words stay: names, typos.
 - **Scores compare within one list only**, not between journeys or algorithms.

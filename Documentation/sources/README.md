@@ -73,7 +73,7 @@ Allow-list proposal for the current non-commercial university project (not legal
 | PMC `TDM`, arXiv default | yes (text mining, research use) | ask | no, link only | ask |
 | All rights reserved, unknown | ask | no | no, link only | ask |
 
-The table kept later commercial use in mind and is probably out of date: each matching approach decides which licences it reads, in its own document. Keyword matching (#8) reads every licence, as it keeps keywords only ([keyword matching](../keyword-matching.md#full-texts)).
+The table assumed later commercial use and is probably outdated: each approach now sets its own licence rules, e.g. [keyword matching](../keyword-matching.md#full-texts).
 
 Licences differ per record: PMC mixes CC BY and NC in one bucket; 8 % of a Zenodo and 16 % of an arXiv sample are NC; a third of medical arXiv papers carry only arXiv's licence; no podcast feed grants one.
 
