@@ -223,6 +223,9 @@ importers:
       '@matcher/db':
         specifier: workspace:*
         version: link:../db
+      '@matcher/keyword':
+        specifier: workspace:*
+        version: link:../algorithms/keyword
       '@modelcontextprotocol/node':
         specifier: ^2.1.2
         version: 2.1.2(@modelcontextprotocol/server@2.4.0)

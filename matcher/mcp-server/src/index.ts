@@ -1,29 +1,20 @@
 import { createServer } from "node:http";
+import { createPool } from "@matcher/db";
 import {
   localhostHostValidation,
   localhostOriginValidation,
   toNodeHandler,
 } from "@modelcontextprotocol/node";
 import { createMcpHandler } from "@modelcontextprotocol/server";
-import { buildServer, type MatchService, ToolError } from "./server.ts";
+import { createMatchService } from "./match.ts";
+import { buildServer } from "./server.ts";
 
 const port = Number(process.env.MCP_PORT ?? 3000);
-
-// Replaced by the real matchers from #8, #9 and #10.
-const notAvailable: MatchService = {
-  matchJourney: async () => {
-    throw new ToolError("NOT_AVAILABLE", "No matcher is available yet.");
-  },
-  getSource: async () => {
-    throw new ToolError("NOT_AVAILABLE", "No source store is available yet.");
-  },
-};
+const service = createMatchService(createPool());
 
 const validateHost = localhostHostValidation();
 const validateOrigin = localhostOriginValidation();
-const handleMcp = toNodeHandler(
-  createMcpHandler(() => buildServer(notAvailable)),
-);
+const handleMcp = toNodeHandler(createMcpHandler(() => buildServer(service)));
 
 // Loopback only, because the server has no authentication yet.
 createServer((req, res) => {
