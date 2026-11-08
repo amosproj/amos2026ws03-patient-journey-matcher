@@ -6,10 +6,11 @@ Run these commands from the repository root. You need the tools listed under [Pr
 |---|---|
 | `make build` | Installs the locked dependencies of `crawler/` and `matcher/`, and typechecks `matcher/` |
 | `make test` | Builds, then runs the same checks as [CI](github-ci.md); with the root `.env`, the database tests use the database from `make db` |
-| `make start` | Builds, then starts the MCP server on `http://127.0.0.1:3000/mcp` |
+| `make start` | Builds, then starts the MCP server on `http://127.0.0.1:3000/mcp`; needs the root `.env` for the database |
 | `make debug` | Starts the [crawler debug UI](../debug/crawler/README.md) on `http://127.0.0.1:8765` |
 | `make db` | Starts the [database](database.md) and applies `db/init/`; needs the root `.env` |
 | `make seed` | Runs `make db`, then fills the database with a sample crawl of every source: about 1,500 documents in about 6 minutes ([`scripts/seed.py`](../scripts/seed.py)) |
+| `make index` | Builds, then brings the [keyword index](keyword-matching.md) up to date with the stored documents |
 
 Make only calls the `uv` and `pnpm` commands from the [README](../README.md#development-setup), so you can still run them directly.
 

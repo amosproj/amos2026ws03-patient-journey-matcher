@@ -27,7 +27,7 @@ Legend: orange = Python component, blue = TypeScript component, grey = PostgreSQ
 
 ## 2 Code components (layers)
 
-How the code in this repository is organised. Each layer only uses the layers below it. Inside our code, interface modules call domain modules, and domain modules call infrastructure modules. The folder names are the planned layout; today the repository holds `crawler/` (the Python source component), `matcher/` (a pnpm workspace with `db`, `indexer` and `mcp-server` packages), `backend/`, `Documentation/` and `Deliverables/`.
+How the code in this repository is organised. Each layer only uses the layers below it. Inside our code, interface modules call domain modules, and domain modules call infrastructure modules. The folder names are the planned layout; today the repository holds `crawler/` (the Python source component), `matcher/` (a pnpm workspace with `db`, `indexer`, `mcp-server` and `algorithms/keyword` packages), `backend/`, `Documentation/` and `Deliverables/`.
 
 ![Code components](code-components.svg)
 
@@ -66,7 +66,7 @@ Basis: **Partner** = project description or AIlixir · **#5** = [crawler evaluat
 | asyncpg | 0.32 | Writing to `documents` | Apache-2.0 | #41, In use |
 | **Storage** | | | | |
 | PostgreSQL | 18 | `documents`, run log, three index schemas | PostgreSQL | #5, In use |
-| Postgres full-text search | built in | Keyword index: term statistics and ranking | PostgreSQL | Proposal |
+| pg_textsearch | 1.5 | Keyword index: BM25 ranking ([keyword matching](../keyword-matching.md)) | PostgreSQL | #8, In use |
 | pgvector | 0.8 | Vectors for the AI summary index ([AstraDB is open](#5-open-points)) | PostgreSQL | In use |
 | **Indexing, matching and MCP interface (TypeScript)** | | | | |
 | MCP TypeScript SDK v2 (`@modelcontextprotocol/server`, `@modelcontextprotocol/node`) | 2.4 | MCP server over Streamable HTTP | Apache-2.0 | Partner |

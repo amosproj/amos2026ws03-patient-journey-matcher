@@ -9,3 +9,5 @@ Build, user, and technical documentation
 [External sources: metadata, storage and indexing](sources/README.md)
 
 [Resource storage and retrieval](storage.md)
+
+[Keyword matching](keyword-matching.md)

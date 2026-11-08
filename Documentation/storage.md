@@ -16,7 +16,7 @@ flowchart LR
 |---|---|---|
 | `documents` | crawler | indexer, MCP server |
 | `crawl_runs` | crawler | crawler (`--since auto`), people |
-| index tables | indexer (not built yet) | MCP server |
+| index tables, e.g. `keyword.documents` ([keyword matching](keyword-matching.md)) | indexer | MCP server |
 
 ## Storing
 

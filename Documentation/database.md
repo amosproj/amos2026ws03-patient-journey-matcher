@@ -1,13 +1,13 @@
 ## Local database (PostgreSQL)
 
-The local database runs in Docker via Docker Compose. It uses PostgreSQL 18 with the pgvector extension and is defined in `compose.yaml` in the repository root. Every developer gets the same setup, so the crawler, indexer and MCP server can be developed and tested against the same database.
+The local database runs in Docker via Docker Compose. It uses PostgreSQL 18 with the pgvector and pg_textsearch extensions and is defined in `compose.yaml` in the repository root. Every developer gets the same setup, so the crawler, indexer and MCP server can be developed and tested against the same database.
 
 ### Prerequisites
 
 - Docker Desktop (Windows/macOS) or Docker Engine with the Compose plugin
 - Check the installation with `docker compose version`
 - On Windows, Docker Desktop needs WSL2
-- No Docker login is needed. The image is pulled automatically on first start.
+- No Docker login is needed. `make db` builds the image from `db/Dockerfile`: the pgvector image plus pg_textsearch for the [keyword index](keyword-matching.md).
 
 ### Configuration
 

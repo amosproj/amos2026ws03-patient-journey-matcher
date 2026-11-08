@@ -20,7 +20,8 @@ The Python crawler and the TypeScript matcher are separate projects with their o
 | `crawler/` | Python 3.12 | [uv](https://docs.astral.sh/uv/) | PubMed, arXiv, Zenodo, YouTube and podcast crawlers |
 | `debug/crawler/` | Python 3.12, HTML | uses `crawler/` | [Debug UI](debug/crawler/README.md) for the crawler and the database |
 | `matcher/db/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Reads the stored sources ([storage](Documentation/storage.md)) |
-| `matcher/indexer/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Index builder |
+| `matcher/algorithms/keyword/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | [Keyword matching](Documentation/keyword-matching.md): BM25 index and matcher |
+| `matcher/indexer/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Index builder (`make index`) |
 | `matcher/mcp-server/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | MCP server |
 
 ### Prerequisites
