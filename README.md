@@ -27,6 +27,8 @@ The Python crawler and the TypeScript matcher are separate projects with their o
 | `matcher/indexer/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Index builder (`make index`) |
 | `matcher/mcp-server/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | MCP server; builds the journey state all matchers get: focus and context |
 
+How the matcher packages depend on each other and the rules for their code: [`matcher/README.md`](matcher/README.md).
+
 ### Prerequisites
 
 | Tool | Version |
