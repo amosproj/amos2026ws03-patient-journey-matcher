@@ -53,7 +53,7 @@ Implemented in [`db/init/02-documents.sql`](../../db/init/02-documents.sql) (#41
 
 ## 3 Indexing
 
-The indexer (and `get_source`) checks `licence` against the allow-list for the use, tries the `full_text` locators in order and keeps the text in memory. Not allowed: title, summary and subjects from the row only.
+The indexer of each approach (and `get_source`) checks `licence` against its own allow-list for the use, tries the `full_text` locators in order and keeps the text in memory. Not allowed: title, summary and subjects from the row only.
 
 Why at use time, not in the crawler:
 
@@ -73,7 +73,7 @@ Allow-list proposal for the current non-commercial university project (not legal
 | PMC `TDM`, arXiv default | yes (text mining, research use) | ask | no, link only | ask |
 | All rights reserved, unknown | ask | no | no, link only | ask |
 
-Decided for the keyword index (#8): the project stays non-profit and the index keeps word counts only, so it reads the full text whatever the licence, including all rights reserved and unknown ([keyword matching](../keyword-matching.md#full-texts)).
+The table kept later commercial use in mind and is probably out of date: each matching approach decides which licences it reads, in its own document. Keyword matching (#8) reads every licence, as it keeps keywords only ([keyword matching](../keyword-matching.md#full-texts)).
 
 Licences differ per record: PMC mixes CC BY and NC in one bucket; 8 % of a Zenodo and 16 % of an arXiv sample are NC; a third of medical arXiv papers carry only arXiv's licence; no podcast feed grants one.
 

@@ -15,7 +15,7 @@ The keyword approach as the example:
 | `src/schema.ts`      | Its tables, in a schema named after the approach                                                         |
 | `src/<name>.test.ts` | Its database tests                                                                                       |
 
-Other files hold what only this approach needs, e.g. `terms.ts` (journey words in English) for keyword.
+Other files hold what only this approach needs, e.g. `terms.ts` (journey words in English) and `data/basic-words.json` (words not to index, built by `scripts/basic-words.ts`) for keyword.
 
 ## Contracts
 
@@ -42,6 +42,7 @@ From [`@matcher/core`](../core/src/index.ts):
 
 - An approach writes only its own schema and creates it itself (`CREATE … IF NOT EXISTS`, safe to run again).
 - Indexes hold derived data only, never a full text ([sources §5](../../Documentation/sources/README.md#5-storage-limits-and-retention)).
+- Each approach decides which licences it reads full texts under and documents it ([sources §3](../../Documentation/sources/README.md#3-indexing)).
 - Index rows reference their document, so a deleted document (YouTube after 30 days) leaves every index.
 - A matcher only reads and returns document IDs; the server adds the metadata and links.
 - A journey is health data: never stored or logged. Sending it to an outside service, e.g. for embeddings, needs a team decision ([open points](../../Documentation/architecture/README.md#5-open-points)).

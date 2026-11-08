@@ -141,6 +141,11 @@ const ENGLISH: Record<string, string> = {
   überweisung: "referral",
 };
 
+/** The words of the English terms above, e.g. "radical" and "prostatectomy". */
+export const ENGLISH_WORDS = Object.values(ENGLISH).flatMap((term) =>
+  term.split(" "),
+);
+
 // German function words and units; some would match English or German records by chance.
 const SKIP = new Set(
   "als auf bei beim d da der des durch für ggf gy in kbq kein keine kg m mg ml nach ng re trotz und unter vom von wegen x zum zur".split(

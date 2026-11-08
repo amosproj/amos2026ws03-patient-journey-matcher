@@ -92,7 +92,7 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     };
   }
 
-  test("indexes full texts as word counts and downloads failed ones again", async () => {
+  test("indexes the keywords of English full texts and downloads failed ones again", async () => {
     await insert("pubmed:1", "Olaparib in prostate cancer", {
       full_text: ["https://example.org/1.xml"],
     });
@@ -100,14 +100,19 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     await insert("pubmed:3", "Radiotherapy", {
       full_text: ["https://example.org/3.xml"],
     });
+    await insert("pubmed:4", "Strahlentherapie", {
+      full_text: ["https://example.org/4.xml"],
+    });
     const downloader = fakeDownloader({
       "https://example.org/1.xml": "Olaparib, olaparib and PSA.",
       "https://example.org/3.xml": new Error("HTTP 503"),
+      "https://example.org/4.xml":
+        "Die Patienten erhielten eine Strahlentherapie.",
     });
 
     expect(await indexFullTexts(pool, downloader)).toEqual({
       indexed: 1,
-      skipped: 1,
+      skipped: 2,
       failed: 1,
     });
     const { rows } = await pool.query(
@@ -121,8 +126,8 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
         detail: null,
         url: "https://example.org/1.xml",
         media_type: "application/xml",
-        words: 4,
-        terms: "and olaparib olaparib psa",
+        words: 3,
+        terms: "olaparib olaparib psa",
       },
       {
         document_id: "pubmed:2",
@@ -139,6 +144,15 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
         detail: "HTTP 503",
         url: "https://example.org/3.xml",
         media_type: null,
+        words: 0,
+        terms: "",
+      },
+      {
+        document_id: "pubmed:4",
+        status: "skipped",
+        detail: "not English",
+        url: "https://example.org/4.xml",
+        media_type: "application/xml",
         words: 0,
         terms: "",
       },

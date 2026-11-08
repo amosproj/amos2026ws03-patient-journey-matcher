@@ -1,12 +1,24 @@
 import { indexChangedDocuments, type Queryable } from "@matcher/db";
 import type { Downloader } from "@matcher/download";
+// Common English words that are not medical, most frequent first; sources and licence in the file.
+import basicWords from "../data/basic-words.json" with { type: "json" };
 import { createSchema } from "./schema.ts";
+import { ENGLISH_WORDS } from "./terms.ts";
 
-export type FullTextStatus = "indexed" | "skipped" | "failed";
+type FullTextStatus = "indexed" | "skipped" | "failed";
 
 const WORD = /[\p{L}\p{N}]+(?:['’-][\p{L}\p{N}]+)*/gu;
 // Enough for any paper; keeps the lexemes of a long book under Postgres' 1 MB tsvector limit.
 const MAX_WORDS = 50_000;
+const BASIC = new Set(basicWords.words);
+// "the", "and", "of"…: about 30% of the words of an English text, at most 10% of a text in the
+// other languages of the sources.
+const MOST_FREQUENT = new Set(basicWords.words.slice(0, 100));
+const MIN_ENGLISH_SHARE = 0.12;
+// shortcut: plural "s" only, so "rising" goes when the journey says "rise"; use stems if it matters.
+const JOURNEY_WORDS = new Set(
+  ENGLISH_WORDS.flatMap((word) => [word, `${word}s`, word.replace(/s$/, "")]),
+);
 
 /**
  * Downloads and indexes the full texts of new and changed documents, and of those whose
@@ -27,7 +39,8 @@ export async function indexFullTexts(
     await Promise.all(
       documents.map(async (document) => {
         const result = await downloader.fullText(document.full_text);
-        const words = result.status === "ok" ? wordBag(result.text) : [];
+        const found = result.status === "ok" ? keywords(result.text) : [];
+        const words = found ?? [];
         const status: FullTextStatus =
           result.status === "failed"
             ? "failed"
@@ -46,7 +59,12 @@ export async function indexFullTexts(
             document.id,
             document.changed_at,
             status,
-            result.detail ?? (status === "skipped" ? "no words" : null),
+            result.detail ??
+              (found === undefined
+                ? "not English"
+                : status === "skipped"
+                  ? "no keywords"
+                  : null),
             result.url ?? null,
             result.mediaType ?? null,
             words.length,
@@ -61,10 +79,18 @@ export async function indexFullTexts(
   return counts;
 }
 
-/** The words of a text in lower case and alphabetical order: what BM25 counts, but no text. */
-function wordBag(text: string): string[] {
-  return (text.toLowerCase().match(WORD) ?? [])
-    .filter((word) => word.length <= 40)
+/**
+ * The keywords of an English text in lower case and alphabetical order, each as often as it
+ * occurs: what BM25 counts, without numbers and basic words. Undefined for another language.
+ */
+export function keywords(text: string): string[] | undefined {
+  const words = (
+    text.toLowerCase().replaceAll("’", "'").match(WORD) ?? []
+  ).filter((word) => word.length <= 40 && /\p{L}/u.test(word));
+  const frequent = words.filter((word) => MOST_FREQUENT.has(word)).length;
+  if (frequent < words.length * MIN_ENGLISH_SHARE) return undefined;
+  return words
+    .filter((word) => !BASIC.has(word) || JOURNEY_WORDS.has(word))
     .slice(0, MAX_WORDS)
     .sort();
 }

@@ -12,8 +12,8 @@ const SCHEMA = `
   );
   CREATE INDEX IF NOT EXISTS documents_content_idx ON keyword.documents
     USING bm25 (content) WITH (text_config = 'english');
-  -- The full text as word counts: its words in alphabetical order, each as often as it occurs.
-  -- BM25 ranks them like the text, which is not stored. Also a row without text (status).
+  -- The keywords of a full text in alphabetical order, each as often as it occurs. BM25 ranks
+  -- them like the text, which is not stored. Also a row without text (status).
   CREATE TABLE IF NOT EXISTS keyword.full_texts (
     document_id text PRIMARY KEY REFERENCES public.documents (id) ON DELETE CASCADE,
     document_changed_at timestamptz NOT NULL,

@@ -6,7 +6,7 @@ The keyword baseline (#8): `match_journey` with `algorithm: keyword` ranks the s
 
 **Metadata index.** `make index` runs the indexer ([`matcher/indexer/`](../matcher/indexer/src/index.ts)). It reads the new and changed rows of `documents` with `documentsToIndex` ([storage](storage.md#reading)) and writes one row per document to `keyword.documents`: title, abstract or description, and subject labels (MeSH for PubMed). The [pg_textsearch](https://github.com/timescale/pg_textsearch) extension (PostgreSQL License) keeps a BM25 index on that text, with English stemming and stop words. The indexer creates the schema `keyword` itself; nothing else writes it. Deleting a document deletes its index rows.
 
-**Full-text index.** Then the indexer downloads the full text of the same documents ([full texts](#full-texts)) and writes one row per document to `keyword.full_texts`, with its own BM25 index.
+**Full-text index.** Then the indexer downloads the full text of the same documents ([full texts](#full-texts)), keeps the [keywords](#keywords) of English texts and writes one row per document to `keyword.full_texts`, with its own BM25 index.
 
 **Query.** The server cuts the journey at `as_of` ([MCP interface](mcp-interface.md#match_journey-input)): the latest event is the focus, every older event is context. For each event, the matcher takes the label, the text parameters and the names of `true` flags (`bone_mets` → bone metastases), and turns them into English terms:
 
@@ -36,18 +36,33 @@ Downloads keep the [request budgets](sources/README.md#5-storage-limits-and-rete
 
 | Column | Content |
 |---|---|
-| `status` | `indexed`; `skipped`: nothing readable, tried again when the document changes; `failed`: the download failed, tried again in the next `make index` |
-| `detail` | Why skipped or failed, e.g. `HTTP 404`, `no readable format: audio/mpeg`, `no text` (a scanned PDF) |
-| `url`, `media_type` | The file the words come from, or the last one tried |
-| `words` | Number of words read; at most 50,000 count |
-| `terms` | The words in alphabetical order, each as often as it occurs: what BM25 ranks. The text cannot be read back from it |
+| `status` | `indexed`; `skipped`: nothing readable, not English or no keywords, tried again when the document changes; `failed`: the download failed, tried again in the next `make index` |
+| `detail` | Why skipped or failed, e.g. `HTTP 404`, `no readable format: audio/mpeg`, `no text` (a scanned PDF), `not English` |
+| `url`, `media_type` | The file the keywords come from, or the last one tried |
+| `words` | Number of keywords; at most 50,000 count |
+| `terms` | The keywords in alphabetical order, each as often as it occurs: what BM25 ranks. Without basic words and numbers, the text cannot be read back from it |
 | `lexemes` | The distinct English word stems of `terms`, for `matched_terms` |
 | `fetched_at` | When the file was downloaded |
 | `document_changed_at` | The `changed_at` of the document it was built from |
 
 Check a run with `SELECT status, detail, count(*) FROM keyword.full_texts GROUP BY 1, 2 ORDER BY 3 DESC`.
 
-**Licences.** The project stays non-profit and the index keeps word counts only, so it reads the full text whatever the licence, also "all rights reserved" and unknown ([sources §3](sources/README.md#3-indexing)).
+**Licences.** This approach reads the full text whatever its licence, also "all rights reserved" and unknown: the project stays non-profit and the index keeps keywords only. The decision holds for keyword matching only; other approaches decide for themselves ([sources §3](sources/README.md#3-indexing)).
+
+## Keywords
+
+The index keeps every word that can be medical, also one a text names only once, and drops numbers and basic English words. Basic are the 5,000 most frequent English words of [wordfreq](https://github.com/rspeer/wordfreq), except:
+
+- MeSH terms of one word on anatomy, organisms, diseases, drugs, procedures, psychology, phenomena, disciplines, persons and health care (blood, surgery, patients, hospital);
+- words of longer MeSH terms on anatomy, diseases, drugs and procedures, outside the 1,000 most frequent words (failure as in heart failure, survival, oral);
+- words of two or three letters outside the 2,000 most frequent: mostly abbreviations (PSA, DRE, HF);
+- the words of the journey terms in [`terms.ts`](../matcher/algorithms/keyword/src/terms.ts), also with a plural "s" (follow, local, rise).
+
+The list is [`basic-words.json`](../matcher/algorithms/keyword/data/basic-words.json), built by [`basic-words.ts`](../matcher/algorithms/keyword/scripts/basic-words.ts) from the MeSH descriptors ([NLM download](https://nlmpubs.nlm.nih.gov/projects/mesh/MESH_FILES/xmlmesh/), `desc2026.gz`) and wordfreq's English frequencies, which it downloads at a fixed version: `node matcher/algorithms/keyword/scripts/basic-words.ts desc2026.gz`. Run it again when NLM publishes a new MeSH year or the rule changes. On 50 stored texts it keeps 42 % of the words, about 610 different words per text, 470 of them named once or twice. Of 80 medical test words it drops one, "doctor". A changed list applies to new and changed documents; for all, empty `keyword.full_texts` and run `make index` again.
+
+**English only.** A full text counts as English if the 100 most frequent English words make up at least 12 % of its words: about 30 % in English texts, at most 10 % in the Ukrainian, Spanish, Russian, German and other texts of the seed data. Texts in other languages are not indexed (`not English`); their metadata is.
+
+**Credits.** Medical Subject Headings 2026, courtesy of the U.S. National Library of Medicine (NLM); NLM does not endorse this project. Word frequencies: wordfreq v3.2 by Robyn Speer, data under CC BY-SA 4.0, with the SUBTLEX word lists by Marc Brysbaert et al. (freely available data), OpenSubtitles and Google Books Ngrams. `basic-words.json` is shared under CC BY-SA 4.0 as well.
 
 ## Run it
 
@@ -58,7 +73,7 @@ make index    # after every crawl; reads only new and changed documents
 make start    # MCP server, uses the database from the root .env
 ```
 
-`make index APPROACHES=keyword` indexes this approach only. The first `make index` on the seed data took 26 minutes, mostly waiting for arxiv.org, and stored 33 MB of word counts; later runs read only new and changed documents. The database tests (`make test`) create a database of their own per test file, because the index lives in the fixed schema `keyword`; their downloads are faked.
+`make index APPROACHES=keyword` indexes this approach only. The first `make index` on the seed data took 26 minutes, mostly waiting for arxiv.org; later runs read only new and changed documents. The database tests (`make test`) create a database of their own per test file, because the index lives in the fixed schema `keyword`; their downloads are faked.
 
 ## Results
 
@@ -82,5 +97,6 @@ Only 6 of the 56 papers graded in #11 are in the seed data, so these are not yet
 - **No negation or values.** "Keine Fernmetastasen" (no distant metastases) becomes "distant metastases". "PSA rising" and "PSA falling" differ in one word; PSA values are ignored.
 - **The term list only covers the synthetic journeys.** Other German words pass through and match nothing. The format of the real app is still open (#44).
 - **Full texts for some documents only.** PubMed without a PMCID, most podcasts and all videos have metadata only. Not read yet: Word and PowerPoint files, audio and video (speech-to-text is undecided), podcast show notes. Scanned PDFs without a text layer give no text. The references cut needs an English heading.
-- **English only.** Documents in other languages rank poorly.
+- **English only.** Full texts in other languages are not indexed, only their metadata, and match English journey terms poorly. A text that mixes languages counts by its share of frequent English words.
+- **Some medical words go.** The basic words include common words MeSH does not mark as medical ("doctor") and forms of journey words other than the plural ("rising" when the journey says "rise"). Rare words stay even when not medical: names, typos, words of other languages.
 - **Scores compare within one list only**, not between journeys or algorithms.
