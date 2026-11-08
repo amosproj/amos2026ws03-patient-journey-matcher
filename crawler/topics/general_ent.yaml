@@ -1,0 +1,62 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+# Ear, nose and throat in general: channels and podcasts of ENT societies, academic ENT departments and patient organisations.
+id: general_ent
+label: Ear, nose and throat in general
+
+# YouTube channels.
+channels:
+  - name: American Academy of Otolaryngology-Head and Neck Surgery (AAO-HNS)
+    url: https://www.youtube.com/channel/UC1QrPVA6-tihibHVLKIELSA
+  - name: American Society of Pediatric Otolaryngology (ASPO)
+    url: https://www.youtube.com/channel/UCOJnGzc5_X7Ir5T-RXjGerg
+  - name: Stanford Otolaryngology-Head and Neck Surgery
+    url: https://www.youtube.com/channel/UC5oJcoImmxwCMuSvSugpJtg
+  - name: American Tinnitus Association (ATA)
+    url: https://www.youtube.com/channel/UCHPFy-XMxiFY6WtxCllLr-A
+  - name: Vestibular Disorders Association (VeDA)
+    url: https://www.youtube.com/channel/UCn-Qx6uwbpZLmggujp9hHfw
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: aaohns_voices_of_otolaryngology
+    name: Voices of Otolaryngology
+    url: https://entnet.libsyn.com/rss
+    publisher: American Academy of Otolaryngology-Head and Neck Surgery Foundation (AAO-HNSF)
+    audience: clinicians
+    language: en
+    trusted_because: Flagship podcast of the AAO-HNS and its Foundation, the professional society of ENT physicians.
+  - key: aaohns_oto_journal
+    name: OTO Journal
+    url: https://feeds.libsyn.com/54812/rss
+    publisher: American Academy of Otolaryngology-Head and Neck Surgery Foundation (AAO-HNSF)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the AAO-HNS Foundation presenting research from its peer-reviewed journals since 2011.
+  - key: jama_otolaryngology_author_interviews
+    name: JAMA Otolaryngology-Head & Neck Surgery Author Interviews
+    url: https://jamaotolaryngologyauthorinterviews.libsyn.com/rss
+    publisher: JAMA Network
+    audience: clinicians
+    language: en
+    trusted_because: Authors discuss their articles in JAMA Otolaryngology-Head & Neck Surgery, a peer-reviewed journal of the American Medical Association.
+  - key: cleveland_clinic_head_and_neck_innovations
+    name: Head and Neck Innovations
+    url: https://rss.buzzsprout.com/2241209.rss
+    publisher: Cleveland Clinic Head & Neck Institute
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the Cleveland Clinic Head & Neck Institute on advances in otolaryngology, from a leading academic medical centre.
+  - key: uep_voice_box
+    name: The UEP Voice Box
+    url: https://www.uepvoicebox.com/feed.xml
+    publisher: Union of European Phoniatricians (UEP)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the Union of European Phoniatricians, the professional body for voice, speech and swallowing medicine.
+  - key: asha_voices
+    name: ASHA Voices
+    url: https://feeds.blubrry.com/feeds/asha_voices.xml
+    publisher: American Speech-Language-Hearing Association (ASHA)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of ASHA, the professional association of audiologists and speech-language pathologists, on hearing, balance, voice and swallowing care.

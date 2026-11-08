@@ -1,0 +1,75 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: pancreatitis
+label: Pancreatitis
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - pancreatitis
+  - Pancreatitis, Acute Necrotizing
+  - Pancreatitis, Chronic
+  - pancreatic necrosis
+  - walled-off necrosis
+  - Pancreatic Pseudocyst
+  - Exocrine Pancreatic Insufficiency
+  - pancreatic exocrine insufficiency
+  - pancreatic enzyme replacement therapy
+  - pancreatogenic diabetes
+  - type 3c diabetes
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - acute pancreatitis
+  - chronic pancreatitis
+  - necrotizing pancreatitis
+  - infected pancreatic necrosis
+  - gallstone pancreatitis
+  - alcoholic pancreatitis
+  - hypertriglyceridemia pancreatitis
+  - post-ERCP pancreatitis
+  - recurrent acute pancreatitis
+  - hereditary pancreatitis
+  - autoimmune pancreatitis
+  - pediatric acute pancreatitis
+  - pancreatic exocrine insufficiency
+  - pancreatogenic diabetes
+  # Diagnosis and screening
+  - acute pancreatitis severity classification
+  - acute pancreatitis computed tomography
+  - idiopathic acute pancreatitis
+  - chronic pancreatitis endoscopic ultrasound
+  - chronic pancreatitis fecal elastase
+  # Treatment
+  - acute pancreatitis fluid resuscitation
+  - acute pancreatitis early oral feeding
+  - acute pancreatitis enteral nutrition
+  - acute pancreatitis analgesia
+  - acute pancreatitis antibiotics
+  - post-ERCP pancreatitis indomethacin
+  - necrotizing pancreatitis step-up approach
+  - necrotizing pancreatitis endoscopic necrosectomy
+  - chronic pancreatitis pain management
+  - chronic pancreatitis celiac plexus block
+  - chronic pancreatitis endoscopic therapy
+  - chronic pancreatitis pancreatic surgery
+  - chronic pancreatitis islet autotransplantation
+  - chronic pancreatitis enzyme replacement therapy
+  # Living with
+  - pancreatitis quality of life
+  - chronic pancreatitis nutrition
+  - chronic pancreatitis alcohol smoking cessation
+  - chronic pancreatitis bone disease
+  - chronic pancreatitis opioid use
+  - acute pancreatitis long-term outcomes
+  - post-pancreatitis diabetes mellitus
+
+# YouTube channels.
+channels:
+  - name: National Pancreas Foundation (NPF)
+    url: https://www.youtube.com/channel/UCY3TZKz27P77CyWbsRohejQ
+  - name: "Mission: Cure"
+    url: https://www.youtube.com/channel/UC84v-dWnMg5EQFXTKd-kpUw
+  - name: Collaborative Alliance for Pancreatic Education and Research (CAPER)
+    url: https://www.youtube.com/channel/UCsXTKAh2XNgoFcduhognNZw
+  - name: American Pancreatic Association (APA)
+    url: https://www.youtube.com/channel/UCgD8UYgmjPIkD52p74RTx3w

@@ -1,0 +1,104 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+# Pediatrics in general: channels and podcasts of paediatric societies, children's hospitals and their patient-education services.
+id: general_pediatrics
+label: Pediatrics in general
+
+# YouTube channels.
+channels:
+  - name: American Academy of Pediatrics (AAP)
+    url: https://www.youtube.com/channel/UClR8YIQX5Fb8J2wmsUKLhvQ
+  - name: Canadian Paediatric Society (CPS)
+    url: https://www.youtube.com/channel/UCshE0mp04Cl36pgyqxtB7fQ
+  - name: AboutKidsHealth at The Hospital for Sick Children (SickKids)
+    url: https://www.youtube.com/channel/UCvHCw-Pc9Cl9VeZrvEVldEw
+  - name: The Hospital for Sick Children (SickKids)
+    url: https://www.youtube.com/channel/UCRXuIrY0w8NPvBptXtfDKvA
+  - name: Boston Children's Hospital
+    url: https://www.youtube.com/channel/UCyAzJwpOZqZyBGWO7jSImzg
+  - name: The Children's Hospital of Philadelphia (CHOP)
+    url: https://www.youtube.com/channel/UCCdnN4v9Fia0pjUzYlUBsGg
+  - name: Cincinnati Children's Hospital Medical Center (Cincinnati Children's)
+    url: https://www.youtube.com/channel/UCSC8V1ez4zt3rviyPWzk9Sg
+  - name: Ann & Robert H. Lurie Children's Hospital of Chicago (Lurie Children's)
+    url: https://www.youtube.com/channel/UC0deSyrJ8rJUROPwjUFxjNQ
+  - name: St. Jude Children's Research Hospital
+    url: https://www.youtube.com/channel/UC2NI99YBLdVDNVK-iQmkUbA
+  - name: Nemours KidsHealth (Nemours Children's Health)
+    url: https://www.youtube.com/channel/UCDummp96hqu7KAUbs5k_zOw
+  - name: The Royal Children's Hospital Melbourne (RCH)
+    url: https://www.youtube.com/channel/UCkM3BNrD_qHu2rApxVdKO1A
+  - name: Great Ormond Street Hospital for Children (GOSH)
+    url: https://www.youtube.com/channel/UCNvNvGvwC281P19afaQDCUg
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: aap_pediatrics_on_call
+    name: Pediatrics On Call
+    url: https://rss.libsyn.com/shows/278672/destinations/2135006.xml
+    publisher: American Academy of Pediatrics (AAP)
+    audience: clinicians
+    language: en
+    trusted_because: Official AAP podcast with interviews of researchers and clinicians on new pediatric research and current topics.
+  - key: aap_healthy_children
+    name: Healthy Children
+    url: https://rss.libsyn.com/shows/527743/destinations/4538243.xml
+    publisher: American Academy of Pediatrics (AAP)
+    audience: patients
+    language: en
+    trusted_because: Official AAP podcast for parents, hosted by a pediatrician, with advice from the AAP's HealthyChildren.org.
+  - key: bmj_adc_podcast
+    name: ADC Podcast
+    url: https://feed.podbean.com/adcbmj/feed.xml
+    publisher: BMJ Group (Archives of Disease in Childhood)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of Archives of Disease in Childhood, the peer-reviewed paediatric journal of BMJ and the Royal College of Paediatrics and Child Health.
+  - key: rcpch_podcasts
+    name: RCPCH Podcasts
+    url: https://rss.libsyn.com/shows/299579/destinations/2377646.xml
+    publisher: Royal College of Paediatrics and Child Health (RCPCH)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the RCPCH, the UK professional body for paediatricians, on patient safety, child health research and leadership.
+  - key: boston_childrens_answers_parentcast
+    name: Boston Children's Answers Parentcast
+    url: https://feeds.resonaterecordings.com/boston-childrens-answers-kids-health
+    publisher: Boston Children's Hospital
+    audience: patients
+    language: en
+    trusted_because: Specialists of Boston Children's Hospital answer parents' questions on child health.
+  - key: cincinnati_kids_health_uncomplicated
+    name: Kids' Health Uncomplicated
+    url: https://feed.podbean.com/khu/feed.xml
+    publisher: Cincinnati Children's Hospital Medical Center (Cincinnati Children's)
+    audience: patients
+    language: en
+    trusted_because: Podcast of Cincinnati Children's, with its specialists, on parenting and children's health for families.
+  - key: cincinnati_pediatric_consult
+    name: Pediatric Consult Podcast
+    url: https://feed.podbean.com/pediatricconsult/feed.xml
+    publisher: Cincinnati Children's Hospital Medical Center (Cincinnati Children's)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of Cincinnati Children's for primary care providers; one common pediatric condition per episode, with its specialists.
+  - key: chop_primary_care_perspectives
+    name: Primary Care Perspectives
+    url: https://feed.podbean.com/marketingn4/feed.xml
+    publisher: The Children's Hospital of Philadelphia (CHOP)
+    audience: clinicians
+    language: en
+    trusted_because: CHOP podcast for pediatricians on topics of daily primary care practice, hosted by a CHOP primary care physician.
+  - key: chop_vec_vaccine_notes
+    name: VEC Vaccine Notes
+    url: https://feed.podbean.com/vec-vaccine-notes/feed.xml
+    publisher: Vaccine Education Center at The Children's Hospital of Philadelphia (CHOP)
+    audience: patients
+    language: en
+    trusted_because: Podcast of CHOP's Vaccine Education Center, which explains vaccines and the diseases they prevent for families.
+  - key: sickkids_vs
+    name: SickKids VS
+    url: https://feeds.cohostpodcasting.com/xrnjZLsS
+    publisher: SickKids Foundation (The Hospital for Sick Children)
+    audience: patients
+    language: en
+    trusted_because: Narrative podcast of the SickKids Foundation, the charity of The Hospital for Sick Children, with SickKids scientists and physicians on child health research.

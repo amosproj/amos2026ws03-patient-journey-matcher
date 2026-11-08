@@ -94,6 +94,8 @@ class Frontier:
       this run or is in `known_ids` (documents stored by an earlier run).
     - Cited papers must pass the topic filter. Seed results always count.
     - References are followed until `max_depth` (seeds have depth 0).
+    - A seed with `since` that returns `max_results` documents is noted: sources list the
+      newest first then, so older documents of the period may be missing.
     """
 
     def __init__(
@@ -114,6 +116,7 @@ class Frontier:
         self._expanded: set[str] = set()
         self._claimed: set[str] = set()
         self._citations: dict[str, list[str]] = {}
+        self._max_results_reached: list[str] = []
         self.stats = CollectionStats()
 
     def add_documents(
@@ -133,6 +136,9 @@ class Frontier:
             self.stats.lookups_missing += sum(
                 1 for native_id in request.ids if native_id not in returned
             )
+        elif request.since is not None and len(documents) >= request.max_results:
+            self.stats.max_results_reached += 1
+            self._max_results_reached.append(request.seed_label)
         provenance = self._query_provenance(request)
         to_expand: list[str] = []
         for document in documents:
@@ -205,6 +211,7 @@ class Frontier:
             failures=list(failures),
             stats=stats,
             citations=citations,
+            max_results_reached=list(self._max_results_reached),
             run_error=run_error,
         )
 

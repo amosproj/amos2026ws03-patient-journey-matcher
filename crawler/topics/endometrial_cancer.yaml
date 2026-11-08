@@ -1,0 +1,78 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: endometrial_cancer
+label: Endometrial cancer
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - endometrial cancer
+  - endometrial carcinoma
+  - Endometrial Neoplasms
+  - endometrial adenocarcinoma
+  - endometrial hyperplasia
+  - endometrial intraepithelial neoplasia
+  - uterine cancer
+  - uterine carcinoma
+  - Uterine Neoplasms
+  - womb cancer
+  - uterine serous carcinoma
+  - uterine carcinosarcoma
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - endometrial cancer
+  - uterine cancer
+  - early-stage endometrial cancer
+  - high-risk endometrial cancer
+  - advanced endometrial cancer
+  - recurrent endometrial cancer
+  - uterine serous carcinoma
+  - uterine carcinosarcoma
+  - atypical endometrial hyperplasia
+  # Diagnosis and screening
+  - endometrial cancer postmenopausal bleeding
+  - endometrial cancer transvaginal ultrasound
+  - endometrial cancer endometrial biopsy
+  - endometrial cancer molecular classification
+  - endometrial cancer mismatch repair deficiency
+  - endometrial cancer POLE mutation
+  - endometrial cancer Lynch syndrome
+  - endometrial cancer FIGO staging
+  - endometrial cancer obesity
+  # Treatment
+  - endometrial cancer hysterectomy
+  - endometrial cancer minimally invasive surgery
+  - endometrial cancer sentinel lymph node
+  - endometrial cancer fertility-sparing treatment
+  - endometrial cancer progestin therapy
+  - endometrial cancer vaginal brachytherapy
+  - endometrial cancer adjuvant chemotherapy
+  - endometrial cancer chemoradiotherapy
+  - endometrial cancer carboplatin paclitaxel
+  - endometrial cancer dostarlimab
+  - endometrial cancer pembrolizumab
+  - endometrial cancer durvalumab
+  - endometrial cancer lenvatinib
+  # Living with
+  - endometrial cancer survivorship
+  - endometrial cancer quality of life
+  - endometrial cancer lymphedema
+  - endometrial cancer sexual function
+  - endometrial cancer menopause hormone therapy
+  - endometrial cancer weight loss
+  - endometrial cancer follow-up
+
+# YouTube channels.
+channels:
+  - name: Peaches Womb Cancer Trust
+    url: https://www.youtube.com/channel/UC4IAv3qimv5Fy-hxKyrDChQ
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: anzgog_on_the_down_low
+    name: On The Down Low
+    url: https://rss.buzzsprout.com/2013874.rss
+    publisher: Australia New Zealand Gynaecological Oncology Group (ANZGOG)
+    audience: patients
+    language: en
+    trusted_because: ANZGOG, the Australia New Zealand gynaecological cancer research group, shares patient and clinician stories; its 2025 season covers uterine cancers.

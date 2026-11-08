@@ -1,0 +1,98 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+# Endocrinology in general: channels and podcasts of endocrine and diabetes societies, patient organisations and journals.
+id: general_endocrinology
+label: Endocrinology in general
+
+# YouTube channels.
+channels:
+  - name: Endocrine Society
+    url: https://www.youtube.com/channel/UC-yB7B1YvqN9hwaEeyOGtuw
+  - name: American Diabetes Association (ADA)
+    url: https://www.youtube.com/channel/UC-rZbNdZSGa1Uan8aTj_SsQ
+  - name: Diabetes UK
+    url: https://www.youtube.com/channel/UCXFFcYoTl244oguj2NAisiw
+  - name: International Diabetes Federation (IDF)
+    url: https://www.youtube.com/channel/UCtjXGdBG1OEL36XEZ0vXJ7g
+  - name: European Association for the Study of Diabetes (EASD)
+    url: https://www.youtube.com/channel/UC8G1y7-r6biiGUS-IeiTfzg
+  - name: European Society of Endocrinology (ESE)
+    url: https://www.youtube.com/channel/UCusj1KKStUyFLV_SH5HvArQ
+  - name: Society for Endocrinology (SfE)
+    url: https://www.youtube.com/channel/UC9cBh214meUylrH95KAP4Qw
+  - name: Association of Diabetes Care & Education Specialists (ADCES)
+    url: https://www.youtube.com/channel/UCqW5N7c-qG6RxVsl8qkf0aA
+  - name: The Pituitary Foundation
+    url: https://www.youtube.com/channel/UCnzncZctddYi1Oe9bxZd18Q
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: ada_doc_updates
+    name: DOC Updates
+    url: https://diabetescoreupdate.libsyn.com/rss
+    publisher: American Diabetes Association (ADA)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the American Diabetes Association on clinically relevant articles from its peer-reviewed journals (formerly Diabetes Core Update).
+  - key: ada_diabetes_care_on_air
+    name: Diabetes Care "On Air"
+    url: https://rss.libsyn.com/shows/453336/destinations/3811482.xml
+    publisher: American Diabetes Association (ADA)
+    audience: clinicians
+    language: en
+    trusted_because: Monthly podcast of the American Diabetes Association's peer-reviewed clinical research journal Diabetes Care, with interviews of authors of its featured articles.
+  - key: ada_diabetes_day_by_day
+    name: Diabetes Day by Day
+    url: https://rss.libsyn.com/shows/435096/destinations/3631206.xml
+    publisher: American Diabetes Association (ADA)
+    audience: patients
+    language: en
+    trusted_because: American Diabetes Association podcast for people with diabetes and their caregivers, with practical advice from clinicians.
+  - key: adces_diabetes_care_conversations
+    name: Diabetes Care Conversations
+    url: https://feeds.simplecast.com/cq1NVAKn
+    publisher: Association of Diabetes Care & Education Specialists (ADCES)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of ADCES, the professional society of diabetes care and education specialists.
+  - key: endocrine_news_podcast
+    name: Endocrine News Podcast
+    url: https://media.rss.com/endocrine-news-podcast/feed.xml
+    publisher: Endocrine Society
+    audience: clinicians
+    language: en
+    trusted_because: Free podcast of the Endocrine Society with expert interviews on the latest research and trends in endocrinology.
+  - key: endocrine_feedback_loop
+    name: Endocrine Feedback Loop
+    url: https://media.rss.com/endocrine-feedback-loop/feed.xml
+    publisher: Endocrine Society
+    audience: clinicians
+    language: en
+    trusted_because: Journal club of the Endocrine Society on articles from its peer-reviewed clinical journals.
+  - key: aace_podcasts
+    name: AACE Podcasts
+    url: https://rss.buzzsprout.com/1554491.rss
+    publisher: American Association of Clinical Endocrinology (AACE)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of AACE on its clinical guidance documents, consensus statements and research.
+  - key: easd_diabetes_insights
+    name: Diabetes Insights - Breakthroughs and Innovators
+    url: https://diabetes-insights.podigee.io/feed/mp3
+    publisher: European Association for the Study of Diabetes (EASD)
+    audience: clinicians
+    language: en
+    trusted_because: Expert interviews on diabetes research, medicines and technology, published by the EASD.
+  - key: idf_d_talk
+    name: D-Talk
+    url: https://feeds.acast.com/public/shows/6214f04174d82e00145af407
+    publisher: International Diabetes Federation (IDF)
+    audience: patients
+    language: en
+    trusted_because: Conversations with health professionals and advocates on topical diabetes issues, published by the International Diabetes Federation.
+  - key: diabetes_canada_healthcare_huddle
+    name: Diabetes Canada Healthcare Huddle
+    url: https://feeds.blubrry.com/feeds/diabeteshealthcarehuddle.xml
+    publisher: Diabetes Canada
+    audience: clinicians
+    language: en
+    trusted_because: Diabetes Canada's podcast for health care professionals, with case studies and updates of its clinical practice guidelines.

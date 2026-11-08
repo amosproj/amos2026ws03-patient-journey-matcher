@@ -254,6 +254,9 @@ class CollectionStats(BaseModel):
     skipped_known: int = 0
     skipped_invalid: int = 0
     skipped_off_topic: int = 0
+    max_results_reached: int = 0
+    """Seed requests with `since` that returned `max_results` documents. Sources list the newest
+    first then, so older documents of the period may be missing."""
 
 
 class CollectionResult(BaseModel):
@@ -264,11 +267,14 @@ class CollectionResult(BaseModel):
     stats: CollectionStats = Field(default_factory=CollectionStats)
     citations: dict[str, list[str]] = Field(default_factory=dict)
     """Cited document ID to citing document IDs, for collected and already known documents."""
+    max_results_reached: list[str] = Field(default_factory=list)
+    """Query, channel or feed key of each seed request counted in `stats.max_results_reached`."""
     run_error: str | None = None
 
     @property
     def ok(self) -> bool:
-        return not self.failures and self.run_error is None
+        """Every queued request finished: none failed, none was left over (`max_requests`)."""
+        return not self.failures and self.run_error is None and not self.stats.unprocessed_requests
 
 
 def validation_message(error: ValidationError) -> str:

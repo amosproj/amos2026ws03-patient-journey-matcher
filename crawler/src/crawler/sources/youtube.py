@@ -24,6 +24,9 @@ LICENCES = {"youtube": "youtube-standard", "creativeCommon": "CC-BY-3.0"}
 """`status.license`: YouTube's standard licence, or the CC BY licence uploaders can pick."""
 RETENTION = timedelta(days=30)
 """YouTube data, IDs included, must be refreshed or deleted within 30 days."""
+REFRESH_WITHIN = timedelta(days=15)
+"""`--store` runs fetch the stored videos of their channels again once they expire within this
+time, so channels crawled with `--store` at least every two weeks keep their videos."""
 PAGE_SIZE = 50
 """Most items playlistItems.list and videos.list return per call; a call costs one unit."""
 SINCE_LOOKAHEAD = 50

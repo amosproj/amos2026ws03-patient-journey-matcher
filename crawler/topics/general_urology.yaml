@@ -1,0 +1,48 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+# Urology in general: channels and podcasts of urological societies and charities.
+id: general_urology
+label: Urology in general
+
+# YouTube channels.
+channels:
+  - name: American Urological Association (AUA)
+    url: https://www.youtube.com/channel/UCTyj0qXIIaqiU_Sa9P4Ow8w
+  - name: European Association of Urology (EAU)
+    url: https://www.youtube.com/channel/UCuBt1xdv2n7GPawh7lcqDRA
+  - name: Urology Care Foundation
+    url: https://www.youtube.com/channel/UCHCZ1sbVTYhpM1qmKFiOJJQ
+  - name: The Urology Foundation
+    url: https://www.youtube.com/channel/UCLBZ58KNfk6oVwutySwqzjw
+  - name: Interstitial Cystitis Association (ICA)
+    url: https://www.youtube.com/channel/UCb3yfLzyvRjua3qdmrUZgqA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: auau_podcast
+    name: AUAUniversity
+    url: https://feeds.soundcloud.com/users/soundcloud:users:360958121/sounds.rss
+    publisher: American Urological Association (AUA)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the American Urological Association on guidelines, clinical care and surgical techniques.
+  - key: urology_care_podcast
+    name: Urology Care Podcast
+    url: https://feeds.libsyn.com/458190/rss
+    publisher: Urology Care Foundation
+    audience: patients
+    language: en
+    trusted_because: Official podcast of the Urology Care Foundation, the foundation of the American Urological Association, for patients and caregivers.
+  - key: eau_podcast
+    name: EAU Podcast
+    url: https://rss.buzzsprout.com/1555850.rss
+    publisher: European Association of Urology (EAU)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the European Association of Urology and its European School of Urology on guideline updates and clinical practice.
+  - key: bjui_podcast
+    name: BJUI - BJU International
+    url: https://feeds.soundcloud.com/users/soundcloud:users:39107409/sounds.rss
+    publisher: BJU International (BJUI)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the peer-reviewed journal BJU International discussing recent papers and clinical guidance.

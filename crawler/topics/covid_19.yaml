@@ -1,0 +1,82 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: covid_19
+label: COVID-19
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - COVID-19
+  - COVID19
+  - SARS-CoV-2
+  - SARS-CoV2
+  - severe acute respiratory syndrome coronavirus 2
+  - coronavirus disease 2019
+  - Post-Acute COVID-19 Syndrome
+  - long COVID
+  - post-COVID-19 condition
+  - post-COVID condition
+  - post-COVID syndrome
+  - post-acute sequelae of SARS-CoV-2
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - COVID-19
+  - SARS-CoV-2 infection
+  - COVID-19 pneumonia
+  - COVID-19 risk factors
+  - COVID-19 children
+  - COVID-19 pregnancy
+  - COVID-19 immunocompromised
+  # Diagnosis and screening
+  - COVID-19 diagnosis
+  - COVID-19 rapid antigen test
+  - COVID-19 PCR testing
+  # Treatment
+  - COVID-19 treatment
+  - COVID-19 outpatient treatment
+  - COVID-19 nirmatrelvir ritonavir
+  - COVID-19 remdesivir
+  - COVID-19 molnupiravir
+  - COVID-19 corticosteroids
+  - COVID-19 tocilizumab
+  - COVID-19 baricitinib
+  - COVID-19 anticoagulation
+  - COVID-19 oxygen therapy
+  - COVID-19 prone positioning
+  - COVID-19 mechanical ventilation
+  - COVID-19 mRNA vaccine
+  - COVID-19 vaccine effectiveness
+  - COVID-19 booster vaccination
+  - COVID-19 vaccine safety
+  # Living with
+  - long COVID
+  - post-COVID-19 condition
+  - post-acute sequelae of SARS-CoV-2
+  - long COVID symptoms
+  - long COVID treatment
+  - long COVID rehabilitation
+  - long COVID fatigue
+  - long COVID cognitive impairment
+  - long COVID dysautonomia
+  - long COVID post-exertional malaise
+  - long COVID children
+  - long COVID vaccination
+  - long COVID quality of life
+  - long COVID return to work
+
+# YouTube channels.
+channels:
+  - name: Researching COVID to Enhance Recovery (RECOVER)
+    url: https://www.youtube.com/channel/UC9k05vWtot1DGT4LiT257HA
+  - name: Patient-Led Research Collaborative (PLRC)
+    url: https://www.youtube.com/channel/UCO2wEKp95ELUUkPF1tcFXjA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: jama_coronavirus_covid_19_qa
+    name: Coronavirus (COVID-19) Q&A
+    url: https://covid19jama.libsyn.com/rss
+    publisher: JAMA Network
+    audience: clinicians
+    language: en
+    trusted_because: Editors of the JAMA Network interview experts and authors of COVID-19 research, from the publisher of the peer-reviewed journal JAMA.

@@ -1,0 +1,81 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: atrial_fibrillation
+label: Atrial fibrillation
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - atrial fibrillation
+  - AFib
+  - auricular fibrillation
+  - atrial flutter
+  - left atrial appendage
+  - pulmonary vein isolation
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - atrial fibrillation
+  - paroxysmal atrial fibrillation
+  - persistent atrial fibrillation
+  - postoperative atrial fibrillation
+  - subclinical atrial fibrillation
+  - atrial flutter
+  - atrial fibrillation heart failure
+  - atrial fibrillation stroke
+  - atrial fibrillation in older adults
+  # Diagnosis and screening
+  - atrial fibrillation screening
+  - atrial fibrillation electrocardiogram
+  - atrial fibrillation wearable devices
+  - atrial fibrillation implantable loop recorder
+  - atrial fibrillation stroke risk stratification
+  - atrial fibrillation bleeding risk
+  - atrial fibrillation detection deep learning
+  # Treatment
+  - atrial fibrillation anticoagulation
+  - atrial fibrillation direct oral anticoagulants
+  - atrial fibrillation apixaban
+  - atrial fibrillation rivaroxaban
+  - atrial fibrillation edoxaban
+  - atrial fibrillation dabigatran
+  - atrial fibrillation warfarin
+  - left atrial appendage occlusion
+  - atrial fibrillation rate control
+  - atrial fibrillation rhythm control
+  - atrial fibrillation electrical cardioversion
+  - atrial fibrillation antiarrhythmic drugs
+  - atrial fibrillation amiodarone
+  - atrial fibrillation catheter ablation
+  - atrial fibrillation pulsed field ablation
+  - atrial fibrillation surgical ablation
+  - atrial fibrillation risk factor modification
+  # Living with
+  - atrial fibrillation quality of life
+  - atrial fibrillation patient education
+  - atrial fibrillation shared decision making
+  - atrial fibrillation integrated care
+  - atrial fibrillation physical activity
+  - atrial fibrillation medication adherence
+  - atrial fibrillation self-management
+
+# YouTube channels.
+channels:
+  - name: Arrhythmia Alliance
+    url: https://www.youtube.com/channel/UCmWIQStpy-1mHPnkKqDnbLg
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: ehra_cardio_talk
+    name: EHRA Cardio Talk
+    url: https://rss.libsyn.com/shows/370847/destinations/3046280.xml
+    publisher: European Society of Cardiology (ESC)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the European Heart Rhythm Association of the European Society of Cardiology on electrophysiology, atrial fibrillation and pacing.
+  - key: hrs_the_lead
+    name: The Lead Podcast presented by Heart Rhythm Society
+    url: https://rss.libsyn.com/shows/479448/destinations/4075953.xml
+    publisher: Heart Rhythm Society (HRS)
+    audience: clinicians
+    language: en
+    trusted_because: Weekly journal review podcast presented by the Heart Rhythm Society, the international society of heart rhythm professionals.

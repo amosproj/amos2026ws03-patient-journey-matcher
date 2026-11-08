@@ -1,0 +1,89 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: obesity
+label: Obesity
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - obesity
+  - overweight
+  - adiposity based chronic disease
+  - bariatric surgery
+  - metabolic surgery
+  - weight loss surgery
+  - gastric bypass
+  - sleeve gastrectomy
+  - gastroplasty
+  - anti obesity agent
+  - anti obesity medication
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - obesity
+  - severe obesity
+  - childhood obesity
+  - sarcopenic obesity
+  - monogenic obesity
+  - obesity fatty liver
+  # Diagnosis and screening
+  - obesity body mass index
+  - obesity waist circumference
+  - obesity body composition
+  - obesity diagnostic criteria
+  - childhood obesity prevention
+  # Treatment
+  - obesity management
+  - obesity pharmacotherapy
+  - obesity semaglutide
+  - obesity tirzepatide
+  - obesity liraglutide
+  - obesity naltrexone bupropion
+  - obesity phentermine topiramate
+  - obesity orlistat
+  - obesity lifestyle intervention
+  - obesity behavioral therapy
+  - childhood obesity treatment
+  - bariatric surgery
+  - sleeve gastrectomy
+  - Roux-en-Y gastric bypass
+  - obesity endoscopic bariatric therapy
+  - adolescent bariatric surgery
+  - bariatric surgery complications
+  # Living with
+  - obesity weight maintenance
+  - anti-obesity medication discontinuation
+  - bariatric surgery nutritional deficiencies
+  - bariatric surgery follow-up
+  - bariatric surgery quality of life
+  - obesity weight stigma
+  - obesity depression
+  - obesity pregnancy
+  - obesity digital intervention
+
+# YouTube channels.
+channels:
+  - name: Obesity Action Coalition (OAC)
+    url: https://www.youtube.com/channel/UCxv3-2O2XnXtZrsa7H4g1sg
+  - name: Obesity Canada
+    url: https://www.youtube.com/channel/UCINnEI_7ZZ2VXGC6yC4jZLg
+  - name: American Society for Metabolic and Bariatric Surgery (ASMBS)
+    url: https://www.youtube.com/channel/UCSJd14Hv41ch0H6mxgO_4aw
+  - name: International Federation for the Surgery of Obesity and Metabolic Disorders (IFSO)
+    url: https://www.youtube.com/channel/UCMjnRxSjJF6CQ7iYSsO1GoQ
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: obesity_canada_scale_up_your_practice
+    name: Scale Up Your Practice by Obesity Canada
+    url: https://anchor.fm/s/fe41a470/podcast/rss
+    publisher: Obesity Canada
+    audience: clinicians
+    language: en
+    trusted_because: Obesity Canada's podcast for health care professionals on evidence-informed obesity care.
+  - key: oma_obesity_a_disease
+    name: "Obesity: A Disease"
+    url: https://feeds.castos.com/wm87k
+    publisher: Obesity Medicine Association (OMA)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the Obesity Medicine Association, the professional society of clinicians who treat obesity.

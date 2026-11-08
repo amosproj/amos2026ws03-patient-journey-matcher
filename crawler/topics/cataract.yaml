@@ -1,0 +1,79 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: cataract
+label: Cataract
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - cataract
+  - cataractous
+  - Cataract Extraction
+  - phacoemulsification
+  - intraocular lens
+  - Lenses, Intraocular
+  - Lens Implantation, Intraocular
+  - refractive lens exchange
+  - Capsule Opacification
+  - Pseudophakia
+  - pseudophakic
+  - aphakia
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - cataract
+  - age-related cataract
+  - congenital cataract
+  - pediatric cataract
+  - posterior subcapsular cataract
+  - nuclear cataract
+  - cortical cataract
+  - traumatic cataract
+  - cataract risk factors
+  - cataract corticosteroids
+  # Diagnosis and screening
+  - cataract screening
+  - cataract grading
+  - cataract visual acuity
+  - cataract preoperative assessment
+  - cataract biometry
+  - intraocular lens power calculation
+  # Treatment
+  - cataract surgery
+  - phacoemulsification
+  - manual small incision cataract surgery
+  - femtosecond laser cataract surgery
+  - cataract extraction
+  - intraocular lens implantation
+  - cataract multifocal intraocular lens
+  - cataract toric intraocular lens
+  - cataract surgery topical anesthesia
+  - cataract surgery intracameral antibiotics
+  - cataract surgery endophthalmitis
+  - cataract surgery macular edema
+  - cataract surgery nepafenac
+  - cataract surgery complications
+  - immediately sequential bilateral cataract surgery
+  - posterior capsule opacification
+  - cataract YAG laser capsulotomy
+  # Living with
+  - cataract surgery outcomes
+  - cataract surgery quality of life
+  - cataract surgery recovery
+  - cataract surgery falls
+  - cataract surgery dementia
+  - cataract surgery follow-up
+
+# YouTube channels.
+channels:
+  - name: American Society of Cataract and Refractive Surgery (ASCRS)
+    url: https://www.youtube.com/channel/UCkUA4RoekXkXl4rCeCuFdtw
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: escrs_podcasts
+    name: ESCRS Podcasts
+    url: https://escrs.libsyn.com/rss
+    publisher: European Society of Cataract and Refractive Surgeons (ESCRS)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the ESCRS, the European society of cataract and refractive surgeons.

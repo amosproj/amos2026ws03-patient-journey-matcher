@@ -4,6 +4,8 @@ Checked 01.11.2026 against the specs and the live feeds. Shared rules: [README](
 
 RSS 2.0 file per show, one `<item>` per episode. No API, key or quota; one GET per feed. Hand-curated [feed list](#curated-feed-list), no discovery. Namespaces read: RSS core, `itunes:`, `podcast:` (`guid`, `transcript`, `chapters`, `person`, `license`), `content:encoded`, `atom:link rel="self"`.
 
+The six feeds checked:
+
 | Feed | Publisher | Episodes | Transcripts |
 |---|---|---|---|
 | [JCO Podcast](https://jcopodcast.libsyn.com/rss) | ASCO | 470 | In show notes of 30 of newest 50 |
@@ -50,23 +52,13 @@ Feed state (crawler table): feed key, current URL, `ETag`, `Last-Modified`, last
 
 1. `podcast:transcript`: VTT, then SRT, JSON, HTML, text. Strip timecodes, keep speakers. Match types loosely (Lancet declares `application/srt`, serves `application/x-subrip`).
 2. Show notes (`content:encoded`, else `description`): full text for ASCO; others 60–190 words. Feeds are not archives (NEJM keeps 22), so notes are re-readable only while listed. Other ASCO transcripts are on ascopubs.org (terms not checked).
-3. Speech-to-text: undecided. About 715 h back catalogue, 66 h new a year; $0.003–0.006/min (OpenAI) = $130–260 once, $12–24 a year. A transcript is a copy, see [open questions](open-questions.md).
+3. Speech-to-text: undecided. About 715 h back catalogue in the six feeds, 66 h new a year; $0.003–0.006/min (OpenAI) = $130–260 once, $12–24 a year. A transcript is a copy, see [open questions](open-questions.md).
 
 ## Curated feed list
 
-One hand-edited YAML file in the crawler, like the topic files:
-
-```yaml
-- key: jco                    # stable and unique; used in episode IDs, never reused
-  url: https://jcopodcast.libsyn.com/rss
-  publisher: American Society of Clinical Oncology (ASCO)
-  audience: clinicians        # clinicians | patients
-  topics: [oncology]          # disease areas, same names as the topic files
-  language: en
-  trusted_because: Official podcast of ASCO's peer-reviewed Journal of Clinical Oncology.
-```
-
-`publisher` replaces the unreliable `itunes:author`; `topics` replaces `itunes:category` ("Medicine" for all six).
+Hand-edited under `podcasts:` in the topic files, with the curation rules in the
+[crawler README](../../crawler/README.md#topic-files). `publisher` replaces the unreliable
+`itunes:author`; the topic files replace `itunes:category` ("Medicine" for all six).
 
 ## To be aware of
 

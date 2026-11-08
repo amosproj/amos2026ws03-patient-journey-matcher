@@ -1,0 +1,98 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: peripheral_artery_disease
+label: Peripheral artery disease
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - peripheral artery disease
+  - peripheral arterial disease
+  - peripheral arterial occlusive disease
+  - peripheral vascular disease
+  - lower extremity artery disease
+  - lower extremity arterial disease
+  - intermittent claudication
+  - chronic limb threatening ischemia
+  - chronic limb threatening ischaemia
+  - critical limb ischemia
+  - critical limb ischaemia
+  - CLTI
+  - acute limb ischemia
+  - acute limb ischaemia
+  - ankle brachial index
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - peripheral artery disease
+  - peripheral arterial disease
+  - intermittent claudication
+  - chronic limb-threatening ischemia
+  - critical limb ischemia
+  - acute limb ischemia
+  - peripheral artery disease diabetes
+  - peripheral artery disease femoropopliteal
+  - peripheral artery disease infrapopliteal
+  # Diagnosis and screening
+  - intermittent claudication ankle brachial index
+  - peripheral artery disease toe pressure
+  - peripheral artery disease duplex ultrasound
+  - peripheral artery disease CT angiography
+  - peripheral artery disease screening
+  - chronic limb-threatening ischemia WIfI
+  # Treatment
+  - peripheral artery disease revascularization
+  - peripheral artery disease endovascular therapy
+  - peripheral artery disease balloon angioplasty
+  - peripheral artery disease drug-coated balloon
+  - peripheral artery disease stenting
+  - peripheral artery disease atherectomy
+  - peripheral artery disease bypass surgery
+  - peripheral artery disease antiplatelet therapy
+  - peripheral artery disease rivaroxaban
+  - peripheral artery disease statin therapy
+  - intermittent claudication cilostazol
+  - chronic limb-threatening ischemia revascularization
+  - chronic limb-threatening ischemia limb salvage
+  - peripheral artery disease major amputation
+  - acute limb ischemia thrombolysis
+  # Living with
+  - peripheral artery disease supervised exercise
+  - peripheral artery disease home-based exercise
+  - peripheral artery disease smoking cessation
+  - intermittent claudication quality of life
+  - peripheral artery disease self-management
+  - peripheral artery disease foot care
+  - peripheral artery disease amputation rehabilitation
+  - chronic limb-threatening ischemia wound care
+  - peripheral artery disease secondary prevention
+
+# YouTube channels.
+channels:
+  - name: Vascular Cures
+    url: https://www.youtube.com/channel/UCXdulE5GAhy2Z26OItzJ73g
+  - name: Society for Vascular Surgery (SVS)
+    url: https://www.youtube.com/channel/UC2FHIqynbiKxNw8o_G502WQ
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: audible_bleeding
+    name: Audible Bleeding
+    url: https://audiblebleeding.libsyn.com/rss
+    publisher: Society for Vascular Surgery (SVS)
+    audience: clinicians
+    language: en
+    trusted_because: Interviews, journal author spotlights and landmark paper reviews for vascular surgeons, from the Society for Vascular Surgery.
+  - key: esvs_podcast
+    name: European Society for Vascular Surgery
+    url: https://media.rss.com/esvs/feed.xml
+    publisher: European Society for Vascular Surgery (ESVS)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the European Society for Vascular Surgery on its guidelines, trials and techniques for arterial, venous and aortic disease.
+  - key: aha_pad_podcast_series
+    name: Peripheral Artery Disease (PAD) Podcast Series
+    url: https://rss.libsyn.com/shows/421328/destinations/3500081.xml
+    publisher: American Heart Association (AHA)
+    audience: clinicians
+    language: en
+    trusted_because: Series by the American Heart Association for health care professionals on PAD screening, lifestyle change, wound care and foot care.

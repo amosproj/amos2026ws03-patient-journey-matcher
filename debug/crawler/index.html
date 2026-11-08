@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Crawler Debug</title>
+<link rel="icon" href="data:,">
 <style>
 :root {
   --bg: #f5f6f8; --panel: #ffffff; --text: #1d2127; --muted: #6a7280; --line: #e3e6ea;
@@ -183,16 +184,106 @@ td.found { min-width: 190px; }
 .kw.major { font-weight: 700; color: var(--accent); }
 .thumb { display: block; width: 100%; max-width: 320px; border-radius: 6px; margin: 6px 0 4px; }
 .detail dl.extra { grid-template-columns: 110px 1fr; font-size: 12px; color: var(--muted); }
+
+/* Screens and the database view */
+[hidden] { display: none !important; }
+.views { display: flex; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
+.views button { border: 0; background: transparent; padding: 4px 12px; cursor: pointer; color: var(--muted); font-weight: 600; }
+.views button + button { border-left: 1px solid var(--line); }
+.views button.active { background: var(--accent); color: #fff; }
+.check { display: flex; align-items: center; gap: 7px; font-size: 12.5px; cursor: pointer; }
+.check:has(input:disabled) { opacity: .5; cursor: default; }
+.muted { color: var(--muted); }
+.mono { font: 11.5px ui-monospace, SFMono-Regular, Menlo, monospace; }
+.expired, .red { color: var(--error); }
+.expiring { color: var(--warn); }
+.pill.src-pubmed { background: #2f6fde; }
+.pill.src-arxiv { background: #7c4dcc; }
+.pill.src-zenodo { background: #0f8a80; }
+.pill.src-youtube { background: #d93025; }
+.pill.src-podcast { background: #d9822b; }
+.pill.ok { background: var(--cited); }
+.pill.failed { background: var(--error); }
+.pill.plain { background: var(--code); color: var(--text); }
+.db-conn { border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; display: grid; gap: 3px; font-size: 12.5px; }
+.db-conn b::before { content: "●"; margin-right: 6px; color: var(--cited); }
+.db-conn.down b::before { color: var(--error); }
+.db-conn.warn b::before { color: var(--warn); }
+.db-conn small { color: var(--muted); word-break: break-word; }
+.db-conn .hint { color: var(--warn); font-size: 12px; }
+.db-tables { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
+.db-tables li { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 6px 8px; border-radius: 6px; cursor: pointer; border: 1px solid transparent; }
+.db-tables li:hover { background: var(--hover); }
+.db-tables li.active { border-color: var(--accent); background: var(--hover); }
+.db-tables li.empty { cursor: default; color: var(--muted); }
+.db-tables small { color: var(--muted); white-space: nowrap; }
+.filters { display: flex; flex-direction: column; gap: 9px; }
+.filter-chip { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 5px 8px; border-radius: 6px; background: color-mix(in srgb, var(--accent) 14%, transparent); font-size: 12px; }
+.filter-chip button { border: 0; background: none; cursor: pointer; color: var(--muted); font-size: 15px; line-height: 1; padding: 0 2px; }
+.filter-chip button:hover { color: var(--error); }
+.dbtab { position: absolute; inset: 0; display: none; }
+.dbtab.active { display: flex; flex-direction: column; }
+.pager { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.pager button { border: 1px solid var(--line); background: var(--panel); border-radius: 6px; padding: 3px 9px; cursor: pointer; }
+.pager button:disabled { opacity: .4; cursor: default; }
+.pager select { width: auto; padding: 3px 6px; }
+th.sortable { cursor: pointer; user-select: none; }
+th.sortable:hover, th.sorted { color: var(--text); }
+th.sorted::after { content: " ↓"; }
+th.sorted.asc::after { content: " ↑"; }
+td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+td.zero { color: var(--muted); }
+td.when { white-space: nowrap; color: var(--muted); font-size: 12px; }
+td.cmdcell { font: 11.5px ui-monospace, Menlo, monospace; color: var(--muted); max-width: 380px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+td.cell { font-size: 12px; max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.schema { flex: 1; overflow: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 14px; }
+.schema-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+.schema-card h3 { margin: 0; padding: 9px 12px; font-size: 13px; display: flex; gap: 10px; align-items: baseline; border-bottom: 1px solid var(--line); }
+.schema-card h3 small { color: var(--muted); font-weight: 400; }
+.schema-card th { position: static; }
+.schema-card tbody tr { cursor: default; }
+.schema-card tbody tr:hover { background: none; }
+.schema-card .defs { padding: 8px 12px 10px; display: grid; gap: 4px; font: 11.5px/1.5 ui-monospace, Menlo, monospace; color: var(--muted); word-break: break-word; }
+.schema-card .defs b { color: var(--text); font-weight: 600; }
+.db-down { position: absolute; inset: 0; z-index: 20; background: var(--bg); display: grid; place-items: center; padding: 20px; }
+.db-down-box { max-width: 540px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; }
+.db-down-box h3 { margin: 0 0 6px; font-size: 15px; }
+.db-down-box p { margin: 6px 0; word-break: break-word; }
+.db-down-box button { margin-top: 8px; padding: 6px 14px; border-radius: 7px; border: 1px solid var(--line); background: var(--panel); cursor: pointer; font-weight: 600; }
+.copy { border: 1px solid var(--line); background: none; border-radius: 5px; font-size: 11px; padding: 0 6px; margin-left: 6px; cursor: pointer; color: var(--muted); }
+.copy:hover { color: var(--accent); }
+.detail .actions { display: flex; gap: 8px; margin: 10px 0; }
+.detail .actions button { padding: 5px 10px; border-radius: 6px; border: 1px solid var(--accent); background: none; color: var(--accent); cursor: pointer; font-weight: 600; }
+.detail .actions button:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.detail .label { color: var(--muted); font-size: 12px; margin-top: 10px; }
+.db-tables li { position: relative; }
+.db-tables .empty-table { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); visibility: hidden; border: 1px solid var(--error); background: var(--panel); color: var(--error); border-radius: 5px; font-size: 11px; padding: 0 7px; line-height: 18px; cursor: pointer; }
+.db-tables li:hover .empty-table { visibility: visible; }
+.db-tables li:hover small { visibility: hidden; }
+.db-notice { border-radius: 8px; padding: 8px 10px; font-size: 12px; background: color-mix(in srgb, var(--cited) 15%, transparent); color: var(--text); }
+dialog.confirm { border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; width: min(470px, 92vw); background: var(--panel); color: var(--text); box-shadow: 0 20px 60px rgba(0, 0, 0, .35); }
+dialog.confirm::backdrop { background: rgba(0, 0, 0, .45); }
+dialog.confirm h3 { margin: 0 0 6px; font-size: 15px; color: var(--error); }
+dialog.confirm p { margin: 6px 0; }
+.empty-list { list-style: none; margin: 10px 0; padding: 0; border: 1px solid var(--line); border-radius: 8px; }
+.empty-list li { display: flex; justify-content: space-between; gap: 10px; padding: 6px 10px; }
+.empty-list li + li { border-top: 1px solid var(--line); }
+.empty-list small { color: var(--muted); }
+.buttons button.danger { background: var(--error); border-color: var(--error); color: #fff; }
 </style>
 </head>
 <body>
 <header>
   <h1>Crawler Debug</h1>
+  <nav class="views" id="views">
+    <button type="button" data-screen="runs" class="active">Runs</button>
+    <button type="button" data-screen="db">Database</button>
+  </nav>
   <div class="chips" id="env"></div>
   <div class="status" id="status"><span class="dot"></span><span id="status-text">ready</span></div>
 </header>
 
-<div class="layout">
+<div class="layout" id="runs-view">
   <aside class="side">
     <form id="form" autocomplete="off">
       <div class="field">
@@ -228,6 +319,7 @@ td.found { min-width: 190px; }
           <select id="query_mode"><option>and</option><option>or</option><option>raw</option></select>
         </label>
       </div>
+      <label class="check" style="margin-top:12px"><input type="checkbox" id="store"> Store in the database <i class="info" tabindex="0" data-tip="Same as --store: checks the database before the run and skips cited papers that are already stored; when the run is done, upserts its documents and logs it in crawl_runs. Needs DATABASE_URL in crawler/.env and the schema (make db). Stopped runs are not stored.">i</i></label>
       <div class="error" id="form-error" style="margin-top:8px"></div>
       <div class="buttons" style="margin-top:8px">
         <button type="submit" class="primary" id="start">Start</button>
@@ -298,6 +390,102 @@ td.found { min-width: 190px; }
   </main>
 </div>
 
+<div class="layout" id="db-view" hidden>
+  <aside class="side">
+    <div class="side-head">
+      <h2>Database</h2>
+      <button type="button" class="link-button" id="db-refresh" title="Load everything again">↻ Refresh</button>
+    </div>
+    <div class="db-conn" id="db-conn"><b>Connecting …</b></div>
+    <label class="check"><input type="checkbox" id="db-auto" checked> Refresh every 5 s <small class="muted" id="db-updated"></small></label>
+    <div class="db-notice" id="db-notice" hidden></div>
+    <div class="side-head">
+      <h2>Tables</h2>
+      <button type="button" class="link-button" id="db-empty-all" title="Delete every row of every table, after a confirmation">Empty all …</button>
+    </div>
+    <ul class="db-tables" id="db-tables"></ul>
+    <div id="db-filters">
+      <div class="side-head">
+        <h2>Filter documents</h2>
+        <button type="button" class="link-button" id="db-reset" title="Show all documents">Reset</button>
+      </div>
+      <div class="filters" style="margin-top:8px">
+        <div class="filter-chip" id="db-run-chip" hidden></div>
+        <input type="text" id="db-q" placeholder="Title, ID or DOI">
+        <label class="field"><span>Source</span><select id="db-source"><option value="">All sources</option></select></label>
+        <label class="field"><span>Type</span><select id="db-type"><option value="">All types</option></select></label>
+        <label class="field"><span>Found by <i class="info" tabindex="0" data-tip="Search results came from a search, channel or feed of a run (they may also be cited). Cited papers only were collected by following references.">i</i></span>
+          <select id="db-origin"><option value="">All</option><option value="search">Search results</option><option value="cited">Cited papers only</option></select>
+        </label>
+        <label class="field"><span>Topic</span><select id="db-topic"><option value="">All topics</option></select></label>
+        <label class="field"><span>Licence</span><select id="db-licence"><option value="">All licences</option></select></label>
+        <label class="field"><span>Expiry <i class="info" tabindex="0" data-tip="Only YouTube rows expire, 30 days after they were retrieved. The next store run deletes expired rows; until then readers such as @matcher/db ignore them.">i</i></span>
+          <select id="db-expiry"><option value="">All</option></select>
+        </label>
+      </div>
+    </div>
+  </aside>
+
+  <main>
+    <div class="stats" id="db-stats"></div>
+    <nav class="tabs" id="db-tabs">
+      <button data-dbtab="documents" class="active">Documents <span class="badge" id="db-docs-count">0</span></button>
+      <button data-dbtab="runs">Store runs <span class="badge" id="db-runs-count">0</span></button>
+      <button data-dbtab="schema">Schema</button>
+      <button data-dbtab="table" id="db-table-tab" hidden>Table</button>
+    </nav>
+    <div class="content">
+      <section class="dbtab active" id="dbtab-documents">
+        <div class="toolbar"><span class="muted" id="db-docs-shown"></span><span class="spacer"></span><div class="pager" id="db-docs-pager"></div></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr id="db-docs-head"></tr></thead>
+            <tbody id="db-docs"></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="dbtab" id="dbtab-runs">
+        <div class="toolbar"><span class="muted" id="db-runs-shown"></span><span class="spacer"></span><div class="pager" id="db-runs-pager"></div></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Run</th><th>Finished</th><th>Source</th><th>Command</th><th>Took</th><th>Result</th><th class="num">New</th><th class="num">Changed</th><th class="num">Unchanged</th><th class="num">Newly cited</th><th class="num">Expired</th><th class="num">Failures</th></tr></thead>
+            <tbody id="db-runs"></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="dbtab" id="dbtab-schema"><div class="schema" id="db-schema"></div></section>
+      <section class="dbtab" id="dbtab-table">
+        <div class="toolbar"><b class="mono" id="db-table-name"></b><span class="muted" id="db-table-shown"></span><span class="spacer"></span><div class="pager" id="db-table-pager"></div></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr id="db-table-head"></tr></thead>
+            <tbody id="db-table-rows"></tbody>
+          </table>
+        </div>
+      </section>
+      <div class="db-down" id="db-down" hidden></div>
+      <aside class="detail" id="db-detail"></aside>
+    </div>
+  </main>
+</div>
+
+<dialog class="confirm" id="empty-dialog">
+  <form id="empty-form">
+    <h3 id="empty-title">Empty tables?</h3>
+    <p>This deletes every row of these tables in <b id="empty-db"></b>. It cannot be undone.</p>
+    <ul class="empty-list" id="empty-list"></ul>
+    <p class="muted" id="empty-note"></p>
+    <label class="field" style="margin-top:12px"><span>Type <b id="empty-name"></b> to confirm</span>
+      <input type="text" id="empty-confirm" autocomplete="off" spellcheck="false">
+    </label>
+    <div class="error" id="empty-error" style="margin-top:8px"></div>
+    <div class="buttons" style="margin-top:12px">
+      <button type="button" id="empty-cancel">Cancel</button>
+      <button type="submit" class="danger" id="empty-submit" disabled>Delete</button>
+    </div>
+  </form>
+</dialog>
+
 <div class="tip" id="tip"></div>
 <script>
 "use strict";
@@ -321,7 +509,7 @@ function h(tag, attrs, ...children) {
 async function api(path, options = {}) {
   const response = await fetch(path, { headers: { "Content-Type": "application/json" }, ...options });
   const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+  if (!response.ok) throw Object.assign(new Error(data.error || `HTTP ${response.status}`), { data });
   return data;
 }
 
@@ -358,7 +546,7 @@ function armOrRun(button, label, action) {
 
 // ── State ──────────────────────────────────────────────────────────────────────
 const state = {
-  meta: null, source: "pubmed", mode: "query", runs: [],
+  screen: "runs", meta: null, source: "pubmed", mode: "query", runs: [],
   view: null, run: null, stream: null, liveStart: null,
   counters: null, result: null, options: null, command: "",
   selected: null, tab: "live", renderQueued: false,
@@ -484,6 +672,10 @@ function logText(event) {
     case "run_finished": return ["run", `Done: ${plural(event.documents, "document")}, ${plural(event.failures, "failed request")}${event.run_error ? `, aborted: ${event.run_error}` : ""}`];
     case "run_cancelled": return ["err", `Run stopped${event.documents != null ? `: ${plural(event.documents, "document")} so far` : ""}`];
     case "run_failed": return ["err", `Run failed: ${event.error}`];
+    case "store_started": return ["start", "Storing in the database …"];
+    case "refreshed": return ["ok", `Refreshed ${event.refreshed} of ${plural(event.due, "stored video")} that expire soon`];
+    case "stored": return ["run", `Stored as store run #${event.run_id}: ${event.inserted} new, ${event.changed} changed, ${event.unchanged} unchanged; ${plural(event.cited, "stored document")} newly cited; ${event.expired} expired deleted`];
+    case "store_failed": return ["err", `Storing failed: ${event.error}`];
     default: return ["start", JSON.stringify(event)];
   }
 }
@@ -492,7 +684,8 @@ function appendLog(event) {
   const log = $("#log");
   if (log.firstElementChild?.classList.contains("empty")) log.replaceChildren();
   const [cls, text] = logText(event);
-  const line = h("div", { class: cls, "data-type": event.type }, h("span", { class: "t" }, `${event.t.toFixed(1)} s`), h("span", {}, text));
+  const link = event.type === "stored" ? h("a", { onclick: () => openStoreRun(event.run_id) }, " → show in the database") : null;
+  const line = h("div", { class: cls, "data-type": event.type }, h("span", { class: "t" }, `${event.t.toFixed(1)} s`), h("span", {}, text, link));
   if (event.type === "request_start" && !$("#show-starts").checked) line.style.display = "none";
   log.append(line);
   while (log.childElementCount > LOG_LIMIT) log.firstElementChild.remove();
@@ -588,6 +781,7 @@ function renderStats() {
       card("Requests ok", s.finished_requests),
       card("Failed", s.failed_requests, s.failed_requests ? "bad" : "muted"),
       card("Not processed", s.unprocessed_requests, s.unprocessed_requests ? "" : "muted"),
+      card("Reached max results", s.max_results_reached, s.max_results_reached ? "" : "muted"),
       card("Duration", fmtSeconds(state.run?.duration)),
     );
     return;
@@ -639,6 +833,7 @@ function externalLink(key, value) {
   const links = {
     pmcid: `https://pmc.ncbi.nlm.nih.gov/articles/${value}/`,
     concept_doi: `https://doi.org/${value}`,
+    channel_id: `https://www.youtube.com/channel/${value}`,
   };
   return links[key] ? h("a", { href: links[key], target: "_blank", rel: "noopener" }, value) : value;
 }
@@ -936,7 +1131,7 @@ canvas.addEventListener("wheel", (event) => {
 }, { passive: false });
 
 function frame() {
-  if (state.tab === "graph") {
+  if (state.screen === "runs" && state.tab === "graph") {
     if (graph.alpha > 0.01) simulate();
     if (graph.dirty) { draw(); graph.dirty = false; }
     const hidden = graph.nodes.size - visibleNodes().length;
@@ -968,6 +1163,7 @@ function formBody() {
     max_requests: number("max_requests"),
     since: $("#since").value || null,
     query_mode: $("#query_mode").value,
+    store: $("#store").checked && !$("#store").disabled,
   };
 }
 
@@ -982,6 +1178,7 @@ function updateCommand() {
   add("--since", body.since);
   if (["arxiv", "zenodo"].includes(body.source)) add("--query-mode", body.query_mode);
   add("--max-requests", body.max_requests);
+  if (body.store) argv.push("--store");
   if (body.mode === "topic") for (const topic of body.topics) argv.push("--topic", topic);
   else if (body.query.trim()) argv.push(body.query.trim());
   $("#cmd").textContent = `uv run crawler ${argv.map(shellQuote).join(" ")}`;
@@ -1025,8 +1222,14 @@ function renderEnv() {
   const env = state.meta?.env || {};
   const labels = { NCBI_ENTREZ_EMAIL: "NCBI email", NCBI_API_KEY: "NCBI key", SEMANTIC_SCHOLAR_API_KEY: "Semantic Scholar", YOUTUBE_API_KEY: "YouTube" };
   const chips = Object.entries(labels).map(([key, label]) => h("span", { class: `chip ${env[key] ? "on" : ""}`, title: `${key} is ${env[key] ? "set" : "not set"}` }, `${env[key] ? "✓" : "–"} ${label}`));
+  const database = Boolean(state.meta?.database);
+  chips.push(h("span", { class: `chip ${database ? "on" : ""}`, title: `DATABASE_URL is ${database ? "set" : "not set"}` }, `${database ? "✓" : "–"} Database`));
   if (state.meta && !state.meta.env_file_exists) chips.push(h("span", { class: "hint", title: state.meta.env_file }, "crawler/.env missing (cp .env.example .env)"));
   $("#env").replaceChildren(...chips);
+  const store = $("#store");
+  store.disabled = !database;
+  store.parentElement.title = database ? "" : "Needs DATABASE_URL in crawler/.env";
+  updateCommand();
 }
 
 function setStatus(status) {
@@ -1053,7 +1256,7 @@ async function refreshRuns() {
   if (!state.runs.length) { list.replaceChildren(h("li", { class: "empty" }, "No runs yet")); return; }
   list.replaceChildren(...state.runs.map((run) => {
     const running = run.status === "running";
-    const count = running ? "running" : run.documents != null ? plural(run.documents, "doc") : run.status;
+    const count = running ? "running" : run.documents != null ? `${plural(run.documents, "doc")}${run.stored ? " · stored" : ""}` : run.status;
     const remove = running ? h("span") : h("button", {
       class: "del", type: "button", title: "Delete this run",
       onclick: (event) => { event.stopPropagation(); armOrRun(event.currentTarget, "Delete?", () => deleteRun(run.id)); },
@@ -1105,7 +1308,7 @@ $("#clear-runs").addEventListener("click", (event) => armOrRun(event.currentTarg
   if (state.view && !viewingRunning) showEmptyView();
   await refreshRuns();
 }));
-for (const id of ["query", "max_results", "max_depth", "max_requests", "since", "query_mode"]) $(`#${id}`).addEventListener("input", updateCommand);
+for (const id of ["query", "max_results", "max_depth", "max_requests", "since", "query_mode", "store"]) $(`#${id}`).addEventListener("input", updateCommand);
 for (const button of document.querySelectorAll("#tabs button")) button.addEventListener("click", () => switchTab(button.dataset.tab));
 $("#filter").addEventListener("input", () => renderDocs());
 $("#origin-filter").addEventListener("change", () => renderDocs());
@@ -1113,7 +1316,7 @@ $("#show-starts").addEventListener("change", (event) => {
   for (const line of document.querySelectorAll('#log [data-type="request_start"]')) line.style.display = event.target.checked ? "" : "none";
 });
 window.addEventListener("resize", () => { if (state.tab === "graph") resizeCanvas(); });
-document.addEventListener("keydown", (event) => { if (event.key === "Escape") closeDetail(); });
+document.addEventListener("keydown", (event) => { if (event.key === "Escape") { if (state.screen === "db") dbCloseDetail(); else closeDetail(); } });
 setInterval(() => { if (state.liveStart && !state.result) renderStats(); }, 500);
 
 // Info icons: one fixed tooltip, so the side panel's scroll area cannot clip it.
@@ -1138,6 +1341,563 @@ for (const icon of document.querySelectorAll(".info")) {
 setupSeg("source", (value) => { state.source = value; updateForm(); });
 setupSeg("mode", (value) => { state.mode = value; updateForm(); });
 
+// ── Database view (read-only) ─────────────────────────────────────────────────
+const SOURCE_LABEL = { pubmed: "PubMed", arxiv: "arXiv", zenodo: "Zenodo", youtube: "YouTube", podcast: "Podcast" };
+const PRECISION_LENGTH = { year: 4, month: 7, day: 10 };
+const DOC_COLUMNS = [["Source", "source"], ["ID", "id"], ["Type"], ["Title", "title"], ["Published", "published"], ["Licence"], ["Found by"], ["Changed", "changed"], ["Retrieved", "retrieved"], ["Expires", "expires"]];
+const DOC_FILTERS = ["db-source", "db-type", "db-origin", "db-topic", "db-licence", "db-expiry"];
+const db = {
+  overview: null, error: null, tab: "documents", table: null, runFilter: null, selected: null, loading: false,
+  docs: { rows: [], total: 0, offset: 0, limit: 50, sort: "changed", order: "desc", ticket: 0 },
+  runs: { rows: [], total: 0, offset: 0, limit: 50, ticket: 0 },
+  generic: { rows: [], columns: [], total: 0, offset: 0, limit: 50, ticket: 0 },
+};
+
+const sourcePill = (source) => h("span", { class: `pill src-${source}` }, SOURCE_LABEL[source] || source);
+const publishedText = (row) => row.published_at ? row.published_at.slice(0, PRECISION_LENGTH[row.published_precision] || 10) : "";
+const fmtDateTime = (iso) => iso ? new Date(iso).toLocaleString("en-GB", { day: "2-digit", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "–";
+const runCommand = (run) => `uv run crawler ${run.arguments.map(shellQuote).join(" ")}`;
+const runSeconds = (run) => (new Date(run.finished_at) - new Date(run.started_at)) / 1000;
+const dbReady = () => Boolean(db.overview && !db.overview.missing.length);
+
+function fmtSpan(ms) {
+  const seconds = Math.abs(ms) / 1000;
+  if (seconds < 60) return `${Math.round(seconds)} s`;
+  if (seconds < 3600) return `${Math.round(seconds / 60)} min`;
+  if (seconds < 86400) return `${Math.round(seconds / 3600)} h`;
+  return `${Math.round(seconds / 86400)} d`;
+}
+
+function fmtAgo(iso) {
+  if (!iso) return "–";
+  const ms = Date.now() - new Date(iso);
+  return ms < 10000 ? "just now" : `${fmtSpan(ms)} ago`;
+}
+
+function expiryText(iso) {
+  if (!iso) return null;
+  const left = new Date(iso) - Date.now();
+  const cls = left < 0 ? "expired" : left < 7 * 86400000 ? "expiring" : null;
+  return h("span", { class: cls, title: fmtDateTime(iso) }, left < 0 ? `expired ${fmtSpan(left)} ago` : `in ${fmtSpan(left)}`);
+}
+
+function queryString(values) {
+  const search = new URLSearchParams();
+  for (const [key, value] of Object.entries(values)) if (value !== "" && value != null) search.set(key, value);
+  return search.toString();
+}
+
+function dbFilters() {
+  return {
+    q: $("#db-q").value.trim(), source: $("#db-source").value, type: $("#db-type").value, origin: $("#db-origin").value,
+    topic: $("#db-topic").value, licence: $("#db-licence").value, expiry: $("#db-expiry").value, run: db.runFilter,
+  };
+}
+
+async function dbRefresh() {
+  if (db.loading) return;
+  db.loading = true;
+  try {
+    try {
+      db.overview = await api("/api/db");
+      db.error = null;
+    } catch (error) {
+      db.overview = null;
+      db.error = { message: error.message, hint: error.data?.hint };
+    }
+    renderDbSide();
+    renderDbStats();
+    renderDbDown();
+    if (dbReady()) await dbLoadTab();
+    $("#db-updated").textContent = `· ${fmtClock(new Date().toISOString())}`;
+  } finally {
+    db.loading = false;
+  }
+}
+
+function dbLoadTab() {
+  if (db.tab === "documents") return dbLoadDocs();
+  if (db.tab === "runs") return dbLoadRuns();
+  if (db.tab === "schema") return dbLoadSchema();
+  if (db.tab === "table" && db.table) return dbLoadTable();
+}
+
+// Each list keeps a ticket, so a slow answer cannot overwrite a newer one.
+async function dbLoadList(list, url, render) {
+  const ticket = ++list.ticket;
+  try {
+    const data = await api(url);
+    if (ticket !== list.ticket) return;
+    Object.assign(list, data, { error: null });
+  } catch (error) {
+    if (ticket !== list.ticket) return;
+    Object.assign(list, { rows: [], total: 0, error: error.message });
+  }
+  render();
+}
+
+function dbLoadDocs() {
+  const docs = db.docs;
+  return dbLoadList(docs, `/api/db/documents?${queryString({ ...dbFilters(), sort: docs.sort, order: docs.order, limit: docs.limit, offset: docs.offset })}`, renderDbDocs);
+}
+
+function dbLoadRuns() {
+  return dbLoadList(db.runs, `/api/db/runs?${queryString({ limit: db.runs.limit, offset: db.runs.offset })}`, renderDbRuns);
+}
+
+function dbLoadTable() {
+  const table = db.generic;
+  return dbLoadList(table, `/api/db/table?${queryString({ name: db.table, limit: table.limit, offset: table.offset })}`, renderDbTable);
+}
+
+async function dbLoadSchema() {
+  try { renderDbSchema(await api("/api/db/schema")); }
+  catch (error) { $("#db-schema").replaceChildren(h("div", { class: "empty" }, error.message)); }
+}
+
+function renderDbSide() {
+  const box = $("#db-conn");
+  const overview = db.overview;
+  // replaceChildren would turn a null into the text "null".
+  const lines = (...items) => items.filter(Boolean);
+  if (db.error) {
+    box.className = "db-conn down";
+    box.replaceChildren(...lines(h("b", {}, "Not connected"), h("small", {}, db.error.message), db.error.hint && h("span", { class: "hint" }, db.error.hint)));
+  } else if (overview) {
+    box.className = `db-conn${overview.missing.length ? " warn" : ""}`;
+    box.replaceChildren(...lines(
+      h("b", {}, overview.database),
+      h("small", {}, `${overview.target} · PostgreSQL ${overview.version.split(" ")[0]} · user ${overview.user}`),
+      overview.missing.length && h("span", { class: "hint" }, `No ${overview.missing.join(" or ")} table: run make db`),
+      h("small", {}, "Only reads; emptying tables asks for the database name."),
+    ));
+  }
+  $("#db-filters").hidden = db.tab !== "documents" || !dbReady();
+  renderDbTables();
+  renderDbFilterOptions();
+}
+
+function renderDbTables() {
+  const list = $("#db-tables");
+  const tables = db.overview?.tables || [];
+  $("#db-empty-all").hidden = !tables.length;
+  if (!tables.length) { list.replaceChildren(h("li", { class: "empty" }, db.error ? "–" : "No tables")); return; }
+  const active = { documents: "documents", runs: "crawl_runs", table: db.table }[db.tab];
+  list.replaceChildren(...tables.map((table) => h("li", { class: table.name === active ? "active" : null, onclick: () => dbOpenTable(table.name) },
+    h("code", {}, table.name),
+    h("small", {}, `${plural(table.rows, "row")} · ${fmtBytes(table.bytes)}`),
+    h("button", { type: "button", class: "empty-table", title: `Delete every row of ${table.name}, after a confirmation`, onclick: (event) => { event.stopPropagation(); openEmptyDialog([table.name]); } }, "Empty …"))));
+}
+
+// ── Emptying tables: a preview of what goes, then the database name typed ──────
+let emptying = null;
+
+async function openEmptyDialog(names) {
+  let plan;
+  try {
+    plan = await api(`/api/db/empty-plan?${names.map((name) => `table=${encodeURIComponent(name)}`).join("&")}`);
+  } catch (error) {
+    showDbNotice(`Cannot empty: ${error.message}`, true);
+    return;
+  }
+  emptying = { names, database: plan.database };
+  const total = plan.tables.reduce((sum, table) => sum + table.rows, 0);
+  const added = plan.tables.filter((table) => !table.requested).map((table) => table.name);
+  $("#empty-title").textContent = names.length > 1 ? "Empty all tables?" : `Empty ${names[0]}?`;
+  $("#empty-db").textContent = plan.database;
+  $("#empty-name").textContent = plan.database;
+  $("#empty-list").replaceChildren(...plan.tables.map((table) => h("li", {},
+    h("code", {}, table.name),
+    h("small", {}, `${plural(table.rows, "row")}${table.requested ? "" : " · references it"}`))));
+  $("#empty-note").textContent = [
+    added.length ? `${added.join(", ")} ${added.length === 1 ? "references" : "reference"} the table, so ${added.length === 1 ? "it is" : "they are"} emptied too.` : "",
+    plan.tables.some((table) => table.name === "crawl_runs") ? "Store runs start again at #1." : "",
+  ].filter(Boolean).join(" ");
+  $("#empty-confirm").value = "";
+  $("#empty-error").textContent = "";
+  $("#empty-submit").textContent = `Delete ${plural(total, "row")}`;
+  $("#empty-submit").disabled = true;
+  $("#empty-dialog").showModal();
+  $("#empty-confirm").focus();
+}
+
+function showDbNotice(text, bad = false) {
+  const notice = $("#db-notice");
+  notice.textContent = text;
+  notice.style.color = bad ? "var(--error)" : "";
+  notice.hidden = false;
+  clearTimeout(showDbNotice.timer);
+  showDbNotice.timer = setTimeout(() => { notice.hidden = true; }, 10000);
+}
+
+$("#empty-confirm").addEventListener("input", (event) => {
+  $("#empty-submit").disabled = event.target.value !== emptying?.database;
+});
+$("#empty-cancel").addEventListener("click", () => $("#empty-dialog").close());
+$("#empty-form").addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const typed = $("#empty-confirm").value;
+  if (!emptying || typed !== emptying.database) return;
+  $("#empty-submit").disabled = true;
+  try {
+    const result = await api("/api/db/empty", { method: "POST", body: JSON.stringify({ tables: emptying.names, confirm: typed }) });
+    $("#empty-dialog").close();
+    Object.assign(db, { runFilter: null, selected: null });
+    for (const list of [db.docs, db.runs, db.generic]) list.offset = 0;
+    showDbNotice(`Emptied ${result.emptied.map((table) => `${table.name} (${plural(table.rows, "row")})`).join(", ")}.`);
+    await dbRefresh();
+  } catch (error) {
+    $("#empty-error").textContent = error.message;
+    $("#empty-submit").disabled = false;
+  }
+});
+$("#db-empty-all").addEventListener("click", () => openEmptyDialog((db.overview?.tables || []).map((table) => table.name)));
+
+function dbOpenTable(name) {
+  if (name === "documents") dbSwitchTab("documents");
+  else if (name === "crawl_runs") dbSwitchTab("runs");
+  else { db.table = name; db.generic.offset = 0; dbSwitchTab("table"); }
+}
+
+function fillSelect(select, options) {
+  const current = select.value;
+  select.replaceChildren(...options.map(([value, label]) => h("option", { value }, label)));
+  select.value = options.some(([value]) => value === current) ? current : "";
+}
+
+function renderDbFilterOptions() {
+  const stats = db.overview?.documents;
+  if (!stats) return;
+  const unknown = stats.licences.find((facet) => facet.value == null)?.count || 0;
+  fillSelect($("#db-source"), [["", `All sources (${stats.total})`], ...stats.sources.map((facet) => [facet.value, `${SOURCE_LABEL[facet.value] || facet.value} (${facet.count})`])]);
+  fillSelect($("#db-type"), [["", "All types"], ...stats.types.map((facet) => [facet.value, `${typeLabel(facet.value)} (${facet.count})`])]);
+  fillSelect($("#db-topic"), [["", stats.topics.length ? "All topics" : "No topic runs stored yet"], ...stats.topics.map((facet) => [facet.value, `${facet.value} (${facet.count})`])]);
+  fillSelect($("#db-licence"), [
+    ["", "All licences"], [":known", `Known (${stats.total - unknown})`], [":unknown", `Unknown (${unknown})`],
+    ...stats.licences.filter((facet) => facet.value != null).map((facet) => [facet.value, `${facet.value} (${facet.count})`]),
+  ]);
+  fillSelect($("#db-expiry"), [
+    ["", "All"], ["soon", `Expiring within 7 days (${stats.expiring})`], ["expired", `Expired, not deleted yet (${stats.expired})`],
+    ["has", "Expires (YouTube)"], ["none", "Never expires"],
+  ]);
+  $("#db-topic").disabled = !stats.topics.length;
+}
+
+function renderDbStats() {
+  const box = $("#db-stats");
+  const stats = db.overview?.documents;
+  if (!stats) { box.replaceChildren(card("Documents", "–", "muted"), card("Store runs", "–", "muted")); return; }
+  const share = (count) => stats.total ? ` · ${Math.round((100 * count) / stats.total)} %` : "";
+  const bySource = Object.fromEntries(stats.sources.map((facet) => [facet.value, facet.count]));
+  const runs = db.overview.runs;
+  const last = runs?.last;
+  box.replaceChildren(
+    card("Documents", stats.total),
+    ...Object.entries(SOURCE_LABEL).map(([source, label]) => card(label, bySource[source] || 0, bySource[source] ? "" : "muted")),
+    card(`With summary${share(stats.with_summary)}`, stats.with_summary),
+    card(`Licence known${share(stats.with_licence)}`, stats.with_licence),
+    card(`Full-text links${share(stats.with_full_text)}`, stats.with_full_text),
+    card("Only cited, no search hit", stats.cited_only, "muted"),
+    card("Expiring within 7 days", stats.expiring, stats.expiring ? "" : "muted"),
+    card("Expired, not deleted yet", stats.expired, stats.expired ? "bad" : "muted"),
+    card("Store runs", runs?.total ?? 0),
+    card(last ? `Last store run #${last.id}${last.ok ? "" : " (failed)"}` : "Last store run", last ? fmtAgo(last.finished_at) : "–", last && !last.ok ? "bad" : ""),
+  );
+  $("#db-docs-count").textContent = stats.total;
+  $("#db-runs-count").textContent = runs?.total ?? 0;
+}
+
+function renderDbDown() {
+  const box = $("#db-down");
+  let title = null, message = null, hint = null;
+  if (db.error) [title, message, hint] = ["Database not reachable", db.error.message, db.error.hint];
+  else if (db.overview?.missing.length) [title, message, hint] = ["Schema missing", `${db.overview.database} has no ${db.overview.missing.join(" or ")} table.`, "Apply db/init/ from the repository root: make db"];
+  box.hidden = !title;
+  if (title) box.replaceChildren(h("div", { class: "db-down-box" }, h("h3", {}, title), h("p", {}, message), hint ? h("p", { class: "cmd" }, hint) : null, h("button", { type: "button", onclick: () => dbRefresh() }, "Try again")));
+}
+
+function pager(box, list, load) {
+  const end = list.offset + list.rows.length;
+  box.replaceChildren(
+    h("span", { class: "muted" }, list.total ? `${list.offset + 1}–${end} of ${list.total}` : ""),
+    h("button", { type: "button", disabled: list.offset === 0, onclick: () => { list.offset = Math.max(0, list.offset - list.limit); load(); } }, "‹ Prev"),
+    h("button", { type: "button", disabled: end >= list.total, onclick: () => { list.offset += list.limit; load(); } }, "Next ›"),
+    h("select", { title: "Rows per page", onchange: (event) => { list.limit = Number(event.target.value); list.offset = 0; load(); } },
+      ...[50, 100, 200, 500].map((size) => h("option", { value: size, selected: size === list.limit }, `${size} / page`))),
+  );
+}
+
+function dbSort(column) {
+  const docs = db.docs;
+  if (docs.sort === column) docs.order = docs.order === "desc" ? "asc" : "desc";
+  else { docs.sort = column; docs.order = ["title", "id", "source"].includes(column) ? "asc" : "desc"; }
+  docs.offset = 0;
+  dbLoadDocs();
+}
+
+function foundByText(row) {
+  return [
+    row.queries.length ? `Search: ${row.queries.join(", ")}` : null,
+    row.topics.length ? `topic ${row.topics.join(", ")}` : null,
+    row.cited_by ? `cited by ${row.cited_by}` : null,
+  ].filter(Boolean).join(" · ");
+}
+
+function messageRow(columns, text, cls = "small") {
+  return h("tr", {}, h("td", { colspan: columns, class: cls }, text));
+}
+
+function renderDbDocs() {
+  const docs = db.docs;
+  $("#db-docs-head").replaceChildren(...DOC_COLUMNS.map(([label, column]) => column
+    ? h("th", { class: `sortable${docs.sort === column ? ` sorted ${docs.order}` : ""}`, title: "Sort by this column", onclick: () => dbSort(column) }, label)
+    : h("th", {}, label)));
+  const body = $("#db-docs");
+  const empty = db.overview?.documents?.total === 0
+    ? "No documents stored yet: run the crawler with --store, or tick “Store in the database” on the Runs screen."
+    : "No documents match the filters.";
+  if (docs.error) body.replaceChildren(messageRow(DOC_COLUMNS.length, docs.error, "small error"));
+  else if (!docs.rows.length) body.replaceChildren(messageRow(DOC_COLUMNS.length, empty));
+  else body.replaceChildren(...docs.rows.map((row) => h("tr", { class: db.selected?.id === row.id ? "selected" : null, onclick: () => dbOpenDocument(row.id) },
+    h("td", {}, sourcePill(row.source)),
+    h("td", { class: "id" }, row.id),
+    h("td", { class: "small" }, typeLabel(row.content_type)),
+    h("td", {}, row.title || h("span", { class: "muted" }, "Untitled")),
+    h("td", { class: "when" }, publishedText(row) || "–"),
+    h("td", { class: "small" }, row.licence || "–"),
+    h("td", { class: "small found" }, foundByText(row) || "–"),
+    h("td", { class: "when", title: fmtDateTime(row.changed_at) }, fmtAgo(row.changed_at)),
+    h("td", { class: "when", title: fmtDateTime(row.retrieved_at) }, fmtAgo(row.retrieved_at)),
+    h("td", { class: "small" }, expiryText(row.expires_at) || "–"),
+  )));
+  $("#db-docs-shown").textContent = docs.error ? "" : `${docs.total} ${docs.total === 1 ? "match" : "matches"}`;
+  pager($("#db-docs-pager"), docs, dbLoadDocs);
+  const chip = $("#db-run-chip");
+  chip.hidden = !db.runFilter;
+  if (db.runFilter) chip.replaceChildren(
+    h("span", { title: "Documents whose last retrieval was in this run; a later run that fetches them again takes them over." }, `Last retrieved by store run #${db.runFilter}`),
+    h("button", { type: "button", title: "Remove this filter", onclick: () => { db.runFilter = null; db.docs.offset = 0; dbLoadDocs(); } }, "×"),
+  );
+}
+
+function dbShowDetail(parts) {
+  const panel = $("#db-detail");
+  panel.replaceChildren(h("button", { class: "close", title: "Close", onclick: dbCloseDetail }, "×"), ...parts);
+  panel.classList.add("open");
+  panel.scrollTop = 0;
+}
+
+function dbCloseDetail() {
+  $("#db-detail").classList.remove("open");
+  if (!db.selected) return;
+  db.selected = null;
+  if (db.tab === "documents") renderDbDocs();
+  if (db.tab === "runs") renderDbRuns();
+}
+
+function copyButton(text) {
+  return h("button", { type: "button", class: "copy", title: "Copy to the clipboard", onclick: (event) => { navigator.clipboard?.writeText(text); event.currentTarget.textContent = "copied"; } }, "copy");
+}
+
+function dbDocLink(item) {
+  // `title` is null for an ID that is not stored (e.g. a citing paper that was deleted).
+  const label = item.title ? `${item.id} – ${item.title}` : item.id;
+  return item.title == null ? h("span", { class: "muted", title: "Not stored" }, item.id) : h("a", { onclick: () => dbOpenDocument(item.id) }, label);
+}
+
+async function dbOpenDocument(id) {
+  db.selected = { id };
+  if (db.tab === "documents") renderDbDocs();
+  try {
+    const data = await api(`/api/db/document?${queryString({ id })}`);
+    if (db.selected?.id === id) renderDbDocument(data);
+  } catch (error) {
+    dbShowDetail([h("h3", {}, id), h("div", { class: "note" }, error.message)]);
+  }
+}
+
+function renderDbDocument({ document: doc, cited_by: citedBy, cites }) {
+  const link = (href, text) => h("a", { href, target: "_blank", rel: "noopener" }, text);
+  const rows = [
+    ["ID", h("span", {}, h("span", { class: "mono" }, doc.id), copyButton(doc.id))],
+    ["Link", link(doc.canonical_url, "Open source ↗")],
+  ];
+  if (doc.version) rows.push(["Version", doc.version]);
+  if (doc.publication_types.length) rows.push(["Publication types", doc.publication_types.join(", ")]);
+  if (doc.published_at) rows.push(["Published", `${publishedText(doc)} (${doc.published_precision})`]);
+  if (doc.source_updated_at) rows.push(["Updated at source", fmtDateTime(doc.source_updated_at)]);
+  if (doc.authors.length) rows.push(["Authors", authorList(doc.authors)]);
+  if (doc.venue) rows.push([{ podcast: "Show", youtube: "Channel" }[doc.source] || "Venue", doc.venue]);
+  if (doc.language) rows.push(["Language", doc.language]);
+  if (doc.duration_seconds != null) rows.push(["Duration", fmtDuration(doc.duration_seconds)]);
+  rows.push(["Licence", doc.licence || "unknown"]);
+  if (doc.doi) rows.push(["DOI", link(`https://doi.org/${doc.doi}`, doc.doi)]);
+  const ids = Object.entries(doc.external_ids);
+  if (ids.length) rows.push(["External IDs", h("div", { class: "links" }, ...ids.map(([key, value]) => h("span", {}, `${key}: `, externalLink(key, value))))]);
+  if (doc.full_text.length) rows.push([`Full text (${doc.full_text.length})`, h("div", { class: "links" }, ...doc.full_text.map((locator) => link(locator.url, [locator.kind, locator.media_type, locator.size ? fmtBytes(locator.size) : null, locator.language].filter(Boolean).join(" · "))))]);
+  const queries = doc.found_by.filter((entry) => "query" in entry);
+  if (queries.length) rows.push(["Found by", h("div", { class: "links" }, ...queries.map((entry) => h("span", {}, `Search “${entry.query}”${entry.topic ? ` (topic ${entry.topic})` : ""}`)))]);
+  if (citedBy.length) rows.push([`Cited by (${citedBy.length})`, h("div", { class: "links" }, ...citedBy.map(dbDocLink))]);
+  if (cites.length) rows.push([`Cites (${cites.length} stored)`, h("div", { class: "links" }, ...cites.slice(0, 100).map(dbDocLink), cites.length > 100 ? h("span", { class: "muted" }, `… +${cites.length - 100}`) : null)]);
+  rows.push(["First stored", fmtDateTime(doc.created_at)], ["Last changed", fmtDateTime(doc.changed_at)], ["Last retrieved", fmtDateTime(doc.retrieved_at)]);
+  if (doc.expires_at) rows.push(["Expires", expiryText(doc.expires_at)]);
+  const parts = [
+    h("div", {}, sourcePill(doc.source), " ", h("span", { class: "pill plain" }, typeLabel(doc.content_type))),
+    h("h3", {}, doc.title || "Untitled"),
+  ];
+  if (doc.extra?.thumbnail) parts.push(h("img", { class: "thumb", src: doc.extra.thumbnail, alt: "", loading: "lazy" }));
+  parts.push(h("dl", {}, ...rows.flatMap(([label, value]) => [h("dt", {}, label), h("dd", {}, value)])));
+  if (doc.summary) parts.push(h("div", { class: "label" }, "Summary"), h("p", { class: "abstract" }, doc.summary.length > 2000 ? `${doc.summary.slice(0, 2000)} …` : doc.summary));
+  const extra = Object.entries(doc.extra || {}).filter(([key]) => key !== "thumbnail");
+  if (extra.length) parts.push(h("dl", { class: "extra" }, ...extra.flatMap(([key, value]) => [h("dt", {}, key.replaceAll("_", " ")), h("dd", {}, typeof value === "object" ? JSON.stringify(value) : String(value))])));
+  if (doc.subjects.length) parts.push(h("div", {}, ...doc.subjects.slice(0, 60).map((subject) => h("span", { class: `kw${subject.major ? " major" : ""}`, title: [subject.scheme, subject.id].filter(Boolean).join(" ") }, subject.label))));
+  parts.push(h("details", {}, h("summary", {}, "Row (JSON)"), h("pre", {}, JSON.stringify(doc, null, 2))));
+  dbShowDetail(parts);
+}
+
+function renderDbRuns() {
+  const runs = db.runs;
+  const body = $("#db-runs");
+  const number = (value, cls) => h("td", { class: `num${value ? (cls ? ` ${cls}` : "") : " zero"}` }, value);
+  if (runs.error) body.replaceChildren(messageRow(12, runs.error, "small error"));
+  else if (!runs.rows.length) body.replaceChildren(messageRow(12, "No store runs yet: run the crawler with --store, or tick “Store in the database” on the Runs screen."));
+  else body.replaceChildren(...runs.rows.map((run) => h("tr", { class: db.selected?.run === run.id ? "selected" : null, onclick: () => dbOpenRun(run) },
+    h("td", { class: "id" }, `#${run.id}`),
+    h("td", { class: "when", title: fmtDateTime(run.finished_at) }, `${fmtDay(run.finished_at)} ${fmtClock(run.finished_at)}`),
+    h("td", {}, sourcePill(run.source)),
+    h("td", { class: "cmdcell", title: runCommand(run) }, runCommand(run).replace(/^uv run /, "")),
+    h("td", { class: "when" }, fmtSeconds(runSeconds(run))),
+    h("td", {}, h("span", { class: `pill ${run.ok ? "ok" : "failed"}`, title: run.run_error || "" }, run.ok ? "ok" : "failed")),
+    number(run.inserted), number(run.changed), number(run.unchanged), number(run.cited), number(run.expired), number(run.failures.length, "red"),
+  )));
+  $("#db-runs-shown").textContent = runs.error ? "" : plural(runs.total, "store run");
+  pager($("#db-runs-pager"), runs, dbLoadRuns);
+}
+
+function dbOpenRun(run) {
+  db.selected = { run: run.id };
+  renderDbRuns();
+  const pairs = (entries) => entries.flatMap(([label, value]) => [h("dt", {}, label), h("dd", {}, value)]);
+  const parts = [
+    h("div", {}, sourcePill(run.source), " ", h("span", { class: `pill ${run.ok ? "ok" : "failed"}` }, run.ok ? "ok" : "failed")),
+    h("h3", {}, `Store run #${run.id}`),
+    h("code", { class: "cmd" }, runCommand(run)),
+    h("div", { class: "actions" }, h("button", { type: "button", title: "Documents whose last retrieval was in this run", onclick: () => dbFilterRun(run.id) }, "Show its documents")),
+    h("dl", {}, ...pairs([
+      ["Topics", run.topics.length ? run.topics.join(", ") : "–"],
+      ["Started", fmtDateTime(run.started_at)],
+      ["Finished", fmtDateTime(run.finished_at)],
+      ["Took", fmtSeconds(runSeconds(run))],
+      ["Stored", `${run.inserted} new, ${run.changed} changed, ${run.unchanged} unchanged`],
+      ["Newly cited", `${plural(run.cited, "stored document")} not fetched again`],
+      ["Expired deleted", run.expired],
+    ])),
+    h("div", { class: "label" }, "Crawl statistics"),
+    h("dl", { class: "extra" }, ...pairs(Object.entries(run.stats || {}).map(([key, value]) => [key.replaceAll("_", " "), String(value)]))),
+  ];
+  if (run.run_error) parts.push(h("div", { class: "note" }, `Run aborted: ${run.run_error}`));
+  if (run.failures.length) parts.push(h("div", { class: "label" }, `Failures (${run.failures.length})`), ...run.failures.map((failure) => h("div", { class: "note" },
+    `${failure.kind} ${failure.source} (depth ${failure.depth}) ${failure.detail}: ${failure.error}; ${failure.retryable ? `gave up after ${failure.retries} retries` : "permanent"}`)));
+  parts.push(h("details", {}, h("summary", {}, "Row (JSON)"), h("pre", {}, JSON.stringify(run, null, 2))));
+  dbShowDetail(parts);
+}
+
+function dbFilterRun(id) {
+  db.runFilter = id;
+  db.docs.offset = 0;
+  if (db.tab === "documents") { dbCloseDetail(); dbLoadDocs(); } else dbSwitchTab("documents");
+}
+
+function renderDbSchema(schema) {
+  const group = (items) => items.reduce((map, item) => map.set(item.table, [...(map.get(item.table) || []), item]), new Map());
+  // A primary key or unique constraint has an index of the same name; show it once.
+  const constraintNames = new Set(schema.constraints.map((item) => item.name));
+  const columns = group(schema.columns), constraints = group(schema.constraints);
+  const indexes = group(schema.indexes.filter((item) => !constraintNames.has(item.name)));
+  const tables = db.overview?.tables || [];
+  $("#db-schema").replaceChildren(...tables.map((table) => h("div", { class: "schema-card" },
+    h("h3", {}, h("code", {}, table.name), h("small", {}, `${plural(table.rows, "row")} · ${fmtBytes(table.bytes)}`)),
+    h("table", {},
+      h("thead", {}, h("tr", {}, h("th", {}, "Column"), h("th", {}, "Type"), h("th", {}, "Null"), h("th", {}, "Default"))),
+      h("tbody", {}, ...(columns.get(table.name) || []).map((column) => h("tr", {},
+        h("td", { class: "id" }, column.name),
+        h("td", { class: "small" }, column.type),
+        h("td", { class: "small" }, column.nullable ? "yes" : "–"),
+        h("td", { class: "small mono" }, column.default || ""))))),
+    h("div", { class: "defs" },
+      ...(constraints.get(table.name) || []).map((item) => h("div", {}, h("b", {}, item.name), " ", item.definition)),
+      ...(indexes.get(table.name) || []).map((item) => h("div", {}, h("b", {}, item.name), " ", item.definition.replace(/^CREATE (UNIQUE )?INDEX \S+ ON \S+ /, "$1")))),
+  )));
+}
+
+function cellValue(value) {
+  if (value == null) return h("td", { class: "small muted" }, "–");
+  const text = typeof value === "object" ? JSON.stringify(value) : String(value);
+  return h("td", { class: "cell", title: text.length > 60 ? text.slice(0, 2000) : null }, text);
+}
+
+function renderDbTable() {
+  const table = db.generic;
+  $("#db-table-name").textContent = db.table;
+  $("#db-table-head").replaceChildren(...table.columns.map((column) => h("th", {}, column)));
+  const body = $("#db-table-rows");
+  const width = table.columns.length || 1;
+  if (table.error) body.replaceChildren(messageRow(width, table.error, "small error"));
+  else if (!table.rows.length) body.replaceChildren(messageRow(width, "Empty table"));
+  else body.replaceChildren(...table.rows.map((row) => h("tr", { onclick: () => dbShowDetail([h("h3", {}, `Row of ${db.table}`), h("pre", {}, JSON.stringify(row, null, 2))]) },
+    ...table.columns.map((column) => cellValue(row[column])))));
+  $("#db-table-shown").textContent = table.error ? "" : plural(table.total, "row");
+  pager($("#db-table-pager"), table, dbLoadTable);
+}
+
+function dbSwitchTab(tab, load = true) {
+  db.tab = tab;
+  history.replaceState(null, "", tab === "documents" ? "#db" : `#db-${tab}`);
+  for (const button of document.querySelectorAll("#db-tabs button")) button.classList.toggle("active", button.dataset.dbtab === tab);
+  for (const section of document.querySelectorAll(".dbtab")) section.classList.toggle("active", section.id === `dbtab-${tab}`);
+  const tableTab = $("#db-table-tab");
+  tableTab.hidden = !db.table;
+  tableTab.textContent = db.table ? `Table ${db.table}` : "Table";
+  $("#db-filters").hidden = tab !== "documents" || !dbReady();
+  dbCloseDetail();
+  renderDbTables();
+  if (load && dbReady()) dbLoadTab();
+}
+
+function showScreen(screen) {
+  state.screen = screen;
+  for (const button of document.querySelectorAll("#views button")) button.classList.toggle("active", button.dataset.screen === screen);
+  $("#runs-view").hidden = screen !== "runs";
+  $("#db-view").hidden = screen !== "db";
+  if (screen === "db") { dbSwitchTab(db.tab, false); dbRefresh(); }
+  else switchTab(state.tab);
+}
+
+function openStoreRun(id) {
+  db.runFilter = id;
+  db.docs.offset = 0;
+  db.tab = "documents";
+  showScreen("db");
+}
+
+for (const button of document.querySelectorAll("#views button")) button.addEventListener("click", () => showScreen(button.dataset.screen));
+for (const button of document.querySelectorAll("#db-tabs button")) button.addEventListener("click", () => dbSwitchTab(button.dataset.dbtab));
+let dbTyping = 0;
+$("#db-q").addEventListener("input", () => {
+  clearTimeout(dbTyping);
+  dbTyping = setTimeout(() => { db.docs.offset = 0; dbLoadDocs(); }, 250);
+});
+for (const id of DOC_FILTERS) $(`#${id}`).addEventListener("change", () => { db.docs.offset = 0; dbLoadDocs(); });
+$("#db-reset").addEventListener("click", () => {
+  $("#db-q").value = "";
+  for (const id of DOC_FILTERS) $(`#${id}`).value = "";
+  db.runFilter = null;
+  db.docs.offset = 0;
+  dbLoadDocs();
+});
+$("#db-refresh").addEventListener("click", () => dbRefresh());
+setInterval(() => { if (state.screen === "db" && $("#db-auto").checked && document.visibilityState === "visible") dbRefresh(); }, 5000);
+
 async function init() {
   state.meta = await api("/api/meta");
   renderEnv();
@@ -1147,8 +1907,11 @@ async function init() {
   if (state.meta.running) { setRunning(true); viewRun(state.meta.running, false); }
   else if (state.runs.length) viewRun(state.runs[0].id, false);
   setInterval(async () => { if (!state.liveStart) { try { state.meta = await api("/api/meta"); renderEnv(); } catch (error) { /* server restarting */ } } }, 10000);
-  const tab = location.hash.slice(1);
-  if (["live", "docs", "graph", "failures"].includes(tab)) switchTab(tab);
+  const hash = location.hash.slice(1);
+  if (hash === "db" || hash.startsWith("db-")) {
+    if (["runs", "schema"].includes(hash.slice(3))) db.tab = hash.slice(3);
+    showScreen("db");
+  } else if (["live", "docs", "graph", "failures"].includes(hash)) switchTab(hash);
   requestAnimationFrame(frame);
 }
 init().catch((error) => { $("#log").replaceChildren(h("div", { class: "err" }, `Server not reachable: ${error.message}`)); });

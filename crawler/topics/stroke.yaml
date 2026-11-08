@@ -1,0 +1,107 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: stroke
+label: Stroke
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - stroke
+  - ischemic stroke
+  - ischaemic stroke
+  - hemorrhagic stroke
+  - haemorrhagic stroke
+  - cerebral infarction
+  - brain infarction
+  - cerebral hemorrhage
+  - intracerebral hemorrhage
+  - intracerebral haemorrhage
+  - subarachnoid hemorrhage
+  - subarachnoid haemorrhage
+  - transient ischemic attack
+  - transient ischaemic attack
+  - Ischemic Attack, Transient
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - stroke
+  - ischemic stroke
+  - hemorrhagic stroke
+  - transient ischemic attack
+  - intracerebral hemorrhage
+  - subarachnoid hemorrhage
+  - cryptogenic stroke
+  - lacunar stroke
+  - large vessel occlusion stroke
+  # Diagnosis and screening
+  - stroke CT perfusion
+  - stroke diffusion-weighted MRI
+  - stroke CT angiography
+  - stroke prehospital triage
+  - cryptogenic stroke cardiac monitoring
+  # Treatment
+  - stroke thrombolysis
+  - stroke tenecteplase
+  - stroke mechanical thrombectomy
+  - stroke blood pressure management
+  - ischemic stroke antiplatelet therapy
+  - stroke dual antiplatelet therapy
+  - ischemic stroke statin therapy
+  - ischemic stroke anticoagulation timing
+  - stroke patent foramen ovale closure
+  - carotid endarterectomy
+  - carotid artery stenting
+  - stroke decompressive hemicraniectomy
+  - intracerebral hemorrhage hematoma evacuation
+  - subarachnoid hemorrhage nimodipine
+  - stroke unit care
+  # Living with
+  - stroke rehabilitation
+  - post-stroke aphasia
+  - post-stroke dysphagia
+  - post-stroke spasticity
+  - post-stroke depression
+  - post-stroke cognitive impairment
+  - stroke exercise training
+  - stroke caregivers
+  - stroke quality of life
+  - stroke self-management
+  - stroke secondary prevention
+
+# YouTube channels.
+channels:
+  - name: World Stroke Organization (WSO)
+    url: https://www.youtube.com/channel/UCcIHSjuw-cf5JNDpczz6lKQ
+  - name: Stroke Association (UK)
+    url: https://www.youtube.com/channel/UCbik4bVqs_gNBpY-lM-_1ww
+  - name: European Stroke Organisation (ESO)
+    url: https://www.youtube.com/channel/UClgE-oIgYqpciHDhyS0lC9w
+  - name: Society of Vascular and Interventional Neurology (SVIN)
+    url: https://www.youtube.com/channel/UCxn60bPfbckI_BXtAQf6pMQ
+  - name: Different Strokes (UK)
+    url: https://www.youtube.com/channel/UCHb3YnfSFDw5uKZXq-1oE8g
+  - name: National Aphasia Association (NAA)
+    url: https://www.youtube.com/channel/UCH8y9-vO4bNTXK0U4PCAemg
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: stroke_alert
+    name: Stroke Alert
+    url: https://rss.libsyn.com/shows/324905/destinations/2642120.xml
+    publisher: American Stroke Association (ASA)
+    audience: clinicians
+    language: en
+    trusted_because: Monthly summary of the key papers in Stroke, the peer-reviewed journal of the American Stroke Association.
+  - key: stronger_after_stroke
+    name: Stronger After Stroke
+    url: https://rss.libsyn.com/shows/467196/destinations/3950616.xml
+    publisher: Norton Neuroscience Comprehensive Stroke Center and Resource Center (Norton Healthcare)
+    audience: patients
+    language: en
+    trusted_because: Stroke survivors and specialists of a hospital stroke centre explain recovery, swallowing, caregiving and life after stroke.
+  - key: enableme_podcast
+    name: enableme podcast
+    url: https://feeds.soundcloud.com/users/soundcloud:users:73707521/sounds.rss
+    publisher: Stroke Foundation (Australia)
+    audience: patients
+    language: en
+    trusted_because: Stroke survivors, health professionals and researchers share practical advice on recovery, from the Stroke Foundation, Australia's national stroke charity.

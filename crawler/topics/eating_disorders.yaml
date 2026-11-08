@@ -1,0 +1,96 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: eating_disorders
+label: Eating disorders
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - eating disorder
+  - Feeding and Eating Disorders
+  - anorexia nervosa
+  - bulimia nervosa
+  - bulimia
+  - binge eating disorder
+  - binge eating
+  - avoidant restrictive food intake disorder
+  - ARFID
+  - other specified feeding or eating disorder
+  - OSFED
+  - disordered eating
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - eating disorders
+  - anorexia nervosa
+  - bulimia nervosa
+  - binge eating disorder
+  - avoidant restrictive food intake disorder
+  - ARFID
+  - atypical anorexia nervosa
+  - OSFED
+  - eating disorders in adolescents
+  - eating disorders in men
+  - eating disorders type 1 diabetes
+  - eating disorders pregnancy
+  # Diagnosis and screening
+  - eating disorder screening
+  - eating disorder diagnosis
+  - eating disorder SCOFF questionnaire
+  - eating disorder examination questionnaire
+  - ARFID screening
+  - anorexia nervosa medical complications
+  - eating disorder primary care
+  # Treatment
+  - anorexia nervosa family-based treatment
+  - anorexia nervosa CBT-E
+  - anorexia nervosa MANTRA
+  - anorexia nervosa weight restoration
+  - anorexia nervosa refeeding
+  - anorexia nervosa inpatient treatment
+  - bulimia nervosa cognitive behavioral therapy
+  - bulimia nervosa fluoxetine
+  - binge eating cognitive behavioral therapy
+  - binge eating disorder lisdexamfetamine
+  - binge eating disorder guided self-help
+  - eating disorders dialectical behavior therapy
+  - ARFID cognitive behavioral therapy
+  # Living with
+  - eating disorder recovery
+  - eating disorder relapse prevention
+  - eating disorder quality of life
+  - eating disorder family caregivers
+  - eating disorder peer support
+  - anorexia nervosa long-term outcomes
+  - eating disorder transition adult services
+
+# YouTube channels.
+channels:
+  - name: National Association of Anorexia Nervosa and Associated Disorders (ANAD)
+    url: https://www.youtube.com/channel/UCsY41z1RttXkWGHhm7H_CoQ
+  - name: Academy for Eating Disorders (AED)
+    url: https://www.youtube.com/channel/UCJdjVELGnfTYYCX5bCZ920A
+  - name: F.E.A.S.T. (Families Empowered and Supporting Treatment of Eating Disorders)
+    url: https://www.youtube.com/channel/UCAEw_zqn5oStZN3rlODm5Ag
+  - name: National Eating Disorders Association (NEDA)
+    url: https://www.youtube.com/channel/UCYqrNkz0An996CYZYoKEj1A
+  - name: Bodywhys, the Eating Disorders Association of Ireland
+    url: https://www.youtube.com/channel/UCRBVmQdFmxzRU-wU_i4DIog
+  - name: Butterfly Foundation
+    url: https://www.youtube.com/channel/UCMSjyBGLTxGmvaSEMJftJTA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: butterfly_lets_talk
+    name: "Butterfly: Let's Talk"
+    url: https://www.omnycontent.com/d/playlist/5d932e97-77f5-4d24-9230-aec1006a1eda/f4f0762d-a75f-4aa2-9765-aec3003a960f/35be0026-7e99-40c8-835b-aec3003a9622/podcast.rss
+    publisher: Butterfly Foundation
+    audience: patients
+    language: en
+    trusted_because: Official podcast of the Butterfly Foundation, the Australian national charity for eating disorders and body image, with experts and people with lived experience.
+  - key: bodywhys_podcast
+    name: Bodywhys Podcast
+    url: https://anchor.fm/s/70386204/podcast/rss
+    publisher: Bodywhys, the Eating Disorders Association of Ireland
+    audience: patients
+    language: en
+    trusted_because: Official podcast of Bodywhys, the Irish eating disorders charity, with clinicians and carers, including a series on the Maudsley carer skills.

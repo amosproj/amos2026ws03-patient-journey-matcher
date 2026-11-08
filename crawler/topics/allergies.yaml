@@ -1,0 +1,107 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: allergies
+label: Allergies and anaphylaxis
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - allergy
+  - allergies
+  - allergen
+  - allergic rhinitis
+  - Rhinitis, Allergic
+  - Rhinitis, Allergic, Seasonal
+  - hay fever
+  - hayfever
+  - Food Hypersensitivity
+  - Drug Hypersensitivity
+  - anaphylaxis
+  - anaphylactic
+  - Hypersensitivity, Immediate
+  - Desensitization, Immunologic
+  - venom immunotherapy
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - allergy
+  - allergic rhinitis
+  - hay fever
+  - food allergy
+  - peanut allergy
+  - cow's milk allergy
+  - egg allergy
+  - tree nut allergy
+  - anaphylaxis
+  - drug allergy
+  - penicillin allergy
+  - venom allergy
+  - alpha-gal allergy
+  # Diagnosis and screening
+  - allergy skin prick test
+  - allergy specific IgE
+  - allergy basophil activation test
+  - food allergy oral food challenge
+  - food allergy component testing
+  - drug allergy testing
+  - contact allergy patch test
+  # Treatment
+  - allergic rhinitis antihistamines
+  - allergic rhinitis intranasal corticosteroids
+  - allergen immunotherapy
+  - allergic rhinitis sublingual immunotherapy
+  - house dust mite allergy immunotherapy
+  - grass pollen allergy immunotherapy
+  - food allergy oral immunotherapy
+  - peanut allergy early introduction
+  - food allergy omalizumab
+  - anaphylaxis epinephrine
+  - anaphylaxis epinephrine autoinjector
+  - anaphylaxis intranasal epinephrine
+  - venom allergy immunotherapy
+  - drug allergy desensitization
+  - penicillin allergy delabeling
+  # Living with
+  - food allergy quality of life
+  - food allergy anxiety
+  - food allergy school
+  - anaphylaxis emergency action plan
+  - food allergy labelling
+
+# YouTube channels.
+channels:
+  - name: American College of Allergy, Asthma and Immunology (ACAAI)
+    url: https://www.youtube.com/channel/UC7BWi6P_JjqXDIE0U5vdfcA
+  - name: American Academy of Allergy, Asthma & Immunology (AAAAI)
+    url: https://www.youtube.com/channel/UCWto9iPcGxRn3s2AyzpwQHw
+  - name: Allergy & Asthma Network
+    url: https://www.youtube.com/channel/UCDJNzwnvP_Mit8bOQZ0nl_g
+  - name: Food Allergy Research & Education (FARE)
+    url: https://www.youtube.com/channel/UCE_125yu_QxOM0PXPOKj93w
+  - name: Anaphylaxis UK
+    url: https://www.youtube.com/channel/UCXz0XgHZmOpGB9dt95o0NCQ
+  - name: Allergy UK
+    url: https://www.youtube.com/channel/UCsN8Oup6loOegxxxSBfDOzg
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: aaaai_conversations_from_the_world_of_allergy
+    name: "AAAAI Podcast: Conversations from the World of Allergy"
+    url: https://rss.buzzsprout.com/2049216.rss
+    publisher: American Academy of Allergy, Asthma & Immunology (AAAAI)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the AAAAI, the professional society of allergists and immunologists in the United States.
+  - key: csaci_the_allergist
+    name: The Allergist
+    url: https://rss.buzzsprout.com/2250841.rss
+    publisher: Canadian Society of Allergy and Clinical Immunology (CSACI)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of CSACI, the professional society of allergists and clinical immunologists in Canada, hosted by a physician.
+  - key: anaphylaxis_uk_lets_talk_about_allergies
+    name: "Anaphylaxis UK: Let's Talk About Allergies"
+    url: https://media.rss.com/letstalkaboutallergies/feed.xml
+    publisher: Anaphylaxis UK (now part of Allergy UK)
+    audience: patients
+    language: en
+    trusted_because: Podcast of the UK allergy charity Anaphylaxis UK, with allergy specialists and people living with allergies.

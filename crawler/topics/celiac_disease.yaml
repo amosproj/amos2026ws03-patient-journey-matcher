@@ -1,0 +1,91 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: celiac_disease
+label: Celiac disease
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - celiac disease
+  - coeliac disease
+  - celiac sprue
+  - coeliac sprue
+  - gluten enteropathy
+  - gluten sensitive enteropathy
+  - nontropical sprue
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - celiac disease
+  - coeliac disease
+  - refractory celiac disease
+  - pediatric celiac disease
+  - potential celiac disease
+  - seronegative celiac disease
+  - celiac disease complications
+  - celiac disease type 1 diabetes
+  - celiac disease dermatitis herpetiformis
+  # Diagnosis and screening
+  - celiac disease serology
+  - celiac disease tissue transglutaminase
+  - celiac disease endomysial antibodies
+  - celiac disease duodenal biopsy
+  - celiac disease Marsh classification
+  - celiac disease screening
+  - celiac disease HLA-DQ2
+  - celiac disease diagnostic criteria
+  - celiac disease non-biopsy diagnosis
+  - celiac disease gluten challenge
+  # Treatment
+  - celiac disease gluten-free diet
+  - celiac disease dietary adherence
+  - celiac disease gluten contamination
+  - celiac disease gluten immunogenic peptides
+  - celiac disease nutritional deficiencies
+  - celiac disease oats
+  - celiac disease budesonide
+  - celiac disease novel therapies
+  # Living with
+  - celiac disease quality of life
+  - celiac disease follow-up
+  - celiac disease anxiety depression
+  - celiac disease persistent symptoms
+  - celiac disease bone density
+  - celiac disease pregnancy
+  - celiac disease adolescents
+  - celiac disease family screening
+  - celiac disease self-management
+
+# YouTube channels.
+channels:
+  - name: Celiac Disease Foundation
+    url: https://www.youtube.com/channel/UCQGGvxTl_NJM_iZX11WbIjQ
+  - name: Beyond Celiac
+    url: https://www.youtube.com/channel/UC4cuj7EGugzyiPqaSQfn99g
+  - name: Celiac Canada
+    url: https://www.youtube.com/channel/UCmajCE_RE80dog_S80pB66Q
+  - name: Coeliac UK
+    url: https://www.youtube.com/channel/UCxy5w7waAdseR1p7Iuq065w
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: celiac_canada_podcast
+    name: A Canadian Celiac Podcast
+    url: https://rss.libsyn.com/shows/114626/destinations/648333.xml
+    publisher: Celiac Canada
+    audience: patients
+    language: en
+    trusted_because: Podcast of Celiac Canada, the national charity for celiac disease, hosted by its dietitian and executive director since April 2026 (earlier episodes by a volunteer chapter president).
+  - key: beyond_celiac_straight_talk
+    name: Celiac Straight Talk
+    url: https://rss.libsyn.com/shows/96591/destinations/497758.xml
+    publisher: Beyond Celiac
+    audience: patients
+    language: en
+    trusted_because: Official podcast of the patient-advocacy and research organisation Beyond Celiac, with real stories of living with celiac disease.
+  - key: celiac_disease_foundation_inside_celiac
+    name: Inside Celiac
+    url: https://feed.podbean.com/InsideCeliac/feed.xml
+    publisher: Celiac Disease Foundation
+    audience: patients
+    language: en
+    trusted_because: Signature podcast of the Celiac Disease Foundation, the US patient organisation, with clinician interviews on diagnosis, treatment and research.

@@ -1,0 +1,99 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: skin_cancer
+label: Skin cancer (melanoma and non-melanoma)
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - skin cancer
+  - skin neoplasm
+  - melanoma
+  - non-melanoma skin cancer
+  - nonmelanoma skin cancer
+  - keratinocyte carcinoma
+  - keratinocyte cancer
+  - basal cell carcinoma
+  - Carcinoma, Basal Cell
+  - cutaneous squamous cell carcinoma
+  - squamous cell carcinoma of the skin
+  - cSCC
+  - Merkel cell carcinoma
+  - Carcinoma, Merkel Cell
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - skin cancer
+  - melanoma
+  - non-melanoma skin cancer
+  - keratinocyte carcinoma
+  - basal cell carcinoma
+  - cutaneous squamous cell carcinoma
+  - Merkel cell carcinoma
+  - acral melanoma
+  - melanoma in situ
+  - metastatic melanoma
+  - advanced cutaneous squamous cell carcinoma
+  # Diagnosis and screening
+  - skin cancer screening
+  - skin cancer prevention
+  - melanoma dermoscopy
+  - skin cancer artificial intelligence
+  - melanoma staging
+  - melanoma sentinel lymph node biopsy
+  - melanoma BRAF mutation
+  - skin cancer transplant recipients
+  # Treatment
+  - melanoma wide local excision
+  - Mohs micrographic surgery
+  - melanoma adjuvant immunotherapy
+  - melanoma neoadjuvant immunotherapy
+  - melanoma pembrolizumab
+  - melanoma nivolumab ipilimumab
+  - melanoma nivolumab relatlimab
+  - melanoma dabrafenib trametinib
+  - melanoma encorafenib binimetinib
+  - melanoma lifileucel
+  - melanoma brain metastases
+  - melanoma immune-related adverse events
+  - basal cell carcinoma hedgehog inhibitor
+  - cutaneous squamous cell carcinoma cemiplimab
+  - Merkel cell carcinoma avelumab
+  - skin cancer nicotinamide
+  # Living with
+  - melanoma survivors
+  - melanoma follow-up
+  - melanoma quality of life
+  - melanoma fear of recurrence
+  - skin cancer psychological distress
+
+# YouTube channels.
+channels:
+  - name: AIM at Melanoma Foundation (AIM)
+    url: https://www.youtube.com/channel/UCkbmBEQdiuUmaTFMO0ffoXQ
+  - name: Melanoma Research Alliance (MRA)
+    url: https://www.youtube.com/channel/UClJk1dzR0h2JWTiQkujvJnQ
+  - name: Skin Cancer Foundation (SCF)
+    url: https://www.youtube.com/channel/UCV4Lz4FhzXKCQo0kxSiLpgg
+  - name: Melanoma Research Foundation (MRF)
+    url: https://www.youtube.com/channel/UCmMqxBR0LoObPrGl6-aphIA
+  - name: Melanoma Patients Australia (MPA)
+    url: https://www.youtube.com/channel/UCKD7-7vjYuH0lSUBqc41yKA
+  - name: Melanoma Canada
+    url: https://www.youtube.com/channel/UCuW_b9-g8LT0sk2VbnwHBgg
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: aim_at_melanoma_beyond_the_clinic
+    name: "Beyond The Clinic: Living Well With Melanoma"
+    url: https://anchor.fm/s/7989a9a8/podcast/rss
+    publisher: AIM at Melanoma Foundation (AIM)
+    audience: patients
+    language: en
+    trusted_because: Podcast of the AIM at Melanoma Foundation, a global foundation for melanoma research and patient support, with researchers, clinicians, patients and caregivers on life after a melanoma diagnosis.
+  - key: melanoma_canada_spotcast
+    name: Spotcast
+    url: https://rss.buzzsprout.com/2599387.rss
+    publisher: Melanoma Canada
+    audience: patients
+    language: en
+    trusted_because: Podcast of Melanoma Canada, a registered Canadian melanoma and skin cancer charity, with clinicians, patients and caregivers on detection, treatment and survivorship.

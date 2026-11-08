@@ -33,7 +33,7 @@ To compare the three algorithms, a client calls `match_journey` once per algorit
 | `journey` | object | yes | See below |
 | `algorithm` | `keyword`, `graph`, `ai_summary` | no | Default `keyword` |
 | `limit` | integer, 1 to 50 | no | Default 10 |
-| `source_types` | list of `paper`, `preprint`, `video`, `podcast` | no | Default: all types |
+| `content_types` | list of `content_type` values, see [output](#match_journey-output) | no | Default: all types |
 
 `journey` has the format of the generator's `timeline.json`, so a generated journey can be sent unchanged. Other fields, such as `pathway_id`, `start_date` and `documents`, are dropped.
 
@@ -69,7 +69,7 @@ Each result holds the source reference and optional relevance information:
 | `source_id` | string | yes | Stable ID, for example `pubmed:42745507`. Input of `get_source` |
 | `title` | string | yes | |
 | `source` | string | yes | Where the entry comes from, for example `pubmed`, `arxiv`, `zenodo`, `youtube` |
-| `source_type` | `paper`, `preprint`, `video`, `podcast` | yes | |
+| `content_type` | `journal_article`, `preprint`, `conference_paper`, `poster`, `presentation`, `report`, `book`, `video`, `podcast_episode` | yes | As stored, see [sources §2](sources/README.md#2-metadata-schema) |
 | `url` | URL | yes | Link to the original |
 | `published_date` | string | no | As precise as the source provides it |
 | `authors` | list of strings | no | |
@@ -90,7 +90,7 @@ Example:
       "source_id": "pubmed:42745507",
       "title": "Salvage radiotherapy after radical prostatectomy",
       "source": "pubmed",
-      "source_type": "paper",
+      "content_type": "journal_article",
       "url": "https://pubmed.ncbi.nlm.nih.gov/42745507/",
       "score": 1,
       "matched_terms": ["biochemical recurrence"]
@@ -135,7 +135,7 @@ The server does not store or log the journey. It also does not log the message o
 
 | Need | Basis | Status |
 |---|---|---|
-| Show a list of sources | `PaperReference` in the SS26 code (`title`, `source`, `source_type`, `published_date`, `url`) | Same field names. `url` is required here because we store only links to the originals |
+| Show a list of sources | `PaperReference` in the SS26 code (`title`, `source`, `source_type`, `published_date`, `url`) | Same field names, except `content_type` instead of `source_type`. `url` is required here because we store only links to the originals |
 | Tell "nothing relevant" from "search failed" | `degraded` and `degraded_reason` in the SS26 `PaperRetrievalResult` | Same field names |
 | Send generated journeys | Generator `timeline.json` | Checked with one generated journey for each of the 10 pathways |
 | Send journeys of the real app | Unknown | Open |

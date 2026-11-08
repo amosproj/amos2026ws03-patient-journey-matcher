@@ -120,7 +120,7 @@
   <text class="sub" x="372" y="566">three index schemas</text>
   <g text-anchor="middle">
     <text class="hm" x="485" y="244">crawl_runs</text>
-    <text class="b" x="485" y="262">optional run log</text>
+    <text class="b" x="485" y="262">one row per store run</text>
     <text class="hm" x="485" y="312">documents</text>
     <text class="b" x="485" y="334">metadata and links only</text>
     <text class="b" x="485" y="351">no full texts, PDFs</text>

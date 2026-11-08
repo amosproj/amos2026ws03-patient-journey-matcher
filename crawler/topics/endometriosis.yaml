@@ -1,0 +1,80 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: endometriosis
+label: Endometriosis
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - endometriosis
+  - endometriotic
+  - endometrioma
+  - adenomyosis
+  - adenomyotic
+  - adenomyoma
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - endometriosis
+  - adenomyosis
+  - endometrioma
+  - deep infiltrating endometriosis
+  - bowel endometriosis
+  - adolescent endometriosis
+  - endometriosis classification
+  # Diagnosis and screening
+  - endometriosis diagnosis
+  - endometriosis diagnostic delay
+  - endometriosis transvaginal ultrasound
+  - endometriosis MRI
+  - endometriosis biomarkers
+  - adenomyosis imaging
+  # Treatment
+  - endometriosis treatment
+  - endometriosis pain management
+  - endometriosis combined oral contraceptive
+  - endometriosis progestin
+  - endometriosis dienogest
+  - endometriosis levonorgestrel intrauterine system
+  - endometriosis GnRH agonist
+  - endometriosis GnRH antagonist
+  - endometriosis add-back therapy
+  - endometriosis elagolix
+  - endometriosis relugolix
+  - endometriosis letrozole
+  - endometriosis laparoscopic excision
+  - endometrioma cystectomy
+  - endometriosis hysterectomy
+  - adenomyosis treatment
+  - adenomyosis uterine artery embolization
+  # Living with
+  - endometriosis infertility
+  - endometriosis IVF
+  - endometriosis fertility preservation
+  - endometriosis pregnancy outcomes
+  - endometriosis quality of life
+  - endometriosis pain self-management
+  - endometriosis pelvic floor physiotherapy
+  - endometriosis depression anxiety
+  - endometriosis partners
+  - endometriosis recurrence
+
+# YouTube channels.
+channels:
+  - name: Endometriosis Foundation of America (EFA)
+    url: https://www.youtube.com/channel/UCyLvBkPWroSFnN6dimFytJw
+  - name: Endometriosis UK
+    url: https://www.youtube.com/channel/UCm6hC9bouHzWOmSAfruF_yw
+  - name: Endometriosis Australia
+    url: https://www.youtube.com/channel/UC7nhfFJHtahhUCBQQyv31tQ
+  - name: The Endometriosis Network Canada
+    url: https://www.youtube.com/channel/UC4H7FGjW9iisFW4fCrf7p3g
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: endometriosis_australia_living_with_endo
+    name: Living With Endo
+    url: https://rss.libsyn.com/shows/284330/destinations/2185007.xml
+    publisher: Endometriosis Australia
+    audience: patients
+    language: en
+    trusted_because: Podcast of Endometriosis Australia, the national endometriosis charity, with people living with endometriosis, clinicians and researchers.

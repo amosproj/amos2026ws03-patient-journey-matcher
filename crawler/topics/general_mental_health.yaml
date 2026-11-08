@@ -1,0 +1,108 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+# Mental health in general: channels and podcasts on all mental health conditions, incl. ADHD, autism, eating disorders and addiction.
+id: general_mental_health
+label: Mental health in general
+
+# YouTube channels.
+channels:
+  - name: American Psychiatric Association (APA)
+    url: https://www.youtube.com/channel/UCm8c3GJ8-zYVKk9aKQrDw8g
+  - name: Royal College of Psychiatrists (RCPsych)
+    url: https://www.youtube.com/channel/UC8tk9gNTTxswGx1bj8XVrRQ
+  - name: National Alliance on Mental Illness (NAMI)
+    url: https://www.youtube.com/channel/UCaNzWjA23x9EvaVU3jYw15A
+  - name: Mind
+    url: https://www.youtube.com/channel/UCarWBJYMNqJxgn6n8_htCTQ
+  - name: Substance Abuse and Mental Health Services Administration (SAMHSA)
+    url: https://www.youtube.com/channel/UCAkmVsd_pi2eLlfaPJ0iSCA
+  - name: Centre for Addiction and Mental Health (CAMH)
+    url: https://www.youtube.com/channel/UC7qWEIEPqtsXlHY7gcqIpvQ
+  - name: Brain & Behavior Research Foundation (BBRF)
+    url: https://www.youtube.com/channel/UC4fhqXpIi7pcpyRd13Z1WQA
+  - name: American Foundation for Suicide Prevention (AFSP)
+    url: https://www.youtube.com/channel/UCjOslwaZQmr32tv1NZPlVbg
+  - name: MQ Mental Health Research
+    url: https://www.youtube.com/channel/UCRoRA1NEX2WioDnD-IWeCIQ
+  - name: Orygen
+    url: https://www.youtube.com/channel/UC3Y60uP7dKGOAMbk6v4D84Q
+  - name: Beyond Blue
+    url: https://www.youtube.com/channel/UChdVDaoJX2jqP95OhXhNT1g
+  - name: Rethink Mental Illness
+    url: https://www.youtube.com/channel/UCHys7c5jVb2wf1yhUmVAAVg
+  - name: American Academy of Child and Adolescent Psychiatry (AACAP)
+    url: https://www.youtube.com/channel/UCT9bDFvoYzcHRKJGMc38g4w
+  - name: Child Mind Institute
+    url: https://www.youtube.com/channel/UCJWqhYTN2h00RsOBQSFEytg
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: speaking_of_psychology
+    name: Speaking of Psychology
+    url: https://feeds.megaphone.fm/AMERICANPSYCHOLOGICALASSOCIATION9933181801
+    publisher: American Psychological Association (APA)
+    audience: patients
+    language: en
+    trusted_because: Official podcast of the American Psychological Association on current psychological research.
+  - key: ajp_audio
+    name: American Journal of Psychiatry Audio
+    url: https://rss.libsyn.com/shows/141098/destinations/886157.xml
+    publisher: American Psychiatric Association (APA)
+    audience: clinicians
+    language: en
+    trusted_because: Monthly author interviews on articles of The American Journal of Psychiatry, the peer-reviewed journal of the American Psychiatric Association.
+  - key: jama_psychiatry_author_interviews
+    name: JAMA Psychiatry Author Interviews
+    url: https://rss.libsyn.com/shows/86896/destinations/422125.xml
+    publisher: JAMA Network
+    audience: clinicians
+    language: en
+    trusted_because: Author interviews on articles of JAMA Psychiatry, the peer-reviewed journal of the JAMA Network.
+  - key: bjpsych_journals_podcast
+    name: BJPsych Journals
+    url: https://feeds.soundcloud.com/users/soundcloud:users:591956529/sounds.rss
+    publisher: Royal College of Psychiatrists (RCPsych)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the peer-reviewed BJPsych journals of the Royal College of Psychiatrists.
+  - key: rcpsych_podcast
+    name: The Royal College of Psychiatrists Podcast
+    url: https://feeds.soundcloud.com/users/soundcloud:users:400277223/sounds.rss
+    publisher: Royal College of Psychiatrists (RCPsych)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the Royal College of Psychiatrists, the professional body of psychiatrists in the UK.
+  - key: lancet_psychiatry_in_conversation
+    name: The Lancet Psychiatry in conversation with
+    url: https://feed.podbean.com/lancetpsychiatry/feed.xml
+    publisher: The Lancet Group
+    audience: clinicians
+    language: en
+    trusted_because: Editors of the peer-reviewed journal The Lancet Psychiatry talk with authors about their research.
+  - key: nami_hope_starts_with_us
+    name: Hope Starts With Us
+    url: https://rss.buzzsprout.com/2001913.rss
+    publisher: National Alliance on Mental Illness (NAMI)
+    audience: patients
+    language: en
+    trusted_because: Official podcast of NAMI, the National Alliance on Mental Illness, on mental health topics and lived experience.
+  - key: mq_open_mind
+    name: MQ Open Mind
+    url: https://feed.podbean.com/mqopenmind/feed.xml
+    publisher: MQ Mental Health Research
+    audience: patients
+    language: en
+    trusted_because: Podcast of MQ, a UK charity for mental health research, on the science behind mental health.
+  - key: child_mind_thriving_kids
+    name: Thriving Kids
+    url: https://api.riverside.com/hosting/MH2C8jcv.rss
+    publisher: Child Mind Institute
+    audience: patients
+    language: en
+    trusted_because: Podcast of the Child Mind Institute, a nonprofit for children's mental health, hosted by one of its clinical psychologists.
+  - key: black_dog_expert_insights
+    name: Expert Insights – Black Dog Institute Podcasts
+    url: https://feeds.transistor.fm/expert-insights-black-dog-institute-podcasts
+    publisher: Black Dog Institute
+    audience: clinicians
+    language: en
+    trusted_because: Expert panels for health professionals from the Black Dog Institute, an Australian medical research institute for mental health.

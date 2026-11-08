@@ -1,0 +1,86 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: hiv
+label: HIV
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - HIV
+  - HIV infection
+  - HIV-1
+  - HIV-2
+  - human immunodeficiency virus
+  - acquired immunodeficiency syndrome
+  - AIDS-related opportunistic infection
+  - antiretroviral therapy
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - HIV infection
+  - HIV-1 infection
+  - HIV-2 infection
+  - acute HIV infection
+  - advanced HIV disease
+  - HIV opportunistic infections
+  - HIV mother-to-child transmission
+  - pediatric HIV infection
+  # Diagnosis and screening
+  - HIV testing
+  - HIV self-testing
+  - HIV antigen antibody assay
+  - HIV viral load monitoring
+  - HIV genotypic resistance testing
+  - HIV early infant diagnosis
+  # Treatment
+  - HIV antiretroviral therapy
+  - HIV same-day antiretroviral initiation
+  - HIV integrase inhibitors
+  - HIV dolutegravir
+  - HIV bictegravir
+  - HIV dolutegravir lamivudine
+  - HIV cabotegravir rilpivirine
+  - HIV lenacapavir
+  - HIV tenofovir alafenamide
+  - HIV doravirine
+  - HIV darunavir
+  - HIV treatment switch
+  - HIV pre-exposure prophylaxis
+  - HIV long-acting pre-exposure prophylaxis
+  - HIV post-exposure prophylaxis
+  - HIV treatment as prevention
+  - HIV vaccine
+  # Living with
+  - HIV treatment adherence
+  - HIV stigma
+  - HIV quality of life
+  - HIV mental health
+  - HIV aging comorbidities
+  - HIV cardiovascular disease
+  - HIV retention in care
+  - HIV weight gain
+  - HIV pregnancy antiretroviral
+
+# YouTube channels.
+channels:
+  - name: NAM aidsmap
+    url: https://www.youtube.com/channel/UCpqDe1I_t1oV_j67U0HT2bg
+  - name: HIV.gov (U.S. Department of Health and Human Services)
+    url: https://www.youtube.com/channel/UC5J1dpToOZLl37onLT6qe3g
+  - name: Terrence Higgins Trust (THT)
+    url: https://www.youtube.com/channel/UCvDIu4SI_mKkD9uYFOqXutw
+  - name: The Well Project
+    url: https://www.youtube.com/channel/UCMQcT6v5ENqn7Ocln6sP_sw
+  - name: International AIDS Society (IAS)
+    url: https://www.youtube.com/channel/UC43XbxjX7RZZ_gK9Vt8Z8FA
+  - name: European AIDS Clinical Society (EACS)
+    url: https://www.youtube.com/channel/UC1SBqh2iaV2GwbqXSBts6bA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: lancet_hiv
+    name: The Lancet HIV in conversation with
+    url: https://feed.podbean.com/lancethiv/feed.xml
+    publisher: The Lancet Group
+    audience: clinicians
+    language: en
+    trusted_because: Editors of the peer-reviewed journal The Lancet HIV talk with authors about their research.

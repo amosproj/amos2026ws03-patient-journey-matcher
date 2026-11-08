@@ -1,0 +1,66 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: uterine_fibroids
+label: Uterine fibroids
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - uterine fibroid
+  - uterine leiomyoma
+  - uterine leiomyomata
+  - uterine myoma
+  - leiomyoma
+  - leiomyomata
+  - myomectomy
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - uterine fibroids
+  - uterine leiomyoma
+  - uterine myoma
+  - symptomatic uterine fibroids
+  - submucosal uterine fibroids
+  - uterine fibroids heavy menstrual bleeding
+  - uterine fibroids anemia
+  - uterine fibroids MED12
+  - uterine fibroids racial disparities
+  # Diagnosis and screening
+  - uterine fibroids diagnosis
+  - uterine fibroids ultrasound
+  - uterine fibroids MRI
+  - uterine fibroids hysteroscopy
+  - uterine fibroids FIGO classification
+  # Treatment
+  - uterine fibroids treatment
+  - uterine fibroids medical therapy
+  - uterine fibroids tranexamic acid
+  - uterine fibroids levonorgestrel intrauterine system
+  - uterine fibroids GnRH antagonist
+  - uterine fibroids relugolix
+  - uterine fibroids elagolix
+  - uterine fibroids linzagolix
+  - uterine fibroids GnRH agonist
+  - myomectomy
+  - laparoscopic myomectomy
+  - robotic myomectomy
+  - hysteroscopic myomectomy
+  - uterine fibroids hysterectomy
+  - uterine fibroids uterine artery embolization
+  - uterine fibroids radiofrequency ablation
+  - uterine fibroids focused ultrasound
+  - uterine fibroids morcellation
+  # Living with
+  - uterine fibroids fertility
+  - uterine fibroids pregnancy outcomes
+  - uterine fibroids quality of life
+  - uterine fibroids recurrence
+  - uterine fibroids postmenopausal
+  - uterine fibroids shared decision making
+  - uterine fibroids hysterectomy recovery
+
+# YouTube channels.
+channels:
+  - name: Fibroid Foundation
+    url: https://www.youtube.com/channel/UCJWLGhDaxBOHSVuzihPS7zQ
+  - name: The White Dress Project
+    url: https://www.youtube.com/channel/UCwAWJ69VRfiWpDfJGTjWybg

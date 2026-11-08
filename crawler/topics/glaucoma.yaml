@@ -1,0 +1,80 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: glaucoma
+label: Glaucoma
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - glaucoma
+  - glaucomatous
+  - Glaucoma, Open-Angle
+  - Glaucoma, Angle-Closure
+  - Low Tension Glaucoma
+  - Glaucoma, Neovascular
+  - Ocular Hypertension
+  - Hydrophthalmos
+  - Exfoliation Syndrome
+  - angle closure
+  - POAG
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - glaucoma
+  - primary open angle glaucoma
+  - angle closure glaucoma
+  - primary angle closure
+  - normal tension glaucoma
+  - ocular hypertension
+  - pseudoexfoliation glaucoma
+  - pigmentary glaucoma
+  - neovascular glaucoma
+  - congenital glaucoma
+  - glaucoma progression
+  # Diagnosis and screening
+  - glaucoma screening
+  - glaucoma optical coherence tomography
+  - glaucoma visual field
+  - glaucoma intraocular pressure
+  - glaucoma gonioscopy
+  - glaucoma risk factors
+  - glaucoma genetics
+  - glaucoma artificial intelligence
+  # Treatment
+  - glaucoma eye drops
+  - glaucoma latanoprost
+  - glaucoma bimatoprost
+  - glaucoma timolol
+  - glaucoma dorzolamide
+  - glaucoma brimonidine
+  - glaucoma netarsudil
+  - glaucoma selective laser trabeculoplasty
+  - glaucoma laser peripheral iridotomy
+  - glaucoma trabeculectomy
+  - glaucoma tube shunt
+  - minimally invasive glaucoma surgery
+  - glaucoma cyclophotocoagulation
+  - glaucoma cataract surgery
+  # Living with
+  - glaucoma medication adherence
+  - glaucoma quality of life
+  - glaucoma low vision
+  - glaucoma follow-up
+  - glaucoma patient education
+  - glaucoma depression
+
+# YouTube channels.
+channels:
+  - name: Glaucoma Research Foundation (GRF)
+    url: https://www.youtube.com/channel/UCepwUTbiGsJPcU-VIzuIYvg
+  - name: Glaucoma UK
+    url: https://www.youtube.com/channel/UCXhuckWANcQauyelHtbFWfA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: brightfocus_glaucoma_chats
+    name: Glaucoma Chats
+    url: https://feeds.blubrry.com/feeds/1469751.xml
+    publisher: BrightFocus Foundation
+    audience: patients
+    language: en
+    trusted_because: Conversations with glaucoma specialists and researchers from BrightFocus, a nonprofit that funds eye and brain disease research.
