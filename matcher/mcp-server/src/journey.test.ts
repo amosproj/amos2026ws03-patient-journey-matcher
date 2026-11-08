@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { journeyState } from "./index.ts";
+import { journeyState } from "./journey.ts";
 
 function event(id: string, date: string) {
   return { id, type: "followup", label: `Event ${id}`, date };

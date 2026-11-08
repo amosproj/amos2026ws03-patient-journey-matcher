@@ -1,6 +1,6 @@
 import type { Approach } from "@matcher/core";
 import { expect, test } from "vitest";
-import { selectApproaches } from "./index.ts";
+import { selectApproaches } from "./registry.ts";
 
 function approach(name: string): Approach {
   return {

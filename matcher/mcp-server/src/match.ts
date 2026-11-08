@@ -1,7 +1,7 @@
 import type { Approach, Hit } from "@matcher/core";
 import type { DocumentRow, DocumentStore } from "@matcher/db";
-import { journeyState } from "@matcher/journey";
 import type { MatchResult } from "./contract.ts";
+import { journeyState } from "./journey.ts";
 import { type MatchService, ToolError } from "./server.ts";
 import { toSourceReference } from "./sources.ts";
 

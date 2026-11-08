@@ -4,7 +4,7 @@ The keyword baseline (#8): `match_journey` with `algorithm: keyword` ranks the s
 
 ## How it works
 
-**Metadata index.** `make index` runs the indexer ([`matcher/indexer/`](../matcher/indexer/src/index.ts)). It reads the new and changed rows of `documents` with `documentsToIndex` ([storage](storage.md#reading)) and writes one row per document to `keyword.documents`: title, abstract or description, and subject labels (MeSH for PubMed). The [pg_textsearch](https://github.com/timescale/pg_textsearch) extension (PostgreSQL License) keeps a BM25 index on that text, with English stemming and stop words. The indexer creates the schema `keyword` itself; nothing else writes it. Deleting a document deletes its index rows.
+**Metadata index.** `make index` runs the indexer ([`matcher/indexer/`](../matcher/indexer/src/main.ts)). It reads the new and changed rows of `documents` with `documentsToIndex` ([storage](storage.md#reading)) and writes one row per document to `keyword.documents`: title, abstract or description, and subject labels (MeSH for PubMed). The [pg_textsearch](https://github.com/timescale/pg_textsearch) extension (PostgreSQL License) keeps a BM25 index on that text, with English stemming and stop words. The indexer creates the schema `keyword` itself; nothing else writes it. Deleting a document deletes its index rows.
 
 **Full-text index.** Then the indexer downloads the full text of the same documents ([full texts](#full-texts)), keeps the [keywords](#keywords) of English texts and writes one row per document to `keyword.full_texts`, with its own BM25 index.
 
@@ -18,7 +18,7 @@ The focus terms go into the BM25 query three times and the context terms once, s
 
 ## Full texts
 
-[`@matcher/download`](../matcher/download/src/index.ts) tries the `full_text` locators of a document in their stored order ([sources §2](sources/README.md#2-metadata-schema)), at most three, and reads the first one that gives text. It keeps the text in memory only.
+[`@matcher/download`](../matcher/download/src/downloader.ts) tries the `full_text` locators of a document in their stored order ([sources §2](sources/README.md#2-metadata-schema)), at most three, and reads the first one that gives text. It keeps the text in memory only.
 
 | Source | File read | Read as |
 |---|---|---|

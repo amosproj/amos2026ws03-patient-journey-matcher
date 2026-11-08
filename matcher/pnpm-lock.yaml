@@ -253,12 +253,6 @@ importers:
         specifier: ^8.23.1
         version: 8.23.1
 
-  journey:
-    dependencies:
-      '@matcher/core':
-        specifier: workspace:*
-        version: link:../core
-
   mcp-server:
     dependencies:
       '@matcher/approaches':
@@ -273,9 +267,6 @@ importers:
       '@matcher/download':
         specifier: workspace:*
         version: link:../download
-      '@matcher/journey':
-        specifier: workspace:*
-        version: link:../journey
       '@modelcontextprotocol/node':
         specifier: ^2.1.2
         version: 2.1.2(@modelcontextprotocol/server@2.4.0)

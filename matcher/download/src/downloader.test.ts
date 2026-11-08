@@ -1,5 +1,5 @@
 import { expect, test, vi } from "vitest";
-import { createDownloader, type Locator } from "./index.ts";
+import { createDownloader, type Locator } from "./downloader.ts";
 
 function locator(
   url: string,

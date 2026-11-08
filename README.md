@@ -21,12 +21,11 @@ The Python crawler and the TypeScript matcher are separate projects with their o
 | `debug/crawler/` | Python 3.12, HTML | uses `crawler/` | [Debug UI](debug/crawler/README.md) for the crawler and the database |
 | `matcher/db/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Reads the stored sources ([storage](Documentation/storage.md)) |
 | `matcher/core/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Contracts of the approaches: `Approach`, `Indexer`, `Matcher`, rank fusion |
-| `matcher/journey/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | The journey state all matchers get: focus and context |
 | `matcher/approaches/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | The list of approaches, for the MCP server and the indexer |
 | `matcher/download/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Downloads full texts and reads their text ([keyword matching](Documentation/keyword-matching.md#full-texts)) |
 | `matcher/algorithms/keyword/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | [Keyword matching](Documentation/keyword-matching.md): BM25 index and matcher; [adding an approach](matcher/algorithms/README.md) |
 | `matcher/indexer/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Index builder (`make index`) |
-| `matcher/mcp-server/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | MCP server |
+| `matcher/mcp-server/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | MCP server; builds the journey state all matchers get: focus and context |
 
 ### Prerequisites
 

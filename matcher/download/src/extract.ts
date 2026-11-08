@@ -2,7 +2,7 @@ import { Parser } from "htmlparser2";
 import { getDocumentProxy, extractText as pdfText } from "unpdf";
 
 /** How a full-text file is read. */
-export type Format = "pdf" | "xml" | "html" | "vtt" | "srt" | "json" | "text";
+type Format = "pdf" | "xml" | "html" | "vtt" | "srt" | "json" | "text";
 
 const FORMATS: Record<string, Format> = {
   "application/pdf": "pdf",
