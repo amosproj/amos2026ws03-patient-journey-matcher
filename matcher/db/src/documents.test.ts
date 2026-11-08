@@ -256,6 +256,23 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     expect(first.map((document) => document.id)).toEqual(["pubmed:3"]);
   });
 
+  test("lists a document no more once an index stored the changed_at it read", async () => {
+    await pool.query(`
+      CREATE TABLE keyword_index (
+        document_id text PRIMARY KEY REFERENCES documents (id) ON DELETE CASCADE,
+        document_changed_at timestamptz NOT NULL
+      )`);
+    await insert("pubmed:1"); // changed_at = now(), in microseconds
+    const store = createDocumentStore(pool);
+    const [document] = await store.documentsToIndex("keyword_index");
+    await pool.query(
+      "INSERT INTO keyword_index (document_id, document_changed_at) VALUES ($1, $2)",
+      [document?.id, document?.changed_at],
+    );
+
+    await expect(store.documentsToIndex("keyword_index")).resolves.toEqual([]);
+  });
+
   test("reads through a client of the pool, e.g. in a transaction", async () => {
     await insert("pubmed:1");
     const client = await pool.connect();

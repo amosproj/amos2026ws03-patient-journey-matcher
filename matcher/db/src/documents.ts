@@ -177,12 +177,14 @@ export function createDocumentStore(db: Queryable): DocumentStore {
         );
       }
       // A per-row comparison: polling `changed_at > last run` would miss the rows of a
-      // store run that commits late.
+      // store run that commits late. In milliseconds, as a JavaScript Date holds no more,
+      // so an indexer can store the `changed_at` it read.
       const { rows } = await db.query<DocumentRow>(
         `SELECT ${SELECT_DOCUMENT}
          FROM documents AS d
          LEFT JOIN ${tableName(indexTable)} AS i ON i.document_id = d.id
-         WHERE (i.document_id IS NULL OR i.document_changed_at IS DISTINCT FROM d.changed_at)
+         WHERE (i.document_id IS NULL
+                OR i.document_changed_at IS DISTINCT FROM date_trunc('milliseconds', d.changed_at))
            AND ${NOT_EXPIRED}
          ORDER BY d.changed_at, d.id
          LIMIT $1`,
