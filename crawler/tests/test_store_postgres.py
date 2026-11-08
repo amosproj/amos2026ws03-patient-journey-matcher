@@ -3,8 +3,8 @@
 import asyncio
 import json
 import os
-from collections.abc import Iterator
-from datetime import UTC, datetime, timedelta
+from collections.abc import Iterator, Sequence
+from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 from typing import Any
 from uuid import uuid4
@@ -27,7 +27,9 @@ from crawler.store import (
     StoreReport,
     last_successful_runs,
     prepare_store,
+    resume_date,
     save_result,
+    videos_to_refresh,
 )
 
 pytestmark = pytest.mark.postgres
@@ -119,13 +121,14 @@ def paper(native_id: str, **fields: Any) -> SourceDocument:
     return SourceDocument.model_validate(values | fields)
 
 
-def video(native_id: str, expires_at: datetime) -> SourceDocument:
+def video(native_id: str, expires_at: datetime, channel_id: str = "UCone") -> SourceDocument:
     return paper(
         native_id,
         id=f"youtube:{native_id}",
         source=SourceName.YOUTUBE,
         content_type="video",
         url=f"https://www.youtube.com/watch?v={native_id}",
+        channel_id=channel_id,
         refresh_after=expires_at,
     )
 
@@ -135,6 +138,7 @@ def save(
     *documents: SourceDocument,
     citations: dict[str, list[str]] | None = None,
     failures: list[RequestFailure] | None = None,
+    refreshed: Sequence[SourceDocument] = (),
 ) -> StoreReport:
     result = CollectionResult(
         documents=list(documents),
@@ -149,7 +153,7 @@ def save(
         started_at=RETRIEVED,
         finished_at=RETRIEVED + timedelta(minutes=5),
     )
-    return asyncio.run(save_result(url, result, run))
+    return asyncio.run(save_result(url, result, run, refreshed=refreshed))
 
 
 def set_timestamps(url: str, document_id: str, moment: datetime) -> None:
@@ -330,6 +334,32 @@ def test_expired_documents_and_their_index_rows_are_deleted(url: str) -> None:
     assert query(url, "SELECT document_id FROM keyword_index") == [{"document_id": "youtube:kept"}]
 
 
+def test_videos_to_refresh_are_those_of_the_channels_that_expire_soon(url: str) -> None:
+    soon = datetime.now(UTC) + timedelta(days=1)
+    save(
+        url,
+        video("soon", soon),
+        video("expired", FAR_AHEAD),
+        video("later", FAR_AHEAD),
+        video("other_channel", soon, channel_id="UCtwo"),
+    )
+    query(url, "UPDATE documents SET expires_at = $1 WHERE id = 'youtube:expired'", LONG_AGO)
+
+    assert asyncio.run(videos_to_refresh(url, ["UCone"])) == ["expired", "soon"]
+
+
+def test_refreshed_videos_are_kept_while_the_other_expired_ones_are_deleted(url: str) -> None:
+    save(url, video("refreshed", FAR_AHEAD), video("gone", FAR_AHEAD))
+    query(url, "UPDATE documents SET expires_at = $1", LONG_AGO)
+
+    report = save(url, refreshed=[video("refreshed", FAR_AHEAD)])
+
+    assert (report.unchanged, report.expired) == (1, 1)
+    assert query(url, "SELECT id, expires_at FROM documents") == [
+        {"id": "youtube:refreshed", "expires_at": FAR_AHEAD}
+    ]
+
+
 def test_a_failed_save_stores_nothing(url: str) -> None:
     mismatched = paper("2", id="pubmed:3")
 
@@ -347,6 +377,7 @@ def log_run(
     *,
     ok: bool = True,
     source: SourceName = SourceName.PUBMED,
+    max_results_reached: int = 0,
 ) -> None:
     failure = RequestFailure(
         kind="search",
@@ -357,7 +388,11 @@ def log_run(
         retries=3,
         retryable=True,
     )
-    result = CollectionResult(documents=[], failures=[] if ok else [failure])
+    result = CollectionResult(
+        documents=[],
+        failures=[] if ok else [failure],
+        stats=CollectionStats(max_results_reached=max_results_reached),
+    )
     run = RunInfo(
         source=source,
         topics=topics,
@@ -378,6 +413,16 @@ def test_last_successful_runs_are_per_topic_and_source(url: str) -> None:
     last = asyncio.run(last_successful_runs(url, SourceName.PUBMED, ["a", "b", "d"]))
 
     assert last == {"a": RETRIEVED + timedelta(days=1), "b": RETRIEVED}
+
+
+def test_a_run_that_reached_max_results_does_not_move_the_start_date(url: str) -> None:
+    log_run(url, ["a"], RETRIEVED)
+    log_run(url, ["a"], RETRIEVED + timedelta(days=1), max_results_reached=1)
+
+    last = asyncio.run(last_successful_runs(url, SourceName.PUBMED, ["a"]))
+
+    assert last == {"a": RETRIEVED}
+    assert resume_date(last, ["a"]) == date(2026, 10, 30)
 
 
 def test_duplicates_by_doi_and_the_last_run_of_a_source(url: str) -> None:

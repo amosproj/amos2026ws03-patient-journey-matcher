@@ -673,6 +673,7 @@ function logText(event) {
     case "run_cancelled": return ["err", `Run stopped${event.documents != null ? `: ${plural(event.documents, "document")} so far` : ""}`];
     case "run_failed": return ["err", `Run failed: ${event.error}`];
     case "store_started": return ["start", "Storing in the database …"];
+    case "refreshed": return ["ok", `Refreshed ${event.refreshed} of ${plural(event.due, "stored video")} that expire soon`];
     case "stored": return ["run", `Stored as store run #${event.run_id}: ${event.inserted} new, ${event.changed} changed, ${event.unchanged} unchanged; ${plural(event.cited, "stored document")} newly cited; ${event.expired} expired deleted`];
     case "store_failed": return ["err", `Storing failed: ${event.error}`];
     default: return ["start", JSON.stringify(event)];

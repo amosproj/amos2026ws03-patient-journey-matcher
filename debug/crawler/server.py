@@ -32,10 +32,11 @@ from dotenv import dotenv_values
 from pydantic import ValidationError
 
 from crawler.cli import parser as cli_parser
-from crawler.cli import requests_from_args
+from crawler.cli import refresh_videos, requests_from_args
 from crawler.models import SourceName
 from crawler.runner import ENV_FILE, link_extractor_from_env, run_requests, source_from_env
 from crawler.seeds import TOPICS_DIR, TopicFileError, load_topic
+from crawler.sources.base import redact_secrets
 from crawler.store import (
     STORE_LOCK,
     RunInfo,
@@ -296,8 +297,19 @@ def store(run: Run, loop: asyncio.AbstractEventLoop, seeds: list[Any], result: A
         started_at=datetime.fromisoformat(run.started_at),
         finished_at=datetime.now(UTC),
     )
+    refreshed: list[Any] = []
+    if info.source is SourceName.YOUTUBE:
+        try:
+            due, refreshed = loop.run_until_complete(refresh_videos(run.store_url, seeds, result))
+        except Exception as error:
+            message = redact_secrets(describe_error(error))
+            run.emit("warning", message=f"Refreshing stored videos failed: {message}")
+        else:
+            run.emit("refreshed", due=due, refreshed=len(refreshed))
     try:
-        report = loop.run_until_complete(save_result(run.store_url, result, info))
+        report = loop.run_until_complete(
+            save_result(run.store_url, result, info, refreshed=refreshed)
+        )
     except StoreError as error:
         run.emit("store_failed", error=str(error))
         return

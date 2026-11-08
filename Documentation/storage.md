@@ -25,9 +25,9 @@ cd crawler
 uv run crawler pubmed --topic prostate_cancer --store
 ```
 
-`--store` needs `DATABASE_URL` (see [`crawler/.env.example`](../crawler/.env.example)) and the schema (`make db`); the crawler checks both before the crawl and exits with 2 if one is missing. Cited papers that are already stored are not fetched again. The JSON Lines on stdout stay the same. After the crawl, one transaction:
+`--store` needs `DATABASE_URL` (see [`crawler/.env.example`](../crawler/.env.example)) and the schema (`make db`); the crawler checks both before the crawl and exits with 2 if one is missing. Cited papers that are already stored are not fetched again. The JSON Lines on stdout stay the same. After the crawl, a YouTube run refreshes the stored videos of its channels that expire within 15 days. Then one transaction:
 
-1. upserts each document by `id`: columns get the new values, `found_by` gains the new entries, `changed_at` moves only if the content changed;
+1. upserts each document, refreshed videos included, by `id`: columns get the new values, `found_by` gains the new entries, `changed_at` moves only if the content changed;
 2. adds the run's `cited_by` entries to stored documents it did not fetch again;
 3. deletes rows whose `expires_at` has passed (YouTube: 30 days after retrieval);
 4. writes the run to `crawl_runs`.
@@ -73,7 +73,7 @@ Duplicates are grouped by `doi` at query time; the last run per source is `SELEC
 
 ## Limits
 
-- Expired rows are deleted by the next store run. YouTube rows stay while their channels are crawled with `--store` at least every 30 days.
+- Expired rows are deleted by the next store run. YouTube rows stay while their channels are crawled with `--store` at least every two weeks and the videos stay public.
 - Stored cited papers are not refreshed; search results are.
 - YouTube rows have no `venue`, and a few rows have no `title` (shown as `Untitled`).
 

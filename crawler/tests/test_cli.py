@@ -1,9 +1,12 @@
+import asyncio
 import io
 import json
 import sys
 from collections.abc import Iterable, Sequence
 from datetime import UTC, date, datetime
 from pathlib import Path
+from types import SimpleNamespace
+from typing import Any
 
 import pytest
 
@@ -18,6 +21,7 @@ from crawler.models import (
     SourceName,
 )
 from crawler.runner import CollectionOptions
+from crawler.sources.youtube import YouTubeScraper
 from crawler.store import RunInfo, StoreError, StoreReport
 
 TOPIC = """
@@ -409,23 +413,29 @@ class FakeStore:
         last_runs: dict[str, datetime] | None = None,
         prepare_error: str | None = None,
         save_error: str | None = None,
+        refresh: tuple[int, list[SourceDocument]] = (0, []),
+        refresh_error: Exception | None = None,
     ) -> None:
         self.result = result
         self.stored = stored
         self.last_runs = last_runs or {}
         self.prepare_error = prepare_error
         self.save_error = save_error
+        self.refresh = refresh
+        self.refresh_error = refresh_error
         self.calls: list[str] = []
         self.load_ids: bool | None = None
         self.seeds: list[ScrapeRequest] = []
         self.options: CollectionOptions | None = None
         self.run: RunInfo | None = None
+        self.refreshed: list[SourceDocument] | None = None
 
     def install(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setattr(cli, "database_url", lambda: "postgresql://test/db")
         monkeypatch.setattr(cli, "prepare_store", self.prepare_store)
         monkeypatch.setattr(cli, "last_successful_runs", self.last_successful_runs)
         monkeypatch.setattr(cli, "run_requests", self.run_requests)
+        monkeypatch.setattr(cli, "refresh_videos", self.refresh_videos)
         monkeypatch.setattr(cli, "save_result", self.save_result)
 
     async def prepare_store(
@@ -451,9 +461,25 @@ class FakeStore:
         self.options = options
         return self.result
 
-    async def save_result(self, _url: str, _result: CollectionResult, run: RunInfo) -> StoreReport:
+    async def refresh_videos(
+        self, _url: str, _seeds: Sequence[ScrapeRequest], _result: CollectionResult
+    ) -> tuple[int, list[SourceDocument]]:
+        self.calls.append("refresh")
+        if self.refresh_error is not None:
+            raise self.refresh_error
+        return self.refresh
+
+    async def save_result(
+        self,
+        _url: str,
+        _result: CollectionResult,
+        run: RunInfo,
+        *,
+        refreshed: Sequence[SourceDocument] = (),
+    ) -> StoreReport:
         self.calls.append("save")
         self.run = run
+        self.refreshed = list(refreshed)
         if self.save_error is not None:
             raise StoreError(self.save_error)
         return StoreReport(run_id=7, inserted=1, changed=0, unchanged=0, cited=2, expired=0)
@@ -673,6 +699,95 @@ def test_runs_with_failures_are_stored_and_exit_with_1(
     assert exit_code == 1
     assert fake.calls == ["prepare", "run", "save"]
     assert "stored (run 7)" in capsys.readouterr().err
+
+
+def video(native_id: str) -> SourceDocument:
+    return SourceDocument(
+        id=f"youtube:{native_id}",
+        source=SourceName.YOUTUBE,
+        content_type="video",
+        source_id=native_id,
+        title="Treatment update",
+        url=f"https://www.youtube.com/watch?v={native_id}",
+    )
+
+
+def test_youtube_store_runs_store_the_refreshed_videos_too(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    old = video("old")
+    fake = FakeStore(CollectionResult(documents=[video("new")]), refresh=(2, [old]))
+    fake.install(monkeypatch)
+
+    exit_code = main(["youtube", "@NationalCancerInstitute", "--store"])
+
+    assert exit_code == 0
+    assert fake.calls == ["prepare", "run", "refresh", "save"]
+    assert fake.refreshed == [old]
+    assert "refreshed 1 of 2 stored video(s) that expire within 15 days" in capsys.readouterr().err
+
+
+def test_a_failed_refresh_still_stores_the_run_and_exits_with_1(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    error = RuntimeError("quotaExceeded: https://www.googleapis.com/youtube/v3/videos?key=SECRET")
+    fake = FakeStore(CollectionResult(documents=[video("new")]), refresh_error=error)
+    fake.install(monkeypatch)
+
+    exit_code = main(["youtube", "@NationalCancerInstitute", "--store"])
+
+    output = capsys.readouterr()
+    assert exit_code == 1
+    assert fake.calls == ["prepare", "run", "refresh", "save"]
+    assert fake.refreshed == []
+    assert "refreshing stored videos failed: RuntimeError: quotaExceeded" in output.err
+    assert "SECRET" not in output.err
+    assert "stored (run 7)" in output.err
+
+
+def youtube_api(handles: dict[str, str], items: list[dict[str, Any]]) -> Any:
+    """The Data API calls of `refresh_videos`: channels.list by handle, videos.list by ID."""
+    by_id = {item["id"]: item for item in items}
+
+    def channels(part: str, forHandle: str) -> SimpleNamespace:
+        found = [{"id": handles[forHandle]}] if forHandle in handles else []
+        return SimpleNamespace(execute=lambda: {"items": found})
+
+    def videos(part: str, id: str) -> SimpleNamespace:
+        found = [by_id[video_id] for video_id in id.split(",") if video_id in by_id]
+        return SimpleNamespace(execute=lambda: {"items": found})
+
+    return SimpleNamespace(
+        channels=lambda: SimpleNamespace(list=channels),
+        videos=lambda: SimpleNamespace(list=videos),
+    )
+
+
+def test_refresh_videos_fetches_the_due_videos_of_the_channels_again(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    channel_id = "UC" + "a" * 22
+    asked: list[list[str]] = []
+
+    async def videos_to_refresh(_url: str, channel_ids: Sequence[str]) -> list[str]:
+        asked.append(list(channel_ids))
+        return ["old", "new", "private"]
+
+    monkeypatch.setattr(cli, "videos_to_refresh", videos_to_refresh)
+    items = [
+        {"id": video_id, "snippet": {"title": video_id}, "status": {"privacyStatus": privacy}}
+        for video_id, privacy in [("old", "public"), ("new", "public"), ("private", "private")]
+    ]
+    scraper = YouTubeScraper("", service=youtube_api({"medical": "UCmedical"}, items))
+    channels = [f"https://www.youtube.com/channel/{channel_id}", "@medical", "@gone"]
+    seeds = [ScrapeRequest(source=SourceName.YOUTUBE, channel=channel) for channel in channels]
+    result = CollectionResult(documents=[video("new")])
+
+    due, refreshed = asyncio.run(cli.refresh_videos("postgresql://test/db", seeds, result, scraper))
+
+    assert asked == [[channel_id, "UCmedical"]]
+    assert due == 2
+    assert [document.id for document in refreshed] == ["youtube:old"]
 
 
 def test_json_lines_are_utf8_whatever_the_encoding_of_stdout(

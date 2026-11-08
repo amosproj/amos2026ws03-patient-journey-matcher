@@ -5,6 +5,7 @@ import json
 import logging
 import sys
 from collections.abc import Callable, Sequence
+from contextlib import suppress
 from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import NoReturn
@@ -15,6 +16,7 @@ from crawler.models import (
     MAX_RESULTS,
     CollectionResult,
     ScrapeRequest,
+    SourceDocument,
     SourceName,
     source_document_id,
     validation_message,
@@ -30,7 +32,8 @@ from crawler.seeds import (
     topic_terms,
 )
 from crawler.sources.arxiv import split_version
-from crawler.sources.youtube import channel_lookup
+from crawler.sources.base import redact_secrets
+from crawler.sources.youtube import REFRESH_WITHIN, YouTubeScraper, channel_lookup
 from crawler.store import (
     RESUME_OVERLAP,
     RunInfo,
@@ -41,13 +44,14 @@ from crawler.store import (
     prepare_store,
     resume_date,
     save_result,
+    videos_to_refresh,
 )
 
 AUTO = "auto"
 """`--since auto`: continue from the topics' last successful run with `--store`."""
 SINCE_AUTO_HELP = (
-    f"auto: from {RESUME_OVERLAP.days} days before the topics' last successful run with --store "
-    "(needs --store and --topic or --all-topics)"
+    f"auto: from {RESUME_OVERLAP.days} days before the topics' last successful run with --store, "
+    "not counting runs that reached --max-results (needs --store and --topic or --all-topics)"
 )
 SINCE_HELP = {
     SourceName.PUBMED: "only search results PubMed added since this date (YYYY-MM-DD); "
@@ -68,6 +72,10 @@ QUERY_MODE_HELP = (
 )
 STORE_HELP = "also upsert the documents into PostgreSQL (DATABASE_URL) and log the run"
 STORE_REFERENCES_HELP = f"{STORE_HELP}; cited papers stored before are not fetched again"
+STORE_VIDEOS_HELP = (
+    f"{STORE_HELP}; stored videos of the channels that expire within {REFRESH_WITHIN.days} days "
+    "are fetched again"
+)
 
 
 def whole_number(minimum: int, maximum: int | None = None) -> Callable[[str], int]:
@@ -118,7 +126,7 @@ def parser() -> argparse.ArgumentParser:
         description=(
             "Collect source metadata as JSON Lines on stdout. A summary of the run goes to "
             "stderr. Exit code 1 means at least one request failed or was not processed "
-            "(--max-requests) or, with --store, storing failed."
+            "(--max-requests) or, with --store, storing or refreshing stored videos failed."
         ),
     )
     subcommands = command.add_subparsers(dest="source", required=True)
@@ -168,7 +176,7 @@ def parser() -> argparse.ArgumentParser:
     _add_max_results_argument(youtube, "videos per channel")
     _add_since_argument(youtube, SourceName.YOUTUBE)
     _add_max_requests_argument(youtube)
-    _add_store_argument(youtube, STORE_HELP)
+    _add_store_argument(youtube, STORE_VIDEOS_HELP)
 
     podcast = subcommands.add_parser(SourceName.PODCAST.value, help="list podcast episodes")
     podcast.set_defaults(subcommand=podcast)
@@ -334,6 +342,57 @@ def _topics(seeds: Sequence[ScrapeRequest]) -> list[str]:
     return list(dict.fromkeys(topic for seed in seeds for topic in seed.topics))
 
 
+async def refresh_videos(
+    url: str,
+    seeds: Sequence[ScrapeRequest],
+    result: CollectionResult,
+    scraper: YouTubeScraper | None = None,
+) -> tuple[int, list[SourceDocument]]:
+    """Fetch the stored videos of the seeds' channels that expire within `REFRESH_WITHIN` again,
+    except those the run collected.
+
+    A run only lists the newest videos of a channel, so the older ones would expire. Returns how
+    many were due and those still public; the others expire. Channels that are not found are
+    skipped: the run already failed for them.
+    """
+    youtube = scraper or YouTubeScraper.from_env()
+
+    def channel_ids() -> list[str]:
+        ids: list[str] = []
+        for seed in seeds:
+            if seed.channel:
+                with suppress(ValueError):
+                    ids.append(youtube.resolve_channel_id(seed.channel))
+        return ids
+
+    collected = {document.id for document in result.documents}
+    stored = await videos_to_refresh(url, await asyncio.to_thread(channel_ids))
+    due = [
+        video_id
+        for video_id in stored
+        if source_document_id(SourceName.YOUTUBE, video_id) not in collected
+    ]
+    return len(due), await asyncio.to_thread(youtube.video_details, due)
+
+
+def _refresh(
+    url: str, seeds: Sequence[ScrapeRequest], result: CollectionResult
+) -> list[SourceDocument] | None:
+    """`refresh_videos` with its outcome on stderr; None if it failed."""
+    try:
+        due, refreshed = asyncio.run(refresh_videos(url, seeds, result))
+    except Exception as error:  # API, network or database: the run is stored all the same
+        message = redact_secrets(f"{type(error).__name__}: {error}")
+        print(f"refreshing stored videos failed: {message}", file=sys.stderr)
+        return None
+    print(
+        f"refreshed {len(refreshed)} of {due} stored video(s) that expire within "
+        f"{REFRESH_WITHIN.days} days",
+        file=sys.stderr,
+    )
+    return refreshed
+
+
 def _usage_error(
     command: argparse.ArgumentParser, arguments: argparse.Namespace, message: str
 ) -> NoReturn:
@@ -429,12 +488,15 @@ def main(argv: Sequence[str] | None = None) -> int:
             started_at=started_at,
             finished_at=finished_at,
         )
+        refreshed = _refresh(url, seeds, result) if source is SourceName.YOUTUBE else []
         try:
-            report = asyncio.run(save_result(url, result, run))
+            report = asyncio.run(save_result(url, result, run, refreshed=refreshed or []))
         except StoreError as error:
             print(f"storing failed: {error}", file=sys.stderr)
             return 1
         print(store_summary(report), file=sys.stderr)
+        if refreshed is None:
+            return 1
     return 0 if result.ok else 1
 
 

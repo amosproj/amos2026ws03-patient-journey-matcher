@@ -19,7 +19,7 @@ Default 10,000 units/day plus the 100 `search.list` calls, reset at midnight Pac
 ## Connectors
 
 - **SS26** `backend/scrapers/…/YouTube`: captions via the internal player API (scraping, III.E.6, III.I.8); stores transcripts and view counts forever. Drop that part.
-- **crawler** `crawler/src/crawler/sources/youtube.py`: official API, the fields below, no statistics. Each `--store` run deletes rows past `expires_at`; crawling the channels again with `--store` refreshes them (#41).
+- **crawler** `crawler/src/crawler/sources/youtube.py`: official API, the fields below, no statistics. A `--store` run refreshes the stored videos of its channels that expire within 15 days; every store run deletes rows past `expires_at` (#41).
 
 ## Fields
 

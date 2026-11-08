@@ -18,6 +18,7 @@ from pydantic import BaseModel, ConfigDict
 
 from crawler.models import CollectionResult, SourceDocument, SourceName
 from crawler.runner import ENV_FILE
+from crawler.sources.youtube import REFRESH_WITHIN
 
 __all__ = [
     "COLUMNS",
@@ -32,6 +33,7 @@ __all__ = [
     "prepare_store",
     "resume_date",
     "save_result",
+    "videos_to_refresh",
 ]
 
 DATABASE_URL = "DATABASE_URL"
@@ -183,13 +185,25 @@ async def last_successful_runs(
     url: str, source: SourceName, topics: Sequence[str]
 ) -> dict[str, datetime]:
     """When the last successful run of `source` started, per topic; topics without one are left
-    out."""
+    out. Runs that reached `--max-results` do not count: they may have cut off older documents,
+    so the next `--since auto` run covers their period again."""
     async with _connect(url) as connection:
         try:
             rows = await connection.fetch(_LAST_RUNS, source.value, list(topics))
         except _DATABASE_ERRORS as error:
             raise StoreError(f"cannot read from the database: {_describe(error)}") from error
     return {str(row["topic"]): row["started_at"] for row in rows}
+
+
+async def videos_to_refresh(url: str, channel_ids: Sequence[str]) -> list[str]:
+    """Video IDs of the stored videos of the channels that expire within `REFRESH_WITHIN`,
+    expired ones included."""
+    async with _connect(url) as connection:
+        try:
+            rows = await connection.fetch(_TO_REFRESH, list(channel_ids), REFRESH_WITHIN)
+        except _DATABASE_ERRORS as error:
+            raise StoreError(f"cannot read from the database: {_describe(error)}") from error
+    return [str(row["native_id"]) for row in rows]
 
 
 def resume_date(last_runs: Mapping[str, datetime], topics: Sequence[str]) -> date:
@@ -207,14 +221,21 @@ def resume_date(last_runs: Mapping[str, datetime], topics: Sequence[str]) -> dat
     return (oldest - RESUME_OVERLAP).astimezone(UTC).date()
 
 
-async def save_result(url: str, result: CollectionResult, run: RunInfo) -> StoreReport:
+async def save_result(
+    url: str,
+    result: CollectionResult,
+    run: RunInfo,
+    *,
+    refreshed: Sequence[SourceDocument] = (),
+) -> StoreReport:
     """Store the documents, the citations of stored documents and the run; all or nothing.
 
-    Documents are upserted by `id`. `found_by` gains the new entries, `changed_at` moves only if
-    the content changed. `result.citations` also holds stored documents that were skipped as
-    known; they get the `cited_by` entries the run found for them. Expired rows are deleted.
+    Documents are upserted by `id`, `refreshed` ones (stored videos fetched again) like those of
+    the run. `found_by` gains the new entries, `changed_at` moves only if the content changed.
+    `result.citations` also holds stored documents that were skipped as known; they get the
+    `cited_by` entries the run found for them. Expired rows are deleted.
     """
-    rows = [document_row(document) for document in result.documents]
+    rows = [document_row(document) for document in [*result.documents, *refreshed]]
     collected = {document.id for document in result.documents}
     citations = {
         cited_id: [{"cited_by": citing_id} for citing_id in citing_ids]
@@ -315,10 +336,19 @@ WHERE d.id = cited.id AND NOT d.found_by @> cited.found_by
 
 _EXPIRE = "DELETE FROM documents WHERE expires_at < now()"
 
+_TO_REFRESH = """
+SELECT native_id
+FROM documents
+WHERE source = 'youtube' AND external_ids ->> 'channel_id' = ANY($1::text[])
+    AND expires_at < now() + $2::interval
+ORDER BY expires_at, native_id
+"""
+
 _LAST_RUNS = """
 SELECT topic, max(started_at) AS started_at
 FROM crawl_runs, unnest(topics) AS topic
 WHERE source = $1 AND ok AND topic = ANY($2::text[])
+    AND coalesce((stats ->> 'max_results_reached')::int, 0) = 0
 GROUP BY topic
 """
 
