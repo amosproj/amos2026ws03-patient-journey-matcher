@@ -1,40 +1,114 @@
-import type { Queryable } from "@matcher/db";
+import type { Hit, Matcher } from "@matcher/core";
+import type { DocumentRow, DocumentStore } from "@matcher/db";
 import { expect, test, vi } from "vitest";
-import { createMatchService, cutJourney } from "./match.ts";
+import { createMatchService } from "./match.ts";
 
-function event(id: string, date: string) {
-  return { id, type: "followup", label: `Event ${id}`, date };
+const RETRIEVED = new Date("2026-11-01T12:00:00Z");
+
+function document(id: string): DocumentRow {
+  return {
+    id,
+    source: "pubmed",
+    native_id: id.split(":")[1] ?? id,
+    version: null,
+    content_type: "journal_article",
+    publication_types: [],
+    title: `Title of ${id}`,
+    authors: [],
+    venue: null,
+    summary: null,
+    language: "en",
+    subjects: [],
+    published_at: null,
+    published_precision: null,
+    source_updated_at: null,
+    duration_seconds: null,
+    canonical_url: `https://example.org/${id}`,
+    doi: null,
+    external_ids: {},
+    licence: null,
+    full_text: [],
+    found_by: [],
+    retrieved_at: RETRIEVED,
+    expires_at: null,
+    extra: {},
+    created_at: RETRIEVED,
+    changed_at: RETRIEVED,
+  };
+}
+
+/** A store that has the documents with these IDs. */
+function store(ids: string[]): DocumentStore {
+  return {
+    getDocuments: async (asked) =>
+      asked.filter((id) => ids.includes(id)).map(document),
+    getDocument: async (id) => (ids.includes(id) ? document(id) : undefined),
+    documentsToIndex: async () => [],
+  };
+}
+
+/** The keyword approach, its matcher answering with these hits. */
+function keyword(hits: Hit[] | Error) {
+  return {
+    name: "keyword",
+    matcher: {
+      match: vi.fn<Matcher["match"]>(async () => {
+        if (hits instanceof Error) throw hits;
+        return hits;
+      }),
+    },
+  };
 }
 
 const journey = {
   patient_id: "Patient-1",
   events: [
-    event("e1", "2026-01-10"),
-    event("e2", "2026-03-01"),
-    event("e3", "2026-03-01"),
-    event("e4", "2026-02-01"),
-    event("e5", "2027-01-01"),
+    { id: "e1", type: "lab_test", label: "PSA", date: "2026-01-10" },
+    { id: "e2", type: "followup", label: "Nachsorge", date: "2026-03-01" },
   ],
 };
 
-test("focuses on the latest event up to as_of, the last listed one on a tie", () => {
-  const { focus, context } = cutJourney({ ...journey, as_of: "2026-06-30" });
+test("answers with the stored documents of the matcher's hits, in its order", async () => {
+  const approach = keyword([
+    { documentId: "pubmed:2", score: 1, matchedTerms: ["psa"] },
+    { documentId: "pubmed:9", score: 0.8 },
+    { documentId: "pubmed:1", score: 0.5 },
+  ]);
+  const service = createMatchService(
+    [approach],
+    store(["pubmed:1", "pubmed:2"]),
+  );
 
-  expect(focus.id).toBe("e3");
-  expect(context.map(({ id }) => id)).toEqual(["e1", "e2", "e4"]);
+  const result = await service.matchJourney({
+    journey,
+    algorithm: "keyword",
+    limit: 10,
+    content_types: ["journal_article"],
+  });
+
+  expect(approach.matcher.match).toHaveBeenCalledWith(
+    { focus: journey.events[1], context: [journey.events[0]] },
+    { limit: 10, contentTypes: ["journal_article"] },
+  );
+  expect(result).toMatchObject({
+    algorithm: "keyword",
+    focus_event_id: "e2",
+    degraded: false,
+    results: [
+      { rank: 1, source_id: "pubmed:2", score: 1, matched_terms: ["psa"] },
+      { rank: 2, source_id: "pubmed:1", score: 0.5 },
+    ],
+  });
 });
 
-test("focuses on the latest event of the journey without as_of", () => {
-  expect(cutJourney(journey).focus.id).toBe("e5");
-});
-
-test("answers degraded when the keyword index cannot be searched", async () => {
-  const failing: Queryable = {
-    query: () => Promise.reject(new Error("relation does not exist")),
-  };
+test("answers degraded when the matcher fails", async () => {
   vi.spyOn(console, "error").mockImplementation(() => {});
+  const service = createMatchService(
+    [keyword(new Error("relation does not exist"))],
+    store([]),
+  );
 
-  const result = await createMatchService(failing).matchJourney({
+  const result = await service.matchJourney({
     journey,
     algorithm: "keyword",
     limit: 10,
@@ -42,15 +116,15 @@ test("answers degraded when the keyword index cannot be searched", async () => {
 
   expect(result).toEqual({
     algorithm: "keyword",
-    focus_event_id: "e5",
+    focus_event_id: "e2",
     results: [],
     degraded: true,
     degraded_reason: "The keyword index could not be searched.",
   });
 });
 
-test("refuses the matchers that do not exist yet", async () => {
-  const service = createMatchService({ query: vi.fn() });
+test("refuses an algorithm without a matcher", async () => {
+  const service = createMatchService([keyword([])], store([]));
 
   await expect(
     service.matchJourney({ journey, algorithm: "graph", limit: 10 }),

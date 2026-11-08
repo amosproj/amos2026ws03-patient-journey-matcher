@@ -1,0 +1,12 @@
+{
+  "name": "@matcher/approaches",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "dependencies": {
+    "@matcher/core": "workspace:*",
+    "@matcher/db": "workspace:*",
+    "@matcher/keyword": "workspace:*"
+  }
+}

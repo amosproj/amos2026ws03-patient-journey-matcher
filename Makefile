@@ -42,6 +42,7 @@ db:
 seed: db
 	cd crawler && uv run --locked python ../scripts/seed.py
 
-# Brings the keyword index up to date with the stored documents; run it after a crawl.
+# Brings the indexes of the approaches up to date with the stored documents; run it after a
+# crawl. All approaches, or the ones named, e.g. `make index APPROACHES=keyword`.
 index: build
-	cd matcher && pnpm --filter @matcher/indexer start
+	cd matcher && pnpm --filter @matcher/indexer start $(APPROACHES)

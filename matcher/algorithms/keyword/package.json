@@ -5,6 +5,7 @@
   "type": "module",
   "exports": "./src/index.ts",
   "dependencies": {
+    "@matcher/core": "workspace:*",
     "@matcher/db": "workspace:*"
   },
   "devDependencies": {

@@ -181,6 +181,9 @@ importers:
 
   algorithms/keyword:
     dependencies:
+      '@matcher/core':
+        specifier: workspace:*
+        version: link:../../core
       '@matcher/db':
         specifier: workspace:*
         version: link:../../db
@@ -191,6 +194,20 @@ importers:
       pg:
         specifier: ^8.23.1
         version: 8.23.1
+
+  approaches:
+    dependencies:
+      '@matcher/core':
+        specifier: workspace:*
+        version: link:../core
+      '@matcher/db':
+        specifier: workspace:*
+        version: link:../db
+      '@matcher/keyword':
+        specifier: workspace:*
+        version: link:../algorithms/keyword
+
+  core: {}
 
   db:
     dependencies:
@@ -204,12 +221,12 @@ importers:
 
   indexer:
     dependencies:
+      '@matcher/approaches':
+        specifier: workspace:*
+        version: link:../approaches
       '@matcher/db':
         specifier: workspace:*
         version: link:../db
-      '@matcher/keyword':
-        specifier: workspace:*
-        version: link:../algorithms/keyword
       pg:
         specifier: ^8.23.1
         version: 8.23.1
@@ -218,14 +235,26 @@ importers:
         specifier: ^8.23.1
         version: 8.23.1
 
+  journey:
+    dependencies:
+      '@matcher/core':
+        specifier: workspace:*
+        version: link:../core
+
   mcp-server:
     dependencies:
+      '@matcher/approaches':
+        specifier: workspace:*
+        version: link:../approaches
+      '@matcher/core':
+        specifier: workspace:*
+        version: link:../core
       '@matcher/db':
         specifier: workspace:*
         version: link:../db
-      '@matcher/keyword':
+      '@matcher/journey':
         specifier: workspace:*
-        version: link:../algorithms/keyword
+        version: link:../journey
       '@modelcontextprotocol/node':
         specifier: ^2.1.2
         version: 2.1.2(@modelcontextprotocol/server@2.4.0)

@@ -2,7 +2,8 @@ import { randomUUID } from "node:crypto";
 import { readdir, readFile } from "node:fs/promises";
 import { Pool } from "pg";
 import { beforeAll, beforeEach, describe, expect, test } from "vitest";
-import { indexDocuments, matchJourney } from "./index.ts";
+import { createKeywordMatcher } from "./matcher.ts";
+import { indexMetadata } from "./metadata.ts";
 
 const databaseUrl = process.env.TEST_DATABASE_URL?.trim();
 if (!databaseUrl && process.env.CI) {
@@ -42,6 +43,11 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     await pool.query("TRUNCATE documents CASCADE");
   });
 
+  /** A journey event with this label. */
+  function event(label: string) {
+    return { id: label, type: "followup", label, date: "2026-01-01" };
+  }
+
   /** Stores a document as the crawler would, with the columns the index reads. */
   async function insert(
     id: string,
@@ -73,13 +79,13 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     await insert("pubmed:1", "Olaparib in prostate cancer");
     await insert("pubmed:2", "Heart failure in diabetes");
 
-    expect(await indexDocuments(pool)).toBe(2);
-    expect(await indexDocuments(pool)).toBe(0);
+    expect(await indexMetadata(pool)).toBe(2);
+    expect(await indexMetadata(pool)).toBe(0);
 
     await pool.query(
       "UPDATE documents SET summary = 'New abstract', changed_at = now() WHERE id = 'pubmed:1'",
     );
-    expect(await indexDocuments(pool)).toBe(1);
+    expect(await indexMetadata(pool)).toBe(1);
   });
 
   test("ranks the documents that share the most focus terms first", async () => {
@@ -93,15 +99,14 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     );
     await insert("pubmed:3", "Heart failure in type 2 diabetes");
     await insert("pubmed:4", "Active surveillance for prostate cancer");
-    await indexDocuments(pool);
+    await indexMetadata(pool);
 
-    const hits = await matchJourney(pool, {
-      focus: { label: "Olaparib" },
-      context: [{ label: "Prostatakarzinom" }],
-      limit: 10,
-    });
+    const hits = await createKeywordMatcher(pool).match(
+      { focus: event("Olaparib"), context: [event("Prostatakarzinom")] },
+      { limit: 10 },
+    );
 
-    expect(hits.map((hit) => hit.id)).toEqual([
+    expect(hits.map((hit) => hit.documentId)).toEqual([
       "pubmed:1",
       "pubmed:2",
       "pubmed:4",
@@ -124,33 +129,36 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
       content_type: "video",
       expires_at: FAR_AHEAD,
     });
-    await indexDocuments(pool);
+    await indexMetadata(pool);
     await pool.query("DELETE FROM documents WHERE id = 'pubmed:2'");
     await pool.query(
       "UPDATE documents SET expires_at = $1 WHERE id = 'youtube:b'",
       [LONG_AGO],
     );
-    const query = { focus: { label: "Prostata" }, context: [], limit: 10 };
+    const matcher = createKeywordMatcher(pool);
+    const state = { focus: event("Prostata"), context: [] };
 
-    const all = await matchJourney(pool, query);
-    const videos = await matchJourney(pool, {
-      ...query,
+    const all = await matcher.match(state, { limit: 10 });
+    const videos = await matcher.match(state, {
+      limit: 10,
       contentTypes: ["video"],
     });
 
-    expect(all.map((hit) => hit.id).sort()).toEqual(["pubmed:1", "youtube:a"]);
-    expect(videos.map((hit) => hit.id)).toEqual(["youtube:a"]);
+    expect(all.map((hit) => hit.documentId).sort()).toEqual([
+      "pubmed:1",
+      "youtube:a",
+    ]);
+    expect(videos.map((hit) => hit.documentId)).toEqual(["youtube:a"]);
   });
 
   test("finds nothing for an event without search terms", async () => {
     await insert("pubmed:1", "Prostate cancer");
-    await indexDocuments(pool);
+    await indexMetadata(pool);
 
-    const hits = await matchJourney(pool, {
-      focus: { label: "nach und zur" },
-      context: [],
-      limit: 10,
-    });
+    const hits = await createKeywordMatcher(pool).match(
+      { focus: event("nach und zur"), context: [] },
+      { limit: 10 },
+    );
 
     expect(hits).toEqual([]);
   });

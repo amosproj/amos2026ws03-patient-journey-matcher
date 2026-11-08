@@ -1,5 +1,8 @@
 packages:
+  - approaches
+  - core
   - db
   - indexer
+  - journey
   - mcp-server
   - algorithms/*

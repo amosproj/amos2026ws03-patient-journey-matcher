@@ -7,8 +7,8 @@
     "start": "node src/index.ts"
   },
   "dependencies": {
+    "@matcher/approaches": "workspace:*",
     "@matcher/db": "workspace:*",
-    "@matcher/keyword": "workspace:*",
     "pg": "^8.23.1"
   },
   "devDependencies": {

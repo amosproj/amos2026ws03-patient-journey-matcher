@@ -7,8 +7,10 @@
     "start": "node src/index.ts"
   },
   "dependencies": {
+    "@matcher/approaches": "workspace:*",
+    "@matcher/core": "workspace:*",
     "@matcher/db": "workspace:*",
-    "@matcher/keyword": "workspace:*",
+    "@matcher/journey": "workspace:*",
     "@modelcontextprotocol/node": "^2.1.2",
     "@modelcontextprotocol/server": "^2.4.0",
     "zod": "^4.6.7"

@@ -1,8 +1,4 @@
-/** What the keyword matcher reads of a journey event. */
-export interface JourneyEvent {
-  label: string;
-  parameters?: Record<string, unknown>;
-}
+import type { JourneyEvent } from "@matcher/core";
 
 // German words of the synthetic journeys (#14) and the English terms the sources use. Words
 // not listed pass through: drug names and abbreviations match as they are, other German
@@ -153,7 +149,9 @@ const SKIP = new Set(
 );
 
 /** The English search terms of an event: its label, text parameters and the names of true flags. */
-export function eventTerms(event: JourneyEvent): string[] {
+export function eventTerms(
+  event: Pick<JourneyEvent, "label" | "parameters">,
+): string[] {
   const texts = [event.label];
   for (const [key, value] of Object.entries(event.parameters ?? {})) {
     if (value === true) texts.push(key);

@@ -1,5 +1,6 @@
 import { createServer } from "node:http";
-import { createPool } from "@matcher/db";
+import { createApproaches } from "@matcher/approaches";
+import { createDocumentStore, createPool } from "@matcher/db";
 import {
   localhostHostValidation,
   localhostOriginValidation,
@@ -10,7 +11,11 @@ import { createMatchService } from "./match.ts";
 import { buildServer } from "./server.ts";
 
 const port = Number(process.env.MCP_PORT ?? 3000);
-const service = createMatchService(createPool());
+const pool = createPool();
+const service = createMatchService(
+  createApproaches({ db: pool }),
+  createDocumentStore(pool),
+);
 
 const validateHost = localhostHostValidation();
 const validateOrigin = localhostOriginValidation();
