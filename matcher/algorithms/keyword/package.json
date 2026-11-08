@@ -7,9 +7,5 @@
   "dependencies": {
     "@matcher/core": "workspace:*",
     "@matcher/db": "workspace:*"
-  },
-  "devDependencies": {
-    "@types/pg": "^8.23.1",
-    "pg": "^8.23.1"
   }
 }

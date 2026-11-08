@@ -5,6 +5,7 @@ import { beforeAll, beforeEach, describe, expect, test } from "vitest";
 import {
   createDocumentStore,
   type DocumentRow,
+  metadataText,
   publishedDate,
   type Queryable,
 } from "./documents.ts";
@@ -51,6 +52,23 @@ test("publishedDate is undefined without a date", () => {
   expect(
     publishedDate({ published_at: null, published_precision: null }),
   ).toBeUndefined();
+});
+
+test("joins title, abstract and subject labels as the text of a row", () => {
+  expect(
+    metadataText({
+      title: "Olaparib for mCRPC",
+      summary: "Background: BRCA2",
+      subjects: [
+        {
+          scheme: "mesh",
+          label: "Prostatic Neoplasms",
+          id: "D011471",
+          major: true,
+        },
+      ],
+    }),
+  ).toBe("Olaparib for mCRPC\nBackground: BRCA2\nProstatic Neoplasms");
 });
 
 test("asks the database nothing for no IDs", async () => {

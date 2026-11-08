@@ -187,13 +187,6 @@ importers:
       '@matcher/db':
         specifier: workspace:*
         version: link:../../db
-    devDependencies:
-      '@types/pg':
-        specifier: ^8.23.1
-        version: 8.23.1
-      pg:
-        specifier: ^8.23.1
-        version: 8.23.1
 
   approaches:
     dependencies:

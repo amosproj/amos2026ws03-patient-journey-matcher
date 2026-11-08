@@ -1,42 +1,25 @@
-import { randomUUID } from "node:crypto";
-import { readdir, readFile } from "node:fs/promises";
-import { Pool } from "pg";
+import {
+  createTestDatabase,
+  type TestDatabase,
+  testDatabaseUrl,
+} from "@matcher/db/testing";
 import { beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { createKeywordMatcher } from "./matcher.ts";
 import { indexMetadata } from "./metadata.ts";
 
-const databaseUrl = process.env.TEST_DATABASE_URL?.trim();
-if (!databaseUrl && process.env.CI) {
-  throw new Error("TEST_DATABASE_URL must be set on CI");
-}
-
-const INIT_DIR = new URL("../../../../db/init/", import.meta.url);
+const databaseUrl = testDatabaseUrl();
 const LONG_AGO = new Date("2000-01-01T00:00:00Z");
 const FAR_AHEAD = new Date("2999-01-01T00:00:00Z");
 
 // A database of its own, not a schema per test: the keyword index lives in the fixed schema
 // `keyword` and needs the pg_textsearch extension of its database.
 describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
-  let pool: Pool;
+  let pool: TestDatabase["pool"];
 
   beforeAll(async () => {
-    const admin = new Pool({ connectionString: databaseUrl });
-    const name = `test_keyword_${randomUUID().replaceAll("-", "").slice(0, 12)}`;
-    await admin.query(`CREATE DATABASE ${name}`);
-    const url = new URL(databaseUrl as string);
-    url.pathname = `/${name}`;
-    pool = new Pool({ connectionString: url.toString() });
-    const files = (await readdir(INIT_DIR)).filter((file) =>
-      file.endsWith(".sql"),
-    );
-    for (const file of files.sort()) {
-      await pool.query(await readFile(new URL(file, INIT_DIR), "utf8"));
-    }
-    return async () => {
-      await pool.end();
-      await admin.query(`DROP DATABASE ${name} WITH (FORCE)`);
-      await admin.end();
-    };
+    const database = await createTestDatabase(databaseUrl as string);
+    pool = database.pool;
+    return () => database.drop();
   });
 
   beforeEach(async () => {

@@ -209,3 +209,14 @@ export function publishedDate(
   if (published_at === null || published_precision === null) return undefined;
   return published_at.slice(0, PRECISION_LENGTH[published_precision]);
 }
+
+/**
+ * The text of a document's row: title, abstract or description, and subject labels (MeSH for
+ * PubMed). What an index reads when it has no full text (Documentation/sources/README.md §3).
+ */
+export function metadataText(
+  document: Pick<DocumentRow, "title" | "summary" | "subjects">,
+): string {
+  const subjects = document.subjects.map((subject) => subject.label);
+  return [document.title, document.summary ?? "", ...subjects].join("\n");
+}
