@@ -2,6 +2,7 @@ packages:
   - approaches
   - core
   - db
+  - download
   - indexer
   - journey
   - mcp-server

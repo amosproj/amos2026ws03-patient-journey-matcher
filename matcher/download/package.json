@@ -1,0 +1,11 @@
+{
+  "name": "@matcher/download",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "dependencies": {
+    "htmlparser2": "^12.0.0",
+    "unpdf": "^2.1.0"
+  }
+}
