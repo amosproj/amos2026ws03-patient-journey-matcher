@@ -3,7 +3,9 @@ import {
   type TestDatabase,
   testDatabaseUrl,
 } from "@matcher/db/testing";
-import { beforeAll, beforeEach, describe, expect, test } from "vitest";
+import type { FullText, Locator } from "@matcher/download";
+import { beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
+import { indexFullTexts } from "./full-texts.ts";
 import { createKeywordMatcher } from "./matcher.ts";
 import { indexMetadata } from "./metadata.ts";
 
@@ -35,13 +37,18 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
   async function insert(
     id: string,
     title: string,
-    fields: { content_type?: string; summary?: string; expires_at?: Date } = {},
+    fields: {
+      content_type?: string;
+      summary?: string;
+      expires_at?: Date;
+      full_text?: string[];
+    } = {},
   ) {
     const [source, nativeId] = id.split(":");
     await pool.query(
       `INSERT INTO documents (id, source, native_id, content_type, title, summary, subjects,
-                              canonical_url, retrieved_at, expires_at)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, now(), $9)`,
+                              canonical_url, retrieved_at, expires_at, full_text)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, now(), $9, $10)`,
       [
         id,
         source,
@@ -54,9 +61,126 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
         ]),
         `https://example.org/${id}`,
         fields.expires_at ?? null,
+        JSON.stringify(
+          (fields.full_text ?? []).map((url) => ({
+            kind: "file",
+            url,
+            media_type: "application/xml",
+            size: null,
+          })),
+        ),
       ],
     );
   }
+
+  /** A downloader that answers by URL: the text read, or a failed download. */
+  function fakeDownloader(texts: Record<string, string | Error>) {
+    return {
+      fullText: vi.fn(
+        async (locators: readonly Locator[]): Promise<FullText> => {
+          const url = locators[0]?.url;
+          const text = url === undefined ? undefined : texts[url];
+          if (text === undefined) {
+            return { status: "skipped", text: "", detail: "no full text" };
+          }
+          if (text instanceof Error) {
+            return { status: "failed", text: "", url, detail: text.message };
+          }
+          return { status: "ok", text, url, mediaType: "application/xml" };
+        },
+      ),
+    };
+  }
+
+  test("indexes full texts as word counts and downloads failed ones again", async () => {
+    await insert("pubmed:1", "Olaparib in prostate cancer", {
+      full_text: ["https://example.org/1.xml"],
+    });
+    await insert("pubmed:2", "Heart failure");
+    await insert("pubmed:3", "Radiotherapy", {
+      full_text: ["https://example.org/3.xml"],
+    });
+    const downloader = fakeDownloader({
+      "https://example.org/1.xml": "Olaparib, olaparib and PSA.",
+      "https://example.org/3.xml": new Error("HTTP 503"),
+    });
+
+    expect(await indexFullTexts(pool, downloader)).toEqual({
+      indexed: 1,
+      skipped: 1,
+      failed: 1,
+    });
+    const { rows } = await pool.query(
+      `SELECT document_id, status, detail, url, media_type, words, terms
+       FROM keyword.full_texts ORDER BY document_id`,
+    );
+    expect(rows).toEqual([
+      {
+        document_id: "pubmed:1",
+        status: "indexed",
+        detail: null,
+        url: "https://example.org/1.xml",
+        media_type: "application/xml",
+        words: 4,
+        terms: "and olaparib olaparib psa",
+      },
+      {
+        document_id: "pubmed:2",
+        status: "skipped",
+        detail: "no full text",
+        url: null,
+        media_type: null,
+        words: 0,
+        terms: "",
+      },
+      {
+        document_id: "pubmed:3",
+        status: "failed",
+        detail: "HTTP 503",
+        url: "https://example.org/3.xml",
+        media_type: null,
+        words: 0,
+        terms: "",
+      },
+    ]);
+
+    downloader.fullText.mockClear();
+    expect(await indexFullTexts(pool, downloader)).toEqual({
+      indexed: 0,
+      skipped: 0,
+      failed: 1,
+    });
+    expect(downloader.fullText).toHaveBeenCalledOnce();
+  });
+
+  test("ranks with the full texts too and names the terms found there", async () => {
+    await insert("pubmed:1", "Prostate cancer care", {
+      full_text: ["https://example.org/1.xml"],
+    });
+    await insert("pubmed:2", "Diabetes care", {
+      full_text: ["https://example.org/2.xml"],
+    });
+    await insert("pubmed:3", "Heart failure care");
+    await indexMetadata(pool);
+    await indexFullTexts(
+      pool,
+      fakeDownloader({
+        "https://example.org/1.xml": "Olaparib for prostate cancer",
+        "https://example.org/2.xml": "Olaparib dosing in diabetes",
+      }),
+    );
+
+    const hits = await createKeywordMatcher(pool).match(
+      { focus: event("Olaparib"), context: [event("Prostatakarzinom")] },
+      { limit: 10 },
+    );
+
+    expect(hits.map((hit) => hit.documentId)).toEqual(["pubmed:1", "pubmed:2"]);
+    expect(hits.map((hit) => hit.matchedTerms)).toEqual([
+      ["olaparib", "prostate cancer"],
+      ["olaparib"],
+    ]);
+  });
 
   test("indexes new and changed documents once", async () => {
     await insert("pubmed:1", "Olaparib in prostate cancer");

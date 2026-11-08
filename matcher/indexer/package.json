@@ -9,6 +9,7 @@
   "dependencies": {
     "@matcher/approaches": "workspace:*",
     "@matcher/db": "workspace:*",
+    "@matcher/download": "workspace:*",
     "pg": "^8.23.1"
   },
   "devDependencies": {

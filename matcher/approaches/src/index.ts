@@ -1,10 +1,13 @@
 import type { Approach } from "@matcher/core";
 import type { Queryable } from "@matcher/db";
+import type { Downloader } from "@matcher/download";
 import { createKeywordApproach } from "@matcher/keyword";
 
 /** What the approaches need from the process that runs them. */
 export interface Dependencies {
   db: Queryable;
+  /** One for all approaches, so the request budgets per host hold across them. */
+  downloader: Downloader;
 }
 
 /**

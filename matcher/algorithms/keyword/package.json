@@ -6,6 +6,7 @@
   "exports": "./src/index.ts",
   "dependencies": {
     "@matcher/core": "workspace:*",
-    "@matcher/db": "workspace:*"
+    "@matcher/db": "workspace:*",
+    "@matcher/download": "workspace:*"
   }
 }

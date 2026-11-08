@@ -54,3 +54,5 @@ export interface Approach {
   readonly indexer: Indexer;
   readonly matcher: Matcher;
 }
+
+export { type Ranking, reciprocalRankFusion } from "./fusion.ts";

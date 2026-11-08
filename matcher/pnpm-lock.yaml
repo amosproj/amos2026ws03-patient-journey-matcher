@@ -187,6 +187,9 @@ importers:
       '@matcher/db':
         specifier: workspace:*
         version: link:../../db
+      '@matcher/download':
+        specifier: workspace:*
+        version: link:../../download
 
   approaches:
     dependencies:
@@ -196,6 +199,9 @@ importers:
       '@matcher/db':
         specifier: workspace:*
         version: link:../db
+      '@matcher/download':
+        specifier: workspace:*
+        version: link:../download
       '@matcher/keyword':
         specifier: workspace:*
         version: link:../algorithms/keyword
@@ -229,6 +235,9 @@ importers:
       '@matcher/db':
         specifier: workspace:*
         version: link:../db
+      '@matcher/download':
+        specifier: workspace:*
+        version: link:../download
       pg:
         specifier: ^8.23.1
         version: 8.23.1
@@ -254,6 +263,9 @@ importers:
       '@matcher/db':
         specifier: workspace:*
         version: link:../db
+      '@matcher/download':
+        specifier: workspace:*
+        version: link:../download
       '@matcher/journey':
         specifier: workspace:*
         version: link:../journey

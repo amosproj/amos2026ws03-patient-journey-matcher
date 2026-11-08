@@ -1,6 +1,7 @@
 import { createServer } from "node:http";
 import { createApproaches } from "@matcher/approaches";
 import { createDocumentStore, createPool } from "@matcher/db";
+import { createDownloader } from "@matcher/download";
 import {
   localhostHostValidation,
   localhostOriginValidation,
@@ -12,8 +13,10 @@ import { buildServer } from "./server.ts";
 
 const port = Number(process.env.MCP_PORT ?? 3000);
 const pool = createPool();
+// The approaches come with all their dependencies; at query time the matchers only read the
+// database, the downloader serves the indexers.
 const service = createMatchService(
-  createApproaches({ db: pool }),
+  createApproaches({ db: pool, downloader: createDownloader() }),
   createDocumentStore(pool),
 );
 

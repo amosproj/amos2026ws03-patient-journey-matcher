@@ -10,6 +10,7 @@
     "@matcher/approaches": "workspace:*",
     "@matcher/core": "workspace:*",
     "@matcher/db": "workspace:*",
+    "@matcher/download": "workspace:*",
     "@matcher/journey": "workspace:*",
     "@modelcontextprotocol/node": "^2.1.2",
     "@modelcontextprotocol/server": "^2.4.0",
