@@ -34,7 +34,7 @@ debug:
 # Starts the database and applies db/init/ again; the files are idempotent, so this also
 # brings an existing volume up to date.
 db:
-	docker compose up -d --wait
+	docker compose up -d --wait --build
 	docker compose exec -T postgres sh -ec 'for f in /docker-entrypoint-initdb.d/*.sql; do PGOPTIONS=--client-min-messages=warning psql -v ON_ERROR_STOP=1 -q -U "$$POSTGRES_USER" -d "$$POSTGRES_DB" -f "$$f"; done'
 
 # Starts the database like `make db`, then fills it with a sample crawl of every source (about
