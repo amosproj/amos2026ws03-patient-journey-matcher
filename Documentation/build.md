@@ -10,7 +10,7 @@ Run these commands from the repository root. You need the tools listed under [Pr
 | `make debug` | Starts the [crawler debug UI](../debug/crawler/README.md) on `http://127.0.0.1:8765` |
 | `make db` | Starts the [database](database.md) and applies `db/init/`; needs the root `.env` |
 | `make seed` | Runs `make db`, then fills the database with a sample crawl of every source: about 1,500 documents in about 6 minutes ([`scripts/seed.py`](../scripts/seed.py)) |
-| `make index` | Builds, then brings the [keyword index](keyword-matching.md) up to date with the stored documents |
+| `make index` | Builds, then brings the indexes of all approaches up to date with the stored documents, e.g. the [keyword index](keyword-matching.md) with the full texts; `make index APPROACHES=keyword` for some |
 
 Make only calls the `uv` and `pnpm` commands from the [README](../README.md#development-setup), so you can still run them directly.
 

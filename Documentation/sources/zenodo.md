@@ -54,7 +54,7 @@ Search:
 2. `GET https://zenodo.org/api/records/{id}/files/{url-encoded key}/content`. `Content-Type` is always `application/octet-stream`; use the stored type. Check MD5.
 3. Allow-list proposal: PDF, DOCX, PPTX, MP4 with a size cap per type (up to 100 files and 50 GB per record; videos 9–518 MB).
 4. Several files: `files.default_preview` from `GET /api/records/{id}/files`, else the first allowed file.
-5. MP4 needs speech-to-text (undecided) or metadata only. PDF, DOCX, PPTX need a TypeScript extractor.
+5. MP4 needs speech-to-text (undecided) or metadata only. PDF is read with unpdf ([keyword matching](../keyword-matching.md#full-texts)); DOCX and PPTX need an extractor.
 
 ## To be aware of
 
