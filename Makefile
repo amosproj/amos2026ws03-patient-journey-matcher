@@ -1,15 +1,15 @@
-.PHONY: build test start debug db seed
+.PHONY: build test start debug db seed index
 
 PORT ?= 8765
 
 # With the root .env, `make test` runs the database tests against the database from `make db`
-# instead of skipping them, and `make seed` fills that database; a TEST_DATABASE_URL or
-# DATABASE_URL that is already set wins.
+# instead of skipping them, and `make seed` and `make index` use that database; a
+# TEST_DATABASE_URL or DATABASE_URL that is already set wins.
 ifneq ($(wildcard .env),)
 include .env
 LOCAL_DATABASE_URL := postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@127.0.0.1:$(or $(POSTGRES_PORT),5432)/$(POSTGRES_DB)
 export TEST_DATABASE_URL ?= $(LOCAL_DATABASE_URL)
-seed: export DATABASE_URL ?= $(LOCAL_DATABASE_URL)
+seed index: export DATABASE_URL ?= $(LOCAL_DATABASE_URL)
 endif
 
 build:
@@ -41,3 +41,7 @@ db:
 # 6 minutes); see scripts/seed.py.
 seed: db
 	cd crawler && uv run --locked python ../scripts/seed.py
+
+# Brings the keyword index up to date with the stored documents; run it after a crawl.
+index: build
+	cd matcher && pnpm --filter @matcher/indexer start

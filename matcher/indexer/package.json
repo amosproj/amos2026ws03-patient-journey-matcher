@@ -3,7 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
+  "scripts": {
+    "start": "node src/index.ts"
+  },
   "dependencies": {
+    "@matcher/db": "workspace:*",
+    "@matcher/keyword": "workspace:*",
     "pg": "^8.23.1"
   },
   "devDependencies": {

@@ -204,6 +204,12 @@ importers:
 
   indexer:
     dependencies:
+      '@matcher/db':
+        specifier: workspace:*
+        version: link:../db
+      '@matcher/keyword':
+        specifier: workspace:*
+        version: link:../algorithms/keyword
       pg:
         specifier: ^8.23.1
         version: 8.23.1
