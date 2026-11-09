@@ -6,12 +6,7 @@ All fields use `snake_case`, like the journey generator and the SS26 retrieval c
 
 ## Connection
 
-The server speaks MCP over Streamable HTTP at `POST /mcp`. It listens on `127.0.0.1` only, because it has no authentication yet. It keeps no sessions.
-
-```sh
-cd matcher
-pnpm --filter @matcher/mcp-server start
-```
+The server speaks MCP over Streamable HTTP at `POST /mcp`. It listens on `127.0.0.1` only, because it has no authentication yet. It keeps no sessions. Start and try it: [build and run](build.md#run-the-matcher-locally).
 
 | Environment variable | Default | Meaning |
 |---|---|---|
