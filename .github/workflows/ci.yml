@@ -18,7 +18,7 @@ jobs:
     # For the store tests (tests/test_store_postgres.py); they apply db/init/ themselves.
     services:
       postgres:
-        image: pgvector/pgvector:pg18
+        image: pgvector/pgvector:pg18-trixie
         env:
           POSTGRES_PASSWORD: postgres
         ports:

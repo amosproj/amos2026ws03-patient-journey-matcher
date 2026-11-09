@@ -12,7 +12,7 @@ Each job runs its commands in order and stops at the first failure. They are the
 | `uv run ruff check .` | Lint: finds bugs such as unused imports and undefined names. |
 | `uv run ruff format --check .` | Fails on unformatted code without changing any file, so formatting does not show up in later diffs. |
 | `uv run mypy src` | Strict type check, including Pydantic models. |
-| `uv run pytest` | Runs the tests in `tests/`. The store tests use a PostgreSQL service container (`pgvector/pgvector:pg18`) through `TEST_DATABASE_URL`. |
+| `uv run pytest` | Runs the tests in `tests/`. The store tests use a PostgreSQL service container (`pgvector/pgvector:pg18-trixie`) through `TEST_DATABASE_URL`. |
 
 ## `matcher` job (TypeScript, in `matcher/`)
 
