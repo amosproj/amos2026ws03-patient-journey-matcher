@@ -9,11 +9,9 @@ import {
   publishedDate,
   type Queryable,
 } from "./documents.ts";
+import { testDatabaseUrl } from "./testing.ts";
 
-const databaseUrl = process.env.TEST_DATABASE_URL?.trim();
-if (!databaseUrl && process.env.CI) {
-  throw new Error("TEST_DATABASE_URL must be set on CI");
-}
+const databaseUrl = testDatabaseUrl();
 
 const INIT_DIR = new URL("../../../db/init/", import.meta.url);
 const RETRIEVED = new Date("2026-11-01T12:00:00Z");
