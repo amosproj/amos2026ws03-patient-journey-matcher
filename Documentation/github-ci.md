@@ -18,10 +18,11 @@ Each job runs its commands in order and stops at the first failure. They are the
 
 | Command | Why |
 |---|---|
+| `docker compose up -d --wait` | Builds and starts the database from [`compose.yaml`](../compose.yaml) (PostgreSQL 18 with pgvector and pg_textsearch), as for local development. A service container cannot preload pg_textsearch. |
 | `pnpm install --frozen-lockfile` | Installs the exact versions from `pnpm-lock.yaml`. Fails if the lockfile does not match the `package.json` files. |
 | `pnpm lint` | Biome checks lint rules, formatting and import order without changing any file. |
 | `pnpm typecheck` | `tsc` type-checks all packages, including the tests. |
-| `pnpm test` | Runs the Vitest tests (`*.test.ts`) of all packages. The `@matcher/db` tests use a PostgreSQL service container through `TEST_DATABASE_URL`. |
+| `pnpm test` | Runs the Vitest tests (`*.test.ts`) of all packages. The database tests of `@matcher/db` and `@matcher/keyword` use that database through `TEST_DATABASE_URL`. |
 
 ## Limitations
 
