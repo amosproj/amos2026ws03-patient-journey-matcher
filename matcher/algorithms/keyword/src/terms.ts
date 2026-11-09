@@ -3,11 +3,12 @@ import type { JourneyEvent } from "@matcher/core";
 // German journey words: English translations and words to skip.
 import german from "../data/german-terms.json" with { type: "json" };
 
-const ENGLISH: Record<string, string> = german.translations;
+// A Map, not the object: a plain object also answers "constructor".
+const ENGLISH = new Map<string, string>(Object.entries(german.translations));
 const SKIP = new Set(german.skip);
 
 /** The words of the English terms, e.g. "radical" and "prostatectomy". */
-export const ENGLISH_WORDS = Object.values(ENGLISH).flatMap((term) =>
+export const ENGLISH_WORDS = [...ENGLISH.values()].flatMap((term) =>
   term.split(" "),
 );
 
@@ -30,6 +31,6 @@ export function eventTerms(
       .match(/[\p{L}\p{N}]+/gu) ?? [];
   const terms = words
     .filter((word) => /\p{L}/u.test(word) && !SKIP.has(word))
-    .map((word) => ENGLISH[word] ?? word);
+    .map((word) => ENGLISH.get(word) ?? word);
   return [...new Set(terms)];
 }

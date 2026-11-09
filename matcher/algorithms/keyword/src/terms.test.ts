@@ -43,3 +43,7 @@ test("passes unknown words through and drops function words and numbers", () => 
     "monaten",
   ]);
 });
+
+test("passes through words named like built-in object properties", () => {
+  expect(eventTerms({ label: "constructor" })).toEqual(["constructor"]);
+});
