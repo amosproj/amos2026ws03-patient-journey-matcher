@@ -19,11 +19,13 @@ const FULL_TEXT_RANKING = `
   WHERE f.status = 'indexed' AND ${FILTERS}
   ORDER BY f.terms <@> to_bm25query($1, 'keyword.full_texts_terms_idx')
   LIMIT ${CANDIDATES}`;
+// MATERIALIZED: terms parsed once, not per candidate
 const CANDIDATE_DETAILS = `
+  WITH terms AS MATERIALIZED (
+    SELECT term, plainto_tsquery('english', term) AS query FROM unnest($2::text[]) AS term)
   SELECT k.document_id AS id, f.document_id IS NOT NULL AS has_full_text,
-         ARRAY(SELECT term FROM unnest($2::text[]) AS term
-               WHERE metadata @@ plainto_tsquery('english', term)
-                  OR coalesce(f.lexemes @@ plainto_tsquery('english', term), false))
+         ARRAY(SELECT term FROM terms
+               WHERE metadata @@ query OR coalesce(f.lexemes @@ query, false))
            AS matched_terms
   FROM keyword.documents AS k
   LEFT JOIN keyword.full_texts AS f ON f.document_id = k.document_id AND f.status = 'indexed'
