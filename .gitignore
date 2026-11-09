@@ -29,6 +29,9 @@ crawler/storage/
 # Runs saved by the crawler debug UI
 debug/crawler/runs/
 
+# Test runs of the MCP server: requests, answers
+debug/matcher/runs/
+
 # Secrets
 .env
 
