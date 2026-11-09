@@ -144,3 +144,16 @@ test("reads the segments of a JSON transcript", async () => {
     "Host: Hello.\nOlaparib.",
   );
 });
+
+// over 10 s each with backtracking patterns
+test.each([
+  ["a transcript of unclosed voice tags", "<v ".repeat(40_000), "vtt"],
+  ["a transcript of unclosed tags", "<".repeat(100_000), "vtt"],
+  [
+    "a references heading before a long run of spaces",
+    `Text\nReferences${" ".repeat(80_000)}x`,
+    "text",
+  ],
+] as const)("reads %s in linear time", async (_name, text, format) => {
+  await extractText(encode(text), format);
+});

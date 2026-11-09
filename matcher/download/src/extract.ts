@@ -119,10 +119,11 @@ function cueText(text: string): string {
         !/^\s*(\d+|WEBVTT\b.*|NOTE\b.*|STYLE|REGION)\s*$/.test(line),
     )
     .join("\n");
+  // linear time on crafted files: no "<" inside tags, one \s
   return lines(
     cues
-      .replace(/<v(?:\.[^\s>]*)?\s+([^>]*)>/g, "$1: ")
-      .replace(/<[^>]*>/g, ""),
+      .replace(/<v(?:\.[^\s<>]*)?\s([^<>]*)>/g, "$1: ")
+      .replace(/<[^<>]*>/g, ""),
   );
 }
 
@@ -136,8 +137,9 @@ function segmentText(json: string): string {
     .join("\n");
 }
 
+// one trailing class, not "[ \t]*:?[ \t]*": linear time
 const REFERENCES_HEADING =
-  /^[ \t]*(?:\d+\.?[ \t]*)?(?:references|bibliography|literature cited|works cited)[ \t]*:?[ \t]*$/gim;
+  /^[ \t]*(?:\d+\.?[ \t]*)?(?:references|bibliography|literature cited|works cited)[ \t:]*$/gim;
 
 /** The text before its last references heading, if that is in the second half: cited titles would match like the paper's own words. */
 function cutReferences(text: string): string {
