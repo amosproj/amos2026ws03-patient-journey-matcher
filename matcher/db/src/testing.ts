@@ -39,9 +39,18 @@ export async function createTestDatabase(url: string): Promise<TestDatabase> {
   return {
     pool,
     async drop() {
-      await pool.end();
-      await admin.query(`DROP DATABASE ${name} WITH (FORCE)`);
-      await admin.end();
+      const ended = pool.end();
+      try {
+        // no FORCE: it kills connections still closing; Postgres waits 5 s for them
+        await admin.query(`DROP DATABASE ${name}`);
+      } catch (error) {
+        // leaked connection: drop anyway, then report it
+        await admin.query(`DROP DATABASE ${name} WITH (FORCE)`);
+        throw error;
+      } finally {
+        await admin.end();
+      }
+      await ended;
     },
   };
 }
