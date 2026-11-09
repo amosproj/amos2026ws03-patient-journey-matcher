@@ -4,7 +4,15 @@ import {
   testDatabaseUrl,
 } from "@matcher/db/testing";
 import type { FullText, Locator } from "@matcher/download";
-import { beforeAll, beforeEach, describe, expect, test, vi } from "vitest";
+import {
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  onTestFinished,
+  test,
+  vi,
+} from "vitest";
 import { indexFullTexts } from "./full-texts.ts";
 import { createKeywordMatcher } from "./matcher.ts";
 import { indexMetadata } from "./metadata.ts";
@@ -109,8 +117,10 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
       "https://example.org/4.xml":
         "Die Patienten erhielten eine Strahlentherapie.",
     });
+    const lines: string[] = [];
+    const log = (line: string) => lines.push(line);
 
-    expect(await indexFullTexts(pool, downloader)).toEqual({
+    expect(await indexFullTexts(pool, downloader, log)).toEqual({
       indexed: 1,
       skipped: 2,
       failed: 1,
@@ -159,12 +169,19 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     ]);
 
     downloader.fullText.mockClear();
-    expect(await indexFullTexts(pool, downloader)).toEqual({
+    expect(await indexFullTexts(pool, downloader, log)).toEqual({
       indexed: 0,
       skipped: 0,
       failed: 1,
     });
     expect(downloader.fullText).toHaveBeenCalledOnce();
+    // Each run reads as many as it counted first: all four, then the failed one again.
+    expect(lines).toEqual([
+      "full texts: 4 to read",
+      "full texts: 1 indexed, 2 without text, 1 failed (tried again next run)",
+      "full texts: 1 to read",
+      "full texts: 0 indexed, 0 without text, 1 failed (tried again next run)",
+    ]);
   });
 
   test("ranks with the full texts too and names the terms found there", async () => {
@@ -193,6 +210,54 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     expect(hits.map((hit) => hit.matchedTerms)).toEqual([
       ["olaparib", "prostate cancer"],
       ["olaparib"],
+    ]);
+  });
+
+  test("logs the full texts to read, every minute how many are read, and counts late ones in", async () => {
+    // Only the interval: the database client keeps its own timers.
+    vi.useFakeTimers({ toFake: ["setInterval", "clearInterval"] });
+    onTestFinished(() => {
+      vi.useRealTimers();
+    });
+    await insert("pubmed:1", "Olaparib");
+    // Slow downloads, e.g. arXiv at one request every 15 s, each finished by the test.
+    const finish: (() => void)[] = [];
+    let started = () => {};
+    const nextDownload = () =>
+      new Promise<void>((resolve) => {
+        started = resolve;
+      });
+    const downloader = {
+      fullText: async (): Promise<FullText> => {
+        await new Promise<void>((resolve) => {
+          finish.push(resolve);
+          started();
+        });
+        return { status: "failed", text: "", detail: "HTTP 503" };
+      },
+    };
+    const lines: string[] = [];
+
+    let download = nextDownload();
+    const indexing = indexFullTexts(pool, downloader, (line) =>
+      lines.push(line),
+    );
+    await download;
+    await insert("pubmed:2", "Olaparib dosing"); // a crawl stores one more meanwhile
+    vi.advanceTimersByTime(60_000);
+    download = nextDownload();
+    finish[0]?.();
+    await download;
+    vi.advanceTimersByTime(60_000);
+    finish[1]?.();
+    await indexing;
+    vi.advanceTimersByTime(60_000);
+
+    expect(lines).toEqual([
+      "full texts: 1 to read",
+      "full texts: 0 of 1 read",
+      "full texts: 1 of 2 read",
+      "full texts: 0 indexed, 0 without text, 2 failed (tried again next run)",
     ]);
   });
 

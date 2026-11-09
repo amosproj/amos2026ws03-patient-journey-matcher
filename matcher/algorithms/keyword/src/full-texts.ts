@@ -1,4 +1,8 @@
-import { indexChangedDocuments, type Queryable } from "@matcher/db";
+import {
+  createDocumentStore,
+  indexChangedDocuments,
+  type Queryable,
+} from "@matcher/db";
 import type { Downloader } from "@matcher/download";
 // Common non-medical English words, most frequent first.
 import basicWords from "../data/basic-words.json" with { type: "json" };
@@ -21,19 +25,32 @@ const JOURNEY_WORDS = new Set(
 
 /**
  * Downloads and indexes the full texts of new and changed documents, and of those whose
- * download failed last time; returns how many of each status.
+ * download failed last time; logs how many are to read, the progress every minute and a
+ * summary, and returns how many of each status.
  */
 export async function indexFullTexts(
   db: Queryable,
   downloader: Downloader,
-  onDocument?: (counts: Record<FullTextStatus, number>) => void,
+  log: (line: string) => void = () => {},
 ): Promise<Record<FullTextStatus, number>> {
   await createSchema(db);
   // A failed download (a server error, or PMC's 404 before an article is in its bucket) is tried
   // again in every run; a skipped one only when the document changes.
   await db.query("DELETE FROM keyword.full_texts WHERE status = 'failed'");
+  const toRead = () =>
+    createDocumentStore(db).countToIndex("keyword.full_texts");
+  let total = await toRead();
+  log(`full texts: ${total} to read`);
   const counts = { indexed: 0, skipped: 0, failed: 0 };
+  const read = () => counts.indexed + counts.skipped + counts.failed;
+  // By the clock, not by count: arXiv's 15 s per request can hold the last documents up for minutes.
+  const progress = setInterval(
+    () => log(`full texts: ${read()} of ${total} read`),
+    60_000,
+  );
   await indexChangedDocuments(db, "keyword.full_texts", async (documents) => {
+    // Again per batch, so that documents a crawl stores meanwhile raise the total.
+    total = read() + (await toRead());
     // All at once: the downloader keeps each host's pace, so different hosts work in parallel.
     await Promise.all(
       documents.map(async (document) => {
@@ -71,10 +88,13 @@ export async function indexFullTexts(
           ],
         );
         counts[status]++;
-        onDocument?.(counts);
       }),
     );
-  });
+  }).finally(() => clearInterval(progress));
+  log(
+    `full texts: ${counts.indexed} indexed, ${counts.skipped} without text, ` +
+      `${counts.failed} failed (tried again next run)`,
+  );
   return counts;
 }
 

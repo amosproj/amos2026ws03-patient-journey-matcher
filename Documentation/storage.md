@@ -58,7 +58,7 @@ const next = await store.documentsToIndex("keyword_index", 500);
 
 `toSourceReference` in [`mcp-server/src/sources.ts`](../matcher/mcp-server/src/sources.ts) turns a document into the fields of a tool result ([sources §4](sources/README.md#4-mcp-server)).
 
-Index tables reference their document, so deleting it removes them, and keep the `changed_at` they indexed (as read, in milliseconds). `documentsToIndex` returns the documents without a row or with a different `changed_at`; polling `changed_at > last run` instead would miss the rows of a store run that commits late.
+Index tables reference their document, so deleting it removes them, and keep the `changed_at` they indexed (as read, in milliseconds). `documentsToIndex` returns the documents without a row or with a different `changed_at`, and `countToIndex` counts them; polling `changed_at > last run` instead would miss the rows of a store run that commits late.
 
 ```sql
 CREATE TABLE keyword_index (

@@ -44,6 +44,7 @@ function store(ids: string[]): DocumentStore {
       asked.filter((id) => ids.includes(id)).map(document),
     getDocument: async (id) => (ids.includes(id) ? document(id) : undefined),
     documentsToIndex: async () => [],
+    countToIndex: async () => 0,
   };
 }
 

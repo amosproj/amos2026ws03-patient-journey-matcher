@@ -272,6 +272,7 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
       "pubmed:2",
     ]);
     expect(first.map((document) => document.id)).toEqual(["pubmed:3"]);
+    expect(await store.countToIndex("keyword_index")).toBe(2);
   });
 
   test("lists a document no more once an index stored the changed_at it read", async () => {

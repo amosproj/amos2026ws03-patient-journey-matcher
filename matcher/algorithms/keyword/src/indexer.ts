@@ -12,16 +12,8 @@ export function createKeywordIndexer(
   return {
     async index(log) {
       const count = await indexMetadata(db);
-      log(`${count} new or changed document(s) indexed`);
-      const counts = await indexFullTexts(db, downloader, (counts) => {
-        const done = counts.indexed + counts.skipped + counts.failed;
-        // Progress every 50 documents; a first run takes about half an hour.
-        if (done % 50 === 0) log(`full texts: ${done} read`);
-      });
-      log(
-        `full texts: ${counts.indexed} indexed, ${counts.skipped} without text, ` +
-          `${counts.failed} failed (tried again next run)`,
-      );
+      log(`metadata: ${count} new or changed document(s) indexed`);
+      await indexFullTexts(db, downloader, log);
     },
   };
 }

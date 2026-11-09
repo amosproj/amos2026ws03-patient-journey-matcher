@@ -73,7 +73,7 @@ make index    # after every crawl; reads only new and changed documents
 make start    # MCP server, uses the database from the root .env
 ```
 
-`make index APPROACHES=keyword` indexes this approach only. The first `make index` on the seed data took 26 minutes, mostly waiting for arxiv.org; later runs read only new and changed documents. The database tests (`make test`) create a database of their own per test file, because the index lives in the fixed schema `keyword`; their downloads are faked.
+`make index APPROACHES=keyword` indexes this approach only. The first `make index` on the seed data took 26 minutes, mostly waiting for arxiv.org; it prints how many full texts it has to read, then every minute how many it has read. Later runs read only new and changed documents. The database tests (`make test`) create a database of their own per test file, because the index lives in the fixed schema `keyword`; their downloads are faked.
 
 ## Results
 
