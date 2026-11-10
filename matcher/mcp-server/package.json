@@ -4,10 +4,13 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node src/index.ts"
+    "start": "node src/main.ts"
   },
   "dependencies": {
+    "@matcher/approaches": "workspace:*",
+    "@matcher/core": "workspace:*",
     "@matcher/db": "workspace:*",
+    "@matcher/download": "workspace:*",
     "@modelcontextprotocol/node": "^2.1.2",
     "@modelcontextprotocol/server": "^2.4.0",
     "zod": "^4.6.7"

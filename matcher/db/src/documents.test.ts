@@ -5,14 +5,13 @@ import { beforeAll, beforeEach, describe, expect, test } from "vitest";
 import {
   createDocumentStore,
   type DocumentRow,
+  metadataText,
   publishedDate,
   type Queryable,
 } from "./documents.ts";
+import { testDatabaseUrl } from "./testing.ts";
 
-const databaseUrl = process.env.TEST_DATABASE_URL?.trim();
-if (!databaseUrl && process.env.CI) {
-  throw new Error("TEST_DATABASE_URL must be set on CI");
-}
+const databaseUrl = testDatabaseUrl();
 
 const INIT_DIR = new URL("../../../db/init/", import.meta.url);
 const RETRIEVED = new Date("2026-11-01T12:00:00Z");
@@ -51,6 +50,23 @@ test("publishedDate is undefined without a date", () => {
   expect(
     publishedDate({ published_at: null, published_precision: null }),
   ).toBeUndefined();
+});
+
+test("joins title, abstract and subject labels as the text of a row", () => {
+  expect(
+    metadataText({
+      title: "Olaparib for mCRPC",
+      summary: "Background: BRCA2",
+      subjects: [
+        {
+          scheme: "mesh",
+          label: "Prostatic Neoplasms",
+          id: "D011471",
+          major: true,
+        },
+      ],
+    }),
+  ).toBe("Olaparib for mCRPC\nBackground: BRCA2\nProstatic Neoplasms");
 });
 
 test("asks the database nothing for no IDs", async () => {
@@ -254,6 +270,24 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
       "pubmed:2",
     ]);
     expect(first.map((document) => document.id)).toEqual(["pubmed:3"]);
+    expect(await store.countToIndex("keyword_index")).toBe(2);
+  });
+
+  test("lists a document no more once an index stored the changed_at it read", async () => {
+    await pool.query(`
+      CREATE TABLE keyword_index (
+        document_id text PRIMARY KEY REFERENCES documents (id) ON DELETE CASCADE,
+        document_changed_at timestamptz NOT NULL
+      )`);
+    await insert("pubmed:1"); // changed_at = now(), in microseconds
+    const store = createDocumentStore(pool);
+    const [document] = await store.documentsToIndex("keyword_index");
+    await pool.query(
+      "INSERT INTO keyword_index (document_id, document_changed_at) VALUES ($1, $2)",
+      [document?.id, document?.changed_at],
+    );
+
+    await expect(store.documentsToIndex("keyword_index")).resolves.toEqual([]);
   });
 
   test("reads through a client of the pool, e.g. in a transaction", async () => {

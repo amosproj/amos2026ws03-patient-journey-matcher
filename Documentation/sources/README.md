@@ -53,7 +53,7 @@ Implemented in [`db/init/02-documents.sql`](../../db/init/02-documents.sql) (#41
 
 ## 3 Indexing
 
-The indexer (and `get_source`) checks `licence` against the allow-list for the use, tries the `full_text` locators in order and keeps the text in memory. Not allowed: title, summary and subjects from the row only.
+The indexer of each approach (and `get_source`) checks `licence` against its own allow-list for the use, tries the `full_text` locators in order and keeps the text in memory. Not allowed: title, summary and subjects from the row only.
 
 Why at use time, not in the crawler:
 
@@ -72,6 +72,8 @@ Allow-list proposal for the current non-commercial university project (not legal
 | NC licences | yes | as without NC | as without NC | no |
 | PMC `TDM`, arXiv default | yes (text mining, research use) | ask | no, link only | ask |
 | All rights reserved, unknown | ask | no | no, link only | ask |
+
+The table assumed later commercial use and is probably outdated: each approach now sets its own licence rules, e.g. [keyword matching](../keyword-matching.md#full-texts).
 
 Licences differ per record: PMC mixes CC BY and NC in one bucket; 8 % of a Zenodo and 16 % of an arXiv sample are NC; a third of medical arXiv papers carry only arXiv's licence; no podcast feed grants one.
 
@@ -123,6 +125,6 @@ Not made in this issue:
 - **Architecture §4 Indexing:** "public source text" → "text whose licence is on the allow-list".
 - **Architecture §4 Answer:** `download()` passes the original on only where the licence allows; otherwise abstract or description plus link.
 - **Architecture §4, crawler evaluation:** PMC S3 is the full-text path for PubMed (OA web service, FTP packages and licence folders retired 08.2026).
-- **Architecture §3:** indexer needs a PDF text extractor (not chosen). `arxiv` 4.0.2, `feedparser` 6.0.14; feedparser misses `podcast:*` tags.
+- **Architecture §3:** `arxiv` 4.0.2, `feedparser` 6.0.14; feedparser misses `podcast:*` tags.
 - **Architecture §5:** YouTube 30-day rule covers IDs and playlist IDs; add labelling and the popularity-score ban.
 - **Crawler evaluation:** YouTube search has its own 100 calls/day (since 01.06.2026); PubMed `elink` gives cited PMIDs, so Europe PMC may be unnecessary; Zenodo's 30/min also applies with a token; arXiv OAI-PMH is at `oaipmh.arxiv.org` (03.2025); podcasts' 20 req/min is our own limit.

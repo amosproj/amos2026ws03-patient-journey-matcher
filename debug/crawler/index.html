@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Crawler Debug</title>
+<title>Debug UI</title>
 <link rel="icon" href="data:,">
 <style>
 :root {
@@ -270,14 +270,149 @@ dialog.confirm p { margin: 6px 0; }
 .empty-list li + li { border-top: 1px solid var(--line); }
 .empty-list small { color: var(--muted); }
 .buttons button.danger { background: var(--error); border-color: var(--error); color: #fff; }
+
+/* Index and Matcher screens. Chart colours: one hue (--accent) for single series; --meta and
+   --full tell the two keyword indexes apart; --good, --pending and --critical are states and
+   always come with a label. */
+:root { --meta: #2a78d6; --full: #eb6834; --good: #0ca30c; --pending: #fab219; --critical: #d03b3b; }
+@media (prefers-color-scheme: dark) { :root { --meta: #3987e5; --full: #d95926; } }
+textarea {
+  font: 11.5px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; color: inherit; width: 100%; min-height: 170px;
+  resize: vertical; padding: 7px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel);
+}
+textarea:focus { outline: 2px solid color-mix(in srgb, var(--accent) 40%, transparent); border-color: var(--accent); }
+.db-tables li.schema-name { cursor: default; padding: 8px 8px 2px; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.db-tables li.schema-name:hover { background: none; }
+.db-tables li.plain { cursor: default; }
+.db-tables li.plain:hover { background: none; }
+.heat .any { background: var(--accent); }
+.pill.none { background: var(--code); color: var(--muted); }
+.ixtab, .mttab { position: absolute; inset: 0; display: none; }
+.ixtab.active, .mttab.active { display: flex; flex-direction: column; }
+.panels { flex: 1; overflow: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 14px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+.panel > h3 { margin: 0; padding: 9px 12px; font-size: 13px; display: flex; gap: 10px; align-items: baseline; border-bottom: 1px solid var(--line); }
+.panel > h3 small { color: var(--muted); font-weight: 400; }
+.panel > h3 .spacer { flex: 1; }
+.panel th { position: static; }
+.panel-body { padding: 10px 12px 12px; display: grid; gap: 10px; }
+.mini-seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; font-size: 12px; font-weight: 400; }
+.mini-seg button { border: 0; background: none; padding: 2px 9px; cursor: pointer; color: var(--muted); }
+.mini-seg button + button { border-left: 1px solid var(--line); }
+.mini-seg button.active { background: var(--accent); color: #fff; }
+.legend-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; font-size: 12px; color: var(--muted); }
+.swatch { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+.s-indexed, .swatch.good { background: var(--good); }
+.s-unread, .swatch.pending { background: var(--pending); }
+.s-failed, .swatch.critical { background: var(--critical); }
+.s-skipped, .swatch.neutral { background: var(--dropped); }
+.swatch.meta { background: var(--meta); }
+.swatch.full { background: var(--full); }
+/* One whole split into its states: thin, the figures stand beside it in the table. */
+.seg-bar { display: flex; gap: 2px; height: 8px; min-width: 180px; border-radius: 999px; overflow: hidden; }
+.seg-bar i { min-width: 3px; }
+td.barcell { vertical-align: middle; width: 34%; }
+td.link { cursor: pointer; }
+td.link:hover { color: var(--accent); text-decoration: underline; }
+/* Named bars with their figure at the end: one series, so one hue and no legend. */
+.bars { display: grid; gap: 3px; max-width: 1000px; }
+.bar-row { display: grid; grid-template-columns: var(--name-width, 250px) 1fr 96px; gap: 12px; align-items: center; padding: 2px 6px; border-radius: 5px; font-size: 12.5px; }
+.bar-row.link { cursor: pointer; }
+.bar-row.link:hover { background: var(--hover); }
+.bar-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bar-track { height: 8px; }
+.bar-track i { display: block; height: 100%; background: var(--accent); border-radius: 0 4px 4px 0; }
+.bar-value { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.bar-value small { color: var(--muted); }
+.detail .bars { margin: 6px 0 10px; }
+.detail .bar-row { grid-template-columns: 130px 1fr 44px; padding: 1px 0; font-size: 12px; }
+.detail .bar-track { height: 6px; }
+.term-test { display: grid; gap: 4px; margin: 8px 0; }
+.term-test small { color: var(--muted); }
+.yes { color: var(--good); font-weight: 600; }
+.no { color: var(--muted); }
+
+.match-main { grid-template-rows: auto auto auto auto 1fr; }
+/* A long journey scrolls in its own row instead of widening the page. */
+.match-main > * { min-width: 0; }
+/* Fixed rows: the results keep the last one when the terms are hidden (MCP server). */
+.match-main > .tabs { grid-row: 4; }
+.match-main > .content { grid-row: 5; }
+td.title { min-width: 260px; max-width: 460px; }
+.journey-bar { display: flex; align-items: center; gap: 12px; padding: 8px 16px 0; font-size: 12.5px; }
+.journey-bar input[type=range] { flex: 0 1 380px; accent-color: var(--accent); }
+.journey-bar b, .journey-bar > span:first-child { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.timeline { display: flex; overflow-x: auto; padding: 6px 16px 10px; }
+.timeline .empty { padding: 14px 0; text-align: left; }
+.ev { flex: 0 0 136px; position: relative; border: 0; background: none; padding: 0 10px 0 0; text-align: left; color: inherit; cursor: pointer; }
+.ev::before { content: ""; position: absolute; left: 0; right: 0; top: 23px; height: 2px; background: var(--line); }
+.ev:last-child::before { right: auto; width: 14px; }
+.ev .when { display: block; height: 16px; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.ev .dot { position: relative; display: block; width: 14px; height: 14px; margin: 1px 0 5px; border-radius: 50%; background: var(--panel); border: 2px solid var(--muted); }
+.ev.context .dot { border-color: var(--accent); }
+.ev.focus .dot { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent); }
+.ev.future { opacity: .45; }
+.ev .what { display: block; font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ev .what b { color: var(--text); font-size: 12px; }
+.ev .label { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 12px; line-height: 1.3; }
+.ev:hover .label { color: var(--accent); }
+.terms { display: grid; gap: 5px; max-height: 148px; overflow: auto; padding: 8px 16px; border-top: 1px solid var(--line); }
+.term-row { display: flex; gap: 5px; align-items: baseline; flex-wrap: wrap; }
+.term-row > b { flex: 0 0 74px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.term { display: inline-flex; gap: 5px; align-items: baseline; padding: 0 8px; border: 1px solid var(--line); border-radius: 999px; background: var(--panel); font-size: 12px; white-space: nowrap; }
+.term small { color: var(--muted); font-variant-numeric: tabular-nums; }
+.term.none { border-style: dashed; border-color: var(--error); }
+.term.common { border-color: var(--warn); }
+.term.skipped { text-decoration: line-through; color: var(--muted); border-style: dashed; }
+.terms details summary { cursor: pointer; font-size: 12px; color: var(--muted); }
+.terms details .term-row { margin-top: 5px; }
+.meter { display: inline-block; width: 56px; height: 6px; margin-right: 7px; border-radius: 999px; background: var(--code); overflow: hidden; vertical-align: 1px; }
+.meter i { display: block; height: 100%; border-radius: 999px; background: var(--accent); }
+/* The parts of a rank-fusion score side by side: metadata, then full text. */
+.meter.split { display: inline-flex; width: 80px; }
+.meter.split i { border-radius: 0; }
+.meter i.m { background: var(--meta); }
+.meter i.f { background: var(--full); }
+/* Where a hit stands in each index: one axis for all rows, rank 1 on the left, on a log
+   scale, as the first ranks count most. */
+.ranks { position: relative; width: 132px; height: 14px; }
+.ranks::before { content: ""; position: absolute; left: 0; right: 0; top: 6px; height: 1px; background: var(--line); }
+.ranks i { position: absolute; top: 2px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; box-shadow: 0 0 0 2px var(--panel); }
+.ranks .m { background: var(--meta); }
+.ranks .f { background: var(--full); }
+td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: tabular-nums; color: var(--muted); }
+/* Which query term is in which index of a hit: left half metadata, right half full text. */
+.heat-head, .heat { display: flex; gap: 2px; }
+.heat-head span { width: 18px; max-height: 120px; writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 400; }
+.heat-head span.focus { color: var(--text); font-weight: 700; }
+.heat span { display: flex; width: 18px; height: 14px; border-radius: 3px; background: var(--code); overflow: hidden; }
+.heat span i { flex: 1; }
+.heat .m { background: var(--meta); }
+.heat .f { background: var(--full); }
+.heat-head .gap, .heat .gap { width: 6px; background: none; }
+th.heat-th { vertical-align: bottom; }
+.rank-lists { flex: 1; overflow: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; padding: 0 16px 12px; align-content: start; }
+.rank-lists h3 { position: sticky; top: 0; margin: 0; padding: 9px 0 7px; font-size: 12px; font-weight: 600; color: var(--muted); background: var(--bg); border-bottom: 1px solid var(--line); z-index: 1; }
+.rank-item { display: grid; grid-template-columns: 26px 70px 1fr 48px; gap: 8px; align-items: baseline; padding: 4px 4px; border-bottom: 1px solid var(--line); font-size: 12.5px; cursor: pointer; }
+.rank-item:hover { background: var(--hover); }
+.rank-item .n { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+.rank-item small { color: var(--muted); }
+.pill.hit { background: var(--accent); }
+.raw { flex: 1; overflow: auto; padding: 12px 16px; }
+.raw pre { margin: 0 0 12px; padding: 10px; border-radius: 6px; background: var(--code); font-size: 11px; overflow: auto; }
+.raw summary { cursor: pointer; margin-bottom: 8px; color: var(--muted); }
+.notice { margin: 12px 16px 0; padding: 9px 12px; border-radius: 8px; background: color-mix(in srgb, var(--error) 12%, transparent); font-size: 12.5px; white-space: pre-wrap; }
+.notice.quiet { background: var(--code); color: var(--muted); }
 </style>
 </head>
 <body>
 <header>
-  <h1>Crawler Debug</h1>
-  <nav class="views" id="views">
+  <h1>Debug</h1>
+  <nav class="views" id="views" title="The pipeline: crawl, store, index, match">
     <button type="button" data-screen="runs" class="active">Runs</button>
     <button type="button" data-screen="db">Database</button>
+    <button type="button" data-screen="index">Index</button>
+    <button type="button" data-screen="match">Matcher</button>
   </nav>
   <div class="chips" id="env"></div>
   <div class="status" id="status"><span class="dot"></span><span id="status-text">ready</span></div>
@@ -411,6 +546,7 @@ dialog.confirm p { margin: 6px 0; }
       </div>
       <div class="filters" style="margin-top:8px">
         <div class="filter-chip" id="db-run-chip" hidden></div>
+        <div class="filter-chip" id="db-detail-chip" hidden></div>
         <input type="text" id="db-q" placeholder="Title, ID or DOI">
         <label class="field"><span>Source</span><select id="db-source"><option value="">All sources</option></select></label>
         <label class="field"><span>Type</span><select id="db-type"><option value="">All types</option></select></label>
@@ -419,6 +555,9 @@ dialog.confirm p { margin: 6px 0; }
         </label>
         <label class="field"><span>Topic</span><select id="db-topic"><option value="">All topics</option></select></label>
         <label class="field"><span>Licence</span><select id="db-licence"><option value="">All licences</option></select></label>
+        <label class="field"><span>Full text <i class="info" tabindex="0" data-tip="What the keyword indexer did with a document's full text, as on the Index screen. Done, the next run leaves it alone: indexed, or skipped (no usable full text: none, an unreadable format, not English or no keywords; only the metadata is matched, read again when the document changes). Open, the next run reads it: failed (the download failed), new (not read yet) or changed (since it was read). Leaves out expired documents. Needs make index.">i</i></span>
+          <select id="db-fulltext"><option value="">All</option><option value="indexed">Indexed</option><option value="skipped">Skipped</option><option value="failed">Failed</option><option value="unread">New or changed</option></select>
+        </label>
         <label class="field"><span>Expiry <i class="info" tabindex="0" data-tip="Only YouTube rows expire, 30 days after they were retrieved. The next store run deletes expired rows; until then readers such as @matcher/db ignore them.">i</i></span>
           <select id="db-expiry"><option value="">All</option></select>
         </label>
@@ -469,6 +608,131 @@ dialog.confirm p { margin: 6px 0; }
   </main>
 </div>
 
+<div class="layout" id="index-view" hidden>
+  <aside class="side">
+    <div class="side-head">
+      <h2>Keyword index</h2>
+      <button type="button" class="link-button" id="ix-refresh" title="Load everything again">↻ Refresh</button>
+    </div>
+    <div class="db-conn" id="ix-state"><b>Loading …</b></div>
+    <label class="check"><input type="checkbox" id="ix-auto" checked> Refresh every 5 s <small class="muted" id="ix-updated"></small></label>
+    <div class="side-head">
+      <h2>Indexer <i class="info" tabindex="0" data-tip="The indexer job of make index: brings the indexes of all approaches up to date with the stored documents. It reads the full texts of new and changed documents and tries failed downloads again. Stopping is safe: the next run continues with the documents not read yet.">i</i></h2>
+    </div>
+    <div class="buttons">
+      <button type="button" class="primary" id="ix-start">Start indexing</button>
+      <button type="button" id="ix-stop" disabled>Stop</button>
+    </div>
+    <code class="cmd" title="The same run in the terminal">make index</code>
+    <div class="error" id="ix-error"></div>
+    <div class="side-head">
+      <h2>Next run downloads <i class="info" tabindex="0" data-tip="The full texts the next run reads, by the host of the file it tries first, and how long that host takes at its pace: arxiv.org one request every 15 s, zenodo.org 1 s, the PMC bucket 0.1 s, others 3 s. A rough lower bound: hosts are read in parallel, a second file (arXiv PDF after a missing HTML page) and retries come on top.">i</i></h2>
+    </div>
+    <ul class="db-tables" id="ix-hosts"></ul>
+  </aside>
+
+  <main>
+    <div class="stats" id="ix-stats"></div>
+    <nav class="tabs" id="ix-tabs">
+      <button data-ixtab="coverage" class="active">Coverage</button>
+      <button data-ixtab="log">Indexer log</button>
+      <button data-ixtab="vocabulary">Vocabulary</button>
+      <button data-ixtab="terms">Journey terms</button>
+    </nav>
+    <div class="content">
+      <section class="ixtab active" id="ixtab-coverage"><div class="panels" id="ix-coverage"></div></section>
+      <section class="ixtab" id="ixtab-log">
+        <div class="log-tools"><label><input type="checkbox" id="ix-follow" checked> Follow</label><span id="ix-run"></span></div>
+        <div class="log" id="ix-log"><div class="empty">No indexer run since this server started. Start one on the left.</div></div>
+      </section>
+      <section class="ixtab" id="ixtab-vocabulary">
+        <div class="toolbar">
+          <input type="text" id="ix-word" placeholder="Words that contain …">
+          <select id="ix-words-limit"><option value="100">Top 100</option><option value="250">Top 250</option><option value="500">Top 500</option></select>
+          <span class="muted" id="ix-words-shown"></span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th class="num">#</th><th>Keyword</th><th>Occurrences</th><th class="num">Full texts</th><th>Indexed as</th></tr></thead>
+            <tbody id="ix-words"></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="ixtab" id="ixtab-terms">
+        <div class="toolbar"><span class="muted" id="ix-terms-shown"></span></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>English term</th><th>German journey words</th><th>In metadata</th><th>In full texts</th><th></th></tr></thead>
+            <tbody id="ix-terms"></tbody>
+          </table>
+        </div>
+      </section>
+      <div class="db-down" id="ix-down" hidden></div>
+    </div>
+  </main>
+</div>
+
+<div class="layout" id="match-view" hidden>
+  <aside class="side">
+    <div class="side-head">
+      <h2>Journey <i class="info" tabindex="0" data-tip="Puts a journey into the arguments below and keeps their other fields: a synthetic journey of patientdata/, the one of the example in Documentation/build.md, or a timeline.json from disk. Only synthetic journeys belong here: the journey goes to the matcher and back, it is not stored or logged.">i</i></h2>
+      <button type="button" class="link-button" id="mt-open" title="Put a timeline.json from disk into the arguments">Open file …</button>
+    </div>
+    <select id="mt-journey"></select>
+    <input type="file" id="mt-file" accept=".json,application/json" hidden>
+    <div class="side-head">
+      <h2>Arguments of match_journey <i class="info" tabindex="0" data-tip="One JSON object, sent as it is: the same as “Edit as JSON” in the Tools tab of the MCP Inspector, or --tool-args-json of its CLI. journey: the timeline.json fits as it is. algorithm: keyword (graph and ai_summary answer NOT_AVAILABLE). limit: 1 to 50, default 10. content_types: default all. The as-of slider writes journey.as_of. All fields: Documentation/mcp-interface.md.">i</i></h2>
+    </div>
+    <textarea id="mt-json" spellcheck="false" autocomplete="off" placeholder='{"journey": {"patient_id": "…", "events": [{"id": "e1", "type": "…", "label": "…", "date": "2026-01-31"}]}, "algorithm": "keyword", "limit": 10}'></textarea>
+    <div class="error" id="mt-json-error"></div>
+    <div id="mt-tuning-box" hidden>
+      <div class="side-head">
+        <h2>Ranking constants <i class="info" tabindex="0" data-tip="The constants the matcher ranks with. Other values apply to this screen only; the MCP server keeps its own. The defaults are in the matcher's code.">i</i></h2>
+        <button type="button" class="link-button" id="mt-tuning-reset" title="Back to the matcher's values">Reset</button>
+      </div>
+      <div class="grid2" id="mt-tuning" style="margin-top:8px"></div>
+    </div>
+    <label class="check"><input type="checkbox" id="mt-mcp"> Through the MCP server <i class="info" tabindex="0" data-tip="Off: this screen runs the matcher's code itself with the arguments and shows the steps of the match. On: it sends the same arguments to match_journey of the running MCP server (make start), like a client would; the answer comes without the steps, and the ranking constants are the server's.">i</i></label>
+    <small class="muted" id="mt-mcp-state" style="margin-top:-10px"></small>
+    <div class="buttons"><button type="button" class="primary" id="mt-run">Match</button></div>
+    <div class="error" id="mt-error"></div>
+  </aside>
+
+  <main class="match-main">
+    <div class="stats" id="mt-stats"></div>
+    <div>
+      <div class="journey-bar"><span class="muted">as of</span><input type="range" id="mt-asof" min="0" max="0" value="0" title="The date the journey is cut at: the latest event up to it is the focus"><b id="mt-asof-date">–</b><span class="muted" id="mt-asof-note"></span></div>
+      <div class="timeline" id="mt-timeline"></div>
+    </div>
+    <div class="terms" id="mt-terms"></div>
+    <nav class="tabs" id="mt-tabs">
+      <button data-mttab="results" class="active">Results <span class="badge" id="mt-count">0</span></button>
+      <button data-mttab="rankings" title="The best candidates of each index before rank fusion, and where each one ended">Index rankings</button>
+      <button data-mttab="answer">Answer</button>
+    </nav>
+    <div class="content">
+      <section class="mttab active" id="mttab-results">
+        <div class="toolbar">
+          <span class="legend-row" id="mt-legend"><span><i class="swatch meta"></i>Metadata</span><span><i class="swatch full"></i>Full text</span></span>
+          <span class="muted" id="mt-mcp-note" hidden>Answer of the MCP server, without the steps of the match</span>
+          <span class="spacer"></span>
+          <label class="check"><input type="checkbox" id="mt-all-terms"> Terms without a hit</label>
+        </div>
+        <div class="notice" id="mt-notice" hidden></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr id="mt-head"></tr></thead>
+            <tbody id="mt-results"></tbody>
+          </table>
+        </div>
+      </section>
+      <section class="mttab" id="mttab-rankings"><div class="rank-lists" id="mt-rankings"></div></section>
+      <section class="mttab" id="mttab-answer"><div class="raw" id="mt-raw"></div></section>
+      <aside class="detail" id="mt-detail"></aside>
+    </div>
+  </main>
+</div>
+
 <dialog class="confirm" id="empty-dialog">
   <form id="empty-form">
     <h3 id="empty-title">Empty tables?</h3>
@@ -509,7 +773,10 @@ function h(tag, attrs, ...children) {
 async function api(path, options = {}) {
   const response = await fetch(path, { headers: { "Content-Type": "application/json" }, ...options });
   const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw Object.assign(new Error(data.error || `HTTP ${response.status}`), { data });
+  // The server answers a path it does not know with "not found": its code is older than this page.
+  const outdated = response.status === 404 && data.error === "not found";
+  const message = outdated ? "The running server is older than this page: stop make debug (Ctrl+C) and start it again." : data.error || `HTTP ${response.status}`;
+  if (!response.ok) throw Object.assign(new Error(message), { data });
   return data;
 }
 
@@ -1316,7 +1583,7 @@ $("#show-starts").addEventListener("change", (event) => {
   for (const line of document.querySelectorAll('#log [data-type="request_start"]')) line.style.display = event.target.checked ? "" : "none";
 });
 window.addEventListener("resize", () => { if (state.tab === "graph") resizeCanvas(); });
-document.addEventListener("keydown", (event) => { if (event.key === "Escape") { if (state.screen === "db") dbCloseDetail(); else closeDetail(); } });
+document.addEventListener("keydown", (event) => { if (event.key === "Escape") { if (state.screen === "runs") closeDetail(); else dbCloseDetail(); } });
 setInterval(() => { if (state.liveStart && !state.result) renderStats(); }, 500);
 
 // Info icons: one fixed tooltip, so the side panel's scroll area cannot clip it.
@@ -1341,13 +1608,41 @@ for (const icon of document.querySelectorAll(".info")) {
 setupSeg("source", (value) => { state.source = value; updateForm(); });
 setupSeg("mode", (value) => { state.mode = value; updateForm(); });
 
+// ── Shared by the Database, Index and Matcher screens ─────────────────────────
+const fmtCount = (value) => Number(value).toLocaleString("en-GB");
+const fmtCompact = (value) => new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 }).format(value);
+const fmtShare = (count, total) => total ? `${Math.round((100 * count) / total)} %` : "–";
+// What the keyword indexer did with a document's full text (`full_text_state` in server.py):
+// the first two are done, the next run reads the others.
+const FULL_TEXT_STATES = {
+  indexed: ["ok", "Done: its keywords are in the index"],
+  skipped: ["plain", "Done: no usable full text, so only its metadata is matched; read again when the document changes"],
+  failed: ["failed", "Open: the download failed; the next run tries again"],
+  new: ["none", "Open: not read yet; the next run reads it"],
+  changed: ["none", "Open: changed since it was read; the next run reads it again"],
+};
+
+function fullTextPill(state) {
+  const [cls, tip] = FULL_TEXT_STATES[state] || ["plain", ""];
+  return h("span", { class: `pill ${cls}`, title: tip }, state);
+}
+
+// Named bars with their figure at the end. Rows: { name, value, label, title, onclick }.
+function barList(rows, nameWidth) {
+  const top = Math.max(1, ...rows.map((row) => row.value));
+  return h("div", { class: "bars", style: nameWidth ? `--name-width:${nameWidth}px` : null }, ...rows.map((row) => h("div", { class: `bar-row${row.onclick ? " link" : ""}`, title: row.title, onclick: row.onclick },
+    h("span", { class: "bar-name" }, row.name),
+    h("span", { class: "bar-track" }, row.value > 0 ? h("i", { style: `width:${Math.max(0.6, (100 * row.value) / top)}%` }) : null),
+    h("span", { class: "bar-value" }, row.label ?? fmtCount(row.value)))));
+}
+
 // ── Database view (read-only) ─────────────────────────────────────────────────
 const SOURCE_LABEL = { pubmed: "PubMed", arxiv: "arXiv", zenodo: "Zenodo", youtube: "YouTube", podcast: "Podcast" };
 const PRECISION_LENGTH = { year: 4, month: 7, day: 10 };
-const DOC_COLUMNS = [["Source", "source"], ["ID", "id"], ["Type"], ["Title", "title"], ["Published", "published"], ["Licence"], ["Found by"], ["Changed", "changed"], ["Retrieved", "retrieved"], ["Expires", "expires"]];
-const DOC_FILTERS = ["db-source", "db-type", "db-origin", "db-topic", "db-licence", "db-expiry"];
+const DOC_COLUMNS = [["Source", "source"], ["ID", "id"], ["Type"], ["Title", "title"], ["Published", "published"], ["Licence"], ["Full text"], ["Found by"], ["Changed", "changed"], ["Retrieved", "retrieved"], ["Expires", "expires"]];
+const DOC_FILTERS = ["db-source", "db-type", "db-origin", "db-topic", "db-licence", "db-fulltext", "db-expiry"];
 const db = {
-  overview: null, error: null, tab: "documents", table: null, runFilter: null, selected: null, loading: false,
+  overview: null, error: null, tab: "documents", table: null, runFilter: null, detailFilter: null, pending: null, selected: null, loading: false,
   docs: { rows: [], total: 0, offset: 0, limit: 50, sort: "changed", order: "desc", ticket: 0 },
   runs: { rows: [], total: 0, offset: 0, limit: 50, ticket: 0 },
   generic: { rows: [], columns: [], total: 0, offset: 0, limit: 50, ticket: 0 },
@@ -1391,6 +1686,7 @@ function dbFilters() {
   return {
     q: $("#db-q").value.trim(), source: $("#db-source").value, type: $("#db-type").value, origin: $("#db-origin").value,
     topic: $("#db-topic").value, licence: $("#db-licence").value, expiry: $("#db-expiry").value, run: db.runFilter,
+    fulltext: $("#db-fulltext").value, detail: db.detailFilter,
   };
 }
 
@@ -1408,6 +1704,10 @@ async function dbRefresh() {
     renderDbSide();
     renderDbStats();
     renderDbDown();
+    if (db.pending) {
+      for (const [id, value] of Object.entries(db.pending)) $(`#${id}`).value = value;
+      db.pending = null;
+    }
     if (dbReady()) await dbLoadTab();
     $("#db-updated").textContent = `· ${fmtClock(new Date().toISOString())}`;
   } finally {
@@ -1483,10 +1783,15 @@ function renderDbTables() {
   $("#db-empty-all").hidden = !tables.length;
   if (!tables.length) { list.replaceChildren(h("li", { class: "empty" }, db.error ? "–" : "No tables")); return; }
   const active = { documents: "documents", runs: "crawl_runs", table: db.table }[db.tab];
-  list.replaceChildren(...tables.map((table) => h("li", { class: table.name === active ? "active" : null, onclick: () => dbOpenTable(table.name) },
-    h("code", {}, table.name),
-    h("small", {}, `${plural(table.rows, "row")} · ${fmtBytes(table.bytes)}`),
-    h("button", { type: "button", class: "empty-table", title: `Delete every row of ${table.name}, after a confirmation`, onclick: (event) => { event.stopPropagation(); openEmptyDialog([table.name]); } }, "Empty …"))));
+  // A schema per matching approach (keyword) next to the crawler's tables.
+  const schemas = new Set(tables.map((table) => table.schema));
+  list.replaceChildren(...tables.flatMap((table, index) => [
+    schemas.size > 1 && table.schema !== tables[index - 1]?.schema ? h("li", { class: "schema-name" }, `Schema ${table.schema}`) : null,
+    h("li", { class: table.name === active ? "active" : null, onclick: () => dbOpenTable(table.name) },
+      h("code", {}, table.name),
+      h("small", {}, `${plural(table.rows, "row")} · ${fmtBytes(table.bytes)}`),
+      h("button", { type: "button", class: "empty-table", title: `Delete every row of ${table.name}, after a confirmation`, onclick: (event) => { event.stopPropagation(); openEmptyDialog([table.name]); } }, "Empty …")),
+  ].filter(Boolean)));
 }
 
 // ── Emptying tables: a preview of what goes, then the database name typed ──────
@@ -1581,6 +1886,9 @@ function renderDbFilterOptions() {
     ["has", "Expires (YouTube)"], ["none", "Never expires"],
   ]);
   $("#db-topic").disabled = !stats.topics.length;
+  const fullText = $("#db-fulltext");
+  fullText.disabled = !db.overview.keyword_index;
+  fullText.parentElement.title = db.overview.keyword_index ? "" : "No keyword index yet: run make index";
 }
 
 function renderDbStats() {
@@ -1665,6 +1973,7 @@ function renderDbDocs() {
     h("td", {}, row.title || h("span", { class: "muted" }, "Untitled")),
     h("td", { class: "when" }, publishedText(row) || "–"),
     h("td", { class: "small" }, row.licence || "–"),
+    h("td", { class: "small" }, db.overview?.keyword_index ? fullTextPill(row.full_text_state) : "–"),
     h("td", { class: "small found" }, foundByText(row) || "–"),
     h("td", { class: "when", title: fmtDateTime(row.changed_at) }, fmtAgo(row.changed_at)),
     h("td", { class: "when", title: fmtDateTime(row.retrieved_at) }, fmtAgo(row.retrieved_at)),
@@ -1678,21 +1987,40 @@ function renderDbDocs() {
     h("span", { title: "Documents whose last retrieval was in this run; a later run that fetches them again takes them over." }, `Last retrieved by store run #${db.runFilter}`),
     h("button", { type: "button", title: "Remove this filter", onclick: () => { db.runFilter = null; db.docs.offset = 0; dbLoadDocs(); } }, "×"),
   );
+  const reason = $("#db-detail-chip");
+  reason.hidden = !db.detailFilter;
+  if (db.detailFilter) reason.replaceChildren(
+    h("span", { title: "The reason the keyword index gives for a skipped or failed full text" }, `Full text: ${db.detailFilter}`),
+    h("button", { type: "button", title: "Remove this filter", onclick: () => { db.detailFilter = null; db.docs.offset = 0; dbLoadDocs(); } }, "×"),
+  );
 }
 
+// The documents with these filter values (IDs of the selects) and this full-text reason.
+function dbShowDocuments(filters, detail = null) {
+  $("#db-q").value = "";
+  for (const id of DOC_FILTERS) $(`#${id}`).value = "";
+  Object.assign(db, { runFilter: null, detailFilter: detail, pending: filters, tab: "documents" });
+  db.docs.offset = 0;
+  showScreen("db");
+}
+
+// The Matcher screen shows documents in a panel of its own.
+const detailPanel = () => $(state.screen === "match" ? "#mt-detail" : "#db-detail");
+
 function dbShowDetail(parts) {
-  const panel = $("#db-detail");
+  const panel = detailPanel();
   panel.replaceChildren(h("button", { class: "close", title: "Close", onclick: dbCloseDetail }, "×"), ...parts);
   panel.classList.add("open");
   panel.scrollTop = 0;
 }
 
 function dbCloseDetail() {
-  $("#db-detail").classList.remove("open");
+  detailPanel().classList.remove("open");
   if (!db.selected) return;
   db.selected = null;
   if (db.tab === "documents") renderDbDocs();
   if (db.tab === "runs") renderDbRuns();
+  if (state.screen === "match") mtRenderResults();
 }
 
 function copyButton(text) {
@@ -1708,6 +2036,7 @@ function dbDocLink(item) {
 async function dbOpenDocument(id) {
   db.selected = { id };
   if (db.tab === "documents") renderDbDocs();
+  if (state.screen === "match") mtRenderResults();
   try {
     const data = await api(`/api/db/document?${queryString({ id })}`);
     if (db.selected?.id === id) renderDbDocument(data);
@@ -1716,7 +2045,50 @@ async function dbOpenDocument(id) {
   }
 }
 
-function renderDbDocument({ document: doc, cited_by: citedBy, cites }) {
+// Whether the matcher would find a term in this document.
+function termTest(id) {
+  const hint = "Whether the matcher finds a term in this document.";
+  const result = h("small", {}, hint);
+  let timer = 0;
+  const found = (value) => value == null ? h("span", { class: "no" }, "–") : h("span", { class: value ? "yes" : "no" }, value ? "✓ found" : "✗ not found");
+  const input = h("input", { type: "text", placeholder: "Test a search term, e.g. bone metastases", oninput: () => {
+    clearTimeout(timer);
+    timer = setTimeout(async () => {
+      const q = input.value.trim();
+      if (!q) { result.replaceChildren(hint); return; }
+      try {
+        const test = await api(`/api/db/term-test?${queryString({ id, q })}`);
+        if (input.value.trim() !== q) return;
+        if (!test.stems.length) result.replaceChildren("Only stop words: finds nothing anywhere.");
+        else result.replaceChildren(`Searched as ${test.stems.join(" + ")} · metadata `, found(test.metadata), " · full text ", found(test.full_text));
+      } catch (error) { result.replaceChildren(error.message); }
+    }, 250);
+  } });
+  return h("div", { class: "term-test" }, input, result);
+}
+
+function indexParts(doc, index) {
+  const parts = [h("div", { class: "label" }, "Keyword index")];
+  if (!index) return [...parts, h("div", { class: "note" }, "No keyword index yet: start the indexer on the Index screen, or run make index.")];
+  const { metadata, full_text: fullText } = index;
+  const outdated = (row) => row.current ? null : h("span", { class: "expiring", title: "The document changed since it was indexed; the next indexer run reads it again." }, " · outdated");
+  const rows = [
+    ["Metadata", metadata ? h("span", {}, "indexed", outdated(metadata)) : h("span", { class: "muted" }, "not indexed yet")],
+    ["Full text", fullText ? h("span", {}, fullTextPill(fullText.status), fullText.detail ? ` ${fullText.detail}` : "", outdated(fullText)) : h("span", { class: "muted" }, "not read yet")],
+  ];
+  if (fullText?.url) rows.push(["File read", h("a", { href: fullText.url, target: "_blank", rel: "noopener" }, `${fullText.media_type || "file"} ↗`)]);
+  if (fullText) rows.push(["Read", fmtDateTime(fullText.fetched_at)]);
+  if (fullText?.status === "indexed") rows.push(["Keywords", `${fmtCount(fullText.words)}, ${fmtCount(fullText.distinct_words)} different`]);
+  parts.push(h("dl", {}, ...rows.flatMap(([label, value]) => [h("dt", {}, label), h("dd", {}, value)])));
+  if (fullText?.top_words.length) parts.push(
+    h("div", { class: "label" }, "Most frequent keywords of the full text"),
+    barList(fullText.top_words.map(({ word, count }) => ({ name: word, value: count }))));
+  parts.push(termTest(doc.id));
+  if (metadata) parts.push(h("details", {}, h("summary", {}, "Indexed metadata text"), h("pre", {}, metadata.content)));
+  return parts;
+}
+
+function renderDbDocument({ document: doc, cited_by: citedBy, cites, index }) {
   const link = (href, text) => h("a", { href, target: "_blank", rel: "noopener" }, text);
   const rows = [
     ["ID", h("span", {}, h("span", { class: "mono" }, doc.id), copyButton(doc.id))],
@@ -1746,8 +2118,10 @@ function renderDbDocument({ document: doc, cited_by: citedBy, cites }) {
     h("h3", {}, doc.title || "Untitled"),
   ];
   if (doc.extra?.thumbnail) parts.push(h("img", { class: "thumb", src: doc.extra.thumbnail, alt: "", loading: "lazy" }));
+  if (state.screen === "match") parts.push(...mtDocumentParts(doc.id));
   parts.push(h("dl", {}, ...rows.flatMap(([label, value]) => [h("dt", {}, label), h("dd", {}, value)])));
   if (doc.summary) parts.push(h("div", { class: "label" }, "Summary"), h("p", { class: "abstract" }, doc.summary.length > 2000 ? `${doc.summary.slice(0, 2000)} …` : doc.summary));
+  parts.push(...indexParts(doc, index));
   const extra = Object.entries(doc.extra || {}).filter(([key]) => key !== "thumbnail");
   if (extra.length) parts.push(h("dl", { class: "extra" }, ...extra.flatMap(([key, value]) => [h("dt", {}, key.replaceAll("_", " ")), h("dd", {}, typeof value === "object" ? JSON.stringify(value) : String(value))])));
   if (doc.subjects.length) parts.push(h("div", {}, ...doc.subjects.slice(0, 60).map((subject) => h("span", { class: `kw${subject.major ? " major" : ""}`, title: [subject.scheme, subject.id].filter(Boolean).join(" ") }, subject.label))));
@@ -1815,7 +2189,8 @@ function renderDbSchema(schema) {
   const columns = group(schema.columns), constraints = group(schema.constraints);
   const indexes = group(schema.indexes.filter((item) => !constraintNames.has(item.name)));
   const tables = db.overview?.tables || [];
-  $("#db-schema").replaceChildren(...tables.map((table) => h("div", { class: "schema-card" },
+  const extensions = schema.extensions.map((item) => `${item.name} ${item.version}`).join(", ");
+  $("#db-schema").replaceChildren(h("div", { class: "muted" }, `Extensions: ${extensions || "none"}`), ...tables.map((table) => h("div", { class: "schema-card" },
     h("h3", {}, h("code", {}, table.name), h("small", {}, `${plural(table.rows, "row")} · ${fmtBytes(table.bytes)}`)),
     h("table", {},
       h("thead", {}, h("tr", {}, h("th", {}, "Column"), h("th", {}, "Type"), h("th", {}, "Null"), h("th", {}, "Default"))),
@@ -1826,7 +2201,7 @@ function renderDbSchema(schema) {
         h("td", { class: "small mono" }, column.default || ""))))),
     h("div", { class: "defs" },
       ...(constraints.get(table.name) || []).map((item) => h("div", {}, h("b", {}, item.name), " ", item.definition)),
-      ...(indexes.get(table.name) || []).map((item) => h("div", {}, h("b", {}, item.name), " ", item.definition.replace(/^CREATE (UNIQUE )?INDEX \S+ ON \S+ /, "$1")))),
+      ...(indexes.get(table.name) || []).map((item) => h("div", {}, h("b", {}, item.name), " ", item.definition.replace(/^CREATE (UNIQUE )?INDEX \S+ ON \S+ /, "$1"), ` · ${fmtBytes(item.bytes)}`))),
   )));
 }
 
@@ -1864,12 +2239,15 @@ function dbSwitchTab(tab, load = true) {
   if (load && dbReady()) dbLoadTab();
 }
 
+const SCREENS = { runs: "#runs-view", db: "#db-view", index: "#index-view", match: "#match-view" };
+
 function showScreen(screen) {
   state.screen = screen;
   for (const button of document.querySelectorAll("#views button")) button.classList.toggle("active", button.dataset.screen === screen);
-  $("#runs-view").hidden = screen !== "runs";
-  $("#db-view").hidden = screen !== "db";
+  for (const [name, view] of Object.entries(SCREENS)) $(view).hidden = name !== screen;
   if (screen === "db") { dbSwitchTab(db.tab, false); dbRefresh(); }
+  else if (screen === "index") { ixSwitchTab(ix.tab); ixRefresh(); }
+  else if (screen === "match") mtShow();
   else switchTab(state.tab);
 }
 
@@ -1892,11 +2270,778 @@ $("#db-reset").addEventListener("click", () => {
   $("#db-q").value = "";
   for (const id of DOC_FILTERS) $(`#${id}`).value = "";
   db.runFilter = null;
+  db.detailFilter = null;
   db.docs.offset = 0;
   dbLoadDocs();
 });
 $("#db-refresh").addEventListener("click", () => dbRefresh());
 setInterval(() => { if (state.screen === "db" && $("#db-auto").checked && document.visibilityState === "visible") dbRefresh(); }, 5000);
+
+// ── Index screen: what the keyword index holds, and the indexer job ────────────
+// The columns of the coverage (FULL_TEXT_STATES): the first two are done, the next run reads
+// the other two.
+const COVERAGE_STATES = [
+  ["indexed", "Indexed", "good", FULL_TEXT_STATES.indexed[1]],
+  ["skipped", "Skipped", "neutral", FULL_TEXT_STATES.skipped[1]],
+  ["failed", "Failed", "critical", FULL_TEXT_STATES.failed[1]],
+  ["unread", "New or changed", "pending", "Open: not read yet, or changed since it was read; the next run reads it"],
+];
+const ix = { overview: null, error: null, tab: "coverage", by: "source", loading: false, rendered: "", run: null, stream: null, wordsTicket: 0, termsLoaded: false };
+
+function ixTotals() {
+  const total = { documents: 0, metadata: 0, metadata_to_index: 0, indexed: 0, skipped: 0, failed: 0, unread: 0, to_read: 0 };
+  for (const row of ix.overview?.coverage || []) for (const key of Object.keys(total)) total[key] += row[key];
+  return total;
+}
+
+async function ixRefresh() {
+  if (ix.loading) return;
+  ix.loading = true;
+  try {
+    try {
+      ix.overview = await api("/api/index");
+      ix.error = null;
+    } catch (error) {
+      ix.overview = null;
+      ix.error = { message: error.message, hint: error.data?.hint, database: Boolean(error.data?.unavailable) };
+    }
+    renderIxSide();
+    renderIxStats();
+    renderIxCoverage();
+    renderIxDown();
+    $("#ix-updated").textContent = `· ${fmtClock(new Date().toISOString())}`;
+    await ixFollowRun();
+  } finally {
+    ix.loading = false;
+  }
+}
+
+function renderIxSide() {
+  const box = $("#ix-state");
+  const overview = ix.overview;
+  const lines = (...items) => items.filter(Boolean);
+  const running = overview?.indexer.run?.status === "running";
+  $("#ix-start").disabled = !overview || running || Boolean(overview.indexer.missing);
+  $("#ix-stop").disabled = !running;
+  if (ix.error) {
+    box.className = "db-conn down";
+    box.replaceChildren(...lines(h("b", {}, ix.error.database ? "Not connected" : "Not loaded"), h("small", {}, ix.error.message), ix.error.hint && h("span", { class: "hint" }, ix.error.hint)));
+  } else if (overview) {
+    const total = ixTotals();
+    const waiting = Math.max(total.to_read, total.metadata_to_index);
+    const { available, installed, preloaded } = overview.extension;
+    box.className = `db-conn${waiting || !overview.exists || !available || !preloaded ? " warn" : ""}`;
+    box.replaceChildren(...lines(
+      h("b", {}, !overview.exists ? "No keyword index yet" : waiting ? `${plural(waiting, "document")} to index` : "Up to date"),
+      h("small", {}, !overview.exists ? "The indexer creates it: start it below, or run make index."
+        : waiting ? "Failed, new and changed documents wait for the next run."
+        : "Every document is done: its full text indexed, or skipped and matched by its metadata only."),
+      h("small", {}, available ? `pg_textsearch ${installed || available}${installed ? "" : " (not created yet)"}${preloaded ? ", preloaded" : ""}` : ""),
+      !available && h("span", { class: "hint" }, "This database has no pg_textsearch: start the one of compose.yaml with make db"),
+      available && !preloaded && h("span", { class: "hint" }, "pg_textsearch is not in shared_preload_libraries: start the database with make db"),
+      overview.indexer.missing && h("span", { class: "hint" }, overview.indexer.missing),
+    ));
+  }
+  const hosts = overview?.hosts || [];
+  const list = $("#ix-hosts");
+  if (!hosts.length) list.replaceChildren(h("li", { class: "empty" }, overview ? "Nothing: every full text is read" : "–"));
+  else list.replaceChildren(...hosts.map((host) => h("li", { class: "plain" },
+    h("code", {}, host.host || "no readable file"),
+    h("small", {}, host.host ? `${plural(host.documents, "file")} · about ${fmtSpan(host.seconds * 1000)}` : `${host.documents} · skipped at once`))));
+}
+
+function renderIxStats() {
+  const box = $("#ix-stats");
+  if (!ix.overview) { box.replaceChildren(card("Documents", "–", "muted"), card("Full texts indexed", "–", "muted")); return; }
+  const total = ixTotals();
+  const words = ix.overview.words;
+  const share = (count) => total.documents ? ` · ${fmtShare(count, total.documents)}` : "";
+  box.replaceChildren(
+    card("Documents, not expired", fmtCount(total.documents)),
+    card(`Metadata indexed${share(total.metadata)}`, fmtCount(total.metadata), total.metadata ? "" : "muted"),
+    card(`Full texts indexed${share(total.indexed)}`, fmtCount(total.indexed), total.indexed ? "" : "muted"),
+    card(`Skipped, metadata only${share(total.skipped)}`, fmtCount(total.skipped), "muted"),
+    card("Failed downloads", fmtCount(total.failed), total.failed ? "bad" : "muted"),
+    card("Open: the next run reads them", fmtCount(total.to_read), total.to_read ? "" : "muted"),
+    card("Keywords stored", words ? fmtCompact(words.words) : "–", "muted"),
+    card("Last full text read", words?.last_read ? fmtAgo(words.last_read) : "–", words?.last_read ? "" : "muted"),
+  );
+}
+
+function coverageGroups() {
+  const field = ix.by === "source" ? "source" : "content_type";
+  const groups = new Map();
+  for (const row of ix.overview.coverage) {
+    const group = groups.get(row[field]) || { key: row[field], documents: 0, indexed: 0, skipped: 0, failed: 0, unread: 0 };
+    for (const key of ["documents", "indexed", "skipped", "failed", "unread"]) group[key] += row[key];
+    groups.set(row[field], group);
+  }
+  return [...groups.values()].sort((a, b) => b.documents - a.documents);
+}
+
+// One whole split into its states; the figures stand in the columns beside it.
+function coverageBar(group) {
+  const title = COVERAGE_STATES.map(([key, label]) => `${label}: ${fmtCount(group[key])}`).join(" · ");
+  return h("div", { class: "seg-bar", role: "img", title, "aria-label": title },
+    ...COVERAGE_STATES.filter(([key]) => group[key] > 0).map(([key]) => h("i", { class: `s-${key}`, style: `flex:${group[key]}` })));
+}
+
+function coveragePanel() {
+  const total = ixTotals();
+  const filterId = ix.by === "source" ? "db-source" : "db-type";
+  const number = (group, key) => {
+    const filters = { "db-fulltext": key };
+    if (group.key) filters[filterId] = group.key;
+    return h("td", { class: `num${group[key] ? " link" : " zero"}`, title: group[key] ? "Show these documents" : null, onclick: group[key] ? () => dbShowDocuments(filters) : null }, fmtCount(group[key]));
+  };
+  const row = (group, name) => h("tr", {},
+    h("td", {}, name),
+    h("td", { class: "barcell" }, coverageBar(group)),
+    h("td", { class: "num" }, fmtCount(group.documents)),
+    ...COVERAGE_STATES.map(([key]) => number(group, key)),
+    h("td", { class: "num" }, fmtShare(group.indexed + group.skipped, group.documents)));
+  const seg = h("span", { class: "mini-seg" }, ...[["source", "Source"], ["type", "Content type"]].map(([value, label]) =>
+    h("button", { type: "button", class: ix.by === value ? "active" : null, onclick: () => { ix.by = value; renderIxCoverage(); } }, label)));
+  const legend = (label, states) => h("span", { class: "legend-row" }, label, ...states.map(([, name, cls, tip]) => h("span", { title: tip }, h("i", { class: `swatch ${cls}` }), name)));
+  return h("div", { class: "panel" },
+    h("h3", {}, "Full texts by", seg, h("span", { class: "spacer" }),
+      legend("Done:", COVERAGE_STATES.slice(0, 2)), legend("Open, the next run reads them:", COVERAGE_STATES.slice(2))),
+    h("table", {},
+      h("thead", {}, h("tr", {}, h("th", {}, ix.by === "source" ? "Source" : "Content type"), h("th", {}, "Share"), h("th", { class: "num" }, "Documents"),
+        ...COVERAGE_STATES.map(([, label, , tip]) => h("th", { class: "num", title: tip }, label)),
+        h("th", { class: "num", title: "Indexed or skipped: the share the next run leaves alone" }, "Done"))),
+      h("tbody", {},
+        ...coverageGroups().map((group) => row(group, ix.by === "source" ? sourcePill(group.key) : typeLabel(group.key))),
+        row({ ...total, key: null }, h("b", {}, "All")))));
+}
+
+function reasonsPanel() {
+  const reasons = ix.overview.reasons.filter((reason) => reason.status !== "indexed");
+  const body = reasons.length
+    ? barList(reasons.map((reason) => ({
+      name: h("span", {}, fullTextPill(reason.status), ` ${reason.detail || "no reason given"}`),
+      value: reason.documents,
+      title: `${reason.detail || reason.status}: show these documents`,
+      onclick: () => dbShowDocuments({ "db-fulltext": reason.status }, reason.detail),
+    })), 420)
+    : h("div", { class: "muted" }, "Every document read so far has an indexed full text.");
+  return h("div", { class: "panel" },
+    h("h3", {}, "Why a document has no full text", h("small", {}, "skipped: done, only its metadata is matched; read again when the document changes · failed: open, tried again in the next run")),
+    h("div", { class: "panel-body" }, body));
+}
+
+function wordsPanel() {
+  const words = ix.overview.words;
+  if (!words.documents) return null;
+  const label = (bucket) => bucket.to == null ? `${fmtCount(bucket.from)} (cut off)` : `${fmtCount(bucket.from)}–${fmtCount(bucket.to)}`;
+  return h("div", { class: "panel" },
+    h("h3", {}, "Keywords per indexed full text", h("small", {}, `median ${fmtCount(words.median)} · from ${fmtCount(words.min)} to ${fmtCount(words.max)} · very few can mean a file that was not read well`)),
+    h("div", { class: "panel-body" }, barList(words.buckets.map((bucket) => ({ name: label(bucket), value: bucket.documents })), 130)));
+}
+
+function formatsPanel() {
+  const formats = ix.overview.formats;
+  if (!formats.length) return null;
+  return h("div", { class: "panel" },
+    h("h3", {}, "Files the indexed full texts were read from"),
+    h("table", {},
+      h("thead", {}, h("tr", {}, h("th", {}, "Media type"), h("th", { class: "num" }, "Full texts"), h("th", { class: "num" }, "Keywords"), h("th", { class: "num" }, "Keywords per full text, average"))),
+      h("tbody", {}, ...formats.map((format) => h("tr", {},
+        h("td", {}, h("code", {}, format.media_type || "unknown")),
+        h("td", { class: "num" }, fmtCount(format.documents)),
+        h("td", { class: "num" }, fmtCount(format.words)),
+        h("td", { class: "num" }, fmtCount(Math.round(format.words / format.documents))))))));
+}
+
+function renderIxCoverage() {
+  if (!ix.overview) return;
+  // The view refreshes every 5 s: build it again only when something changed.
+  const snapshot = JSON.stringify([ix.by, ix.overview.exists, ix.overview.coverage, ix.overview.reasons, ix.overview.words, ix.overview.formats]);
+  if (snapshot === ix.rendered) return;
+  ix.rendered = snapshot;
+  const parts = [coveragePanel()];
+  if (!ix.overview.exists) parts.unshift(h("div", { class: "notice quiet", style: "margin:0" }, "No keyword index yet, so no document is indexed. Start the indexer on the left, or run make index; the first run reads every full text and takes a while (see “Next run downloads”)."));
+  else parts.push(reasonsPanel(), wordsPanel(), formatsPanel());
+  $("#ix-coverage").replaceChildren(...parts.filter(Boolean));
+}
+
+function renderIxDown() {
+  const box = $("#ix-down");
+  box.hidden = !ix.error;
+  if (ix.error) box.replaceChildren(h("div", { class: "db-down-box" }, h("h3", {}, ix.error.database ? "Database not reachable" : "The index could not be loaded"), h("p", {}, ix.error.message), ix.error.hint ? h("p", { class: "cmd" }, ix.error.hint) : null, h("button", { type: "button", onclick: () => ixRefresh() }, "Try again")));
+}
+
+// ── The indexer run: its output lines, live ──
+function ixAppendLog(event) {
+  const log = $("#ix-log");
+  if (log.firstElementChild?.classList.contains("empty")) log.replaceChildren();
+  const [cls, text] = {
+    index_started: ["run", `Start: ${event.command}`],
+    line: [/\berror\b|ECONN|ENOTFOUND/i.test(event.text || "") ? "err" : "ok", event.text],
+    cancel_requested: ["warn", "Stop requested …"],
+    index_finished: ["run", "Done"],
+    index_failed: ["err", `The indexer failed (exit code ${event.code ?? "unknown"})`],
+    index_cancelled: ["err", "Stopped: the next run continues with the documents not read yet"],
+  }[event.type] || ["start", JSON.stringify(event)];
+  log.append(h("div", { class: cls }, h("span", { class: "t" }, `${event.t.toFixed(1)} s`), h("span", {}, text)));
+  while (log.childElementCount > LOG_LIMIT) log.firstElementChild.remove();
+  if ($("#ix-follow").checked) log.scrollTop = log.scrollHeight;
+  if (event.type === "line" && event.text.includes("full texts:")) $("#ix-run").textContent = event.text.replace(/^\w+: /, "");
+}
+
+// Shows the run the server reports: its lines so far, then the stream while it runs.
+async function ixFollowRun() {
+  const run = ix.overview?.indexer.run;
+  if (!run || ix.run === run.id) return;
+  ix.run = run.id;
+  const data = await api("/api/index/run");
+  if (data.run?.id !== run.id) { ix.run = null; return; }
+  $("#ix-log").replaceChildren();
+  $("#ix-run").textContent = "";
+  for (const event of data.events) ixAppendLog(event);
+  if (data.run.status !== "running") return;
+  ix.stream?.close();
+  const stream = new EventSource(`/api/index/events?run=${encodeURIComponent(run.id)}&from=${data.events.length}`);
+  ix.stream = stream;
+  const done = () => { stream.close(); if (ix.stream === stream) ix.stream = null; ixRefresh(); };
+  stream.onmessage = (message) => ixAppendLog(JSON.parse(message.data));
+  stream.addEventListener("end", done);
+  stream.onerror = () => { if (stream.readyState === EventSource.CLOSED) done(); };
+}
+
+async function ixCommand(path) {
+  $("#ix-error").textContent = "";
+  try {
+    await api(path, { method: "POST", body: "{}" });
+    ixSwitchTab("log");
+    // A refresh in progress still holds the state from before the command.
+    while (ix.loading) await new Promise((resolve) => setTimeout(resolve, 100));
+    await ixRefresh();
+  } catch (error) {
+    $("#ix-error").textContent = error.message;
+  }
+}
+
+async function ixLoadWords() {
+  const ticket = ++ix.wordsTicket;
+  const body = $("#ix-words");
+  $("#ix-words-shown").textContent = "Counting the keywords of every full text …";
+  try {
+    const data = await api(`/api/index/vocabulary?${queryString({ limit: $("#ix-words-limit").value, q: $("#ix-word").value.trim() })}`);
+    if (ticket !== ix.wordsTicket) return;
+    const top = Math.max(1, ...data.rows.map((row) => row.count));
+    const stems = (row) => !row.stems.length
+      ? h("span", { class: "pill none", title: "An English stop word: stored, but neither ranked nor found. It only takes space." }, "stop word, not searched")
+      : row.stems.join(" ") === row.word ? h("span", { class: "muted" }, "as it is") : row.stems.join(" ");
+    body.replaceChildren(...(data.rows.length ? data.rows.map((row, index) => h("tr", {},
+      h("td", { class: "num zero" }, index + 1),
+      h("td", { class: "id" }, row.word),
+      h("td", {}, h("div", { class: "bar-row", style: "--name-width:0px; padding:0" }, h("span"), h("span", { class: "bar-track" }, h("i", { style: `width:${Math.max(0.6, (100 * row.count) / top)}%` })), h("span", { class: "bar-value" }, fmtCount(row.count)))),
+      h("td", { class: "num" }, `${fmtCount(row.documents)} · ${fmtShare(row.documents, data.documents)}`),
+      h("td", { class: "small" }, stems(row)),
+    )) : [messageRow(5, "No keyword matches.")]));
+    $("#ix-words-shown").textContent = `the most frequent keywords of ${plural(data.documents, "full text")}: what the keyword filter lets through`;
+  } catch (error) {
+    if (ticket !== ix.wordsTicket) return;
+    body.replaceChildren(messageRow(5, error.message, "small error"));
+    $("#ix-words-shown").textContent = "";
+  }
+}
+
+async function ixLoadTerms() {
+  const body = $("#ix-terms");
+  try {
+    const data = await api("/api/index/journey-terms");
+    const found = (term) => term.metadata + term.full_text;
+    const share = (count, total) => h("span", {}, h("span", { class: "meter" }, h("i", { style: `width:${total ? (100 * count) / total : 0}%` })), `${fmtCount(count)} · ${fmtShare(count, total)}`);
+    const flag = (term) => term.stop_words ? h("span", { class: "pill none", title: "Only English stop words: the index does not hold them" }, "stop words")
+      : !found(term) ? h("span", { class: "pill failed", title: "No stored document has this term" }, "finds nothing")
+      : term.metadata > data.totals.metadata / 2 ? h("span", { class: "pill plain", title: "In more than half of the documents: it hardly tells them apart" }, "in most documents") : null;
+    const rows = data.terms.sort((a, b) => found(a) - found(b) || a.term.localeCompare(b.term));
+    body.replaceChildren(...rows.map((term) => h("tr", {},
+      h("td", {}, term.term),
+      h("td", { class: "small" }, term.german.join(", ")),
+      h("td", { class: "small" }, share(term.metadata, data.totals.metadata)),
+      h("td", { class: "small" }, share(term.full_text, data.totals.full_text)),
+      h("td", {}, flag(term)),
+    )));
+    $("#ix-terms-shown").textContent = `${plural(rows.length, "English term")} of german-terms.json and the stored documents each one finds, the rarest first`;
+    ix.termsLoaded = true;
+  } catch (error) {
+    body.replaceChildren(messageRow(5, error.message, "small error"));
+    $("#ix-terms-shown").textContent = "";
+  }
+}
+
+function ixSwitchTab(tab) {
+  ix.tab = tab;
+  history.replaceState(null, "", tab === "coverage" ? "#index" : `#index-${tab}`);
+  for (const button of document.querySelectorAll("#ix-tabs button")) button.classList.toggle("active", button.dataset.ixtab === tab);
+  for (const section of document.querySelectorAll(".ixtab")) section.classList.toggle("active", section.id === `ixtab-${tab}`);
+  if (tab === "log") { const log = $("#ix-log"); log.scrollTop = log.scrollHeight; }
+  if (tab === "vocabulary" && !$("#ix-words").childElementCount) ixLoadWords();
+  if (tab === "terms" && !ix.termsLoaded) ixLoadTerms();
+}
+
+for (const button of document.querySelectorAll("#ix-tabs button")) button.addEventListener("click", () => ixSwitchTab(button.dataset.ixtab));
+$("#ix-refresh").addEventListener("click", () => { ix.termsLoaded = false; if (ix.tab === "vocabulary") ixLoadWords(); if (ix.tab === "terms") ixLoadTerms(); ixRefresh(); });
+$("#ix-start").addEventListener("click", () => ixCommand("/api/index/run"));
+$("#ix-stop").addEventListener("click", () => ixCommand("/api/index/cancel"));
+let ixTyping = 0;
+$("#ix-word").addEventListener("input", () => { clearTimeout(ixTyping); ixTyping = setTimeout(ixLoadWords, 300); });
+$("#ix-words-limit").addEventListener("change", ixLoadWords);
+setInterval(() => { if (state.screen === "index" && $("#ix-auto").checked && document.visibilityState === "visible") ixRefresh(); }, 5000);
+
+// ── Matcher screen: match_journey for a journey, with the steps of the match ───
+// The arguments of match_journey besides the journey, until the text box holds others: the
+// defaults of the contract, written out so that they can be changed.
+const MT_DEFAULTS = { algorithm: "keyword", limit: 10 };
+const mt = {
+  meta: null, args: null, dates: [], asOf: null, request: null, via: null, result: null,
+  tuning: {}, settings: "", tab: "results", cache: new Map(), ticket: 0, timer: 0,
+};
+
+// The data of a step of the match shown, e.g. "terms"; undefined through the MCP server.
+const mtStep = (name) => mt.result?.steps?.find((entry) => entry.step === name)?.data;
+const mtSetting = (name) => mtStep("settings")?.find((setting) => setting.name === name)?.value;
+
+async function mtShow() {
+  history.replaceState(null, "", "#match");
+  try {
+    const first = !mt.meta;
+    mt.meta = await api("/api/match/meta");
+    if (first) {
+      $("#mt-journey").replaceChildren(
+        ...mt.meta.journeys.map((id) => h("option", { value: id }, id === "demo" ? "demo-1, the example of build.md" : id)),
+        h("option", { value: "", disabled: true }, "Edited or opened"));
+      await mtLoadJourney(mt.meta.journeys[0]);
+    }
+  } catch (error) {
+    $("#mt-error").textContent = error.message;
+  }
+  mtRenderSide();
+}
+
+function mtRenderSide() {
+  const mcp = mt.meta?.mcp;
+  $("#mt-mcp-state").textContent = mcp ? `${mcp.url}: ${mcp.running ? "running" : "not running, start it with make start"}` : "";
+  const viaMcp = $("#mt-mcp").checked;
+  for (const input of document.querySelectorAll("#mt-tuning input")) input.disabled = viaMcp;
+  if (!viaMcp && mt.meta?.missing) $("#mt-error").textContent = mt.meta.missing;
+}
+
+async function mtLoadJourney(id) {
+  const journey = await api(`/api/match/journey?${queryString({ id })}`);
+  $("#mt-journey").value = id;
+  mtSetJourney(journey);
+}
+
+// Puts a journey into the arguments and keeps their other fields.
+function mtSetJourney(journey) {
+  const { journey: _, ...others } = mt.args || MT_DEFAULTS;
+  $("#mt-json").value = JSON.stringify({ journey, ...others }, null, 2);
+  if (mtParse()) mtRun(true);
+}
+
+// Reads the arguments from the text box; the server checks them against the contract.
+function mtParse() {
+  let args;
+  try {
+    args = JSON.parse($("#mt-json").value);
+  } catch (error) {
+    $("#mt-json-error").textContent = `Not JSON: ${error.message}`;
+    return false;
+  }
+  if (!args || typeof args !== "object" || Array.isArray(args)) {
+    $("#mt-json-error").textContent = "Not a JSON object: the arguments of match_journey look like {\"journey\": {…}, \"limit\": 10}";
+    return false;
+  }
+  $("#mt-json-error").textContent = "";
+  mt.args = args;
+  const events = Array.isArray(args.journey?.events) ? args.journey.events : [];
+  mt.dates = [...new Set(events.map((event) => event?.date).filter((date) => /^\d{4}-\d{2}-\d{2}$/.test(date)))].sort();
+  // The focus is the latest event up to as_of; without as_of, the latest of all.
+  const asOf = args.journey?.as_of;
+  mt.asOf = (typeof asOf === "string" ? mt.dates.filter((date) => date <= asOf) : mt.dates).at(-1) ?? null;
+  const slider = $("#mt-asof");
+  slider.max = Math.max(0, mt.dates.length - 1);
+  slider.disabled = mt.dates.length < 2;
+  mtShowAsOf();
+  return true;
+}
+
+function mtShowAsOf() {
+  $("#mt-asof").value = Math.max(0, mt.dates.indexOf(mt.asOf));
+  const asOf = mt.args?.journey?.as_of;
+  $("#mt-asof-date").textContent = typeof asOf === "string" ? asOf : "no as_of";
+  const ahead = (mt.args?.journey?.events || []).filter((event) => mt.asOf && event?.date > mt.asOf).length;
+  const where = mt.asOf ? `date ${mt.dates.indexOf(mt.asOf) + 1} of ${mt.dates.length}` : "before the first event";
+  $("#mt-asof-note").textContent = mt.dates.length > 1 ? `${typeof asOf === "string" ? "" : "the latest event is the focus · "}${where}${ahead ? ` · ${plural(ahead, "later event")} left out` : ""} · drag, or click an event` : "";
+  mtRenderTimeline();
+}
+
+// Cuts the journey at `date`: writes it to journey.as_of in the arguments.
+function mtSetAsOf(date) {
+  if (!mt.dates.includes(date) || date === mt.args.journey.as_of) return;
+  const { as_of: _, ...journey } = mt.args.journey;
+  mt.args = { ...mt.args, journey: { as_of: date, ...journey } };
+  $("#mt-json").value = JSON.stringify(mt.args, null, 2);
+  mt.asOf = date;
+  mtShowAsOf();
+  clearTimeout(mt.timer);
+  mt.timer = setTimeout(() => mtRun(false), 150);
+}
+
+// The arguments as they are, plus other ranking constants, which only this screen takes.
+function mtRequest() {
+  return Object.keys(mt.tuning).length && !$("#mt-mcp").checked ? { ...mt.args, tuning: mt.tuning } : mt.args;
+}
+
+// What the match does not say itself: how many documents hold each term, and the titles.
+async function mtEnrich(result) {
+  const terms = result.steps?.find((entry) => entry.step === "terms")?.data;
+  const candidates = result.steps?.find((entry) => entry.step === "candidates")?.data || [];
+  const post = (path, body) => api(path, { method: "POST", body: JSON.stringify(body) }).catch(() => null);
+  const [found, titles] = await Promise.all([
+    terms && terms.focus.length + terms.context.length ? post("/api/index/terms", { terms: [...new Set([...terms.focus, ...terms.context])] }) : null,
+    candidates.length ? post("/api/db/titles", { ids: candidates.map((candidate) => candidate.id) }) : null,
+  ]);
+  result.found = found;
+  result.titles = Object.fromEntries((titles?.rows || []).map((row) => [row.id, row]));
+}
+
+// `fresh`: ask the matcher again, e.g. after its code or the index changed; else an answer
+// seen for the same request is shown again, which keeps the as-of slider quick.
+async function mtRun(fresh) {
+  if (!mt.args) return;
+  const via = $("#mt-mcp").checked ? "mcp" : "direct";
+  const request = mtRequest();
+  const key = JSON.stringify([via, request]);
+  const ticket = ++mt.ticket;
+  if (fresh) mt.cache.clear();
+  $("#mt-error").textContent = "";
+  let result = mt.cache.get(key);
+  if (!result) {
+    $("#mt-run").disabled = true;
+    $("#mt-run").textContent = "Matching …";
+    try {
+      result = await api("/api/match", { method: "POST", body: JSON.stringify({ request, via }) });
+      await mtEnrich(result);
+      mt.cache.set(key, result);
+    } catch (error) {
+      if (ticket === mt.ticket) $("#mt-error").textContent = error.message;
+      return;
+    } finally {
+      if (ticket === mt.ticket) { $("#mt-run").disabled = false; $("#mt-run").textContent = "Match"; }
+    }
+  }
+  if (ticket !== mt.ticket) return;
+  mt.request = request;
+  mt.via = via;
+  mt.result = result;
+  mtRender();
+}
+
+function mtRender() {
+  dbCloseDetail();
+  mtRenderStats();
+  mtRenderTimeline();
+  mtRenderTerms();
+  mtRenderTuning();
+  mtRenderNotice();
+  mtRenderResults();
+  mtRenderRankings();
+  mtRenderRaw();
+}
+
+function mtRenderStats() {
+  const box = $("#mt-stats");
+  const result = mt.result;
+  if (!result) { box.replaceChildren(card("Focus event", "–", "muted"), card("Results", "–", "muted")); return; }
+  const answer = result.answer;
+  const terms = mtStep("terms"), rankings = mtStep("rankings"), candidates = mtStep("candidates");
+  const dropped = candidates?.filter((candidate) => candidate.score == null).length;
+  box.replaceChildren(...[
+    card("Focus event", answer?.focus_event_id ?? "–", answer ? "" : "muted"),
+    terms && card("Search terms: focus + context", `${terms.focus.length} + ${terms.context.length}`),
+    rankings && card("Candidates: metadata + full text", `${rankings.metadata.length} + ${rankings.fullTexts.length}`),
+    candidates && card("Candidates without a term, dropped", dropped, dropped ? "" : "muted"),
+    card(answer?.degraded ? "Results (degraded)" : "Results", answer ? answer.results.length : "–", answer?.degraded || result.error ? "bad" : ""),
+    card(result.steps?.length ? "Took, with starting the matcher" : "Took", `${result.seconds.toFixed(2)} s`, "muted"),
+  ].filter(Boolean));
+  $("#mt-count").textContent = answer ? answer.results.length : 0;
+}
+
+function mtRenderTimeline() {
+  const box = $("#mt-timeline");
+  const events = Array.isArray(mt.args?.journey?.events) ? mt.args.journey.events.filter((event) => event && typeof event === "object") : [];
+  if (!events.length) { box.replaceChildren(h("div", { class: "empty" }, "The journey has no events.")); return; }
+  // Focus and context are the matcher's; they show once its answer for this journey is here.
+  const current = mt.request?.journey === mt.args?.journey ? mt.result : null;
+  const focus = current?.answer?.focus_event_id;
+  const context = new Set(current?.steps?.find((entry) => entry.step === "journey")?.data.context || []);
+  const date = (event) => String(event.date || "");
+  const sorted = [...events].sort((a, b) => date(a) < date(b) ? -1 : date(a) > date(b) ? 1 : 0);
+  box.replaceChildren(...sorted.map((event) => {
+    const role = mt.asOf && date(event) > mt.asOf ? "future" : event.id === focus ? "focus" : context.has(event.id) ? "context" : "";
+    const says = { future: "after the as-of date: left out", focus: "the focus: the event that is matched", context: "context: an older event that still counts" }[role] || "";
+    return h("button", { type: "button", class: `ev ${role}`, title: `${event.label || ""}${says ? `\n${says}` : ""}\nClick: cut the journey at ${date(event)}`, onclick: () => mtSetAsOf(date(event)) },
+      h("span", { class: "when" }, date(event) || "no date"),
+      h("span", { class: "dot" }),
+      h("span", { class: "what" }, h("b", {}, event.id ?? "?"), ` ${event.type || ""}`),
+      h("span", { class: "label" }, event.label || ""));
+  }));
+  const shown = box.querySelector(".ev.focus") || [...box.querySelectorAll(".ev:not(.future)")].at(-1);
+  if (shown) box.scrollLeft = Math.max(0, shown.offsetLeft - box.offsetLeft - box.clientWidth / 2 + shown.offsetWidth / 2);
+}
+
+function mtRenderTerms() {
+  const box = $("#mt-terms");
+  const terms = mtStep("terms");
+  box.hidden = !terms;
+  if (!terms) return;
+  const found = new Map((mt.result.found?.terms || []).map((term) => [term.term, term]));
+  const totals = mt.result.found?.totals;
+  const chip = (term) => {
+    const count = found.get(term);
+    if (!count) return h("span", { class: "term" }, term);
+    const nothing = count.stop_words || count.metadata + count.full_text === 0;
+    const common = totals && count.metadata > totals.metadata / 2;
+    const title = count.stop_words ? "Only English stop words: the index does not hold them, so this term finds nothing."
+      : `In ${count.metadata} of ${totals.metadata} metadata texts and ${count.full_text} of ${totals.full_text} full texts.${nothing ? " It finds nothing." : common ? " In more than half of the documents: it hardly tells them apart." : ""}`;
+    return h("span", { class: `term${nothing ? " none" : common ? " common" : ""}`, title }, term, h("small", {}, nothing ? "∅" : `${common ? "⚠ " : ""}${count.metadata} · ${count.full_text}`));
+  };
+  const word = ({ word: text, term }) => term == null ? h("span", { class: "term skipped", title: "Skipped: a function word, a unit or a number" }, text)
+    : term === text ? h("span", { class: "term", title: "Passed on as it is: no entry in german-terms.json" }, text)
+    : h("span", { class: "term", title: "Translated by german-terms.json" }, text, h("small", {}, `→ ${term}`));
+  const row = (label, title, chips) => h("div", { class: "term-row" }, h("b", { title }, label), ...(chips.length ? chips : [h("span", { class: "muted" }, "none")]));
+  box.replaceChildren(
+    row(`Focus ×${mtSetting("focusWeight") ?? 1}`, "The terms of the focus event; the query repeats them this often", terms.focus.map(chip)),
+    row("Context ×1", "The terms of the older events, each once", terms.context.map(chip)),
+    // Stays open from one match to the next, e.g. while the as-of date moves.
+    h("details", { open: box.querySelector("details")?.open },
+      h("summary", {}, "Numbers: documents with the term in their metadata · in their full text. ∅ finds nothing, ⚠ is in most documents. Show how each event became terms"),
+      ...terms.events.map((event) => row(event.id, "", event.words.map(word)))));
+}
+
+// The matcher's ranking constants as inputs, built again only when their names change.
+function mtRenderTuning() {
+  const settings = mtStep("settings");
+  const names = settings ? settings.map((setting) => setting.name).join() : mt.settings;
+  $("#mt-tuning-box").hidden = !names;
+  if (!settings || names === mt.settings) return;
+  mt.settings = names;
+  $("#mt-tuning").replaceChildren(...settings.map((setting) => h("label", { class: "field" },
+    h("span", { title: `From ${setting.min} to ${setting.max}${setting.whole ? ", whole numbers" : ""}` }, setting.name, h("small", { class: "muted" }, ` (${setting.default})`)),
+    h("input", { type: "number", min: setting.min, max: setting.max, step: setting.whole ? 1 : "any", value: setting.value, "data-name": setting.name, "data-default": setting.default,
+      oninput: (event) => {
+        const value = event.target.value;
+        if (value === "" || Number(value) === setting.default) delete mt.tuning[setting.name];
+        else mt.tuning[setting.name] = Number(value);
+      },
+      onkeydown: (event) => { if (event.key === "Enter") mtRun(true); } }))));
+}
+
+function mtRenderNotice() {
+  const box = $("#mt-notice");
+  const result = mt.result;
+  const failure = mtStep("error");
+  let text = null, info = false;
+  if (result.error) text = `match_journey refuses this request (${result.error.code}):\n${result.error.message}`;
+  else if (result.answer.degraded) {
+    const missing = /does not exist/.test(failure?.message || "");
+    text = `Degraded: ${result.answer.degraded_reason}${failure ? `\n${failure.name || "Error"}${failure.code ? ` ${failure.code}` : ""}: ${failure.message}` : ""}${missing ? "\nThe index is missing: start the indexer on the Index screen, or run make index." : ""}`;
+  } else if (!result.answer.results.length) [text, info] = ["No stored document shares a term with this journey.", true];
+  box.hidden = !text;
+  box.className = `notice${info ? " quiet" : ""}`;
+  box.textContent = text || "";
+}
+
+// The query terms as columns: the focus terms, then the context terms that hit most.
+function mtTermColumns(results, candidates) {
+  const terms = mtStep("terms");
+  const focus = terms ? terms.focus : [];
+  const all = terms ? [...focus, ...terms.context.filter((term) => !focus.includes(term))] : [...new Set(results.flatMap((result) => result.matched_terms || []))];
+  const hits = (term) => results.filter((result) => (result.matched_terms || []).includes(term)).length;
+  const shown = $("#mt-all-terms").checked ? all : all.filter((term) => hits(term) > 0);
+  return [
+    ...shown.filter((term) => focus.includes(term)).map((term) => ({ term, focus: true })),
+    ...shown.filter((term) => !focus.includes(term)).sort((a, b) => hits(b) - hits(a)).map((term) => ({ term, focus: false })),
+  ].map((column) => ({ ...column, where: (id) => {
+    const candidate = candidates.get(id);
+    return candidate ? { metadata: candidate.metadataTerms.includes(column.term), fullText: candidate.fullTextTerms.includes(column.term) } : null;
+  } }));
+}
+
+const mtBm25 = (score) => score == null ? "–" : score.toFixed(2);
+
+// Where a hit stands among the candidates of each index, rank 1 on the left.
+function mtRankStrip(candidate, last) {
+  if (!candidate) return [h("td", {}), h("td", {})];
+  const at = (rank) => `left:${last > 1 ? (100 * Math.log(rank)) / Math.log(last) : 0}%`;
+  const { metadataRank: meta, fullTextRank: full, hasFullText } = candidate;
+  // An index counts only where it finds a term: a rank without one adds nothing.
+  const metaCounts = meta && candidate.metadataTerms.length > 0;
+  const fullCounts = full && candidate.fullTextTerms.length > 0;
+  const marks = [];
+  if (fullCounts) marks.push(h("i", { class: "f", style: at(full) }));
+  if (metaCounts) marks.push(h("i", { class: "m", style: at(meta) }));
+  const place = (label, position, counts, bm25) => !position ? `${label}: not among the best ${last}`
+    : counts ? `${label}: rank ${position} of the best ${last}, BM25 ${mtBm25(bm25)}` : `${label}: rank ${position}, but none of the terms: adds nothing`;
+  const says = [
+    place("Metadata", meta, metaCounts, candidate.metadataBm25),
+    hasFullText ? place("Full text", full, fullCounts, candidate.fullTextBm25) : "No full text: nothing from the full-text index",
+  ].join("\n");
+  return [
+    h("td", { title: says }, h("div", { class: "ranks" }, ...marks)),
+    h("td", { class: "rank-numbers", title: says }, `${metaCounts ? meta : "–"} · ${hasFullText ? (fullCounts ? full : "–") : "none"}`),
+  ];
+}
+
+// What rank fusion adds up for a hit, one part per index; the bar is scaled to the best hit.
+function mtFusion(candidate, best) {
+  if (candidate?.score == null) return h("td", { class: "muted" }, "–");
+  const { metadataScore: meta, fullTextScore: full, hasFullText } = candidate;
+  const width = (part) => `width:${best ? (100 * part) / best : 0}%`;
+  const says = `Metadata ${meta.toFixed(4)} + full text ${full.toFixed(4)} = ${candidate.score.toFixed(4)}${hasFullText ? "" : "\nNo full text: nothing from the full-text index"}`;
+  return h("td", { class: "rank-numbers", title: says },
+    h("span", { class: "meter split" }, h("i", { class: "m", style: width(meta) }), h("i", { class: "f", style: width(full) })),
+    `${meta.toFixed(4)} + ${full.toFixed(4)}`);
+}
+
+function mtRenderResults() {
+  const head = $("#mt-head"), body = $("#mt-results");
+  const results = mt.result?.answer?.results || [];
+  const ranked = mtStep("candidates") || [];
+  const candidates = new Map(ranked.map((candidate) => [candidate.id, candidate]));
+  const columns = mtTermColumns(results, candidates);
+  const last = mtSetting("candidates") || 100;
+  const gap = (index) => index > 0 && columns[index - 1].focus && !columns[index].focus ? h("span", { class: "gap" }) : null;
+  // The MCP server answers without the steps: no columns that would stay empty.
+  const traced = Boolean(mtStep("candidates"));
+  $("#mt-legend").hidden = !traced;
+  $("#mt-mcp-note").hidden = mt.via !== "mcp";
+  head.replaceChildren(...[
+    h("th", { class: "num" }, "#"),
+    traced && h("th", { title: "The two parts rank fusion adds up, the order of the results: 1 / (rankConstant + metadata rank) and fullTextWeight / (rankConstant + full-text rank). An index adds nothing where it finds none of the terms, e.g. the full-text index for a document without a full text. The bar is the sum, scaled to the best hit." }, "Rank fusion: metadata + full text"),
+    h("th", {}, "Source"), h("th", {}, "Title"),
+    traced && h("th", { colspan: 2, title: "Where the document stands among the candidates of each index: rank 1 on the left, on a log scale. Numbers: metadata · full text; – does not count there, none: no full text." }, `Rank in each index: 1 to ${last}, log scale`),
+    h("th", { class: "heat-th", title: "Which query term is found where; bold: terms of the focus event" }, h("div", { class: "heat-head" }, ...columns.flatMap((column, index) => [gap(index), h("span", { class: column.focus ? "focus" : null, title: column.term }, column.term)]))),
+  ].filter(Boolean));
+  body.replaceChildren(...results.map((result) => {
+    const where = (column) => {
+      const found = column.where(result.source_id);
+      if (!found) return (result.matched_terms || []).includes(column.term) ? h("span", { title: `${column.term}: found` }, h("i", { class: "any" })) : h("span", { title: `${column.term}: not found` });
+      const says = found.metadata && found.fullText ? "in the metadata and the full text" : found.metadata ? "in the metadata" : found.fullText ? "in the full text" : "not found";
+      return h("span", { title: `${column.term}: ${says}` }, h("i", { class: found.metadata ? "m" : null }), h("i", { class: found.fullText ? "f" : null }));
+    };
+    return h("tr", { class: db.selected?.id === result.source_id ? "selected" : null, onclick: () => dbOpenDocument(result.source_id) },
+      h("td", { class: "num" }, result.rank),
+      traced && mtFusion(candidates.get(result.source_id), ranked[0]?.score),
+      h("td", {}, sourcePill(result.source)),
+      h("td", { class: "title" }, result.title, h("div", { class: "muted", style: "font-size:12px" }, [typeLabel(result.content_type), result.published_date, result.source_id].filter(Boolean).join(" · "))),
+      traced && mtRankStrip(candidates.get(result.source_id), last),
+      h("td", {}, h("div", { class: "heat" }, ...columns.flatMap((column, index) => [gap(index), where(column)]))));
+  }));
+}
+
+// The two rankings the result is fused from, with the place each candidate ended on.
+function mtRenderRankings() {
+  const box = $("#mt-rankings");
+  const rankings = mtStep("rankings");
+  const intro = h("p", { class: "muted", style: "grid-column:1 / 3; margin:10px 0 0" }, "Before rank fusion: the best candidates of each index in its own order, and where each one ended. Rank fusion merges the two lists into the results.");
+  if (!rankings) {
+    const why = mt.via === "mcp" ? "The MCP server answers without the steps of the match."
+      : mt.result?.error ? "match_journey refused the request, so nothing was ranked."
+      : "The match ended before it ranked: the journey has no search terms, or the search failed (see Results).";
+    box.replaceChildren(intro, h("div", { class: "empty", style: "grid-column:1 / 3" }, why));
+    return;
+  }
+  const candidates = mtStep("candidates") || [];
+  const place = new Map(candidates.map((candidate, index) => [candidate.id, candidate.score == null ? null : index + 1]));
+  const results = mt.result.answer?.results.length || 0;
+  const titles = mt.result.titles || {};
+  const badge = (id) => {
+    const final = place.get(id);
+    if (final == null) return h("span", { class: "pill none", title: "Dropped: none of the terms is in the document" }, "no term");
+    return final <= results ? h("span", { class: "pill hit", title: "Its rank in the results" }, `result ${final}`) : h("span", { class: "pill plain", title: "Ranked, but below the limit" }, `place ${final}`);
+  };
+  const byId = new Map(candidates.map((candidate) => [candidate.id, candidate]));
+  const list = (label, cls, ids, bm25) => h("div", {},
+    h("h3", {}, h("i", { class: `swatch ${cls}` }), `${label}: its best ${ids.length}, with their BM25 score`),
+    ...ids.map((id, index) => h("div", { class: "rank-item", onclick: () => dbOpenDocument(id) },
+      h("span", { class: "n" }, index + 1), h("span", {}, badge(id)), h("span", {}, titles[id]?.title || id, " ", h("small", {}, id)),
+      h("span", { class: "n", title: "BM25 score in this index: only comparable within the list" }, mtBm25(byId.get(id)?.[bm25])))),
+    ids.length ? null : h("div", { class: "empty" }, "No candidates"));
+  box.replaceChildren(intro, list("Metadata index", "meta", rankings.metadata, "metadataBm25"), list("Full-text index", "full", rankings.fullTexts, "fullTextBm25"));
+}
+
+function mtRenderRaw() {
+  const result = mt.result;
+  const block = (label, data, open) => h("details", { open }, h("summary", {}, label), h("pre", {}, JSON.stringify(data, null, 2)));
+  $("#mt-raw").replaceChildren(
+    block(result.error ? "Error" : "Answer of match_journey", result.error || result.answer, true),
+    result.steps?.length ? block("Steps of the match", result.steps, false) : null,
+    block("Request", mt.request, false));
+}
+
+// What this match found of a document, for the top of its panel.
+function mtDocumentParts(id) {
+  const candidate = (mtStep("candidates") || []).find((entry) => entry.id === id);
+  const result = mt.result?.answer?.results.find((entry) => entry.source_id === id);
+  if (!candidate && !result) return [];
+  const last = mtSetting("candidates") || 100;
+  const rows = [["Result", result ? `rank ${result.rank}` : candidate.score == null ? "dropped: none of the terms is in it" : "ranked, but below the limit"]];
+  if (candidate?.score != null) rows.push(["Rank fusion", `${candidate.metadataScore.toFixed(4)} metadata + ${candidate.fullTextScore.toFixed(4)} full text = ${candidate.score.toFixed(4)}`]);
+  if (candidate) rows.push(
+    ["Metadata", `${candidate.metadataRank ? `rank ${candidate.metadataRank}, BM25 ${mtBm25(candidate.metadataBm25)}` : `not among the best ${last}`}${candidate.metadataTerms.length ? ` · ${candidate.metadataTerms.join(", ")}` : " · no term"}`],
+    ["Full text", !candidate.hasFullText ? "none indexed: adds nothing to rank fusion" : `${candidate.fullTextRank ? `rank ${candidate.fullTextRank}, BM25 ${mtBm25(candidate.fullTextBm25)}` : `not among the best ${last}`}${candidate.fullTextTerms.length ? ` · ${candidate.fullTextTerms.join(", ")}` : " · no term"}`]);
+  else if (result.matched_terms?.length) rows.push(["Terms", result.matched_terms.join(", ")]);
+  return [h("div", { class: "label" }, "In this match"), h("dl", {}, ...rows.flatMap(([label, value]) => [h("dt", {}, label), h("dd", {}, value)]))];
+}
+
+function mtSwitchTab(tab) {
+  mt.tab = tab;
+  for (const button of document.querySelectorAll("#mt-tabs button")) button.classList.toggle("active", button.dataset.mttab === tab);
+  for (const section of document.querySelectorAll(".mttab")) section.classList.toggle("active", section.id === `mttab-${tab}`);
+  dbCloseDetail();
+}
+
+for (const button of document.querySelectorAll("#mt-tabs button")) button.addEventListener("click", () => mtSwitchTab(button.dataset.mttab));
+$("#mt-run").addEventListener("click", () => mtRun(true));
+$("#mt-journey").addEventListener("change", (event) => mtLoadJourney(event.target.value).catch((error) => { $("#mt-error").textContent = error.message; }));
+$("#mt-open").addEventListener("click", () => $("#mt-file").click());
+$("#mt-file").addEventListener("change", async (event) => {
+  const [file] = event.target.files;
+  if (!file) return;
+  event.target.value = "";
+  let journey;
+  try {
+    journey = JSON.parse(await file.text());
+  } catch (error) {
+    $("#mt-json-error").textContent = `${file.name} is not JSON: ${error.message}`;
+    return;
+  }
+  $("#mt-journey").value = "";
+  mtSetJourney(journey);
+});
+$("#mt-json").addEventListener("input", () => {
+  $("#mt-journey").value = "";
+  clearTimeout(mt.timer);
+  mt.timer = setTimeout(() => { if (mtParse()) mtRun(true); }, 600);
+});
+$("#mt-asof").addEventListener("input", (event) => mtSetAsOf(mt.dates[Number(event.target.value)]));
+$("#mt-all-terms").addEventListener("change", () => mtRenderResults());
+$("#mt-mcp").addEventListener("change", async () => {
+  try { mt.meta = await api("/api/match/meta"); } catch (error) { /* shown by the next match */ }
+  mtRenderSide();
+  mtRun(true);
+});
+$("#mt-tuning-reset").addEventListener("click", () => {
+  mt.tuning = {};
+  for (const input of document.querySelectorAll("#mt-tuning input")) input.value = input.dataset.default;
+  mtRun(true);
+});
 
 async function init() {
   state.meta = await api("/api/meta");
@@ -1911,6 +3056,11 @@ async function init() {
   if (hash === "db" || hash.startsWith("db-")) {
     if (["runs", "schema"].includes(hash.slice(3))) db.tab = hash.slice(3);
     showScreen("db");
+  } else if (hash === "index" || hash.startsWith("index-")) {
+    if (["log", "vocabulary", "terms"].includes(hash.slice(6))) ix.tab = hash.slice(6);
+    showScreen("index");
+  } else if (hash === "match") {
+    showScreen("match");
   } else if (["live", "docs", "graph", "failures"].includes(hash)) switchTab(hash);
   requestAnimationFrame(frame);
 }

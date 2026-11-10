@@ -1,21 +1,17 @@
 # MCP interface
 
-Version 0.1, a proposal for #7. It is not yet confirmed by AIlixir, see [Open questions](#open-questions). The schemas in [`matcher/mcp-server/src/contract.ts`](../matcher/mcp-server/src/contract.ts) are the source of truth for field names and limits. No matcher exists yet, so both tools currently answer with the error code `NOT_AVAILABLE`.
+Version 0.1, a proposal for #7. It is not yet confirmed by AIlixir, see [Open questions](#open-questions). The schemas in [`matcher/mcp-server/src/contract.ts`](../matcher/mcp-server/src/contract.ts) are the source of truth for field names and limits. `match_journey` works with the `keyword` algorithm ([keyword matching](keyword-matching.md)); the other algorithms and `get_source` answer with the error code `NOT_AVAILABLE`.
 
 All fields use `snake_case`, like the journey generator and the SS26 retrieval code.
 
 ## Connection
 
-The server speaks MCP over Streamable HTTP at `POST /mcp`. It listens on `127.0.0.1` only, because it has no authentication yet. It keeps no sessions.
-
-```sh
-cd matcher
-pnpm --filter @matcher/mcp-server start
-```
+The server speaks MCP over Streamable HTTP at `POST /mcp`. It listens on `127.0.0.1` only, because it has no authentication yet. It keeps no sessions. Start and try it: [build and run](build.md#run-the-matcher-locally).
 
 | Environment variable | Default | Meaning |
 |---|---|---|
 | `MCP_PORT` | `3000` | Port of the server |
+| `DATABASE_URL` | none, required | The database with `documents` and the indexes; `make start` sets it from the root `.env` |
 
 ## Tools
 

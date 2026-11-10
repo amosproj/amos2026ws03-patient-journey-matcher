@@ -1,6 +1,7 @@
 services:
   postgres:
-    image: pgvector/pgvector:pg18
+    build: db  # pgvector/pgvector:pg18-trixie plus pg_textsearch
+    command: ["postgres", "-c", "shared_preload_libraries=pg_textsearch"]
     container_name: amos-postgres
     restart: unless-stopped
     environment:

@@ -96,6 +96,8 @@ export interface DocumentStore {
    * `document_changed_at` it indexed.
    */
   documentsToIndex(indexTable: string, limit?: number): Promise<DocumentRow[]>;
+  /** How many documents `documentsToIndex` would return without a limit. */
+  countToIndex(indexTable: string): Promise<number>;
 }
 
 const COLUMNS = [
@@ -176,21 +178,34 @@ export function createDocumentStore(db: Queryable): DocumentStore {
           `limit must be a positive whole number, not ${limit}`,
         );
       }
-      // A per-row comparison: polling `changed_at > last run` would miss the rows of a
-      // store run that commits late.
       const { rows } = await db.query<DocumentRow>(
-        `SELECT ${SELECT_DOCUMENT}
-         FROM documents AS d
-         LEFT JOIN ${tableName(indexTable)} AS i ON i.document_id = d.id
-         WHERE (i.document_id IS NULL OR i.document_changed_at IS DISTINCT FROM d.changed_at)
-           AND ${NOT_EXPIRED}
-         ORDER BY d.changed_at, d.id
-         LIMIT $1`,
+        `SELECT ${SELECT_DOCUMENT} ${toIndex(indexTable)} ORDER BY d.changed_at, d.id LIMIT $1`,
         [limit ?? null],
       );
       return rows;
     },
+
+    async countToIndex(indexTable) {
+      const { rows } = await db.query<{ count: number }>(
+        `SELECT count(*)::int AS count ${toIndex(indexTable)}`,
+      );
+      return rows[0]?.count ?? 0;
+    },
   };
+}
+
+/**
+ * FROM and WHERE of the documents an index has not seen or that changed since. A per-row
+ * comparison: polling `changed_at > last run` would miss the rows of a store run that commits
+ * late. In milliseconds, as a JavaScript Date holds no more, so an indexer can store the
+ * `changed_at` it read.
+ */
+function toIndex(indexTable: string): string {
+  return `FROM documents AS d
+          LEFT JOIN ${tableName(indexTable)} AS i ON i.document_id = d.id
+          WHERE (i.document_id IS NULL
+                 OR i.document_changed_at IS DISTINCT FROM date_trunc('milliseconds', d.changed_at))
+            AND ${NOT_EXPIRED}`;
 }
 
 const PRECISION_LENGTH = {
@@ -206,4 +221,15 @@ export function publishedDate(
   const { published_at, published_precision } = document;
   if (published_at === null || published_precision === null) return undefined;
   return published_at.slice(0, PRECISION_LENGTH[published_precision]);
+}
+
+/**
+ * The text of a document's row: title, abstract or description, and subject labels (MeSH for
+ * PubMed). What an index reads when it has no full text (Documentation/sources/README.md §3).
+ */
+export function metadataText(
+  document: Pick<DocumentRow, "title" | "summary" | "subjects">,
+): string {
+  const subjects = document.subjects.map((subject) => subject.label);
+  return [document.title, document.summary ?? "", ...subjects].join("\n");
 }
