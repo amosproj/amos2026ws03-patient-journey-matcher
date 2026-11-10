@@ -88,3 +88,8 @@ repeated events where applicable and is otherwise `null`.
 
 Template-based patient journeys without an LLM layer are sufficient for the intended development and testing purposes. In the sample comparison, the relevant clinical information and timelines were already represented. LLM enrichment mainly changed wording and text length; it did not provide substantial additional value for our tests. The reviewed LLM document set also contained inconsistencies in patient demographics and the chronological presentation of findings.
 
+## Generator Version
+
+The dataset was generated using
+[meddocgenerator](https://github.com/andizink/meddocgenerator)
+at commit `7901b8fe3b691629c7a8c2b4e20c8d4bcf8264a9`.
