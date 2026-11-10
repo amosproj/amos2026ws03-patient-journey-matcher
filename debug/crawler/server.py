@@ -753,26 +753,25 @@ def document_filter(params: dict[str, list[str]], indexed: bool) -> tuple[str, l
     if full_text or detail:
         if not indexed:
             raise ValueError("No keyword index yet: run make index")
-        row = "SELECT FROM keyword.full_texts AS f WHERE f.document_id = documents.id"
-        if full_text == "none":
-            conditions.append(f"NOT EXISTS ({row})")
-        elif full_text in ("indexed", "skipped", "failed"):
-            conditions.append(f"EXISTS ({row} AND f.status = {arg(full_text)})")
-        elif full_text:
-            raise ValueError("Unknown full-text status")
+        # Like the Index screen: the indexer leaves expired documents alone.
+        conditions.append("(expires_at IS NULL OR expires_at > now())")
+        if full_text:
+            states = FULL_TEXT_FILTERS.get(full_text)
+            if states is None:
+                raise ValueError("Unknown full-text state")
+            conditions.append(f"{DOCUMENT_FULL_TEXT} = ANY ({arg(states)}::text[])")
         if detail:
-            conditions.append(f"EXISTS ({row} AND f.detail = {arg(detail)})")
+            conditions.append(
+                "EXISTS (SELECT FROM keyword.full_texts AS f"
+                f" WHERE f.document_id = documents.id AND f.detail = {arg(detail)})"
+            )
     return " AND ".join(conditions) or "true", args
 
 
 async def db_documents(connection: Any, params: dict[str, list[str]]) -> dict[str, Any]:
     indexed = await has_keyword_index(connection)
     where, args = document_filter(params, indexed)
-    full_text_status = (
-        "(SELECT f.status FROM keyword.full_texts AS f WHERE f.document_id = documents.id)"
-        if indexed
-        else "NULL::text"
-    )
+    state = DOCUMENT_FULL_TEXT if indexed else "NULL::text"
     sort = DOCUMENT_SORTS.get(first(params, "sort") or "changed")
     if sort is None:
         raise ValueError("Unknown sort column")
@@ -783,7 +782,7 @@ async def db_documents(connection: Any, params: dict[str, list[str]]) -> dict[st
         connection,
         f"""SELECT id, source, content_type, title, published_at, published_precision, licence,
                    doi, retrieved_at, changed_at, created_at, expires_at,
-                   {FROM_SEARCH} AS from_search, {full_text_status} AS full_text_status,
+                   {FROM_SEARCH} AS from_search, {state} AS full_text_state,
                    jsonb_array_length(jsonb_path_query_array(found_by, '$[*].cited_by'))
                        AS cited_by,
                    (SELECT coalesce(jsonb_agg(DISTINCT entry ->> 'query'), '[]')
@@ -1044,6 +1043,35 @@ def to_index(index: str) -> str:
     )
 
 
+def full_text_state(row: str, document: str) -> str:
+    """What the indexer does with the full text of `document`, given its keyword.full_texts `row`.
+
+    Done, the next run leaves it alone: `indexed`, or `skipped` (no usable full text, so only the
+    metadata is matched; read again when the document changes). Open, the next run reads it:
+    `failed` (tried again in every run), `new` (no row yet), `changed` (a row of an older version).
+    """
+    return (
+        f"CASE WHEN {row}.document_id IS NULL THEN 'new'"
+        f" WHEN {row}.status = 'failed' THEN 'failed'"
+        f" WHEN {row}.document_changed_at = date_trunc('milliseconds', {document}.changed_at)"
+        f" THEN {row}.status ELSE 'changed' END"
+    )
+
+
+DOCUMENT_FULL_TEXT = (
+    f"coalesce((SELECT {full_text_state('f', 'documents')} FROM keyword.full_texts AS f"
+    " WHERE f.document_id = documents.id), 'new')"
+)
+"""The full-text state of a row of the documents table."""
+FULL_TEXT_FILTERS = {
+    "indexed": ["indexed"],
+    "skipped": ["skipped"],
+    "failed": ["failed"],
+    "unread": ["new", "changed"],
+}
+"""The full-text filter of the documents table: the columns of the Index screen's coverage."""
+
+
 NO_INDEX = (
     "(SELECT NULL::text AS document_id, NULL::timestamptz AS document_changed_at,"
     " NULL::text AS status WHERE false)"
@@ -1208,21 +1236,21 @@ async def index_overview(connection: Any) -> dict[str, Any]:
         "exists": exists,
         "extension": extension,
         "indexer": indexer_state(),
-        # The stacked bars: every document is indexed, skipped, failed or not read yet.
+        # The stacked bars: the state of each document's full text (`full_text_state`).
         "coverage": await fetch_json(
             connection,
             f"""SELECT d.source, d.content_type, count(*) AS documents,
                        count(m.document_id) AS metadata,
                        count(*) FILTER (WHERE {to_index("m")}) AS metadata_to_index,
-                       count(*) FILTER (WHERE i.status = 'indexed') AS indexed,
-                       count(*) FILTER (WHERE i.status = 'skipped') AS skipped,
-                       count(*) FILTER (WHERE i.status = 'failed') AS failed,
-                       count(*) FILTER (WHERE i.document_id IS NULL) AS unread,
-                       -- What the next run reads: new and changed documents, failed downloads.
-                       count(*) FILTER (WHERE {to_index("i")} OR i.status = 'failed') AS to_read
+                       count(*) FILTER (WHERE s.state = 'indexed') AS indexed,
+                       count(*) FILTER (WHERE s.state = 'skipped') AS skipped,
+                       count(*) FILTER (WHERE s.state = 'failed') AS failed,
+                       count(*) FILTER (WHERE s.state IN ('new', 'changed')) AS unread,
+                       count(*) FILTER (WHERE s.state NOT IN ('indexed', 'skipped')) AS to_read
                 FROM documents AS d
                 LEFT JOIN {metadata} AS m ON m.document_id = d.id
                 LEFT JOIN {full_texts} AS i ON i.document_id = d.id
+                CROSS JOIN LATERAL (SELECT {full_text_state("i", "d")} AS state) AS s
                 WHERE {NOT_EXPIRED}
                 GROUP BY 1, 2 ORDER BY 1, 2""",
         ),
@@ -1241,7 +1269,8 @@ async def index_overview(connection: Any) -> dict[str, Any]:
                        OR (media_type = 'application/json' AND e.locator ->> 'kind' = 'transcript')
                     ORDER BY e.position LIMIT 1
                 ) AS file ON true
-                WHERE {NOT_EXPIRED} AND ({to_index("i")} OR i.status = 'failed')
+                WHERE {NOT_EXPIRED}
+                  AND {full_text_state("i", "d")} NOT IN ('indexed', 'skipped')
                 GROUP BY 1 ORDER BY 2 DESC, 1""",
             READABLE_TYPES,
         ),
@@ -1251,10 +1280,13 @@ async def index_overview(connection: Any) -> dict[str, Any]:
         host["seconds"] = None if host["host"] is None else round(host["documents"] * interval)
     if not exists:
         return overview
+    # Like the coverage: a changed document counts as to read, whatever its old row says.
     overview["reasons"] = await fetch_json(
         connection,
-        "SELECT status, detail, count(*) AS documents FROM keyword.full_texts"
-        " GROUP BY 1, 2 ORDER BY 3 DESC, 1, 2",
+        f"""SELECT i.status, i.detail, count(*) AS documents
+            FROM keyword.full_texts AS i JOIN documents AS d ON d.id = i.document_id
+            WHERE {NOT_EXPIRED} AND {full_text_state("i", "d")} <> 'changed'
+            GROUP BY 1, 2 ORDER BY 3 DESC, 1, 2""",
     )
     overview["formats"] = await fetch_json(
         connection,
@@ -1354,7 +1386,7 @@ def string_list(body: dict[str, Any], key: str, limit: int) -> list[str]:
 # ── Matcher screen: match_journey for a journey, with the steps of the match ─────
 
 JOURNEYS_DIR = ROOT / "patientdata"
-"""The synthetic journeys of #14, one `timeline.json` per patient, once they are merged."""
+"""The synthetic journeys of #14, one `timeline.json` per patient."""
 JOURNEY_ID = re.compile(r"[0-9A-Za-z_-]+")
 DEMO_JOURNEY = {
     "patient_id": "demo-1",
@@ -1373,7 +1405,7 @@ DEMO_JOURNEY = {
         },
     ],
 }
-"""The test journey of Documentation/build.md."""
+"""The journey of the example arguments in Documentation/build.md."""
 MATCH_TIMEOUT = 60
 LOCAL = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 """Opens URLs of this machine without a proxy."""
