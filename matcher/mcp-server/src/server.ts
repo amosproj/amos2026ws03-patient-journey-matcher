@@ -1,3 +1,4 @@
+import type { MatchOptions } from "@matcher/core";
 import { McpServer } from "@modelcontextprotocol/server";
 import {
   getSourceInputSchema,
@@ -32,8 +33,14 @@ function toToolError(error: unknown): ToolError {
   return new ToolError("INTERNAL_ERROR", "The request failed unexpectedly.");
 }
 
+/** A trace and other ranking constants for the matcher; only `explain` passes them. */
+export type MatchDebug = Pick<MatchOptions, "trace" | "tuning">;
+
 export interface MatchService {
-  matchJourney(request: MatchJourneyInput): Promise<MatchResult>;
+  matchJourney(
+    request: MatchJourneyInput,
+    debug?: MatchDebug,
+  ): Promise<MatchResult>;
   getSource(sourceId: string): Promise<SourceContent>;
 }
 

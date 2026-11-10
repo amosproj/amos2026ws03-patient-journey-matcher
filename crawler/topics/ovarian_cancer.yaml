@@ -1,0 +1,97 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: ovarian_cancer
+label: Ovarian cancer
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - ovarian cancer
+  - ovarian carcinoma
+  - Ovarian Neoplasms
+  - ovarian tumor
+  - ovarian tumour
+  - fallopian tube cancer
+  - fallopian tube carcinoma
+  - Fallopian Tube Neoplasms
+  - primary peritoneal cancer
+  - primary peritoneal carcinoma
+  - HGSOC
+  - hereditary breast and ovarian cancer
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - ovarian cancer
+  - epithelial ovarian cancer
+  - high-grade serous ovarian cancer
+  - low-grade serous ovarian cancer
+  - clear cell ovarian cancer
+  - fallopian tube cancer
+  - primary peritoneal cancer
+  - platinum-resistant ovarian cancer
+  - platinum-sensitive ovarian cancer
+  - recurrent ovarian cancer
+  - borderline ovarian tumor
+  # Diagnosis and screening
+  - ovarian cancer screening
+  - ovarian cancer symptoms
+  - ovarian cancer CA125
+  - ovarian cancer adnexal mass
+  - ovarian cancer germline testing
+  - ovarian cancer homologous recombination deficiency
+  - ovarian cancer folate receptor alpha
+  - ovarian cancer risk-reducing surgery
+  # Treatment
+  - ovarian cancer cytoreductive surgery
+  - ovarian cancer interval debulking
+  - ovarian cancer neoadjuvant chemotherapy
+  - ovarian cancer HIPEC
+  - ovarian cancer carboplatin paclitaxel
+  - ovarian cancer bevacizumab
+  - ovarian cancer PARP inhibitor maintenance
+  - ovarian cancer olaparib
+  - ovarian cancer niraparib
+  - ovarian cancer rucaparib
+  - ovarian cancer mirvetuximab soravtansine
+  - ovarian cancer pegylated liposomal doxorubicin
+  - ovarian cancer secondary cytoreduction
+  # Living with
+  - ovarian cancer fertility-sparing surgery
+  - ovarian cancer survivorship
+  - ovarian cancer quality of life
+  - ovarian cancer menopause hormone therapy
+  - ovarian cancer palliative care
+  - ovarian cancer follow-up
+  - ovarian cancer fear of recurrence
+
+# YouTube channels.
+channels:
+  - name: National Ovarian Cancer Coalition (NOCC)
+    url: https://www.youtube.com/channel/UCHqaxPlsWjAiXfYxDWXF08g
+  - name: Ovarian Cancer Research Alliance (OCRA)
+    url: https://www.youtube.com/channel/UCh54mT6SZ_j9CBxE8fQ3jIg
+  - name: Target Ovarian Cancer
+    url: https://www.youtube.com/channel/UCGujvt5KPrr2FR7LEL-KfIA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: teal_talk_ovarian_cancer
+    name: Teal Talk–An Ovarian Cancer Podcast
+    url: https://feed.podbean.com/tealtalk/feed.xml
+    publisher: National Ovarian Cancer Coalition (NOCC)
+    audience: patients
+    language: en
+    trusted_because: The National Ovarian Cancer Coalition, a US ovarian cancer patient organisation, discusses risk, genetic testing, treatment advances and follow-up care with survivors and experts.
+  - key: gosh_podcast
+    name: GOSH Podcast
+    url: https://rss.buzzsprout.com/1387837.rss
+    publisher: Gynecologic Cancer Initiative (GCI)
+    audience: patients
+    language: en
+    trusted_because: The Gynecologic Cancer Initiative, a British Columbia research and care network with patient partners, discusses gynecologic cancer research alongside lived experience; it covers all gynaecological cancers.
+  - key: gog_gyn_live
+    name: GOG GYN-LIVE
+    url: https://feeds.transistor.fm/gog-gyn-live
+    publisher: The GOG Foundation
+    audience: clinicians
+    language: en
+    trusted_because: The GOG Foundation, a non-profit gynecologic cancer clinical trials organisation, reports trial updates and drug approvals with the investigators; it covers all gynaecological cancers.

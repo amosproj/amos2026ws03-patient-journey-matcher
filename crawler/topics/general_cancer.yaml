@@ -3,6 +3,7 @@
 id: general_cancer
 label: Cancer in general
 
+# YouTube channels.
 channels:
   - name: American Society of Clinical Oncology (ASCO)
     url: https://www.youtube.com/channel/UCdN18S7Vfm3Rs_BPTs4CFkw
@@ -10,24 +11,34 @@ channels:
     url: https://www.youtube.com/channel/UCRVdFy0DLWhIApG8LWDzV1w
   - name: MD Anderson Cancer Center
     url: https://www.youtube.com/channel/UCMla9EyQDlPXUBsWOwmMqZg
-  - name: Mayo Clinic
-    url: https://www.youtube.com/channel/UC8fQzKHIhSoZeSq3bwQx4mw
   - name: Memorial Sloan Kettering Cancer Center
     url: https://www.youtube.com/channel/UC7CfDrRVN3yMVq7gq17hZdQ
   - name: Dana-Farber Cancer Institute
     url: https://www.youtube.com/channel/UCmo02peDKZvgpJj3TT2Jt_A
-  - name: Cleveland Clinic
-    url: https://www.youtube.com/channel/UCxyiSz4m161Z6frOsFxJpgw
   - name: Macmillan Cancer Support
     url: https://www.youtube.com/channel/UCrG_xSjSf5TtFDZGexsS4dQ
   - name: Cancer Research UK
     url: https://www.youtube.com/channel/UC01cT8kXmbVH6-mzwaa2qIQ
-  - name: The Oncology Dietitian
-    url: https://www.youtube.com/channel/UCG4NSKCNHZYu54rFzvzZE4Q
-  - name: NutritionFacts.org
-    url: https://www.youtube.com/channel/UCddn8dUxYdgJz3Qr5mjADtA
   - name: American Institute for Cancer Research (AICR)
     url: https://www.youtube.com/channel/UCVMd2_87ji2uAsfxyiKjveg
+  - name: American Association for Cancer Research (AACR)
+    url: https://www.youtube.com/channel/UCxr_bGdhkdyyFo5V3qDBwGg
+  - name: Union for International Cancer Control (UICC)
+    url: https://www.youtube.com/channel/UCyutT4t1YCegXcyYJHETbGg
+  - name: American Cancer Society (ACS)
+    url: https://www.youtube.com/channel/UCxmmyyWrLMpbQidP1d7943w
+  - name: Canadian Cancer Society (CCS)
+    url: https://www.youtube.com/channel/UCGsq3WNdiBOpqdJCc5OZ_BA
+  - name: Facing Our Risk of Cancer Empowered (FORCE)
+    url: https://www.youtube.com/channel/UCCh3CRXvmUtbErF2Gk9-cTw
+  - name: Fred Hutchinson Cancer Center (Fred Hutch)
+    url: https://www.youtube.com/channel/UCnWBh22UKMHF4VRKdsQvZqg
+  - name: Roswell Park Comprehensive Cancer Center
+    url: https://www.youtube.com/channel/UC9rvJImXDgWy59xz_lPkGYw
+  - name: Moffitt Cancer Center
+    url: https://www.youtube.com/channel/UC77rIE3PwMxrkS4QqKLYUbg
+  - name: Huntsman Cancer Institute
+    url: https://www.youtube.com/channel/UCPvXVHtfBKkILaWZlbTx-Gg
 
 # Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
 podcasts:
@@ -59,3 +70,45 @@ podcasts:
     audience: clinicians
     language: en
     trusted_because: Interviews from the peer-reviewed journal The Lancet Oncology.
+  - key: asco_guidelines
+    name: ASCO Guidelines
+    url: https://feeds.libsyn.com/115284/rss
+    publisher: American Society of Clinical Oncology (ASCO)
+    audience: clinicians
+    language: en
+    trusted_because: ASCO's podcast with the expert panel members behind its evidence-based clinical practice guidelines.
+  - key: esmo_podcasts
+    name: ESMO Podcasts
+    url: https://feeds.soundcloud.com/users/soundcloud:users:881879173/sounds.rss
+    publisher: European Society for Medical Oncology (ESMO)
+    audience: clinicians
+    language: en
+    trusted_because: Official ESMO podcasts with highlights from its peer-reviewed journals Annals of Oncology and ESMO Open and from its congresses.
+  - key: cleveland_clinic_cancer_advances
+    name: Cleveland Clinic Cancer Advances
+    url: https://rss.buzzsprout.com/2241774.rss
+    publisher: Cleveland Clinic Cancer Institute
+    audience: clinicians
+    language: en
+    trusted_because: Specialists of the Cleveland Clinic Cancer Institute discuss new research and clinical advances in oncology.
+  - key: macmillan_cancer_professionals
+    name: The Cancer Professionals Podcast
+    url: https://www.spreaker.com/show/6015348/episodes/feed
+    publisher: Macmillan Cancer Support
+    audience: clinicians
+    language: en
+    trusted_because: Macmillan Cancer Support, a UK cancer charity, interviews experts on clinical practice and care for people affected by cancer.
+  - key: mdanderson_cancerwise
+    name: Cancerwise Podcast
+    url: https://support.doctorpodcasting.com/podcastfeed/335
+    publisher: The University of Texas MD Anderson Cancer Center (MD Anderson)
+    audience: patients
+    language: en
+    trusted_because: MD Anderson experts and cancer survivors discuss diagnosis, treatment, research and prevention for patients and caregivers.
+  - key: roswell_park_smarter_than_cancer
+    name: Smarter Than Cancer
+    url: https://feeds.captivate.fm/smarter-than-cancer/
+    publisher: Roswell Park Comprehensive Cancer Center (Roswell Park)
+    audience: patients
+    language: en
+    trusted_because: Roswell Park clinicians and scientists answer common questions about cancer and its treatment.

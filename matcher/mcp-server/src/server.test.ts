@@ -41,7 +41,7 @@ const matchResult: MatchResult = {
       source_id: "pubmed:42745507",
       title: "Salvage radiotherapy after radical prostatectomy",
       source: "pubmed",
-      source_type: "paper",
+      content_type: "journal_article",
       url: "https://pubmed.ncbi.nlm.nih.gov/42745507/",
       summary: "When radiotherapy helps after PSA rises again.",
       image_url: "https://example.org/salvage-radiotherapy.png",

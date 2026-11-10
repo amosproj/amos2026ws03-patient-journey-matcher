@@ -1,0 +1,67 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: influenza
+label: Influenza
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - influenza
+  - Influenza, Human
+  - seasonal influenza
+  - pandemic influenza
+  - avian influenza
+  - influenza-like illness
+  - H1N1
+  - H3N2
+  - H5N1
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - influenza
+  - seasonal influenza
+  - pandemic influenza
+  - avian influenza H5N1
+  - influenza complications
+  - influenza pneumonia
+  - influenza bacterial coinfection
+  - influenza cardiovascular events
+  - influenza children
+  - influenza pregnancy
+  - influenza older adults
+  - influenza high-risk groups
+  - influenza hospitalization
+  # Diagnosis and screening
+  - influenza diagnosis
+  - influenza rapid antigen test
+  - influenza molecular testing
+  # Treatment
+  - influenza treatment
+  - influenza antiviral therapy
+  - influenza oseltamivir
+  - influenza baloxavir
+  - influenza zanamivir
+  - influenza peramivir
+  - influenza neuraminidase inhibitors
+  - influenza antiviral resistance
+  - influenza antiviral prophylaxis
+  - influenza critical illness
+  - influenza vaccine
+  - influenza vaccine effectiveness
+  - influenza high-dose vaccine
+  - influenza adjuvanted vaccine
+  - influenza live attenuated vaccine
+  - influenza recombinant vaccine
+  - influenza vaccination pregnancy
+  - influenza vaccination children
+  # Living with
+  - influenza recovery
+  - influenza long-term outcomes
+  - influenza prevention
+  - influenza household transmission
+  - influenza nursing home outbreaks
+  - influenza vaccine uptake
+
+# YouTube channels.
+channels:
+  - name: Families Fighting Flu
+    url: https://www.youtube.com/channel/UCLaDgHrvszj_3_s4LcWvdDQ

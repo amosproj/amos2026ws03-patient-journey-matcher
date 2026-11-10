@@ -1,0 +1,101 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: autism_spectrum_disorder
+label: Autism
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - autism
+  - autistic
+  - autism spectrum disorder
+  - autism spectrum condition
+  - autistic disorder
+  - Asperger syndrome
+  - Asperger's syndrome
+  - Child Development Disorders, Pervasive
+  - pervasive developmental disorder
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - autism spectrum disorder
+  - autism in children
+  - autism in adults
+  - autistic adults
+  - autistic girls and women
+  - autism spectrum condition
+  - Asperger syndrome
+  - autism intellectual disability
+  - autism ADHD
+  - autism anxiety
+  - autism epilepsy
+  - autism sleep problems
+  - autism gastrointestinal problems
+  # Diagnosis and screening
+  - autism screening toddlers
+  - autism M-CHAT
+  - autism diagnosis children
+  - autism diagnosis adults
+  - autism diagnostic observation schedule
+  - autism late diagnosis
+  - autism genetic testing
+  # Treatment
+  - autism early intervention
+  - autism Denver model
+  - autism parent-mediated intervention
+  - autism social communication intervention
+  - autism applied behavior analysis
+  - autism speech language therapy
+  - autism occupational therapy
+  - autism cognitive behavioral therapy
+  - autism risperidone
+  - autism aripiprazole
+  - autism melatonin
+  # Living with
+  - autism school inclusion
+  - autism transition adulthood
+  - autistic adults employment
+  - autistic adults health care
+  - autistic adults suicide
+  - autism quality of life
+  - autism family caregivers
+  - autism camouflaging
+  - autistic burnout
+
+# YouTube channels.
+channels:
+  - name: National Autistic Society (NAS)
+    url: https://www.youtube.com/channel/UCo-1Gt-7Djyj6rUR-ro_FNA
+  - name: Autistica
+    url: https://www.youtube.com/channel/UCOczrUsUjmBbUMPT0HIgGKg
+  - name: Autism Science Foundation (ASF)
+    url: https://www.youtube.com/channel/UCt4qS0PJD9QfQtlxd4iK2wg
+  - name: Organization for Autism Research (OAR)
+    url: https://www.youtube.com/channel/UCQTbwWS11IydmyNyLvmhpsQ
+  - name: Autistic Self Advocacy Network (ASAN)
+    url: https://www.youtube.com/channel/UC_TYP1RDq76UnlVtSUxCmtA
+  - name: UC Davis MIND Institute
+    url: https://www.youtube.com/channel/UC429m3SOjCJNAS2-DTDA3RA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: asf_weekly_science_report
+    name: Autism Science Foundation Weekly Science Report
+    url: https://asfpodcast.org/feed/podcast/
+    publisher: Autism Science Foundation (ASF)
+    audience: patients
+    language: en
+    trusted_because: Official podcast of the Autism Science Foundation, a research charity, summarising the week's autism research findings.
+  - key: aspect_a_different_brilliant
+    name: A Different Brilliant
+    url: https://feeds.captivate.fm/a-different-brilliant/
+    publisher: Autism Spectrum Australia (Aspect)
+    audience: patients
+    language: en
+    trusted_because: Podcast of Aspect, an Australian autism charity, for autistic adults and for parents and carers of autistic children, with experts and guests from the autism community.
+  - key: middletown_autism_podcast
+    name: The Middletown Centre for Autism Podcast
+    url: https://rss.buzzsprout.com/1184276.rss
+    publisher: Middletown Centre for Autism
+    audience: patients
+    language: en
+    trusted_because: Podcast of the Middletown Centre for Autism, set up by the education departments of Ireland and Northern Ireland, with autism-affirming interviews on education and lived experience.

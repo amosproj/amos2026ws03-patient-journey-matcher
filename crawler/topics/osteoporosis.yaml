@@ -1,0 +1,89 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: osteoporosis
+label: Osteoporosis
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - osteoporosis
+  - Osteoporosis, Postmenopausal
+  - osteoporotic fracture
+  - fragility fracture
+  - hip fracture
+  - femoral neck fracture
+  - intertrochanteric fracture
+  - proximal femoral fracture
+  - neck of femur fracture
+  - osteopenia
+  - low bone mass
+  - low bone mineral density
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - osteoporosis
+  - postmenopausal osteoporosis
+  - osteoporosis in men
+  - glucocorticoid-induced osteoporosis
+  - osteoporosis cancer treatment-induced bone loss
+  - osteopenia
+  - osteoporotic fracture
+  - fragility fracture
+  - osteoporosis vertebral fracture
+  - hip fracture
+  # Diagnosis and screening
+  - osteoporosis screening
+  - osteoporosis bone mineral density
+  - osteoporosis fracture risk assessment
+  - osteoporosis trabecular bone score
+  - osteoporosis bone turnover markers
+  # Treatment
+  - osteoporosis bisphosphonates
+  - osteoporosis alendronate
+  - osteoporosis zoledronic acid
+  - osteoporosis denosumab
+  - osteoporosis romosozumab
+  - osteoporosis teriparatide
+  - osteoporosis abaloparatide
+  - osteoporosis calcium vitamin D
+  - osteoporosis sequential therapy
+  - osteoporosis drug holiday
+  - osteoporosis atypical femoral fracture
+  - osteoporosis fracture liaison service
+  - hip fracture surgery
+  - hip fracture hemiarthroplasty
+  - intertrochanteric fracture intramedullary nail
+  - hip fracture orthogeriatric care
+  # Living with
+  - hip fracture rehabilitation
+  - hip fracture functional recovery
+  - hip fracture delirium
+  - hip fracture caregivers
+  - osteoporosis exercise
+  - osteoporosis fall prevention
+  - osteoporosis quality of life
+  - osteoporosis medication adherence
+  - osteoporosis self-management
+
+# YouTube channels.
+channels:
+  - name: Royal Osteoporosis Society (ROS)
+    url: https://www.youtube.com/channel/UCgSE__viI3rDYjk2AxNOFIA
+  - name: Osteoporosis Canada
+    url: https://www.youtube.com/channel/UCmZ6viZuXxnZwUbalKhpGGA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: bhof_bone_talk
+    name: Bone Talk
+    url: https://www.bonetalk.org/podcast-episodes?format=rss
+    publisher: Bone Health & Osteoporosis Foundation (BHOF)
+    audience: patients
+    language: en
+    trusted_because: Podcast of the Bone Health & Osteoporosis Foundation, the US osteoporosis patient and professional organisation (formerly the National Osteoporosis Foundation).
+  - key: osteoporosis_canada_unbreakable
+    name: UNBREAKABLE - The OC Podcast
+    url: https://feeds.blubrry.com/feeds/oc_podcast.xml
+    publisher: Osteoporosis Canada
+    audience: patients
+    language: en
+    trusted_because: Osteoporosis Canada's podcast with evidence-based information from health professionals and stories of people living with osteoporosis.

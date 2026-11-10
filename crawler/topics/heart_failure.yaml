@@ -1,0 +1,97 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: heart_failure
+label: Heart failure
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - heart failure
+  - cardiac failure
+  - HFrEF
+  - HFpEF
+  - HFmrEF
+  - ventricular dysfunction, left
+  - left ventricular systolic dysfunction
+  - cardiac resynchronization therapy
+  - heart transplantation
+  - heart transplant
+  - left ventricular assist device
+  - LVAD
+  - heart-assist device
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - heart failure
+  - chronic heart failure
+  - acute heart failure
+  - heart failure with reduced ejection fraction
+  - heart failure with preserved ejection fraction
+  - heart failure with mildly reduced ejection fraction
+  - advanced heart failure
+  - right heart failure
+  - acute heart failure cardiogenic shock
+  - heart failure cardiac amyloidosis
+  - heart failure in older adults
+  # Diagnosis and screening
+  - heart failure natriuretic peptides
+  - heart failure echocardiography
+  - heart failure cardiac magnetic resonance
+  - HFpEF diagnosis
+  - heart failure risk prediction
+  - heart failure screening
+  # Treatment
+  - heart failure guideline-directed medical therapy
+  - heart failure ACE inhibitors
+  - heart failure sacubitril valsartan
+  - heart failure beta blockers
+  - heart failure mineralocorticoid receptor antagonists
+  - heart failure SGLT2 inhibitors
+  - heart failure finerenone
+  - heart failure vericiguat
+  - heart failure loop diuretics
+  - heart failure iron deficiency
+  - heart failure cardiac resynchronization therapy
+  - heart failure implantable cardioverter defibrillator
+  - heart failure left ventricular assist device
+  - heart transplantation
+  - heart failure transcatheter edge-to-edge repair
+  # Living with
+  - heart failure self-care
+  - heart failure cardiac rehabilitation
+  - heart failure telemonitoring
+  - heart failure quality of life
+  - heart failure palliative care
+  - heart failure hospital readmission
+  - heart failure caregivers
+  - heart failure depression
+
+# YouTube channels.
+channels:
+  - name: Heart Failure Society of America (HFSA)
+    url: https://www.youtube.com/channel/UCwr2-TjAghS6OByS_Sm_kUg
+  - name: Pumping Marvellous Foundation
+    url: https://www.youtube.com/channel/UCGMWQu-GHJXKh2GbqAkjoVg
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: hfa_cardio_talk
+    name: HFA Cardio Talk
+    url: https://rss.libsyn.com/shows/395444/destinations/3251654.xml
+    publisher: European Society of Cardiology (ESC)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the Heart Failure Association of the European Society of Cardiology on heart failure guidelines, courses and research.
+  - key: heart_failure_beat
+    name: Heart Failure Beat
+    url: https://feed.podbean.com/heartfailurebeat/feed.xml
+    publisher: Heart Failure Society of America (HFSA)
+    audience: clinicians
+    language: en
+    trusted_because: Monthly podcast of the Heart Failure Society of America with heart failure clinicians on research and treatment.
+  - key: heart_failure_unfiltered
+    name: Heart Failure Unfiltered Podcast
+    url: https://anchor.fm/s/695cf10c/podcast/rss
+    publisher: Pumping Marvellous Foundation
+    audience: patients
+    language: en
+    trusted_because: Podcast of the UK heart failure charity Pumping Marvellous Foundation, led by patients and joined by clinicians.

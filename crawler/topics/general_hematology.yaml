@@ -1,0 +1,96 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+# Hematology in general: channels and podcasts of hematology societies and blood cancer charities.
+id: general_hematology
+label: Hematology in general
+
+# YouTube channels.
+channels:
+  - name: American Society of Hematology (ASH)
+    url: https://www.youtube.com/channel/UC-HcHe_ECeUpoCLY92diyEg
+  - name: European Hematology Association (EHA)
+    url: https://www.youtube.com/channel/UC7Vlnlb0gC3Qgaa4QDgl55Q
+  - name: British Society for Haematology (BSH)
+    url: https://www.youtube.com/channel/UCzK5B7RrfXWE7V6aEe7WQYg
+  - name: European Society for Blood and Marrow Transplantation (EBMT)
+    url: https://www.youtube.com/channel/UC9BwJQld_KlPoCQK-YHvM4w
+  - name: Blood Cancer UK
+    url: https://www.youtube.com/channel/UCxiTo_HrgI0RFJWsnejWyAg
+  - name: Blood Cancer United (BCU, formerly the Leukemia & Lymphoma Society)
+    url: https://www.youtube.com/channel/UCY023rb6YERgEjzVTzZTHmQ
+  - name: MDS Foundation
+    url: https://www.youtube.com/channel/UCEEIKR0jqKT6g27ZZadV9Ng
+  - name: Aplastic Anemia & MDS International Foundation (AAMDSIF)
+    url: https://www.youtube.com/channel/UCo1hEH-o3PHIaQBfWvm1i5g
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: blood_podcast
+    name: Blood Podcast
+    url: https://feeds.transistor.fm/blood-podcast
+    publisher: American Society of Hematology (ASH)
+    audience: clinicians
+    language: en
+    trusted_because: Weekly author interviews on the latest research of Blood, the peer-reviewed journal of ASH.
+  - key: hemetalks
+    name: "HemeTalks: Conversations in Hematology Education"
+    url: https://feeds.transistor.fm/hemetalks-conversations-in-hematology-education
+    publisher: American Society of Hematology (ASH)
+    audience: clinicians
+    language: en
+    trusted_because: ASH's education podcast for community hematologists, advanced practice providers and trainees, with case-based talks.
+  - key: the_hematologist
+    name: The Hematologist
+    url: https://feeds.transistor.fm/the-hematologist
+    publisher: American Society of Hematology (ASH)
+    audience: clinicians
+    language: en
+    trusted_because: Contributing editors discuss recent hematology papers, from The Hematologist, the member newsletter of ASH.
+  - key: eha_unplugged
+    name: EHA Unplugged
+    url: https://anchor.fm/s/10dced214/podcast/rss/
+    publisher: European Hematology Association (EHA)
+    audience: clinicians
+    language: en
+    trusted_because: Official education podcast of EHA with expert-led updates, interviews and clinical cases.
+  - key: bsh_guidelines
+    name: The BSH Guidelines Official Podcast
+    url: https://feed.podbean.com/podcasts.b-s-h.org.uk/feed.xml
+    publisher: British Society for Haematology (BSH)
+    audience: clinicians
+    language: en
+    trusted_because: Short podcasts on the guidelines and good practice papers of the British Society for Haematology.
+  - key: lancet_haematology
+    name: The Lancet Haematology in conversation with
+    url: https://feed.podbean.com/lancethaem/feed.xml
+    publisher: The Lancet Group
+    audience: clinicians
+    language: en
+    trusted_because: Interviews with authors of the peer-reviewed journal The Lancet Haematology.
+  - key: the_bloodline
+    name: The Bloodline with Blood Cancer United Podcast
+    url: https://www.thebloodline.org/feed/podcast/
+    publisher: Blood Cancer United (formerly the Leukemia & Lymphoma Society)
+    audience: patients
+    language: en
+    trusted_because: Experts and patients explain diagnosis, treatment and resources, from the US blood cancer charity Blood Cancer United.
+  - key: talking_blood_cancer
+    name: Talking Blood Cancer
+    url: https://feeds.captivate.fm/talking-blood-cancer/
+    publisher: Leukaemia Foundation
+    audience: patients
+    language: en
+    trusted_because: Personal stories of people with blood cancer and their families, from the Leukaemia Foundation, an Australian blood cancer charity.
+  - key: lets_talk_blood_cancer
+    name: "Let's Talk Blood Cancer, The Patients' Podcast"
+    url: https://anchor.fm/s/10ca95be8/podcast/rss
+    publisher: Cure Leukaemia
+    audience: patients
+    language: en
+    trusted_because: Patients, clinicians and researchers talk about blood cancer, from a UK charity that funds blood cancer research.
+  - key: anthony_nolan_podcast
+    name: Anthony Nolan Podcast
+    url: https://audioboom.com/channels/4928507.rss
+    publisher: Anthony Nolan
+    audience: patients
+    language: en
+    trusted_because: Patient and donor information on stem cell transplants and CAR T-cell therapy from the UK stem cell charity Anthony Nolan.

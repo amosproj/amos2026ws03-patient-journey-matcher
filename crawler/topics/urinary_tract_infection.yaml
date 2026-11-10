@@ -1,0 +1,66 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: urinary_tract_infection
+label: Urinary tract infection
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - urinary tract infection
+  - UTI
+  - CAUTI
+  - acute cystitis
+  - uncomplicated cystitis
+  - pyelonephritis
+  - bacteriuria
+  - urosepsis
+  - urinary infection
+  - bladder infection
+  - uropathogenic Escherichia coli
+  - uropathogenic E. coli
+  - UPEC
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - urinary tract infection
+  - uncomplicated urinary tract infection
+  - complicated urinary tract infection
+  - acute cystitis
+  - acute pyelonephritis
+  - recurrent urinary tract infection
+  - catheter-associated urinary tract infection
+  - asymptomatic bacteriuria
+  - urinary tract infection pregnancy
+  - urinary tract infection children
+  - urinary tract infection older adults
+  - urinary tract infection men
+  - urosepsis
+  # Diagnosis and screening
+  - urinary tract infection diagnosis
+  - urinary tract infection urinalysis
+  - urinary tract infection urine culture
+  - urinary tract infection febrile infants
+  # Treatment
+  - urinary tract infection antibiotic treatment
+  - urinary tract infection nitrofurantoin
+  - urinary tract infection fosfomycin
+  - urinary tract infection pivmecillinam
+  - urinary tract infection trimethoprim
+  - urinary tract infection antibiotic duration
+  - pyelonephritis oral antibiotics
+  - urinary tract infection antibiotic resistance
+  - urinary tract infection ESBL
+  - complicated urinary tract infection carbapenem-resistant
+  - urinary tract infection prophylaxis
+  - recurrent urinary tract infection methenamine
+  - recurrent urinary tract infection estrogen
+  - recurrent urinary tract infection cranberry
+  - recurrent urinary tract infection vaccine
+  - catheter-associated urinary tract infection prevention
+  - asymptomatic bacteriuria antibiotic stewardship
+  # Living with
+  - recurrent UTI quality of life
+  - recurrent urinary tract infection hydration
+  - urinary tract infection intermittent catheterization
+  - urinary tract infection nursing home
+  - urinary tract infection delirium
+  - pyelonephritis renal scarring children

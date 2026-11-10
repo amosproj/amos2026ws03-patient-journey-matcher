@@ -1,0 +1,81 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: bipolar_disorder
+label: Bipolar disorder
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - bipolar disorder
+  - bipolar I disorder
+  - bipolar II disorder
+  - bipolar depression
+  - manic-depressive illness
+  - manic depression
+  - manic-depressive psychosis
+  - cyclothymic disorder
+  - mania
+  - hypomania
+  - manic episode
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - bipolar disorder
+  - bipolar I disorder
+  - bipolar II disorder
+  - bipolar depression
+  - bipolar mania
+  - cyclothymic disorder
+  - rapid cycling bipolar disorder
+  - bipolar disorder mixed features
+  - bipolar disorder adolescents
+  - bipolar disorder older adults
+  - bipolar disorder pregnancy
+  # Diagnosis and screening
+  - bipolar disorder diagnosis
+  - bipolar disorder screening
+  - bipolar disorder Mood Disorder Questionnaire
+  - bipolar disorder misdiagnosis
+  - bipolar disorder comorbidity
+  - bipolar disorder biomarkers
+  # Treatment
+  - bipolar disorder lithium
+  - bipolar disorder valproate
+  - bipolar disorder lamotrigine
+  - bipolar disorder quetiapine
+  - bipolar disorder lurasidone
+  - bipolar disorder cariprazine
+  - bipolar disorder antipsychotics
+  - bipolar disorder antidepressants
+  - bipolar disorder maintenance treatment
+  - bipolar disorder psychoeducation
+  - bipolar disorder cognitive behavioral therapy
+  - bipolar disorder social rhythm therapy
+  - bipolar disorder family-focused therapy
+  - bipolar disorder electroconvulsive therapy
+  # Living with
+  - bipolar disorder relapse prevention
+  - bipolar disorder self-management
+  - bipolar disorder quality of life
+  - bipolar disorder caregivers
+  - bipolar disorder suicide prevention
+  - bipolar disorder sleep
+  - bipolar disorder physical health
+
+# YouTube channels.
+channels:
+  - name: Depression and Bipolar Support Alliance (DBSA)
+    url: https://www.youtube.com/channel/UC0aEpMQ1bVDm9HYL25S5XbA
+  - name: Bipolar UK
+    url: https://www.youtube.com/channel/UCoZXDh8JLDyRrvAUG_jHI5A
+  - name: CREST Bipolar Disorder Network (CREST.BD)
+    url: https://www.youtube.com/channel/UCTnMUERb67wv1urJLFO4bUA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: talkbd_bipolar_disorder
+    name: talkBD Bipolar Disorder Podcast
+    url: https://anchor.fm/s/7de8bb4c/podcast/rss
+    publisher: CREST Bipolar Disorder Network (CREST.BD), University of British Columbia
+    audience: patients
+    language: en
+    trusted_because: Podcast of the CREST.BD research network of the University of British Columbia's Department of Psychiatry, with researchers, clinicians and people with lived experience.

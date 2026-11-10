@@ -1,0 +1,71 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: thyroid_disease
+label: Thyroid disease
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - thyroid disease
+  - thyroid dysfunction
+  - hypothyroidism
+  - hyperthyroidism
+  - thyrotoxicosis
+  - Graves disease
+  - Hashimoto disease
+  - Hashimoto's disease
+  - thyroiditis
+  - Graves Ophthalmopathy
+  - thyroid eye disease
+  - thyroid nodule
+  - goiter
+  - goitre
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - thyroid disease
+  - hypothyroidism
+  - subclinical hypothyroidism
+  - congenital hypothyroidism
+  - hyperthyroidism
+  - subclinical hyperthyroidism
+  - Graves disease
+  - thyroid eye disease
+  - Hashimoto thyroiditis
+  - postpartum thyroiditis
+  - subacute thyroiditis
+  - toxic nodular goiter
+  - benign thyroid nodule
+  # Diagnosis and screening
+  - thyroid dysfunction screening
+  - hypothyroidism TSH
+  - thyroid nodule ultrasound
+  - thyroid nodule fine-needle aspiration
+  - thyroid nodule TI-RADS
+  - Graves disease thyrotropin receptor antibodies
+  - thyroiditis thyroid peroxidase antibodies
+  # Treatment
+  - hypothyroidism levothyroxine
+  - hypothyroidism liothyronine
+  - hyperthyroidism antithyroid drugs
+  - Graves disease methimazole
+  - Graves disease radioactive iodine
+  - hyperthyroidism thyroidectomy
+  - thyroid eye disease teprotumumab
+  - thyroid eye disease treatment
+  - thyroid nodule radiofrequency ablation
+  - goiter thyroidectomy
+  # Living with
+  - hypothyroidism quality of life
+  - hypothyroidism persistent symptoms
+  - thyroid disease pregnancy
+  - Graves disease relapse
+  - hypothyroidism older adults
+  - hypothyroidism depression
+  - hypothyroidism monitoring
+
+# YouTube channels.
+channels:
+  - name: British Thyroid Foundation (BTF)
+    url: https://www.youtube.com/channel/UCYDXPYRXk0_x6ZKIgZBc1Og
+  - name: Graves' Disease & Thyroid Foundation (GDATF)
+    url: https://www.youtube.com/channel/UCONJaoWexqoz1cr6m5313Dw

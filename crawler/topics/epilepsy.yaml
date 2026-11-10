@@ -1,0 +1,93 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: epilepsy
+label: Epilepsy
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - epilepsy
+  - epilepsies
+  - epileptic
+  - seizure disorder
+  - status epilepticus
+  - antiepileptic drug
+  - antiseizure medication
+  - anti-seizure medication
+  - Dravet syndrome
+  - Lennox-Gastaut syndrome
+  - infantile spasm
+  - SUDEP
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - epilepsy
+  - focal epilepsy
+  - generalized epilepsy
+  - temporal lobe epilepsy
+  - juvenile myoclonic epilepsy
+  - drug-resistant epilepsy
+  - status epilepticus
+  - developmental and epileptic encephalopathy
+  - Dravet syndrome
+  - Lennox-Gastaut syndrome
+  - infantile spasms
+  - SUDEP
+  # Diagnosis and screening
+  - epilepsy diagnosis
+  - epilepsy first unprovoked seizure
+  - epilepsy EEG
+  - epilepsy MRI
+  - epilepsy genetic testing
+  - epilepsy psychogenic nonepileptic seizures
+  - epilepsy wearable seizure detection
+  # Treatment
+  - epilepsy antiseizure medication
+  - epilepsy levetiracetam
+  - epilepsy lamotrigine
+  - epilepsy valproate
+  - epilepsy carbamazepine
+  - epilepsy cenobamate
+  - epilepsy ethosuximide
+  - epilepsy cannabidiol
+  - epilepsy fenfluramine
+  - epilepsy ketogenic diet
+  - epilepsy vagus nerve stimulation
+  - epilepsy responsive neurostimulation
+  - epilepsy surgery
+  - epilepsy laser interstitial thermal therapy
+  - status epilepticus benzodiazepines
+  - epilepsy pregnancy
+  # Living with
+  - epilepsy quality of life
+  - epilepsy self-management
+  - epilepsy depression anxiety
+  - epilepsy medication adherence
+  - epilepsy transition adolescents
+
+# YouTube channels.
+channels:
+  - name: CURE Epilepsy
+    url: https://www.youtube.com/channel/UCP58E7cyxHd7gjdiFfSPD2g
+  - name: Epilepsy Society
+    url: https://www.youtube.com/channel/UCLNRYQcIipwdgTzjAR6kQAA
+  - name: Epilepsy Action
+    url: https://www.youtube.com/channel/UCjjr6RcKZTqz6or6GPInLlg
+  - name: International Bureau for Epilepsy (IBE)
+    url: https://www.youtube.com/channel/UCybzRWXm-s8o7YhU1Wg6KCA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: cure_epilepsy_seizing_life
+    name: Seizing Life
+    url: https://anchor.fm/s/110eea334/podcast/rss
+    publisher: CURE Epilepsy
+    audience: patients
+    language: en
+    trusted_because: Official podcast of CURE Epilepsy, a research foundation, with personal stories and information on epilepsy research and care.
+  - key: ilae_sharp_waves
+    name: "Sharp Waves: ILAE's epilepsy podcast"
+    url: https://rss.buzzsprout.com/1886660.rss
+    publisher: International League Against Epilepsy (ILAE)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the International League Against Epilepsy, with physicians and researchers on epilepsy care and science.

@@ -1,3 +1,5 @@
+from datetime import date
+
 import pytest
 
 from crawler.frontier import Frontier, TopicFilter
@@ -155,6 +157,24 @@ def test_lookups_drop_off_topic_papers_and_count_missing_ones() -> None:
     assert [document.id for document in result.documents] == ["pubmed:3"]
     assert result.stats.skipped_off_topic == 1
     assert result.stats.lookups_missing == 1
+
+
+def test_seeds_with_since_that_return_max_results_are_noted() -> None:
+    state = frontier()
+    since = date(2026, 11, 1)
+    full = ScrapeRequest(source=SourceName.PUBMED, query="psa", max_results=2, since=since)
+    short = ScrapeRequest(source=SourceName.PUBMED, query="biopsy", max_results=3, since=since)
+    relevance = ScrapeRequest(source=SourceName.PUBMED, query="gleason", max_results=1)
+    lookup = ScrapeRequest(source=SourceName.PUBMED, ids=["5"], since=since)
+
+    state.add_documents(full, 0, [paper("1"), paper("2")], expand=False)
+    state.add_documents(short, 0, [paper("3")], expand=False)
+    state.add_documents(relevance, 0, [paper("4")], expand=False)
+    state.add_documents(lookup, 1, [paper("5")], expand=False)
+    result = state.result([])
+
+    assert result.max_results_reached == ["psa"]
+    assert result.stats.max_results_reached == 1
 
 
 def test_result_adds_every_citing_paper_to_found_by() -> None:

@@ -1,0 +1,78 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: anxiety_disorders
+label: Anxiety disorders
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - anxiety disorder
+  - generalized anxiety disorder
+  - generalised anxiety disorder
+  - panic disorder
+  - social anxiety disorder
+  - social phobia
+  - Phobia, Social
+  - phobic disorder
+  - specific phobia
+  - agoraphobia
+  - separation anxiety
+  - panic attack
+  - obsessive-compulsive disorder
+  - OCD
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - anxiety disorders
+  - generalized anxiety disorder
+  - panic disorder
+  - social anxiety disorder
+  - agoraphobia
+  - specific phobia
+  - separation anxiety disorder
+  - anxiety disorders in children
+  - anxiety disorders older adults
+  - panic attacks
+  - obsessive-compulsive disorder
+  # Diagnosis and screening
+  - anxiety disorder screening
+  - anxiety disorder diagnosis
+  - generalized anxiety disorder GAD-7
+  - anxiety disorder primary care
+  - social anxiety disorder Liebowitz scale
+  - anxiety disorder comorbid depression
+  # Treatment
+  - anxiety disorders cognitive behavioral therapy
+  - anxiety disorder exposure therapy
+  - anxiety disorder internet CBT
+  - anxiety disorder acceptance commitment therapy
+  - anxiety disorder mindfulness
+  - anxiety disorder SSRI
+  - anxiety disorder sertraline
+  - generalized anxiety disorder escitalopram
+  - generalized anxiety disorder venlafaxine
+  - generalized anxiety disorder pregabalin
+  - panic disorder cognitive behavioral therapy
+  - panic disorder SSRI
+  - social anxiety disorder cognitive therapy
+  - specific phobia exposure therapy
+  - OCD exposure response prevention
+  - OCD SSRI
+  - anxiety disorder physical activity
+  # Living with
+  - anxiety disorder relapse prevention
+  - anxiety disorder self-help
+  - anxiety disorder quality of life
+  - anxiety disorder peer support
+  - anxiety disorder family caregivers
+  - anxiety disorder sleep
+
+# YouTube channels.
+channels:
+  - name: Anxiety and Depression Association of America (ADAA)
+    url: https://www.youtube.com/channel/UC_wvKpDd7xmm4ngj0mruK_A
+  - name: International OCD Foundation (IOCDF)
+    url: https://www.youtube.com/channel/UCDX6nEP1WY23RtIFaQ8MH3g
+  - name: No Panic
+    url: https://www.youtube.com/channel/UCE2TT3XrOZSS41T9kwPbkPw
+  - name: Anxiety UK
+    url: https://www.youtube.com/channel/UChgwTcksPBAWg1i1yczJRpA

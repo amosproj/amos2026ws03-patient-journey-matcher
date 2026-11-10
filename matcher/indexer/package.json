@@ -3,10 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "dependencies": {
-    "pg": "^8.23.1"
+  "scripts": {
+    "start": "node src/main.ts"
   },
-  "devDependencies": {
-    "@types/pg": "^8.23.1"
+  "dependencies": {
+    "@matcher/approaches": "workspace:*",
+    "@matcher/db": "workspace:*",
+    "@matcher/download": "workspace:*"
   }
 }

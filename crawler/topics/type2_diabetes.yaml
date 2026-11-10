@@ -5,9 +5,58 @@ label: Type 2 diabetes mellitus
 # A cited paper is kept only if one of these terms is in its title, abstract or keywords.
 terms:
   - type 2 diabetes
-  - diabetes mellitus type 2
+  - type II diabetes
+  - Diabetes Mellitus, Type 2
+  - type 2 diabetic
+  - type II diabetic
+  - T2DM
+  - T2D
+  - non insulin dependent diabetes
+  - prediabetes
+  - Prediabetic State
 
 # PubMed, arXiv and Zenodo search queries.
 queries:
+  # Disease
   - type 2 diabetes mellitus
+  - prediabetes
+  - type 2 diabetes remission
+  - youth-onset type 2 diabetes
+  - type 2 diabetes cardiovascular disease
+  - type 2 diabetes kidney disease
+  - type 2 diabetes retinopathy
+  - type 2 diabetes neuropathy
+  - type 2 diabetes foot ulcer
+  - type 2 diabetes fatty liver
+  # Diagnosis and screening
+  - type 2 diabetes screening
+  - type 2 diabetes diagnosis
+  - type 2 diabetes HbA1c
+  - type 2 diabetes glucose tolerance
+  - type 2 diabetes prevention
+  # Treatment
   - type 2 diabetes management
+  - type 2 diabetes metformin
+  - type 2 diabetes SGLT2 inhibitor
+  - type 2 diabetes empagliflozin
+  - type 2 diabetes GLP-1 agonists
+  - type 2 diabetes semaglutide
+  - type 2 diabetes tirzepatide
+  - type 2 diabetes finerenone
+  - type 2 diabetes pioglitazone
+  - type 2 diabetes DPP-4 inhibitor
+  - type 2 diabetes sulfonylurea
+  - type 2 diabetes insulin therapy
+  - type 2 diabetes bariatric surgery
+  - type 2 diabetes glucose monitoring
+  # Living with
+  - type 2 diabetes self-management education
+  - type 2 diabetes lifestyle intervention
+  - type 2 diabetes diet
+  - type 2 diabetes physical activity
+  - type 2 diabetes digital health
+  - type 2 diabetes quality of life
+  - type 2 diabetes psychological distress
+  - type 2 diabetes medication adherence
+  - type 2 diabetes older adults
+  - type 2 diabetes hypoglycemia

@@ -1,0 +1,68 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: kidney_stones
+label: Kidney stones
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - kidney stone
+  - kidney calculi
+  - renal calculi
+  - renal stone
+  - nephrolithiasis
+  - urolithiasis
+  - urinary stone
+  - urinary calculi
+  - ureteral calculi
+  - ureteral stone
+  - ureteric stone
+  - renal colic
+  - nephrolithotomy
+  - lithotripsy
+  - ureteroscopy
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - kidney stones
+  - nephrolithiasis
+  - urolithiasis
+  - urinary stone disease
+  - ureteral stones
+  - renal colic
+  - recurrent kidney stones
+  - staghorn kidney stones
+  - calcium oxalate kidney stones
+  - uric acid kidney stones
+  - cystinuria kidney stones
+  - kidney stones children
+  - kidney stones pregnancy
+  # Diagnosis and screening
+  - kidney stones CT
+  - kidney stones ultrasound
+  - kidney stones imaging
+  - kidney stones metabolic evaluation
+  - kidney stones 24 hour urine
+  - kidney stones composition analysis
+  - kidney stones risk factors
+  - renal colic emergency department
+  # Treatment
+  - kidney stones medical expulsive therapy
+  - kidney stones tamsulosin
+  - renal colic analgesia
+  - ureteroscopy
+  - shock wave lithotripsy
+  - percutaneous nephrolithotomy
+  - laser lithotripsy
+  - retrograde intrarenal surgery
+  - ureteroscopy ureteral stent
+  - kidney stones potassium citrate
+  - kidney stones thiazide diuretics
+  - kidney stones allopurinol
+  - kidney stones tiopronin
+  # Living with
+  - kidney stones prevention
+  - kidney stones diet
+  - kidney stones fluid intake
+  - kidney stones quality of life
+  - kidney stones follow-up
+  - ureteroscopy recovery

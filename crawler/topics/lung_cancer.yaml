@@ -1,0 +1,107 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: lung_cancer
+label: Lung cancer
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - lung cancer
+  - lung carcinoma
+  - lung neoplasm
+  - cancer of the lung
+  - non-small cell lung cancer
+  - small cell lung cancer
+  - NSCLC
+  - SCLC
+  - lung adenocarcinoma
+  - adenocarcinoma of the lung
+  - lung squamous cell carcinoma
+  - squamous cell carcinoma of the lung
+  - Carcinoma, Non-Small-Cell Lung
+  - Small Cell Lung Carcinoma
+  - Carcinoma, Bronchogenic
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - lung cancer
+  - non-small cell lung cancer
+  - small cell lung cancer
+  - lung adenocarcinoma
+  - lung squamous cell carcinoma
+  - early-stage lung cancer
+  - stage III NSCLC
+  - metastatic NSCLC
+  - extensive-stage SCLC
+  - EGFR-mutant lung cancer
+  - ALK-positive lung cancer
+  - KRAS G12C lung cancer
+  # Diagnosis and screening
+  - lung cancer screening
+  - lung cancer pulmonary nodule
+  - lung cancer biomarker testing
+  - lung cancer PD-L1
+  - lung cancer liquid biopsy
+  - lung cancer staging
+  # Treatment
+  - lung cancer lobectomy
+  - lung cancer segmentectomy
+  - lung cancer SBRT
+  - lung cancer chemoradiotherapy
+  - SCLC prophylactic cranial irradiation
+  - lung cancer adjuvant therapy
+  - lung cancer neoadjuvant therapy
+  - lung cancer immunotherapy
+  - lung cancer pembrolizumab
+  - lung cancer durvalumab
+  - lung cancer osimertinib
+  - lung cancer amivantamab
+  - lung cancer ALK inhibitor
+  - SCLC tarlatamab
+  - lung cancer antibody-drug conjugate
+  # Living with
+  - lung cancer pulmonary rehabilitation
+  - lung cancer quality of life
+  - lung cancer follow-up
+  - lung cancer palliative care
+  - lung cancer smoking cessation
+  - lung cancer symptom management
+  - lung cancer caregivers
+
+# YouTube channels.
+channels:
+  - name: LUNGevity Foundation
+    url: https://www.youtube.com/channel/UC6Te7vWWbfLTZ_91b-Qh9mw
+  - name: GO2 for Lung Cancer
+    url: https://www.youtube.com/channel/UCHJSlCXD7ahiXqeutuY5Tag
+  - name: Lung Cancer Foundation of America (LCFA)
+    url: https://www.youtube.com/channel/UCpQi6au-iFiMzrAxcpSopHQ
+  - name: Roy Castle Lung Cancer Foundation
+    url: https://www.youtube.com/channel/UCXm2Nzi7etjrHxe0_pEodeQ
+  - name: ALK Positive
+    url: https://www.youtube.com/channel/UCZPMeuzQGj-9uATmotZ5b8w
+  - name: EGFR Resisters
+    url: https://www.youtube.com/channel/UCmtoExRMZw7MnKjpIQR0XXw
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: lcfa_hope_with_answers
+    name: "Hope With Answers: Living With Lung Cancer"
+    url: https://feed.podbean.com/hopewithanswers/feed.xml
+    publisher: Lung Cancer Foundation of America (LCFA)
+    audience: patients
+    language: en
+    trusted_because: LCFA, a US lung cancer charity, talks with oncologists, nurses and people living with lung cancer about biomarkers, treatment options and life after diagnosis.
+  - key: lungevity_voices_of_hope
+    name: Lung Cancer Voices of Hope
+    url: https://media.rss.com/lungcancervoicesofhope/feed.xml
+    publisher: LUNGevity Foundation
+    audience: patients
+    language: en
+    trusted_because: LUNGevity Foundation, a US lung cancer research and patient-support nonprofit, brings people living with lung cancer together with oncologists and nurses.
+  - key: roy_castle_talk_of_hope
+    name: Talk of Hope
+    url: https://anchor.fm/s/be538edc/podcast/rss
+    publisher: Roy Castle Lung Cancer Foundation
+    audience: patients
+    language: en
+    trusted_because: Roy Castle Lung Cancer Foundation, the UK lung cancer charity, shares patient stories and expert advice on screening, treatment and living with lung cancer.

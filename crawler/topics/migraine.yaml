@@ -1,0 +1,92 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: migraine
+label: Migraine and other primary headaches
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - migraine
+  - migraine disorder
+  - cluster headache
+  - tension-type headache
+  - headache disorder
+  - medication overuse headache
+  - trigeminal autonomic cephalalgia
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - migraine
+  - migraine with aura
+  - chronic migraine
+  - episodic migraine
+  - menstrual migraine
+  - vestibular migraine
+  - pediatric migraine
+  - cluster headache
+  - tension-type headache
+  - medication overuse headache
+  - trigeminal autonomic cephalalgia
+  # Diagnosis and screening
+  - migraine diagnosis
+  - migraine neuroimaging
+  - migraine comorbidities
+  - migraine stroke risk
+  # Treatment
+  - migraine acute treatment
+  - migraine triptans
+  - migraine lasmiditan
+  - migraine ubrogepant
+  - migraine rimegepant
+  - migraine preventive treatment
+  - migraine erenumab
+  - migraine fremanezumab
+  - migraine galcanezumab
+  - migraine eptinezumab
+  - migraine atogepant
+  - chronic migraine botulinum toxin
+  - migraine topiramate
+  - migraine propranolol
+  - migraine amitriptyline
+  - migraine neuromodulation
+  - migraine occipital nerve block
+  - migraine pregnancy
+  - cluster headache oxygen therapy
+  - cluster headache verapamil
+  # Living with
+  - migraine quality of life
+  - migraine self-management
+  - migraine triggers
+  - migraine cognitive behavioral therapy
+  - migraine depression anxiety
+
+# YouTube channels.
+channels:
+  - name: American Migraine Foundation (AMF)
+    url: https://www.youtube.com/channel/UC-ooNEgHgaMCI9gmPjItcZw
+  - name: The Migraine Trust
+    url: https://www.youtube.com/channel/UCQ_DHFnlai3_vcib0WYoSow
+  - name: Migraine Canada
+    url: https://www.youtube.com/channel/UCS36BzZ2rOt8eld3-QisKjw
+  - name: International Headache Society (IHS)
+    url: https://www.youtube.com/channel/UC_7e4MOHTiBk24eMh2wsH3A
+  - name: The Migraine Association of Ireland (MAI)
+    url: https://www.youtube.com/channel/UC8yIbX7O4jTL5FoXDqVEqdw
+  - name: OUCH (UK) Cluster Headache Charity
+    url: https://www.youtube.com/channel/UCBuPXWRtboMYcfGvy5ercaQ
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: national_migraine_centre_heads_up
+    name: Heads Up
+    url: https://rss.libsyn.com/shows/198998/destinations/1414619.xml
+    publisher: National Migraine Centre
+    audience: patients
+    language: en
+    trusted_because: Podcast of the UK charity National Migraine Centre, with its headache specialists on migraine and headache care.
+  - key: ahs_first_contact
+    name: First Contact — Headache in Primary Care
+    url: https://anchor.fm/s/336d387c/podcast/rss
+    publisher: American Headache Society (AHS)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the American Headache Society on headache medicine for primary care clinicians.

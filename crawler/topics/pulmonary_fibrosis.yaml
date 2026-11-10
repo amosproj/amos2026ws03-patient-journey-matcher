@@ -1,0 +1,79 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: pulmonary_fibrosis
+label: Pulmonary fibrosis
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - pulmonary fibrosis
+  - idiopathic pulmonary fibrosis
+  - IPF
+  - lung fibrosis
+  - fibrosing alveolitis
+  - interstitial lung disease
+  - Lung Diseases, Interstitial
+  - idiopathic interstitial pneumonia
+  - usual interstitial pneumonia
+  - nonspecific interstitial pneumonia
+  - non-specific interstitial pneumonia
+  - hypersensitivity pneumonitis
+  - Alveolitis, Extrinsic Allergic
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - pulmonary fibrosis
+  - idiopathic pulmonary fibrosis
+  - interstitial lung disease
+  - progressive pulmonary fibrosis
+  - fibrotic hypersensitivity pneumonitis
+  - systemic sclerosis interstitial lung disease
+  - rheumatoid arthritis interstitial lung disease
+  - nonspecific interstitial pneumonia
+  - familial pulmonary fibrosis
+  - idiopathic pulmonary fibrosis acute exacerbation
+  - combined pulmonary fibrosis and emphysema
+  - post-COVID pulmonary fibrosis
+  # Diagnosis and screening
+  - idiopathic pulmonary fibrosis diagnosis
+  - interstitial lung disease HRCT
+  - usual interstitial pneumonia pattern
+  - interstitial lung disease bronchoalveolar lavage
+  - interstitial lung disease cryobiopsy
+  - interstitial lung disease multidisciplinary discussion
+  - pulmonary fibrosis biomarkers
+  - pulmonary fibrosis genetic testing
+  - interstitial lung disease screening
+  - idiopathic pulmonary fibrosis prognosis
+  # Treatment
+  - idiopathic pulmonary fibrosis antifibrotic therapy
+  - pulmonary fibrosis nintedanib
+  - pulmonary fibrosis pirfenidone
+  - interstitial lung disease mycophenolate
+  - interstitial lung disease rituximab
+  - pulmonary fibrosis lung transplantation
+  - pulmonary fibrosis oxygen therapy
+  - idiopathic pulmonary fibrosis cough
+  # Living with
+  - pulmonary fibrosis pulmonary rehabilitation
+  - pulmonary fibrosis palliative care
+  - pulmonary fibrosis breathlessness
+  - pulmonary fibrosis quality of life
+  - pulmonary fibrosis caregivers
+  - pulmonary fibrosis home spirometry
+
+# YouTube channels.
+channels:
+  - name: Pulmonary Fibrosis Foundation (PFF)
+    url: https://www.youtube.com/channel/UCX7PIZrKrZb6CWJncJboI2g
+  - name: Canadian Pulmonary Fibrosis Foundation (CPFF)
+    url: https://www.youtube.com/channel/UC7aRFIYsO4McxbxnurAt4FQ
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: apf_breath_of_hope
+    name: "Breath of Hope: Pulmonary Fibrosis Stories"
+    url: https://feed.podbean.com/actionpf/feed.xml
+    publisher: Action for Pulmonary Fibrosis (APF)
+    audience: patients
+    language: en
+    trusted_because: Podcast of Action for Pulmonary Fibrosis, a UK patient charity, with its experts and people affected by pulmonary fibrosis.

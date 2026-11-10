@@ -1,0 +1,83 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: coronary_artery_disease
+label: Coronary artery disease
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - coronary artery disease
+  - coronary heart disease
+  - ischemic heart disease
+  - ischaemic heart disease
+  - chronic coronary syndrome
+  - acute coronary syndrome
+  - myocardial infarction
+  - myocardial ischemia
+  - angina pectoris
+  - Angina, Stable
+  - Angina, Unstable
+  - STEMI
+  - NSTEMI
+  - percutaneous coronary intervention
+  - coronary artery bypass
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - coronary artery disease
+  - coronary heart disease
+  - ischemic heart disease
+  - chronic coronary syndrome
+  - stable angina pectoris
+  - acute coronary syndrome
+  - myocardial infarction
+  - ST elevation myocardial infarction
+  - non-ST elevation myocardial infarction
+  - myocardial infarction nonobstructive coronary arteries
+  - multivessel coronary artery disease
+  - left main coronary artery disease
+  # Diagnosis and screening
+  - coronary artery disease CT angiography
+  - coronary artery disease calcium scoring
+  - coronary artery disease stress testing
+  - coronary artery disease myocardial perfusion imaging
+  - coronary artery disease fractional flow reserve
+  - myocardial infarction high-sensitivity troponin
+  # Treatment
+  - percutaneous coronary intervention
+  - primary percutaneous coronary intervention
+  - percutaneous coronary intervention drug-eluting stent
+  - percutaneous coronary intervention intravascular imaging
+  - coronary artery bypass grafting
+  - coronary artery bypass arterial grafts
+  - dual antiplatelet therapy myocardial infarction
+  - acute coronary syndrome ticagrelor
+  - chronic coronary syndrome rivaroxaban
+  - myocardial infarction beta blockers
+  - coronary artery disease statin therapy
+  - angina pectoris ranolazine
+  - ST elevation myocardial infarction fibrinolysis
+  - myocardial infarction complete revascularization
+  - myocardial infarction cardiogenic shock
+  # Living with
+  - coronary artery disease cardiac rehabilitation
+  - coronary artery disease secondary prevention
+  - coronary artery disease quality of life
+  - coronary artery disease self-management
+  - myocardial infarction depression
+  - myocardial infarction return to work
+  - coronary artery bypass recovery
+
+# YouTube channels.
+channels:
+  - name: Society for Cardiovascular Angiography and Interventions (SCAI)
+    url: https://www.youtube.com/channel/UCpvyCp4WVmgEvlvui2aoEhA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: jscai_beats
+    name: JSCAI BEATS
+    url: https://anchor.fm/s/10cff4cb0/podcast/rss
+    publisher: Society for Cardiovascular Angiography and Interventions (SCAI)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the Journal of the Society for Cardiovascular Angiography and Interventions, SCAI's peer-reviewed journal on interventional cardiology.

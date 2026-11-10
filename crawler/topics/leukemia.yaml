@@ -1,0 +1,85 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: leukemia
+label: Leukemia
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - leukemia
+  - leukaemia
+  - acute myeloid leukemia
+  - acute lymphoblastic leukemia
+  - chronic lymphocytic leukemia
+  - chronic myeloid leukemia
+  - AML
+  - CLL
+  - CML
+  - Leukemia, Myeloid, Acute
+  - Precursor Cell Lymphoblastic Leukemia-Lymphoma
+  - Leukemia, Lymphocytic, Chronic, B-Cell
+  - Leukemia, Myelogenous, Chronic, BCR-ABL Positive
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - leukemia
+  - acute myeloid leukemia
+  - acute lymphoblastic leukemia
+  - chronic lymphocytic leukemia
+  - chronic myeloid leukemia
+  - acute promyelocytic leukemia
+  - childhood leukemia
+  # Diagnosis and screening
+  - leukemia diagnosis
+  - leukemia bone marrow biopsy
+  - AML measurable residual disease
+  - leukemia minimal residual disease
+  - chronic lymphocytic leukemia IGHV mutation
+  - chronic myeloid leukemia BCR-ABL1 monitoring
+  # Treatment
+  - acute myeloid leukemia venetoclax azacitidine
+  - acute myeloid leukemia induction chemotherapy
+  - acute myeloid leukemia midostaurin
+  - acute myeloid leukemia gilteritinib
+  - acute myeloid leukemia ivosidenib
+  - acute myeloid leukemia menin inhibitor
+  - acute promyelocytic leukemia arsenic trioxide
+  - acute lymphoblastic leukemia blinatumomab
+  - acute lymphoblastic leukemia inotuzumab ozogamicin
+  - acute lymphoblastic leukemia CAR T-cell therapy
+  - acute lymphoblastic leukemia Philadelphia chromosome
+  - chronic lymphocytic leukemia ibrutinib
+  - chronic lymphocytic leukemia acalabrutinib
+  - chronic lymphocytic leukemia zanubrutinib
+  - chronic lymphocytic leukemia venetoclax obinutuzumab
+  - chronic myeloid leukemia imatinib
+  - chronic myeloid leukemia asciminib
+  - chronic myeloid leukemia treatment-free remission
+  - CML tyrosine kinase inhibitor
+  - leukemia allogeneic stem cell transplantation
+  - leukemia graft-versus-host disease
+  # Living with
+  - leukemia survivors
+  - leukemia quality of life
+  - leukemia fertility preservation
+  - leukemia caregivers
+  - leukemia exercise
+  - childhood leukemia late effects
+
+# YouTube channels.
+channels:
+  - name: CLL Society
+    url: https://www.youtube.com/channel/UCJpDAAz--BFTfbR1zQ-xjjQ
+  - name: CLL Support Association (CLLSA)
+    url: https://www.youtube.com/channel/UCbu5xntcj1DRwPW5SnQRgxw
+  - name: Leukaemia Care
+    url: https://www.youtube.com/channel/UC9ieaSTl97g0LngliwyhZFg
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: carecast_cll_society
+    name: "CareCast: The CLL Society Podcast"
+    url: https://rss.libsyn.com/shows/542287/destinations/4674137.xml
+    publisher: CLL Society
+    audience: patients
+    language: en
+    trusted_because: Patient stories and information on living with chronic lymphocytic leukemia, from CLL Society, a patient nonprofit with physician-curated information.

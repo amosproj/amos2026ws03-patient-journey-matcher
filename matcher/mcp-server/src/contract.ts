@@ -29,25 +29,30 @@ export const patientJourneySchema = z
 
 export const algorithmSchema = z.enum(["keyword", "graph", "ai_summary"]);
 
-export const sourceTypeSchema = z.enum([
-  "paper",
+export const contentTypeSchema = z.enum([
+  "journal_article",
   "preprint",
+  "conference_paper",
+  "poster",
+  "presentation",
+  "report",
+  "book",
   "video",
-  "podcast",
+  "podcast_episode",
 ]);
 
 export const matchJourneyInputSchema = z.object({
   journey: patientJourneySchema,
   algorithm: algorithmSchema.default("keyword"),
   limit: z.number().int().min(1).max(50).default(10),
-  source_types: z.array(sourceTypeSchema).min(1).optional(),
+  content_types: z.array(contentTypeSchema).min(1).optional(),
 });
 
 export const sourceReferenceSchema = z.object({
   source_id: z.string().min(1),
   title: z.string().min(1),
   source: z.string().min(1),
-  source_type: sourceTypeSchema,
+  content_type: contentTypeSchema,
   url: z.url(),
   summary: z.string().optional(),
   image_url: z.url().optional(),
@@ -83,4 +88,5 @@ export const sourceContentSchema = sourceReferenceSchema.extend({
 
 export type MatchJourneyInput = z.output<typeof matchJourneyInputSchema>;
 export type MatchResult = z.output<typeof matchResultSchema>;
+export type SourceReference = z.output<typeof sourceReferenceSchema>;
 export type SourceContent = z.output<typeof sourceContentSchema>;

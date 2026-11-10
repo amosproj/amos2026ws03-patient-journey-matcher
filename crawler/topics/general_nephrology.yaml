@@ -1,0 +1,102 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+# Nephrology in general: channels and podcasts of kidney societies, charities and journals.
+id: general_nephrology
+label: Nephrology in general
+
+# YouTube channels.
+channels:
+  - name: National Kidney Foundation (NKF)
+    url: https://www.youtube.com/channel/UC5Cs788esAFTEDVktHFry1g
+  - name: American Society of Nephrology (ASN)
+    url: https://www.youtube.com/channel/UCUkyER166QPylHwoooStxeA
+  - name: International Society of Nephrology (ISN)
+    url: https://www.youtube.com/channel/UC5uy7AD8L1TYfHb38WUX5Hg
+  - name: European Renal Association (ERA)
+    url: https://www.youtube.com/channel/UCBE2gLzF2iVyB2CLogpGsKg
+  - name: "Kidney Disease: Improving Global Outcomes (KDIGO)"
+    url: https://www.youtube.com/channel/UCm7zHM_wBaPbQxRDJwyvqMg
+  - name: American Kidney Fund (AKF)
+    url: https://www.youtube.com/channel/UCiLuZ3MoPXmbBntWRiX9qzA
+  - name: Kidney Research UK
+    url: https://www.youtube.com/channel/UCVC0Jdku1o3KjUB869BTDyw
+  - name: Kidney Care UK
+    url: https://www.youtube.com/channel/UCeqQTdAsEzXphqjHVtcTD-A
+  - name: The Rogosin Institute
+    url: https://www.youtube.com/channel/UCWlS_sFgzeyCbvc15nnZyfQ
+  - name: American Association of Kidney Patients (AAKP)
+    url: https://www.youtube.com/channel/UCwT_eU7vwGtHSapN8PKc-Hw
+  - name: Renal Support Network (RSN)
+    url: https://www.youtube.com/channel/UClsRVyI5y5pI9NuT2-8fGgA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: asn_podcast
+    name: ASN Podcast
+    url: https://www.asn-online.org/media/podcast/feed.aspx?p=ASN
+    publisher: American Society of Nephrology (ASN)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the American Society of Nephrology with expert interviews on research, care and policy in kidney medicine.
+  - key: cjasn_podcast
+    name: Clinical Journal of the American Society of Nephrology (CJASN) Podcast
+    url: https://www.asn-online.org/media/podcast/feed.aspx?p=CJASN
+    publisher: American Society of Nephrology (ASN)
+    audience: clinicians
+    language: en
+    trusted_because: Authors of the peer-reviewed Clinical Journal of the American Society of Nephrology discuss recent articles.
+  - key: jasn_podcast
+    name: Journal of the American Society of Nephrology (JASN) Podcast
+    url: https://www.asn-online.org/media/podcast/feed.aspx?p=JASN
+    publisher: American Society of Nephrology (ASN)
+    audience: clinicians
+    language: en
+    trusted_because: Authors of the peer-reviewed Journal of the American Society of Nephrology discuss recent articles.
+  - key: isn_global_kidney_care
+    name: Global Kidney Care Podcast
+    url: https://feeds.transistor.fm/global-kidney-care-podcast-provided-by-isn
+    publisher: International Society of Nephrology (ISN)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the International Society of Nephrology on kidney care and research worldwide.
+  - key: era_pinch_of_salt
+    name: A pinch of salt - A podcast by ERA
+    url: https://rss.buzzsprout.com/2292401.rss
+    publisher: European Renal Association (ERA)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the European Renal Association with monthly episodes on nephrology practice and research.
+  - key: kdigo_conversations_in_nephrology
+    name: KDIGO Conversations in Nephrology
+    url: https://anchor.fm/s/672898c8/podcast/rss
+    publisher: "Kidney Disease: Improving Global Outcomes (KDIGO)"
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of KDIGO, the nonprofit behind the international kidney guidelines, with clinicians and patients on guideline topics.
+  - key: nkf_kidney_commute
+    name: Kidney Commute
+    url: https://feed.podbean.com/kidneycommute/feed.xml
+    publisher: National Kidney Foundation (NKF)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the National Kidney Foundation for the kidney care team, with KDOQI guideline discussions and clinical updates.
+  - key: nkf_hot_topics_in_kidney_health
+    name: Hot Topics in Kidney Health
+    url: https://feed.podbean.com/hottopicsinkidneyhealth/feed.xml
+    publisher: National Kidney Foundation (NKF)
+    audience: patients
+    language: en
+    trusted_because: Official podcast of the National Kidney Foundation on kidney health topics for patients and families; a few episodes are in Spanish.
+  - key: akf_kidney_collective
+    name: The Kidney Collective
+    url: https://rss.buzzsprout.com/2527900.rss
+    publisher: American Kidney Fund (AKF)
+    audience: patients
+    language: en
+    trusted_because: Podcast of the American Kidney Fund, a national kidney charity, with people living with kidney disease and experts.
+  - key: rsn_kidneytalk
+    name: KidneyTalk - An Online Radio Show By Renal Support Network
+    url: https://feeds.feedburner.com/kidneytalk
+    publisher: Renal Support Network (RSN)
+    audience: patients
+    language: en
+    trusted_because: Radio show of the Renal Support Network, a US kidney patient charity, with experts and patients on living with kidney disease.
