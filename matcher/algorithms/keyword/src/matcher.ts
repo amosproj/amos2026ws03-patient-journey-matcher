@@ -117,19 +117,21 @@ export function createKeywordMatcher(db: Queryable): Matcher {
         ),
       }));
       // Every hit shows a term it matched. This also drops the documents without any, which an
-      // index scores 0 when Postgres scores every row instead of using its index (small tables).
+      // index scores 0 when Postgres scores every row instead of using its index.
       const matched = details.filter((row) => row.matchedTerms.length > 0);
-      // Without a full text, the metadata rank stands in for it: no penalty for lacking one.
-      const fullTextRanks = new Map<string, number>();
-      for (const row of matched) {
-        const rank = row.has_full_text
-          ? fullTexts.get(row.id)
-          : metadata.get(row.id);
-        if (rank !== undefined) fullTextRanks.set(row.id, rank);
-      }
+      // Likewise, an index counts only for the documents in which it finds a term. One that does
+      // not count adds nothing, so a document without a full text ranks below one both find.
+      const byId = new Map(details.map((row) => [row.id, row]));
+      const withTerms = (
+        ranks: Map<string, number>,
+        terms: "metadata_terms" | "full_text_terms",
+      ) => new Map([...ranks].filter(([id]) => byId.get(id)?.[terms].length));
       const rankings = [
-        { ranks: metadata, weight: 1 },
-        { ranks: fullTextRanks, weight: fullTextWeight },
+        { ranks: withTerms(metadata, "metadata_terms"), weight: 1 },
+        {
+          ranks: withTerms(fullTexts, "full_text_terms"),
+          weight: fullTextWeight,
+        },
       ];
       const fused = reciprocalRankFusion(rankings, rankConstant);
       const ranked = matched

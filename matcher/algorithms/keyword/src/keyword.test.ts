@@ -213,6 +213,70 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     ]);
   });
 
+  test("ranks a document without a full text below one that both indexes find", async () => {
+    // pubmed:1 leads the metadata but has no full text; pubmed:2 is second there and has one.
+    await insert("pubmed:1", "Olaparib olaparib for prostate cancer");
+    await insert("pubmed:2", "Olaparib in prostate cancer care", {
+      full_text: ["https://example.org/2.xml"],
+    });
+    await indexMetadata(pool);
+    await indexFullTexts(
+      pool,
+      fakeDownloader({
+        "https://example.org/2.xml": "Olaparib for prostate cancer",
+      }),
+    );
+    const steps = new Map<string, unknown>();
+
+    const hits = await createKeywordMatcher(pool).match(
+      { focus: event("Olaparib"), context: [event("Prostatakarzinom")] },
+      { limit: 10, trace: (step, data) => steps.set(step, data) },
+    );
+
+    expect(steps.get("rankings")).toEqual({
+      metadata: ["pubmed:1", "pubmed:2"],
+      fullTexts: ["pubmed:2"],
+    });
+    expect(hits.map((hit) => hit.documentId)).toEqual(["pubmed:2", "pubmed:1"]);
+  });
+
+  test("counts an index only for the documents in which it finds a term", async () => {
+    // pubmed:1 matches in its metadata only, pubmed:2 in its full text only.
+    await insert("pubmed:1", "Olaparib and prostate cancer");
+    await insert("pubmed:2", "Heart failure care", {
+      full_text: ["https://example.org/2.xml"],
+    });
+    await insert("pubmed:3", "Diabetes in older adults");
+    await indexMetadata(pool);
+    await indexFullTexts(
+      pool,
+      fakeDownloader({
+        "https://example.org/2.xml": "Olaparib for prostate cancer",
+      }),
+    );
+    // Without its BM25 index, Postgres scores every row: the metadata ranking also lists
+    // pubmed:2 and pubmed:3, with a score of 0.
+    const client = await pool.connect();
+    onTestFinished(() => client.release(true));
+    await client.query("SET enable_indexscan = off");
+    await client.query("SET enable_bitmapscan = off");
+    const steps = new Map<string, unknown>();
+
+    const hits = await createKeywordMatcher(client).match(
+      { focus: event("Olaparib"), context: [event("Prostatakarzinom")] },
+      { limit: 10, trace: (step, data) => steps.set(step, data) },
+    );
+
+    expect(steps.get("rankings")).toMatchObject({
+      metadata: expect.arrayContaining(["pubmed:2", "pubmed:3"]),
+    });
+    // Each counts in one index only, at rank 1: a tie, in the order of the IDs.
+    expect(hits.map((hit) => hit.documentId)).toEqual(["pubmed:1", "pubmed:2"]);
+    expect(steps.get("candidates")).toContainEqual(
+      expect.objectContaining({ id: "pubmed:2", metadataScore: 0 }),
+    );
+  });
+
   test("logs the full texts to read, every minute how many are read, and counts late ones in", async () => {
     // Only the interval: the database client keeps its own timers.
     vi.useFakeTimers({ toFake: ["setInterval", "clearInterval"] });
@@ -418,12 +482,13 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     expect(first?.score).toBeCloseTo(
       (first?.metadataScore ?? 0) + (first?.fullTextScore ?? 0),
     );
-    // BM25 of each index, positive; none from an index that did not return it.
+    // BM25 of each index, positive; nothing from an index that did not return it.
     expect(first?.metadataBm25).toBeGreaterThan(0);
     expect(first?.fullTextBm25).toBeGreaterThan(0);
     expect(candidates.find(({ id }) => id === "pubmed:2")).toMatchObject({
       hasFullText: false,
       fullTextBm25: null,
+      fullTextScore: 0,
     });
     // A candidate that matches no term is dropped: it has no score.
     expect(

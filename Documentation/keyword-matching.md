@@ -13,7 +13,7 @@ Nothing else writes the schema. Deleting a document deletes its index rows.
 
 **Query.** The latest event up to `as_of` is the focus, older events are context ([MCP interface](mcp-interface.md#match_journey-input)). From each event the matcher takes the label, the text parameters and the names of `true` flags (`bone_mets` → bone metastases). German words become English through [`german-terms.json`](../matcher/algorithms/keyword/data/german-terms.json) (`Knochenmetastasen` → bone metastases, `RPE` → radical prostatectomy); drug names and abbreviations pass unchanged (Olaparib, PSA); common function words, units and numbers are dropped. No LLM or outside service sees the journey.
 
-**Ranking.** Focus terms count three times, context terms once. Each index returns its best 100 documents, and [reciprocal rank fusion](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf) merges the two rankings with equal weight. A document without a full text counts its metadata rank for both. `score` is relative to the best hit (1). `matched_terms` lists the query terms found in a document; one without any is not returned.
+**Ranking.** Focus terms count three times, context terms once. Each index returns its best 100 documents, and [reciprocal rank fusion](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf) merges the two rankings with equal weight. An index adds to a document's score only if it finds one of the query terms in it, so a document without a full text (videos, most podcast episodes) ranks below one that both indexes find; `content_types` compares them among themselves. `score` is relative to the best hit (1). `matched_terms` lists the query terms found in a document; one without any is not returned.
 
 ## Full texts
 
