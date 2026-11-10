@@ -1,0 +1,78 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: sleep_apnea
+label: Obstructive sleep apnea
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - obstructive sleep apnea
+  - obstructive sleep apnoea
+  - sleep apnea
+  - sleep apnoea
+  - Sleep Apnea, Obstructive
+  - Sleep Apnea Syndromes
+  - OSA
+  - OSAS
+  - OSAHS
+  - sleep disordered breathing
+  - sleep related breathing disorder
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - obstructive sleep apnea
+  - sleep apnea
+  - central sleep apnea
+  - mild obstructive sleep apnea
+  - obstructive sleep apnea phenotypes
+  - pediatric obstructive sleep apnea
+  - obstructive sleep apnea in women
+  - obstructive sleep apnea cardiovascular disease
+  - obstructive sleep apnea hypertension
+  - obstructive sleep apnea atrial fibrillation
+  # Diagnosis and screening
+  - sleep apnea diagnosis
+  - sleep apnea polysomnography
+  - sleep apnea home sleep apnea test
+  - sleep apnea STOP-Bang
+  - sleep apnea Epworth Sleepiness Scale
+  - sleep apnea apnea-hypopnea index
+  - sleep apnea hypoxic burden
+  - sleep apnea detection wearable
+  - sleep apnea drug-induced sleep endoscopy
+  # Treatment
+  - sleep apnea CPAP
+  - sleep apnea automatic positive airway pressure
+  - sleep apnea bilevel positive airway pressure
+  - sleep apnea oral appliance therapy
+  - sleep apnea hypoglossal nerve stimulation
+  - sleep apnea maxillomandibular advancement
+  - sleep apnea upper airway surgery
+  - sleep apnea adenotonsillectomy
+  - sleep apnea weight loss
+  - sleep apnea bariatric surgery
+  - sleep apnea tirzepatide
+  - sleep apnea positional therapy
+  - central sleep apnea adaptive servo-ventilation
+  # Living with
+  - sleep apnea CPAP adherence
+  - sleep apnea quality of life
+  - sleep apnea excessive daytime sleepiness
+  - sleep apnea driving
+  - sleep apnea telemedicine
+  - sleep apnea perioperative care
+  - sleep apnea pregnancy
+
+# YouTube channels.
+channels:
+  - name: American Academy of Sleep Medicine (AASM)
+    url: https://www.youtube.com/channel/UCVMW2wHI1djijJhahn3UL4w
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: aasm_talking_sleep
+    name: Talking Sleep
+    url: https://feed.podbean.com/aasm/feed.xml
+    publisher: American Academy of Sleep Medicine (AASM)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the AASM, the professional society for sleep medicine, on clinical practice, guidelines and the Journal of Clinical Sleep Medicine.

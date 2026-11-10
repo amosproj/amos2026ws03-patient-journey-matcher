@@ -1,0 +1,82 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+# Infectious diseases in general: channels and podcasts of infectious disease societies, journals, public health agencies and vaccine information charities.
+id: general_infectious_diseases
+label: Infectious diseases in general
+
+# YouTube channels.
+channels:
+  - name: European Centre for Disease Prevention and Control (ECDC)
+    url: https://www.youtube.com/channel/UClTKA4g2BdD2THYNJp1DMqA
+  - name: UK Health Security Agency (UKHSA)
+    url: https://www.youtube.com/channel/UCoFX8yfaEwXNEu3HgLdfomQ
+  - name: European Society of Clinical Microbiology and Infectious Diseases (ESCMID)
+    url: https://www.youtube.com/channel/UC2hxa5nIvgZfpYaUtZKTqCg
+  - name: National Foundation for Infectious Diseases (NFID)
+    url: https://www.youtube.com/channel/UCrmg7oA8IJbDa6x7lKKAVHQ
+  - name: Liverpool School of Tropical Medicine (LSTM)
+    url: https://www.youtube.com/channel/UC5K3DWvHQSmRaS_5n2uFlpg
+  - name: Kirby Institute
+    url: https://www.youtube.com/channel/UCs71DdhlFUhFaLiNUE-fkDQ
+  - name: Immunize.org
+    url: https://www.youtube.com/channel/UCH9U2Bzd2Lz6Gb-Q_Pda9IA
+  - name: Immunisation Coalition
+    url: https://www.youtube.com/channel/UCvLWoHFP3O_45baEi3C6GJQ
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: idsa_lets_talk_id
+    name: Let's Talk ID
+    url: https://rss.buzzsprout.com/2019912.rss
+    publisher: Infectious Diseases Society of America (IDSA)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of IDSA with experts on infectious disease practice, research and outbreaks, including episodes on its journals.
+  - key: bia_more_infection_chat
+    name: "MIC: More Infection Chat"
+    url: https://rss.buzzsprout.com/2514045.rss
+    publisher: British Infection Association (BIA)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the British Infection Association, the UK society for infection doctors.
+  - key: lancet_infectious_diseases
+    name: The Lancet Infectious Diseases in conversation with
+    url: https://feed.podbean.com/lancetid/feed.xml
+    publisher: The Lancet Group
+    audience: clinicians
+    language: en
+    trusted_because: Editors of the peer-reviewed journal The Lancet Infectious Diseases talk with authors about their research.
+  - key: cmi_communicable
+    name: Communicable
+    url: https://feeds.transistor.fm/communicable
+    publisher: CMI Communications (ESCMID)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the editors of CMI Communications, the open-access journal of the European Society of Clinical Microbiology and Infectious Diseases (ESCMID).
+  - key: cdc_emerging_infectious_diseases
+    name: Emerging Infectious Diseases
+    url: https://tools.cdc.gov/api/v2/resources/media/302084.itunes
+    publisher: Centers for Disease Control and Prevention (CDC)
+    audience: clinicians
+    language: en
+    trusted_because: Audio companion of Emerging Infectious Diseases, the peer-reviewed journal of the CDC.
+  - key: apic_5_second_rule
+    name: 5 Second Rule
+    url: https://rss.libsyn.com/shows/203519/destinations/1454654.xml
+    publisher: Association for Professionals in Infection Control and Epidemiology (APIC)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of APIC, the professional association of infection preventionists.
+  - key: nfid_infectious_ideas
+    name: Infectious IDeas
+    url: https://rss.buzzsprout.com/2008893.rss
+    publisher: National Foundation for Infectious Diseases (NFID)
+    audience: patients
+    language: en
+    trusted_because: Official podcast of NFID, the US charity that educates the public and clinicians about infectious diseases.
+  - key: cidrap_osterholm_update
+    name: Osterholm Update
+    url: https://www.cidrap.umn.edu/podcast-series/1000039/v1/feed.xml
+    publisher: Center for Infectious Disease Research and Policy (CIDRAP), University of Minnesota
+    audience: patients
+    language: en
+    trusted_because: Conversations on infectious disease threats and public health from CIDRAP, the infectious disease research centre of the University of Minnesota.

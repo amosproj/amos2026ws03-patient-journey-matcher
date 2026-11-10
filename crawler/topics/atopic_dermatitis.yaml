@@ -1,0 +1,79 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: atopic_dermatitis
+label: Atopic dermatitis (eczema)
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - atopic dermatitis
+  - Dermatitis, Atopic
+  - atopic eczema
+  - atopic neurodermatitis
+  - eczema
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - atopic dermatitis
+  - atopic eczema
+  - eczema
+  - pediatric atopic dermatitis
+  - adult atopic dermatitis
+  - moderate to severe atopic dermatitis
+  - atopic dermatitis flares
+  - atopic dermatitis pruritus
+  - atopic dermatitis atopic march
+  - atopic dermatitis skin infections
+  - hand eczema
+  # Diagnosis and screening
+  - atopic dermatitis diagnosis
+  - atopic dermatitis severity EASI SCORAD
+  - atopic dermatitis patch test
+  - atopic dermatitis food allergy
+  # Treatment
+  - atopic dermatitis prevention
+  - atopic dermatitis emollients
+  - atopic dermatitis topical corticosteroids
+  - atopic dermatitis topical calcineurin inhibitors
+  - atopic dermatitis crisaborole
+  - atopic dermatitis ruxolitinib cream
+  - atopic dermatitis wet wrap
+  - atopic dermatitis phototherapy
+  - atopic dermatitis biologics
+  - atopic dermatitis dupilumab
+  - atopic dermatitis tralokinumab
+  - atopic dermatitis lebrikizumab
+  - atopic dermatitis JAK inhibitors
+  - atopic dermatitis upadacitinib
+  - atopic dermatitis abrocitinib
+  - atopic dermatitis baricitinib
+  - atopic dermatitis ciclosporin
+  - atopic dermatitis methotrexate
+  # Living with
+  - atopic dermatitis quality of life
+  - atopic dermatitis sleep
+  - atopic dermatitis depression anxiety
+  - atopic dermatitis caregivers
+  - eczema skin care
+  - atopic dermatitis school
+  - atopic dermatitis work productivity
+
+# YouTube channels.
+channels:
+  - name: National Eczema Association (NEA)
+    url: https://www.youtube.com/channel/UCVpFQf4P2kdBI7Qag6tuGPA
+  - name: Eczema UK (formerly National Eczema Society)
+    url: https://www.youtube.com/channel/UCfqsIOpk3p0n0AZmutgt4Aw
+  - name: International Eczema Council (IEC)
+    url: https://www.youtube.com/channel/UCw5O-MAG8PgpxLHhUxZ5V5g
+  - name: Eczema Association of Australasia
+    url: https://www.youtube.com/channel/UCj4ZRkFtQKZJHNbB6RqMuZQ
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: eczema_out_loud
+    name: Eczema Out Loud
+    url: https://anchor.fm/s/46d29808/podcast/rss
+    publisher: National Eczema Association (NEA)
+    audience: patients
+    language: en
+    trusted_because: Official podcast of the National Eczema Association, a leading US patient organisation for eczema, with clinicians and people living with eczema.

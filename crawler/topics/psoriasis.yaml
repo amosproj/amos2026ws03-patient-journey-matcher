@@ -1,0 +1,81 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: psoriasis
+label: Psoriasis and psoriatic arthritis
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - psoriasis
+  - psoriatic arthritis
+  - Arthritis, Psoriatic
+  - psoriatic disease
+  - psoriatic arthropathy
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - psoriasis
+  - plaque psoriasis
+  - scalp psoriasis
+  - nail psoriasis
+  - inverse psoriasis
+  - guttate psoriasis
+  - generalized pustular psoriasis
+  - erythrodermic psoriasis
+  - pediatric psoriasis
+  - psoriatic arthritis
+  - psoriasis comorbidities
+  # Diagnosis and screening
+  - psoriasis diagnosis
+  - psoriasis severity PASI
+  - psoriasis biomarkers
+  - psoriatic arthritis screening
+  - psoriatic arthritis diagnosis
+  # Treatment
+  - psoriasis topical corticosteroids
+  - psoriasis calcipotriol
+  - psoriasis phototherapy
+  - psoriasis methotrexate
+  - psoriasis ciclosporin
+  - psoriasis acitretin
+  - psoriasis apremilast
+  - psoriasis deucravacitinib
+  - psoriasis biologics
+  - psoriasis TNF inhibitors
+  - psoriasis IL-17 inhibitors
+  - psoriasis IL-23 inhibitors
+  - psoriasis adalimumab
+  - psoriasis secukinumab
+  - psoriasis ustekinumab
+  - psoriasis biosimilars
+  - psoriatic arthritis biologics
+  - psoriatic arthritis JAK inhibitors
+  # Living with
+  - psoriasis quality of life
+  - psoriasis depression anxiety
+  - psoriasis skin care
+  - psoriasis diet
+  - psoriasis pregnancy
+  - psoriasis work productivity
+
+# YouTube channels.
+channels:
+  - name: National Psoriasis Foundation (NPF)
+    url: https://www.youtube.com/channel/UC1sGV0g9trA-TB-ee7p6YHw
+  - name: Psoriasis UK (formerly Psoriasis Association)
+    url: https://www.youtube.com/channel/UCNVPDrrSYw41zCn2L_NqFzQ
+  - name: International Federation of Psoriasis Associations (IFPA)
+    url: https://www.youtube.com/channel/UCwXkMxaHmFdhwbWGg-CKt1Q
+  - name: Psoriasis Canada
+    url: https://www.youtube.com/channel/UCbTNcottLLvT7IVvuy4iGvA
+  - name: Group for Research and Assessment of Psoriasis and Psoriatic Arthritis (GRAPPA)
+    url: https://www.youtube.com/channel/UCwZ746kA8JKOlICleWXtm2A
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: psoriasis_uncovered
+    name: Psoriasis Uncovered
+    url: https://rss.libsyn.com/shows/147185/destinations/940031.xml
+    publisher: National Psoriasis Foundation (NPF)
+    audience: patients
+    language: en
+    trusted_because: Official podcast of the National Psoriasis Foundation, a leading patient organisation for psoriasis and psoriatic arthritis, with dermatologists, rheumatologists and patients.

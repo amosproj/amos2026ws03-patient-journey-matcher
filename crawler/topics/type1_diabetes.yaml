@@ -1,0 +1,83 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: type1_diabetes
+label: Type 1 diabetes mellitus
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - type 1 diabetes
+  - type I diabetes
+  - Diabetes Mellitus, Type 1
+  - type 1 diabetic
+  - type I diabetic
+  - T1DM
+  - T1D
+  - IDDM
+  - juvenile diabetes
+  - juvenile onset diabetes
+  - autoimmune diabetes
+  - latent autoimmune diabetes in adults
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - type 1 diabetes mellitus
+  - type 1 diabetes children
+  - type 1 diabetes adults
+  - latent autoimmune diabetes in adults
+  - presymptomatic type 1 diabetes
+  - type 1 diabetes complications
+  - type 1 diabetes cardiovascular disease
+  - type 1 diabetes kidney disease
+  # Diagnosis and screening
+  - type 1 diabetes islet autoantibodies
+  - type 1 diabetes screening
+  - type 1 diabetes diagnosis
+  - type 1 diabetes C-peptide
+  - type 1 diabetes genetic risk
+  - type 1 diabetes ketoacidosis
+  # Treatment
+  - type 1 diabetes insulin therapy
+  - type 1 diabetes insulin analogues
+  - type 1 diabetes insulin pump
+  - type 1 diabetes artificial pancreas
+  - type 1 diabetes glucose monitoring
+  - type 1 diabetes teplizumab
+  - type 1 diabetes islet transplantation
+  - type 1 diabetes pancreas transplantation
+  - type 1 diabetes glucagon
+  - type 1 diabetes carbohydrate counting
+  - type 1 diabetes exercise
+  # Living with
+  - type 1 diabetes self-management
+  - type 1 diabetes transition care
+  - type 1 diabetes pregnancy
+  - type 1 diabetes school
+  - type 1 diabetes quality of life
+  - type 1 diabetes mental health
+  - type 1 diabetes disordered eating
+  - type 1 diabetes telemedicine
+  - type 1 diabetes parents
+
+# YouTube channels.
+channels:
+  - name: Breakthrough T1D
+    url: https://www.youtube.com/channel/UC_FsA4Wr076QfCYdWo0eDsA
+  - name: Breakthrough T1D UK
+    url: https://www.youtube.com/channel/UCgr0M-0AMsLksVIhuQU-W0w
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: breakthrough_t1d_voices_of_t1d
+    name: Voices of T1D
+    url: https://feeds.acast.com/public/shows/69baeb566071e3bfbde30f21
+    publisher: Breakthrough T1D
+    audience: patients
+    language: en
+    trusted_because: Monthly podcast of Breakthrough T1D (formerly JDRF), a global type 1 diabetes research and advocacy charity, on daily life with type 1 diabetes.
+  - key: diabetes_australia_life_on_the_level
+    name: Life on the level
+    url: https://feeds.simplecast.com/g6_VBJW8
+    publisher: Diabetes Australia
+    audience: patients
+    language: en
+    trusted_because: Podcast of Diabetes Australia, the national diabetes charity, in which young people share life with type 1 diabetes.

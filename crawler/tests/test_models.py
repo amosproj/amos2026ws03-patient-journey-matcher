@@ -6,6 +6,7 @@ from pydantic import ValidationError
 from crawler.models import (
     CitationProvenance,
     CollectionResult,
+    CollectionStats,
     QueryProvenance,
     RequestFailure,
     ScrapeRequest,
@@ -108,11 +109,13 @@ def failure(retryable: bool) -> RequestFailure:
     )
 
 
-def test_result_is_ok_only_without_failures() -> None:
+def test_result_is_ok_only_if_every_request_finished() -> None:
     assert CollectionResult(documents=[]).ok
     assert not CollectionResult(documents=[], failures=[failure(True)]).ok
     assert not CollectionResult(documents=[], failures=[failure(False)]).ok
     assert not CollectionResult(documents=[], run_error="RuntimeError: boom").ok
+    assert not CollectionResult(documents=[], stats=CollectionStats(unprocessed_requests=2)).ok
+    assert CollectionResult(documents=[], stats=CollectionStats(max_results_reached=1)).ok
 
 
 @pytest.mark.parametrize(

@@ -432,6 +432,7 @@ def test_max_requests_reports_what_was_left_in_the_queue() -> None:
 
     assert len(scraper.calls) == 1
     assert result.stats.unprocessed_requests == 2
+    assert not result.ok
 
 
 def test_missing_credentials_fail_before_the_crawl() -> None:

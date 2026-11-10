@@ -18,9 +18,16 @@ The Python crawler and the TypeScript matcher are separate projects with their o
 | Folder | Language | Package manager | Content |
 |---|---|---|---|
 | `crawler/` | Python 3.12 | [uv](https://docs.astral.sh/uv/) | PubMed, arXiv, Zenodo, YouTube and podcast crawlers |
-| `debug/crawler/` | Python 3.12, HTML | uses `crawler/` | [Debug UI](debug/crawler/README.md) for the crawler |
-| `matcher/indexer/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Index builder |
-| `matcher/mcp-server/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | MCP server |
+| `debug/crawler/` | Python 3.12, HTML | uses `crawler/` | [Debug UI](debug/crawler/README.md) for the crawler, the database, the index and the matcher |
+| `matcher/db/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Reads the stored sources ([storage](Documentation/storage.md)) |
+| `matcher/core/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Contracts of the approaches: `Approach`, `Indexer`, `Matcher`, rank fusion |
+| `matcher/approaches/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | The list of approaches, for the MCP server and the indexer |
+| `matcher/download/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Downloads full texts and reads their text ([keyword matching](Documentation/keyword-matching.md#full-texts)) |
+| `matcher/algorithms/keyword/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | [Keyword matching](Documentation/keyword-matching.md): BM25 index and matcher; [adding an approach](matcher/algorithms/README.md) |
+| `matcher/indexer/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Index builder (`make index`) |
+| `matcher/mcp-server/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | MCP server; builds the journey state (focus and context) |
+
+Matcher dependencies and code rules: [`matcher/README.md`](matcher/README.md).
 
 ### Prerequisites
 
@@ -32,9 +39,9 @@ The Python crawler and the TypeScript matcher are separate projects with their o
 | [pnpm](https://pnpm.io/installation) | 12, pinned in `matcher/package.json` |
 | [Make](https://www.gnu.org/software/make/) | any recent |
 
-### Build, test and start
+### Build, run and test
 
-See [`Documentation/build.md`](Documentation/build.md).
+How to build, test and run the matcher locally, from the database to a matched journey in the MCP Inspector: [`Documentation/build.md`](Documentation/build.md).
 
 ### Python (`crawler/`)
 
@@ -45,7 +52,7 @@ See [`Documentation/build.md`](Documentation/build.md).
    uv sync --locked
    ```
 
-2. Run the tools: `uv run pytest`, `uv run mypy src`, `uv run ruff check .`, `uv run ruff format .`
+2. Run the tools: `uv run pytest`, `uv run mypy src`, `uv run ruff check .`, `uv run ruff format .`. The store tests are skipped unless `TEST_DATABASE_URL` points to a PostgreSQL database.
 3. Add a dependency: `uv add <package>`, or `uv add --dev <package>` for dev tools.
 
 ### TypeScript (`matcher/`)
@@ -57,18 +64,9 @@ See [`Documentation/build.md`](Documentation/build.md).
    pnpm install --frozen-lockfile
    ```
 
-2. Run the tools: `pnpm typecheck`, `pnpm test`, `pnpm lint`
+2. Run the tools: `pnpm typecheck`, `pnpm test`, `pnpm lint`. The database tests of `@matcher/db` and `@matcher/keyword` are skipped unless `TEST_DATABASE_URL` points to a PostgreSQL database.
 3. Add a dependency to one package: `pnpm --filter @matcher/indexer add <package>`. Add shared dev tools to the root with `pnpm add -w -D <package>`.
-4. Start the MCP server: `pnpm --filter @matcher/mcp-server start`. See [`Documentation/mcp-interface.md`](Documentation/mcp-interface.md).
-
-#### Testing the MCP server
-
-Start the server (step 4 above), then test it with the [MCP Inspector](https://github.com/modelcontextprotocol/inspector) in a second terminal:
-
-```sh
-# Web UI, connected to our server
-npx @modelcontextprotocol/inspector --transport http --server-url http://127.0.0.1:3000/mcp
-```
+4. Start and try the MCP server: [`Documentation/build.md`](Documentation/build.md#run-the-matcher-locally).
 
 ### GitHub CI
 
@@ -86,4 +84,4 @@ It writes all direct dependencies with version, licence and scope to `out/depend
 
 ### PostgreSQL 
 
-See [`Documentation/database.md`](Documentation/database.md).
+Setup: [`Documentation/database.md`](Documentation/database.md). Tables, `--store` and reading: [`Documentation/storage.md`](Documentation/storage.md).

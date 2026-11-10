@@ -1,7 +1,48 @@
 # Seeds for one disease area. Schema: crawler/README.md#topic-files
-# Podcasts only: general medical journals that cover every disease area.
+# Medicine in general: channels and podcasts that cover every disease area.
 id: general_medicine
 label: General medicine
+
+# YouTube channels.
+channels:
+  - name: Mayo Clinic
+    url: https://www.youtube.com/channel/UC8fQzKHIhSoZeSq3bwQx4mw
+  - name: Cleveland Clinic
+    url: https://www.youtube.com/channel/UCxyiSz4m161Z6frOsFxJpgw
+  - name: Johns Hopkins Medicine
+    url: https://www.youtube.com/channel/UCATNzbTbfeoMhNonZGZmrhA
+  - name: Stanford Medicine
+    url: https://www.youtube.com/channel/UCDrQaGaHpOav5y7m1SCSJRg
+  - name: Yale Medicine
+    url: https://www.youtube.com/channel/UCQrgetn1CTBp3aa3xzbeXJw
+  - name: Duke Health
+    url: https://www.youtube.com/channel/UCNhXTS_yLO9HgFuiQuhf2AA
+  - name: UCLA Health
+    url: https://www.youtube.com/channel/UCb_JYhqnSdEejiznUm3XNqQ
+  - name: National Institutes of Health (NIH)
+    url: https://www.youtube.com/channel/UC_NQ14VoXhmabaSZ4RWgKWw
+  - name: Centers for Disease Control and Prevention (CDC)
+    url: https://www.youtube.com/channel/UCiMg06DjcUk5FRiM3g5sqoQ
+  - name: U.S. Food and Drug Administration (FDA)
+    url: https://www.youtube.com/channel/UC_giJ3xlEL9jUF1YfJdzzuQ
+  - name: World Health Organization (WHO)
+    url: https://www.youtube.com/channel/UC07-dOwgza1IguKA86jqxNA
+  - name: National Health Service (NHS)
+    url: https://www.youtube.com/channel/UCbVg41jzM8UroywvEr73Pdw
+  - name: National Institute for Health and Care Excellence (NICE)
+    url: https://www.youtube.com/channel/UCwXpF9cgPmi3MZZwBkBVVzg
+  - name: JAMA Network
+    url: https://www.youtube.com/channel/UC4p6bEngiRCN7TyTxZVJ3OQ
+  - name: NEJM Group
+    url: https://www.youtube.com/channel/UCqO3GxVYutcugyknCWdAcUA
+  - name: The BMJ
+    url: https://www.youtube.com/channel/UCrkhryqZABVzsGvfeAp0uIw
+  - name: The Lancet
+    url: https://www.youtube.com/channel/UC0-vwPmp-nmu_Huza_nq0AA
+  - name: American Medical Association (AMA)
+    url: https://www.youtube.com/channel/UCE83i5yn_YQ1HnFO027BnnQ
+  - name: Royal Australian College of General Practitioners (RACGP)
+    url: https://www.youtube.com/channel/UCbvzrxjbHd7XtuMXq9WEpzw
 
 # Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
 podcasts:
@@ -19,3 +60,73 @@ podcasts:
     audience: clinicians
     language: en
     trusted_because: Podcast of the peer-reviewed BMJ on medical research and practice.
+  - key: jama_clinical_reviews
+    name: JAMA Clinical Reviews
+    url: https://jamaclinicalreviews.libsyn.com/rss
+    publisher: JAMA Network
+    audience: clinicians
+    language: en
+    trusted_because: Interviews on the clinical reviews of JAMA, the peer-reviewed journal of the American Medical Association.
+  - key: bmj_best_practice
+    name: BMJ Best Practice Podcast
+    url: https://feed.podbean.com/bmjbestpractice/feed.xml
+    publisher: BMJ Group
+    audience: clinicians
+    language: en
+    trusted_because: Interviews with clinical experts from BMJ Best Practice, the evidence-based decision support of the peer-reviewed BMJ.
+  - key: afp_podcast
+    name: "AFP: American Family Physician Podcast"
+    url: https://rss.libsyn.com/shows/80596/destinations/371783.xml
+    publisher: American Academy of Family Physicians (AAFP)
+    audience: clinicians
+    language: en
+    trusted_because: Audio summaries of American Family Physician, the peer-reviewed journal of the American Academy of Family Physicians.
+  - key: annals_on_call
+    name: Annals On Call Podcast
+    url: https://media.acponline.org/feeds/annals-on-call.xml
+    publisher: American College of Physicians (ACP)
+    audience: clinicians
+    language: en
+    trusted_because: Experts discuss clinically influential articles of Annals of Internal Medicine, the peer-reviewed journal of the American College of Physicians.
+  - key: lancet_voice
+    name: The Lancet Voice
+    url: https://feed.podbean.com/lancetvoice/feed.xml
+    publisher: The Lancet Group
+    audience: clinicians
+    language: en
+    trusted_because: Editors of the peer-reviewed Lancet journals discuss recent clinical and global health research.
+  - key: cmaj_podcasts
+    name: CMAJ Podcasts
+    url: https://rss.buzzsprout.com/1815691.rss
+    publisher: Canadian Medical Association Journal (CMAJ)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the peer-reviewed Canadian Medical Association Journal on clinical research and health care.
+  - key: nice_talks
+    name: NICE Talks
+    url: https://feeds.soundcloud.com/users/soundcloud:users:118150081/sounds.rss
+    publisher: National Institute for Health and Care Excellence (NICE)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of NICE, the national body that issues evidence-based guidance for health care in England.
+  - key: mayo_clinic_talks
+    name: Mayo Clinic Talks
+    url: https://feed.podbean.com/mayoclinictalks/feed.xml
+    publisher: Mayo Clinic
+    audience: clinicians
+    language: en
+    trusted_because: Weekly clinical updates for primary care and specialist clinicians from Mayo Clinic physicians.
+  - key: mayo_clinic_health_matters
+    name: Mayo Clinic Health Matters
+    url: https://feeds.megaphone.fm/ERTOE2188201511
+    publisher: Mayo Clinic Press
+    audience: patients
+    language: en
+    trusted_because: Health information for the public from Mayo Clinic experts, produced by Mayo Clinic Press.
+  - key: cleveland_clinic_health_essentials
+    name: Cleveland Clinic Health Essentials Podcast
+    url: https://feeds.megaphone.fm/IAIIL7971610262
+    publisher: Cleveland Clinic
+    audience: patients
+    language: en
+    trusted_because: Practical health advice for the public from Cleveland Clinic experts.

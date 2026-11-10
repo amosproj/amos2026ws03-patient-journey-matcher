@@ -1,0 +1,84 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: asthma
+label: Asthma
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - asthma
+  - asthmatic
+  - status asthmaticus
+  - exercise induced bronchoconstriction
+  - reactive airway disease
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - asthma
+  - severe asthma
+  - difficult-to-treat asthma
+  - eosinophilic asthma
+  - non-eosinophilic asthma
+  - allergic asthma
+  - occupational asthma
+  - exercise-induced asthma
+  - childhood asthma
+  - asthma-COPD overlap
+  - asthma clinical remission
+  - acute asthma exacerbation
+  # Diagnosis and screening
+  - asthma diagnosis
+  - asthma spirometry
+  - asthma exhaled nitric oxide
+  - asthma methacholine challenge
+  - asthma blood eosinophils
+  - asthma control test
+  # Treatment
+  - asthma inhaled corticosteroids
+  - asthma budesonide formoterol
+  - asthma maintenance and reliever therapy
+  - asthma tiotropium
+  - asthma montelukast
+  - asthma oral corticosteroids
+  - asthma biologic therapy
+  - asthma omalizumab
+  - asthma mepolizumab
+  - asthma benralizumab
+  - asthma dupilumab
+  - asthma tezepelumab
+  - asthma allergen immunotherapy
+  - asthma bronchial thermoplasty
+  # Living with
+  - asthma self-management
+  - asthma action plan
+  - asthma inhaler technique
+  - asthma medication adherence
+  - asthma quality of life
+  - asthma anxiety depression
+  - asthma pregnancy
+  - asthma telehealth
+
+# YouTube channels.
+channels:
+  - name: Asthma and Allergy Foundation of America (AAFA)
+    url: https://www.youtube.com/channel/UCToRbRJeOAIvBpQw2inQ1JA
+  - name: Asthma Australia
+    url: https://www.youtube.com/channel/UC69wHY5dG05HOVldFvQkq3g
+  - name: Asthma Canada
+    url: https://www.youtube.com/channel/UCX2gG53GEfzQm1C_5k7KYxw
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: gina_asthma_with_experts
+    name: Asthma with Experts
+    url: https://feeds.acast.com/public/shows/67af7d975bd6cff30054c1d7
+    publisher: Global Initiative for Asthma (GINA)
+    audience: clinicians
+    language: en
+    trusted_because: Produced by GINA, the organisation behind the global asthma management guideline, with expert clinicians on asthma care.
+  - key: aafa_aafanoon_chats
+    name: AAFAnoon Chats
+    url: https://anchor.fm/s/f88cd608/podcast/rss
+    publisher: Asthma and Allergy Foundation of America (AAFA)
+    audience: patients
+    language: en
+    trusted_because: Official podcast of AAFA, a US patient organisation for asthma and allergies, with expert interviews.

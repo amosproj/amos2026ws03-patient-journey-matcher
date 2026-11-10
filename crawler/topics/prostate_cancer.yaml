@@ -10,63 +10,71 @@ terms:
   - prostatic neoplasm
   - prostatic carcinoma
   - prostatic adenocarcinoma
+  - prostatic cancer
   - adenocarcinoma of the prostate
+  - carcinoma of the prostate
+  - cancer of the prostate
+  - CRPC
   - mCRPC
   - nmCRPC
+  - mHSPC
 
 # PubMed, arXiv and Zenodo search queries.
 queries:
   # Disease
   - prostate cancer
-  - prostatic neoplasm
-  - prostatic carcinoma
-  - adenocarcinoma of the prostate
   - localized prostate cancer
   - advanced prostate cancer
   - metastatic prostate cancer
+  - metastatic hormone-sensitive prostate cancer
   - castration-sensitive prostate cancer
   - castration-resistant prostate cancer
   - mCRPC
-  - nmCRPC
   - high-risk prostate cancer
-  - low-risk prostate cancer
   - prostate cancer biochemical recurrence
-  - prostate cancer PSA recurrence
+  - oligometastatic prostate cancer
   # Diagnosis and screening
+  - prostate cancer screening
   - prostate cancer PSA
-  - prostate specific antigen
   - prostate cancer PSMA PET
   - prostate cancer MRI
-  - prostate cancer multiparametric MRI
   - prostate cancer biopsy
   - prostate cancer Gleason score
-  - prostate cancer ISUP grade
   - prostate cancer active surveillance
-  - prostate cancer risk stratification
   - prostate cancer genomic testing
+  - prostate cancer germline testing
   # Treatment
   - radical prostatectomy
-  - robotic prostatectomy
   - prostate cancer radiation therapy
+  - prostate cancer hypofractionated radiotherapy
   - prostate cancer brachytherapy
   - prostate cancer SBRT
+  - prostate cancer salvage radiotherapy
+  - prostate cancer focal therapy
   - prostate cancer androgen deprivation therapy
-  - prostate cancer ADT
-  - prostate cancer hormone therapy
+  - prostate cancer GnRH antagonist
   - prostate cancer enzalutamide
   - prostate cancer abiraterone
   - prostate cancer apalutamide
   - prostate cancer darolutamide
-  - prostate cancer chemotherapy
   - prostate cancer docetaxel
   - prostate cancer cabazitaxel
   - prostate cancer PARP inhibitor
   - prostate cancer olaparib
-  - prostate cancer rucaparib
-  - prostate cancer radioligand therapy
-  - prostate cancer Lu177 PSMA
+  - prostate cancer niraparib
+  - prostate cancer talazoparib
+  - prostate cancer lutetium PSMA
+  - prostate cancer radium-223
   - prostate cancer immunotherapy
-  - prostate cancer clinical trial
+  # Living with
+  - prostate cancer urinary incontinence
+  - prostate cancer erectile dysfunction
+  - prostate cancer sexual health
+  - prostate cancer quality of life
+  - prostate cancer survivorship
+  - prostate cancer exercise
+  - prostate cancer ADT side effects
+  - prostate cancer follow-up
 
 # YouTube channels.
 channels:
@@ -76,9 +84,17 @@ channels:
     url: https://www.youtube.com/channel/UCIDj9VHBN-Ly-NYp9itgMxg
   - name: ZERO Prostate Cancer
     url: https://www.youtube.com/channel/UC5TTkqc3lQcej4XnTXz4MqQ
-  - name: The Urology Foundation
-    url: https://www.youtube.com/channel/UCLBZ58KNfk6oVwutySwqzjw
-  - name: European Association of Urology (EAU)
-    url: https://www.youtube.com/channel/UCuBt1xdv2n7GPawh7lcqDRA
-  - name: American Urological Association (AUA)
-    url: https://www.youtube.com/channel/UCTyj0qXIIaqiU_Sa9P4Ow8w
+  - name: Prostate Cancer UK
+    url: https://www.youtube.com/channel/UC8KAhtyYbXSMDyarDhrdTSA
+  - name: Prostate Cancer Foundation of Australia (PCFA)
+    url: https://www.youtube.com/channel/UCUIkK_JD5EOOgtlduXVt6Zg
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: prostate_pod
+    name: The Prostate Pod
+    url: https://anchor.fm/s/3db76de8/podcast/rss
+    publisher: Prostate Cancer Research
+    audience: patients
+    language: en
+    trusted_because: Podcast of the UK research charity Prostate Cancer Research, with interviews of its researchers and staff on prostate cancer research, screening and living with the disease.

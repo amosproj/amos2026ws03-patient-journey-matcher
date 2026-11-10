@@ -1,0 +1,106 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+# Bones, joints and muscles in general: channels and podcasts of rheumatology and orthopaedics societies, journals, charities and hospitals.
+id: general_musculoskeletal
+label: Bones, joints and muscles in general
+
+# YouTube channels.
+channels:
+  - name: American College of Rheumatology (ACR)
+    url: https://www.youtube.com/channel/UCpMxh61CUyY4j3c6U4SX0Gg
+  - name: European Alliance of Associations for Rheumatology (EULAR)
+    url: https://www.youtube.com/channel/UCX6UCy05VE8UiYY-q_0j3JQ
+  - name: British Society for Rheumatology (BSR)
+    url: https://www.youtube.com/channel/UCTt_QipzReEH5ORYPGvSbxA
+  - name: Arthritis Foundation
+    url: https://www.youtube.com/channel/UCoak-43w1BqWHZs7U_s8Shw
+  - name: Arthritis UK (formerly Versus Arthritis)
+    url: https://www.youtube.com/channel/UCvBfwJfZIQ6jWKpKYDy7DNw
+  - name: OrthoInfo of the American Academy of Orthopaedic Surgeons (AAOS)
+    url: https://www.youtube.com/channel/UCsxJPrDOwpvhjqBJvtsRiJw
+  - name: Hospital for Special Surgery (HSS)
+    url: https://www.youtube.com/channel/UCtiGeFDbY7iVDODlLKQ5onw
+  - name: CreakyJoints (Global Healthy Living Foundation)
+    url: https://www.youtube.com/channel/UCSooQXJQlPeYz-DZwZ8GPuw
+  - name: Arthritis Ireland
+    url: https://www.youtube.com/channel/UCeXbl4NDqiRkmrCak9YUBhg
+  - name: Arthritis Consumer Experts (ACE)
+    url: https://www.youtube.com/channel/UCqF0b7afzoPwdGYTQuPCGAA
+  - name: Bath Institute for Rheumatic Diseases (BIRD)
+    url: https://www.youtube.com/channel/UC3tW2mYBcMJVDczSWyjjitA
+  - name: Arthritis New Zealand
+    url: https://www.youtube.com/channel/UCGrg2mI4fUVpJoFRXDg7sCg
+  - name: Arthritis Research Canada
+    url: https://www.youtube.com/channel/UCJqIqPBtsbGLnyJMlQez9qA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: acr_journals_on_air
+    name: ACR Journals On Air
+    url: https://rss.libsyn.com/shows/436041/destinations/3640041.xml
+    publisher: American College of Rheumatology (ACR)
+    audience: clinicians
+    language: en
+    trusted_because: Author interviews on the peer-reviewed journals of the American College of Rheumatology.
+  - key: acr_on_air
+    name: ACR on Air
+    url: https://rss.libsyn.com/shows/181481/destinations/1238600.xml
+    publisher: American College of Rheumatology (ACR)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the American College of Rheumatology on clinical care, guidelines and research.
+  - key: lancet_rheumatology
+    name: The Lancet Rheumatology in conversation with
+    url: https://feed.podbean.com/lancetrheum/feed.xml
+    publisher: The Lancet Group
+    audience: clinicians
+    language: en
+    trusted_because: Editors of the peer-reviewed journal The Lancet Rheumatology talk with authors about their research.
+  - key: talking_rheumatology_spotlight
+    name: Talking Rheumatology Spotlight
+    url: https://rss.buzzsprout.com/1972494.rss
+    publisher: British Society for Rheumatology (BSR)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the British Society for Rheumatology on rheumatology practice and care.
+  - key: your_case_is_on_hold
+    name: Your Case Is On Hold
+    url: https://feeds.castos.com/zdwx7
+    publisher: "The Journal of Bone & Joint Surgery (JBJS)"
+    audience: clinicians
+    language: en
+    trusted_because: Deputy editors of the peer-reviewed Journal of Bone & Joint Surgery discuss the studies of each issue.
+  - key: jaaos_unplugged
+    name: JAAOS Unplugged
+    url: https://rss.libsyn.com/shows/145019/destinations/920678.xml
+    publisher: American Academy of Orthopaedic Surgeons (AAOS)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the Journal of the American Academy of Orthopaedic Surgeons, a peer-reviewed journal.
+  - key: jospt_insights
+    name: JOSPT Insights
+    url: https://feeds.resonaterecordings.com/jospt
+    publisher: "Journal of Orthopaedic & Sports Physical Therapy (JOSPT)"
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the peer-reviewed Journal of Orthopaedic & Sports Physical Therapy on musculoskeletal rehabilitation.
+  - key: apta_orthopedics_podcasts
+    name: APTA Orthopedics Podcasts
+    url: https://feeds.blubrry.com/feeds/3713731.xml
+    publisher: APTA Orthopedics (Academy of Orthopaedic Physical Therapy)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of APTA Orthopedics, the orthopaedic section of the American Physical Therapy Association, with episodes on clinical practice guidelines.
+  - key: live_yes_with_arthritis
+    name: Live Yes! With Arthritis
+    url: https://feeds.fireside.fm/liveyeswitharthritis/rss
+    publisher: Arthritis Foundation
+    audience: patients
+    language: en
+    trusted_because: Podcast of the Arthritis Foundation, a US nonprofit for people with arthritis.
+  - key: bird_patient_podcasts
+    name: Bath Institute for Rheumatic Diseases, Patient Podcasts
+    url: https://anchor.fm/s/1635567c/podcast/rss
+    publisher: Bath Institute for Rheumatic Diseases (BIRD)
+    audience: patients
+    language: en
+    trusted_because: Rheumatology clinicians talk to patients; BIRD is a UK registered charity for arthritis research, education and patient engagement.

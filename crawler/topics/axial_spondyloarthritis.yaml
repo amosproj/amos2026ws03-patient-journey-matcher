@@ -1,0 +1,83 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: axial_spondyloarthritis
+label: Axial spondyloarthritis
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - axial spondyloarthritis
+  - axSpA
+  - axial SpA
+  - ankylosing spondylitis
+  - Spondylitis, Ankylosing
+  - spondyloarthritis
+  - spondyloarthritides
+  - Spondylarthritis
+  - spondyloarthropathy
+  - spondyloarthropathies
+  - Spondylarthropathies
+  - Bechterew disease
+  - Bechterew's disease
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - axial spondyloarthritis
+  - axSpA
+  - ankylosing spondylitis
+  - non-radiographic axial spondyloarthritis
+  - radiographic axial spondyloarthritis
+  - spondyloarthritis
+  - axial spondyloarthritis uveitis
+  - axial spondyloarthritis inflammatory bowel disease
+  - axial spondyloarthritis women
+  - ankylosing spondylitis syndesmophytes
+  # Diagnosis and screening
+  - axial spondyloarthritis diagnosis
+  - axial spondyloarthritis classification criteria
+  - axial spondyloarthritis HLA-B27
+  - axial spondyloarthritis MRI sacroiliac joints
+  - axial spondyloarthritis inflammatory back pain
+  - axial spondyloarthritis diagnostic delay
+  - axial spondyloarthritis ASDAS
+  - ankylosing spondylitis BASDAI
+  # Treatment
+  - axial spondyloarthritis NSAIDs
+  - axial spondyloarthritis biologics
+  - axial spondyloarthritis TNF inhibitors
+  - axial spondyloarthritis adalimumab
+  - axial spondyloarthritis IL-17 inhibitors
+  - axial spondyloarthritis secukinumab
+  - axial spondyloarthritis ixekizumab
+  - axial spondyloarthritis bimekizumab
+  - axial spondyloarthritis JAK inhibitors
+  - axial spondyloarthritis upadacitinib
+  - ankylosing spondylitis hip arthroplasty
+  # Living with
+  - axial spondyloarthritis exercise
+  - axial spondyloarthritis physiotherapy
+  - axial spondyloarthritis self-management
+  - axial spondyloarthritis quality of life
+  - axial spondyloarthritis fatigue
+  - axial spondyloarthritis work
+  - axial spondyloarthritis pregnancy
+
+# YouTube channels.
+channels:
+  - name: Spondylitis Association of America (SAA)
+    url: https://www.youtube.com/channel/UCCNbdZ2G-CzOFjT9bq3cXoA
+  - name: National Axial Spondyloarthritis Society (NASS)
+    url: https://www.youtube.com/channel/UCBBEzT1MrYyLe_TWQ17Rz1g
+  - name: Canadian Spondyloarthritis Association (CSA)
+    url: https://www.youtube.com/channel/UC3W94Y75wyVudvmN49Qi1qg
+  - name: Axial Spondyloarthritis International Federation (ASIF)
+    url: https://www.youtube.com/channel/UC7gQjCTac7VZ11Gzkwqt_yA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: spondycast
+    name: Spondycast
+    url: https://media.rss.com/saa-spondycast/feed.xml
+    publisher: Spondylitis Association of America (SAA)
+    audience: patients
+    language: en
+    trusted_because: Podcast of the Spondylitis Association of America, a nonprofit for people living with spondyloarthritis.

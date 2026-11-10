@@ -6,9 +6,95 @@ label: Breast cancer
 terms:
   - breast cancer
   - breast carcinoma
-  - breast neoplasm
+  - Breast Neoplasms
+  - breast tumor
+  - breast tumour
+  - TNBC
+  - DCIS
+  - ductal carcinoma in situ
+  - Carcinoma, Intraductal, Noninfiltrating
+  - hereditary breast and ovarian cancer
 
 # PubMed, arXiv and Zenodo search queries.
 queries:
+  # Disease
   - breast cancer
-  - breast carcinoma
+  - early breast cancer
+  - hormone receptor-positive breast cancer
+  - HER2-positive breast cancer
+  - triple-negative breast cancer
+  - metastatic breast cancer
+  - ductal carcinoma in situ
+  - invasive lobular breast cancer
+  # Diagnosis and screening
+  - breast cancer screening
+  - breast cancer mammography
+  - breast cancer dense breasts
+  - breast cancer biopsy
+  - breast cancer BRCA mutation
+  - breast cancer multigene assay
+  # Treatment
+  - breast cancer breast-conserving surgery
+  - breast cancer mastectomy
+  - breast cancer breast reconstruction
+  - breast cancer sentinel node biopsy
+  - breast cancer radiotherapy
+  - breast cancer neoadjuvant therapy
+  - breast cancer endocrine therapy
+  - breast cancer tamoxifen
+  - breast cancer aromatase inhibitor
+  - breast cancer palbociclib
+  - breast cancer ribociclib
+  - breast cancer abemaciclib
+  - breast cancer trastuzumab
+  - breast cancer trastuzumab deruxtecan
+  - breast cancer pembrolizumab
+  - breast cancer sacituzumab govitecan
+  - breast cancer PARP inhibitor
+  # Living with
+  - breast cancer lymphedema
+  - breast cancer survivorship
+  - breast cancer quality of life
+  - breast cancer fertility preservation
+  - breast cancer cardiotoxicity
+  - breast cancer menopausal symptoms
+  - breast cancer sexual health
+  - breast cancer exercise
+  - breast cancer follow-up
+
+# YouTube channels.
+channels:
+  - name: Breast Cancer Now
+    url: https://www.youtube.com/channel/UC8VM32n3Xp3n3puDjGSMZKQ
+  - name: Susan G. Komen
+    url: https://www.youtube.com/channel/UCjKkTxdUepxlNIk9wzRAQvg
+  - name: Living Beyond Breast Cancer (LBBC)
+    url: https://www.youtube.com/channel/UCa8mup9xIKDg0FE3P27Dnng
+  - name: Breastcancer.org
+    url: https://www.youtube.com/channel/UCmX7zgjQFd7JiNJQ6ZJXJGQ
+  - name: Breast Cancer Research Foundation (BCRF)
+    url: https://www.youtube.com/channel/UCEeInLT0VNTp6Qob5jDsrfA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: breastcancer_org_podcast
+    name: Breastcancer.org Podcast
+    url: https://feeds.megaphone.fm/breastcancerorg-podcast
+    publisher: Breastcancer.org
+    audience: patients
+    language: en
+    trusted_because: Breastcancer.org, a US nonprofit for breast cancer information, discusses treatment, research and life with breast cancer with medical experts and patients.
+  - key: breast_cancer_now_podcast
+    name: Breast Cancer Now Podcast
+    url: https://audioboom.com/channels/4978682.rss
+    publisher: Breast Cancer Now
+    audience: patients
+    language: en
+    trusted_because: Breast Cancer Now, the UK's largest breast cancer research and support charity, talks with people affected by breast cancer, its nurses and specialists.
+  - key: komen_real_pink
+    name: Real Pink
+    url: https://feeds.fireside.fm/realpink/rss
+    publisher: Susan G. Komen
+    audience: patients
+    language: en
+    trusted_because: Susan G. Komen, a leading US breast cancer charity and research funder, talks with survivors, researchers and physicians.

@@ -1,0 +1,66 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: rheumatoid_arthritis
+label: Rheumatoid arthritis
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - rheumatoid arthritis
+  - Arthritis, Rheumatoid
+  - rheumatoid disease
+  - Rheumatoid Nodule
+  - Felty syndrome
+  - Felty's syndrome
+  - Caplan syndrome
+  - Caplan's syndrome
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - rheumatoid arthritis
+  - seropositive rheumatoid arthritis
+  - seronegative rheumatoid arthritis
+  - early rheumatoid arthritis
+  - difficult-to-treat rheumatoid arthritis
+  - rheumatoid arthritis interstitial lung disease
+  - rheumatoid arthritis cardiovascular risk
+  - rheumatoid arthritis remission
+  - rheumatoid arthritis flare
+  # Diagnosis and screening
+  - rheumatoid arthritis classification criteria
+  - rheumatoid arthritis rheumatoid factor
+  - rheumatoid arthritis anti-CCP antibodies
+  - rheumatoid arthritis ultrasound
+  - rheumatoid arthritis MRI
+  - rheumatoid arthritis DAS28
+  - rheumatoid arthritis treat-to-target
+  # Treatment
+  - rheumatoid arthritis methotrexate
+  - rheumatoid arthritis leflunomide
+  - rheumatoid arthritis hydroxychloroquine
+  - rheumatoid arthritis glucocorticoids
+  - rheumatoid arthritis csDMARDs
+  - rheumatoid arthritis biologics
+  - rheumatoid arthritis TNF inhibitors
+  - rheumatoid arthritis adalimumab
+  - rheumatoid arthritis tocilizumab
+  - rheumatoid arthritis abatacept
+  - rheumatoid arthritis JAK inhibitors
+  - rheumatoid arthritis tofacitinib
+  - rheumatoid arthritis upadacitinib
+  - rheumatoid arthritis biosimilars
+  - rheumatoid arthritis tapering
+  - rheumatoid arthritis joint replacement
+  # Living with
+  - rheumatoid arthritis exercise
+  - rheumatoid arthritis occupational therapy
+  - rheumatoid arthritis self-management
+  - rheumatoid arthritis quality of life
+  - rheumatoid arthritis fatigue
+  - rheumatoid arthritis diet
+  - rheumatoid arthritis pregnancy
+  - rheumatoid arthritis work disability
+
+# YouTube channels.
+channels:
+  - name: National Rheumatoid Arthritis Society (NRAS)
+    url: https://www.youtube.com/channel/UCpSjjXNpKWkb4ltuAmWMQIA

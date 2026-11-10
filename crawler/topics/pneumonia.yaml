@@ -1,0 +1,65 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: pneumonia
+label: Pneumonia
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - pneumonia
+  - community-acquired pneumonia
+  - hospital-acquired pneumonia
+  - ventilator-associated pneumonia
+  - aspiration pneumonia
+  - Pneumonia, Bacterial
+  - Pneumonia, Viral
+  - Healthcare-Associated Pneumonia
+  - pneumococcal vaccine
+  - pneumococcal conjugate vaccine
+  - pneumococcal disease
+  - pneumococcal infection
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - pneumonia
+  - community-acquired pneumonia
+  - severe community-acquired pneumonia
+  - hospital-acquired pneumonia
+  - ventilator-associated pneumonia
+  - aspiration pneumonia
+  - pneumococcal pneumonia
+  - viral pneumonia
+  - childhood pneumonia
+  - pneumonia older adults
+  - pneumonia pleural empyema
+  # Diagnosis and screening
+  - pneumonia diagnosis
+  - pneumonia chest radiograph
+  - pneumonia lung ultrasound
+  - pneumonia procalcitonin
+  - pneumonia severity assessment
+  - pneumonia urinary antigen test
+  # Treatment
+  - pneumonia antibiotic therapy
+  - community-acquired pneumonia amoxicillin
+  - community-acquired pneumonia doxycycline
+  - community-acquired pneumonia macrolides
+  - community-acquired pneumonia corticosteroids
+  - community-acquired pneumonia short course antibiotics
+  - hospital-acquired pneumonia antibiotics
+  - ventilator-associated pneumonia prevention
+  - ventilator-associated pneumonia antibiotics
+  - aspiration pneumonia antibiotics
+  - pneumonia high-flow nasal oxygen
+  - pneumonia noninvasive ventilation
+  - pneumococcal conjugate vaccine
+  - pneumococcal vaccine adults
+  - invasive pneumococcal disease
+  # Living with
+  - pneumonia recovery
+  - pneumonia long-term outcomes
+  - pneumonia readmission
+  - pneumonia rehabilitation
+  - pneumonia cardiovascular complications
+  - aspiration pneumonia dysphagia
+  - aspiration pneumonia oral care
+  - pneumonia nursing home

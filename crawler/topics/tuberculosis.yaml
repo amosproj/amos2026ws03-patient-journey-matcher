@@ -1,0 +1,84 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: tuberculosis
+label: Tuberculosis
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - tuberculosis
+  - Mycobacterium tuberculosis
+  - Tuberculosis, Pulmonary
+  - Latent Tuberculosis
+  - Tuberculosis, Multidrug-Resistant
+  - Extensively Drug-Resistant Tuberculosis
+  - drug-resistant tuberculosis
+  - rifampicin-resistant tuberculosis
+  - MDR-TB
+  - XDR-TB
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - tuberculosis
+  - pulmonary tuberculosis
+  - extrapulmonary tuberculosis
+  - latent tuberculosis infection
+  - drug-resistant tuberculosis
+  - multidrug-resistant tuberculosis
+  - rifampicin-resistant tuberculosis
+  - extensively drug-resistant tuberculosis
+  - tuberculosis meningitis
+  - childhood tuberculosis
+  - tuberculosis HIV coinfection
+  # Diagnosis and screening
+  - tuberculosis diagnosis
+  - tuberculosis molecular diagnostic test
+  - tuberculosis interferon gamma release assay
+  - tuberculosis tuberculin skin test
+  - tuberculosis drug susceptibility testing
+  - tuberculosis whole genome sequencing
+  - tuberculosis computer-aided detection
+  - tuberculosis urine lipoarabinomannan
+  - tuberculosis contact investigation
+  # Treatment
+  - tuberculosis treatment
+  - tuberculosis shorter treatment regimen
+  - tuberculosis rifapentine
+  - tuberculosis bedaquiline
+  - tuberculosis pretomanid
+  - tuberculosis linezolid
+  - tuberculosis delamanid
+  - tuberculosis preventive treatment
+  - latent tuberculosis rifapentine isoniazid
+  - tuberculosis BCG vaccine
+  - tuberculosis vaccine candidates
+  - tuberculosis directly observed therapy
+  # Living with
+  - tuberculosis treatment adherence
+  - tuberculosis stigma
+  - tuberculosis quality of life
+  - post-tuberculosis lung disease
+  - tuberculosis adverse drug reactions
+  - tuberculosis diabetes comorbidity
+  - tuberculosis social support
+  - tuberculosis depression
+
+# YouTube channels.
+channels:
+  - name: International Union Against Tuberculosis and Lung Disease (The Union)
+    url: https://www.youtube.com/channel/UCcDrRTNWdjDXgZK91_nr29A
+  - name: Curry International Tuberculosis Center
+    url: https://www.youtube.com/channel/UCQGniCFVuR-JZUjY_BYGF1w
+  - name: Heartland National Tuberculosis Center
+    url: https://www.youtube.com/channel/UC7qIyX9pbaEIsaJX_vSa3IQ
+  - name: Southeastern National Tuberculosis Center (SNTC)
+    url: https://www.youtube.com/channel/UCDwJKwgjTQQt3XHGjUgvWXw
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: actnet_tbpod
+    name: The TBPod
+    url: https://rss.buzzsprout.com/851944.rss
+    publisher: Australasian Clinical Tuberculosis Network (ACTnet)
+    audience: clinicians
+    language: en
+    trusted_because: Monthly podcast of ACTnet, the network of tuberculosis clinicians and researchers in Australia and New Zealand.

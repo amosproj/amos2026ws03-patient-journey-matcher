@@ -1,0 +1,93 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+# Gastroenterology in general: channels and podcasts of gastroenterology and hepatology societies, journals and patient organisations.
+id: general_gastroenterology
+label: Gastroenterology in general
+
+# YouTube channels.
+channels:
+  - name: American Gastroenterological Association (AGA)
+    url: https://www.youtube.com/channel/UC9gs7X1GwlFAqO0fEf0Tysg
+  - name: American College of Gastroenterology (ACG)
+    url: https://www.youtube.com/channel/UC_FFkOg3B0lWjl6RB3T6QwA
+  - name: United European Gastroenterology (UEG)
+    url: https://www.youtube.com/channel/UCEGUMoUH3Xg4vJNCoavYpzQ
+  - name: American Association for the Study of Liver Diseases (AASLD)
+    url: https://www.youtube.com/channel/UCASwvoiywTWfuZivqIhKnEA
+  - name: American Liver Foundation (ALF)
+    url: https://www.youtube.com/channel/UCVQcOvt0I61Xgew_EtlYSXA
+  - name: Global Liver Institute (GLI)
+    url: https://www.youtube.com/channel/UCLYtkzOVI9GuFMPuEVde8vA
+  - name: Liver Canada
+    url: https://www.youtube.com/channel/UCtMzSfNUdTrcDpvl2CNQclw
+  - name: Guts UK
+    url: https://www.youtube.com/channel/UCkGn8SpSY6WpJoVj76mMeyA
+  - name: Gastrointestinal Society (GI Society)
+    url: https://www.youtube.com/channel/UCud06U6_6M0ilG7VqOAnL7g
+  - name: United Ostomy Associations of America (UOAA)
+    url: https://www.youtube.com/channel/UCA6Dl3eEdpl0_Y8UDgkh6kA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: aga_inside_scope
+    name: Inside Scope
+    url: https://feeds.resonaterecordings.com/inside-scope-aga-podcast
+    publisher: American Gastroenterological Association (AGA)
+    audience: clinicians
+    language: en
+    trusted_because: Official AGA podcast on clinical practice updates, guidelines and best practice in gastroenterology patient care.
+  - key: ajg_author_podcasts
+    name: American Journal of Gastroenterology Author Podcasts
+    url: https://webfiles.gi.org/podcasts/xml/ajgpodcasts.xml
+    publisher: American College of Gastroenterology (ACG)
+    audience: clinicians
+    language: en
+    trusted_because: The editors of the peer-reviewed American Journal of Gastroenterology interview authors of clinically relevant articles.
+  - key: bsg_from_top_to_bottom
+    name: BSG From Top to Bottom
+    url: https://feeds.castos.com/159q7
+    publisher: British Society of Gastroenterology (BSG)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the BSG with interviews and summaries of guidelines for gastroenterology practice.
+  - key: pcsg_ingest
+    name: Ingest
+    url: https://www.pcsg.org.uk/feed/podcast/ingest/
+    publisher: Primary Care Society for Gastroenterology (PCSG)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the PCSG in which a GP explores when to suspect, diagnose, refer and support patients with gastroenterology conditions.
+  - key: ueg_podcast
+    name: UEG Podcast
+    url: https://ueg-talks-podcast.podigee.io/feed/mp3
+    publisher: United European Gastroenterology (UEG)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of UEG on scientific, educational and professional topics in digestive health.
+  - key: easl_podcasts
+    name: EASL Podcasts
+    url: https://rss.buzzsprout.com/1735335.rss
+    publisher: European Association for the Study of the Liver (EASL)
+    audience: clinicians
+    language: en
+    trusted_because: Official EASL podcasts with expert discussions and audio from its guideline webinars on hepatology.
+  - key: gut_podcast
+    name: Gut Podcast
+    url: https://feed.podbean.com/gutbmj/feed.xml
+    publisher: BMJ Group
+    audience: clinicians
+    language: en
+    trusted_because: The digital editor of Gut, the peer-reviewed journal of BMJ Group and the British Society of Gastroenterology, discusses articles with their authors.
+  - key: frontline_gastroenterology_podcast
+    name: FG Podcast
+    url: https://feed.podbean.com/fgbmj/feed.xml
+    publisher: BMJ Group
+    audience: clinicians
+    language: en
+    trusted_because: Interviews with authors of Frontline Gastroenterology, the peer-reviewed journal of BMJ Group and the British Society of Gastroenterology.
+  - key: lancet_gastroenterology_hepatology
+    name: The Lancet Gastroenterology & Hepatology in conversation with
+    url: https://feed.podbean.com/lancetgastro/feed.xml
+    publisher: The Lancet Group
+    audience: clinicians
+    language: en
+    trusted_because: Monthly interviews with authors of the peer-reviewed journal The Lancet Gastroenterology & Hepatology.

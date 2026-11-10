@@ -1,0 +1,85 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: colorectal_cancer
+label: Colorectal cancer
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - colorectal cancer
+  - colorectal carcinoma
+  - colorectal neoplasm
+  - colorectal adenocarcinoma
+  - colon cancer
+  - colon carcinoma
+  - colon adenocarcinoma
+  - colonic neoplasm
+  - rectal cancer
+  - rectal carcinoma
+  - rectal neoplasm
+  - bowel cancer
+  - CRC
+  - mCRC
+  - Lynch syndrome
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - colorectal cancer
+  - colon cancer
+  - rectal cancer
+  - bowel cancer
+  - early-onset colorectal cancer
+  - locally advanced rectal cancer
+  - metastatic colorectal cancer
+  - colorectal cancer liver metastases
+  - BRAF V600E colorectal cancer
+  - MSI-H colorectal cancer
+  - Lynch syndrome
+  # Diagnosis and screening
+  - colorectal cancer screening
+  - colorectal cancer colonoscopy
+  - colorectal cancer fecal immunochemical test
+  - colorectal cancer stool DNA
+  - colorectal cancer circulating tumor DNA
+  - rectal cancer MRI staging
+  - colorectal cancer RAS mutation
+  # Treatment
+  - colon cancer colectomy
+  - rectal cancer total mesorectal excision
+  - rectal cancer short-course radiotherapy
+  - rectal cancer neoadjuvant chemoradiotherapy
+  - rectal cancer total neoadjuvant therapy
+  - rectal cancer watch-and-wait
+  - colorectal cancer adjuvant chemotherapy
+  - colorectal cancer oxaliplatin
+  - colorectal cancer capecitabine
+  - colorectal cancer immune checkpoint inhibitor
+  - colorectal cancer pembrolizumab
+  - colorectal cancer anti-EGFR
+  - colorectal cancer bevacizumab
+  - colorectal cancer encorafenib
+  # Living with
+  - colorectal cancer stoma
+  - rectal cancer bowel function
+  - colorectal cancer survivors
+  - colorectal cancer quality of life
+  - colorectal cancer follow-up
+  - colorectal cancer physical activity
+  - colorectal cancer peripheral neuropathy
+  - colorectal cancer caregivers
+
+# YouTube channels.
+channels:
+  - name: Fight Colorectal Cancer (Fight CRC)
+    url: https://www.youtube.com/channel/UCeNy8LO21qQ0ANPJHVK_p5Q
+  - name: Colorectal Cancer Alliance
+    url: https://www.youtube.com/channel/UChk_2XJ0-AcqeSfvyBrAANA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: bowel_cancer_australia_bottom_line
+    name: The Bottom Line Podcast
+    url: https://feeds.captivate.fm/the-bottom-line-podcast/
+    publisher: Bowel Cancer Australia
+    audience: patients
+    language: en
+    trusted_because: Bowel Cancer Australia, a community-funded national charity, talks monthly with people living with bowel cancer and with the health professionals who care for them.

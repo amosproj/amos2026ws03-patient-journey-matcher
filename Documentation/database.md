@@ -1,13 +1,13 @@
 ## Local database (PostgreSQL)
 
-The local database runs in Docker via Docker Compose. It uses PostgreSQL 18 with the pgvector extension and is defined in `compose.yaml` in the repository root. Every developer gets the same setup, so the crawler, indexer and MCP server can be developed and tested against the same database.
+The local database runs in Docker via Docker Compose. It uses PostgreSQL 18 with the pgvector and pg_textsearch extensions and is defined in `compose.yaml` in the repository root. Every developer gets the same setup, so the crawler, indexer and MCP server can be developed and tested against the same database.
 
 ### Prerequisites
 
 - Docker Desktop (Windows/macOS) or Docker Engine with the Compose plugin
 - Check the installation with `docker compose version`
 - On Windows, Docker Desktop needs WSL2
-- No Docker login is needed. The image is pulled automatically on first start.
+- No Docker login is needed. `make db` builds the image from `db/Dockerfile`: the pgvector image (PostgreSQL 18 on Debian 13) plus pg_textsearch for the [keyword index](keyword-matching.md).
 
 ### Configuration
 
@@ -51,16 +51,28 @@ Open a SQL shell inside the container (use the values from your `.env`):
 docker compose exec postgres psql -U amos -d patient_journey_matcher
 ```
 
-Type `\q` to leave. Connection URL for clients running on your machine (asyncpg, node-postgres):
+Type `\q` to leave. Connection URL for clients running on your machine (asyncpg, node-postgres), e.g. `DATABASE_URL` in `crawler/.env`:
 
 ```
-postgresql://amos:<password>@localhost:5432/patient_journey_matcher
+postgresql://amos:<password>@127.0.0.1:5432/patient_journey_matcher
 ```
 
-When a component runs as a container in the same Compose file, use the host `postgres` instead of `localhost`.
+Use `127.0.0.1`, not `localhost`: the port is published on IPv4 only. URL-encode special characters in the password. When a component runs as a container in the same Compose file, use the host `postgres` instead.
 
 ### Data and initialization
 
 - Data is stored in the Docker volume `pgdata` and survives `stop`, `down` and restarts. Only `down -v` deletes it.
-- SQL files in `db/init/` run once on the first start with an empty volume. They enable the `vector` extension and will later create the shared schemas. After changing them, reset with `docker compose down -v` and start again.
+- SQL files in `db/init/` run once on the first start with an empty volume. They enable the `vector` extension and create the tables `documents` and `crawl_runs` ([storage and retrieval](storage.md)).
+- `make db` starts the database and applies `db/init/` again, so an existing volume gets new tables without a reset. Without make (works in Bash and PowerShell):
+
+  ```bash
+  docker compose up -d --wait
+  docker compose exec -T postgres sh -ec 'for f in /docker-entrypoint-initdb.d/*.sql; do PGOPTIONS=--client-min-messages=warning psql -v ON_ERROR_STOP=1 -q -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f "$f"; done'
+  ```
+- A volume created before the image moved to Debian 13 warns "collation version mismatch" on every connection, as Debian 13 sorts text slightly differently. Rebuild its indexes once (or reset with `docker compose down -v` and `make seed`):
+
+  ```bash
+  docker compose exec -T postgres sh -ec 'for db in $(psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tAc "SELECT datname FROM pg_database WHERE datallowconn" 2>/dev/null); do psql -q -U "$POSTGRES_USER" -d "$db" -c "REINDEX DATABASE" -c "ALTER DATABASE $db REFRESH COLLATION VERSION"; done'
+  ```
+- `make seed` fills the database with a sample crawl of every source (about 6 minutes), so the indexer and the MCP server can be developed against real documents.
 - Use only synthetic patient data. The database is for development only.

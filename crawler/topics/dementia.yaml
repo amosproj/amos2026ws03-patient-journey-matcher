@@ -1,0 +1,102 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: dementia
+label: Dementia and Alzheimer's disease
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - dementia
+  - Alzheimer disease
+  - Alzheimer's disease
+  - Lewy body disease
+  - frontotemporal lobar degeneration
+  - primary progressive aphasia
+  - mild cognitive impairment
+  - major neurocognitive disorder
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - dementia
+  - Alzheimer disease
+  - Alzheimer's disease
+  - young onset dementia
+  - vascular dementia
+  - Lewy body dementia
+  - frontotemporal dementia
+  - primary progressive aphasia
+  - mild cognitive impairment
+  - dementia risk factors
+  - dementia prevention
+  # Diagnosis and screening
+  - dementia diagnosis
+  - dementia cognitive screening
+  - dementia subjective cognitive decline
+  - Alzheimer's disease blood biomarkers
+  - Alzheimer's disease plasma p-tau217
+  - Alzheimer's disease amyloid PET
+  - Alzheimer's disease tau PET
+  - Alzheimer's disease cerebrospinal fluid biomarkers
+  - Alzheimer's disease APOE genotype
+  - Lewy body dementia dopamine transporter imaging
+  - frontotemporal dementia genetics
+  # Treatment
+  - Alzheimer's disease lecanemab
+  - Alzheimer's disease donanemab
+  - Alzheimer's disease amyloid-related imaging abnormalities
+  - Alzheimer's disease donepezil
+  - Alzheimer's disease rivastigmine
+  - Alzheimer's disease galantamine
+  - Alzheimer's disease memantine
+  - dementia agitation
+  - dementia antipsychotics
+  # Living with
+  - dementia caregivers
+  - dementia quality of life
+  - dementia palliative care
+  - dementia advance care planning
+  - dementia nonpharmacological interventions
+  - dementia cognitive stimulation
+  - dementia nursing home
+  - dementia sleep disturbances
+  - dementia post-diagnostic support
+
+# YouTube channels.
+channels:
+  - name: National Institute on Aging (NIA)
+    url: https://www.youtube.com/channel/UCF4jdnof7ZnydEgUfmoxvSg
+  - name: Alzheimer's Association
+    url: https://www.youtube.com/channel/UCkGrLDa-K4qd7MxA-_k-E5g
+  - name: Alzheimer's Society
+    url: https://www.youtube.com/channel/UC1miDO27ShatLOE4nWARYCg
+  - name: Dementia UK
+    url: https://www.youtube.com/channel/UCuA-1UZDw5K4CPZzcQUWzFQ
+  - name: Lewy Body Dementia Association (LBDA)
+    url: https://www.youtube.com/channel/UC9KoqkAop9eVcm5NCPGhKAQ
+  - name: Association for Frontotemporal Degeneration (AFTD)
+    url: https://www.youtube.com/channel/UCuIR6gUuJxHcjgkyM3tHRPg
+  - name: BrightFocus Foundation
+    url: https://www.youtube.com/channel/UCW4oUA-f_ez779ClTkEwL5A
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: dementia_untangled
+    name: Dementia Untangled
+    url: https://anchor.fm/s/44920358/podcast/rss
+    publisher: Banner Health
+    audience: patients
+    language: en
+    trusted_because: Podcast of Banner Alzheimer's Institute and Banner Sun Health Research Institute with dementia experts and advice for caregivers.
+  - key: alzheimers_society_podcast
+    name: Alzheimer's Society Podcast
+    url: https://feeds.soundcloud.com/users/soundcloud:users:65985840/sounds.rss
+    publisher: Alzheimer's Society
+    audience: patients
+    language: en
+    trusted_because: Official podcast of the UK's leading dementia charity, with people living with dementia and experts.
+  - key: dementia_uk_my_life_with_dementia
+    name: "My life with dementia | A Dementia UK podcast"
+    url: https://feeds.acast.com/public/shows/66d70fb0a7a4982508f0f9f5
+    publisher: Dementia UK
+    audience: patients
+    language: en
+    trusted_because: Official podcast of Dementia UK, the charity behind the Admiral Nurses, with people living with dementia and specialist nurses.

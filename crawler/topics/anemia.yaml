@@ -1,0 +1,64 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: anemia
+label: Anemia
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - anemia
+  - anaemia
+  - iron deficiency anemia
+  - Anemia, Iron-Deficiency
+  - iron deficiency
+  - Iron Deficiencies
+  - vitamin B12 deficiency
+  - Vitamin B 12 Deficiency
+  - cobalamin deficiency
+  - folate deficiency
+  - Folic Acid Deficiency
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - anemia
+  - iron deficiency anemia
+  - iron deficiency
+  - anemia of chronic disease
+  - vitamin B12 deficiency
+  - pernicious anemia
+  - folate deficiency
+  - anemia in chronic kidney disease
+  - anemia in pregnancy
+  - postpartum anemia
+  - anemia in older adults
+  - chemotherapy-induced anemia
+  - preoperative anemia
+  - iron deficiency after bariatric surgery
+  - vitamin B12 deficiency metformin
+  # Diagnosis and screening
+  - anemia diagnosis
+  - anemia screening
+  - anemia ferritin
+  - anemia transferrin saturation
+  - anemia hemoglobin threshold
+  - iron deficiency anemia endoscopy
+  - vitamin B12 deficiency methylmalonic acid
+  # Treatment
+  - iron deficiency anemia oral iron
+  - iron deficiency alternate day dosing
+  - iron deficiency anemia intravenous iron
+  - iron deficiency anemia ferric carboxymaltose
+  - iron deficiency anemia ferric derisomaltose
+  - iron deficiency anemia iron sucrose
+  - anemia erythropoiesis-stimulating agents
+  - renal anemia roxadustat
+  - renal anemia daprodustat
+  - anemia red blood cell transfusion
+  - anemia patient blood management
+  - pernicious anemia hydroxocobalamin
+  - folate deficiency folic acid supplementation
+  # Living with
+  - anemia fatigue
+  - anemia quality of life
+  - iron deficiency anemia diet
+  - iron deficiency anemia prevention
+  - iron deficiency anemia recurrence

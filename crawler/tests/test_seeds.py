@@ -230,14 +230,18 @@ def test_podcast_keys_must_be_unique_and_valid(tmp_path: Path) -> None:
         )
 
 
-def test_every_bundled_podcast_key_maps_to_one_url() -> None:
+def test_bundled_podcast_keys_and_urls_are_one_to_one() -> None:
+    # Two keys for one feed would store every episode twice, under two IDs.
     feeds = [feed for topic in bundled_topics() for feed in topic.podcasts]
 
-    assert len(feeds) == 6
     urls: dict[str, set[str]] = {}
+    keys: dict[str, set[str]] = {}
     for feed in feeds:
         urls.setdefault(feed.key, set()).add(feed.url)
+        keys.setdefault(feed.url, set()).add(feed.key)
+    assert feeds
     assert all(len(feed_urls) == 1 for feed_urls in urls.values())
+    assert all(len(feed_keys) == 1 for feed_keys in keys.values())
     feed, topic_ids = find_podcast("nejm_this_week")
     assert feed.publisher == "NEJM Group"
     assert topic_ids == ["general_medicine"]

@@ -1,0 +1,59 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+# Dermatology in general: channels and podcasts of dermatology societies, journals and skin charities.
+id: general_dermatology
+label: Dermatology in general
+
+# YouTube channels.
+channels:
+  - name: American Academy of Dermatology (AAD)
+    url: https://www.youtube.com/channel/UCcrrdKQ-2FgrqNzCsfgrucA
+  - name: European Academy of Dermatology and Venereology (EADV)
+    url: https://www.youtube.com/channel/UCqpKHYkHewJ2a3xUjOzP7Sg
+  - name: British Skin Foundation (BSF)
+    url: https://www.youtube.com/channel/UCsVrrxKUzASHEZSuZNDLXcQ
+  - name: Canadian Dermatology Association (CDA)
+    url: https://www.youtube.com/channel/UCK4aBckmB55Sp1bh8Jw7pGg
+  - name: Skin of Color Society (SOCS)
+    url: https://www.youtube.com/channel/UCkPCACzHzFqP1elI5KGMdwg
+  - name: International League of Dermatological Societies (ILDS)
+    url: https://www.youtube.com/channel/UCmYOgmBcYgY6QGtvs-redkQ
+  - name: DermNet (New Zealand Dermatological Society)
+    url: https://www.youtube.com/channel/UCj4I5L1l7jT64IuMZJirfhQ
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: eadv_podcast
+    name: EADV Podcast
+    url: https://feed.podbean.com/eadv/feed.xml
+    publisher: European Academy of Dermatology and Venereology (EADV)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of EADV, the European professional society of dermatologists and venereologists, with expert conversations and clinical updates.
+  - key: jama_dermatology_author_interviews
+    name: JAMA Dermatology Author Interviews
+    url: https://rss.libsyn.com/shows/86884/destinations/422061.xml
+    publisher: JAMA Network
+    audience: clinicians
+    language: en
+    trusted_because: Interviews with authors of articles in JAMA Dermatology, the peer-reviewed dermatology journal of the American Medical Association's JAMA Network.
+  - key: bjd_talks
+    name: BJD Talks
+    url: https://rss.buzzsprout.com/2615997.rss
+    publisher: British Journal of Dermatology (BJD)
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of the peer-reviewed British Journal of Dermatology (British Association of Dermatologists); recent episodes are AI-generated discussions of its articles, labelled as such.
+  - key: jcms_dermatology_podcast
+    name: The JCMS Dermatology Podcast with Dr Kirk Barber
+    url: https://feeds.blubrry.com/feeds/jcms_author_interviews.xml
+    publisher: Canadian Dermatology Association (CDA)
+    audience: clinicians
+    language: en
+    trusted_because: Author interviews and editor's choices of the Journal of Cutaneous Medicine and Surgery, the peer-reviewed journal of the Canadian Dermatology Association.
+  - key: dermalogues
+    name: "Dermalogues: The Dermatology Residents Podcast with Dr. Kerri Purdy"
+    url: https://feeds.blubrry.com/feeds/dermalogues.xml
+    publisher: Canadian Dermatology Association (CDA)
+    audience: clinicians
+    language: en
+    trusted_because: Podcast of the Canadian Dermatology Association for dermatology residents, with expert-led teaching on clinical topics.

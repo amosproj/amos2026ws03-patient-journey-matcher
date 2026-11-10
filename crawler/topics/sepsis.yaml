@@ -1,0 +1,90 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: sepsis
+label: Sepsis
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - sepsis
+  - septic shock
+  - Shock, Septic
+  - septicemia
+  - septicaemia
+  - blood poisoning
+  - post-sepsis syndrome
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - sepsis
+  - septic shock
+  - sepsis definitions
+  - sepsis incidence mortality
+  - pediatric sepsis
+  - neonatal sepsis
+  - maternal sepsis
+  - sepsis older adults
+  - sepsis acute kidney injury
+  # Diagnosis and screening
+  - sepsis early recognition
+  - sepsis screening tools
+  - sepsis SOFA score
+  - sepsis lactate
+  - sepsis procalcitonin
+  - sepsis blood cultures
+  - sepsis biomarkers
+  - sepsis early prediction
+  # Treatment
+  - sepsis care bundle
+  - sepsis antibiotic timing
+  - sepsis empiric antibiotics
+  - sepsis antibiotic duration
+  - sepsis fluid resuscitation
+  - sepsis balanced crystalloids
+  - sepsis norepinephrine
+  - septic shock vasopressin
+  - septic shock hydrocortisone
+  - sepsis albumin
+  - sepsis source control
+  - sepsis renal replacement therapy
+  - pediatric septic shock
+  # Living with
+  - post-sepsis syndrome
+  - sepsis survivors
+  - sepsis long-term outcomes
+  - sepsis readmission
+  - sepsis cognitive impairment
+  - sepsis rehabilitation
+  - sepsis quality of life
+  - sepsis survivors PTSD
+  - sepsis family caregivers
+  - sepsis return to work
+
+# YouTube channels.
+channels:
+  - name: Sepsis Alliance
+    url: https://www.youtube.com/channel/UCiM-89MD4DzMivJ76PGnhjA
+  - name: UK Sepsis Trust (UKST)
+    url: https://www.youtube.com/channel/UCiHfuK3bIrSd8PJnU1TuwZg
+  - name: Sepsis Research FEAT
+    url: https://www.youtube.com/channel/UCaTfwthHR1O9yEH_hkqVJ1A
+  - name: Sepsis Australia
+    url: https://www.youtube.com/channel/UCY_lHgcmrgkFky0NFAypNgg
+  - name: World Sepsis Congress (WSC) of the Global Sepsis Alliance
+    url: https://www.youtube.com/channel/UCGWOyfh1lz4tI7R6tERyjpQ
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: sepsis_alliance_sepsis_spectrum
+    name: The Sepsis Spectrum
+    url: https://feeds.megaphone.fm/sepsisspectrum
+    publisher: Sepsis Alliance
+    audience: clinicians
+    language: en
+    trusted_because: Official podcast of Sepsis Alliance, the US sepsis charity, on recognising and treating sepsis and on survivorship, hosted by a critical care nurse specialist.
+  - key: uk_sepsis_trust_sepsis_voices
+    name: Sepsis Voices with Dr Ron
+    url: https://feed.podbean.com/SepsisVoices/feed.xml
+    publisher: UK Sepsis Trust (UKST)
+    audience: patients
+    language: en
+    trusted_because: Official podcast of the UK Sepsis Trust, the UK sepsis charity, with sepsis survivors, clinicians and campaigners on recognition, recovery and infection management.

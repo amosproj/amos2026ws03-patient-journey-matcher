@@ -1,10 +1,12 @@
 import argparse
 import asyncio
+import io
 import json
 import logging
 import sys
 from collections.abc import Callable, Sequence
-from datetime import date
+from contextlib import suppress
+from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import NoReturn
 
@@ -14,16 +16,43 @@ from crawler.models import (
     MAX_RESULTS,
     CollectionResult,
     ScrapeRequest,
+    SourceDocument,
     SourceName,
     source_document_id,
     validation_message,
 )
 from crawler.queries import query_words
 from crawler.runner import CollectionOptions, CollectionSetupError, run_requests
-from crawler.seeds import TopicFileError, find_podcast, load_topic, seed_requests, topic_terms
+from crawler.seeds import (
+    TopicFileError,
+    bundled_topics,
+    find_podcast,
+    load_topic,
+    seed_requests,
+    topic_terms,
+)
 from crawler.sources.arxiv import split_version
-from crawler.sources.youtube import channel_lookup
+from crawler.sources.base import redact_secrets
+from crawler.sources.youtube import REFRESH_WITHIN, YouTubeScraper, channel_lookup
+from crawler.store import (
+    RESUME_OVERLAP,
+    RunInfo,
+    StoreError,
+    StoreReport,
+    database_url,
+    last_successful_runs,
+    prepare_store,
+    resume_date,
+    save_result,
+    videos_to_refresh,
+)
 
+AUTO = "auto"
+"""`--since auto`: continue from the topics' last successful run with `--store`."""
+SINCE_AUTO_HELP = (
+    f"auto: from {RESUME_OVERLAP.days} days before the topics' last successful run with --store, "
+    "not counting runs that reached --max-results (needs --store and --topic or --all-topics)"
+)
 SINCE_HELP = {
     SourceName.PUBMED: "only search results PubMed added since this date (YYYY-MM-DD); "
     "cited papers are not filtered",
@@ -40,6 +69,12 @@ KNOWN_IDS_HELP = (
 QUERY_MODE_HELP = (
     "and: every word, or: any word (quotes, backslashes and lone symbols are ignored); "
     "raw: the source's own query syntax"
+)
+STORE_HELP = "also upsert the documents into PostgreSQL (DATABASE_URL) and log the run"
+STORE_REFERENCES_HELP = f"{STORE_HELP}; cited papers stored before are not fetched again"
+STORE_VIDEOS_HELP = (
+    f"{STORE_HELP}; stored videos of the channels that expire within {REFRESH_WITHIN.days} days "
+    "are fetched again"
 )
 
 
@@ -75,12 +110,23 @@ def youtube_channel(value: str) -> str:
     return value.strip()
 
 
+def since_date(value: str) -> date | str:
+    """An argparse type for `--since`: a date (YYYY-MM-DD) or `auto`."""
+    if value.strip() == AUTO:
+        return AUTO
+    try:
+        return date.fromisoformat(value.strip())
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"expected YYYY-MM-DD or auto, got {value!r}") from None
+
+
 def parser() -> argparse.ArgumentParser:
     command = argparse.ArgumentParser(
         prog="crawler",
         description=(
             "Collect source metadata as JSON Lines on stdout. A summary of the run goes to "
-            "stderr. Exit code 1 means at least one request failed."
+            "stderr. Exit code 1 means at least one request failed or was not processed "
+            "(--max-requests) or, with --store, storing or refreshing stored videos failed."
         ),
     )
     subcommands = command.add_subparsers(dest="source", required=True)
@@ -95,9 +141,9 @@ def parser() -> argparse.ArgumentParser:
         paper.set_defaults(subcommand=paper)
         seeds = paper.add_mutually_exclusive_group(required=True)
         seeds.add_argument("query", nargs="?", type=non_blank, help="one search query")
-        _add_topic_argument(seeds)
+        _add_topic_arguments(seeds)
         _add_max_results_argument(paper, "results per query")
-        paper.add_argument("--since", type=date.fromisoformat, help=SINCE_HELP[source])
+        _add_since_argument(paper, source)
         if source is not SourceName.ZENODO:
             paper.add_argument(
                 "--max-depth",
@@ -113,6 +159,9 @@ def parser() -> argparse.ArgumentParser:
             paper.add_argument(
                 "--query-mode", choices=("and", "or", "raw"), default="and", help=QUERY_MODE_HELP
             )
+        _add_store_argument(
+            paper, STORE_HELP if source is SourceName.ZENODO else STORE_REFERENCES_HELP
+        )
 
     youtube = subcommands.add_parser(SourceName.YOUTUBE.value, help="list channel videos")
     youtube.set_defaults(subcommand=youtube)
@@ -123,10 +172,11 @@ def parser() -> argparse.ArgumentParser:
         type=youtube_channel,
         help="channel ID, channel URL, @handle, or legacy username",
     )
-    _add_topic_argument(seeds)
+    _add_topic_arguments(seeds)
     _add_max_results_argument(youtube, "videos per channel")
-    youtube.add_argument("--since", type=date.fromisoformat, help=SINCE_HELP[SourceName.YOUTUBE])
+    _add_since_argument(youtube, SourceName.YOUTUBE)
     _add_max_requests_argument(youtube)
+    _add_store_argument(youtube, STORE_VIDEOS_HELP)
 
     podcast = subcommands.add_parser(SourceName.PODCAST.value, help="list podcast episodes")
     podcast.set_defaults(subcommand=podcast)
@@ -134,19 +184,23 @@ def parser() -> argparse.ArgumentParser:
     seeds.add_argument(
         "feed", nargs="?", type=non_blank, help="feed key from a topic file, e.g. jco"
     )
-    _add_topic_argument(seeds)
+    _add_topic_arguments(seeds)
     _add_max_results_argument(podcast, "episodes per feed")
-    podcast.add_argument("--since", type=date.fromisoformat, help=SINCE_HELP[SourceName.PODCAST])
+    _add_since_argument(podcast, SourceName.PODCAST)
     _add_max_requests_argument(podcast)
+    _add_store_argument(podcast, STORE_HELP)
     return command
 
 
-def _add_topic_argument(group: argparse._MutuallyExclusiveGroup) -> None:
+def _add_topic_arguments(group: argparse._MutuallyExclusiveGroup) -> None:
     group.add_argument(
         "--topic",
         action="append",
         metavar="ID_OR_PATH",
         help="topic file: an ID from crawler/topics/ or a path to a YAML file; repeatable",
+    )
+    group.add_argument(
+        "--all-topics", action="store_true", help="every topic file in crawler/topics/"
     )
 
 
@@ -156,12 +210,22 @@ def _add_max_results_argument(command: argparse.ArgumentParser, help_text: str) 
     )
 
 
+def _add_since_argument(command: argparse.ArgumentParser, source: SourceName) -> None:
+    command.add_argument(
+        "--since", type=since_date, help=f"{SINCE_HELP[source]}; {SINCE_AUTO_HELP}"
+    )
+
+
 def _add_max_requests_argument(command: argparse.ArgumentParser) -> None:
     command.add_argument(
         "--max-requests",
         type=whole_number(1),
-        help="stop after this many requests (safety cap)",
+        help="stop after this many requests (safety cap); the run then exits with 1",
     )
+
+
+def _add_store_argument(command: argparse.ArgumentParser, help_text: str) -> None:
+    command.add_argument("--store", action="store_true", help=help_text)
 
 
 def known_ids_file(value: str) -> frozenset[str]:
@@ -214,10 +278,15 @@ def requests_from_args(
 ) -> tuple[list[ScrapeRequest], CollectionOptions]:
     source = SourceName(arguments.source)
     query_mode: str = getattr(arguments, "query_mode", "and")
-    since: date | None = getattr(arguments, "since", None)
+    # `auto` is resolved by `main` from the stored runs, once the topics of the seeds are known.
+    since_argument = getattr(arguments, "since", None)
+    since = since_argument if isinstance(since_argument, date) else None
     match_all = False
-    if arguments.topic:
-        topics = [load_topic(reference) for reference in arguments.topic]
+    if arguments.topic or arguments.all_topics:
+        if arguments.all_topics:
+            topics = bundled_topics()
+        else:
+            topics = [load_topic(reference) for reference in arguments.topic]
         seeds = seed_requests(
             topics,
             source,
@@ -268,6 +337,62 @@ def requests_from_args(
     return seeds, options
 
 
+def _topics(seeds: Sequence[ScrapeRequest]) -> list[str]:
+    """The topics of the seeds, in seed order and without duplicates."""
+    return list(dict.fromkeys(topic for seed in seeds for topic in seed.topics))
+
+
+async def refresh_videos(
+    url: str,
+    seeds: Sequence[ScrapeRequest],
+    result: CollectionResult,
+    scraper: YouTubeScraper | None = None,
+) -> tuple[int, list[SourceDocument]]:
+    """Fetch the stored videos of the seeds' channels that expire within `REFRESH_WITHIN` again,
+    except those the run collected.
+
+    A run only lists the newest videos of a channel, so the older ones would expire. Returns how
+    many were due and those still public; the others expire. Channels that are not found are
+    skipped: the run already failed for them.
+    """
+    youtube = scraper or YouTubeScraper.from_env()
+
+    def channel_ids() -> list[str]:
+        ids: list[str] = []
+        for seed in seeds:
+            if seed.channel:
+                with suppress(ValueError):
+                    ids.append(youtube.resolve_channel_id(seed.channel))
+        return ids
+
+    collected = {document.id for document in result.documents}
+    stored = await videos_to_refresh(url, await asyncio.to_thread(channel_ids))
+    due = [
+        video_id
+        for video_id in stored
+        if source_document_id(SourceName.YOUTUBE, video_id) not in collected
+    ]
+    return len(due), await asyncio.to_thread(youtube.video_details, due)
+
+
+def _refresh(
+    url: str, seeds: Sequence[ScrapeRequest], result: CollectionResult
+) -> list[SourceDocument] | None:
+    """`refresh_videos` with its outcome on stderr; None if it failed."""
+    try:
+        due, refreshed = asyncio.run(refresh_videos(url, seeds, result))
+    except Exception as error:  # API, network or database: the run is stored all the same
+        message = redact_secrets(f"{type(error).__name__}: {error}")
+        print(f"refreshing stored videos failed: {message}", file=sys.stderr)
+        return None
+    print(
+        f"refreshed {len(refreshed)} of {due} stored video(s) that expire within "
+        f"{REFRESH_WITHIN.days} days",
+        file=sys.stderr,
+    )
+    return refreshed
+
+
 def _usage_error(
     command: argparse.ArgumentParser, arguments: argparse.Namespace, message: str
 ) -> NoReturn:
@@ -293,9 +418,25 @@ def summary(result: CollectionResult) -> str:
             f"failed {failure.kind} {failure.source.value} (depth {failure.depth}) "
             f"{failure.detail}: {failure.error} ({outcome})"
         )
+    for seed in result.max_results_reached:
+        lines.append(
+            f"reached --max-results: {seed}; older results of the --since period may be missing"
+        )
     if result.run_error:
         lines.append(f"run aborted: {result.run_error}")
+    elif stats.unprocessed_requests:
+        lines.append(
+            f"stopped at --max-requests: {stats.unprocessed_requests} request(s) not processed"
+        )
     return "\n".join(lines)
+
+
+def store_summary(report: StoreReport) -> str:
+    return (
+        f"stored (run {report.run_id}): {report.inserted} new, {report.changed} changed, "
+        f"{report.unchanged} unchanged; {report.cited} stored document(s) newly cited; "
+        f"{report.expired} expired deleted"
+    )
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -305,16 +446,57 @@ def main(argv: Sequence[str] | None = None) -> int:
     # Crawlee logs every failed request with a full traceback. The runner logs each retry
     # in one line and the summary lists every failure, so keep Crawlee quiet.
     logging.getLogger("crawlee").setLevel(logging.CRITICAL)
+    source = SourceName(arguments.source)
+    resume = arguments.since == AUTO
+    if resume and not arguments.store:
+        _usage_error(command, arguments, "--since auto needs --store, whose runs it continues")
+    if resume and not (arguments.topic or arguments.all_topics):
+        _usage_error(command, arguments, "--since auto needs --topic or --all-topics")
+    url: str | None = None
     try:
         seeds, options = requests_from_args(arguments)
+        if arguments.store:
+            # Checked before the crawl, so a missing database costs no requests.
+            url = database_url()
+            stored = asyncio.run(prepare_store(url, source, load_ids=options.max_depth > 0))
+            options = options.model_copy(update={"known_ids": options.known_ids | stored})
+            if resume:
+                topics = _topics(seeds)
+                last_runs = asyncio.run(last_successful_runs(url, source, topics))
+                since = resume_date(last_runs, topics)
+                seeds = [seed.model_copy(update={"since": since}) for seed in seeds]
+                print(f"since auto: {since.isoformat()}", file=sys.stderr)
+        started_at = datetime.now(UTC)
         result = asyncio.run(run_requests(seeds, options=options))
-    except (TopicFileError, CollectionSetupError) as error:
+        finished_at = datetime.now(UTC)
+    except (TopicFileError, CollectionSetupError, StoreError) as error:
         _usage_error(command, arguments, str(error))
     except ValidationError as error:
         _usage_error(command, arguments, validation_message(error))
+    if isinstance(sys.stdout, io.TextIOWrapper):
+        # JSON Lines are UTF-8; redirected on Windows, stdout would use the ANSI code page.
+        sys.stdout.reconfigure(encoding="utf-8")
     for document in result.documents:
         print(json.dumps(document.model_dump(mode="json"), ensure_ascii=False))
     print(summary(result), file=sys.stderr)
+    if url is not None:
+        # Stored only after the output is printed, so a failed store loses none of the run.
+        run = RunInfo(
+            source=source,
+            topics=_topics(seeds),
+            arguments=list(sys.argv[1:] if argv is None else argv),
+            started_at=started_at,
+            finished_at=finished_at,
+        )
+        refreshed = _refresh(url, seeds, result) if source is SourceName.YOUTUBE else []
+        try:
+            report = asyncio.run(save_result(url, result, run, refreshed=refreshed or []))
+        except StoreError as error:
+            print(f"storing failed: {error}", file=sys.stderr)
+            return 1
+        print(store_summary(report), file=sys.stderr)
+        if refreshed is None:
+            return 1
     return 0 if result.ok else 1
 
 

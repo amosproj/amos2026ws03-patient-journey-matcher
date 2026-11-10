@@ -1,0 +1,96 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: multiple_sclerosis
+label: Multiple sclerosis
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - multiple sclerosis
+  - disseminated sclerosis
+  - clinically isolated syndrome
+  - radiologically isolated syndrome
+  - neuromyelitis optica
+  - optic neuritis
+  - RRMS
+  - SPMS
+  - PPMS
+  - NMOSD
+  - MOGAD
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - multiple sclerosis
+  - relapsing remitting multiple sclerosis
+  - secondary progressive multiple sclerosis
+  - primary progressive multiple sclerosis
+  - pediatric multiple sclerosis
+  - clinically isolated syndrome
+  - radiologically isolated syndrome
+  - multiple sclerosis relapse
+  - multiple sclerosis disability progression
+  - neuromyelitis optica spectrum disorder
+  - MOGAD
+  # Diagnosis and screening
+  - multiple sclerosis diagnosis
+  - multiple sclerosis McDonald criteria
+  - multiple sclerosis MRI
+  - multiple sclerosis central vein sign
+  - multiple sclerosis oligoclonal bands
+  - multiple sclerosis neurofilament light
+  - multiple sclerosis Epstein-Barr virus
+  # Treatment
+  - multiple sclerosis disease-modifying therapy
+  - multiple sclerosis interferon beta
+  - multiple sclerosis glatiramer acetate
+  - multiple sclerosis dimethyl fumarate
+  - multiple sclerosis teriflunomide
+  - multiple sclerosis fingolimod
+  - multiple sclerosis ozanimod
+  - multiple sclerosis natalizumab
+  - multiple sclerosis ocrelizumab
+  - multiple sclerosis ofatumumab
+  - multiple sclerosis cladribine
+  - multiple sclerosis autologous hematopoietic stem cell transplantation
+  - multiple sclerosis methylprednisolone
+  - multiple sclerosis pregnancy
+  - multiple sclerosis spasticity
+  - multiple sclerosis fatigue
+  # Living with
+  - multiple sclerosis rehabilitation
+  - multiple sclerosis exercise
+  - multiple sclerosis quality of life
+  - multiple sclerosis self-management
+  - multiple sclerosis depression
+  - multiple sclerosis cognitive impairment
+
+# YouTube channels.
+channels:
+  - name: MS Society UK
+    url: https://www.youtube.com/channel/UCL-0tPt23-RHupo4Y7UitMw
+  - name: The Multiple Sclerosis Trust (MS Trust)
+    url: https://www.youtube.com/channel/UCrrSnhjQg16wOZUIhlm4_xA
+  - name: Multiple Sclerosis Society of Canada (MS Canada)
+    url: https://www.youtube.com/channel/UCZRI67A_z0picHv6v6eRtnQ
+  - name: Multiple Sclerosis International Federation (MSIF)
+    url: https://www.youtube.com/channel/UC7XuBlcZcL0uMpW7PJ57-1w
+  - name: Multiple Sclerosis Association of America (MSAA)
+    url: https://www.youtube.com/channel/UCMf0qu38ldRwgatBcqGZF2g
+  - name: European Committee for Treatment and Research in Multiple Sclerosis (ECTRIMS)
+    url: https://www.youtube.com/channel/UCcSIbg9FSpjoc-bytRkN7eA
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: ms_trust_podcast
+    name: The MS Trust podcast
+    url: https://rss.buzzsprout.com/1801913.rss
+    publisher: The Multiple Sclerosis Trust (MS Trust)
+    audience: patients
+    language: en
+    trusted_because: Official podcast of the UK's MS Trust, with MS specialists and people living with MS on symptoms, treatment and daily life.
+  - key: msaa_podcast
+    name: MSAA Podcast
+    url: https://mymsaa.org/feed/podcast/
+    publisher: Multiple Sclerosis Association of America (MSAA)
+    audience: patients
+    language: en
+    trusted_because: Official podcast of the Multiple Sclerosis Association of America, with medical professionals and MSAA staff.

@@ -41,7 +41,7 @@ The JSON has no authors, abstract or dates; those come from PubMed. `TDM` = auth
 
 ## Indexing
 
-1. Licence not allowed: skip.
+1. Licence not allowed: skip. The keyword index reads every licence ([sources §3](README.md#3-indexing)).
 2. `GET https://pmc-oa-opendata.s3.amazonaws.com/<key>`, no credentials. Served as `binary/octet-stream`; parse as UTF-8 JATS XML (60–275 KB).
 3. Re-check `<license>`/`<ali:license_ref>`. Use `.txt` only as keyword fallback, never the PDF.
 4. 404 is normal (not in the bucket yet, or version removed): retry next run.

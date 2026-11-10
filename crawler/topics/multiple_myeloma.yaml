@@ -1,0 +1,86 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: multiple_myeloma
+label: Multiple myeloma
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - multiple myeloma
+  - myeloma
+  - plasma cell myeloma
+  - smoldering multiple myeloma
+  - smouldering multiple myeloma
+  - MGUS
+  - monoclonal gammopathy of undetermined significance
+  - monoclonal gammopathy
+  - plasma cell neoplasm
+  - Neoplasms, Plasma Cell
+  - NDMM
+  - RRMM
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - multiple myeloma
+  - plasma cell myeloma
+  - newly diagnosed multiple myeloma
+  - relapsed refractory multiple myeloma
+  - high-risk multiple myeloma
+  - smoldering multiple myeloma
+  - monoclonal gammopathy of undetermined significance
+  - MGUS
+  # Diagnosis and screening
+  - multiple myeloma diagnosis
+  - multiple myeloma free light chain
+  - multiple myeloma bone marrow biopsy
+  - multiple myeloma PET CT
+  - multiple myeloma whole body MRI
+  - multiple myeloma cytogenetic abnormalities
+  - multiple myeloma minimal residual disease
+  - multiple myeloma staging
+  - MGUS screening
+  - MGUS progression risk
+  # Treatment
+  - multiple myeloma bortezomib
+  - multiple myeloma carfilzomib
+  - multiple myeloma lenalidomide
+  - multiple myeloma pomalidomide
+  - multiple myeloma daratumumab
+  - multiple myeloma isatuximab
+  - multiple myeloma autologous transplantation
+  - multiple myeloma maintenance therapy
+  - multiple myeloma idecabtagene vicleucel
+  - multiple myeloma ciltacabtagene autoleucel
+  - multiple myeloma teclistamab
+  - multiple myeloma elranatamab
+  - multiple myeloma talquetamab
+  - multiple myeloma zoledronic acid
+  - smoldering multiple myeloma treatment
+  # Living with
+  - multiple myeloma quality of life
+  - multiple myeloma peripheral neuropathy
+  - multiple myeloma fatigue
+  - multiple myeloma exercise
+  - multiple myeloma infections
+  - multiple myeloma caregivers
+  - multiple myeloma survivorship
+
+# YouTube channels.
+channels:
+  - name: International Myeloma Foundation (IMF)
+    url: https://www.youtube.com/channel/UCKmicjFeMCXISMr_ZDqTO_A
+  - name: Multiple Myeloma Research Foundation (MMRF)
+    url: https://www.youtube.com/channel/UCQVbiTmG0D6KIt1l49vV6bA
+  - name: Myeloma UK
+    url: https://www.youtube.com/channel/UC9bQIeN-gOnuRJhx-yw_paw
+  - name: Myeloma Patients Europe (MPE)
+    url: https://www.youtube.com/channel/UCFaEe3nOS7TVUO8l_-0OjOg
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: myeloma_voices
+    name: Myeloma Voices
+    url: https://feeds.soundcloud.com/users/soundcloud:users:119519019/sounds.rss
+    publisher: International Myeloma Foundation (IMF)
+    audience: patients
+    language: en
+    trusted_because: Patients and care partners tell their myeloma journey, from the International Myeloma Foundation, a patient organisation devoted to myeloma.

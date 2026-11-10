@@ -1,0 +1,98 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: parkinsons_disease
+label: Parkinson's disease
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - Parkinson disease
+  - Parkinson's disease
+  - parkinsonism
+  - parkinsonian disorder
+  - parkinsonian syndrome
+  - paralysis agitans
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - Parkinson disease
+  - Parkinson's disease
+  - young onset Parkinson's disease
+  - advanced Parkinson's disease
+  - Parkinson's disease dementia
+  - atypical parkinsonism
+  - Parkinson's disease genetics
+  - prodromal Parkinson's disease
+  # Diagnosis and screening
+  - Parkinson's disease diagnosis
+  - Parkinson's disease biomarkers
+  - Parkinson's disease alpha-synuclein seed amplification
+  - Parkinson's disease dopamine transporter imaging
+  - Parkinson's disease MRI
+  - Parkinson's disease wearable sensors
+  - Parkinson's disease REM sleep behavior disorder
+  # Treatment
+  - Parkinson's disease levodopa
+  - Parkinson's disease dopamine agonists
+  - Parkinson's disease MAO-B inhibitors
+  - Parkinson's disease COMT inhibitors
+  - Parkinson's disease amantadine
+  - Parkinson's disease apomorphine
+  - Parkinson's disease foslevodopa foscarbidopa
+  - Parkinson's disease levodopa carbidopa intestinal gel
+  - Parkinson's disease deep brain stimulation
+  - Parkinson's disease focused ultrasound
+  - Parkinson's disease motor fluctuations
+  - Parkinson's disease dyskinesia
+  - Parkinson's disease psychosis
+  - Parkinson's disease orthostatic hypotension
+  - Parkinson's disease depression
+  # Living with
+  - Parkinson's disease exercise
+  - Parkinson's disease physiotherapy
+  - Parkinson's disease speech therapy
+  - Parkinson's disease falls
+  - Parkinson's disease dysphagia
+  - Parkinson's disease sleep disturbances
+  - Parkinson's disease caregivers
+  - Parkinson's disease quality of life
+  - Parkinson's disease palliative care
+  - Parkinson's disease self-management
+
+# YouTube channels.
+channels:
+  - name: The Michael J. Fox Foundation for Parkinson's Research (MJFF)
+    url: https://www.youtube.com/channel/UCEwLnD6-KxGvKqnohdQ8lCw
+  - name: Parkinson's Foundation
+    url: https://www.youtube.com/channel/UCZYwe6WjTuyLWkYjLH_MQPA
+  - name: American Parkinson Disease Association (APDA)
+    url: https://www.youtube.com/channel/UCsGvM2ZpXqe8jLJE-4ehS4g
+  - name: International Parkinson and Movement Disorder Society (MDS)
+    url: https://www.youtube.com/channel/UCeRCH3kEBJ9-TH2VDgWotVQ
+  - name: Parkinson's UK
+    url: https://www.youtube.com/channel/UCQ_KkZo1b6ghObp1c_7dAlg
+  - name: Cure Parkinson's
+    url: https://www.youtube.com/channel/UC22BEygQpXo9wbb6qMZPjtQ
+
+# Podcast feeds. `key` is part of every episode ID: keep it stable, never reuse it.
+podcasts:
+  - key: parkinsons_foundation_substantial_matters
+    name: "Substantial Matters: Life & Science of Parkinson's"
+    url: https://parkinson.libsyn.com/rss
+    publisher: Parkinson's Foundation
+    audience: patients
+    language: en
+    trusted_because: Official podcast of the Parkinson's Foundation, with Parkinson's experts on treatment, research, exercise and living well.
+  - key: mjff_parkinsons_podcast
+    name: The Michael J. Fox Foundation Parkinson's Podcast
+    url: https://feeds.captivate.fm/mjff/
+    publisher: The Michael J. Fox Foundation for Parkinson's Research (MJFF)
+    audience: patients
+    language: en
+    trusted_because: Official podcast of the Michael J. Fox Foundation, a major Parkinson's research funder, with researchers, clinicians and patients, including webinar audio.
+  - key: davis_phinney_parkinsons_podcast
+    name: The Parkinson's Podcast
+    url: https://rss.libsyn.com/shows/129789/destinations/786457.xml
+    publisher: Davis Phinney Foundation
+    audience: patients
+    language: en
+    trusted_because: Official podcast of the Davis Phinney Foundation for Parkinson's, with movement disorder specialists and therapists for patients and care partners.

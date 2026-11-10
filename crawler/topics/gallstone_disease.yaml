@@ -1,0 +1,67 @@
+# Seeds for one disease area. Schema: crawler/README.md#topic-files
+id: gallstone_disease
+label: Gallstone disease
+
+# A cited paper is kept only if one of these terms is in its title, abstract or keywords.
+terms:
+  - gallstone
+  - gall stone
+  - Cholelithiasis
+  - Cholecystolithiasis
+  - Choledocholithiasis
+  - biliary colic
+  - cholecystitis
+  - Cholecystitis, Acute
+  - biliary pancreatitis
+  - bile duct stone
+  - common bile duct exploration
+  - gallbladder stone
+  - gall bladder stone
+  - cholecystectomy
+
+# PubMed, arXiv and Zenodo search queries.
+queries:
+  # Disease
+  - gallstone disease
+  - cholelithiasis
+  - symptomatic gallstones
+  - asymptomatic gallstones
+  - biliary colic
+  - acute cholecystitis
+  - choledocholithiasis
+  - gallstone pancreatitis
+  - choledocholithiasis acute cholangitis
+  # Diagnosis and screening
+  - gallstones ultrasound
+  - gallstone disease risk factors
+  - acute cholecystitis Tokyo Guidelines
+  - biliary colic emergency department
+  - choledocholithiasis MRCP
+  - choledocholithiasis endoscopic ultrasound
+  - choledocholithiasis risk stratification
+  # Treatment
+  - laparoscopic cholecystectomy
+  - robotic cholecystectomy
+  - subtotal cholecystectomy
+  - critical view of safety cholecystectomy
+  - bile duct injury cholecystectomy
+  - cholecystectomy intraoperative cholangiography
+  - acute cholecystitis early cholecystectomy
+  - acute cholecystitis percutaneous cholecystostomy
+  - acute cholecystitis antibiotics
+  - choledocholithiasis ERCP
+  - laparoscopic common bile duct exploration
+  - gallstone pancreatitis cholecystectomy timing
+  - biliary colic NSAIDs
+  - gallstones ursodeoxycholic acid
+  # Living with
+  - cholecystectomy recovery
+  - cholecystectomy enhanced recovery
+  - day case laparoscopic cholecystectomy
+  - post-cholecystectomy syndrome
+  - post-cholecystectomy diarrhea
+  - cholecystectomy long-term outcomes
+  - gallstones diet
+  - gallstones quality of life
+  - gallstones pregnancy
+  - gallstones bariatric surgery
