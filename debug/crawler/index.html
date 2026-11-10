@@ -775,7 +775,10 @@ function h(tag, attrs, ...children) {
 async function api(path, options = {}) {
   const response = await fetch(path, { headers: { "Content-Type": "application/json" }, ...options });
   const data = await response.json().catch(() => ({}));
-  if (!response.ok) throw Object.assign(new Error(data.error || `HTTP ${response.status}`), { data });
+  // The server answers a path it does not know with "not found": its code is older than this page.
+  const outdated = response.status === 404 && data.error === "not found";
+  const message = outdated ? "The running server is older than this page: stop make debug (Ctrl+C) and start it again." : data.error || `HTTP ${response.status}`;
+  if (!response.ok) throw Object.assign(new Error(message), { data });
   return data;
 }
 
@@ -2286,7 +2289,7 @@ async function ixRefresh() {
       ix.error = null;
     } catch (error) {
       ix.overview = null;
-      ix.error = { message: error.message, hint: error.data?.hint };
+      ix.error = { message: error.message, hint: error.data?.hint, database: Boolean(error.data?.unavailable) };
     }
     renderIxSide();
     renderIxStats();
@@ -2308,7 +2311,7 @@ function renderIxSide() {
   $("#ix-stop").disabled = !running;
   if (ix.error) {
     box.className = "db-conn down";
-    box.replaceChildren(...lines(h("b", {}, "Not connected"), h("small", {}, ix.error.message), ix.error.hint && h("span", { class: "hint" }, ix.error.hint)));
+    box.replaceChildren(...lines(h("b", {}, ix.error.database ? "Not connected" : "Not loaded"), h("small", {}, ix.error.message), ix.error.hint && h("span", { class: "hint" }, ix.error.hint)));
   } else if (overview) {
     const total = ixTotals();
     const waiting = Math.max(total.to_read, total.metadata_to_index);
@@ -2446,7 +2449,7 @@ function renderIxCoverage() {
 function renderIxDown() {
   const box = $("#ix-down");
   box.hidden = !ix.error;
-  if (ix.error) box.replaceChildren(h("div", { class: "db-down-box" }, h("h3", {}, "Database not reachable"), h("p", {}, ix.error.message), ix.error.hint ? h("p", { class: "cmd" }, ix.error.hint) : null, h("button", { type: "button", onclick: () => ixRefresh() }, "Try again")));
+  if (ix.error) box.replaceChildren(h("div", { class: "db-down-box" }, h("h3", {}, ix.error.database ? "Database not reachable" : "The index could not be loaded"), h("p", {}, ix.error.message), ix.error.hint ? h("p", { class: "cmd" }, ix.error.hint) : null, h("button", { type: "button", onclick: () => ixRefresh() }, "Try again")));
 }
 
 // ── The indexer run: its output lines, live ──
