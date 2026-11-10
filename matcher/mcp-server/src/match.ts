@@ -17,7 +17,10 @@ export function createMatchService(
     approaches.map(({ name, matcher }) => [name, matcher]),
   );
   return {
-    async matchJourney({ journey, algorithm, limit, content_types }) {
+    async matchJourney(
+      { journey, algorithm, limit, content_types },
+      debug = {},
+    ) {
       const matcher = byAlgorithm.get(algorithm);
       if (matcher === undefined) {
         throw new ToolError(
@@ -26,11 +29,16 @@ export function createMatchService(
         );
       }
       const state = journeyState(journey);
+      debug.trace?.("journey", {
+        focus: state.focus.id,
+        context: state.context.map((event) => event.id),
+      });
       const answer = { algorithm, focus_event_id: state.focus.id };
       try {
         const hits = await matcher.match(state, {
           limit,
           contentTypes: content_types,
+          ...debug,
         });
         const documents = await store.getDocuments(
           hits.map((hit) => hit.documentId),
@@ -42,10 +50,16 @@ export function createMatchService(
         };
       } catch (error) {
         // Name and SQLSTATE only: a message can hold terms of the journey.
-        const { name, code } = error as { name?: string; code?: string };
+        const { name, code, message } = error as {
+          name?: string;
+          code?: string;
+          message?: string;
+        };
         console.error(
           `${algorithm} search failed: ${name} ${code ?? ""}`.trim(),
         );
+        // The trace goes back to the developer who sent the journey, so it gets the message.
+        debug.trace?.("error", { name, code, message });
         return {
           ...answer,
           results: [],

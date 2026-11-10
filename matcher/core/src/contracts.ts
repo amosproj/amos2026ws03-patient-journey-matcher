@@ -21,7 +21,17 @@ export interface MatchOptions {
   limit: number;
   /** `content_type` values to keep; all if left out. */
   contentTypes?: readonly string[];
+  /**
+   * Other values for the approach's ranking constants, by the names its `settings` step lists;
+   * for experiments (debug UI, #11).
+   */
+  tuning?: Readonly<Record<string, number>>;
+  /** Gets what the matcher works out on the way; only the debug UI passes one. */
+  trace?: Trace;
 }
+
+/** Receives the steps of a match: a name and its data, which must be JSON values. */
+export type Trace = (step: string, data: unknown) => void;
 
 /** A stored document a matcher found for a journey. */
 export interface Hit {
@@ -55,4 +65,8 @@ export interface Approach {
   readonly matcher: Matcher;
 }
 
-export { type Ranking, reciprocalRankFusion } from "./fusion.ts";
+export {
+  RANK_CONSTANT,
+  type Ranking,
+  reciprocalRankFusion,
+} from "./fusion.ts";

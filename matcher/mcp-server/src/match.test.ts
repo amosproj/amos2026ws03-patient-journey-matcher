@@ -124,6 +124,29 @@ test("answers degraded when the matcher fails", async () => {
   });
 });
 
+test("passes a trace and tuning on, and traces the journey and why a search failed", async () => {
+  vi.spyOn(console, "error").mockImplementation(() => {});
+  const approach = keyword(new Error("relation does not exist"));
+  const steps: [string, unknown][] = [];
+  const trace = (step: string, data: unknown) => steps.push([step, data]);
+  const tuning = { focusWeight: 5 };
+
+  await createMatchService([approach], store([])).matchJourney(
+    { journey, algorithm: "keyword", limit: 10 },
+    { trace, tuning },
+  );
+
+  expect(approach.matcher.match).toHaveBeenCalledWith(expect.anything(), {
+    limit: 10,
+    trace,
+    tuning,
+  });
+  expect(steps).toEqual([
+    ["journey", { focus: "e2", context: ["e1"] }],
+    ["error", { name: "Error", message: "relation does not exist" }],
+  ]);
+});
+
 test("refuses an algorithm without a matcher", async () => {
   const service = createMatchService([keyword([])], store([]));
 

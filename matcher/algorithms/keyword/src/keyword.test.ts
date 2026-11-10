@@ -337,6 +337,117 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     expect(videos.map((hit) => hit.documentId)).toEqual(["youtube:a"]);
   });
 
+  test("traces its settings, terms, rankings and candidates", async () => {
+    await insert("pubmed:1", "Prostate cancer care", {
+      full_text: ["https://example.org/1.xml"],
+    });
+    await insert("pubmed:2", "Olaparib dosing");
+    await insert("pubmed:3", "Heart failure care");
+    await indexMetadata(pool);
+    await indexFullTexts(
+      pool,
+      fakeDownloader({
+        "https://example.org/1.xml": "Olaparib for prostate cancer",
+      }),
+    );
+    const matcher = createKeywordMatcher(pool);
+    const state = {
+      focus: event("Olaparib nach 3"),
+      context: [event("Prostatakarzinom")],
+    };
+    const options = { limit: 10, tuning: { focusWeight: 2 } };
+    const steps = new Map<string, unknown>();
+
+    const hits = await matcher.match(state, {
+      ...options,
+      trace: (step, data) => steps.set(step, data),
+    });
+
+    expect(hits).toEqual(await matcher.match(state, options));
+    expect([...steps.keys()]).toEqual([
+      "settings",
+      "terms",
+      "rankings",
+      "candidates",
+    ]);
+    expect(steps.get("settings")).toContainEqual({
+      name: "focusWeight",
+      value: 2,
+      default: 3,
+      min: 1,
+      max: 20,
+      whole: true,
+    });
+    expect(steps.get("terms")).toEqual({
+      focus: ["olaparib"],
+      context: ["prostate cancer"],
+      query: "olaparib olaparib prostate cancer",
+      events: [
+        {
+          id: "Olaparib nach 3",
+          words: [
+            { word: "olaparib", term: "olaparib" },
+            { word: "nach", term: null },
+            { word: "3", term: null },
+          ],
+        },
+        {
+          id: "Prostatakarzinom",
+          words: [{ word: "prostatakarzinom", term: "prostate cancer" }],
+        },
+      ],
+    });
+    expect(steps.get("rankings")).toMatchObject({ fullTexts: ["pubmed:1"] });
+    const candidates = steps.get("candidates") as {
+      id: string;
+      score: number | null;
+    }[];
+    expect(candidates.find(({ id }) => id === "pubmed:1")).toMatchObject({
+      hasFullText: true,
+      fullTextRank: 1,
+      metadataTerms: ["prostate cancer"],
+      fullTextTerms: ["olaparib", "prostate cancer"],
+    });
+    // A candidate that matches no term is dropped: it has no score.
+    expect(
+      candidates.filter(({ score }) => score !== null).map(({ id }) => id),
+    ).toEqual(hits.map((hit) => hit.documentId));
+  });
+
+  test("ranks by other constants when tuned, and refuses values out of range", async () => {
+    // Each leads one index and is second in the other.
+    await insert("pubmed:1", "Olaparib", {
+      full_text: ["https://example.org/1.xml"],
+    });
+    await insert("pubmed:2", "Prostate cancer care", {
+      full_text: ["https://example.org/2.xml"],
+    });
+    await indexMetadata(pool);
+    await indexFullTexts(
+      pool,
+      fakeDownloader({
+        "https://example.org/1.xml": "Prostate cancer and the kidney",
+        "https://example.org/2.xml": "Olaparib and olaparib for the patient",
+      }),
+    );
+    const matcher = createKeywordMatcher(pool);
+    const state = {
+      focus: event("Olaparib"),
+      context: [event("Prostatakarzinom")],
+    };
+    const ids = async (tuning?: Record<string, number>) =>
+      (await matcher.match(state, { limit: 10, tuning })).map(
+        (hit) => hit.documentId,
+      );
+
+    // A tie, in the order of the IDs.
+    expect(await ids()).toEqual(["pubmed:1", "pubmed:2"]);
+    expect(await ids({ fullTextWeight: 5 })).toEqual(["pubmed:2", "pubmed:1"]);
+    await expect(ids({ candidates: 0 })).rejects.toThrow(
+      "candidates must be a whole number from 1 to 1000, not 0",
+    );
+  });
+
   test("finds nothing for an event without search terms", async () => {
     await insert("pubmed:1", "Prostate cancer");
     await indexMetadata(pool);

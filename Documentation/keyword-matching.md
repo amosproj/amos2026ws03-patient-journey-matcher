@@ -39,7 +39,7 @@ PDFs are read with [unpdf](https://github.com/unjs/unpdf) (MIT, Mozilla's pdf.js
 | `lexemes` | The distinct English stems of `terms`, for `matched_terms` |
 | `words`, `url`, `media_type`, `fetched_at`, `document_changed_at` | Number of keywords (at most 50,000), the file read, when, and the document version it was built from |
 
-Check a run with `SELECT status, detail, count(*) FROM keyword.full_texts GROUP BY 1, 2 ORDER BY 3 DESC`.
+Check a run on the Index screen of the [debug UI](../debug/crawler/README.md), or with `SELECT status, detail, count(*) FROM keyword.full_texts GROUP BY 1, 2 ORDER BY 3 DESC`.
 
 **Licences.** This approach reads full texts under any licence, also "all rights reserved": the project is non-profit and keeps keywords only. Other approaches decide for themselves ([sources §3](sources/README.md#3-indexing)).
 

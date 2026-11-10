@@ -7,7 +7,7 @@ Run these commands from the repository root. You need the tools listed under [Pr
 | `make build` | Installs the locked dependencies of `crawler/` and `matcher/`, and typechecks `matcher/` |
 | `make test` | Builds, then runs the same checks as [CI](github-ci.md); with the root `.env`, the database tests use the database from `make db` |
 | `make start` | Builds, then starts the MCP server on `http://127.0.0.1:3000/mcp`; needs the root `.env` for the database |
-| `make debug` | Starts the [crawler debug UI](../debug/crawler/README.md) on `http://127.0.0.1:8765` |
+| `make debug` | Starts the [debug UI](../debug/crawler/README.md) for the crawler, the database, the index and the matcher on `http://127.0.0.1:8765` |
 | `make db` | Starts the [database](database.md) and applies `db/init/`; needs the root `.env` |
 | `make seed` | Runs `make db`, then fills the database with a sample crawl of every source, in about 6 minutes ([`scripts/seed.py`](../scripts/seed.py)) |
 | `make index` | Builds, then updates the indexes of all approaches, e.g. the [keyword index](keyword-matching.md) |
@@ -45,7 +45,7 @@ In the browser: **Connect**, **Tools**, **List Tools**, then `match_journey`. Yo
 }
 ```
 
-The answer names the focus event `e2` and lists papers on biochemical recurrence after prostatectomy. All fields of the call and the answer: [MCP interface](mcp-interface.md).
+The answer names the focus event `e2` and lists papers on biochemical recurrence after prostatectomy. All fields of the call and the answer: [MCP interface](mcp-interface.md). To see how an answer came about, use the Matcher screen of the [debug UI](../debug/crawler/README.md).
 
 The same without a browser:
 

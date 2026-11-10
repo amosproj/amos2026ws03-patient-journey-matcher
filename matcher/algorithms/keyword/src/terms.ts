@@ -12,10 +12,16 @@ export const ENGLISH_WORDS = [...ENGLISH.values()].flatMap((term) =>
   term.split(" "),
 );
 
-/** The English search terms of an event: its label, text parameters and the names of true flags. */
-export function eventTerms(
-  event: Pick<JourneyEvent, "label" | "parameters">,
-): string[] {
+/** A word of an event and the search term it becomes; `null` for skipped words and numbers. */
+export interface EventWord {
+  word: string;
+  term: string | null;
+}
+
+type TermSource = Pick<JourneyEvent, "label" | "parameters">;
+
+/** The words of an event, in order: its label, text parameters and the names of true flags. */
+export function eventWords(event: TermSource): EventWord[] {
   const texts = [event.label];
   for (const [key, value] of Object.entries(event.parameters ?? {})) {
     if (value === true) texts.push(key);
@@ -29,8 +35,16 @@ export function eventTerms(
       .replaceAll("_", " ")
       .toLowerCase()
       .match(/[\p{L}\p{N}]+/gu) ?? [];
-  const terms = words
-    .filter((word) => /\p{L}/u.test(word) && !SKIP.has(word))
-    .map((word) => ENGLISH.get(word) ?? word);
-  return [...new Set(terms)];
+  return words.map((word) => ({
+    word,
+    term:
+      /\p{L}/u.test(word) && !SKIP.has(word)
+        ? (ENGLISH.get(word) ?? word)
+        : null,
+  }));
+}
+
+/** The English search terms of an event, each once. */
+export function eventTerms(event: TermSource): string[] {
+  return [...new Set(eventWords(event).flatMap(({ term }) => term ?? []))];
 }

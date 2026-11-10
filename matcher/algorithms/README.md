@@ -28,6 +28,8 @@ From [`@matcher/core`](../core/src/contracts.ts):
 | `Matcher.match(state, options)`  | The best hits for a `JourneyState`, best first; `score` from 0 to 1 relative to the best |
 | `reciprocalRankFusion(rankings)` | Merges rankings whose scores are not comparable, e.g. two indexes or two approaches      |
 
+The options of `match` also hold `trace` and `tuning`, for the [debug UI](../../debug/crawler/README.md): `trace(step, data)` gets what the matcher works out on the way, `tuning` other values for its ranking constants. A matcher that ignores both still works there.
+
 ## Shared parts
 
 | Need                                | Use                                                                                                                                                                                     |

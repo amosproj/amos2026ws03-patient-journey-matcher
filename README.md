@@ -18,7 +18,7 @@ The Python crawler and the TypeScript matcher are separate projects with their o
 | Folder | Language | Package manager | Content |
 |---|---|---|---|
 | `crawler/` | Python 3.12 | [uv](https://docs.astral.sh/uv/) | PubMed, arXiv, Zenodo, YouTube and podcast crawlers |
-| `debug/crawler/` | Python 3.12, HTML | uses `crawler/` | [Debug UI](debug/crawler/README.md) for the crawler and the database |
+| `debug/crawler/` | Python 3.12, HTML | uses `crawler/` | [Debug UI](debug/crawler/README.md) for the crawler, the database, the index and the matcher |
 | `matcher/db/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Reads the stored sources ([storage](Documentation/storage.md)) |
 | `matcher/core/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Contracts of the approaches: `Approach`, `Indexer`, `Matcher`, rank fusion |
 | `matcher/approaches/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | The list of approaches, for the MCP server and the indexer |

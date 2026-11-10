@@ -23,3 +23,12 @@ test("adds each ranking's weight over 60 plus the rank of a document", () => {
   expect(fused.get("b")).toBeCloseTo(1 / 62 + 0.5 / 61);
   expect(fused.get("c")).toBeCloseTo(0.5 / 62);
 });
+
+test("uses another rank constant when given one", () => {
+  const fused = reciprocalRankFusion(
+    [{ ranks: new Map([["a", 1]]), weight: 2 }],
+    10,
+  );
+
+  expect(fused.get("a")).toBeCloseTo(2 / 11);
+});

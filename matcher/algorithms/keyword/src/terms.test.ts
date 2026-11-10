@@ -1,5 +1,5 @@
 import { expect, test } from "vitest";
-import { eventTerms } from "./terms.ts";
+import { eventTerms, eventWords } from "./terms.ts";
 
 test("translates German words and keeps drug names and abbreviations", () => {
   const terms = eventTerms({
@@ -46,4 +46,13 @@ test("passes unknown words through and drops function words and numbers", () => 
 
 test("passes through words named like built-in object properties", () => {
   expect(eventTerms({ label: "constructor" })).toEqual(["constructor"]);
+});
+
+test("tells what became of each word", () => {
+  expect(eventWords({ label: "Kontrolle nach 3 Monaten" })).toEqual([
+    { word: "kontrolle", term: "monitoring" },
+    { word: "nach", term: null },
+    { word: "3", term: null },
+    { word: "monaten", term: "monaten" },
+  ]);
 });
