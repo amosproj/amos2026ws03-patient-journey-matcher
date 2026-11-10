@@ -31,7 +31,7 @@ import urllib.error
 import urllib.request
 import uuid
 import warnings
-from collections.abc import Awaitable, Callable
+from collections.abc import Awaitable, Callable, Sequence
 from datetime import UTC, datetime
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -44,10 +44,11 @@ from pydantic import ValidationError
 
 from crawler.cli import parser as cli_parser
 from crawler.cli import refresh_videos, requests_from_args
-from crawler.models import SourceName
+from crawler.links.base import LinkExtractor
+from crawler.models import ScrapeRequest, SourceDocument, SourceName
 from crawler.runner import ENV_FILE, link_extractor_from_env, run_requests, source_from_env
 from crawler.seeds import TOPICS_DIR, TopicFileError, load_topic
-from crawler.sources.base import redact_secrets
+from crawler.sources.base import BaseScraper, redact_secrets
 from crawler.store import (
     STORE_LOCK,
     RunInfo,
@@ -149,15 +150,16 @@ class Run(EventLog):
 # ── Tracing wrappers: plugged in through run_requests' factory hooks ─────────────
 
 
-class TracedScraper:
+class TracedScraper(BaseScraper):
     """Wraps a real scraper and reports every source call as an event."""
 
-    def __init__(self, inner: Any, run: Run) -> None:
+    def __init__(self, inner: BaseScraper, run: Run) -> None:
         self.inner = inner
         self.source = inner.source
         self.run = run
 
-    def scrape(self, request: Any) -> Any:
+    def scrape(self, request: ScrapeRequest) -> list[SourceDocument]:
+        detail: str | None
         if request.is_lookup:
             kind, detail = "lookup", f"{len(request.ids)} IDs"
         elif request.channel or request.feed:
@@ -187,15 +189,15 @@ class TracedScraper:
         return documents
 
 
-class TracedExtractor:
+class TracedExtractor(LinkExtractor):
     """Wraps a real link extractor and reports the citation edges it finds."""
 
-    def __init__(self, inner: Any, run: Run) -> None:
+    def __init__(self, inner: LinkExtractor, run: Run) -> None:
         self.inner = inner
         self.source = inner.source
         self.run = run
 
-    def cited_ids(self, native_ids: Any) -> Any:
+    def cited_ids(self, native_ids: Sequence[str]) -> dict[str, list[str]]:
         prefix = self.source.value
         base = {"kind": "references", "source": prefix, "detail": f"{len(native_ids)} papers"}
         self.run.emit("request_start", **base)
@@ -244,10 +246,10 @@ def execute(run: Run, seeds: list[Any], options: Any) -> None:
     asyncio.set_event_loop(loop)
     run.loop = loop
 
-    def sources(source: Any) -> TracedScraper:
+    def sources(source: SourceName) -> TracedScraper:
         return TracedScraper(source_from_env(source), run)
 
-    def extractors(source: Any) -> TracedExtractor | None:
+    def extractors(source: SourceName) -> TracedExtractor | None:
         inner = link_extractor_from_env(source)
         return None if inner is None else TracedExtractor(inner, run)
 
@@ -458,7 +460,7 @@ def parse_run(argv: list[str]) -> tuple[list[Any], Any]:
 
 
 def meta() -> dict[str, Any]:
-    topics = []
+    topics: list[dict[str, Any]] = []
     feeds: dict[str, dict[str, str]] = {}
     for path in sorted(TOPICS_DIR.glob("*.yaml")):
         try:
@@ -1464,14 +1466,19 @@ def call_mcp(arguments: dict[str, Any]) -> dict[str, Any]:
         raise RuntimeError(f"No MCP server on {url}: run make start") from error
     # The server answers as an event stream with one message.
     data = [line[5:] for line in body.splitlines() if line.startswith("data:")]
+    not_mcp = f"{url} did not answer like an MCP server"
     try:
         message = json.loads("".join(data) or body)
     except json.JSONDecodeError as error:
-        raise RuntimeError(f"{url} did not answer like an MCP server") from error
+        raise RuntimeError(not_mcp) from error
+    if not isinstance(message, dict):
+        raise RuntimeError(not_mcp)
     if "error" in message:
         failure = message["error"]
         return {"error": {"code": str(failure.get("code")), "message": failure.get("message")}}
-    result = message["result"]
+    result = message.get("result")
+    if not isinstance(result, dict):
+        raise RuntimeError(not_mcp)
     if result.get("isError"):
         text = "".join(part.get("text", "") for part in result.get("content", []))
         try:
@@ -1479,6 +1486,8 @@ def call_mcp(arguments: dict[str, Any]) -> dict[str, Any]:
             return {"error": {"code": refused["error_code"], "message": refused["message"]}}
         except (ValueError, KeyError, TypeError):
             return {"error": {"code": "INVALID_REQUEST", "message": text}}
+    if "structuredContent" not in result:
+        raise RuntimeError(not_mcp)
     return {"answer": result["structuredContent"]}
 
 
@@ -1649,8 +1658,8 @@ class Handler(BaseHTTPRequestHandler):
                 self.send_json({"error": "Run not found"}, 404)
             elif suffix == "jsonl":
                 documents = (data.get("result") or {}).get("documents") or []
-                body = "".join(json.dumps(d, ensure_ascii=False) + "\n" for d in documents)
-                encoded = body.encode()
+                lines = (json.dumps(d, ensure_ascii=False) + "\n" for d in documents)
+                encoded = "".join(lines).encode()
                 self.send_response(200)
                 self.send_header("Content-Type", "application/x-ndjson; charset=utf-8")
                 self.send_header("Content-Disposition", f'attachment; filename="{run_id}.jsonl"')
