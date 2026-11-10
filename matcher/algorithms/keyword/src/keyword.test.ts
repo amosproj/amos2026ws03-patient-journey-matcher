@@ -401,12 +401,29 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     const candidates = steps.get("candidates") as {
       id: string;
       score: number | null;
+      metadataScore: number | null;
+      fullTextScore: number | null;
+      metadataBm25: number | null;
+      fullTextBm25: number | null;
     }[];
-    expect(candidates.find(({ id }) => id === "pubmed:1")).toMatchObject({
+    const first = candidates.find(({ id }) => id === "pubmed:1");
+    expect(first).toMatchObject({
       hasFullText: true,
       fullTextRank: 1,
       metadataTerms: ["prostate cancer"],
       fullTextTerms: ["olaparib", "prostate cancer"],
+    });
+    // The two parts rank fusion adds up: weight / (60 + rank) per index.
+    expect(first?.fullTextScore).toBeCloseTo(1 / 61);
+    expect(first?.score).toBeCloseTo(
+      (first?.metadataScore ?? 0) + (first?.fullTextScore ?? 0),
+    );
+    // BM25 of each index, positive; none from an index that did not return it.
+    expect(first?.metadataBm25).toBeGreaterThan(0);
+    expect(first?.fullTextBm25).toBeGreaterThan(0);
+    expect(candidates.find(({ id }) => id === "pubmed:2")).toMatchObject({
+      hasFullText: false,
+      fullTextBm25: null,
     });
     // A candidate that matches no term is dropped: it has no score.
     expect(

@@ -26,18 +26,24 @@ type Setting = keyof typeof SETTINGS;
 
 const FILTERS = `(d.expires_at IS NULL OR d.expires_at > now())
   AND ($2::text[] IS NULL OR d.content_type = ANY ($2::text[]))`;
-// `candidates` is a whole number that `settings` checked.
-const metadataRanking = (candidates: number) => `
-  SELECT k.document_id AS id FROM keyword.documents AS k
+// pg_textsearch's BM25 score, negated: the best first.
+const METADATA_BM25 = `k.content <@> to_bm25query($1, 'keyword.documents_content_idx')`;
+const FULL_TEXT_BM25 = `f.terms <@> to_bm25query($1, 'keyword.full_texts_terms_idx')`;
+// `candidates` is a whole number that `settings` checked. `scored` selects the score too, for the
+// trace only: outside the index scan it costs about 2 ms per full text.
+const metadataRanking = (candidates: number, scored: boolean) => `
+  SELECT k.document_id AS id${scored ? `, ${METADATA_BM25} AS score` : ""}
+  FROM keyword.documents AS k
   JOIN public.documents AS d ON d.id = k.document_id
   WHERE ${FILTERS}
-  ORDER BY k.content <@> to_bm25query($1, 'keyword.documents_content_idx')
+  ORDER BY ${METADATA_BM25}
   LIMIT ${candidates}`;
-const fullTextRanking = (candidates: number) => `
-  SELECT f.document_id AS id FROM keyword.full_texts AS f
+const fullTextRanking = (candidates: number, scored: boolean) => `
+  SELECT f.document_id AS id${scored ? `, ${FULL_TEXT_BM25} AS score` : ""}
+  FROM keyword.full_texts AS f
   JOIN public.documents AS d ON d.id = f.document_id
   WHERE f.status = 'indexed' AND ${FILTERS}
-  ORDER BY f.terms <@> to_bm25query($1, 'keyword.full_texts_terms_idx')
+  ORDER BY ${FULL_TEXT_BM25}
   LIMIT ${candidates}`;
 // MATERIALIZED: terms parsed once, not per candidate
 const CANDIDATE_DETAILS = `
@@ -82,9 +88,13 @@ export function createKeywordMatcher(db: Queryable): Matcher {
       });
       if (terms.length === 0) return [];
       const parameters = [text, contentTypes ?? null];
-      const [metadata, fullTexts] = await Promise.all([
-        ranks(db, metadataRanking(candidates), parameters),
-        ranks(db, fullTextRanking(candidates), parameters),
+      const scored = trace !== undefined;
+      const [
+        { ranks: metadata, bm25: metadataBm25 },
+        { ranks: fullTexts, bm25: fullTextBm25 },
+      ] = await Promise.all([
+        ranks(db, metadataRanking(candidates, scored), parameters),
+        ranks(db, fullTextRanking(candidates, scored), parameters),
       ]);
       trace?.("rankings", {
         metadata: [...metadata.keys()],
@@ -117,31 +127,44 @@ export function createKeywordMatcher(db: Queryable): Matcher {
           : metadata.get(row.id);
         if (rank !== undefined) fullTextRanks.set(row.id, rank);
       }
-      const fused = reciprocalRankFusion(
-        [
-          { ranks: metadata, weight: 1 },
-          { ranks: fullTextRanks, weight: fullTextWeight },
-        ],
-        rankConstant,
-      );
+      const rankings = [
+        { ranks: metadata, weight: 1 },
+        { ranks: fullTextRanks, weight: fullTextWeight },
+      ];
+      const fused = reciprocalRankFusion(rankings, rankConstant);
       const ranked = matched
         .map((row) => ({ ...row, score: fused.get(row.id) ?? 0 }))
         .sort((a, b) => b.score - a.score || (a.id < b.id ? -1 : 1));
-      trace?.(
-        "candidates",
-        // The ranked ones, best first, then those dropped for matching no term.
-        [...ranked, ...details.filter((row) => !matched.includes(row))].map(
-          (row) => ({
-            id: row.id,
-            hasFullText: row.has_full_text,
-            metadataRank: metadata.get(row.id) ?? null,
-            fullTextRank: fullTexts.get(row.id) ?? null,
-            metadataTerms: row.metadata_terms,
-            fullTextTerms: row.full_text_terms,
-            score: "score" in row ? row.score : null,
-          }),
-        ),
-      );
+      if (trace) {
+        // What each ranking adds to `score`, to tune the constants of rank fusion.
+        const [metadataScores, fullTextScores] = rankings.map((ranking) =>
+          reciprocalRankFusion([ranking], rankConstant),
+        );
+        trace(
+          "candidates",
+          // The ranked ones, best first, then those dropped for matching no term.
+          [...ranked, ...details.filter((row) => !matched.includes(row))].map(
+            (row) => {
+              const score = "score" in row ? row.score : null;
+              return {
+                id: row.id,
+                hasFullText: row.has_full_text,
+                metadataRank: metadata.get(row.id) ?? null,
+                fullTextRank: fullTexts.get(row.id) ?? null,
+                metadataTerms: row.metadata_terms,
+                fullTextTerms: row.full_text_terms,
+                metadataBm25: metadataBm25.get(row.id) ?? null,
+                fullTextBm25: fullTextBm25.get(row.id) ?? null,
+                metadataScore:
+                  score === null ? null : (metadataScores?.get(row.id) ?? 0),
+                fullTextScore:
+                  score === null ? null : (fullTextScores?.get(row.id) ?? 0),
+                score,
+              };
+            },
+          ),
+        );
+      }
       // A full-text weight of 0 can leave every score at 0.
       const best = ranked[0]?.score || 1;
       return ranked.slice(0, limit).map((row) => ({
@@ -185,12 +208,22 @@ function settings(
   return values;
 }
 
-/** The rank of each document a query returns, from 1. */
+/** The rank of each document a query returns, from 1, and its BM25 score if the query selects it. */
 async function ranks(
   db: Queryable,
   sql: string,
   parameters: unknown[],
-): Promise<Map<string, number>> {
-  const { rows } = await db.query<{ id: string }>(sql, parameters);
-  return new Map(rows.map(({ id }, index) => [id, index + 1]));
+): Promise<{ ranks: Map<string, number>; bm25: Map<string, number> }> {
+  const { rows } = await db.query<{ id: string; score?: number }>(
+    sql,
+    parameters,
+  );
+  return {
+    ranks: new Map(rows.map(({ id }, index) => [id, index + 1])),
+    bm25: new Map(
+      rows.flatMap(({ id, score }) =>
+        score === undefined ? [] : [[id, -score] as const],
+      ),
+    ),
+  };
 }
