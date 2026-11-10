@@ -1,0 +1,301 @@
+
+
+
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Befundbericht – Klinikum Stuttgart – Klinik-12</title>
+  <style>
+    /* ── Page Setup ─────────────────────────────────────────────────── */
+    @page {
+      size: A4;
+      margin: 1.8cm 2cm 2.5cm 2.5cm;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 10pt;
+      color: #1a1a1a;
+      line-height: 1.45;
+    }
+
+    /* ── Letterhead ─────────────────────────────────────────────────── */
+    .letterhead {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 8pt;
+      border-bottom: 2px solid #483d8b;
+      margin-bottom: 6pt;
+    }
+
+    .clinic-brand {
+      display: flex;
+      align-items: flex-start;
+      gap: 10pt;
+    }
+
+    .clinic-monogram {
+      width: 40pt;
+      height: 40pt;
+      background-color: #483d8b;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14pt;
+      font-weight: bold;
+      border-radius: 4pt;
+      flex-shrink: 0;
+    }
+
+    .clinic-text {}
+
+    .clinic-name-main {
+      font-size: 12pt;
+      font-weight: bold;
+      color: #483d8b;
+      line-height: 1.2;
+    }
+
+    .clinic-dept-label {
+      font-size: 9pt;
+      color: #483d8b;
+      font-weight: bold;
+      margin-top: 1pt;
+    }
+
+    .clinic-contact {
+      font-size: 8pt;
+      color: #555;
+      margin-top: 3pt;
+    }
+
+    /* ── Patient Info Box (top-right) ───────────────────────────────── */
+    .patient-box {
+      border: 1px solid #483d8b;
+      padding: 5pt 8pt;
+      min-width: 150pt;
+      font-size: 8.5pt;
+    }
+
+    .patient-box table { width: 100%; border-collapse: collapse; }
+    .patient-box td { padding: 1pt 3pt; vertical-align: top; }
+    .patient-box td:first-child {
+      color: #555;
+      white-space: nowrap;
+      font-size: 7.5pt;
+      text-transform: uppercase;
+      letter-spacing: 0.3pt;
+      padding-right: 5pt;
+    }
+    .patient-box td:last-child { font-weight: bold; color: #483d8b; }
+
+    /* ── Rule + Doctor/Date bar ─────────────────────────────────────── */
+    .doc-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 8.5pt;
+      color: #444;
+      margin: 6pt 0 10pt 0;
+    }
+    .doc-meta .doc-date { font-weight: bold; }
+
+    /* ── Document Title ─────────────────────────────────────────────── */
+    h1.doc-title {
+      font-size: 13pt;
+      font-weight: bold;
+      color: #483d8b;
+      border-bottom: 1px solid #ccd6e0;
+      padding-bottom: 4pt;
+      margin-bottom: 10pt;
+    }
+
+    /* ── Sections ───────────────────────────────────────────────────── */
+    h2.section {
+      font-size: 10pt;
+      font-weight: bold;
+      color: #483d8b;
+      text-transform: uppercase;
+      letter-spacing: 0.5pt;
+      margin: 12pt 0 4pt 0;
+      border-bottom: 0.5px solid #ccd6e0;
+      padding-bottom: 2pt;
+    }
+
+    p { margin-bottom: 5pt; text-align: justify; }
+
+    /* ── Salutation / Signature area ────────────────────────────────── */
+    .salutation { margin-bottom: 8pt; }
+    .closing { margin-top: 20pt; }
+    .signature-line {
+      margin-top: 28pt;
+      border-top: 1px solid #333;
+      width: 160pt;
+      font-size: 8pt;
+      padding-top: 2pt;
+    }
+
+    /* ── Data Tables ────────────────────────────────────────────────── */
+    table.data-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 9pt;
+      margin: 6pt 0;
+    }
+    table.data-table th {
+      background: #483d8b;
+      color: white;
+      font-weight: bold;
+      padding: 4pt 6pt;
+      text-align: left;
+    }
+    table.data-table td {
+      padding: 3pt 6pt;
+      border-bottom: 0.5px solid #ddd;
+      vertical-align: top;
+    }
+    table.data-table tr:nth-child(even) td { background: #f5f8fc; }
+
+    /* ── Diagnosis box ──────────────────────────────────────────────── */
+    .diagnosis-box {
+      border-left: 3px solid #483d8b;
+      background: #f0f4fa;
+      padding: 6pt 8pt;
+      margin: 8pt 0;
+      font-size: 9.5pt;
+    }
+
+    /* ── Footer ─────────────────────────────────────────────────────── */
+    footer {
+      position: running(footer);
+      font-size: 7.5pt;
+      color: #777;
+      border-top: 0.5px solid #ccc;
+      padding-top: 3pt;
+      text-align: center;
+    }
+
+    @page { @bottom-center { content: element(footer); } }
+
+    .page-number::after { content: counter(page); }
+
+    /* ── Dynamic Layout Overrides ───────────────────────────────────── */
+    .layout-modern {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      border-bottom: 3px solid #483d8b;
+      padding-bottom: 15pt;
+    }
+    .layout-modern .clinic-brand {
+      flex-direction: column;
+      align-items: center;
+      gap: 5pt;
+      margin-bottom: 10pt;
+    }
+    .layout-modern .clinic-monogram {
+      display: none; /* No monogram in modern */
+    }
+    .layout-modern .patient-box {
+      border: none;
+      border-top: 1px solid #ccc;
+      padding-top: 10pt;
+      width: 100%;
+    }
+
+    .layout-minimal {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .layout-minimal .clinic-monogram {
+      background: none;
+      color: #483d8b;
+      font-weight: normal;
+      font-size: 24pt;
+    }
+    .layout-minimal .patient-box {
+      border: none;
+      background: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── LETTERHEAD ────────────────────────────────────────────────────── -->
+  <header class="letterhead layout-minimal">
+    <div class="clinic-brand">
+      <div class="clinic-monogram">KL</div>
+      <div class="clinic-text">
+        <div class="clinic-name-main">Klinikum Stuttgart – Klinik-12</div>
+        <div class="clinic-dept-label">Institut für Diagnostische Radiologie</div>
+        <div class="clinic-contact">Goethestraße 11 · 93768 Stuttgart</div>
+      </div>
+    </div>
+    <div class="patient-box">
+      <table>
+        <tr><td>Patient</td><td>Patient-11</td></tr>
+        <tr><td>Geburtsdatum</td><td>16.10.1971</td></tr>
+        <tr><td>Fallnummer</td><td>URO-2026-0011</td></tr>
+        <tr><td>Diagnose</td><td>Vd. a. Prostatakarzinom (C61)</td></tr>
+      </table>
+    </div>
+  </header>
+
+  <!-- ── DOCTOR / DATE ─────────────────────────────────────────────────── -->
+  <div class="doc-meta">
+    <div>Dr. med. Arzt-13 · Institut für Diagnostische Radiologie</div>
+    <div class="doc-date">9. Dezember 2026</div>
+  </div>
+
+  <!-- ── DOCUMENT BODY ──────────────────────────────────────────────────── -->
+  
+
+<h1 class="doc-title">MRT</h1>
+
+<p>Überweiser: Arzt-11<br>
+Untersuchungsdatum: 9. Dezember 2026</p>
+
+<h2 class="section">Klinische Angaben</h2>
+<p>Patient: <strong>Patient-11</strong>, geb. 16. Oktober 1971.<br>
+Fragestellung: Abklärung/Staging bei Prostatakarzinom (Vd. a. Prostatakarzinom (C61)).</p>
+
+<h2 class="section">Untersuchungstechnik</h2>
+<p>MRT der Region: Prostata.</p>
+
+<h2 class="section">Befund</h2>
+<p>PI-RADS 3</p>
+
+
+<p><strong>PI-RADS Score: 3</strong></p>
+
+
+
+
+
+
+<h2 class="section">Beurteilung</h2>
+<div class="diagnosis-box">
+  
+  Prostatakarzinom-Verdacht, PI-RADS 3.
+  
+</div>
+
+<div class="closing">
+  <p>Mit freundlichen kollegialen Grüßen</p>
+  <div class="signature-line">Dr. med. Arzt-13<br>Institut für Diagnostische Radiologie</div>
+</div>
+
+
+
+  <!-- ── FOOTER ────────────────────────────────────────────────────────── -->
+  <footer>
+    Klinikum Stuttgart – Klinik-12 · Institut für Diagnostische Radiologie · Goethestraße 11, 93768 Stuttgart
+  </footer>
+
+</body>
+</html>

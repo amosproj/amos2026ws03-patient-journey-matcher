@@ -1,0 +1,319 @@
+{
+  "patient_id": "Patient-4",
+  "pathway_id": "p04",
+  "start_date": "2026-11-06",
+  "events": [
+    {
+      "id": "e01",
+      "type": "referral",
+      "label": "Überweisung zur Urologie",
+      "date": "2026-11-06",
+      "specialist": "hausarzt",
+      "parameters": {
+        "reason": "PSA erhöht",
+        "psa_trend": "stable",
+        "psa_value": 16.8,
+        "psa_display": "16,8 ng/ml"
+      },
+      "documents": [
+        "ueberweisungsbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e02",
+      "type": "lab_test",
+      "label": "PSA und Erstvorstellung Urologie",
+      "date": "2026-11-11",
+      "specialist": "urologie",
+      "parameters": {
+        "test": "PSA",
+        "unit": "ng/ml",
+        "value_source": "initial_psa",
+        "psa_trend": "stable",
+        "psa_value": 16.8,
+        "psa_display": "16,8 ng/ml"
+      },
+      "documents": [
+        "laborbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e03",
+      "type": "imaging",
+      "label": "Multiparametrische MRT der Prostata",
+      "date": "2026-11-29",
+      "specialist": "radiologie",
+      "parameters": {
+        "modality": "mpMRI",
+        "region": "Prostata",
+        "finding": "PI-RADS 4 – klinisch signifikante Läsion",
+        "pi_rads": 4,
+        "psa_trend": "stable",
+        "psa_value": 16.8,
+        "psa_display": "16,8 ng/ml"
+      },
+      "documents": [
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e04",
+      "type": "biopsy",
+      "label": "Stanzbiopsie der Prostata",
+      "date": "2026-12-10",
+      "specialist": "urologie",
+      "parameters": {
+        "cores_total": 12,
+        "cores_positive_range": [
+          4,
+          8
+        ],
+        "gleason_primary": 4,
+        "gleason_secondary": 3,
+        "psa_trend": "stable",
+        "psa_value": 16.8,
+        "psa_display": "16,8 ng/ml"
+      },
+      "documents": [
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e05",
+      "type": "tumor_board",
+      "label": "Tumorkonferenz: Therapieentscheidung RPE",
+      "date": "2026-12-23",
+      "specialist": "urologie",
+      "parameters": {
+        "decision": "radical_prostatectomy",
+        "participants": [
+          "urologie",
+          "strahlentherapie",
+          "pathologie"
+        ],
+        "psa_trend": "stable",
+        "psa_value": 16.8,
+        "psa_display": "16,8 ng/ml"
+      },
+      "documents": [
+        "tumorkonferenzprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e06",
+      "type": "hospital_admission",
+      "label": "Stationäre Aufnahme zur RPE",
+      "date": "2027-01-23",
+      "specialist": "urologie",
+      "parameters": {
+        "planned_procedure": "Radikale Prostatektomie",
+        "psa_trend": "stable",
+        "psa_value": 16.8,
+        "psa_display": "16,8 ng/ml"
+      },
+      "documents": [
+        "einweisungsbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e07",
+      "type": "surgery",
+      "label": "Radikale Prostatektomie",
+      "date": "2027-01-24",
+      "specialist": "urologie",
+      "parameters": {
+        "procedure": "open_retropubic",
+        "lymphadenectomy": "bilateral_extended",
+        "psa_trend": "stable",
+        "psa_value": 16.8,
+        "psa_display": "16,8 ng/ml"
+      },
+      "documents": [
+        "op_bericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e08",
+      "type": "pathology",
+      "label": "Pathologische Untersuchung: pT3a R1",
+      "date": "2027-02-03",
+      "specialist": "pathologie",
+      "parameters": {
+        "pt_stage": "pT3a",
+        "r_status": "R1",
+        "gleason_primary": 4,
+        "gleason_secondary": 3,
+        "psa_trend": "stable",
+        "psa_value": 16.8,
+        "psa_display": "16,8 ng/ml"
+      },
+      "documents": [
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e09",
+      "type": "hospital_discharge",
+      "label": "Entlassung nach RPE",
+      "date": "2027-02-06",
+      "specialist": "urologie",
+      "parameters": {
+        "diagnosis": "pT3a R1 Prostatakarzinom Gleason 4+3",
+        "psa_trend": "stable",
+        "psa_value": 16.8,
+        "psa_display": "16,8 ng/ml"
+      },
+      "documents": [
+        "entlassungsbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e10",
+      "type": "radiation",
+      "label": "Adjuvante Strahlentherapie der Prostataloge (IMRT 64 Gy)",
+      "date": "2027-03-18",
+      "specialist": "strahlentherapie",
+      "parameters": {
+        "technique": "IMRT",
+        "target": "Prostataloge",
+        "total_dose_gy": 64,
+        "fractions": 32,
+        "psa_trend": "declining",
+        "psa_value": 0.18,
+        "psa_display": "0,2 ng/ml"
+      },
+      "documents": [
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e11",
+      "type": "followup",
+      "label": "Nachsorge nach adjuvanter RT",
+      "date": "2027-06-16",
+      "specialist": "urologie",
+      "parameters": {
+        "psa_trend": "declining",
+        "psa_value": 0.18,
+        "psa_display": "0,2 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 0
+    },
+    {
+      "id": "e12",
+      "type": "followup",
+      "label": "Nachsorge nach adjuvanter RT",
+      "date": "2027-12-09",
+      "specialist": "urologie",
+      "parameters": {
+        "psa_trend": "stable",
+        "psa_value": 0.18,
+        "psa_display": "0,2 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 1
+    },
+    {
+      "id": "e13",
+      "type": "followup",
+      "label": "Nachsorge nach adjuvanter RT",
+      "date": "2028-05-08",
+      "specialist": "urologie",
+      "parameters": {
+        "psa_trend": "stable",
+        "psa_value": 0.18,
+        "psa_display": "0,2 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 2
+    },
+    {
+      "id": "e14",
+      "type": "followup",
+      "label": "Nachsorge nach adjuvanter RT",
+      "date": "2028-09-12",
+      "specialist": "urologie",
+      "parameters": {
+        "psa_trend": "stable",
+        "psa_value": 0.18,
+        "psa_display": "0,2 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 3
+    },
+    {
+      "id": "e15",
+      "type": "followup",
+      "label": "Nachsorge nach adjuvanter RT",
+      "date": "2029-02-03",
+      "specialist": "urologie",
+      "parameters": {
+        "psa_trend": "stable",
+        "psa_value": 0.18,
+        "psa_display": "0,2 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 4
+    },
+    {
+      "id": "e16",
+      "type": "followup",
+      "label": "Nachsorge nach adjuvanter RT",
+      "date": "2029-06-15",
+      "specialist": "urologie",
+      "parameters": {
+        "psa_trend": "stable",
+        "psa_value": 0.18,
+        "psa_display": "0,2 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 5
+    },
+    {
+      "id": "e17",
+      "type": "followup",
+      "label": "Nachsorge nach adjuvanter RT",
+      "date": "2029-11-06",
+      "specialist": "urologie",
+      "parameters": {
+        "psa_trend": "stable",
+        "psa_value": 0.18,
+        "psa_display": "0,2 ng/ml"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 6
+    }
+  ]
+}
