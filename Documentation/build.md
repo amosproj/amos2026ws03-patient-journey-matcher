@@ -33,27 +33,31 @@ In a second terminal, open the [MCP Inspector](https://github.com/modelcontextpr
 npx @modelcontextprotocol/inspector --transport http --server-url http://127.0.0.1:3000/mcp
 ```
 
-In the browser: **Connect**, **Tools**, **List Tools**, then `match_journey`. You can use this test `journey`, set a `limit` (between 1 and 50) and click **Run Tool**:
+In the browser, connect to the server, open **Tools** and pick `match_journey`. Turn on **Edit as JSON**, paste these arguments and click **Execute Tool**:
 
 ```json
 {
-  "patient_id": "demo-1",
-  "events": [
-    { "id": "e1", "type": "surgery", "label": "Radikale Prostatektomie", "date": "2027-01-22" },
-    { "id": "e2", "type": "progression", "label": "PSA-Anstieg – Biochemisches Rezidiv", "date": "2028-12-25" }
-  ]
+  "journey": {
+    "patient_id": "demo-1",
+    "events": [
+      { "id": "e1", "type": "surgery", "label": "Radikale Prostatektomie", "date": "2027-01-22" },
+      { "id": "e2", "type": "progression", "label": "PSA-Anstieg – Biochemisches Rezidiv", "date": "2028-12-25" }
+    ]
+  },
+  "algorithm": "keyword",
+  "limit": 10
 }
 ```
 
-The answer names the focus event `e2` and lists papers on biochemical recurrence after prostatectomy. All fields of the call and the answer: [MCP interface](mcp-interface.md). To see how an answer came about, use the Matcher screen of the [debug UI](../debug/crawler/README.md).
+The answer names the focus event `e2` and lists papers on biochemical recurrence after prostatectomy. `limit` takes 1 to 50; all fields of the call and the answer: [MCP interface](mcp-interface.md). The Matcher screen of the [debug UI](../debug/crawler/README.md) takes the same JSON and shows how an answer came about.
 
 The same without a browser:
 
 ```sh
 npx @modelcontextprotocol/inspector --cli http://127.0.0.1:3000/mcp --transport http --method tools/list
 npx @modelcontextprotocol/inspector --cli http://127.0.0.1:3000/mcp --transport http \
-  --method tools/call --tool-name match_journey --tool-arg limit=3 \
-  --tool-arg 'journey={"patient_id":"demo-1","events":[{"id":"e1","type":"progression","label":"PSA-Anstieg – Biochemisches Rezidiv","date":"2028-12-25"}]}'
+  --method tools/call --tool-name match_journey \
+  --tool-args-json '{"journey":{"patient_id":"demo-1","events":[{"id":"e1","type":"progression","label":"PSA-Anstieg – Biochemisches Rezidiv","date":"2028-12-25"}]},"limit":3}'
 ```
 
 ## Options
