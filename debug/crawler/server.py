@@ -9,7 +9,8 @@ the user empties tables and types the database name to confirm.
 The matcher is TypeScript, so its logic stays there: the Index screen starts the indexer job
 (`matcher/indexer`) as a child process and reads its tables, and the Matcher screen asks
 `node src/main.ts explain` in `matcher/mcp-server` for the answer of `match_journey` with the
-steps of the match. Journeys are passed on, never stored or logged.
+steps of the match, and `node src/main.ts get_source` for the files of one source. Journeys are
+passed on, never stored or logged.
 """
 
 import argparse
@@ -1446,11 +1447,12 @@ def load_journey(journey_id: str) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def explain_match(request: dict[str, Any]) -> dict[str, Any]:
-    """`match_journey` by the matcher's own code, with the steps of the match."""
+def run_matcher(command: str, request: dict[str, Any]) -> dict[str, Any]:
+    """A tool by the matcher's own code: `explain` is `match_journey` with the steps of the
+    match, `get_source` is that tool."""
     try:
         done = subprocess.run(
-            ["node", "src/main.ts", "explain"],
+            ["node", "src/main.ts", command],
             cwd=MATCHER_DIR / "mcp-server",
             env=matcher_environment(),
             input=json.dumps(request),
@@ -1472,13 +1474,13 @@ def explain_match(request: dict[str, Any]) -> dict[str, Any]:
         raise RuntimeError(message) from error
 
 
-def call_mcp(arguments: dict[str, Any]) -> dict[str, Any]:
-    """`match_journey` of the running MCP server (`make start`), as a client gets it."""
+def call_mcp(tool: str, arguments: dict[str, Any]) -> dict[str, Any]:
+    """A tool of the running MCP server (`make start`), as a client gets it."""
     call = {
         "jsonrpc": "2.0",
         "id": 1,
         "method": "tools/call",
-        "params": {"name": "match_journey", "arguments": arguments},
+        "params": {"name": tool, "arguments": arguments},
     }
     url = f"http://127.0.0.1:{mcp_port()}/mcp"
     request = urllib.request.Request(
@@ -1531,9 +1533,23 @@ def match(body: dict[str, Any]) -> dict[str, Any]:
     if body.get("via") == "mcp":
         # Tuning is not part of the tool: the server ranks with its own constants.
         arguments = {key: value for key, value in request.items() if key != "tuning"}
-        result = {"steps": [], **call_mcp(arguments)}
+        result = {"steps": [], **call_mcp("match_journey", arguments)}
     else:
-        result = explain_match(request)
+        result = run_matcher("explain", request)
+    return {**result, "seconds": round(time.monotonic() - started, 2)}
+
+
+def source(body: dict[str, Any]) -> dict[str, Any]:
+    """`get_source` for the example client, the same way as its match."""
+    source_id = body.get("source_id")
+    if not isinstance(source_id, str):
+        raise ValueError("source_id must be the ID of a source")
+    arguments = {"source_id": source_id}
+    started = time.monotonic()
+    if body.get("via") == "mcp":
+        result = call_mcp("get_source", arguments)
+    else:
+        result = run_matcher("get_source", arguments)
     return {**result, "seconds": round(time.monotonic() - started, 2)}
 
 
@@ -1715,7 +1731,7 @@ class Handler(BaseHTTPRequestHandler):
             self.send_result(lambda: start_indexer().summary())
         elif path == "/api/index/cancel":
             self.send_result(stop_indexer)
-        elif path in ("/api/index/terms", "/api/db/titles", "/api/match"):
+        elif path in ("/api/index/terms", "/api/db/titles", "/api/match", "/api/match/source"):
             try:
                 body = self.read_json()
             except json.JSONDecodeError:
@@ -1723,6 +1739,8 @@ class Handler(BaseHTTPRequestHandler):
                 return
             if path == "/api/match":
                 self.send_result(lambda: match(body))
+            elif path == "/api/match/source":
+                self.send_result(lambda: source(body))
             elif path == "/api/db/titles":
                 self.send_db(
                     lambda connection: db_titles(connection, string_list(body, "ids", 5000))

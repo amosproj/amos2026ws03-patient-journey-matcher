@@ -1,5 +1,10 @@
 import { z } from "zod";
-import { type MatchResult, matchJourneyInputSchema } from "./contract.ts";
+import {
+  getSourceInputSchema,
+  type MatchResult,
+  matchJourneyInputSchema,
+  type SourceDownloads,
+} from "./contract.ts";
 import { type MatchService, ToolError } from "./server.ts";
 
 // The arguments of `match_journey`, plus other values for the matcher's ranking constants.
@@ -40,5 +45,23 @@ export async function explain(
   } catch (error) {
     if (!(error instanceof ToolError)) throw error;
     return { error: { code: error.code, message: error.message }, steps };
+  }
+}
+
+/** `get_source` for one request, answered like `explain`. For the example client of the debug UI. */
+export async function explainSource(
+  service: MatchService,
+  input: unknown,
+): Promise<{ answer?: SourceDownloads; error?: Explanation["error"] }> {
+  const request = getSourceInputSchema.safeParse(input);
+  if (!request.success) {
+    const message = z.prettifyError(request.error);
+    return { error: { code: "INVALID_REQUEST", message } };
+  }
+  try {
+    return { answer: await service.getSource(request.data.source_id) };
+  } catch (error) {
+    if (!(error instanceof ToolError)) throw error;
+    return { error: { code: error.code, message: error.message } };
   }
 }
