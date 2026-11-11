@@ -8,15 +8,15 @@ The matcher runs on one VM in our project of the [FAU Compute Cloud](https://cc.
 |---|---|
 | CC project | `amos2026ws04` |
 | Name | `matcher` |
-| Address | `172.17.72.173`, reachable only inside the FAU network or with [eduVPN](https://www.anleitungen.rrze.fau.de/internet-zugang/vpn/) |
+| Address | `172.17.72.205`, reachable only inside the FAU network or with [eduVPN](https://www.anleitungen.rrze.fau.de/internet-zugang/vpn/) |
 | Image | Debian 13 |
-| Size | Flavour `SCS-16V-32` (16 vCPUs, 32 GB RAM), 990 GB volume |
+| Size | Flavour `SCS-16V-32` (16 vCPUs, 32 GB RAM), 700 GB volume |
 | Login user | `debian` |
 | Repository on the VM | `/opt/patient-journey-matcher` |
 | MCP server | Service `matcher-mcp`, `http://127.0.0.1:3000/mcp` on the VM |
 | Database | Docker container `amos-postgres`, `127.0.0.1:5432` on the VM |
 
-The size is the largest that fits our quota of 20 vCPUs, 50 GB RAM and 1000 GB volume storage. Together with the `vaultwarden` VM this uses almost all of it. If someone needs another VM, resize or rebuild this one first.
+Our quota is 20 vCPUs, 50 GB RAM and 1000 GB volume storage. The flavour is the largest that fits the RAM quota. Together with the `vaultwarden` VM, 3 vCPUs, 17 GB RAM and 290 GB volume storage are left for other VMs.
 
 ## Get access
 
@@ -25,17 +25,17 @@ The size is the largest that fits our quota of 20 vCPUs, 50 GB RAM and 1000 GB v
 3. A key pair in the dashboard only works for VMs you launch yourself. For the existing VM, send your public SSH key to a developer who already has access. They add it:
 
    ```sh
-   ssh debian@172.17.72.173 'cat >> ~/.ssh/authorized_keys' < your_key.pub
+   ssh debian@172.17.72.205 'cat >> ~/.ssh/authorized_keys' < your_key.pub
    ```
 
-4. Log in: `ssh debian@172.17.72.173`
+4. Log in: `ssh debian@172.17.72.205`
 
 ## Use the server
 
 The MCP server has no authentication yet, so it listens on `127.0.0.1` of the VM only. Open a tunnel to use it from your machine:
 
 ```sh
-ssh -L 3000:127.0.0.1:3000 debian@172.17.72.173
+ssh -L 3000:127.0.0.1:3000 debian@172.17.72.205
 ```
 
 Then `http://127.0.0.1:3000/mcp` on your machine is the server on the VM, and the MCP Inspector commands from [build and run](build.md#run-the-matcher-locally) work unchanged.
