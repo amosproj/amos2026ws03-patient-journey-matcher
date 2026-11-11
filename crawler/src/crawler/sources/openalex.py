@@ -25,7 +25,8 @@ API_URL = "https://api.openalex.org/works"
 BATCH_SIZE = 50
 """DOIs per request; OpenAlex allows 100 values in one filter."""
 MIN_INTERVAL_SECONDS = 1.0
-"""OpenAlex allows one request per second for filters of more than five values without a key."""
+"""Our own pause between requests; OpenAlex limits clients by a daily budget (see
+Documentation/sources/openalex.md)."""
 MAX_LOCATORS = 3
 """The indexers try at most three locators."""
 _FIELDS = "id,doi,best_oa_location,locations"

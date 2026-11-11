@@ -10,7 +10,7 @@ Full-text route for [PubMed](pubmed.md) rows that [PMC](pmc.md) does not hold (#
 |---|---|---|
 | `https://api.openalex.org/works?filter=doi:<a>\|<b>…&select=id,doi,best_oa_location,locations` | optional `api_key` | Up to 100 values per filter; $0.0001 per request. Without a key one $0.10 budget per day shared by the IP address (`x-ratelimit-limit: 1000` on 11.11.2026), with a free key $1 per day |
 
-The crawler asks for 50 DOIs per request and waits one second between requests, which stays below the per-second limits of the help pages. `OPENALEX_API_KEY` in `crawler/.env` is optional; the key goes in the query string, and `redact_secrets` hides it in error messages.
+The crawler asks for 50 DOIs per request and waits one second between requests, its own choice. `OPENALEX_API_KEY` in `crawler/.env` is optional; the key goes in the query string, and `redact_secrets` hides it in error messages.
 
 ## Connectors
 
