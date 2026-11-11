@@ -135,8 +135,37 @@ The server does not store or log the journey. It also does not log the message o
 Results of the partner meeting on 06.11.2026:
 
 - **Matching runs offline, not live.** AIlixir calls `match_journey` when a patient profile changes, for example when a new report comes in, or on a schedule. The tools keep no state, so this needs no change here.
-- **Input is the whole patient graph.** AIlixir will send the complete patient profile graph with entities, relationships and history, not `timeline.json`. Older events can stay relevant depending on the medical context and trends over time. The graph format follows from AIlixir's example data in #44. Until then `timeline.json` stays the input for generated journeys and tests.
+- **Input is the whole patient graph.** AIlixir will send the complete patient profile graph with entities, relationships and history, not `timeline.json`. Older events can stay relevant depending on the medical context and trends over time. The graph format is described in [Patient graph](#patient-graph). Until a graph input exists, `timeline.json` stays the input for generated journeys and tests.
 - **Output is a card.** Each result needs at least a title, a link and a short summary or abstract, and a picture if possible. That is why `summary` and `image_url` were added.
+
+Result of the data request in #44 (Slack, 09.11.2026):
+
+- **AIlixir shared the input of the graph, not the graph.** Their Drive holds the PDF reports of ten generated patients, Patient-1 to Patient-10, made with the same generator we use. It has no `timeline.json` and no graph.
+- **There is no separate transfer format.** The graph is what the SS26 pipeline builds from these PDFs. AIlixir suggests that we set the pipeline up and run it ourselves, so we do not depend on a static snapshot.
+
+## Patient graph
+
+This is the graph that the SS26 pipeline builds. We have the code in [`backend/workers/pipeline/graph/`](../backend/workers/pipeline/graph/), and [`medical_schema.py`](../backend/workers/pipeline/graph/medical_schema.py) is the source of truth for the types.
+
+**How it is built.** Each uploaded PDF is turned into a short clinical text by an LLM (Gemini). Graphiti reads this text and stores it as one episode in Neo4j. Every patient has an own graph, separated by `group_id`. The date of the document is the time of the episode, not the time of the upload.
+
+**Nodes.** One `Patient` node and nodes of 14 more types. Each node has a `name`, a `summary` and the fields of its type.
+
+| Group | Types | Fields with a date |
+|---|---|---|
+| Core | `Patient`, `Diagnosis`, `Medication`, `LabTest`, `Procedure`, `Provider` | `date_confirmed`, `start_date`, `end_date`, `test_date`, `procedure_date` |
+| Oncology | `PathologyResult`, `TumorMarker`, `TreatmentPlan` | `pathology_date`, `test_date`, `planned_start`, `decision_date` |
+| Other | `ImagingResult`, `Symptom`, `Allergy`, `VitalSigns`, `Referral`, `Appointment` | `imaging_date`, `onset_date`, `documented_date`, `measurement_date`, `referral_date`, `appointment_date` |
+
+**Edges.** 21 types. From the patient: `HAS_DIAGNOSIS`, `UNDERWENT`, `PRESCRIBED`, `HAD_LAB_TEST`, `HAS_TUMOR_MARKER`, `HAS_PATHOLOGY`, `HAS_IMAGING`, `HAS_SYMPTOM`, `HAS_ALLERGY`, `HAS_VITAL_SIGNS`, `WAS_REFERRED`, `HAS_APPOINTMENT`, `MANAGED_AT`, `HAS_TREATMENT_PLAN`. Between findings: `TREATED_BY`, `CONFIRMED_BY`, `INDICATES`, `PERFORMED_BY`, `REFERRED_TO`, `SYMPTOM_OF`, and `RELATES_TO` as fallback. Each edge holds a `fact`, which is one sentence, and the times `valid_at` and `invalid_at`. When a newer document replaces a fact, for example a new PSA value, Graphiti sets `invalid_at` on the old edge.
+
+**Dates.** The graph in Neo4j keeps the dates: the episode has the document date, the edges have `valid_at` and `invalid_at`, and the nodes have the date fields above. The file export of SS26 does not keep them. [`exporter.py`](../backend/workers/pipeline/graph/exporter.py) writes a `graph.cypher` file that only holds a query to show the graph, and it removes `valid_at` and `invalid_at` from the data it reads. So this file cannot be the input of the matcher.
+
+**What this means for `match_journey`.**
+
+- A graph input needs the nodes and edges with their dates, read from Neo4j or sent as JSON. The Cypher export is not enough.
+- The most recent event is then the newest document on or before `as_of`, with the facts that are still valid at that time.
+- To get real graphs for tests we have to run the SS26 pipeline on the generated PDFs. This needs a Gemini key and Neo4j. Until then the generated `timeline.json` covers the same patients and events.
 
 ## Check against AIlixir's integration needs
 
@@ -146,13 +175,13 @@ Results of the partner meeting on 06.11.2026:
 | Tell "nothing relevant" from "search failed" | `degraded` and `degraded_reason` in the SS26 `PaperRetrievalResult` | Same field names |
 | Match when the profile changes, not live | Partner meeting 06.11. | No state in the server, AIlixir decides when to call |
 | Send generated journeys | Generator `timeline.json` | Checked with one generated journey for each of the 10 pathways |
-| Send journeys of the real app | Partner meeting 06.11.: the whole patient graph | Format follows in #44 with AIlixir's example data |
+| Send journeys of the real app | Partner meeting 06.11.: the whole patient graph | Format known, see [Patient graph](#patient-graph). The graph input itself is not built yet |
 
 ## Open questions
 
 For AIlixir:
 
-1. Which graph format does the app send, and does its export keep the event dates? Without dates there is no most recent event (#44).
+1. Can the app send the graph as JSON with `valid_at` and `invalid_at`, or should the matcher read it from Neo4j? The format and the dates are answered in [Patient graph](#patient-graph).
 2. May `get_source` return abstracts and full texts to the app, depending on the licence of the source?
 3. Does the app need an `error_code` for invalid input too, or is the plain text enough?
 
