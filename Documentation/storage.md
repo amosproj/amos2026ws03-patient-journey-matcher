@@ -44,6 +44,14 @@ If storing fails, nothing of the run is stored, `storing failed` goes to stderr 
 
 From the crawler's `SourceDocument`: `source_id` → `native_id`, `journal` → `venue`, `abstract` (else `description`) → `summary`, `url` → `canonical_url`, `published_on` → `published_at`, `refresh_after` → `expires_at`, `channel_id` → `external_ids`.
 
+## Languages
+
+The crawler detects the language of each document's title and summary offline with [py3langid](https://github.com/adbar/py3langid) ([`crawler/src/crawler/language.py`](../crawler/src/crawler/language.py)) and stores it as `extra.metadata_language` (BCP 47, e.g. `en`). A source's `language` can name something else: PubMed gives the article's language, and a German article often has an English abstract. So `language` keeps the source's value and only gets the detected one where the source gave none.
+
+- Missing `metadata_language` means unknown, not "not English": short titles such as `PSA` are too short to tell, and stored cited papers keep their old row until a run fetches them again. An indexer that skips non-English metadata should treat unknown as matchable.
+- Non-English documents are stored like the others, so they stay findable and their citations stay complete.
+- The first store run after this change counts every document it fetches again as changed, once, since `extra` and `language` are content: the indexers read their full texts again.
+
 ## Reading
 
 The schema is the only contract between the crawler (Python) and the matcher (TypeScript). The matcher reads through [`@matcher/db`](../matcher/db/src/documents.ts), which treats rows past `expires_at` as gone:

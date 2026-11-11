@@ -30,6 +30,10 @@ first, so `--max-results` only caps them: the summary lists every seed that reac
 Runs that reached it, or stopped at `--max-requests` (exit code 1), do not count as successful,
 so the next `--since auto` run covers their period again.
 
+Each document gets `extra.metadata_language`, the language of its title and abstract or
+description, detected offline; it is missing where the text is too short to tell
+([languages](../Documentation/storage.md#languages)).
+
 Cited papers are kept only if they match the topic filter: the topic's `terms`, or for a
 single arXiv query its words (all of them; any with `--query-mode or`). Single PubMed and
 `raw` queries keep every cited paper.

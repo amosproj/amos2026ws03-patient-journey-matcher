@@ -12,6 +12,7 @@ from typing import NoReturn
 
 from pydantic import ValidationError
 
+from crawler.language import with_metadata_language
 from crawler.models import (
     MAX_RESULTS,
     CollectionResult,
@@ -372,7 +373,8 @@ async def refresh_videos(
         for video_id in stored
         if source_document_id(SourceName.YOUTUBE, video_id) not in collected
     ]
-    return len(due), await asyncio.to_thread(youtube.video_details, due)
+    videos = await asyncio.to_thread(youtube.video_details, due)
+    return len(due), [with_metadata_language(video) for video in videos]
 
 
 def _refresh(

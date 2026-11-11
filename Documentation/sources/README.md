@@ -33,7 +33,7 @@ Table `documents`, one row per source record. PMC has no rows; it fills the PubM
 | `authors` | jsonb | yes | `[{name, orcid, affiliation}]`; channel or host for media |
 | `venue` | text | | Journal, channel or show |
 | `summary` | text | | Abstract or description; show notes cut to 1,000 characters |
-| `language` | text | | BCP 47 |
+| `language` | text | | BCP 47: the source's, else the detected language of title and summary |
 | `subjects` | jsonb | | `[{scheme, id, label, major}]`, e.g. MeSH |
 | `published_at` | date | yes | First public date |
 | `published_precision` | text | yes | `year`, `month` or `day` |
@@ -47,7 +47,7 @@ Table `documents`, one row per source record. PMC has no rows; it fills the PubM
 | `found_by` | jsonb | yes | `[{topic, query}]` or `[{cited_by: <id>}]` |
 | `retrieved_at` | timestamptz | yes | Last successful fetch |
 | `expires_at` | timestamptz | | YouTube only: `retrieved_at` + 30 days |
-| `extra` | jsonb | | Source-specific fields, see source pages |
+| `extra` | jsonb | | Source-specific fields, see source pages; `metadata_language`: the detected language of title and summary, missing if unsure ([storage](../storage.md#languages)) |
 
 Implemented in [`db/init/02-documents.sql`](../../db/init/02-documents.sql) (#41), with `created_at` and `changed_at` added and `published_at`/`published_precision` optional: [storage and retrieval](../storage.md).
 
