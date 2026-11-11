@@ -19,6 +19,7 @@ from crawler.models import (
 )
 from crawler.sources.base import BaseScraper
 from crawler.sources.fields import bare_orcid, language_tag, normalize_doi
+from crawler.sources.openalex import OpenAlexClient
 from crawler.sources.pmc import PmcClient
 
 logger = logging.getLogger(__name__)
@@ -82,7 +83,8 @@ def _major(value: Any) -> bool | None:
 
 
 class PubMedScraper(BaseScraper):
-    """PubMed discovery and XML metadata parsing; PMC adds licence and full text."""
+    """PubMed discovery and XML metadata parsing; PMC adds licence and full text, OpenAlex
+    open-access copies of the papers PMC does not hold."""
 
     source = SourceName.PUBMED
 
@@ -93,16 +95,20 @@ class PubMedScraper(BaseScraper):
         *,
         entrez: Any = Entrez,
         pmc: PmcClient | None = None,
+        open_access: OpenAlexClient | None = None,
     ) -> None:
         self._email = email.strip() if email else None
         self._api_key = api_key or None
         self._entrez = entrez
         self._pmc = pmc
+        self._open_access = open_access
 
     @classmethod
     def from_env(cls) -> "PubMedScraper":
         email, api_key = ncbi_credentials_from_env()
-        return cls(email=email, api_key=api_key, pmc=PmcClient())
+        return cls(
+            email=email, api_key=api_key, pmc=PmcClient(), open_access=OpenAlexClient.from_env()
+        )
 
     def scrape(self, request: ScrapeRequest) -> list[SourceDocument]:
         if request.source is not self.source:
@@ -110,9 +116,48 @@ class PubMedScraper(BaseScraper):
         configure_entrez(self._entrez, self._email, self._api_key)
         identifiers = request.ids if request.is_lookup else self._search(request)
         documents = self._fetch(identifiers)
-        if self._pmc is None:
+        if self._pmc is not None:
+            documents = [self._enrich(self._pmc, document) for document in documents]
+        if self._open_access is not None:
+            documents = self._add_open_access(self._open_access, documents)
+        return documents
+
+    @staticmethod
+    def _add_open_access(
+        open_access: OpenAlexClient, documents: list[SourceDocument]
+    ) -> list[SourceDocument]:
+        """Open-access copies for the records with a DOI but no full text from PMC.
+
+        Unlike PMC errors, OpenAlex errors only log: a daily budget that ran out must not stop
+        the crawl, and the next run of a search asks again.
+        """
+        dois = [d.doi for d in documents if d.doi and not d.full_text]
+        if not dois:
             return documents
-        return [self._enrich(self._pmc, document) for document in documents]
+        try:
+            copies = open_access.open_access(dois)
+        except (OSError, ValueError) as error:  # HTTP and network errors, broken JSON
+            logger.warning("OpenAlex lookup failed for %d record(s): %s", len(dois), error)
+            return documents
+        enriched: list[SourceDocument] = []
+        for document in documents:
+            copy = copies.get(document.doi or "") if not document.full_text else None
+            if copy is None:
+                enriched.append(document)
+                continue
+            external_ids = dict(document.external_ids)
+            if copy.openalex_id:
+                external_ids["openalex"] = copy.openalex_id
+            enriched.append(
+                document.model_copy(
+                    update={
+                        "full_text": copy.full_text,
+                        "licence": document.licence or copy.licence,
+                        "external_ids": external_ids,
+                    }
+                )
+            )
+        return enriched
 
     @staticmethod
     def _enrich(pmc: PmcClient, document: SourceDocument) -> SourceDocument:

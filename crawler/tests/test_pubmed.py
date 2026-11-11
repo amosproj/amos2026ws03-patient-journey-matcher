@@ -1,5 +1,6 @@
 import io
 import xml.etree.ElementTree as ET
+from collections.abc import Sequence
 from datetime import UTC, date, datetime
 from email.message import Message
 from typing import Any
@@ -8,7 +9,15 @@ from urllib.error import HTTPError
 import pytest
 from Bio import Entrez
 
-from crawler.models import Author, ScrapeRequest, SourceDocument, SourceName, Subject
+from crawler.models import (
+    Author,
+    FullTextLocator,
+    ScrapeRequest,
+    SourceDocument,
+    SourceName,
+    Subject,
+)
+from crawler.sources.openalex import OpenAccessCopy
 from crawler.sources.pubmed import MAX_SEARCH_RESULTS, PubMedScraper, is_pmid
 
 
@@ -328,6 +337,79 @@ def test_a_pmc_network_error_fails_the_request_so_it_is_retried() -> None:
 
     with pytest.raises(HTTPError):
         scraper.scrape(ScrapeRequest(source=SourceName.PUBMED, query="q"))
+
+
+PDF = FullTextLocator(
+    kind="pdf", url="https://journal.example.org/2.pdf", media_type="application/pdf"
+)
+JATS = FullTextLocator(
+    kind="jats", url="https://pmc.example.org/1.xml", media_type="application/xml"
+)
+
+
+class FakeOpenAlex:
+    def __init__(self, error: Exception | None = None) -> None:
+        self.asked: list[list[str]] = []
+        self.error = error
+
+    def open_access(self, dois: Sequence[str]) -> dict[str, OpenAccessCopy]:
+        self.asked.append(list(dois))
+        if self.error is not None:
+            raise self.error
+        return {"10.1/2": OpenAccessCopy(full_text=[PDF], licence="CC-BY", openalex_id="W2")}
+
+
+class DoiPmc:
+    """PMC holds pubmed:1; every record has the DOI `10.1/<pmid>`."""
+
+    def enrich(self, document: SourceDocument) -> SourceDocument:
+        update: dict[str, Any] = {"doi": f"10.1/{document.source_id}"}
+        if document.id == "pubmed:1":
+            update |= {"full_text": [JATS], "licence": "CC-BY-NC"}
+        return document.model_copy(update=update)
+
+
+def oa_scraper(open_access: FakeOpenAlex, ids: list[str]) -> PubMedScraper:
+    return PubMedScraper(
+        entrez=FakeEntrez(ids),
+        pmc=DoiPmc(),  # type: ignore[arg-type]
+        open_access=open_access,  # type: ignore[arg-type]
+    )
+
+
+def test_openalex_adds_open_copies_only_where_pmc_has_no_full_text() -> None:
+    open_access = FakeOpenAlex()
+
+    documents = oa_scraper(open_access, ["1", "2", "3"]).scrape(
+        ScrapeRequest(source=SourceName.PUBMED, query="q")
+    )
+
+    assert open_access.asked == [["10.1/2", "10.1/3"]]
+    pmc, open_copy, closed = documents
+    assert (pmc.full_text, pmc.licence) == ([JATS], "CC-BY-NC")
+    assert (open_copy.full_text, open_copy.licence) == ([PDF], "CC-BY")
+    assert open_copy.external_ids["openalex"] == "W2"
+    assert (closed.full_text, closed.licence) == ([], None)
+
+
+def test_openalex_is_not_asked_when_pmc_has_every_full_text() -> None:
+    open_access = FakeOpenAlex()
+
+    oa_scraper(open_access, ["1"]).scrape(ScrapeRequest(source=SourceName.PUBMED, query="q"))
+
+    assert open_access.asked == []
+
+
+@pytest.mark.parametrize(
+    "error",
+    [HTTPError("https://api.openalex.org", 429, "Too Many", Message(), None), ValueError("json")],
+)
+def test_an_openalex_error_keeps_the_records_and_the_request(error: Exception) -> None:
+    documents = oa_scraper(FakeOpenAlex(error), ["1", "2"]).scrape(
+        ScrapeRequest(source=SourceName.PUBMED, query="q")
+    )
+
+    assert [document.full_text for document in documents] == [[JATS], []]
 
 
 BOOK_CHAPTER = (

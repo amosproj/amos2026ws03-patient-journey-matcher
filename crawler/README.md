@@ -1,7 +1,8 @@
 # Source crawler
 
 Collects metadata from PubMed, arXiv, Zenodo, YouTube and podcast feeds and follows the
-references of the papers it finds. Writes JSON Lines to stdout; with `--store` it also
+references of the papers it finds. PubMed papers get their full-text links from PMC, else
+open-access copies from OpenAlex. Writes JSON Lines to stdout; with `--store` it also
 upserts them into PostgreSQL ([storage and retrieval](../Documentation/storage.md)).
 
 ## Setup

@@ -8,8 +8,9 @@ Findings for #6, checked 01.11.2026 against live docs and live requests. Follows
 
 | Source | Role | Page | Offers | Full source for the indexer | Existing connector |
 |---|---|---|---|---|---|
-| PubMed | primary | [`pubmed.md`](pubmed.md) | 41.4 M citations, abstracts, MeSH | Via PMC if there is a PMCID | SS26, #27 |
+| PubMed | primary | [`pubmed.md`](pubmed.md) | 41.4 M citations, abstracts, MeSH | Via PMC if there is a PMCID, else via OpenAlex | SS26, #27 |
 | PMC | primary | [`pmc.md`](pmc.md) | About 8 M full-text article versions on S3 | JATS XML | crawler |
+| OpenAlex | primary | [`openalex.md`](openalex.md) | Open-access copies of papers by DOI, for PubMed rows without PMC | PDF on publisher or repository sites | crawler |
 | arXiv | secondary | [`arxiv.md`](arxiv.md) | Preprints, about 8,300 a year in medical categories | HTML, else PDF | SS26, #27 |
 | Zenodo | secondary | [`zenodo.md`](zenodo.md) | Any research output, no review | Files: PDF, DOCX, PPTX, MP4 | crawler |
 | YouTube | complementary | [`youtube.md`](youtube.md) | Metadata of curated channels | None: description and chapters only | SS26, #27 |
@@ -41,7 +42,7 @@ Table `documents`, one row per source record. PMC has no rows; it fills the PubM
 | `duration_seconds` | integer | | Videos and episodes |
 | `canonical_url` | text | yes | Page shown to users |
 | `doi` | text | | Lower case, no `https://doi.org/` |
-| `external_ids` | jsonb | | e.g. `pmcid`, `pmc_version`, `nihms`, `concept_doi`, `channel_id`, `feed_key` |
+| `external_ids` | jsonb | | e.g. `pmcid`, `pmc_version`, `nihms`, `openalex`, `concept_doi`, `channel_id`, `feed_key` |
 | `licence` | text | | SPDX ID, PMC's CC code without version (`CC-BY-NC`), or own code (`arxiv-nonexclusive-1.0`, `pmc-tdm`, `youtube-standard`, `all-rights-reserved`); empty = unknown |
 | `full_text` | jsonb | | Locators in fetch order: `[{kind, url, media_type, size, checksum}]` |
 | `found_by` | jsonb | yes | `[{topic, query}]` or `[{cited_by: <id>}]` |
@@ -109,6 +110,7 @@ Request budgets, shared per key or host by crawler, indexer and MCP server:
 | Zenodo | 30 searches/min (also with token); 133 record/file req/min | Crawler, indexer |
 | YouTube | 10,000 units/day + 100 `search.list`/day | Crawler, refresh job (< 100 units/day) |
 | Semantic Scholar | 1 req/s with key | arXiv reference crawl |
+| OpenAlex | $0.10/day per IP without key, $1/day with a free key; crawler: 1 req/s, 50 DOIs each | PubMed crawler |
 | PMC S3, podcast hosts | none published | Indexer; one conditional GET per feed and day |
 
 ## 6 Traceability
