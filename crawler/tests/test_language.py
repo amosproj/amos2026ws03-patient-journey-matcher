@@ -52,7 +52,7 @@ def test_metadata_language_comes_from_the_abstract_not_the_article_language() ->
     assert marked.language == "de"
 
 
-def test_metadata_language_fills_a_missing_language() -> None:
+def test_metadata_language_leaves_a_missing_language_empty() -> None:
     marked = with_metadata_language(
         document(
             title="Prostatakrebs: Nachsorge und Therapie nach der radikalen Prostatektomie",
@@ -61,7 +61,7 @@ def test_metadata_language_fills_a_missing_language() -> None:
     )
 
     assert marked.extra[METADATA_LANGUAGE] == "de"
-    assert marked.language == "de"
+    assert marked.language is None
 
 
 def test_metadata_language_is_left_out_when_unsure() -> None:

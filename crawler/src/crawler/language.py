@@ -43,16 +43,12 @@ def detect_language(*texts: str | None) -> str | None:
 
 
 def with_metadata_language(document: SourceDocument) -> SourceDocument:
-    """The document with `extra.metadata_language`, and `language` if the source gave none.
+    """The document with `extra.metadata_language`; its `language` stays the source's.
 
     Without a confident detection, `extra` keeps no such key: unknown counts as matchable.
-    The source's `language` always wins, as it may name the full text's language.
     """
     detected = detect_language(document.title, document.abstract or document.description)
     extra = {key: value for key, value in document.extra.items() if key != METADATA_LANGUAGE}
     if detected is not None:
         extra[METADATA_LANGUAGE] = detected
-    update: dict[str, Any] = {"extra": extra}
-    if document.language is None and detected is not None:
-        update["language"] = detected
-    return document.model_copy(update=update)
+    return document.model_copy(update={"extra": extra})

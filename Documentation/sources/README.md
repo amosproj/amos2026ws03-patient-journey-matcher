@@ -34,7 +34,7 @@ Table `documents`, one row per source record. PMC has no rows; it fills the PubM
 | `authors` | jsonb | yes | `[{name, orcid, affiliation}]`; channel or host for media |
 | `venue` | text | | Journal, channel or show |
 | `summary` | text | | Abstract or description; show notes cut to 1,000 characters |
-| `language` | text | | BCP 47: the source's, else the detected language of title and summary |
+| `language` | text | | BCP 47 |
 | `subjects` | jsonb | | `[{scheme, id, label, major}]`, e.g. MeSH |
 | `published_at` | date | yes | First public date |
 | `published_precision` | text | yes | `year`, `month` or `day` |
