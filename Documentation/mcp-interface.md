@@ -67,7 +67,7 @@ Each result holds the source reference and optional relevance information:
 | `source` | string | yes | Where the entry comes from, for example `pubmed`, `arxiv`, `zenodo`, `youtube` |
 | `content_type` | `journal_article`, `preprint`, `conference_paper`, `poster`, `presentation`, `report`, `book`, `video`, `podcast_episode` | yes | As stored, see [sources §2](sources/README.md#2-metadata-schema) |
 | `url` | URL | yes | Link to the original |
-| `summary` | string | no | Abstract or description of the source, in full, for the card in the app. Missing only if the source has none |
+| `summary` | string | no | Abstract or description of the source, for the card in the app. Cut after 5,000 characters. Missing only if the source has none |
 | `image_url` | URL | no | Picture for the card. So far only YouTube videos have one, their thumbnail |
 | `published_date` | string | no | As precise as the source provides it |
 | `authors` | list of strings | no | |
@@ -105,8 +105,8 @@ The input is `{ "source_id": "pubmed:42745507" }`. The output holds the fields o
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
-| `downloads` | list | yes | In the order to try them, for example the HTML page of an arXiv paper before its PDF. Empty if the source has no file, as for YouTube videos and PubMed records without a full text in PMC; then `url` is the only link |
-| `downloads[].url` | URL | yes | |
+| `downloads` | list | yes | In the order to try them, for example the HTML page of an arXiv paper before its PDF. At most 20; `url` leads to the rest. Empty if the source has no file, as for YouTube videos and PubMed records without a full text in PMC; then `url` is the only link |
+| `downloads[].url` | URL | yes | `http` or `https` only |
 | `downloads[].kind` | string | yes | `jats`, `html`, `pdf`, `file`, `transcript` or `audio` |
 | `downloads[].media_type` | string | no | Says how to read the file: the PMC bucket and Zenodo serve every file as `application/octet-stream` |
 | `downloads[].size` | integer | no | In bytes |

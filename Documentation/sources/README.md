@@ -65,7 +65,7 @@ Why at use time, not in the crawler:
 
 Allow-list proposal for the current non-commercial university project (not legal advice):
 
-| Licence | Keyword, graph, AI index | AI summary shown | MCP passes the original on | If used commercially later |
+| Licence | Keyword, graph, AI index | AI summary shown | Client passes the original on | If used commercially later |
 |---|---|---|---|---|
 | CC0, CC BY, public domain | yes | yes, with credit | yes, with credit | same |
 | CC BY-SA, CC BY-ND | yes | ask | SA: same licence; ND: unchanged | same |
