@@ -12,7 +12,7 @@ import time
 import urllib.request
 from collections.abc import Callable, Iterable, Sequence
 from typing import Any
-from urllib.parse import urlencode
+from urllib.parse import urlencode, urlsplit
 
 from pydantic import BaseModel
 
@@ -29,6 +29,14 @@ MIN_INTERVAL_SECONDS = 1.0
 MAX_LOCATORS = 3
 """The indexers try at most three locators."""
 _FIELDS = "id,doi,best_oa_location,locations"
+NO_AUTOMATED_DOWNLOAD = (
+    "pmc.ncbi.nlm.nih.gov",  # PMC's terms forbid it; PMC full text comes from its S3 bucket
+    "www.ncbi.nlm.nih.gov",
+    "onlinelibrary.wiley.com",  # HTTP 403 to the indexer (checked 11.11.2026)
+    "www.cancertreatmentreviews.com",  # Elsevier journal site, HTTP 403 (11.11.2026)
+)
+"""Hosts, with their subdomains, whose PDFs the indexers may not or cannot download: a 403
+counts as a failed download, which every indexer run would try again."""
 
 
 class OpenAccessCopy(BaseModel):
@@ -116,7 +124,7 @@ class OpenAlexClient:
             if not isinstance(location, dict) or not location.get("is_oa"):
                 continue
             url = str(location.get("pdf_url") or "").strip()
-            if not url.startswith(("https://", "http://")):
+            if not url.startswith(("https://", "http://")) or not _downloadable(url):
                 continue
             if any(locator.url == url for locator in locators):
                 continue
@@ -134,3 +142,10 @@ class OpenAlexClient:
 def _searchable(doi: str) -> bool:
     """`|` separates the values of a filter and `,` the filters, so such DOIs cannot be asked."""
     return "|" not in doi and "," not in doi
+
+
+def _downloadable(url: str) -> bool:
+    host = (urlsplit(url).hostname or "").lower()
+    return not any(
+        host == blocked or host.endswith(f".{blocked}") for blocked in NO_AUTOMATED_DOWNLOAD
+    )

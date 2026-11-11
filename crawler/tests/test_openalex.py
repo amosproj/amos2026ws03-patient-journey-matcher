@@ -79,6 +79,25 @@ def test_keeps_the_direct_pdf_links_of_open_copies_best_first() -> None:
     assert copy.openalex_id == "W123"
 
 
+def test_leaves_out_pdfs_the_indexers_may_not_or_cannot_download() -> None:
+    allowed = "https://www.nature.com/articles/s41391-022-1.pdf"
+    api = FakeApi(
+        [
+            work(
+                "10.1/a",
+                location("https://pmc.ncbi.nlm.nih.gov/articles/PMC1/pdf/a.pdf"),
+                location("https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1/pdf/a.pdf"),
+                location("https://bjui-journals.onlinelibrary.wiley.com/doi/pdfdirect/10.1/a"),
+                location(allowed),
+            )
+        ]
+    )
+
+    copy = client(api).open_access(["10.1/a"])["10.1/a"]
+
+    assert [locator.url for locator in copy.full_text] == [allowed]
+
+
 def test_leaves_out_papers_without_an_open_pdf() -> None:
     api = FakeApi(
         [

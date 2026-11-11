@@ -2,7 +2,7 @@
 
 Checked 11.11.2026. Shared rules: [README](README.md).
 
-Full-text route for [PubMed](pubmed.md) rows that [PMC](pmc.md) does not hold (#57). No rows of its own; fills `full_text`, `licence` (if PMC gave none) and `external_ids.openalex` of the PubMed row. OpenAlex lists, per DOI, where a paper can be read: publisher sites, repositories and preprint servers, each with a licence. In a 50-paper sample ("prostate cancer", by relevance) the PubMed rows with a full-text link went from 9 (PMC) to 17.
+Full-text route for [PubMed](pubmed.md) rows that [PMC](pmc.md) does not hold (#57). No rows of its own; fills `full_text`, `licence` (if PMC gave none) and `external_ids.openalex` of the PubMed row. OpenAlex lists, per DOI, where a paper can be read: publisher sites, repositories and preprint servers, each with a licence. In a 50-paper sample ("prostate cancer", by relevance, 11.11.2026) the PubMed rows with a full-text link went from 9 (PMC) to 13; 3 of the 4 new PDFs downloaded, the fourth site answered with an HTML page.
 
 ## Access
 
@@ -27,12 +27,13 @@ The crawler asks for 50 DOIs per request and waits one second between requests, 
 Left out:
 
 - Locations without `pdf_url`: their `landing_page_url` is an article page, not a file.
+- PDFs on hosts in `NO_AUTOMATED_DOWNLOAD`, with their subdomains: the PMC website (its terms forbid automated downloads; PMC full text comes from the [S3 bucket](pmc.md)), and publisher sites that answered the indexer with HTTP 403 (Wiley, an Elsevier journal site). The downloader counts a 403 as failed and tries it again in every run. In the sample, 4 of 8 OpenAlex PDFs were on such sites.
 - `content_urls` (OpenAlex's own PDF and GROBID XML): downloading them needs an API key, which a stored URL must not hold, and the indexers would need it too.
 
 ## Indexing
 
 1. The indexers try the locators in their order ([keyword matching](../keyword-matching.md#full-texts)); they are read as PDFs, with the default budget of 3 s per host.
-2. Publisher sites may refuse automated downloads (403) or answer with an HTML page; such documents keep their metadata only. Measure the readable share with the Index screen of the [debug UI](../../debug/crawler/README.md).
+2. Other publisher sites may refuse automated downloads too, or answer with an HTML page; such documents keep their metadata only. Measure the readable share with the Index screen of the [debug UI](../../debug/crawler/README.md), and add hosts that always fail to `NO_AUTOMATED_DOWNLOAD`.
 
 ## To be aware of
 
