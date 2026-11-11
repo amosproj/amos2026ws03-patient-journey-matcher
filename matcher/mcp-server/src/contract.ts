@@ -55,7 +55,7 @@ export const sourceReferenceSchema = z.object({
   content_type: contentTypeSchema,
   url: z.url(),
   summary: z.string().optional(),
-  image_url: z.url().optional(),
+  image_url: z.httpUrl().optional(),
   published_date: z.string().optional(),
   authors: z.array(z.string()).optional(),
   licence: z.string().optional(),
@@ -80,9 +80,10 @@ export const getSourceInputSchema = z.object({
   source_id: z.string().min(1),
 });
 
-// A file of a source at its origin: an entry of `documents.full_text`.
+// A file of a source at its origin: an entry of `documents.full_text`. Web links only: a feed
+// could name any other, e.g. `javascript:` or `file:`.
 export const downloadSchema = z.object({
-  url: z.url(),
+  url: z.httpUrl(),
   kind: z.string().min(1),
   media_type: z.string().optional(),
   size: z.number().int().min(0).optional(),

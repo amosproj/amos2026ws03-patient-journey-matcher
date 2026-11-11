@@ -96,8 +96,16 @@ test("shows the thumbnail of a video as its picture", () => {
   expect(sourceReferenceSchema.safeParse(reference).success).toBe(true);
 });
 
-test.each(["not a url", 42])(
-  "leaves out a thumbnail that is not a URL (%j)",
+test("cuts a summary that is too long, but not through an emoji", () => {
+  const { summary } = toSourceReference(
+    document({ summary: `${"a".repeat(4998)}😀${"b".repeat(100)}` }),
+  );
+
+  expect(summary).toBe(`${"a".repeat(4998)}…`);
+});
+
+test.each(["not a url", "javascript:alert(1)", 42])(
+  "leaves out a thumbnail that is not a web link (%j)",
   (thumbnail) => {
     const reference = toSourceReference(document({ extra: { thumbnail } }));
 
@@ -146,10 +154,26 @@ test("answers a document without files with an empty list", () => {
   expect(toSourceDownloads(document()).downloads).toEqual([]);
 });
 
-test("leaves out a file whose link is not a URL", () => {
-  const source = toSourceDownloads(
-    document({ full_text: [{ ...HTML, url: "episode 12.vtt" }, PDF] }),
-  );
+test.each(["episode 12.vtt", "javascript:alert(1)", "file:///etc/passwd"])(
+  "leaves out a file whose link is not a web link (%j)",
+  (url) => {
+    const source = toSourceDownloads(
+      document({ full_text: [{ ...HTML, url }, PDF] }),
+    );
 
-  expect(source.downloads.map(({ url }) => url)).toEqual([PDF.url]);
+    expect(source.downloads.map(({ url }) => url)).toEqual([PDF.url]);
+  },
+);
+
+test("lists the first 20 files of a document with more", () => {
+  const files = Array.from({ length: 25 }, (_, index) => ({
+    ...PDF,
+    url: `https://zenodo.org/api/records/1/files/${index}.dcm/content`,
+  }));
+
+  const { downloads } = toSourceDownloads(document({ full_text: files }));
+
+  expect(downloads.map(({ url }) => url)).toEqual(
+    files.slice(0, 20).map(({ url }) => url),
+  );
 });
