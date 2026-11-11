@@ -1,0 +1,86 @@
+# Deployment on the FAU Compute Cloud
+
+The matcher runs on one VM in our project of the [FAU Compute Cloud](https://cc.rrze.de) (CC), an OpenStack cloud of the RRZE. The VM runs the same commands as a developer machine ([build and run](build.md)): the database in Docker and the MCP server as a service.
+
+## The VM
+
+| | |
+|---|---|
+| CC project | `amos2026ws04` |
+| Name | `matcher` |
+| Address | `172.17.72.205`, reachable only inside the FAU network or with [eduVPN](https://www.anleitungen.rrze.fau.de/internet-zugang/vpn/) |
+| Image | Debian 13 |
+| Size | Flavour `SCS-16V-32` (16 vCPUs, 32 GB RAM), 700 GB volume |
+| Login user | `debian` |
+| Repository on the VM | `/opt/patient-journey-matcher` |
+| MCP server | Service `matcher-mcp`, `http://127.0.0.1:3000/mcp` on the VM |
+| Database | Docker container `amos-postgres`, `127.0.0.1:5432` on the VM |
+
+Our quota is 20 vCPUs, 50 GB RAM and 1000 GB volume storage. The flavour is the largest that fits the RAM quota. Together with the `vaultwarden` VM, 3 vCPUs, 17 GB RAM and 290 GB volume storage are left for other VMs.
+
+## Get access
+
+To log in to the VM you need eduVPN and your SSH key on the VM. You do not need the cloud dashboard for that.
+
+1. Install [eduVPN](https://www.anleitungen.rrze.fau.de/internet-zugang/vpn/) and connect with your FAU login.
+2. If you have no SSH key yet, create one. Press Enter for the default file name:
+
+   ```sh
+   ssh-keygen -t ed25519
+   ```
+
+3. Print your public key and send it to a developer who already has access, for example in Slack. The public key is not a secret. Never send the file without `.pub`.
+
+   ```sh
+   cat ~/.ssh/id_ed25519.pub
+   ```
+
+4. That developer adds the line on the VM:
+
+   ```sh
+   echo 'ssh-ed25519 AAAA... name' >> ~/.ssh/authorized_keys
+   ```
+
+5. Log in: `ssh debian@172.17.72.205`
+
+**Accounts.** Everyone logs in as the same user `debian`, which may use `sudo`. There are no personal accounts on the VM. To take access away from someone, delete their line from `/home/debian/.ssh/authorized_keys`.
+
+**Cloud dashboard.** You only need [cc.rrze.de](https://cc.rrze.de) to launch, resize or delete VMs and to read the boot log. Log in with FAU SSO and switch to the project `amos2026ws04` in the top left corner. If the project is missing, ask the Scrum Master to add your CC account. A key pair in the dashboard only works for VMs you launch yourself, not for the existing VM.
+
+## Use the server
+
+The MCP server has no authentication yet, so it listens on `127.0.0.1` of the VM only. Open a tunnel to use it from your machine:
+
+```sh
+ssh -L 3000:127.0.0.1:3000 debian@172.17.72.205
+```
+
+Then `http://127.0.0.1:3000/mcp` on your machine is the server on the VM, and the MCP Inspector commands from [build and run](build.md#run-the-matcher-locally) work unchanged.
+
+On the VM:
+
+| Task | Command |
+|---|---|
+| State of the server | `systemctl status matcher-mcp` |
+| Log of the server | `journalctl -u matcher-mcp -f` |
+| Restart the server | `sudo systemctl restart matcher-mcp` |
+| Update to the newest `main` | `cd /opt/patient-journey-matcher && git pull && sudo systemctl restart matcher-mcp` |
+| Fill the database and the index | `cd /opt/patient-journey-matcher && make seed && make index` |
+| Log of the setup | `/var/log/matcher-setup.log` |
+
+## Set up a new VM
+
+[`deploy/vm-setup.sh`](../deploy/vm-setup.sh) does the whole setup: it installs Docker, Node.js 24, pnpm 12 and uv, clones this repository, writes a `.env` with a random database password, starts the database, runs the tests and starts the MCP server as a service.
+
+1. In the dashboard, open **Compute → Instances → Launch Instance**.
+2. **Details:** a name. **Source:** image `Debian 13`, create a new volume. **Flavour:** one without a root disk, such as `SCS-4V-8`. **Networks:** `FAU-Intern`. **Key Pair:** your key.
+3. **Configuration:** paste the content of `deploy/vm-setup.sh` into **Customisation Script**.
+4. Launch. The setup takes about 4 minutes. Follow it in the **Log** tab of the instance; it ends with the line `matcher-setup: done`.
+
+On a VM that already exists, run the script with `sudo bash deploy/vm-setup.sh`. It is safe to run again.
+
+## Limitations
+
+- **No access from outside the FAU network.** The VM has no public address. AIlixir's app cannot call the server yet; this needs authentication first ([MCP interface](mcp-interface.md#open-questions), question 4).
+- **The database is empty after the setup.** Run `make seed` and `make index` once; the first index run takes about 30 minutes ([limitations](build.md#limitations)).
+- **Secrets stay on the VM.** The database password is in `/opt/patient-journey-matcher/.env`, readable only by `debian`. No API keys are needed.
