@@ -2,7 +2,7 @@
 
 Checked 11.11.2026. Shared rules: [README](README.md).
 
-Full-text route for [PubMed](pubmed.md) rows that [PMC](pmc.md) does not hold (#57). No rows of its own; fills `full_text`, `licence` (if PMC gave none) and `external_ids.openalex` of the PubMed row. OpenAlex lists, per DOI, where a paper can be read: publisher sites, repositories and preprint servers, each with a licence. In a 50-paper sample ("prostate cancer", by relevance, 11.11.2026) the PubMed rows with a full-text link went from 9 (PMC) to 13; 3 of the 4 new PDFs downloaded, the fourth site answered with an HTML page.
+Full-text route for [PubMed](pubmed.md) rows that [PMC](pmc.md) does not hold (#57). No rows of its own; fills `full_text`, `licence` (if PMC gave none) and `external_ids.openalex` of the PubMed row. OpenAlex lists, per DOI, where a paper can be read: publisher sites, repositories and preprint servers, each with a licence. In the seed crawl (`make seed`, 11.11.2026) the PubMed rows with a full-text link went from 195 of 586 (33 %, PMC) to 275 of 588 (47 %); [coverage](README.md#coverage-of-the-seed-crawl-57). In an earlier 50-paper sample, 3 of 4 new PDFs downloaded; the fourth site answered with an HTML page.
 
 ## Access
 

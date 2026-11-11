@@ -18,6 +18,22 @@ Findings for #6, checked 01.11.2026 against live docs and live requests. Follows
 
 Primary: peer-reviewed core. Secondary: preprints and grey literature. Complementary: curated formats for patients.
 
+### Coverage of the seed crawl (#57)
+
+The crawls of [`scripts/seed.py`](../../scripts/seed.py) (`make seed`) without `--store`, from `main` before #57 and with #57, both on 11.11.2026. YouTube is left out on both sides (no API key); it has no full texts, so with it the shares are lower.
+
+| Source | Documents | Full-text link before | with #57 | Metadata language with #57: English / other / unknown |
+|---|---|---|---|---|
+| PubMed | 586 / 588 | 195 (33 %) | 275 (47 %) | 579 / 0 / 9 |
+| arXiv | 53 | 53 (100 %) | 53 (100 %) | 53 / 0 / 0 |
+| Zenodo | 492 | 479 (97 %) | 479 (97 %) | 457 / 28 / 7 |
+| Podcasts | 170 | 170 (100 %) | 170 (100 %) | 170 / 0 / 0 |
+| All | 1,301 / 1,303 | 897 (69 %) | 977 (75 %) | 1,259 / 28 / 16 |
+
+- The 80 new PubMed links are [OpenAlex](openalex.md) PDFs; the 195 from PMC stay.
+- Before #57 no metadata language was detected. Zenodo has no language field on 162 of its 492 records; 28 records have metadata detected as non-English.
+- A link is not yet a readable text. How many of these texts the indexers can download and read is still to be measured (the keyword indexer's `keyword.full_texts.status`, or the downloader on the same crawl).
+
 ## 2 Metadata schema
 
 Table `documents`, one row per source record. PMC has no rows; it fills the PubMed row. Field paths per source: source pages. Independent of the #27 draft model.
