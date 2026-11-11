@@ -20,15 +20,32 @@ Our quota is 20 vCPUs, 50 GB RAM and 1000 GB volume storage. The flavour is the 
 
 ## Get access
 
-1. Connect to eduVPN.
-2. Log in at [cc.rrze.de](https://cc.rrze.de) with FAU SSO. Switch to the project `amos2026ws04` in the top left corner. If it is missing, ask the Scrum Master to add your CC account.
-3. A key pair in the dashboard only works for VMs you launch yourself. For the existing VM, send your public SSH key to a developer who already has access. They add it:
+To log in to the VM you need eduVPN and your SSH key on the VM. You do not need the cloud dashboard for that.
+
+1. Install [eduVPN](https://www.anleitungen.rrze.fau.de/internet-zugang/vpn/) and connect with your FAU login.
+2. If you have no SSH key yet, create one. Press Enter for the default file name:
 
    ```sh
-   ssh debian@172.17.72.205 'cat >> ~/.ssh/authorized_keys' < your_key.pub
+   ssh-keygen -t ed25519
    ```
 
-4. Log in: `ssh debian@172.17.72.205`
+3. Print your public key and send it to a developer who already has access, for example in Slack. The public key is not a secret. Never send the file without `.pub`.
+
+   ```sh
+   cat ~/.ssh/id_ed25519.pub
+   ```
+
+4. That developer adds the line on the VM:
+
+   ```sh
+   echo 'ssh-ed25519 AAAA... name' >> ~/.ssh/authorized_keys
+   ```
+
+5. Log in: `ssh debian@172.17.72.205`
+
+**Accounts.** Everyone logs in as the same user `debian`, which may use `sudo`. There are no personal accounts on the VM. To take access away from someone, delete their line from `/home/debian/.ssh/authorized_keys`.
+
+**Cloud dashboard.** You only need [cc.rrze.de](https://cc.rrze.de) to launch, resize or delete VMs and to read the boot log. Log in with FAU SSO and switch to the project `amos2026ws04` in the top left corner. If the project is missing, ask the Scrum Master to add your CC account. A key pair in the dashboard only works for VMs you launch yourself, not for the existing VM.
 
 ## Use the server
 
