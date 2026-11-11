@@ -64,6 +64,7 @@ Basis: **Partner** = project description or AIlixir · **#5** = [crawler evaluat
 | pydantic | 2.14 | Validating source records | MIT | #13 |
 | PyYAML | 6.0 | Topic files with the seed queries | MIT | In use |
 | asyncpg | 0.32 | Writing to `documents` | Apache-2.0 | #41, In use |
+| py3langid | 0.4 | Offline language detection of titles and abstracts | BSD-3-Clause | #57 |
 | **Storage** | | | | |
 | PostgreSQL | 18 | `documents`, run log, three index schemas | PostgreSQL | #5, In use |
 | pg_textsearch | 1.5 | Keyword index: BM25 ranking ([keyword matching](../keyword-matching.md)) | PostgreSQL | #8, In use |
