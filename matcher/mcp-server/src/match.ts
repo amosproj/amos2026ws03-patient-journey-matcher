@@ -3,11 +3,12 @@ import type { DocumentRow, DocumentStore } from "@matcher/db";
 import type { MatchResult } from "./contract.ts";
 import { journeyState } from "./journey.ts";
 import { type MatchService, ToolError } from "./server.ts";
-import { toSourceReference } from "./sources.ts";
+import { toSourceDownloads, toSourceReference } from "./sources.ts";
 
 /**
  * `match_journey` with the matcher of the approach the request names as `algorithm`, and the
- * metadata and links of its hits. Works for every approach alike.
+ * metadata and links of its hits; `get_source` with the download links of one stored document.
+ * Works for every approach alike.
  */
 export function createMatchService(
   approaches: readonly Pick<Approach, "name" | "matcher">[],
@@ -68,8 +69,12 @@ export function createMatchService(
         };
       }
     },
-    async getSource() {
-      throw new ToolError("NOT_AVAILABLE", "No source store is available yet.");
+    async getSource(sourceId) {
+      const document = await store.getDocument(sourceId);
+      if (document === undefined) {
+        throw new ToolError("SOURCE_NOT_FOUND", `Unknown source ${sourceId}.`);
+      }
+      return toSourceDownloads(document);
     },
   };
 }

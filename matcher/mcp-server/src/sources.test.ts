@@ -1,7 +1,7 @@
 import type { DocumentRow } from "@matcher/db";
 import { expect, test } from "vitest";
-import { sourceReferenceSchema } from "./contract.ts";
-import { toSourceReference } from "./sources.ts";
+import { sourceDownloadsSchema, sourceReferenceSchema } from "./contract.ts";
+import { toSourceDownloads, toSourceReference } from "./sources.ts";
 
 const RETRIEVED = new Date("2026-11-01T12:00:00Z");
 
@@ -50,6 +50,7 @@ test("shows a stored document with the fields of a tool result", () => {
     source: "pubmed",
     content_type: "journal_article",
     url: "https://pubmed.ncbi.nlm.nih.gov/42745507/",
+    summary: "Background: text",
     published_date: "2026-09",
     authors: ["A. Author", "B. Author"],
     licence: "CC-BY",
@@ -57,9 +58,10 @@ test("shows a stored document with the fields of a tool result", () => {
   expect(sourceReferenceSchema.parse(reference)).toEqual(reference);
 });
 
-test("leaves out the date and licence a document does not have", () => {
+test("leaves out the summary, date and licence a document does not have", () => {
   const reference = toSourceReference(
     document({
+      summary: null,
       published_at: null,
       published_precision: null,
       licence: null,
@@ -83,4 +85,71 @@ test.each(["", "  "])("gives a document without a title one (%j)", (title) => {
 
   expect(reference.title).toBe("Untitled");
   expect(sourceReferenceSchema.safeParse(reference).success).toBe(true);
+});
+
+test("shows the thumbnail of a video as its picture", () => {
+  const thumbnail = "https://i.ytimg.com/vi/abc/mqdefault.jpg";
+
+  const reference = toSourceReference(document({ extra: { thumbnail } }));
+
+  expect(reference.image_url).toBe(thumbnail);
+  expect(sourceReferenceSchema.safeParse(reference).success).toBe(true);
+});
+
+test.each(["not a url", 42])(
+  "leaves out a thumbnail that is not a URL (%j)",
+  (thumbnail) => {
+    const reference = toSourceReference(document({ extra: { thumbnail } }));
+
+    expect(reference.image_url).toBeUndefined();
+  },
+);
+
+const HTML = {
+  kind: "html",
+  url: "https://arxiv.org/html/2007.05098v1",
+  media_type: "text/html",
+  size: null,
+  checksum: null,
+  language: null,
+};
+const PDF = {
+  kind: "pdf",
+  url: "https://arxiv.org/pdf/2007.05098v1",
+  media_type: "application/pdf",
+  size: 2_400_000,
+  checksum: "md5:a632426766c58a1f20a6cc2f9b1a5190",
+  language: "en",
+};
+
+test("lists the files of a document as download links, in the stored order", () => {
+  const stored = document({ full_text: [HTML, PDF] });
+
+  const source = toSourceDownloads(stored);
+
+  expect(JSON.parse(JSON.stringify(source))).toEqual({
+    ...toSourceReference(stored),
+    downloads: [
+      { url: HTML.url, kind: "html", media_type: "text/html" },
+      {
+        url: PDF.url,
+        kind: "pdf",
+        media_type: "application/pdf",
+        size: 2_400_000,
+      },
+    ],
+  });
+  expect(sourceDownloadsSchema.safeParse(source).success).toBe(true);
+});
+
+test("answers a document without files with an empty list", () => {
+  expect(toSourceDownloads(document()).downloads).toEqual([]);
+});
+
+test("leaves out a file whose link is not a URL", () => {
+  const source = toSourceDownloads(
+    document({ full_text: [{ ...HTML, url: "episode 12.vtt" }, PDF] }),
+  );
+
+  expect(source.downloads.map(({ url }) => url)).toEqual([PDF.url]);
 });

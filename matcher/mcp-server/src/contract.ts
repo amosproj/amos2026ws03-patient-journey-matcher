@@ -80,13 +80,19 @@ export const getSourceInputSchema = z.object({
   source_id: z.string().min(1),
 });
 
-export const sourceContentSchema = sourceReferenceSchema.extend({
-  content: z.string(),
-  content_kind: z.enum(["abstract", "full_text", "transcript"]),
-  fetched_at: z.iso.datetime(),
+// A file of a source at its origin: an entry of `documents.full_text`.
+export const downloadSchema = z.object({
+  url: z.url(),
+  kind: z.string().min(1),
+  media_type: z.string().optional(),
+  size: z.number().int().min(0).optional(),
+});
+
+export const sourceDownloadsSchema = sourceReferenceSchema.extend({
+  downloads: z.array(downloadSchema),
 });
 
 export type MatchJourneyInput = z.output<typeof matchJourneyInputSchema>;
 export type MatchResult = z.output<typeof matchResultSchema>;
 export type SourceReference = z.output<typeof sourceReferenceSchema>;
-export type SourceContent = z.output<typeof sourceContentSchema>;
+export type SourceDownloads = z.output<typeof sourceDownloadsSchema>;
