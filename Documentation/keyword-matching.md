@@ -24,24 +24,24 @@ Nothing else writes the schema. Deleting a document deletes its index rows.
 | PubMed with a PMCID | JATS XML from the PMC bucket | `<body>`, without front matter and references |
 | arXiv | HTML page, else the PDF (PDF-only uploads have no HTML) | HTML without page parts, formulas and references; PDF text |
 | Zenodo | The preview file first: PDF, XML, HTML or text | As above; Word files, images, archives and unknown types are skipped |
-| Podcasts | Transcript: WebVTT, SRT, JSON or text | Speakers and spoken text, without timings |
+| Podcasts | Transcript: WebVTT, SRT, JSON or text; else the MP3, with [speech-to-text](sources/podcasts.md#indexing) | Speakers and spoken text, without timings; what Whisper hears |
 | YouTube | none | — |
 
-PDFs are read with [unpdf](https://github.com/unjs/unpdf) (MIT, Mozilla's pdf.js), XML and HTML with [htmlparser2](https://github.com/fb55/htmlparser2) (MIT). Text after a "References" or "Bibliography" heading in the second half is dropped, so cited titles do not match. Downloads keep the [request budgets](sources/README.md#5-storage-limits-and-retention) per host: arxiv.org 15 s (its `robots.txt`), Zenodo 1 s, the PMC bucket 0.1 s, others 3 s; different hosts in parallel. A server error or 429 is retried twice, after `Retry-After` if sent; files over 50 MB are skipped.
+PDFs are read with [unpdf](https://github.com/unjs/unpdf) (MIT, Mozilla's pdf.js), XML and HTML with [htmlparser2](https://github.com/fb55/htmlparser2) (MIT). Text after a "References" or "Bibliography" heading in the second half is dropped, so cited titles do not match. Downloads keep the [request budgets](sources/README.md#5-storage-limits-and-retention) per host: arxiv.org 15 s (its `robots.txt`), Zenodo 1 s, the PMC bucket 0.1 s, others 3 s; different hosts in parallel. A server error or 429 is retried twice, after `Retry-After` if sent; files over 50 MB are skipped, audio over 150 MB.
 
 `keyword.full_texts` has one row per document, also without a text:
 
 | Column | Content |
 |---|---|
-| `status` | `indexed`; `skipped` (nothing readable, not English or no keywords; tried again when the document changes); `failed` (tried again in the next `make index`) |
-| `detail` | Why skipped or failed, e.g. `HTTP 404`, `no readable format: audio/mpeg`, `no text` (a scanned PDF), `not English` |
+| `status` | `indexed`; `skipped` (nothing readable, not English or no keywords; tried again when the document changes, audio also once speech-to-text is on); `failed` (tried again in the next `make index`) |
+| `detail` | Why skipped or failed, e.g. `HTTP 404`, `no readable format: audio/x-m4a`, `audio, and speech-to-text is off`, `no text` (a scanned PDF), `not English` |
 | `terms` | The keywords in alphabetical order, each as often as it occurs: what BM25 ranks. The text cannot be read back from it |
 | `lexemes` | The distinct English stems of `terms`, for `matched_terms` |
 | `words`, `url`, `media_type`, `fetched_at`, `document_changed_at` | Number of keywords (at most 50,000), the file read, when, and the document version it was built from |
 
 Check a run on the Index screen of the [debug UI](../debug/crawler/README.md), or with `SELECT status, detail, count(*) FROM keyword.full_texts GROUP BY 1, 2 ORDER BY 3 DESC`.
 
-**Licences.** This approach reads full texts under any licence, also "all rights reserved": the project is non-profit and keeps keywords only. Other approaches decide for themselves ([sources §3](sources/README.md#3-indexing)).
+**Licences.** This approach reads full texts under any licence, also "all rights reserved": the project is non-profit and keeps keywords only, also of the audio it transcribes. Other approaches decide for themselves ([sources §3](sources/README.md#3-indexing)).
 
 ## Keywords
 

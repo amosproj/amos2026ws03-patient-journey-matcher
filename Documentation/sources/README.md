@@ -14,7 +14,7 @@ Findings for #6, checked 01.11.2026 against live docs and live requests. Follows
 | arXiv | secondary | [`arxiv.md`](arxiv.md) | Preprints, about 8,300 a year in medical categories | HTML, else PDF | SS26, #27 |
 | Zenodo | secondary | [`zenodo.md`](zenodo.md) | Any research output, no review | Files: PDF, DOCX, PPTX, MP4 | crawler |
 | YouTube | complementary | [`youtube.md`](youtube.md) | Metadata of curated channels | None: description and chapters only | SS26, #27 |
-| Podcasts | complementary | [`podcasts.md`](podcasts.md) | Curated RSS feeds | Transcript file (rare), else show notes | crawler |
+| Podcasts | complementary | [`podcasts.md`](podcasts.md) | Curated RSS feeds | Transcript file (rare), else show notes; the MP3 with speech-to-text | crawler |
 
 Primary: peer-reviewed core. Secondary: preprints and grey literature. Complementary: curated formats for patients.
 
@@ -32,6 +32,7 @@ The crawls of [`scripts/seed.py`](../../scripts/seed.py) (`make seed`) without `
 
 - The 80 new PubMed links are [OpenAlex](openalex.md) PDFs; the 195 from PMC stay.
 - Before #57 no metadata language was detected. Zenodo has no language field on 162 of its 492 records; 28 records have metadata detected as non-English.
+- Podcast links are mostly audio: 148 of 165 episodes (12.11.2026) have no transcript, and the indexer reads their MP3 only with [speech-to-text](podcasts.md#indexing).
 - A link is not yet a readable text. How many of these texts the indexers can download and read is still to be measured (the keyword indexer's `keyword.full_texts.status`, or the downloader on the same crawl).
 
 ## 2 Metadata schema

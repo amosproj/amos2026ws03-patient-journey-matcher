@@ -75,6 +75,7 @@ Basis: **Partner** = project description or AIlixir · **#5** = [crawler evaluat
 | pg (node-postgres) | 8.23 | Database access | MIT | In use |
 | htmlparser2 | 12.0 | Text of XML and HTML full texts | MIT | #8, In use |
 | unpdf | 2.1 | Text of PDF full texts (Mozilla's pdf.js inside) | MIT, pdf.js Apache-2.0 | #8, In use |
+| pywhispercpp (whisper.cpp) · miniaudio | 1.5 · 1.73 | Optional: offline speech-to-text for podcast audio, a Python script the indexer calls ([podcasts](../sources/podcasts.md#indexing)) | MIT, Whisper models MIT | #57 |
 | **AI services (hosted, keys from AIlixir)** | | | | |
 | Gemini via Vertex AI (`@google/genai`) | SDK 2.31 | Source summaries at index time | Apache-2.0 (SDK) | #13 |
 | OpenAI embeddings (`openai`) | SDK 7.45 | Vectors for the AI summary index | Apache-2.0 (SDK) | #13 |
