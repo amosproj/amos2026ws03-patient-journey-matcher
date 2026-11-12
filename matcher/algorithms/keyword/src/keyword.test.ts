@@ -3,7 +3,11 @@ import {
   type TestDatabase,
   testDatabaseUrl,
 } from "@matcher/db/testing";
-import type { FullText, Locator } from "@matcher/download";
+import {
+  type FullText,
+  type Locator,
+  NO_SPEECH_TO_TEXT,
+} from "@matcher/download";
 import {
   beforeAll,
   beforeEach,
@@ -182,6 +186,31 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
       "full texts: 1 to read",
       "full texts: 0 indexed, 0 without text, 1 failed (tried again next run)",
     ]);
+  });
+
+  test("reads audio that was skipped without speech-to-text once a run has it", async () => {
+    await insert("podcast:1", "Olaparib, the episode", {
+      full_text: ["https://example.org/1.mp3"],
+    });
+    const off = {
+      fullText: async (): Promise<FullText> => ({
+        status: "skipped",
+        text: "",
+        detail: NO_SPEECH_TO_TEXT,
+      }),
+    };
+    const on = {
+      ...fakeDownloader({
+        "https://example.org/1.mp3": "Olaparib and the PSA.",
+      }),
+      transcribes: true,
+    };
+    const none = { indexed: 0, skipped: 0, failed: 0 };
+
+    expect(await indexFullTexts(pool, off)).toEqual({ ...none, skipped: 1 });
+    expect(await indexFullTexts(pool, off)).toEqual(none);
+    expect(await indexFullTexts(pool, on)).toEqual({ ...none, indexed: 1 });
+    expect(await indexFullTexts(pool, on)).toEqual(none);
   });
 
   test("ranks with the full texts too and names the terms found there", async () => {

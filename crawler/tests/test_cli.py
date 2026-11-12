@@ -774,8 +774,13 @@ def test_refresh_videos_fetches_the_due_videos_of_the_channels_again(
         return ["old", "new", "private"]
 
     monkeypatch.setattr(cli, "videos_to_refresh", videos_to_refresh)
+    talk = "Eine Ärztin erklärt die Nachsorge nach der Bestrahlung der Prostata."
     items = [
-        {"id": video_id, "snippet": {"title": video_id}, "status": {"privacyStatus": privacy}}
+        {
+            "id": video_id,
+            "snippet": {"title": video_id, "description": talk},
+            "status": {"privacyStatus": privacy},
+        }
         for video_id, privacy in [("old", "public"), ("new", "public"), ("private", "private")]
     ]
     scraper = YouTubeScraper("", service=youtube_api({"medical": "UCmedical"}, items))
@@ -788,6 +793,8 @@ def test_refresh_videos_fetches_the_due_videos_of_the_channels_again(
     assert asked == [[channel_id, "UCmedical"]]
     assert due == 2
     assert [document.id for document in refreshed] == ["youtube:old"]
+    # Marked like the documents of a run, so a refresh does not count as a change.
+    assert refreshed[0].extra["metadata_language"] == "de"
 
 
 def test_json_lines_are_utf8_whatever_the_encoding_of_stdout(

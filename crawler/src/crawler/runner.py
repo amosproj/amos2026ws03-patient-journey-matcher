@@ -21,6 +21,7 @@ from googleapiclient.errors import HttpError as GoogleHttpError
 from pydantic import BaseModel, ConfigDict, Field
 
 from crawler.frontier import REFERENCES_BATCH_SIZE, Frontier, TopicFilter
+from crawler.language import with_metadata_language
 from crawler.links.arxiv import REFERENCES_BATCH_SIZE as ARXIV_REFERENCES_BATCH_SIZE
 from crawler.links.arxiv import ArxivLinkExtractor
 from crawler.links.base import LinkExtractor
@@ -290,7 +291,10 @@ async def run_requests(
             raise ValueError(f"{task.kind} task without a source request")
         request = task.request
         scraper = scrapers[task.source]
-        documents = await _attempt(context, scraper.scrape, request)
+        documents = [
+            with_metadata_language(document)
+            for document in await _attempt(context, scraper.scrape, request)
+        ]
         # The fallible work is done. Update the run state, then return the follow-ups;
         # Crawlee adds them only after the handler succeeds, so a failed attempt leaves
         # no trace in either.

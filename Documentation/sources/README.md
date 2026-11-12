@@ -8,14 +8,32 @@ Findings for #6, checked 01.11.2026 against live docs and live requests. Follows
 
 | Source | Role | Page | Offers | Full source for the indexer | Existing connector |
 |---|---|---|---|---|---|
-| PubMed | primary | [`pubmed.md`](pubmed.md) | 41.4 M citations, abstracts, MeSH | Via PMC if there is a PMCID | SS26, #27 |
+| PubMed | primary | [`pubmed.md`](pubmed.md) | 41.4 M citations, abstracts, MeSH | Via PMC if there is a PMCID, else via OpenAlex | SS26, #27 |
 | PMC | primary | [`pmc.md`](pmc.md) | About 8 M full-text article versions on S3 | JATS XML | crawler |
+| OpenAlex | primary | [`openalex.md`](openalex.md) | Open-access copies of papers by DOI, for PubMed rows without PMC | PDF on publisher or repository sites | crawler |
 | arXiv | secondary | [`arxiv.md`](arxiv.md) | Preprints, about 8,300 a year in medical categories | HTML, else PDF | SS26, #27 |
 | Zenodo | secondary | [`zenodo.md`](zenodo.md) | Any research output, no review | Files: PDF, DOCX, PPTX, MP4 | crawler |
 | YouTube | complementary | [`youtube.md`](youtube.md) | Metadata of curated channels | None: description and chapters only | SS26, #27 |
-| Podcasts | complementary | [`podcasts.md`](podcasts.md) | Curated RSS feeds | Transcript file (rare), else show notes | crawler |
+| Podcasts | complementary | [`podcasts.md`](podcasts.md) | Curated RSS feeds | Transcript file (rare), else show notes; the MP3 with speech-to-text | crawler |
 
 Primary: peer-reviewed core. Secondary: preprints and grey literature. Complementary: curated formats for patients.
+
+### Coverage of the seed crawl (#57)
+
+The crawls of [`scripts/seed.py`](../../scripts/seed.py) (`make seed`) without `--store`, from `main` before #57 and with #57, both on 11.11.2026. YouTube is left out on both sides (no API key); it has no full texts, so with it the shares are lower.
+
+| Source | Documents | Full-text link before | with #57 | Metadata language with #57: English / other / unknown |
+|---|---|---|---|---|
+| PubMed | 586 / 588 | 195 (33 %) | 275 (47 %) | 579 / 0 / 9 |
+| arXiv | 53 | 53 (100 %) | 53 (100 %) | 53 / 0 / 0 |
+| Zenodo | 492 | 479 (97 %) | 479 (97 %) | 457 / 28 / 7 |
+| Podcasts | 170 | 170 (100 %) | 170 (100 %) | 170 / 0 / 0 |
+| All | 1,301 / 1,303 | 897 (69 %) | 977 (75 %) | 1,259 / 28 / 16 |
+
+- The 80 new PubMed links are [OpenAlex](openalex.md) PDFs; the 195 from PMC stay.
+- Before #57 no metadata language was detected. Zenodo has no language field on 162 of its 492 records; 28 records have metadata detected as non-English.
+- Podcast links are mostly audio: 148 of 165 episodes (12.11.2026) have no transcript, and the indexer reads their MP3 only with [speech-to-text](podcasts.md#indexing).
+- A link is not yet a readable text. How many of these texts the indexers can download and read is still to be measured (the keyword indexer's `keyword.full_texts.status`, or the downloader on the same crawl).
 
 ## 2 Metadata schema
 
@@ -41,13 +59,13 @@ Table `documents`, one row per source record. PMC has no rows; it fills the PubM
 | `duration_seconds` | integer | | Videos and episodes |
 | `canonical_url` | text | yes | Page shown to users |
 | `doi` | text | | Lower case, no `https://doi.org/` |
-| `external_ids` | jsonb | | e.g. `pmcid`, `pmc_version`, `nihms`, `concept_doi`, `channel_id`, `feed_key` |
+| `external_ids` | jsonb | | e.g. `pmcid`, `pmc_version`, `nihms`, `openalex`, `concept_doi`, `channel_id`, `feed_key` |
 | `licence` | text | | SPDX ID, PMC's CC code without version (`CC-BY-NC`), or own code (`arxiv-nonexclusive-1.0`, `pmc-tdm`, `youtube-standard`, `all-rights-reserved`); empty = unknown |
 | `full_text` | jsonb | | Locators in fetch order: `[{kind, url, media_type, size, checksum}]` |
 | `found_by` | jsonb | yes | `[{topic, query}]` or `[{cited_by: <id>}]` |
 | `retrieved_at` | timestamptz | yes | Last successful fetch |
 | `expires_at` | timestamptz | | YouTube only: `retrieved_at` + 30 days |
-| `extra` | jsonb | | Source-specific fields, see source pages |
+| `extra` | jsonb | | Source-specific fields, see source pages; `metadata_language`: the detected language of title and summary, missing if unsure ([storage](../storage.md#languages)) |
 
 Implemented in [`db/init/02-documents.sql`](../../db/init/02-documents.sql) (#41), with `created_at` and `changed_at` added and `published_at`/`published_precision` optional: [storage and retrieval](../storage.md).
 
@@ -103,12 +121,13 @@ Request budgets, shared per key or host by crawler, indexer and MCP server:
 
 | Budget | Limit | Used by |
 |---|---|---|
-| NCBI E-utilities | 10 req/s per key (3 without), 429 above | PubMed crawler, reference crawl, indexer, MCP |
+| NCBI E-utilities | 5 req/s with our key (3 without), 429 above; `NCBI_REQUESTS_PER_SECOND` | PubMed crawler, reference crawl, indexer, MCP |
 | arXiv API + OAI-PMH | 1 req per 3 s, one connection | arXiv crawler incl. one licence lookup per paper |
 | arxiv.org pages | `Crawl-delay: 15` | Indexer, MCP |
 | Zenodo | 30 searches/min (also with token); 133 record/file req/min | Crawler, indexer |
 | YouTube | 10,000 units/day + 100 `search.list`/day | Crawler, refresh job (< 100 units/day) |
 | Semantic Scholar | 1 req/s with key | arXiv reference crawl |
+| OpenAlex | $0.10/day per IP without key, $1/day with a free key; crawler: 1 req/s, 50 DOIs each | PubMed crawler |
 | PMC S3, podcast hosts | none published | Indexer; one conditional GET per feed and day |
 
 ## 6 Traceability

@@ -70,6 +70,7 @@ npx @modelcontextprotocol/inspector --cli http://127.0.0.1:3000/mcp --transport 
 | `make debug PORT=9000` | Starts the debug UI on another port |
 | `DATABASE_URL=… make index`, `TEST_DATABASE_URL=… make test` | Uses another database; a variable that is set wins over `.env` |
 | `YOUTUBE_API_KEY` in `crawler/.env` | `make seed` also crawls YouTube; without it, YouTube is skipped |
+| `WHISPER_MODEL=small.en make index` | Also transcribes podcast episodes without a transcript, offline; the first run downloads the model (0.5 GB), and the seed's episodes take about 1.5 hours on a Mac mini (M4; [podcasts](sources/podcasts.md#indexing)) |
 | `cd crawler && uv run crawler pubmed --topic prostate_cancer --max-results 200 --store` | Adds more documents; needs `DATABASE_URL` in `crawler/.env` ([connecting](database.md#connecting)). Run `make index` afterwards. Other sources and flags: [crawler](../crawler/README.md) |
 
 ## Limitations

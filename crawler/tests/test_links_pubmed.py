@@ -1,6 +1,7 @@
 from typing import Any
 
 from crawler.links.pubmed import REFERENCES_LINK, PubMedLinkExtractor
+from crawler.sources.pubmed import NcbiThrottle
 
 
 class FakeHandle:
@@ -69,3 +70,20 @@ def test_no_ids_means_no_request() -> None:
 
     assert PubMedLinkExtractor(entrez=entrez).cited_ids([]) == {}
     assert entrez.calls == []
+
+
+def test_elink_waits_for_the_throttle_at_the_configured_rate() -> None:
+    class RecordingThrottle(NcbiThrottle):
+        def __init__(self) -> None:
+            super().__init__()
+            self.rates: list[float] = []
+
+        def wait(self, requests_per_second: float) -> None:
+            self.rates.append(requests_per_second)
+
+    throttle = RecordingThrottle()
+    extractor = PubMedLinkExtractor(entrez=FakeEntrez([]), requests_per_second=2, throttle=throttle)
+
+    extractor.cited_ids(["1"])
+
+    assert throttle.rates == [2]

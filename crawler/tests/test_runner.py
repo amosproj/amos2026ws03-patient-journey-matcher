@@ -175,6 +175,21 @@ def test_a_second_run_in_the_same_process_scrapes_the_same_seed_again() -> None:
     assert [document.id for document in second.documents] == ["pubmed:1"]
 
 
+def test_every_collected_document_is_marked_with_its_metadata_language() -> None:
+    german = paper("2", "Prostatakrebs: Nachsorge und Therapie nach der radikalen Prostatektomie")
+    english = paper("1").model_copy(
+        update={"abstract": "We followed men with localized prostate cancer for ten years."}
+    )
+    scraper = FakeScraper(searches={"q": ["1", "2"]}, records={"1": english, "2": german})
+
+    result = collect([search("q")], scraper, max_depth=0)
+
+    languages = {
+        document.id: document.extra.get("metadata_language") for document in result.documents
+    }
+    assert languages == {"pubmed:1": "en", "pubmed:2": "de"}
+
+
 def test_transient_errors_are_retried_with_exponential_backoff() -> None:
     errors: list[Exception] = [ConnectionError("down"), TimeoutError("slow"), http_error(503)]
     scraper = FakeScraper(searches={"q": ["1"]}, errors={"q": errors})

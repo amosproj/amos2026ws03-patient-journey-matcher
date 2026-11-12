@@ -16,7 +16,7 @@ Use `efetch` with `retmode=xml`, batched via the History server (`usehistory=y`)
 ## Connectors
 
 - **SS26** `backend/scrapers/…/PubMed`: stores publisher PDF text (breaks metadata-only); keeps only the first abstract section; fails on `CollectiveName`; reads keywords from the wrong element; filters by `pdat`.
-- **crawler** `crawler/src/crawler/sources/pubmed.py`: the fields below; `--since` by entry date; PMC adds licence and full text.
+- **crawler** `crawler/src/crawler/sources/pubmed.py`: the fields below; `--since` by entry date; PMC adds licence and full text, OpenAlex open-access copies of the others.
 
 ## Fields
 
@@ -39,14 +39,14 @@ Use `efetch` with `retmode=xml`, batched via the History server (`usehistory=y`)
 | `canonical_url` | `https://pubmed.ncbi.nlm.nih.gov/<PMID>/` | |
 | `doi` | `PD/ArticleIdList/ArticleId[@IdType="doi"]` | |
 | `external_ids` | `ArticleId[@IdType="pmc"]` → `pmcid`, `[@IdType="mid"]` → `nihms` | PMCID is the full-text key |
-| `licence`, `full_text` | from [PMC](pmc.md) | Empty without PMCID |
+| `licence`, `full_text` | from [PMC](pmc.md), else open-access copies from [OpenAlex](openalex.md) by DOI | Empty without PMCID and without an open PDF |
 | `extra` | `MC/@Status`, entry date (`PubMedPubDate[@PubStatus="entrez"]`), `pmc-release` date, `Abstract/CopyrightInformation` | |
 
 Reference crawl: `PD/ReferenceList` or `elink` with `linkname=pubmed_pubmed_refs`. Both matched Europe PMC in two samples, so Europe PMC is not needed.
 
 ## Indexing
 
-PMCID: full text via PMC. Otherwise index title, abstract, MeSH, substances, keywords and publication types from the row. DOI and PubMed page are user links, not index sources.
+PMCID: full text via PMC. Otherwise an open-access PDF found by [OpenAlex](openalex.md), if any; without one, index title, abstract, MeSH, substances, keywords and publication types from the row. DOI and PubMed page are user links, not index sources.
 
 ## To be aware of
 

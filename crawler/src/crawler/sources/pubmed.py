@@ -1,8 +1,9 @@
 import logging
 import os
 import re
+import time
 import xml.etree.ElementTree as ET
-from collections.abc import Mapping, Sequence
+from collections.abc import Callable, Mapping, Sequence
 from datetime import UTC, datetime
 from typing import Any
 
@@ -19,6 +20,7 @@ from crawler.models import (
 )
 from crawler.sources.base import BaseScraper
 from crawler.sources.fields import bare_orcid, language_tag, normalize_doi
+from crawler.sources.openalex import OpenAlexClient
 from crawler.sources.pmc import PmcClient
 
 logger = logging.getLogger(__name__)
@@ -27,6 +29,10 @@ EFETCH_BATCH_SIZE = 200
 """IDs per efetch call; NCBI asks for batches and Biopython switches to POST for long lists."""
 MAX_SEARCH_RESULTS = 9_999
 """PubMed returns at most this many IDs per search."""
+NCBI_REQUESTS_PER_SECOND = "NCBI_REQUESTS_PER_SECOND"
+"""Env var for the NCBI request rate; our key allows 5 requests/s, shared by every user of it."""
+RATE_WITH_KEY = 5.0
+RATE_WITHOUT_KEY = 3.0
 
 _PMID = re.compile(r"[1-9][0-9]{0,9}")
 # Biopython keeps the formatting tags and MathML of mixed-content elements (title, abstract,
@@ -59,6 +65,52 @@ def ncbi_credentials_from_env() -> tuple[str | None, str | None]:
     return email.strip() or None, os.getenv("NCBI_API_KEY") or None
 
 
+def ncbi_requests_per_second(api_key: str | None, value: str | None) -> float:
+    """The configured rate, else the limit of our key (5/s) or the keyless limit (3/s)."""
+    default = RATE_WITH_KEY if api_key else RATE_WITHOUT_KEY
+    if not value or not value.strip():
+        return default
+    try:
+        rate = float(value)
+    except ValueError:
+        rate = 0.0
+    if not rate > 0 or rate == float("inf"):
+        logger.warning(
+            "Ignoring %s=%r, using %g requests/s", NCBI_REQUESTS_PER_SECOND, value, default
+        )
+        return default
+    return rate
+
+
+class NcbiThrottle:
+    """Keeps at least `1 / rate` seconds between NCBI requests.
+
+    Biopython waits only 0.1 s between requests once a key is set (10/s), above the 5/s of
+    our key. The scraper and the link extractor share one throttle, like Biopython's state.
+    """
+
+    def __init__(
+        self,
+        clock: Callable[[], float] = time.monotonic,
+        sleep: Callable[[float], None] = time.sleep,
+    ) -> None:
+        self._clock = clock
+        self._sleep = sleep
+        self._previous: float | None = None
+
+    def wait(self, requests_per_second: float) -> None:
+        now = self._clock()
+        if self._previous is not None:
+            remaining = self._previous + 1 / requests_per_second - now
+            if remaining > 0:
+                self._sleep(remaining)
+                now += remaining
+        self._previous = now
+
+
+NCBI_THROTTLE = NcbiThrottle()
+
+
 def configure_entrez(entrez: Any, email: str | None, api_key: str | None) -> None:
     """Set the NCBI identification, which Biopython keeps in module-global state.
 
@@ -82,7 +134,8 @@ def _major(value: Any) -> bool | None:
 
 
 class PubMedScraper(BaseScraper):
-    """PubMed discovery and XML metadata parsing; PMC adds licence and full text."""
+    """PubMed discovery and XML metadata parsing; PMC adds licence and full text, OpenAlex
+    open-access copies of the papers PMC does not hold."""
 
     source = SourceName.PUBMED
 
@@ -93,16 +146,30 @@ class PubMedScraper(BaseScraper):
         *,
         entrez: Any = Entrez,
         pmc: PmcClient | None = None,
+        open_access: OpenAlexClient | None = None,
+        requests_per_second: float | None = None,
+        throttle: NcbiThrottle | None = None,
     ) -> None:
         self._email = email.strip() if email else None
         self._api_key = api_key or None
         self._entrez = entrez
+        self._rate = requests_per_second or ncbi_requests_per_second(self._api_key, None)
+        self._throttle = throttle or NCBI_THROTTLE
         self._pmc = pmc
+        self._open_access = open_access
 
     @classmethod
     def from_env(cls) -> "PubMedScraper":
         email, api_key = ncbi_credentials_from_env()
-        return cls(email=email, api_key=api_key, pmc=PmcClient())
+        return cls(
+            email=email,
+            api_key=api_key,
+            pmc=PmcClient(),
+            open_access=OpenAlexClient.from_env(),
+            requests_per_second=ncbi_requests_per_second(
+                api_key, os.getenv(NCBI_REQUESTS_PER_SECOND)
+            ),
+        )
 
     def scrape(self, request: ScrapeRequest) -> list[SourceDocument]:
         if request.source is not self.source:
@@ -110,9 +177,48 @@ class PubMedScraper(BaseScraper):
         configure_entrez(self._entrez, self._email, self._api_key)
         identifiers = request.ids if request.is_lookup else self._search(request)
         documents = self._fetch(identifiers)
-        if self._pmc is None:
+        if self._pmc is not None:
+            documents = [self._enrich(self._pmc, document) for document in documents]
+        if self._open_access is not None:
+            documents = self._add_open_access(self._open_access, documents)
+        return documents
+
+    @staticmethod
+    def _add_open_access(
+        open_access: OpenAlexClient, documents: list[SourceDocument]
+    ) -> list[SourceDocument]:
+        """Open-access copies for the records with a DOI but no full text from PMC.
+
+        Unlike PMC errors, OpenAlex errors only log: a daily budget that ran out must not stop
+        the crawl, and the next run of a search asks again.
+        """
+        dois = [d.doi for d in documents if d.doi and not d.full_text]
+        if not dois:
             return documents
-        return [self._enrich(self._pmc, document) for document in documents]
+        try:
+            copies = open_access.open_access(dois)
+        except (OSError, ValueError) as error:  # HTTP and network errors, broken JSON
+            logger.warning("OpenAlex lookup failed for %d record(s): %s", len(dois), error)
+            return documents
+        enriched: list[SourceDocument] = []
+        for document in documents:
+            copy = copies.get(document.doi or "") if not document.full_text else None
+            if copy is None:
+                enriched.append(document)
+                continue
+            external_ids = dict(document.external_ids)
+            if copy.openalex_id:
+                external_ids["openalex"] = copy.openalex_id
+            enriched.append(
+                document.model_copy(
+                    update={
+                        "full_text": copy.full_text,
+                        "licence": document.licence or copy.licence,
+                        "external_ids": external_ids,
+                    }
+                )
+            )
+        return enriched
 
     @staticmethod
     def _enrich(pmc: PmcClient, document: SourceDocument) -> SourceDocument:
@@ -146,6 +252,7 @@ class PubMedScraper(BaseScraper):
         else:
             search_arguments["sort"] = "relevance"
 
+        self._throttle.wait(self._rate)
         search_handle = self._entrez.esearch(**search_arguments)
         try:
             return [str(value) for value in self._entrez.read(search_handle)["IdList"]]
@@ -157,6 +264,7 @@ class PubMedScraper(BaseScraper):
         documents: list[SourceDocument] = []
         for offset in range(0, len(identifiers), EFETCH_BATCH_SIZE):
             batch = identifiers[offset : offset + EFETCH_BATCH_SIZE]
+            self._throttle.wait(self._rate)
             fetch_handle = self._entrez.efetch(db="pubmed", id=",".join(batch), retmode="xml")
             try:
                 response = self._entrez.read(fetch_handle)
