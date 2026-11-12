@@ -1,3 +1,4 @@
+import os
 from collections.abc import Sequence
 from typing import Any
 
@@ -5,7 +6,15 @@ from Bio import Entrez
 
 from crawler.links.base import LinkExtractor
 from crawler.models import SourceName
-from crawler.sources.pubmed import configure_entrez, is_pmid, ncbi_credentials_from_env
+from crawler.sources.pubmed import (
+    NCBI_REQUESTS_PER_SECOND,
+    NCBI_THROTTLE,
+    NcbiThrottle,
+    configure_entrez,
+    is_pmid,
+    ncbi_credentials_from_env,
+    ncbi_requests_per_second,
+)
 
 REFERENCES_LINK = "pubmed_pubmed_refs"
 
@@ -21,21 +30,32 @@ class PubMedLinkExtractor(LinkExtractor):
         api_key: str | None = None,
         *,
         entrez: Any = Entrez,
+        requests_per_second: float | None = None,
+        throttle: NcbiThrottle | None = None,
     ) -> None:
         self._email = email.strip() if email else None
         self._api_key = api_key or None
         self._entrez = entrez
+        self._rate = requests_per_second or ncbi_requests_per_second(self._api_key, None)
+        self._throttle = throttle or NCBI_THROTTLE
 
     @classmethod
     def from_env(cls) -> "PubMedLinkExtractor":
         email, api_key = ncbi_credentials_from_env()
-        return cls(email=email, api_key=api_key)
+        return cls(
+            email=email,
+            api_key=api_key,
+            requests_per_second=ncbi_requests_per_second(
+                api_key, os.getenv(NCBI_REQUESTS_PER_SECOND)
+            ),
+        )
 
     def cited_ids(self, native_ids: Sequence[str]) -> dict[str, list[str]]:
         cited: dict[str, list[str]] = {pmid: [] for pmid in native_ids}
         if not cited:
             return cited
         configure_entrez(self._entrez, self._email, self._api_key)
+        self._throttle.wait(self._rate)
         # A list (not a comma-separated string) makes ELink return one link set per PMID.
         handle = self._entrez.elink(
             dbfrom="pubmed", db="pubmed", linkname=REFERENCES_LINK, id=list(cited)

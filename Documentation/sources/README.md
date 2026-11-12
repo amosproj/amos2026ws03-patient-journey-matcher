@@ -121,7 +121,7 @@ Request budgets, shared per key or host by crawler, indexer and MCP server:
 
 | Budget | Limit | Used by |
 |---|---|---|
-| NCBI E-utilities | 10 req/s per key (3 without), 429 above | PubMed crawler, reference crawl, indexer, MCP |
+| NCBI E-utilities | 5 req/s with our key (3 without), 429 above; `NCBI_REQUESTS_PER_SECOND` | PubMed crawler, reference crawl, indexer, MCP |
 | arXiv API + OAI-PMH | 1 req per 3 s, one connection | arXiv crawler incl. one licence lookup per paper |
 | arxiv.org pages | `Crawl-delay: 15` | Indexer, MCP |
 | Zenodo | 30 searches/min (also with token); 133 record/file req/min | Crawler, indexer |
