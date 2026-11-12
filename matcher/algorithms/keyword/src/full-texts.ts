@@ -3,7 +3,7 @@ import {
   indexChangedDocuments,
   type Queryable,
 } from "@matcher/db";
-import type { Downloader } from "@matcher/download";
+import { type Downloader, NO_SPEECH_TO_TEXT } from "@matcher/download";
 // Common non-medical English words, most frequent first.
 import basicWords from "../data/basic-words.json" with { type: "json" };
 import { createSchema } from "./schema.ts";
@@ -35,8 +35,13 @@ export async function indexFullTexts(
 ): Promise<Record<FullTextStatus, number>> {
   await createSchema(db);
   // A failed download (a server error, or PMC's 404 before an article is in its bucket) is tried
-  // again in every run; a skipped one only when the document changes.
-  await db.query("DELETE FROM keyword.full_texts WHERE status = 'failed'");
+  // again in every run; a skipped one only when the document changes, and audio skipped without
+  // speech-to-text once a run has it.
+  await db.query(
+    `DELETE FROM keyword.full_texts
+     WHERE status = 'failed' OR ($1::boolean AND status = 'skipped' AND detail = $2)`,
+    [downloader.transcribes === true, NO_SPEECH_TO_TEXT],
+  );
   const toRead = () =>
     createDocumentStore(db).countToIndex("keyword.full_texts");
   let total = await toRead();
