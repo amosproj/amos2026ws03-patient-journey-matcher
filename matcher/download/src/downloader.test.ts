@@ -1,5 +1,9 @@
 import { expect, test, vi } from "vitest";
-import { createDownloader, type Locator } from "./downloader.ts";
+import {
+  createDownloader,
+  type Locator,
+  NO_SPEECH_TO_TEXT,
+} from "./downloader.ts";
 
 function locator(
   url: string,
@@ -123,14 +127,126 @@ test("skips documents without a readable file, without a request", async () => {
   });
   await expect(
     fullText([
-      locator("https://a.org/a.mp3", "audio/mpeg", "audio"),
+      locator("https://a.org/a.m4a", "audio/x-m4a", "audio"),
       locator("https://a.org/data", "application/octet-stream", "file"),
     ]),
   ).resolves.toMatchObject({
     status: "skipped",
-    detail: "no readable format: audio/mpeg, application/octet-stream",
+    detail: "no readable format: audio/x-m4a, application/octet-stream",
   });
   expect(fetch).not.toHaveBeenCalled();
+});
+
+test("skips audio without speech-to-text, so that a run with it reads the audio", async () => {
+  const fetch = fakeFetch({ "https://a.org/t.txt": [new Response(" ")] });
+  const downloader = createDownloader({ fetch, ...instant });
+  const audio = locator("https://a.org/a.mp3", "audio/mpeg", "audio");
+
+  expect(downloader.transcribes).toBe(false);
+  await expect(downloader.fullText([audio])).resolves.toEqual({
+    status: "skipped",
+    text: "",
+    detail: NO_SPEECH_TO_TEXT,
+  });
+  // Also when a transcript is listed but empty.
+  await expect(
+    downloader.fullText([locator("https://a.org/t.txt", "text/plain"), audio]),
+  ).resolves.toMatchObject({ status: "skipped", detail: NO_SPEECH_TO_TEXT });
+  expect(fetch).toHaveBeenCalledOnce();
+});
+
+test("transcribes the audio when no transcript gives a text", async () => {
+  const fetch = fakeFetch({
+    "https://a.org/t.vtt": [new Response("", { status: 404 })],
+    "https://a.org/a.mp3": [new Response("mp3 bytes")],
+  });
+  const transcribe = vi.fn(async (_audio: Uint8Array) => "Olaparib, spoken.");
+  const downloader = createDownloader({ fetch, ...instant, transcribe });
+
+  const result = await downloader.fullText([
+    locator("https://a.org/t.vtt", "text/vtt"),
+    locator("https://a.org/a.mp3", "audio/mpeg", "audio"),
+  ]);
+
+  expect(downloader.transcribes).toBe(true);
+  expect(result).toEqual({
+    status: "ok",
+    text: "Olaparib, spoken.",
+    url: "https://a.org/a.mp3",
+    mediaType: "audio/mpeg",
+  });
+  expect(new TextDecoder().decode(transcribe.mock.calls[0]?.[0])).toBe(
+    "mp3 bytes",
+  );
+});
+
+test("reads a transcript rather than the audio", async () => {
+  const fetch = fakeFetch({
+    "https://a.org/t.txt": [new Response("Written.")],
+  });
+  const transcribe = vi.fn(async () => "Spoken.");
+  const { fullText } = createDownloader({ fetch, ...instant, transcribe });
+
+  const result = await fullText([
+    locator("https://a.org/t.txt", "text/plain"),
+    locator("https://a.org/a.mp3", "audio/mpeg", "audio"),
+  ]);
+
+  expect(result).toMatchObject({ status: "ok", text: "Written." });
+  expect(transcribe).not.toHaveBeenCalled();
+});
+
+test("fails when speech-to-text fails, to be tried again later", async () => {
+  const fetch = fakeFetch({ "https://a.org/a.mp3": [new Response("mp3")] });
+  const transcribe = async () => {
+    throw new Error("speech-to-text failed: no such model");
+  };
+  const { fullText } = createDownloader({ fetch, ...instant, transcribe });
+
+  await expect(
+    fullText([locator("https://a.org/a.mp3", "audio/mpeg", "audio")]),
+  ).resolves.toMatchObject({
+    status: "failed",
+    detail: "speech-to-text failed: no such model",
+  });
+});
+
+test("reads one audio file at a time, up to its own size limit", async () => {
+  const fetch = fakeFetch({
+    "https://a.org/1.mp3": [new Response("x".repeat(20))],
+    "https://b.org/2.mp3": [new Response("x".repeat(20))],
+    "https://c.org/3.mp3": [new Response("x".repeat(31))],
+  });
+  let running = 0;
+  const transcribe = vi.fn(async () => {
+    expect(++running).toBe(1);
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    running--;
+    return "Spoken.";
+  });
+  const { fullText } = createDownloader({
+    fetch,
+    ...instant,
+    transcribe,
+    maxBytes: 10,
+    maxAudioBytes: 30,
+  });
+
+  const results = await Promise.all(
+    ["https://a.org/1.mp3", "https://b.org/2.mp3", "https://c.org/3.mp3"].map(
+      (url) => fullText([locator(url, "audio/mpeg", "audio")]),
+    ),
+  );
+
+  expect(results.map(({ status, detail }) => detail ?? status)).toEqual([
+    "ok",
+    "ok",
+    "larger than 30 bytes",
+  ]);
+  // The second file is downloaded only after the first is transcribed.
+  expect(fetch.mock.invocationCallOrder[1]).toBeGreaterThan(
+    transcribe.mock.invocationCallOrder[0] ?? 0,
+  );
 });
 
 test("skips files over the size limit, by their stored size or while reading", async () => {
