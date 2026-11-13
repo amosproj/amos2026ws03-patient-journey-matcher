@@ -6,15 +6,11 @@ import {
   type MatchResult,
   matchJourneyInputSchema,
   matchResultSchema,
-  type SourceContent,
-  sourceContentSchema,
+  type SourceDownloads,
+  sourceDownloadsSchema,
 } from "./contract.ts";
 
-export type ErrorCode =
-  | "NOT_AVAILABLE"
-  | "SOURCE_NOT_FOUND"
-  | "UPSTREAM_UNAVAILABLE"
-  | "INTERNAL_ERROR";
+export type ErrorCode = "NOT_AVAILABLE" | "SOURCE_NOT_FOUND" | "INTERNAL_ERROR";
 
 export class ToolError extends Error {
   readonly code: ErrorCode;
@@ -41,7 +37,7 @@ export interface MatchService {
     request: MatchJourneyInput,
     debug?: MatchDebug,
   ): Promise<MatchResult>;
-  getSource(sourceId: string): Promise<SourceContent>;
+  getSource(sourceId: string): Promise<SourceDownloads>;
 }
 
 async function toToolResult<Output extends Record<string, unknown>>(
@@ -84,10 +80,10 @@ export function buildServer(service: MatchService): McpServer {
     {
       title: "Get a source",
       description:
-        "Downloads one matched source again from its origin and returns its content without storing it.",
+        "Returns the links to the files of one matched source at its origin; the client downloads them itself.",
       inputSchema: getSourceInputSchema,
-      outputSchema: sourceContentSchema,
-      annotations: { readOnlyHint: true, openWorldHint: true },
+      outputSchema: sourceDownloadsSchema,
+      annotations: { readOnlyHint: true, openWorldHint: false },
     },
     ({ source_id }) => toToolResult(() => service.getSource(source_id)),
   );

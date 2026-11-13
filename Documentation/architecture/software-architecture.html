@@ -141,7 +141,7 @@
   <ul class="notes">
     <li>Every lane runs as containers from one Docker Compose file: PostgreSQL, one crawler container per source, the indexer job and the MCP server.</li>
     <li>Each table has one writer. The crawler writes <code>documents</code>, the indexer writes the three indexes, and the MCP server only reads.</li>
-    <li><code>download()</code> is one TypeScript module used by the indexer and the MCP server. Full texts stay in memory and are never written to the database.</li>
+    <li><code>download()</code> is one TypeScript module used by the indexer. Full texts stay in memory and are never written to the database.</li>
   </ul>
 
   <div class="foot"><span>Planned design for the mid-project release (25.11.2026). We will compare it with the real system at the end of the project.</span><span>1 / 4</span></div>
@@ -258,7 +258,7 @@
     <li><b>Crawling.</b> A daily cron job starts one crawler container per source with the queries from a topic file. The crawler searches the source API, follows a paper's references one level deep, and upserts the metadata into <code>documents</code>. It stores metadata and links only, never full texts.</li>
     <li><b>Indexing.</b> After each crawl, the indexer reads the new documents, fetches each text with <code>download()</code>, keeps it in memory, and writes three separate indexes: keyword, graph and AI summary. Only the AI summary builder calls an LLM, and only with public source text.</li>
     <li><b>Query.</b> A client calls an MCP tool with the journey. The journey reader validates it and builds one journey state: the latest event is the focus, and older events are context. How much older events count is still to be tested (#11). All three matchers get the same state, so their results can be compared fairly.</li>
-    <li><b>Answer.</b> The result assembler merges and ranks the hits and adds the metadata and links from <code>documents</code>. When the client asks for one source, <code>download()</code> fetches the original again and passes it on without storing it.</li>
+    <li><b>Answer.</b> The result assembler merges and ranks the hits and adds the metadata and links from <code>documents</code>. When the client asks for one source, the server returns the links to its files, and the client downloads them itself.</li>
   </ol>
 
   <h2>Code view (page 2)</h2>
@@ -268,7 +268,7 @@
   <ul>
     <li><b>Python for crawling, TypeScript for indexing and querying.</b> Required by the project description. The <code>documents</code> table is the interface between the two.</li>
     <li><b>Our own crawler on Crawlee instead of a fork of the JValue crawler.</b> This departs from the project description. Our evaluation (#5) found that JValue walks FTP folder trees and stores whole files, while our sources are search APIs that return single records. The professorship advised us to use JValue only as an architecture reference. Crawlee gives us a deduplicating request queue, retries and rate limits.</li>
-    <li><b>Metadata only, download on a match.</b> Storing the originals is too expensive and often not allowed by their licence. The indexes hold derived data only (term statistics, concepts, summaries), and the original is fetched again when needed.</li>
+    <li><b>Metadata only, download on a match.</b> Storing the originals is too expensive and often not allowed by their licence. The indexes hold derived data only (term statistics, concepts, summaries), and the client fetches the original itself when needed.</li>
     <li><b>PostgreSQL for documents and indexes.</b> #5 chose Postgres for <code>documents</code>. Full-text search and pgvector cover the keyword and AI indexes in the same server, and the graph index fits in two tables for concepts and relations. One database server keeps the demo to one command, and avoids the GPL-3.0 Neo4j server.</li>
     <li><b>Three competing algorithms behind one interface.</b> AIlixir wants a word-statistics, a graph-based and an AI-based approach, each with its own index. We start with the keyword baseline (#8), then add the graph (#10) and AI summary (#9) approaches, and compare all three on the same test journeys and criteria (#11).</li>
     <li><b>Selective reuse of the SS26 code (#13).</b> We keep the PubMed, arXiv and YouTube parsing, the topic lists and the medical ontology, and port the retrieval result shape and the LLM client conventions to TypeScript. We drop chat, voice, OCR and the YouTube caption scraping.</li>

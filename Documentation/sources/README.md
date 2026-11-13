@@ -1,6 +1,6 @@
 # External sources: metadata, storage and indexing
 
-Findings for #6, checked 01.11.2026 against live docs and live requests. Follows the [architecture](../architecture/README.md): the crawler stores metadata and links only; the indexer and the MCP server fetch full texts in memory and never store them. Summary: [`pipeline-overview.pdf`](pipeline-overview.pdf). Open questions: [`open-questions.md`](open-questions.md).
+Findings for #6, checked 01.11.2026 against live docs and live requests. Follows the [architecture](../architecture/README.md): the crawler stores metadata and links only; the indexer fetches full texts in memory and never stores them. Summary: [`pipeline-overview.pdf`](pipeline-overview.pdf). Open questions: [`open-questions.md`](open-questions.md).
 
 ![Source pipeline](pipeline.svg)
 
@@ -53,7 +53,7 @@ Implemented in [`db/init/02-documents.sql`](../../db/init/02-documents.sql) (#41
 
 ## 3 Indexing
 
-The indexer of each approach (and `get_source`) checks `licence` against its own allow-list for the use, tries the `full_text` locators in order and keeps the text in memory. Not allowed: title, summary and subjects from the row only.
+The indexer of each approach checks `licence` against its own allow-list for the use, tries the `full_text` locators in order and keeps the text in memory. Not allowed: title, summary and subjects from the row only.
 
 Why at use time, not in the crawler:
 
@@ -65,7 +65,7 @@ Why at use time, not in the crawler:
 
 Allow-list proposal for the current non-commercial university project (not legal advice):
 
-| Licence | Keyword, graph, AI index | AI summary shown | MCP passes the original on | If used commercially later |
+| Licence | Keyword, graph, AI index | AI summary shown | Client passes the original on | If used commercially later |
 |---|---|---|---|---|
 | CC0, CC BY, public domain | yes | yes, with credit | yes, with credit | same |
 | CC BY-SA, CC BY-ND | yes | ask | SA: same licence; ND: unchanged | same |
@@ -82,11 +82,8 @@ Licences differ per record: PMC mixes CC BY and NC in one bucket; 8 % of a Zenod
 Per the proposal on `feature/7-mcp-interface` (#7). Reads `documents` and the indexes, writes nothing.
 
 - `match_journey`: index rows carry `document_id`, so each hit resolves to its row.
-- `get_source(source_id)`: `source_id` = `documents.id`. Calls `download()` with the "passes the original on" column and the stored `version`. Not allowed: abstract or description plus link. Deleted row (e.g. YouTube after 30 days): `SOURCE_NOT_FOUND`. Shares the request budgets with the indexer.
-- Field mapping: `id` → `source_id`; `canonical_url` → `url`; `published_at` + `published_precision` → `published_date` (`2026`, `2026-09`, `2026-09-13`); `authors[].name` → `authors`; `source`, `title`, `content_type`, `licence` unchanged.
-- Needed in #7, not made here:
-  1. Add `content_kind: description` (Zenodo, YouTube, show notes). Keep `abstract`; `summary` would clash with the AI summary approach.
-  2. Document the fallback: abstract or description plus `url`, not an error.
+- `get_source(source_id)`: `source_id` = `documents.id`. Returns the `full_text` locators as `downloads` and downloads nothing itself (#54): [MCP interface](../mcp-interface.md#get_source). Deleted row (e.g. YouTube after 30 days): `SOURCE_NOT_FOUND`.
+- Field mapping: `id` → `source_id`; `canonical_url` → `url`; `published_at` + `published_precision` → `published_date` (`2026`, `2026-09`, `2026-09-13`); `authors[].name` → `authors`; `extra.thumbnail` → `image_url`; `source`, `title`, `content_type`, `summary`, `licence` unchanged.
 
 ## 5 Storage, limits and retention
 
@@ -99,13 +96,13 @@ Per the proposal on `feature/7-mcp-interface` (#7). Reads `documents` and the in
 - **Identification:** User-Agent with app, version, repo URL, team contact. NCBI also `tool` and `email`. Zenodo may block generic agents.
 - **Attribution:** name NLM; arXiv line "Thank you to arXiv for use of its open access interoperability."; credit CC BY; label YouTube items with unchanged title, thumbnail, channel; no NLM, PMC or arXiv logos.
 
-Request budgets, shared per key or host by crawler, indexer and MCP server:
+Request budgets, shared per key or host by crawler and indexer:
 
 | Budget | Limit | Used by |
 |---|---|---|
-| NCBI E-utilities | 10 req/s per key (3 without), 429 above | PubMed crawler, reference crawl, indexer, MCP |
+| NCBI E-utilities | 10 req/s per key (3 without), 429 above | PubMed crawler, reference crawl, indexer |
 | arXiv API + OAI-PMH | 1 req per 3 s, one connection | arXiv crawler incl. one licence lookup per paper |
-| arxiv.org pages | `Crawl-delay: 15` | Indexer, MCP |
+| arxiv.org pages | `Crawl-delay: 15` | Indexer |
 | Zenodo | 30 searches/min (also with token); 133 record/file req/min | Crawler, indexer |
 | YouTube | 10,000 units/day + 100 `search.list`/day | Crawler, refresh job (< 100 units/day) |
 | Semantic Scholar | 1 req/s with key | arXiv reference crawl |
@@ -123,7 +120,6 @@ Request budgets, shared per key or host by crawler, indexer and MCP server:
 Not made in this issue:
 
 - **Architecture §4 Indexing:** "public source text" → "text whose licence is on the allow-list".
-- **Architecture §4 Answer:** `download()` passes the original on only where the licence allows; otherwise abstract or description plus link.
 - **Architecture §4, crawler evaluation:** PMC S3 is the full-text path for PubMed (OA web service, FTP packages and licence folders retired 08.2026).
 - **Architecture §3:** `arxiv` 4.0.2, `feedparser` 6.0.14; feedparser misses `podcast:*` tags.
 - **Architecture §5:** YouTube 30-day rule covers IDs and playlist IDs; add labelling and the popularity-score ban.
