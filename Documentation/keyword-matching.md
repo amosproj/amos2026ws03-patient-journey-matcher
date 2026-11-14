@@ -29,6 +29,8 @@ Nothing else writes the schema. Deleting a document deletes its index rows.
 
 PDFs are read with [unpdf](https://github.com/unjs/unpdf) (MIT, Mozilla's pdf.js), XML and HTML with [htmlparser2](https://github.com/fb55/htmlparser2) (MIT). Text after a "References" or "Bibliography" heading in the second half is dropped, so cited titles do not match. Downloads keep the [request budgets](sources/README.md#5-storage-limits-and-retention) per host: arxiv.org 15 s (its `robots.txt`), Zenodo 1 s, the PMC bucket 0.1 s, others 3 s; different hosts in parallel. A server error or 429 is retried twice, after `Retry-After` if sent; files over 50 MB are skipped, audio over 150 MB.
 
+Both metadata and full-text indexing skip documents whose `extra.metadata_language` is known and non-English. Unknown stays eligible; `language` is not used because it may describe the article rather than its English abstract. Already indexed non-English content is cleared on the next index run, including indexes created before this filtering was added. Skipped documents still have an index bookkeeping row, avoiding repeated downloads.
+
 Audio skips written by the old indexer (`no readable format: audio/mpeg`, etc.) are retried when speech-to-text is enabled too.
 
 `keyword.full_texts` has one row per document, also without a text:

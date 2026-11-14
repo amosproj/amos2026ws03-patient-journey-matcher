@@ -66,7 +66,7 @@ uv run crawler refresh --source pubmed --limit 50  # bounded trial
 
 The command uses `DATABASE_URL` from the environment or `crawler/.env`, processes batches of 50 (`--batch-size` can lower this), and reports changed/unchanged records, concurrent changes skipped, and failed OpenAlex batches. A failed lookup or concurrent update gives exit code 1; rerunning is safe. `--limit` always scans from the beginning, so omit it for a complete backfill.
 
-Only enrichment fields and `changed_at` change. Provenance, citations, `retrieved_at`, expiry, and crawl resume dates stay intact. Concurrent content changes are left for another run. Run `make index APPROACHES=keyword` afterwards to update the index.
+Only enrichment fields and `changed_at` change. Provenance, citations, `retrieved_at`, expiry, and crawl resume dates stay intact. Concurrent content changes are left for another run. Run `make index APPROACHES=keyword` afterwards to update the index. Indexers skip marked non-English metadata; absent/unknown metadata language remains eligible, independently of the source's `language` field.
 
 ## Reading
 

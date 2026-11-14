@@ -272,6 +272,76 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     expect(downloader.fullText).toHaveBeenCalledOnce();
   });
 
+  test("skips marked non-English metadata before downloading but keeps unknown and English abstracts", async () => {
+    for (const id of ["de", "unknown", "en"]) {
+      await insert(`pubmed:${id}`, "Olaparib", {
+        full_text: [`https://example.org/${id}.xml`],
+      });
+    }
+    await pool.query(
+      `UPDATE documents SET language = 'de', extra = '{"metadata_language":"en"}' WHERE id = 'pubmed:en'`,
+    );
+    await pool.query(
+      `UPDATE documents SET extra = '{"metadata_language":"de"}' WHERE id = 'pubmed:de'`,
+    );
+    const downloader = fakeDownloader({
+      "https://example.org/unknown.xml": "Olaparib and the PSA.",
+      "https://example.org/en.xml": "Olaparib and the PSA.",
+    });
+    await indexMetadata(pool);
+    expect(await indexFullTexts(pool, downloader)).toEqual({
+      indexed: 2,
+      skipped: 1,
+      failed: 0,
+    });
+    expect(downloader.fullText).toHaveBeenCalledTimes(2);
+    const hits = await createKeywordMatcher(pool).match(
+      { focus: event("Olaparib"), context: [] },
+      { limit: 10 },
+    );
+    expect(hits.map((h) => h.documentId).sort()).toEqual([
+      "pubmed:en",
+      "pubmed:unknown",
+    ]);
+    const { rows } = await pool.query(
+      `SELECT status, detail, words FROM keyword.full_texts WHERE document_id = 'pubmed:de'`,
+    );
+    expect(rows).toEqual([
+      { status: "skipped", detail: "non-English metadata", words: 0 },
+    ]);
+  });
+
+  test("removes non-English content from indexes created before filtering", async () => {
+    await insert("pubmed:old", "Olaparib", {
+      full_text: ["https://example.org/a.xml"],
+    });
+    const downloader = fakeDownloader({
+      "https://example.org/a.xml": "Olaparib and the PSA.",
+    });
+    await indexMetadata(pool);
+    await indexFullTexts(pool, downloader);
+    // Keep changed_at unchanged to represent index rows built by the previous indexer.
+    await pool.query(
+      `UPDATE documents SET extra = '{"metadata_language":"fr"}' WHERE id = 'pubmed:old'`,
+    );
+    downloader.fullText.mockClear();
+    await indexMetadata(pool);
+    await indexFullTexts(pool, downloader);
+    expect(downloader.fullText).not.toHaveBeenCalled();
+    const hits = await createKeywordMatcher(pool).match(
+      { focus: event("Olaparib"), context: [] },
+      { limit: 10 },
+    );
+    expect(hits).toEqual([]);
+    expect(
+      (
+        await pool.query(
+          `SELECT terms FROM keyword.full_texts WHERE document_id = 'pubmed:old'`,
+        )
+      ).rows,
+    ).toEqual([{ terms: "" }]);
+  });
+
   test("ranks a document without a full text below one that both indexes find", async () => {
     // pubmed:1 leads the metadata but has no full text; pubmed:2 is second there and has one.
     await insert("pubmed:1", "Olaparib olaparib for prostate cancer");
