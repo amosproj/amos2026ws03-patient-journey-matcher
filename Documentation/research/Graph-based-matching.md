@@ -1,5 +1,9 @@
 # Graph-based Matching Research
 
+**Why.** Our baseline is [keyword matching](../keyword-matching.md): it ranks resources by the words they share with the patient journey. Words are not enough. A paper on olaparib for breast cancer shares "olaparib" and "BRCA" with a prostate cancer patient on olaparib, and still ranks high.
+
+**Idea.** Compare relations instead of words. Patient and resources are both written as links between medical concepts, such as `olaparib –treats→ prostate cancer`, using shared IDs (MeSH), so that synonyms and German and English names match too. A resource ranks high when it shares the patient's concepts and links them the same way.
+
 ## 1. Input: Patient Journey Graph
 
 -> based on [medical_schema.py](../../backend/workers/pipeline/graph/medical_schema.py) & graph builder
