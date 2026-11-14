@@ -80,7 +80,7 @@ Basis: **Partner** = project description or AIlixir · **#5** = [crawler evaluat
 | Gemini via Vertex AI (`@google/genai`) | SDK 2.31 | Source summaries at index time | Apache-2.0 (SDK) | #13 |
 | OpenAI embeddings (`openai`) | SDK 7.45 | Vectors for the AI summary index | Apache-2.0 (SDK) | #13 |
 | **Build, test and delivery** | | | | |
-| Docker Compose | 5.6 | Local PostgreSQL with pgvector | Apache-2.0 | In use |
+| Docker Compose | 5.6 | PostgreSQL with pgvector, one crawler container per source | Apache-2.0 | In use |
 | uv · pnpm | 0.13 · 12.15 | Dependencies and lockfiles for the bill of materials | MIT / Apache-2.0 · MIT | In use |
 | pytest · Vitest · Ruff · Biome | 9.1 · 5.0 · 0.17 · 2.6 | Unit tests, linting and formatting | MIT; Biome also Apache-2.0 | In use |
 | mypy | 2.4 | Python type checks (strict, pydantic plugin) | MIT | In use |
@@ -102,8 +102,8 @@ Basis: **Partner** = project description or AIlixir · **#5** = [crawler evaluat
 
 ### Runtime view
 
-1. **Crawling.** A daily cron job starts one crawler container per source with the queries from a topic file. The crawler searches the source API, follows a paper's references one level deep, and upserts the metadata into `documents` (`--store`, see [storage and retrieval](../storage.md)). It stores metadata and links only, never full texts.
-2. **Indexing.** After each crawl, the indexer reads the new or changed documents, fetches each text with `download()`, keeps it in memory, and writes three separate indexes: keyword, graph and AI summary. Only the AI summary builder calls an LLM, and only with public source text.
+1. **Crawling.** Every night a systemd timer starts one crawler container per source with the queries from all topic files ([scheduled crawls](../deployment.md#scheduled-crawls)). The crawler searches the source API, can follow a paper's references one level deep (not yet in the scheduled runs), and upserts the metadata into `documents` (`--store`, see [storage and retrieval](../storage.md)). It stores metadata and links only, never full texts.
+2. **Indexing.** Every morning after the crawls, the indexer reads the new or changed documents, fetches each text with `download()`, keeps it in memory, and writes three separate indexes: keyword, graph and AI summary. Only the AI summary builder calls an LLM, and only with public source text.
 3. **Query.** A client calls an MCP tool with the journey. The journey reader validates it and builds one journey state: the latest event is the focus, and older events are context. How much older events count is still to be tested (#11). All three matchers get the same state, so their results can be compared fairly.
 4. **Answer.** The result assembler merges and ranks the hits and adds the metadata and links from `documents`. When the client asks for one source, the server returns the links to its files, and the client downloads them itself.
 

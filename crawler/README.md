@@ -19,14 +19,17 @@ cp .env.example .env   # fill in the keys you need
 uv run crawler pubmed "prostate cancer" --max-results 10
 uv run crawler pubmed --topic prostate_cancer
 uv run crawler pubmed --topic prostate_cancer --store   # needs DATABASE_URL and `make db`
-uv run crawler pubmed --all-topics --since auto --max-results 1000 --store   # scheduled
+uv run crawler pubmed --all-topics --since auto --store   # continue from the last run
+docker compose run --rm crawler-pubmed   # the scheduled run, from the repository root
 ```
+
+The scheduled runs and their options: [deployment](../Documentation/deployment.md#scheduled-crawls).
 
 Sources: `pubmed`, `arxiv`, `zenodo`, `youtube`, `podcast`. `uv run crawler <source> --help`
 lists the options. Each output line is a `SourceDocument` (`src/crawler/models.py`).
 
 `--since auto` continues from each topic's last successful `--store` run, 2 days earlier; a
-topic needs one run without `--since` first. With `--since`, sources return the newest results
+topic without one runs without a date. With `--since`, sources return the newest results
 first, so `--max-results` only caps them: the summary lists every seed that reached the cap.
 Runs that reached it, or stopped at `--max-requests` (exit code 1), do not count as successful,
 so the next `--since auto` run covers their period again.
