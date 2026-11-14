@@ -29,10 +29,8 @@ Sources: `pubmed`, `arxiv`, `zenodo`, `youtube`, `podcast`. `uv run crawler <sou
 lists the options. Each output line is a `SourceDocument` (`src/crawler/models.py`).
 
 `--since auto` continues from each topic's last successful `--store` run, 2 days earlier; a
-topic without one runs without a date. With `--since`, sources return the newest results
-first, so `--max-results` only caps them: the summary lists every seed that reached the cap.
-Runs that reached it, or stopped at `--max-requests` (exit code 1), do not count as successful,
-so the next `--since auto` run covers their period again.
+topic without one runs without a date. A run with a failed request, or stopped by
+`--max-requests`, does not count, so the next run covers its period again.
 
 Each document gets `extra.metadata_language`, the language of its title and abstract or
 description, detected offline; it is missing where the text is too short to tell

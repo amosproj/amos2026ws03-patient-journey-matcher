@@ -418,14 +418,14 @@ def test_last_successful_runs_are_per_topic_and_source(url: str) -> None:
     assert last == {"a": RETRIEVED + timedelta(days=1), "b": RETRIEVED}
 
 
-def test_a_run_that_reached_max_results_does_not_move_the_start_date(url: str) -> None:
+def test_a_run_that_reached_max_results_moves_the_start_date(url: str) -> None:
     log_run(url, ["a"], RETRIEVED)
     log_run(url, ["a"], RETRIEVED + timedelta(days=1), max_results_reached=1)
 
     last = asyncio.run(last_successful_runs(url, SourceName.PUBMED, ["a"]))
 
-    assert last == {"a": RETRIEVED}
-    assert resume_date(last, ["a"]) == date(2026, 10, 30)
+    assert last == {"a": RETRIEVED + timedelta(days=1)}
+    assert resume_date(last, ["a"]) == date(2026, 10, 31)
 
 
 def test_duplicates_by_doi_and_the_last_run_of_a_source(url: str) -> None:

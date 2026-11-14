@@ -53,9 +53,8 @@ from crawler.store import (
 AUTO = "auto"
 """`--since auto`: continue from the topics' last successful run with `--store`."""
 SINCE_AUTO_HELP = (
-    f"auto: from {RESUME_OVERLAP.days} days before the topics' last successful run with --store, "
-    "not counting runs that reached --max-results; topics without one get no date "
-    "(needs --store and --topic or --all-topics)"
+    f"auto: from {RESUME_OVERLAP.days} days before the topics' last successful run with --store; "
+    "topics without one get no date (needs --store and --topic or --all-topics)"
 )
 SINCE_HELP = {
     SourceName.PUBMED: "only search results PubMed added since this date (YYYY-MM-DD); "

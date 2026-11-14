@@ -83,8 +83,7 @@ _URL_PASSWORD = re.compile(r"(\w+://[^:/@\s]*:)[^@\s]*@")
 
 
 class StoreError(Exception):
-    """The database is not configured or not reachable, lacks the schema, refused a write, or
-    has no run for `--since auto` to continue from."""
+    """The database is not configured or not reachable, lacks the schema, or refused a write."""
 
 
 class RunInfo(BaseModel):
@@ -185,8 +184,8 @@ async def last_successful_runs(
     url: str, source: SourceName, topics: Sequence[str]
 ) -> dict[str, datetime]:
     """When the last successful run of `source` started, per topic; topics without one are left
-    out. Runs that reached `--max-results` do not count: they may have cut off older documents,
-    so the next `--since auto` run covers their period again."""
+    out. Runs that reached `--max-results` count: sources list the newest results first, so a
+    rerun with the same cap would only fetch the same newest documents again."""
     async with _connect(url) as connection:
         try:
             rows = await connection.fetch(_LAST_RUNS, source.value, list(topics))
@@ -343,7 +342,6 @@ _LAST_RUNS = """
 SELECT topic, max(started_at) AS started_at
 FROM crawl_runs, unnest(topics) AS topic
 WHERE source = $1 AND ok AND topic = ANY($2::text[])
-    AND coalesce((stats ->> 'max_results_reached')::int, 0) = 0
 GROUP BY topic
 """
 
