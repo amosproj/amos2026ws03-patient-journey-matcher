@@ -80,7 +80,23 @@ systemctl daemon-reload
 systemctl enable matcher-mcp.service
 systemctl restart matcher-mcp.service
 
-step "scheduled crawls and index"
+step "timers: crawls, index, backup, cleanup"
+# timer NAME CALENDAR UNIT DESCRIPTION; Persistent: runs missed while the VM was off start at boot.
+timer() {
+  cat > "/etc/systemd/system/$1.timer" <<UNIT
+[Unit]
+Description=$4
+
+[Timer]
+OnCalendar=$2
+Persistent=true
+Unit=$3
+
+[Install]
+WantedBy=timers.target
+UNIT
+}
+
 # One run of crawler-<source> from compose.yaml; stdout only repeats the stored documents.
 cat > /etc/systemd/system/crawler@.service <<UNIT
 [Unit]
@@ -96,21 +112,11 @@ ExecStart=/usr/bin/docker compose run --rm --build -T crawler-%i
 StandardOutput=null
 UNIT
 # Daily in UTC, a few minutes apart; PubMed in NCBI's off-peak hours (21:00-05:00 US Eastern).
-for timer in pubmed=03:00 arxiv=00:00 zenodo=00:10 youtube=00:30 podcast=00:20; do
-  name=${timer%%=*}
-  cat > "/etc/systemd/system/crawler-$name.timer" <<UNIT
-[Unit]
-Description=Daily $name crawl
-
-[Timer]
-OnCalendar=*-*-* ${timer#*=}:00 UTC
-Persistent=true
-Unit=crawler@$name.service
-
-[Install]
-WantedBy=timers.target
-UNIT
+for entry in pubmed=03:00 arxiv=00:00 zenodo=00:10 youtube=00:30 podcast=00:20; do
+  name=${entry%%=*}
+  timer "crawler-$name" "*-*-* ${entry#*=}:00 UTC" "crawler@$name.service" "Daily $name crawl"
 done
+
 cat > /etc/systemd/system/matcher-index.service <<UNIT
 [Unit]
 Description=Patient Journey Matcher index update
@@ -123,18 +129,38 @@ User=$APP_USER
 WorkingDirectory=$APP_DIR
 ExecStart=/usr/bin/make index
 UNIT
-cat > /etc/systemd/system/matcher-index.timer <<UNIT
+timer matcher-index "*-*-* 06:00:00 UTC" matcher-index.service "Daily index update after the crawls"
+
+install -d -o "$APP_USER" -m 700 /var/backups/matcher
+cat > /etc/systemd/system/matcher-backup.service <<UNIT
 [Unit]
-Description=Daily index update after the crawls
+Description=Patient Journey Matcher database backup
+After=docker.service
+Wants=docker.service
 
-[Timer]
-OnCalendar=*-*-* 06:00:00 UTC
-Persistent=true
-
-[Install]
-WantedBy=timers.target
+[Service]
+Type=oneshot
+User=$APP_USER
+ExecStart=/bin/bash $APP_DIR/deploy/backup-db.sh
 UNIT
-timers=(crawler-{pubmed,arxiv,zenodo,youtube,podcast}.timer matcher-index.timer)
+timer matcher-backup "*-*-* 23:00:00 UTC" matcher-backup.service "Nightly database backup"
+
+# The nightly --build leaves the replaced crawler images behind.
+cat > /etc/systemd/system/matcher-prune.service <<UNIT
+[Unit]
+Description=Remove unused Docker images and old build cache
+After=docker.service
+Wants=docker.service
+
+[Service]
+Type=oneshot
+User=$APP_USER
+ExecStart=/usr/bin/docker image prune -f
+ExecStart=/usr/bin/docker builder prune -f --filter until=168h
+UNIT
+timer matcher-prune "Sun *-*-* 23:30:00 UTC" matcher-prune.service "Weekly Docker cleanup"
+
+timers=(crawler-{pubmed,arxiv,zenodo,youtube,podcast}.timer matcher-{index,backup,prune}.timer)
 systemctl daemon-reload
 systemctl enable "${timers[@]}"
 systemctl restart "${timers[@]}"

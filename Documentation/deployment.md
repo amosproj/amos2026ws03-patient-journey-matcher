@@ -16,6 +16,7 @@ The matcher runs on one VM in our project of the [FAU Compute Cloud](https://cc.
 | MCP server | Service `matcher-mcp`, `http://127.0.0.1:3000/mcp` on the VM |
 | Database | Docker container `amos-postgres`, `127.0.0.1:5432` on the VM |
 | Crawlers and index | Timers `crawler-<source>` and `matcher-index`, see [scheduled crawls](#scheduled-crawls) |
+| Backups | `/var/backups/matcher`, see [backups and cleanup](#backups-and-cleanup) |
 
 Our quota is 20 vCPUs, 50 GB RAM and 1000 GB volume storage. The flavour is the largest that fits the RAM quota. Together with the `vaultwarden` VM, 3 vCPUs, 17 GB RAM and 290 GB volume storage are left for other VMs.
 
@@ -91,10 +92,26 @@ The scheduled runs do not follow references (`--max-depth 0`): on a first crawl 
 | Log of a run | `journalctl -u crawler@pubmed`, `journalctl -u matcher-index` |
 | Crawl a source now | `sudo systemctl start --no-block crawler@pubmed` |
 | Stored runs | `docker exec amos-postgres psql -U amos -d patient_journey_matcher -c 'SELECT source, started_at, ok, inserted FROM crawl_runs ORDER BY id DESC LIMIT 10'` |
+| Failed runs | `systemctl --failed` |
+
+## Backups and cleanup
+
+**Backups.** Every night at 23:00 UTC, [`deploy/backup-db.sh`](../deploy/backup-db.sh) dumps the database to `/var/backups/matcher/matcher-<date>.dump` and keeps the newest 7. The dumps are on the same volume as the database: they help against a broken database or `docker compose down -v`, not against losing the VM. To restore one, stop the timers that write to the database, then:
+
+```sh
+docker exec -i amos-postgres sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --clean --if-exists' \
+  < /var/backups/matcher/matcher-2026-11-20.dump
+```
+
+**Cleanup.** Every Sunday at 23:30 UTC, `matcher-prune` removes Docker images that newer builds replaced and build cache older than a week.
+
+| Task | Command |
+|---|---|
+| Back up now | `sudo systemctl start matcher-backup` |
 
 ## Set up a new VM
 
-[`deploy/vm-setup.sh`](../deploy/vm-setup.sh) does the whole setup: it installs Docker, Node.js 24, pnpm 12 and uv, clones this repository, writes a `.env` with a random database password, starts the database, runs the tests, starts the MCP server as a service and installs the timers for the crawls and the index.
+[`deploy/vm-setup.sh`](../deploy/vm-setup.sh) does the whole setup: it installs Docker, Node.js 24, pnpm 12 and uv, clones this repository, writes a `.env` with a random database password, starts the database, runs the tests, starts the MCP server as a service and installs the timers for the crawls, the index, the backups and the cleanup.
 
 1. In the dashboard, open **Compute → Instances → Launch Instance**.
 2. **Details:** a name. **Source:** image `Debian 13`, create a new volume. **Flavour:** one without a root disk, such as `SCS-4V-8`. **Networks:** `FAU-Intern`. **Key Pair:** your key.
