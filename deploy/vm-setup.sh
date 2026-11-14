@@ -49,10 +49,13 @@ if [ ! -f "$APP_DIR/.env" ]; then
     | as_app tee "$APP_DIR/.env" >/dev/null
   chmod 600 "$APP_DIR/.env"
 fi
+# API keys of the crawlers, filled in by hand (Documentation/deployment.md#scheduled-crawls)
+[ -f "$APP_DIR/crawler/.env" ] || as_app install -m 600 "$APP_DIR/crawler/.env.example" "$APP_DIR/crawler/.env"
 
 step "database, build and tests"
 # sg: the docker group of this user is not active in this shell yet.
 as_app sg docker -c "make -C $APP_DIR db"
+as_app sg docker -c "cd $APP_DIR && docker compose --profile crawler build"
 as_app make -C "$APP_DIR" build
 as_app make -C "$APP_DIR" test || echo "=== matcher-setup: TESTS FAILED, see above ==="
 
@@ -77,6 +80,65 @@ systemctl daemon-reload
 systemctl enable matcher-mcp.service
 systemctl restart matcher-mcp.service
 
+step "scheduled crawls and index"
+# One run of crawler-<source> from compose.yaml; stdout only repeats the stored documents.
+cat > /etc/systemd/system/crawler@.service <<UNIT
+[Unit]
+Description=Crawl %i (Documentation/deployment.md)
+After=docker.service
+Wants=docker.service
+
+[Service]
+Type=oneshot
+User=$APP_USER
+WorkingDirectory=$APP_DIR
+ExecStart=/usr/bin/docker compose run --rm --build -T crawler-%i
+StandardOutput=null
+UNIT
+# Daily in UTC, a few minutes apart; PubMed in NCBI's off-peak hours (21:00-05:00 US Eastern).
+for timer in pubmed=03:00 arxiv=00:00 zenodo=00:10 youtube=00:30 podcast=00:20; do
+  name=${timer%%=*}
+  cat > "/etc/systemd/system/crawler-$name.timer" <<UNIT
+[Unit]
+Description=Daily $name crawl
+
+[Timer]
+OnCalendar=*-*-* ${timer#*=}:00 UTC
+Persistent=true
+Unit=crawler@$name.service
+
+[Install]
+WantedBy=timers.target
+UNIT
+done
+cat > /etc/systemd/system/matcher-index.service <<UNIT
+[Unit]
+Description=Patient Journey Matcher index update
+After=docker.service
+Wants=docker.service
+
+[Service]
+Type=oneshot
+User=$APP_USER
+WorkingDirectory=$APP_DIR
+ExecStart=/usr/bin/make index
+UNIT
+cat > /etc/systemd/system/matcher-index.timer <<UNIT
+[Unit]
+Description=Daily index update after the crawls
+
+[Timer]
+OnCalendar=*-*-* 06:00:00 UTC
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+UNIT
+timers=(crawler-{pubmed,arxiv,zenodo,youtube,podcast}.timer matcher-index.timer)
+systemctl daemon-reload
+systemctl enable "${timers[@]}"
+systemctl restart "${timers[@]}"
+
 step "check"
 for _ in $(seq 1 60); do
   curl -s -o /dev/null http://127.0.0.1:3000/mcp && break
@@ -87,4 +149,5 @@ curl -s -X POST http://127.0.0.1:3000/mcp \
   -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' \
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | head -c 600 || true
 echo
-step "done, the server runs. Fill it with: make seed && make index (see Documentation/build.md)"
+systemctl list-timers "${timers[@]}" --no-pager || true
+step "done, the server runs; the crawlers start tonight (Documentation/deployment.md#scheduled-crawls)"

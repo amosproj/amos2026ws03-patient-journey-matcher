@@ -1,3 +1,19 @@
+# One crawler container per source, all from crawler/Dockerfile. The command is the scheduled run
+# (Documentation/deployment.md#scheduled-crawls), e.g. `docker compose run --rm crawler-pubmed`.
+# The profile keeps them out of `docker compose up`, so `make db` starts the database only.
+x-crawler: &crawler
+  build: crawler
+  image: amos-crawler
+  profiles: [crawler]
+  env_file:  # API keys
+    - path: crawler/.env
+      required: false
+  environment:
+    DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+  depends_on:
+    postgres:
+      condition: service_healthy
+
 services:
   postgres:
     build: db  # pgvector/pgvector:pg18-trixie plus pg_textsearch
@@ -20,6 +36,21 @@ services:
       timeout: 3s
       retries: 10
 
+  crawler-pubmed:
+    <<: *crawler
+    command: [pubmed, --all-topics, --since, auto, --store, --max-results, "50", --max-depth, "0"]
+  crawler-arxiv:
+    <<: *crawler
+    command: [arxiv, --all-topics, --since, auto, --store, --max-results, "3", --max-depth, "0"]
+  crawler-zenodo:
+    <<: *crawler
+    command: [zenodo, --all-topics, --since, auto, --store, --max-results, "25"]
+  crawler-youtube:
+    <<: *crawler
+    command: [youtube, --all-topics, --since, auto, --store, --max-results, "50"]
+  crawler-podcast:
+    <<: *crawler
+    command: [podcast, --all-topics, --since, auto, --store, --max-results, "100"]
+
 volumes:
   pgdata:
-  
