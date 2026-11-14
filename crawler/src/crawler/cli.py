@@ -10,6 +10,7 @@ from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import NoReturn
 
+from asyncpg import PostgresError
 from pydantic import ValidationError
 
 from crawler.language import with_metadata_language
@@ -23,6 +24,7 @@ from crawler.models import (
     validation_message,
 )
 from crawler.queries import query_words
+from crawler.refresh import refresh_documents
 from crawler.runner import CollectionOptions, CollectionSetupError, run_requests
 from crawler.seeds import (
     TopicFileError,
@@ -190,6 +192,13 @@ def parser() -> argparse.ArgumentParser:
     _add_since_argument(podcast, SourceName.PODCAST)
     _add_max_requests_argument(podcast)
     _add_store_argument(podcast, STORE_HELP)
+    refresh = subcommands.add_parser(
+        "refresh", help="backfill stored language markers and OpenAlex links; no source recrawl"
+    )
+    refresh.set_defaults(subcommand=refresh)
+    refresh.add_argument("--source", dest="refresh_source", choices=[s.value for s in SourceName])
+    refresh.add_argument("--limit", type=whole_number(1), help="maximum stored documents to scan")
+    refresh.add_argument("--batch-size", type=whole_number(1, 50), default=50)
     return command
 
 
@@ -448,6 +457,29 @@ def main(argv: Sequence[str] | None = None) -> int:
     # Crawlee logs every failed request with a full traceback. The runner logs each retry
     # in one line and the summary lists every failure, so keep Crawlee quiet.
     logging.getLogger("crawlee").setLevel(logging.CRITICAL)
+    if arguments.source == "refresh":
+        try:
+            refresh_report = asyncio.run(
+                refresh_documents(
+                    database_url(),
+                    source=SourceName(arguments.refresh_source)
+                    if arguments.refresh_source
+                    else None,
+                    limit=arguments.limit,
+                    batch_size=arguments.batch_size,
+                )
+            )
+        except (StoreError, ValueError, OSError, PostgresError) as error:
+            print(f"refresh failed: {redact_secrets(str(error))}", file=sys.stderr)
+            return 1
+        print(
+            f"refreshed: {refresh_report.scanned} scanned, {refresh_report.changed} changed, "
+            f"{refresh_report.unchanged} unchanged, "
+            f"{refresh_report.conflicts} concurrent changes skipped, "
+            f"{refresh_report.lookup_failures} OpenAlex batch(es) failed",
+            file=sys.stderr,
+        )
+        return int(bool(refresh_report.conflicts or refresh_report.lookup_failures))
     source = SourceName(arguments.source)
     resume = arguments.since == AUTO
     if resume and not arguments.store:

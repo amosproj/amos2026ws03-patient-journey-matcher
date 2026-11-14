@@ -49,9 +49,24 @@ From the crawler's `SourceDocument`: `source_id` → `native_id`, `journal` → 
 The crawler detects the language of each document's title and summary offline with [py3langid](https://github.com/adbar/py3langid) ([`crawler/src/crawler/language.py`](../crawler/src/crawler/language.py)) and stores it as `extra.metadata_language` (BCP 47, e.g. `en`). A source's `language` can name something else: PubMed gives the article's language, and a German article often has an English abstract. So `language` keeps the source's value.
 
 - Missing `metadata_language` means unknown, not "not English": short titles such as `PSA` are too short to tell, and stored cited papers keep their old row until a run fetches them again. An indexer that skips non-English metadata should treat unknown as matchable.
-- Ordinary runs fetch stored cited papers no more, so they keep their old row: no `metadata_language`, no [OpenAlex](sources/openalex.md) links. To give every stored document both, start from an empty database ([`docker compose down -v`](database.md), then `make seed` or the usual crawls).
+- Ordinary runs do not fetch stored cited papers again. Backfill their language markers and [OpenAlex](sources/openalex.md) links with `cd crawler && uv run crawler refresh`; no database reset is needed.
 - Non-English documents are stored like the others, so they stay findable and their citations stay complete.
 - The first store run after this change counts every document it fetches again as changed, once, since `extra` is content: the indexers read their full texts again.
+
+### Refresh stored enrichment
+
+`crawler refresh` reads stored titles/summaries to detect metadata languages and asks OpenAlex for PubMed DOIs without a full-text link. It also removes OpenAlex locators on hosts now listed in `NO_AUTOMATED_DOWNLOAD`, looking for another copy when none remains. It does not recrawl source metadata or use NCBI. Existing PMC locators and source language values are preserved.
+
+```sh
+cd crawler
+uv run crawler refresh                         # all stored documents
+uv run crawler refresh --source pubmed          # one source only
+uv run crawler refresh --source pubmed --limit 50  # bounded trial
+```
+
+The command uses `DATABASE_URL` from the environment or `crawler/.env`, processes batches of 50 (`--batch-size` can lower this), and reports changed/unchanged records, concurrent changes skipped, and failed OpenAlex batches. A failed lookup or concurrent update gives exit code 1; rerunning is safe. `--limit` always scans from the beginning, so omit it for a complete backfill.
+
+Only enrichment fields and `changed_at` change. Provenance, citations, `retrieved_at`, expiry, and crawl resume dates stay intact. Concurrent content changes are left for another run. Run `make index APPROACHES=keyword` afterwards to update the index.
 
 ## Reading
 

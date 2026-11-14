@@ -20,6 +20,7 @@ from crawler.models import (
     SourceDocument,
     SourceName,
 )
+from crawler.refresh import RefreshReport
 from crawler.runner import CollectionOptions
 from crawler.sources.youtube import YouTubeScraper
 from crawler.store import RunInfo, StoreError, StoreReport
@@ -53,6 +54,31 @@ def test_cli_builds_pubmed_request() -> None:
     assert request.since is not None
     assert options.max_depth == 1
     assert options.topic_terms == ()
+
+
+def test_refresh_command_backfills_stored_enrichment_without_crawling(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    calls = []
+
+    async def refresh(url: str, **options: object) -> RefreshReport:
+        calls.append((url, options))
+        return RefreshReport(scanned=2, changed=1, unchanged=1)
+
+    monkeypatch.setattr(cli, "database_url", lambda: "test-db")
+    monkeypatch.setattr(cli, "refresh_documents", refresh)
+    assert main(["refresh", "--source", "pubmed", "--limit", "2", "--batch-size", "1"]) == 0
+    assert calls == [("test-db", {"source": SourceName.PUBMED, "limit": 2, "batch_size": 1})]
+    assert "2 scanned, 1 changed, 1 unchanged" in capsys.readouterr().err
+
+
+def test_refresh_command_reports_partial_lookup_failures(monkeypatch: pytest.MonkeyPatch) -> None:
+    async def refresh(*args: object, **options: object) -> RefreshReport:
+        return RefreshReport(scanned=1, changed=1, lookup_failures=1)
+
+    monkeypatch.setattr(cli, "database_url", lambda: "test-db")
+    monkeypatch.setattr(cli, "refresh_documents", refresh)
+    assert main(["refresh"]) == 1
 
 
 @pytest.mark.parametrize(("mode", "match_all"), [("and", True), ("or", False)])

@@ -38,7 +38,7 @@ Left out:
 ## To be aware of
 
 - `is_oa` includes "bronze" copies: free to read on the publisher site without an open licence (e.g. NEJM), so `licence` stays empty and each approach decides by its own rules.
-- An OpenAlex error (budget used up, 429, server error) only logs a warning: the records keep the PMC result, and the next run of a search asks again. Stored cited papers are not asked again.
+- An OpenAlex error (budget used up, 429, server error) only logs a warning: the records keep the PMC result, and the next run of a search asks again. Use `crawler refresh --source pubmed` to enrich stored cited papers and remove previously stored blocked locators without a fresh database.
 - The first locator may be a different version than the PubMed record (`version`: submitted, accepted or published).
 
 ## Sources
