@@ -35,6 +35,31 @@ NO_AUTOMATED_DOWNLOAD = (
     "www.ncbi.nlm.nih.gov",
     "onlinelibrary.wiley.com",  # HTTP 403 to the indexer (checked 11.11.2026)
     "www.cancertreatmentreviews.com",  # Elsevier journal site, HTTP 403 (11.11.2026)
+    "sciencedirect.com",  # HTTP 403 on repeated index runs (14.11.2026)
+    # Two download attempts per seed PDF returned 403, with no successes on these hosts
+    # in the same sample (14.11.2026; Documentation/sources/README.md).
+    "academic.oup.com",
+    "ascopubs.org",
+    "cris.unibo.it",
+    "diabetesjournals.org",
+    "euoncology.europeanurology.com",
+    "heart.bmj.com",
+    "iris.uniroma1.it",
+    "joe.bioscientifica.com",
+    "karger.com",
+    "onlinejase.com",
+    "repository.ubn.ru.nl",
+    "www.ahajournals.org",
+    "www.ajconline.org",
+    "www.amjmed.com",
+    "www.annalsofoncology.org",
+    "www.auajournals.org",
+    "www.diabetesresearchclinicalpractice.com",
+    "www.jacc.org",
+    "www.jtcvs.org",
+    "www.nejm.org",
+    "www.surgpath.theclinics.com",
+    "www.tandfonline.com",
 )
 """Hosts, with their subdomains, whose PDFs the indexers may not or cannot download: a 403
 counts as a failed download, which every indexer run would try again."""
@@ -125,7 +150,7 @@ class OpenAlexClient:
             if not isinstance(location, dict) or not location.get("is_oa"):
                 continue
             url = str(location.get("pdf_url") or "").strip()
-            if not url.startswith(("https://", "http://")) or not _downloadable(url):
+            if not url.startswith(("https://", "http://")) or not downloadable(url):
                 continue
             if any(locator.url == url for locator in locators):
                 continue
@@ -145,7 +170,8 @@ def _searchable(doi: str) -> bool:
     return "|" not in doi and "," not in doi
 
 
-def _downloadable(url: str) -> bool:
+def downloadable(url: str) -> bool:
+    """Whether the host is outside the known automated-download blocklist."""
     host = (urlsplit(url).hostname or "").lower()
     return not any(
         host == blocked or host.endswith(f".{blocked}") for blocked in NO_AUTOMATED_DOWNLOAD

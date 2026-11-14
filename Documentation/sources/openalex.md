@@ -27,7 +27,7 @@ The crawler asks for 50 DOIs per request and waits one second between requests, 
 Left out:
 
 - Locations without `pdf_url`: their `landing_page_url` is an article page, not a file.
-- PDFs on hosts in `NO_AUTOMATED_DOWNLOAD`, with their subdomains: the PMC website (its terms forbid automated downloads; PMC full text comes from the [S3 bucket](pmc.md)), and publisher sites that answered the indexer with HTTP 403 (Wiley, an Elsevier journal site). The downloader counts a 403 as failed and tries it again in every run. In the sample, 4 of 8 OpenAlex PDFs were on such sites.
+- PDFs on hosts in `NO_AUTOMATED_DOWNLOAD`, with their subdomains: the PMC website (its terms forbid automated downloads; PMC full text comes from the [S3 bucket](pmc.md)), and hosts confirmed to answer automated PDF downloads with HTTP 403. The 14.11.2026 seed measurement found 33 such PDFs across 22 additional hosts, all confirmed on a second download attempt, with no successes on those hosts in the same sample. ScienceDirect was also confirmed in the earlier 50-paper check. The list lives beside the client, so it can be updated as host behavior changes; transient 503/520 failures are not blocklisted.
 - `content_urls` (OpenAlex's own PDF and GROBID XML): downloading them needs an API key, which a stored URL must not hold, and the indexers would need it too.
 
 ## Indexing

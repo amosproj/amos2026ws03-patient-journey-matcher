@@ -88,6 +88,11 @@ def test_leaves_out_pdfs_the_indexers_may_not_or_cannot_download() -> None:
                 location("https://pmc.ncbi.nlm.nih.gov/articles/PMC1/pdf/a.pdf"),
                 location("https://www.ncbi.nlm.nih.gov/pmc/articles/PMC1/pdf/a.pdf"),
                 location("https://bjui-journals.onlinelibrary.wiley.com/doi/pdfdirect/10.1/a"),
+                location("https://www.sciencedirect.com/science/article/pii/X/pdf"),
+                location("https://sciencedirect.com/science/article/pii/X/pdf"),
+                location("https://academic.oup.com/journal/article.pdf"),
+                location("https://www.nejm.org/doi/pdf/example"),
+                location("https://cris.unibo.it/bitstream/paper.pdf"),
                 location(allowed),
             )
         ]
