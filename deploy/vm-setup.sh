@@ -81,7 +81,7 @@ systemctl enable matcher-mcp.service
 systemctl restart matcher-mcp.service
 
 step "timers: crawls, index, backup, cleanup"
-# timer NAME CALENDAR UNIT DESCRIPTION; Persistent: runs missed while the VM was off start at boot.
+# timer NAME CALENDAR UNIT DESCRIPTION, added to timers. Persistent: runs missed while the VM was off start at boot.
 timer() {
   cat > "/etc/systemd/system/$1.timer" <<UNIT
 [Unit]
@@ -95,6 +95,7 @@ Unit=$3
 [Install]
 WantedBy=timers.target
 UNIT
+  timers+=("$1.timer")
 }
 
 # One run of crawler-<source> from compose.yaml; stdout only repeats the stored documents.
@@ -160,7 +161,6 @@ ExecStart=/usr/bin/docker builder prune -f --filter until=168h
 UNIT
 timer matcher-prune "Sun *-*-* 23:30:00 UTC" matcher-prune.service "Weekly Docker cleanup"
 
-timers=(crawler-{pubmed,arxiv,zenodo,youtube,podcast}.timer matcher-{index,backup,prune}.timer)
 systemctl daemon-reload
 systemctl enable "${timers[@]}"
 systemctl restart "${timers[@]}"
