@@ -1,8 +1,10 @@
 import { Parser } from "htmlparser2";
 import { getDocumentProxy, extractText as pdfText } from "unpdf";
 
-/** How a full-text file is read. */
-type Format = "pdf" | "xml" | "html" | "vtt" | "srt" | "json" | "text";
+/** How a text file is read. */
+type TextFormat = "pdf" | "xml" | "html" | "vtt" | "srt" | "json" | "text";
+/** How a full-text file is read; `audio` needs speech-to-text. */
+type Format = TextFormat | "audio";
 
 const FORMATS: Record<string, Format> = {
   "application/pdf": "pdf",
@@ -15,11 +17,18 @@ const FORMATS: Record<string, Format> = {
   "application/x-subrip": "srt",
   "text/srt": "srt",
   "text/plain": "text",
+  // The audio that scripts/transcribe.py decodes; podcasts in M4A or MP4 are left out.
+  "audio/mpeg": "audio",
+  "audio/mp3": "audio",
+  "audio/flac": "audio",
+  "audio/wav": "audio",
+  "audio/x-wav": "audio",
 };
 
 /**
  * The format of a locator by its stored media type (Zenodo and the PMC bucket serve every file
- * as octet-stream); undefined for audio, video, images, archives, Word files and unknown types.
+ * as octet-stream); undefined for video, images, archives, Word files, other audio and unknown
+ * types.
  */
 export function formatOf(locator: {
   kind: string;
@@ -35,7 +44,7 @@ export function formatOf(locator: {
 /** The text of a file; throws if the file is not readable in its format. */
 export async function extractText(
   bytes: Uint8Array,
-  format: Format,
+  format: TextFormat,
 ): Promise<string> {
   if (format === "pdf") {
     const document = await getDocumentProxy(bytes, { verbosity: 0 });

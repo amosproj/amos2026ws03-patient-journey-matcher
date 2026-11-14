@@ -38,3 +38,11 @@ def no_network(request: pytest.FixtureRequest, monkeypatch: pytest.MonkeyPatch) 
     monkeypatch.setattr(socket.socket, "connect", connect)
     monkeypatch.setattr(socket, "create_connection", refuse)
     monkeypatch.setattr(socket, "socketpair", socketpair)
+
+
+@pytest.fixture(autouse=True)
+def no_ncbi_sleep(monkeypatch: pytest.MonkeyPatch) -> None:
+    """The shared NCBI throttle would sleep between the fake Entrez calls of the tests."""
+    from crawler.sources.pubmed import NCBI_THROTTLE
+
+    monkeypatch.setattr(NCBI_THROTTLE, "_sleep", lambda _seconds: None)

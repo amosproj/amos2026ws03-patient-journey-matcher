@@ -16,11 +16,14 @@ from crawler.models import (
     CitationProvenance,
     CollectionResult,
     CollectionStats,
+    FullTextLocator,
     QueryProvenance,
     RequestFailure,
     SourceDocument,
     SourceName,
 )
+from crawler.refresh import refresh_documents
+from crawler.sources.openalex import OpenAccessCopy
 from crawler.store import (
     RunInfo,
     StoreError,
@@ -455,3 +458,124 @@ SELECT DISTINCT ON (source) source, id, finished_at
 FROM crawl_runs
 ORDER BY source, finished_at DESC, id DESC
 """
+
+
+class RefreshCopies:
+    def __init__(self, error: Exception | None = None) -> None:
+        self.asked: list[list[str]] = []
+        self.error = error
+
+    def open_access(self, dois: Sequence[str]) -> dict[str, OpenAccessCopy]:
+        self.asked.append(list(dois))
+        if self.error:
+            raise self.error
+        return {
+            doi: OpenAccessCopy(
+                full_text=[
+                    FullTextLocator(
+                        kind="pdf",
+                        url="https://example.org/paper.pdf",
+                        media_type="application/pdf",
+                    )
+                ],
+                licence="CC-BY",
+                openalex_id="W1",
+            )
+            for doi in dois
+        }
+
+
+def test_refresh_backfills_stored_metadata_without_a_recrawl_and_is_idempotent(url: str) -> None:
+    save(
+        url,
+        paper(
+            "1",
+            doi="10.1/one",
+            language=None,
+            title="Prostatakrebs: Nachsorge und Therapie nach der radikalen Prostatektomie",
+            extra={"keep": "value"},
+            found_by=[CitationProvenance(cited_by="pubmed:2")],
+        ),
+        paper("2"),
+    )
+    set_timestamps(url, "pubmed:1", LONG_AGO)
+    before = query(url, "SELECT retrieved_at, found_by FROM documents WHERE id='pubmed:1'")[0]
+    client = RefreshCopies()
+    report = asyncio.run(refresh_documents(url, batch_size=1, open_access=client))  # type: ignore[arg-type]
+    assert (report.scanned, report.changed, report.unchanged) == (2, 1, 1)
+    row = query(
+        url,
+        "SELECT extra, language, full_text, external_ids, retrieved_at,found_by,changed_at"
+        " FROM documents WHERE id='pubmed:1'",
+    )[0]
+    assert row["extra"] == {"keep": "value", "metadata_language": "de"}
+    assert row["language"] is None and row["external_ids"]["openalex"] == "W1"
+    assert row["full_text"][0]["url"] == "https://example.org/paper.pdf"
+    assert row["retrieved_at"] == before["retrieved_at"] and row["found_by"] == before["found_by"]
+    assert row["changed_at"] > LONG_AGO
+    again = asyncio.run(refresh_documents(url, open_access=client))  # type: ignore[arg-type]
+    assert (again.changed, again.unchanged) == (0, 2)
+    assert client.asked == [["10.1/one"]]
+
+
+def test_refresh_replaces_blocked_openalex_links_but_preserves_pmc(url: str) -> None:
+    blocked = FullTextLocator(kind="pdf", url="https://www.sciencedirect.com/paper.pdf")
+    pmc = FullTextLocator(kind="jats", url="https://pmc.example.org/paper.xml")
+    save(
+        url,
+        paper("1", doi="10.1/one", full_text=[blocked], external_ids={"openalex": "W1"}),
+        paper("2", doi="10.1/two", full_text=[pmc], licence="CC-BY-NC"),
+    )
+    client = RefreshCopies()
+    asyncio.run(refresh_documents(url, open_access=client))  # type: ignore[arg-type]
+    assert client.asked == [["10.1/one"]]
+    rows = query(url, "SELECT full_text, licence FROM documents ORDER BY id")
+    assert rows[0]["full_text"][0]["url"] == "https://example.org/paper.pdf"
+    assert rows[1]["full_text"][0]["url"] == pmc.url and rows[1]["licence"] == "CC-BY-NC"
+
+
+def test_refresh_limits_scope_and_still_marks_language_when_openalex_fails(url: str) -> None:
+    save(
+        url,
+        paper(
+            "1",
+            doi="10.1/one",
+            title="Prostatakrebs: Nachsorge und Therapie nach der radikalen Prostatektomie",
+        ),
+        video("v", FAR_AHEAD),
+    )
+    report = asyncio.run(
+        refresh_documents(
+            url,
+            source=SourceName.PUBMED,
+            limit=1,
+            open_access=RefreshCopies(ValueError("bad response")),
+        )
+    )  # type: ignore[arg-type]
+    assert (report.scanned, report.changed, report.lookup_failures) == (1, 1, 1)
+    assert (
+        query(url, "SELECT extra FROM documents WHERE id='pubmed:1'")[0]["extra"][
+            "metadata_language"
+        ]
+        == "de"
+    )
+    assert query(url, "SELECT extra FROM documents WHERE id='youtube:v'")[0]["extra"] == {}
+
+
+def test_refresh_does_not_overwrite_concurrent_content_changes(url: str) -> None:
+    save(url, paper("1", doi="10.1/one"))
+
+    class ConcurrentCopies(RefreshCopies):
+        def open_access(self, dois: Sequence[str]) -> dict[str, OpenAccessCopy]:
+            query(
+                url,
+                "UPDATE documents SET title='New metadata', extra='{\"keep\":true}',"
+                " changed_at=now() WHERE id='pubmed:1'",
+            )
+            return super().open_access(dois)
+
+    report = asyncio.run(refresh_documents(url, open_access=ConcurrentCopies()))  # type: ignore[arg-type]
+    assert report.conflicts == 1 and report.changed == 0
+    assert query(url, "SELECT title,extra FROM documents WHERE id='pubmed:1'") == [
+        {"title": "New metadata", "extra": {"keep": True}}
+    ]

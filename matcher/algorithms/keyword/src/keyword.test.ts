@@ -3,7 +3,11 @@ import {
   type TestDatabase,
   testDatabaseUrl,
 } from "@matcher/db/testing";
-import type { FullText, Locator } from "@matcher/download";
+import {
+  type FullText,
+  type Locator,
+  NO_SPEECH_TO_TEXT,
+} from "@matcher/download";
 import {
   beforeAll,
   beforeEach,
@@ -184,6 +188,31 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     ]);
   });
 
+  test("reads audio that was skipped without speech-to-text once a run has it", async () => {
+    await insert("podcast:1", "Olaparib, the episode", {
+      full_text: ["https://example.org/1.mp3"],
+    });
+    const off = {
+      fullText: async (): Promise<FullText> => ({
+        status: "skipped",
+        text: "",
+        detail: NO_SPEECH_TO_TEXT,
+      }),
+    };
+    const on = {
+      ...fakeDownloader({
+        "https://example.org/1.mp3": "Olaparib and the PSA.",
+      }),
+      transcribes: true,
+    };
+    const none = { indexed: 0, skipped: 0, failed: 0 };
+
+    expect(await indexFullTexts(pool, off)).toEqual({ ...none, skipped: 1 });
+    expect(await indexFullTexts(pool, off)).toEqual(none);
+    expect(await indexFullTexts(pool, on)).toEqual({ ...none, indexed: 1 });
+    expect(await indexFullTexts(pool, on)).toEqual(none);
+  });
+
   test("ranks with the full texts too and names the terms found there", async () => {
     await insert("pubmed:1", "Prostate cancer care", {
       full_text: ["https://example.org/1.xml"],
@@ -211,6 +240,106 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
       ["olaparib", "prostate cancer"],
       ["olaparib"],
     ]);
+  });
+
+  test("recovers legacy audio skips when speech-to-text is enabled", async () => {
+    await insert("podcast:legacy", "Diabetes", {
+      full_text: ["https://example.org/a.mp3"],
+    });
+    await indexFullTexts(pool, {
+      fullText: async () => ({
+        status: "skipped",
+        text: "",
+        detail: "no readable format: audio/mpeg",
+      }),
+    });
+    const downloader = {
+      ...fakeDownloader({
+        "https://example.org/a.mp3": "Olaparib and the PSA.",
+      }),
+      transcribes: true,
+    };
+    expect(await indexFullTexts(pool, downloader)).toEqual({
+      indexed: 1,
+      skipped: 0,
+      failed: 0,
+    });
+    expect(await indexFullTexts(pool, downloader)).toEqual({
+      indexed: 0,
+      skipped: 0,
+      failed: 0,
+    });
+    expect(downloader.fullText).toHaveBeenCalledOnce();
+  });
+
+  test("skips marked non-English metadata before downloading but keeps unknown and English abstracts", async () => {
+    for (const id of ["de", "unknown", "en"]) {
+      await insert(`pubmed:${id}`, "Olaparib", {
+        full_text: [`https://example.org/${id}.xml`],
+      });
+    }
+    await pool.query(
+      `UPDATE documents SET language = 'de', extra = '{"metadata_language":"en"}' WHERE id = 'pubmed:en'`,
+    );
+    await pool.query(
+      `UPDATE documents SET extra = '{"metadata_language":"de"}' WHERE id = 'pubmed:de'`,
+    );
+    const downloader = fakeDownloader({
+      "https://example.org/unknown.xml": "Olaparib and the PSA.",
+      "https://example.org/en.xml": "Olaparib and the PSA.",
+    });
+    await indexMetadata(pool);
+    expect(await indexFullTexts(pool, downloader)).toEqual({
+      indexed: 2,
+      skipped: 1,
+      failed: 0,
+    });
+    expect(downloader.fullText).toHaveBeenCalledTimes(2);
+    const hits = await createKeywordMatcher(pool).match(
+      { focus: event("Olaparib"), context: [] },
+      { limit: 10 },
+    );
+    expect(hits.map((h) => h.documentId).sort()).toEqual([
+      "pubmed:en",
+      "pubmed:unknown",
+    ]);
+    const { rows } = await pool.query(
+      `SELECT status, detail, words FROM keyword.full_texts WHERE document_id = 'pubmed:de'`,
+    );
+    expect(rows).toEqual([
+      { status: "skipped", detail: "non-English metadata", words: 0 },
+    ]);
+  });
+
+  test("removes non-English content from indexes created before filtering", async () => {
+    await insert("pubmed:old", "Olaparib", {
+      full_text: ["https://example.org/a.xml"],
+    });
+    const downloader = fakeDownloader({
+      "https://example.org/a.xml": "Olaparib and the PSA.",
+    });
+    await indexMetadata(pool);
+    await indexFullTexts(pool, downloader);
+    // Keep changed_at unchanged to represent index rows built by the previous indexer.
+    await pool.query(
+      `UPDATE documents SET extra = '{"metadata_language":"fr"}' WHERE id = 'pubmed:old'`,
+    );
+    downloader.fullText.mockClear();
+    await indexMetadata(pool);
+    await indexFullTexts(pool, downloader);
+    expect(downloader.fullText).not.toHaveBeenCalled();
+    const hits = await createKeywordMatcher(pool).match(
+      { focus: event("Olaparib"), context: [] },
+      { limit: 10 },
+    );
+    expect(hits).toEqual([]);
+    expect(
+      (
+        await pool.query(
+          `SELECT terms FROM keyword.full_texts WHERE document_id = 'pubmed:old'`,
+        )
+      ).rows,
+    ).toEqual([{ terms: "" }]);
   });
 
   test("ranks a document without a full text below one that both indexes find", async () => {

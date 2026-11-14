@@ -52,7 +52,43 @@ Feed state (crawler table): feed key, current URL, `ETag`, `Last-Modified`, last
 
 1. `podcast:transcript`: VTT, then SRT, JSON, HTML, text. Strip timecodes, keep speakers. Match types loosely (Lancet declares `application/srt`, serves `application/x-subrip`).
 2. Show notes (`content:encoded`, else `description`): full text for ASCO; others 60–190 words. Feeds are not archives (NEJM keeps 22), so notes are re-readable only while listed. Other ASCO transcripts are on ascopubs.org (terms not checked).
-3. Speech-to-text: undecided. About 715 h back catalogue in the six feeds, 66 h new a year; $0.003–0.006/min (OpenAI) = $130–260 once, $12–24 a year. A transcript is a copy, see [open questions](open-questions.md).
+3. Speech-to-text, off by default: `WHISPER_MODEL=tiny-q5_1 make index APPROACHES=keyword` transcribes the MP3 of episodes without a transcript, offline with Whisper ([`scripts/transcribe.py`](../../scripts/transcribe.py)). Audio and text stay in memory; the [keyword index](../keyword-matching.md#full-texts) keeps the keywords only.
+   - In the seed crawl (12.11.2026), 148 of 165 episodes had no transcript: 138 MP3 (58 h), 5 M4A and 5 MP4. M4A and MP4 are not read: the decoder (miniaudio) has no AAC.
+   - Start with multilingual `tiny-q5_1` for the lightest download (32 MB); `base-q5_1` (60 MB) is an accuracy option. Both correctly left German speech in German in the local control, allowing the keyword index to reject it. Known non-English metadata is skipped before downloading or transcribing.
+   - English-only `.en` models can hallucinate English from non-English speech; avoid them when the spoken language is uncertain. Unknown metadata remains eligible, so metadata filtering alone cannot guarantee the audio language.
+   - Storing transcripts, or a cloud service ($0.003–0.006/min at OpenAI; about 715 h back catalogue in the six feeds, 66 h new a year), is an [open question](open-questions.md).
+
+## Whisper models
+
+Lightweight controls, checked 14.11.2026 on short synthetic English medical speech and German speech:
+
+| Model | Download size | English control | German control |
+|---|---|---|---|
+| `tiny-q5_1` | 32 MB | Preserved PSA, misheard olaparib and semaglutide | German output, rejected by the English keyword check |
+| `base-q5_1` | 60 MB | Preserved PSA and semaglutide, misheard olaparib | German output, rejected by the English keyword check |
+| `small.en` | 487 MB | Preserved PSA and semaglutide, misheard olaparib | Unrelated English output that passed the keyword check |
+
+Use `tiny-q5_1` when footprint matters most. Model choice is explicit through `WHISPER_MODEL`; there is no extra language classifier, translation step, or automatic download of larger models. These short controls establish behavior, not clinical transcription accuracy. Medical names still need verification.
+
+Measured 12.11.2026 on one episode, ADA's "What's Next—Amylin-based Therapies" (27.5 min, MP3), on a Mac mini (M4, 16 GB), one run per model with [`scripts/transcribe.py`](../../scripts/transcribe.py). Scored on 22 medical terms the speakers use, picked by hand: drug, hormone and trial names (amylin, cagrilintide, semaglutide, GLP-1, REDEFINE) and general terms (satiety, postprandial).
+
+| Model | Speed, times real time | Terms spelled right at least once, of 22 | Right spellings in total |
+|---|---|---|---|
+| `base.en` | 91 | 16 | 64 |
+| `small.en` | 40 | 19 | 101 |
+| `medium.en` | 15 | 19 | 96 |
+| `large-v3-turbo` | 18 | 20 | 99 |
+| `large-v3-turbo-q5_0` | 19 | 20 | 101 |
+| `distil-large-v3.5` (from its model file) | 19 | 18 | 69 |
+| `large-v3` | 3 | 3 | 5 |
+| The publisher's transcript | | 19 | 83 |
+
+- `small.en` is close to the larger models, which take at least twice as long: the 58 h of MP3 in the seed take about 1.5 hours with `small.en` and 3.3 hours with `large-v3-turbo`.
+- `base.en` never spells "semaglutide" right. `large-v3` got stuck and wrote one sentence 1,503 times.
+- New drug names are the weak spot: "cagrilintide" is right only 3 times, in one model, and never in the publisher's transcript.
+- A glossary helps. With 13 terms of the field as Whisper's prompt for the whole episode (`initial_prompt` with `carry_initial_prompt`), `small.en` spells all 22 terms right (104 spellings) and `large-v3-turbo-q5_0` too (142 spellings). This is the best case, as the glossary held the right terms. The indexer passes no glossary yet; the topic files could supply one. The episode's title and description as the prompt bring no gain.
+
+One episode and one run per model: a first impression, not a ranking.
 
 ## Curated feed list
 

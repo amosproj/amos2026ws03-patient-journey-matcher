@@ -3,9 +3,10 @@ import {
   indexChangedDocuments,
   type Queryable,
 } from "@matcher/db";
-import type { Downloader } from "@matcher/download";
+import { type Downloader, NO_SPEECH_TO_TEXT } from "@matcher/download";
 // Common non-medical English words, most frequent first.
 import basicWords from "../data/basic-words.json" with { type: "json" };
+import { englishMetadata, NON_ENGLISH_METADATA } from "./language.ts";
 import { createSchema } from "./schema.ts";
 import { ENGLISH_WORDS } from "./terms.ts";
 
@@ -34,9 +35,21 @@ export async function indexFullTexts(
   log: (line: string) => void = () => {},
 ): Promise<Record<FullTextStatus, number>> {
   await createSchema(db);
+  await db.query(`UPDATE keyword.full_texts f
+    SET status = 'skipped', detail = 'non-English metadata', terms = '', words = 0
+    FROM documents d WHERE f.document_id = d.id
+    AND (f.status <> 'skipped' OR f.detail IS DISTINCT FROM 'non-English metadata')
+    AND ${NON_ENGLISH_METADATA}`);
   // A failed download (a server error, or PMC's 404 before an article is in its bucket) is tried
-  // again in every run; a skipped one only when the document changes.
-  await db.query("DELETE FROM keyword.full_texts WHERE status = 'failed'");
+  // again in every run; a skipped one only when the document changes, and audio skipped without
+  // speech-to-text once a run has it.
+  await db.query(
+    `DELETE FROM keyword.full_texts
+     WHERE status = 'failed' OR ($1::boolean AND status = 'skipped' AND
+       (detail = $2 OR (detail LIKE 'no readable format:%'
+         AND detail ~ 'audio/(mpeg|mp3|flac|wav|x-wav)(,|$)')))`,
+    [downloader.transcribes === true, NO_SPEECH_TO_TEXT],
+  );
   const toRead = () =>
     createDocumentStore(db).countToIndex("keyword.full_texts");
   let total = await toRead();
@@ -54,7 +67,13 @@ export async function indexFullTexts(
     // All at once: the downloader keeps each host's pace, so different hosts work in parallel.
     await Promise.all(
       documents.map(async (document) => {
-        const result = await downloader.fullText(document.full_text);
+        const result = englishMetadata(document)
+          ? await downloader.fullText(document.full_text)
+          : {
+              status: "skipped" as const,
+              text: "",
+              detail: "non-English metadata",
+            };
         const found = result.status === "ok" ? keywords(result.text) : [];
         const words = found ?? [];
         const status: FullTextStatus =

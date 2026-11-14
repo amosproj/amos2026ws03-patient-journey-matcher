@@ -1,5 +1,6 @@
 import io
 import xml.etree.ElementTree as ET
+from collections.abc import Sequence
 from datetime import UTC, date, datetime
 from email.message import Message
 from typing import Any
@@ -8,8 +9,22 @@ from urllib.error import HTTPError
 import pytest
 from Bio import Entrez
 
-from crawler.models import Author, ScrapeRequest, SourceDocument, SourceName, Subject
-from crawler.sources.pubmed import MAX_SEARCH_RESULTS, PubMedScraper, is_pmid
+from crawler.models import (
+    Author,
+    FullTextLocator,
+    ScrapeRequest,
+    SourceDocument,
+    SourceName,
+    Subject,
+)
+from crawler.sources.openalex import OpenAccessCopy
+from crawler.sources.pubmed import (
+    MAX_SEARCH_RESULTS,
+    NcbiThrottle,
+    PubMedScraper,
+    is_pmid,
+    ncbi_requests_per_second,
+)
 
 
 class EntrezValue(str):
@@ -251,6 +266,58 @@ def test_lookup_skips_the_search_and_fetches_in_batches_of_200() -> None:
     assert len(documents) == 450
 
 
+class FakeClock:
+    def __init__(self) -> None:
+        self.now = 100.0
+        self.sleeps: list[float] = []
+
+    def __call__(self) -> float:
+        return self.now
+
+    def sleep(self, seconds: float) -> None:
+        self.sleeps.append(seconds)
+        self.now += seconds
+
+
+def test_throttle_keeps_the_gap_between_requests() -> None:
+    clock = FakeClock()
+    throttle = NcbiThrottle(clock=clock, sleep=clock.sleep)
+
+    throttle.wait(5)
+    throttle.wait(5)
+    clock.now += 0.05
+    throttle.wait(5)
+    clock.now += 1
+    throttle.wait(5)
+
+    assert clock.sleeps == pytest.approx([0.2, 0.15])
+
+
+def test_requests_per_second_default_to_the_key_limit_and_ignore_bad_values() -> None:
+    assert ncbi_requests_per_second("key", None) == 5
+    assert ncbi_requests_per_second(None, "") == 3
+    assert ncbi_requests_per_second("key", " 2.5 ") == 2.5
+    for bad in ("fast", "0", "-1", "nan", "inf"):
+        assert ncbi_requests_per_second("key", bad) == 5
+
+
+def test_every_ncbi_request_waits_for_the_throttle() -> None:
+    class RecordingThrottle(NcbiThrottle):
+        def __init__(self) -> None:
+            super().__init__()
+            self.rates: list[float] = []
+
+        def wait(self, requests_per_second: float) -> None:
+            self.rates.append(requests_per_second)
+
+    throttle = RecordingThrottle()
+    scraper = PubMedScraper(api_key="key", entrez=FakeEntrez(["1"]), throttle=throttle)
+
+    scraper.scrape(ScrapeRequest(source=SourceName.PUBMED, query="q"))
+
+    assert throttle.rates == [5, 5]  # esearch, efetch
+
+
 def test_pmid_validation() -> None:
     assert is_pmid("41000123")
     assert not is_pmid("0123")
@@ -328,6 +395,79 @@ def test_a_pmc_network_error_fails_the_request_so_it_is_retried() -> None:
 
     with pytest.raises(HTTPError):
         scraper.scrape(ScrapeRequest(source=SourceName.PUBMED, query="q"))
+
+
+PDF = FullTextLocator(
+    kind="pdf", url="https://journal.example.org/2.pdf", media_type="application/pdf"
+)
+JATS = FullTextLocator(
+    kind="jats", url="https://pmc.example.org/1.xml", media_type="application/xml"
+)
+
+
+class FakeOpenAlex:
+    def __init__(self, error: Exception | None = None) -> None:
+        self.asked: list[list[str]] = []
+        self.error = error
+
+    def open_access(self, dois: Sequence[str]) -> dict[str, OpenAccessCopy]:
+        self.asked.append(list(dois))
+        if self.error is not None:
+            raise self.error
+        return {"10.1/2": OpenAccessCopy(full_text=[PDF], licence="CC-BY", openalex_id="W2")}
+
+
+class DoiPmc:
+    """PMC holds pubmed:1; every record has the DOI `10.1/<pmid>`."""
+
+    def enrich(self, document: SourceDocument) -> SourceDocument:
+        update: dict[str, Any] = {"doi": f"10.1/{document.source_id}"}
+        if document.id == "pubmed:1":
+            update |= {"full_text": [JATS], "licence": "CC-BY-NC"}
+        return document.model_copy(update=update)
+
+
+def oa_scraper(open_access: FakeOpenAlex, ids: list[str]) -> PubMedScraper:
+    return PubMedScraper(
+        entrez=FakeEntrez(ids),
+        pmc=DoiPmc(),  # type: ignore[arg-type]
+        open_access=open_access,  # type: ignore[arg-type]
+    )
+
+
+def test_openalex_adds_open_copies_only_where_pmc_has_no_full_text() -> None:
+    open_access = FakeOpenAlex()
+
+    documents = oa_scraper(open_access, ["1", "2", "3"]).scrape(
+        ScrapeRequest(source=SourceName.PUBMED, query="q")
+    )
+
+    assert open_access.asked == [["10.1/2", "10.1/3"]]
+    pmc, open_copy, closed = documents
+    assert (pmc.full_text, pmc.licence) == ([JATS], "CC-BY-NC")
+    assert (open_copy.full_text, open_copy.licence) == ([PDF], "CC-BY")
+    assert open_copy.external_ids["openalex"] == "W2"
+    assert (closed.full_text, closed.licence) == ([], None)
+
+
+def test_openalex_is_not_asked_when_pmc_has_every_full_text() -> None:
+    open_access = FakeOpenAlex()
+
+    oa_scraper(open_access, ["1"]).scrape(ScrapeRequest(source=SourceName.PUBMED, query="q"))
+
+    assert open_access.asked == []
+
+
+@pytest.mark.parametrize(
+    "error",
+    [HTTPError("https://api.openalex.org", 429, "Too Many", Message(), None), ValueError("json")],
+)
+def test_an_openalex_error_keeps_the_records_and_the_request(error: Exception) -> None:
+    documents = oa_scraper(FakeOpenAlex(error), ["1", "2"]).scrape(
+        ScrapeRequest(source=SourceName.PUBMED, query="q")
+    )
+
+    assert [document.full_text for document in documents] == [[JATS], []]
 
 
 BOOK_CHAPTER = (

@@ -1,4 +1,7 @@
 import { extractText, formatOf } from "./extract.ts";
+import type { Transcribe } from "./transcribe.ts";
+
+export { createTranscriber } from "./transcribe.ts";
 
 /** Where a full text can be fetched: an entry of `documents.full_text`, written by the crawler. */
 export interface Locator {
@@ -26,6 +29,8 @@ export interface FullText {
 /** Reads the full text of a document from its locators. */
 export interface Downloader {
   fullText(locators: readonly Locator[]): Promise<FullText>;
+  /** Whether audio is read, by speech-to-text. */
+  transcribes?: boolean;
 }
 
 export interface DownloaderOptions {
@@ -34,7 +39,13 @@ export interface DownloaderOptions {
   /** Milliseconds between two requests to the same host. */
   intervalMs?: (host: string) => number;
   maxBytes?: number;
+  /** Speech-to-text for audio files; without it, audio is not read. */
+  transcribe?: Transcribe;
+  maxAudioBytes?: number;
 }
+
+/** Why a document with audio was skipped: a run with speech-to-text reads it. */
+export const NO_SPEECH_TO_TEXT = "audio, and speech-to-text is off";
 
 const USER_AGENT =
   "patient-journey-matcher/0.1 (+https://github.com/amosproj/amos2026ws03-patient-journey-matcher)";
@@ -48,6 +59,8 @@ const INTERVAL_MS: Record<string, number> = {
 };
 const DEFAULT_INTERVAL_MS = 3_000;
 const MAX_BYTES = 50_000_000;
+// An hour of podcast at 320 kbit/s.
+const MAX_AUDIO_BYTES = 150_000_000;
 const TIMEOUT_MS = 120_000;
 const ATTEMPTS = 3;
 // Locators come in fetch order (arXiv: HTML, then the PDF); later ones are supplements.
@@ -56,15 +69,24 @@ const MAX_LOCATORS = 3;
 /** A 4xx answer: the file is not there, the next locator may be. */
 class Unavailable extends Error {}
 
+/** A locator and how the text of its file is read. */
+interface Reader {
+  locator: Locator;
+  audio: boolean;
+  text: (bytes: Uint8Array) => Promise<string>;
+}
+
 /** Downloads and reads full texts, keeping each host's request budget across parallel calls. */
 export function createDownloader({
   fetch = globalThis.fetch,
   sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
   intervalMs = (host) => INTERVAL_MS[host] ?? DEFAULT_INTERVAL_MS,
   maxBytes = MAX_BYTES,
+  transcribe,
+  maxAudioBytes = MAX_AUDIO_BYTES,
 }: DownloaderOptions = {}): Downloader {
   const nextStart = new Map<string, number>();
-  const tooLarge = `larger than ${maxBytes} bytes`;
+  let audioTurn: Promise<unknown> = Promise.resolve();
 
   /** Waits for the host's turn. The slot is taken before waiting, so parallel calls queue up. */
   async function turn(host: string): Promise<void> {
@@ -75,7 +97,10 @@ export function createDownloader({
   }
 
   /** The body, or undefined if it is larger than `maxBytes`; network and server errors are retried. */
-  async function get(url: string): Promise<Uint8Array | undefined> {
+  async function get(
+    url: string,
+    maxBytes: number,
+  ): Promise<Uint8Array | undefined> {
     for (let attempt = 1; ; attempt++) {
       await turn(new URL(url).host);
       let response: Response;
@@ -100,64 +125,103 @@ export function createDownloader({
     }
   }
 
-  /** The text of the first readable locator that has one. */
-  async function fullText(locators: readonly Locator[]): Promise<FullText> {
-    const readable = locators.flatMap((locator) => {
-      const format = formatOf(locator);
-      return format ? [{ locator, format }] : [];
-    });
-    if (readable.length === 0) {
-      const types = [...new Set(locators.map((l) => l.media_type ?? l.kind))];
+  /** Reads one locator; `last` if the locators after it are not to be tried. */
+  async function read({
+    locator,
+    audio,
+    text,
+  }: Reader): Promise<{ result: FullText; last: boolean }> {
+    const tried = {
+      text: "",
+      url: locator.url,
+      mediaType: locator.media_type ?? undefined,
+    };
+    const limit = audio ? maxAudioBytes : maxBytes;
+    const tooLarge: FullText = {
+      ...tried,
+      status: "skipped",
+      detail: `larger than ${limit} bytes`,
+    };
+    if ((locator.size ?? 0) > limit) return { result: tooLarge, last: false };
+    let bytes: Uint8Array | undefined;
+    try {
+      bytes = await get(locator.url, limit);
+    } catch (error) {
+      // A missing file (arXiv has no HTML for PDF-only uploads): read the next one. A server
+      // or network error: try again later rather than read a lesser file now.
       return {
-        status: "skipped",
-        text: "",
-        detail:
-          types.length > 0
-            ? `no readable format: ${types.join(", ")}`
-            : "no full text",
+        result: { ...tried, status: "failed", detail: message(error) },
+        last: !(error instanceof Unavailable),
       };
     }
-    let result: FullText = { status: "skipped", text: "" };
-    for (const { locator, format } of readable.slice(0, MAX_LOCATORS)) {
-      const tried = {
-        text: "",
-        url: locator.url,
-        mediaType: locator.media_type ?? undefined,
-      };
-      if ((locator.size ?? 0) > maxBytes) {
-        result = { ...tried, status: "skipped", detail: tooLarge };
-        continue;
-      }
-      let bytes: Uint8Array | undefined;
-      try {
-        bytes = await get(locator.url);
-      } catch (error) {
-        result = { ...tried, status: "failed", detail: message(error) };
-        // A missing file (arXiv has no HTML for PDF-only uploads): read the next one. A server
-        // or network error: try again later rather than read a lesser file now.
-        if (error instanceof Unavailable) continue;
-        return result;
-      }
-      if (bytes === undefined) {
-        result = { ...tried, status: "skipped", detail: tooLarge };
-        continue;
-      }
-      try {
-        const text = await extractText(bytes, format);
-        if (text.trim() !== "") return { ...tried, status: "ok", text };
-        result = { ...tried, status: "skipped", detail: "no text" };
-      } catch (error) {
-        result = {
-          ...tried,
-          status: "skipped",
-          detail: `unreadable: ${message(error)}`,
-        };
-      }
+    if (bytes === undefined) return { result: tooLarge, last: false };
+    try {
+      const found = await text(bytes);
+      return found.trim() !== ""
+        ? { result: { ...tried, status: "ok", text: found }, last: true }
+        : {
+            result: { ...tried, status: "skipped", detail: "no text" },
+            last: false,
+          };
+    } catch (error) {
+      // Speech-to-text fails for reasons a later run may not have: no model yet, no uv.
+      return audio
+        ? {
+            result: { ...tried, status: "failed", detail: message(error) },
+            last: true,
+          }
+        : {
+            result: {
+              ...tried,
+              status: "skipped",
+              detail: `unreadable: ${message(error)}`,
+            },
+            last: false,
+          };
     }
-    return result;
   }
 
-  return { fullText };
+  /** One audio file at a time, its download included: speech-to-text takes all cores. */
+  function inTurn<T>(task: () => Promise<T>): Promise<T> {
+    const done = audioTurn.then(task);
+    audioTurn = done.catch(() => {});
+    return done;
+  }
+
+  /** The text of the first readable locator that has one. */
+  async function fullText(locators: readonly Locator[]): Promise<FullText> {
+    const readers = locators.flatMap((locator): Reader[] => {
+      const format = formatOf(locator);
+      if (format === undefined) return [];
+      if (format !== "audio") {
+        const text = (bytes: Uint8Array) => extractText(bytes, format);
+        return [{ locator, audio: false, text }];
+      }
+      return transcribe ? [{ locator, audio: true, text: transcribe }] : [];
+    });
+    const unreadAudio =
+      !transcribe && locators.some((l) => formatOf(l) === "audio");
+    let result: FullText = { status: "skipped", text: "" };
+    if (readers.length === 0 && !unreadAudio) {
+      const types = [...new Set(locators.map((l) => l.media_type ?? l.kind))];
+      result.detail =
+        types.length > 0
+          ? `no readable format: ${types.join(", ")}`
+          : "no full text";
+    }
+    for (const reader of readers.slice(0, MAX_LOCATORS)) {
+      const { result: tried, last } = await (reader.audio
+        ? inTurn(() => read(reader))
+        : read(reader));
+      result = tried;
+      if (last) return result;
+    }
+    return unreadAudio && result.status === "skipped"
+      ? { ...result, detail: NO_SPEECH_TO_TEXT }
+      : result;
+  }
+
+  return { fullText, transcribes: transcribe !== undefined };
 }
 
 /** The body, or undefined once it grows over `maxBytes`. */
