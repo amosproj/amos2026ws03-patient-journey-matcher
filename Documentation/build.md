@@ -70,8 +70,9 @@ npx @modelcontextprotocol/inspector --cli http://127.0.0.1:3000/mcp --transport 
 | `make debug PORT=9000` | Starts the debug UI on another port |
 | `DATABASE_URL=… make index`, `TEST_DATABASE_URL=… make test` | Uses another database; a variable that is set wins over `.env` |
 | `YOUTUBE_API_KEY` in `crawler/.env` | `make seed` also crawls YouTube; without it, YouTube is skipped |
-| `WHISPER_MODEL=small.en make index` | Also transcribes podcast episodes without a transcript, offline; the first run downloads the model (0.5 GB), and the seed's episodes take about 1.5 hours on a Mac mini (M4; [podcasts](sources/podcasts.md#indexing)) |
+| `WHISPER_MODEL=tiny-q5_1 make index APPROACHES=keyword` | Also transcribes podcast episodes without a transcript, offline; smallest recommended multilingual model (32 MB). `base-q5_1` (60 MB) is an accuracy option; [podcasts](sources/podcasts.md#indexing) |
 | `cd crawler && uv run crawler refresh` | Backfills stored metadata languages and OpenAlex locators, without source recrawling or a database reset; reindex afterwards ([refresh](storage.md#refresh-stored-enrichment)) |
+| `cd crawler && uv run python ../scripts/coverage.py` | Reports full-text links, successfully read texts, indexed texts, pending rows and failures from `DATABASE_URL`, after indexing |
 | `cd crawler && uv run crawler pubmed --topic prostate_cancer --max-results 200 --store` | Adds more documents; needs `DATABASE_URL` in `crawler/.env` ([connecting](database.md#connecting)). Run `make index` afterwards. Other sources and flags: [crawler](../crawler/README.md) |
 
 ## Limitations

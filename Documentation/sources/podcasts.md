@@ -52,12 +52,23 @@ Feed state (crawler table): feed key, current URL, `ETag`, `Last-Modified`, last
 
 1. `podcast:transcript`: VTT, then SRT, JSON, HTML, text. Strip timecodes, keep speakers. Match types loosely (Lancet declares `application/srt`, serves `application/x-subrip`).
 2. Show notes (`content:encoded`, else `description`): full text for ASCO; others 60–190 words. Feeds are not archives (NEJM keeps 22), so notes are re-readable only while listed. Other ASCO transcripts are on ascopubs.org (terms not checked).
-3. Speech-to-text, off by default: `WHISPER_MODEL=small.en make index` transcribes the MP3 of episodes without a transcript, offline with Whisper ([`scripts/transcribe.py`](../../scripts/transcribe.py)). Audio and text stay in memory; the [keyword index](../keyword-matching.md#full-texts) keeps the keywords only.
+3. Speech-to-text, off by default: `WHISPER_MODEL=tiny-q5_1 make index APPROACHES=keyword` transcribes the MP3 of episodes without a transcript, offline with Whisper ([`scripts/transcribe.py`](../../scripts/transcribe.py)). Audio and text stay in memory; the [keyword index](../keyword-matching.md#full-texts) keeps the keywords only.
    - In the seed crawl (12.11.2026), 148 of 165 episodes had no transcript: 138 MP3 (58 h), 5 M4A and 5 MP4. M4A and MP4 are not read: the decoder (miniaudio) has no AAC.
-   - `small.en` is the model to start with: an hour of audio takes about 1.5 minutes on a Mac mini (M4). Other models, and what they mishear: [Whisper models](#whisper-models).
+   - Start with multilingual `tiny-q5_1` for the lightest download (32 MB); `base-q5_1` (60 MB) is an accuracy option. Both correctly left German speech in German in the local control, allowing the keyword index to reject it. Known non-English metadata is skipped before downloading or transcribing.
+   - English-only `.en` models can hallucinate English from non-English speech; avoid them when the spoken language is uncertain. Unknown metadata remains eligible, so metadata filtering alone cannot guarantee the audio language.
    - Storing transcripts, or a cloud service ($0.003–0.006/min at OpenAI; about 715 h back catalogue in the six feeds, 66 h new a year), is an [open question](open-questions.md).
 
 ## Whisper models
+
+Lightweight controls, checked 14.11.2026 on short synthetic English medical speech and German speech:
+
+| Model | Download size | English control | German control |
+|---|---|---|---|
+| `tiny-q5_1` | 32 MB | Preserved PSA, misheard olaparib and semaglutide | German output, rejected by the English keyword check |
+| `base-q5_1` | 60 MB | Preserved PSA and semaglutide, misheard olaparib | German output, rejected by the English keyword check |
+| `small.en` | 487 MB | Preserved PSA and semaglutide, misheard olaparib | Unrelated English output that passed the keyword check |
+
+Use `tiny-q5_1` when footprint matters most. Model choice is explicit through `WHISPER_MODEL`; there is no extra language classifier, translation step, or automatic download of larger models. These short controls establish behavior, not clinical transcription accuracy. Medical names still need verification.
 
 Measured 12.11.2026 on one episode, ADA's "What's Next—Amylin-based Therapies" (27.5 min, MP3), on a Mac mini (M4, 16 GB), one run per model with [`scripts/transcribe.py`](../../scripts/transcribe.py). Scored on 22 medical terms the speakers use, picked by hand: drug, hormone and trial names (amylin, cagrilintide, semaglutide, GLP-1, REDEFINE) and general terms (satiety, postprandial).
 

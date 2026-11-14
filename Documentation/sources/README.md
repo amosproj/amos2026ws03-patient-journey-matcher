@@ -35,6 +35,26 @@ The crawls of [`scripts/seed.py`](../../scripts/seed.py) (`make seed`) without `
 - Podcast links are mostly audio: 148 of 165 episodes (12.11.2026) have no transcript, and the indexer reads their MP3 only with [speech-to-text](podcasts.md#indexing).
 - A link is not yet a readable text. How many of these texts the indexers can download and read is still to be measured (the keyword indexer's `keyword.full_texts.status`, or the downloader on the same crawl).
 
+### Measured readable coverage (14.11.2026)
+
+The same seed requests were run locally without YouTube, followed by keyword indexing with transcription **off**. The crawl stored 1,288 documents. One PubMed query returned HTTP 400 and the MD Anderson podcast feed failed certificate validation; the counts below describe the collected dataset, not a completely successful seed crawl.
+
+The first extraction pass found 960 records with links (74.5%), but only 725 produced readable text (56.3%). Excluding OpenAlex additions from the same dataset gives 893 links (69.3%) and 696 readable texts (54.0%): OpenAlex added **29 actually readable papers**. This comparison uses the same current dataset and language policy, rather than a separate run of historical `main`.
+
+| Source | Stored | Downloaded and read | Indexed with usable English keywords |
+|---|---:|---:|---:|
+| PubMed | 577 | 222 (38.5%) | 221 |
+| arXiv | 53 | 53 (100%) | 53 |
+| Zenodo | 493 | 434 (88.0%) | 396 |
+| Podcasts | 165 | 16 (9.7%) | 16 |
+| **Total** | **1,288** | **725 (56.3%)** | **686 (53.3%)** |
+
+`downloaded_and_read` includes texts later skipped as non-English or without keywords; `indexed` counts texts usable by the English keyword index. Known non-English metadata is skipped before downloading. Podcasts are mostly audio, so their readable share is low with transcription off. Two real audio-only episodes were separately transcribed and indexed with `small.en`; the full audio back catalogue was not measured.
+
+The first pass had 35 failed downloads: 33 HTTP 403 responses across 22 hosts, confirmed by a second attempt, and two server errors. Host behavior can vary by URL and time; these observations do not prove that every PDF on a host is inaccessible. Removing failed locators alone does not increase readable coverage.
+
+To measure another stored crawl, run `make index APPROACHES=keyword`, then `cd crawler && uv run python ../scripts/coverage.py` against the same `DATABASE_URL`. The read-only JSON report separates links, downloaded/read texts, indexed texts, pending records, and individual failures. `*_without_openalex` columns provide the same-dataset comparison. Pending records mean extraction is incomplete. `crawler refresh --source pubmed` can update stored enrichment before reindexing. Short [local validation notes](../pr-64-validation.md) list the added features, checks, and limitations.
+
 ## 2 Metadata schema
 
 Table `documents`, one row per source record. PMC has no rows; it fills the PubMed row. Field paths per source: source pages. Independent of the #27 draft model.
