@@ -242,6 +242,36 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     ]);
   });
 
+  test("recovers legacy audio skips when speech-to-text is enabled", async () => {
+    await insert("podcast:legacy", "Diabetes", {
+      full_text: ["https://example.org/a.mp3"],
+    });
+    await indexFullTexts(pool, {
+      fullText: async () => ({
+        status: "skipped",
+        text: "",
+        detail: "no readable format: audio/mpeg",
+      }),
+    });
+    const downloader = {
+      ...fakeDownloader({
+        "https://example.org/a.mp3": "Olaparib and the PSA.",
+      }),
+      transcribes: true,
+    };
+    expect(await indexFullTexts(pool, downloader)).toEqual({
+      indexed: 1,
+      skipped: 0,
+      failed: 0,
+    });
+    expect(await indexFullTexts(pool, downloader)).toEqual({
+      indexed: 0,
+      skipped: 0,
+      failed: 0,
+    });
+    expect(downloader.fullText).toHaveBeenCalledOnce();
+  });
+
   test("ranks a document without a full text below one that both indexes find", async () => {
     // pubmed:1 leads the metadata but has no full text; pubmed:2 is second there and has one.
     await insert("pubmed:1", "Olaparib olaparib for prostate cancer");

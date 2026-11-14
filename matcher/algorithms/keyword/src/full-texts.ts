@@ -39,7 +39,9 @@ export async function indexFullTexts(
   // speech-to-text once a run has it.
   await db.query(
     `DELETE FROM keyword.full_texts
-     WHERE status = 'failed' OR ($1::boolean AND status = 'skipped' AND detail = $2)`,
+     WHERE status = 'failed' OR ($1::boolean AND status = 'skipped' AND
+       (detail = $2 OR (detail LIKE 'no readable format:%'
+         AND detail ~ 'audio/(mpeg|mp3|flac|wav|x-wav)(,|$)')))`,
     [downloader.transcribes === true, NO_SPEECH_TO_TEXT],
   );
   const toRead = () =>
