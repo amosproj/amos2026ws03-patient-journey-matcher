@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="40 0 900 500" width="900" height="500" role="img" aria-labelledby="licence-flow-title licence-flow-desc">
   <title id="licence-flow-title">Licence check before a full text is used</title>
-  <desc id="licence-flow-desc">The crawler stores each record's licence; when a full text is needed for indexing, an AI summary or passing it on, the allow-list decides whether download() fetches it, PMC files are checked again, and otherwise only the stored metadata is used.</desc>
+  <desc id="licence-flow-desc">The crawler stores each record's licence; when a full text is needed for indexing or an AI summary, the allow-list decides whether download() fetches it, PMC files are checked again, and otherwise only the stored metadata is used.</desc>
   <style>
     text { font-family: "Helvetica Neue", Helvetica, "Segoe UI", "Noto Sans", Arial, sans-serif; fill: #374151; }
     .n { font-size: 12.5px; font-weight: 600; fill: #111827; }
@@ -59,8 +59,7 @@
   <rect class="step" x="80" y="200" width="180" height="68" rx="6"/>
   <g text-anchor="middle">
     <text class="n" x="170" y="222">A use needs the text</text>
-    <text class="s" x="170" y="240">indexing, AI summary or</text>
-    <text class="s" x="170" y="254">passing the original on</text>
+    <text class="s" x="170" y="247">indexing or AI summary</text>
   </g>
 
   <!-- decision: allowed for this use? (focal) -->
@@ -94,6 +93,6 @@
   <rect class="end" x="380" y="440" width="200" height="48" rx="24"/>
   <g text-anchor="middle">
     <text class="n" x="480" y="460">Use metadata only</text>
-    <text class="s" x="480" y="476">get_source adds the link</text>
+    <text class="s" x="480" y="476">get_source gives the links</text>
   </g>
 </svg>

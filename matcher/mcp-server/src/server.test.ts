@@ -1,7 +1,11 @@
 import { Client } from "@modelcontextprotocol/client";
 import { InMemoryTransport } from "@modelcontextprotocol/server";
 import { beforeEach, expect, test, vi } from "vitest";
-import type { MatchJourneyInput, MatchResult } from "./contract.ts";
+import type {
+  MatchJourneyInput,
+  MatchResult,
+  SourceDownloads,
+} from "./contract.ts";
 import { buildServer, type MatchService, ToolError } from "./server.ts";
 
 const journey = {
@@ -51,6 +55,29 @@ const matchResult: MatchResult = {
   degraded: false,
 };
 
+const sourceDownloads: SourceDownloads = {
+  source_id: "arxiv:2007.05098",
+  title: "Optimal control of therapies on prostate cancer growth",
+  source: "arxiv",
+  content_type: "preprint",
+  url: "https://arxiv.org/abs/2007.05098",
+  summary: "A model of how prostate cancer responds to two therapies.",
+  licence: "CC-BY-4.0",
+  downloads: [
+    {
+      url: "https://arxiv.org/html/2007.05098v1",
+      kind: "html",
+      media_type: "text/html",
+    },
+    {
+      url: "https://arxiv.org/pdf/2007.05098v1",
+      kind: "pdf",
+      media_type: "application/pdf",
+      size: 2_400_000,
+    },
+  ],
+};
+
 let received: MatchJourneyInput | undefined;
 let client: Client;
 
@@ -60,6 +87,7 @@ const service: MatchService = {
     return matchResult;
   },
   getSource: async (sourceId) => {
+    if (sourceId === sourceDownloads.source_id) return sourceDownloads;
     if (sourceId === "pubmed:broken")
       throw new Error("Patient-5 lookup failed");
     throw new ToolError("SOURCE_NOT_FOUND", `Unknown source ${sourceId}.`);
@@ -126,6 +154,16 @@ test("accepts an as_of on the date of the first event", async () => {
 
   expect(result.isError).toBeFalsy();
   expect(received?.journey.as_of).toBe("2026-10-31");
+});
+
+test("returns the download links of a source", async () => {
+  const result = await client.callTool({
+    name: "get_source",
+    arguments: { source_id: "arxiv:2007.05098" },
+  });
+
+  expect(result.isError).toBeFalsy();
+  expect(result.structuredContent).toEqual(sourceDownloads);
 });
 
 test("reports a known failure with a stable error code", async () => {

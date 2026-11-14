@@ -86,7 +86,7 @@
   <h1><span class="num">1</span>Pipeline: crawl, index, match</h1>
   <p class="lede">Reference for the next pages: how a source record moves from the source API to an MCP result. Full texts are never stored.</p>
 
-  <img class="diagram" src="pipeline.svg" alt="Source pipeline: crawler stores metadata in documents; a shared download() module checks the licence and fetches the full text into memory; the indexer uses it to write three indexes; the MCP server returns sources with IDs and links, and on request one source's text through the same download() module">
+  <img class="diagram" src="pipeline.svg" alt="Source pipeline: crawler stores metadata in documents; a download() module checks the licence and fetches the full text into memory; the indexer uses it to write three indexes; the MCP server returns sources with IDs and links, and on request the links to the files of one source">
 
   <div class="legend">
     <span><i class="sw py"></i>Python component</span>
@@ -114,7 +114,7 @@
   <ul class="rules">
     <li><b>Never stored:</b> full texts, PDFs, audio, video and transcripts. <code>download()</code> holds them in memory only; podcast show notes are cut to 1,000 characters.</li>
     <li><b>No full-text cache.</b> Index rows carry <code>document_id</code> and <code>version</code> and are rebuilt when the version changes. Feeds are polled with a conditional GET (<code>ETag</code>, <code>Last-Modified</code>).</li>
-    <li><b>MCP server:</b> <code>match_journey</code> returns sources from the indexes; <code>get_source</code> fetches one source again through <code>download()</code>.</li>
+    <li><b>MCP server:</b> <code>match_journey</code> returns sources from the indexes; <code>get_source</code> returns the links to the files of one source, and the client downloads them itself.</li>
   </ul>
 
   <div class="foot"><span>Full schema and field paths: <code>Documentation/sources/README.md</code> §2 and the source pages.</span><span>1 / 3</span></div>
@@ -167,7 +167,7 @@
       <tr><td>Podcasts</td><td><code>podcast:transcript</code> (VTT, SRT, HTML), else show notes. Speech-to-text undecided</td><td>copyright</td><td>None published; one conditional GET per feed and day</td><td>–</td><td>No feed grants a licence</td></tr>
     </tbody>
   </table>
-  <p class="note">Limits apply per key or host and are shared by the crawler, the indexer and the MCP server. Queries above the cap are split by date.</p>
+  <p class="note">Limits apply per key or host and are shared by the crawler and the indexer. Queries above the cap are split by date.</p>
 
   <div class="foot"><span>Details, field paths and connector reviews: <code>Documentation/sources/&lt;source&gt;.md</code>.</span><span>2 / 3</span></div>
 </section>
@@ -184,12 +184,12 @@
     <li>Most records have no licence when crawled: PubMed without a PMCID, all podcasts.</li>
     <li>Each licence has three permissions, and open or future decisions (commercial use) change them. A new allow-list means re-indexing, not re-crawling. The crawler filters only for relevance.</li>
   </ul>
-  <img class="diagram flow" src="licence-flow.svg" alt="Licence check: the crawler stores the licence; when a use needs the full text, the allow-list decides; if allowed, download() fetches it and PMC files are checked again; otherwise only metadata is used and get_source adds the link">
+  <img class="diagram flow" src="licence-flow.svg" alt="Licence check: the crawler stores the licence; when a use needs the full text, the allow-list decides; if allowed, download() fetches it and PMC files are checked again; otherwise only metadata is used and get_source gives the links">
 
   <h2>Allow-list proposal (not legal advice)</h2>
   <table class="wrap">
     <colgroup><col style="width:24%"><col style="width:17%"><col style="width:17%"><col style="width:24%"><col style="width:18%"></colgroup>
-    <thead><tr><th>Licence</th><th>Keyword, graph, AI index</th><th>AI summary shown to users</th><th>Original passed on</th><th>If used commercially later</th></tr></thead>
+    <thead><tr><th>Licence</th><th>Keyword, graph, AI index</th><th>AI summary shown to users</th><th>Client passes the original on</th><th>If used commercially later</th></tr></thead>
     <tbody>
       <tr><td>CC0, CC BY, public domain</td><td>yes</td><td>yes, with credit</td><td>yes, with credit</td><td>same</td></tr>
       <tr><td>CC BY-SA, CC BY-ND</td><td>yes</td><td>ask</td><td>SA: same licence; ND: unchanged only</td><td>same</td></tr>

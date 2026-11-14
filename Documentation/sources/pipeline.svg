@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 672" width="1000" height="672" role="img" aria-labelledby="pipeline-title pipeline-desc">
   <title id="pipeline-title">Source pipeline: crawl, index, match</title>
-  <desc id="pipeline-desc">The crawler stores metadata, licence and full-text URLs in the documents table. A shared download() module checks the licence, fetches the full text into memory and extracts it. The indexer uses it to write the keyword, graph and AI summary indexes. The MCP server matches a journey against one index and returns sources, and on request returns one source's text through the same download() module.</desc>
+  <desc id="pipeline-desc">The crawler stores metadata, licence and full-text URLs in the documents table. A download() module checks the licence, fetches the full text into memory and extracts it. The indexer uses it to write the keyword, graph and AI summary indexes. The MCP server matches a journey against one index and returns sources, and on request the links to the files of one source, which the client downloads itself.</desc>
   <style>
     text { font-family: "Helvetica Neue", Helvetica, "Segoe UI", "Noto Sans", Arial, sans-serif; fill: #374151; }
     .n { font-size: 13px; font-weight: 600; fill: #111827; }
@@ -36,7 +36,6 @@
   <path class="e" d="M160 256 H200" marker-end="url(#pipeline-arrow)"/>
   <path class="e" d="M364 420 H404" marker-end="url(#pipeline-arrow)"/>
   <path class="e r" d="M496 276 V324" marker-end="url(#pipeline-arrow)"/>
-  <path class="e r" d="M776 228 H830 Q838 228 838 236 V324" marker-end="url(#pipeline-arrow)"/>
   <path class="e" d="M588 366 H628" marker-end="url(#pipeline-arrow)"/>
   <path class="e" d="M588 466 H628" marker-end="url(#pipeline-arrow)"/>
   <path class="e" d="M588 566 H628" marker-end="url(#pipeline-arrow)"/>
@@ -58,8 +57,8 @@
   <text class="al" x="817" y="175" text-anchor="middle">SOURCE_ID</text>
   <rect class="m" x="948" y="150" width="48" height="12" rx="2"/>
   <text class="al" x="972" y="159" text-anchor="middle">SOURCES</text>
-  <rect class="m" x="948" y="166" width="30" height="12" rx="2"/>
-  <text class="al" x="963" y="175" text-anchor="middle">TEXT</text>
+  <rect class="m" x="948" y="166" width="36" height="12" rx="2"/>
+  <text class="al" x="966" y="175" text-anchor="middle">LINKS</text>
   <rect class="m" x="556" y="648" width="68" height="12" rx="2"/>
   <text class="al" x="590" y="657" text-anchor="middle">ROWS BY ID</text>
 
@@ -83,7 +82,7 @@
   <text class="n" x="804" y="48" text-anchor="middle">AIlixir app backend</text>
   <line class="hr" x1="636" y1="60" x2="972" y2="60"/>
   <text class="c" x="804" y="86" text-anchor="middle">match_journey(journey) → sources</text>
-  <text class="c" x="804" y="106" text-anchor="middle">get_source(source_id) → text</text>
+  <text class="c" x="804" y="106" text-anchor="middle">get_source(source_id) → links</text>
 
   <!-- crawler -->
   <rect class="py" x="20" y="180" width="140" height="152" rx="8"/>
@@ -151,7 +150,7 @@
   <rect class="tg" x="412" y="188" width="62" height="12" rx="2"/>
   <text class="tag" x="443" y="197" text-anchor="middle">TYPESCRIPT</text>
   <text class="nm" x="590" y="206" text-anchor="middle">download()</text>
-  <text class="s" x="590" y="222" text-anchor="middle">used by the indexer and the MCP server</text>
+  <text class="s" x="590" y="222" text-anchor="middle">used by the indexer</text>
   <line class="hr" x1="412" y1="232" x2="768" y2="232"/>
   <text class="b" x="432" y="252"><tspan class="s">1</tspan><tspan x="444">check the licence for the use</tspan></text>
   <text class="b" x="432" y="268"><tspan class="s">2</tspan><tspan x="444">fetch the full_text URLs</tspan></text>
@@ -212,8 +211,8 @@
     <text class="b" x="898" y="458">returns ranked sources</text>
     <text class="c k" x="898" y="486">get_source</text>
     <text class="b" x="898" y="502">looks up one row</text>
-    <text class="b" x="898" y="518">text from download()</text>
-    <text class="b" x="898" y="534">else metadata and link</text>
+    <text class="b" x="898" y="518">returns its file links</text>
+    <text class="b" x="898" y="534">the client downloads them</text>
     <text class="s" x="898" y="592">nothing stored</text>
   </g>
   <line class="hr" x1="824" y1="390" x2="972" y2="390"/>

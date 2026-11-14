@@ -403,6 +403,40 @@ th.heat-th { vertical-align: bottom; }
 .raw summary { cursor: pointer; margin-bottom: 8px; color: var(--muted); }
 .notice { margin: 12px 16px 0; padding: 9px 12px; border-radius: 8px; background: color-mix(in srgb, var(--error) 12%, transparent); font-size: 12.5px; white-space: pre-wrap; }
 .notice.quiet { background: var(--code); color: var(--muted); }
+/* Example client: the answer as an app could show it, from the fields of the tools only. */
+.client { flex: 1; overflow: auto; padding: 0 16px 24px; }
+.client > * { max-width: 800px; margin-left: auto; margin-right: auto; }
+.client-note { margin-top: 12px; margin-bottom: 0; color: var(--muted); font-size: 12px; }
+.client-head { margin-top: 14px; margin-bottom: 10px; }
+.client-head small { color: var(--muted); }
+.client-head h3 { margin: 2px 0 0; font-size: 16px; line-height: 1.3; }
+.client .notice { margin-top: 0; margin-bottom: 10px; }
+.src-card { display: grid; gap: 14px; margin-bottom: 10px; padding: 12px 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+.src-card.has-image { grid-template-columns: 176px 1fr; }
+.src-card > img { width: 176px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 6px; background: var(--code); }
+.src-card > div { min-width: 0; }
+.src-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+.src-meta .rank { margin-left: auto; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.src-meta .meter { margin: 0 0 0 7px; }
+.src-card h4 { margin: 6px 0 2px; font-size: 14.5px; font-weight: 650; line-height: 1.35; }
+.src-card h4 a { color: var(--text); }
+.src-card h4 a:hover { color: var(--accent); }
+.src-card .byline { font-size: 12px; color: var(--muted); }
+.src-card .summary { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin: 6px 0 0; font-size: 12.5px; line-height: 1.5; white-space: pre-line; overflow-wrap: anywhere; }
+.src-card.more .summary { display: block; }
+.src-card .summary.none { color: var(--muted); }
+.src-foot { display: flex; gap: 6px 12px; align-items: center; flex-wrap: wrap; margin-top: 9px; font-size: 12px; color: var(--muted); }
+.src-foot button { padding: 3px 10px; border: 1px solid var(--line); border-radius: 6px; background: none; color: var(--accent); font-weight: 600; cursor: pointer; }
+.src-foot button:hover { background: var(--hover); }
+.src-foot button:disabled { opacity: .5; cursor: default; }
+/* minmax(0, …): a long line of the JSON must not widen the card. */
+.files { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; font-size: 12.5px; }
+.files:not(:empty) { margin-top: 9px; padding-top: 9px; border-top: 1px solid var(--line); }
+.file { display: flex; gap: 2px 10px; align-items: baseline; flex-wrap: wrap; }
+.file a { overflow-wrap: anywhere; }
+.files summary { margin-top: 4px; cursor: pointer; color: var(--muted); font-size: 12px; }
+.files pre { max-height: 260px; overflow: auto; margin: 6px 0 0; padding: 10px; border-radius: 6px; background: var(--code); font-size: 11px; white-space: pre-wrap; overflow-wrap: anywhere; }
+@media (max-width: 760px) { .src-card.has-image { grid-template-columns: 1fr; } .src-card > img { width: 100%; } }
 </style>
 </head>
 <body>
@@ -709,6 +743,7 @@ th.heat-th { vertical-align: bottom; }
       <button data-mttab="results" class="active">Results <span class="badge" id="mt-count">0</span></button>
       <button data-mttab="rankings" title="The best candidates of each index before rank fusion, and where each one ended">Index rankings</button>
       <button data-mttab="answer">Answer</button>
+      <button data-mttab="client" title="How an app could show the answer, with only what the tools return">Example client</button>
     </nav>
     <div class="content">
       <section class="mttab active" id="mttab-results">
@@ -728,6 +763,7 @@ th.heat-th { vertical-align: bottom; }
       </section>
       <section class="mttab" id="mttab-rankings"><div class="rank-lists" id="mt-rankings"></div></section>
       <section class="mttab" id="mttab-answer"><div class="raw" id="mt-raw"></div></section>
+      <section class="mttab" id="mttab-client"><div class="client" id="mt-client"></div></section>
       <aside class="detail" id="mt-detail"></aside>
     </div>
   </main>
@@ -2598,7 +2634,7 @@ setInterval(() => { if (state.screen === "index" && $("#ix-auto").checked && doc
 const MT_DEFAULTS = { algorithm: "keyword", limit: 10 };
 const mt = {
   meta: null, args: null, dates: [], asOf: null, request: null, via: null, result: null,
-  tuning: {}, settings: "", tab: "results", cache: new Map(), ticket: 0, timer: 0,
+  tuning: {}, settings: "", tab: "results", cache: new Map(), sources: new Map(), ticket: 0, timer: 0,
 };
 
 // The data of a step of the match shown, e.g. "terms"; undefined through the MCP server.
@@ -2606,7 +2642,7 @@ const mtStep = (name) => mt.result?.steps?.find((entry) => entry.step === name)?
 const mtSetting = (name) => mtStep("settings")?.find((setting) => setting.name === name)?.value;
 
 async function mtShow() {
-  history.replaceState(null, "", "#match");
+  mtSwitchTab(mt.tab);
   try {
     const first = !mt.meta;
     mt.meta = await api("/api/match/meta");
@@ -2718,7 +2754,7 @@ async function mtRun(fresh) {
   const request = mtRequest();
   const key = JSON.stringify([via, request]);
   const ticket = ++mt.ticket;
-  if (fresh) mt.cache.clear();
+  if (fresh) { mt.cache.clear(); mt.sources.clear(); }
   $("#mt-error").textContent = "";
   let result = mt.cache.get(key);
   if (!result) {
@@ -2752,6 +2788,7 @@ function mtRender() {
   mtRenderResults();
   mtRenderRankings();
   mtRenderRaw();
+  mtRenderClient();
 }
 
 function mtRenderStats() {
@@ -2985,6 +3022,92 @@ function mtRenderRaw() {
     block("Request", mt.request, false));
 }
 
+// ── Example client: the answer as an app could show it ────────────────────────
+// It reads only what the tools answer, no step of the match and no database row, so it shows
+// what a client can build from the contract (Documentation/mcp-interface.md).
+const CLIENT_FILES = 8;
+
+function mtRenderClient() {
+  const box = $("#mt-client");
+  const result = mt.result;
+  const note = h("p", { class: "client-note" }, "An example of a client. The cards hold only what match_journey answers; “Files” asks get_source for one source.");
+  if (result.error) {
+    box.replaceChildren(note, h("div", { class: "client-head" }), h("div", { class: "notice" }, `The request was refused (${result.error.code}).`));
+    return;
+  }
+  const answer = result.answer;
+  const focus = (mt.request?.journey?.events || []).find((event) => event?.id === answer.focus_event_id);
+  const state = answer.degraded ? h("div", { class: "notice" }, `The search is not available right now, so this is not “nothing relevant”.\n${answer.degraded_reason || ""}`)
+    : answer.results.length ? null : h("div", { class: "notice quiet" }, "Nothing relevant for this event.");
+  box.replaceChildren(...[note,
+    h("div", { class: "client-head" },
+      h("small", {}, ["Sources for the latest event", focus?.date].filter(Boolean).join(" · ")),
+      h("h3", {}, focus?.label || answer.focus_event_id)),
+    state, ...answer.results.map(mtClientCard)].filter(Boolean));
+}
+
+function mtClientCard(result) {
+  const authors = result.authors || [];
+  const files = h("div", { class: "files" });
+  const long = result.summary && (result.summary.length > 220 || result.summary.includes("\n"));
+  const card = h("article", { class: `src-card${result.image_url ? " has-image" : ""}` },
+    result.image_url ? h("img", { src: result.image_url, alt: "", loading: "lazy" }) : null,
+    h("div", {},
+      h("div", { class: "src-meta" },
+        sourcePill(result.source),
+        h("span", {}, [typeLabel(result.content_type), result.published_date].filter(Boolean).join(" · ")),
+        h("span", { class: "rank", title: result.score == null ? null : `score ${result.score}: relative to the best source of this list` }, `#${result.rank}`,
+          result.score == null ? null : h("span", { class: "meter" }, h("i", { style: `width:${100 * result.score}%` })))),
+      h("h4", {}, h("a", { href: result.url, target: "_blank", rel: "noopener noreferrer" }, result.title)),
+      authors.length ? h("div", { class: "byline" }, authors.length > 3 ? `${authors.slice(0, 3).join(", ")} and ${authors.length - 3} more` : authors.join(", ")) : null,
+      h("p", { class: `summary${result.summary ? "" : " none"}` }, result.summary || "No summary"),
+      h("div", { class: "src-foot" },
+        h("button", { type: "button", title: "get_source: the files of this source at its origin", onclick: (event) => mtClientFiles(result.source_id, files, event.currentTarget) }, "Files"),
+        long ? h("button", { type: "button", onclick: (event) => { event.currentTarget.textContent = card.classList.toggle("more") ? "Less" : "More"; } }, "More") : null,
+        h("span", { title: "The client has to follow the licence when it downloads a file" }, result.licence || "Licence unknown")),
+      files));
+  return card;
+}
+
+// Shows the files of a source below its card, or hides them again.
+async function mtClientFiles(id, box, button) {
+  if (box.childElementCount) { box.replaceChildren(); button.textContent = "Files"; return; }
+  const key = `${mt.via}:${id}`;
+  button.disabled = true;
+  try {
+    if (!mt.sources.has(key)) mt.sources.set(key, await api("/api/match/source", { method: "POST", body: JSON.stringify({ source_id: id, via: mt.via }) }));
+    box.replaceChildren(...mtClientFileRows(mt.sources.get(key)));
+    button.textContent = "Hide files";
+  } catch (error) {
+    box.replaceChildren(h("div", { class: "error" }, error.message));
+  } finally {
+    button.disabled = false;
+  }
+}
+
+function mtClientFileRows(source) {
+  if (source.error) return [h("div", { class: "error" }, `get_source refused the request (${source.error.code}): ${source.error.message}`)];
+  const { downloads, url } = source.answer;
+  const open = { target: "_blank", rel: "noopener noreferrer" };
+  // The file name of a link (Zenodo's end in /content after it); the whole link if it has none.
+  const name = (link) => {
+    try {
+      const parts = new URL(link).pathname.split("/").filter(Boolean);
+      return decodeURIComponent((parts.at(-1) === "content" ? parts.at(-2) : parts.at(-1)) || link);
+    } catch (error) {
+      return link;
+    }
+  };
+  return [
+    downloads.length ? null : h("div", { class: "muted" }, "No file to download. ", h("a", { href: url, ...open }, "Open the page"), " instead."),
+    ...downloads.slice(0, CLIENT_FILES).map((file) => h("div", { class: "file" },
+      h("a", { href: file.url, ...open }, name(file.url)),
+      h("span", { class: "muted" }, [file.kind, file.media_type, file.size == null ? null : fmtBytes(file.size)].filter(Boolean).join(" · ")))),
+    downloads.length > CLIENT_FILES ? h("div", { class: "muted" }, `and ${fmtCount(downloads.length - CLIENT_FILES)} more`) : null,
+    h("details", {}, h("summary", {}, `Answer of get_source · ${source.seconds.toFixed(2)} s`), h("pre", {}, JSON.stringify(source.answer, null, 2))),
+  ].filter(Boolean);
+}
+
 // What this match found of a document, for the top of its panel.
 function mtDocumentParts(id) {
   const candidate = (mtStep("candidates") || []).find((entry) => entry.id === id);
@@ -3002,6 +3125,7 @@ function mtDocumentParts(id) {
 
 function mtSwitchTab(tab) {
   mt.tab = tab;
+  history.replaceState(null, "", tab === "results" ? "#match" : `#match-${tab}`);
   for (const button of document.querySelectorAll("#mt-tabs button")) button.classList.toggle("active", button.dataset.mttab === tab);
   for (const section of document.querySelectorAll(".mttab")) section.classList.toggle("active", section.id === `mttab-${tab}`);
   dbCloseDetail();
@@ -3059,7 +3183,8 @@ async function init() {
   } else if (hash === "index" || hash.startsWith("index-")) {
     if (["log", "vocabulary", "terms"].includes(hash.slice(6))) ix.tab = hash.slice(6);
     showScreen("index");
-  } else if (hash === "match") {
+  } else if (hash === "match" || hash.startsWith("match-")) {
+    if (["rankings", "answer", "client"].includes(hash.slice(6))) mt.tab = hash.slice(6);
     showScreen("match");
   } else if (["live", "docs", "graph", "failures"].includes(hash)) switchTab(hash);
   requestAnimationFrame(frame);

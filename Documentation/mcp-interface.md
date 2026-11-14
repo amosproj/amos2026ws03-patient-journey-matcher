@@ -1,6 +1,6 @@
 # MCP interface
 
-Version 0.1, a proposal for #7. It is not yet confirmed by AIlixir, see [Open questions](#open-questions). The schemas in [`matcher/mcp-server/src/contract.ts`](../matcher/mcp-server/src/contract.ts) are the source of truth for field names and limits. `match_journey` works with the `keyword` algorithm ([keyword matching](keyword-matching.md)); the other algorithms and `get_source` answer with the error code `NOT_AVAILABLE`.
+Version 0.1, a proposal for #7. It is not yet confirmed by AIlixir, see [Open questions](#open-questions). The schemas in [`matcher/mcp-server/src/contract.ts`](../matcher/mcp-server/src/contract.ts) are the source of truth for field names and limits. `match_journey` works with the `keyword` algorithm ([keyword matching](keyword-matching.md)); the other algorithms answer with the error code `NOT_AVAILABLE`.
 
 All fields use `snake_case`, like the journey generator and the SS26 retrieval code.
 
@@ -18,7 +18,7 @@ The server speaks MCP over Streamable HTTP at `POST /mcp`. It listens on `127.0.
 | Tool | Purpose |
 |---|---|
 | `match_journey` | Returns the sources most relevant to the most recent event of a patient journey |
-| `get_source` | Downloads one matched source again from its origin and returns its content without storing it |
+| `get_source` | Returns the links to the files of one matched source at its origin. The client downloads them itself |
 
 To compare the three algorithms, a client calls `match_journey` once per algorithm with the same journey.
 
@@ -67,8 +67,8 @@ Each result holds the source reference and optional relevance information:
 | `source` | string | yes | Where the entry comes from, for example `pubmed`, `arxiv`, `zenodo`, `youtube` |
 | `content_type` | `journal_article`, `preprint`, `conference_paper`, `poster`, `presentation`, `report`, `book`, `video`, `podcast_episode` | yes | As stored, see [sources §2](sources/README.md#2-metadata-schema) |
 | `url` | URL | yes | Link to the original |
-| `summary` | string | no | Short summary, abstract or description for the card in the app. Missing only if the source has none |
-| `image_url` | URL | no | Picture for the card, for example a video thumbnail |
+| `summary` | string | no | Abstract or description of the source, for the card in the app. Cut after 5,000 characters. Missing only if the source has none |
+| `image_url` | URL | no | Picture for the card. So far only YouTube videos have one, their thumbnail |
 | `published_date` | string | no | As precise as the source provides it |
 | `authors` | list of strings | no | |
 | `licence` | string | no | |
@@ -101,13 +101,32 @@ Example:
 
 ### `get_source`
 
-The input is `{ "source_id": "pubmed:42745507" }`. The output holds the fields of the source reference plus:
+The input is `{ "source_id": "pubmed:42745507" }`. The output holds the fields of the source reference plus `downloads`, the files of the source at its origin. The server downloads and stores nothing: the client fetches a file itself and has to follow the `licence` of the source.
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
-| `content` | string | yes | Kept in memory only |
-| `content_kind` | `abstract`, `full_text`, `transcript` | yes | |
-| `fetched_at` | ISO date-time | yes | |
+| `downloads` | list | yes | In the order to try them, for example the HTML page of an arXiv paper before its PDF. At most 20; `url` leads to the rest. Empty if the source has no file, as for YouTube videos and PubMed records without a full text in PMC; then `url` is the only link |
+| `downloads[].url` | URL | yes | `http` or `https` only |
+| `downloads[].kind` | string | yes | `jats`, `html`, `pdf`, `file`, `transcript` or `audio` |
+| `downloads[].media_type` | string | no | Says how to read the file: the PMC bucket and Zenodo serve every file as `application/octet-stream` |
+| `downloads[].size` | integer | no | In bytes |
+
+Example:
+
+```json
+{
+  "source_id": "arxiv:2007.05098",
+  "title": "Optimal control of cytotoxic and antiangiogenic therapies on prostate cancer growth",
+  "source": "arxiv",
+  "content_type": "preprint",
+  "url": "https://arxiv.org/abs/2007.05098",
+  "licence": "CC-BY-4.0",
+  "downloads": [
+    { "url": "https://arxiv.org/html/2007.05098v1", "kind": "html", "media_type": "text/html" },
+    { "url": "https://arxiv.org/pdf/2007.05098v1", "kind": "pdf", "media_type": "application/pdf" }
+  ]
+}
+```
 
 ## Errors
 
@@ -119,9 +138,8 @@ Failures inside a tool return an MCP result with `isError: true` and this text:
 
 | Code | Meaning |
 |---|---|
-| `NOT_AVAILABLE` | The requested algorithm or store is not available |
+| `NOT_AVAILABLE` | The requested algorithm is not available |
 | `SOURCE_NOT_FOUND` | `get_source` got an unknown ID |
-| `UPSTREAM_UNAVAILABLE` | The origin of a source could not be reached |
 | `INTERNAL_ERROR` | An unexpected failure. The result always has the same message, without any details |
 
 The SDK checks the input before a tool runs and the output after it. When a check fails, the result has `isError: true`, but its text is a plain sentence, such as `Input validation error: ...`, without an `error_code`. A client must not parse every error text as JSON.
@@ -182,7 +200,7 @@ This is the graph that the SS26 pipeline builds. We have the code in [`backend/w
 For AIlixir:
 
 1. Can the app send the graph as JSON with `valid_at` and `invalid_at`, or should the matcher read it from Neo4j? The format and the dates are answered in [Patient graph](#patient-graph).
-2. May `get_source` return abstracts and full texts to the app, depending on the licence of the source?
+2. Is it enough that `get_source` returns the download links, so that the app fetches a source itself?
 3. Does the app need an `error_code` for invalid input too, or is the plain text enough?
 
 For the team:

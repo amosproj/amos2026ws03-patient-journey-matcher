@@ -7,7 +7,7 @@ Local web UI with one screen per step of the pipeline:
 | **Runs** | Starts crawler runs and shows them live: source calls, retries, documents, citation graph and failures. "Store in the database" stores a run like `--store` |
 | **Database** | The stored documents, store runs and the schema of every table; a document also shows what the keyword index holds of it. Empties tables once you type the database name |
 | **Index** | The [keyword index](../../Documentation/keyword-matching.md): per source, which full texts are done (indexed, or skipped: no usable full text, so only the metadata is matched) and which the next run reads (failed, new or changed); why the skipped and failed ones have none, the most frequent keywords and what the journey terms find. Starts the indexer job like `make index` |
-| **Matcher** | `match_journey` for a synthetic journey, cut at any of its dates, with the steps of the match: the terms of each event, the rank of each hit in both indexes, the part each index adds in rank fusion, and the terms found there. Other ranking constants can be tried without changing code |
+| **Matcher** | `match_journey` for a synthetic journey, cut at any of its dates, with the steps of the match: the terms of each event, the rank of each hit in both indexes, the part each index adds in rank fusion, and the terms found there. Other ranking constants can be tried without changing code. The **Example client** tab shows the answer as an app could: one card per source from the fields of `match_journey`, and its files from `get_source` |
 
 ```sh
 make debug             # then open http://127.0.0.1:8765

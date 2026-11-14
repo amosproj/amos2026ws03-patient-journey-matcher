@@ -174,7 +174,6 @@
   <rect class="ts" x="680" y="576" width="270" height="56" rx="5"/>
   <rect class="ts" x="680" y="652" width="270" height="56" rx="5"/>
   <rect class="ts" x="680" y="728" width="270" height="56" rx="5"/>
-  <rect class="ts" x="670" y="812" width="290" height="44" rx="5"/>
   <g text-anchor="middle">
     <text class="h" x="815" y="248">Tool handlers</text>
     <text class="bm" x="815" y="266">match_journey · compare_algorithms</text>
@@ -193,8 +192,6 @@
     <text class="b" x="815" y="693">concept and relation overlap</text>
     <text class="h" x="815" y="750">AI summary matcher</text>
     <text class="b" x="815" y="769">similarity to the summaries</text>
-    <text class="hm" x="815" y="830">download()</text>
-    <text class="b" x="815" y="848">on a match (<tspan class="mono">get_source</tspan>) · not stored</text>
   </g>
   <path class="e" d="M891 290 V316" marker-end="url(#a1)"/>
   <path class="e" d="M740 316 V290" marker-end="url(#a1)"/>
@@ -208,8 +205,6 @@
   <path class="e r" d="M680 680 H590" marker-end="url(#a1)"/>
   <path class="e r" d="M680 756 H590" marker-end="url(#a1)"/>
   <text class="el" x="635" y="596" text-anchor="middle">read</text>
-  <path class="e" d="M960 259 H972 V834 H960" marker-end="url(#a1)"/>
-  <path class="e" d="M815 856 V906" marker-end="url(#a1)"/>
 
   <!-- bottom row -->
   <rect class="ext" x="20" y="906" width="130" height="80" rx="6"/>
@@ -221,7 +216,7 @@
     <text class="b" x="85" y="978">keys from AIlixir</text>
     <text class="h" x="575" y="930">Original sources</text>
     <text class="b" x="575" y="950">publisher pages, open-access full texts, videos, podcast episodes</text>
-    <text class="b" x="575" y="968">fetched by <tspan class="mono">download()</tspan> while indexing and again on a match; nothing is stored</text>
+    <text class="b" x="575" y="968">fetched by <tspan class="mono">download()</tspan> while indexing; nothing is stored</text>
   </g>
 
   <!-- step numbers -->

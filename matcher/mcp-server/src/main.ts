@@ -9,7 +9,7 @@ import {
   toNodeHandler,
 } from "@modelcontextprotocol/node";
 import { createMcpHandler } from "@modelcontextprotocol/server";
-import { explain } from "./explain.ts";
+import { explain, explainSource } from "./explain.ts";
 import { createMatchService } from "./match.ts";
 import { buildServer } from "./server.ts";
 
@@ -22,12 +22,18 @@ const service = createMatchService(
   createDocumentStore(pool),
 );
 
-if (process.argv[2] === "explain") {
-  // `node src/main.ts explain`: answers the one request on stdin with the steps of the match,
-  // without a server. The debug UI runs it (debug/crawler/README.md).
+const command = process.argv[2];
+if (command === "explain" || command === "get_source") {
+  // `node src/main.ts explain` answers the one `match_journey` request on stdin with the steps
+  // of the match, `node src/main.ts get_source` the one `get_source` request; both without a
+  // server. The debug UI runs them (debug/crawler/README.md).
   try {
     const request: unknown = JSON.parse(await text(process.stdin));
-    console.log(JSON.stringify(await explain(service, request)));
+    const answer =
+      command === "explain"
+        ? await explain(service, request)
+        : await explainSource(service, request);
+    console.log(JSON.stringify(answer));
   } finally {
     await pool.end();
   }

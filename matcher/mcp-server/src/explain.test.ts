@@ -1,6 +1,6 @@
 import { expect, test, vi } from "vitest";
-import type { MatchResult } from "./contract.ts";
-import { explain } from "./explain.ts";
+import type { MatchResult, SourceDownloads } from "./contract.ts";
+import { explain, explainSource } from "./explain.ts";
 import { type MatchService, ToolError } from "./server.ts";
 
 const journey = {
@@ -74,4 +74,47 @@ test("answers with the tool error of an algorithm without a matcher", async () =
     },
     steps: [],
   });
+});
+
+const source: SourceDownloads = {
+  source_id: "pubmed:1",
+  title: "Salvage radiotherapy after radical prostatectomy",
+  source: "pubmed",
+  content_type: "journal_article",
+  url: "https://pubmed.ncbi.nlm.nih.gov/1/",
+  downloads: [],
+};
+
+/** A service whose `getSource` is this function. */
+function sources(getSource: MatchService["getSource"]) {
+  return { matchJourney: async () => answer, getSource: vi.fn(getSource) };
+}
+
+test("answers like get_source", async () => {
+  const stored = sources(async () => source);
+
+  const explanation = await explainSource(stored, { source_id: "pubmed:1" });
+
+  expect(stored.getSource).toHaveBeenCalledWith("pubmed:1");
+  expect(explanation).toEqual({ answer: source });
+});
+
+test("answers with the tool error of a source that is not stored", async () => {
+  const stored = sources(async (id) => {
+    throw new ToolError("SOURCE_NOT_FOUND", `Unknown source ${id}.`);
+  });
+
+  expect(await explainSource(stored, { source_id: "pubmed:0" })).toEqual({
+    error: { code: "SOURCE_NOT_FOUND", message: "Unknown source pubmed:0." },
+  });
+});
+
+test("names what is wrong with a get_source request the contract refuses", async () => {
+  const stored = sources(async () => source);
+
+  const explanation = await explainSource(stored, {});
+
+  expect(stored.getSource).not.toHaveBeenCalled();
+  expect(explanation.error?.code).toBe("INVALID_REQUEST");
+  expect(explanation.error?.message).toContain("source_id");
 });

@@ -154,3 +154,22 @@ test("refuses an algorithm without a matcher", async () => {
     service.matchJourney({ journey, algorithm: "graph", limit: 10 }),
   ).rejects.toMatchObject({ code: "NOT_AVAILABLE" });
 });
+
+test("answers get_source with the stored document and its download links", async () => {
+  const service = createMatchService([], store(["pubmed:1"]));
+
+  expect(await service.getSource("pubmed:1")).toMatchObject({
+    source_id: "pubmed:1",
+    url: "https://example.org/pubmed:1",
+    downloads: [],
+  });
+});
+
+test("refuses a source that is not stored", async () => {
+  const service = createMatchService([], store([]));
+
+  await expect(service.getSource("pubmed:1")).rejects.toMatchObject({
+    code: "SOURCE_NOT_FOUND",
+    message: "Unknown source pubmed:1.",
+  });
+});
