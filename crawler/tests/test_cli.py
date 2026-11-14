@@ -586,7 +586,7 @@ def test_since_auto_starts_two_days_before_the_last_successful_run(
     assert "since auto: 2026-11-05" in capsys.readouterr().err
 
 
-def test_since_auto_needs_a_successful_run_of_every_topic(
+def test_since_auto_runs_a_topic_without_a_successful_run_without_a_date(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
     topic = tmp_path / "demo_topic.yaml"
@@ -594,12 +594,42 @@ def test_since_auto_needs_a_successful_run_of_every_topic(
     fake = FakeStore(CollectionResult(documents=[]))
     fake.install(monkeypatch)
 
-    with pytest.raises(SystemExit) as exit_info:
-        main(["pubmed", "--topic", str(topic), "--since", "auto", "--store"])
+    assert main(["pubmed", "--topic", str(topic), "--since", "auto", "--store"]) == 0
 
-    assert exit_info.value.code == 2
-    assert "no successful run with --store yet for demo_topic" in capsys.readouterr().err
-    assert fake.calls == ["prepare", "last_runs"]
+    assert fake.calls == ["prepare", "last_runs", "run", "save"]
+    assert [seed.since for seed in fake.seeds] == [None, None]
+    assert "since auto: no successful run yet, so no date" in capsys.readouterr().err
+
+
+def test_since_auto_dates_each_seed_by_its_own_topics(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    known = tmp_path / "demo_topic.yaml"
+    known.write_text(TOPIC, encoding="utf-8")
+    new = tmp_path / "new_topic.yaml"
+    new.write_text(
+        "id: new_topic\nlabel: New topic\nterms: [prostate cancer]\n"
+        "queries: [prostate cancer, prostate cancer screening]\n",
+        encoding="utf-8",
+    )
+    fake = FakeStore(
+        CollectionResult(documents=[]),
+        last_runs={"demo_topic": datetime(2026, 11, 7, 3, 0, tzinfo=UTC)},
+    )
+    fake.install(monkeypatch)
+
+    argv = ["pubmed", "--topic", str(known), "--topic", str(new), "--since", "auto", "--store"]
+    assert main(argv) == 0
+
+    assert {seed.query: seed.since for seed in fake.seeds} == {
+        "prostate cancer": None,  # shared with the new topic
+        "prostate cancer biopsy": date(2026, 11, 5),
+        "prostate cancer screening": None,
+    }
+    assert (
+        "since auto: 2026-11-05; 2 seed(s) of topics without a successful run: no date"
+        in capsys.readouterr().err
+    )
 
 
 @pytest.mark.parametrize(

@@ -54,7 +54,8 @@ AUTO = "auto"
 """`--since auto`: continue from the topics' last successful run with `--store`."""
 SINCE_AUTO_HELP = (
     f"auto: from {RESUME_OVERLAP.days} days before the topics' last successful run with --store, "
-    "not counting runs that reached --max-results (needs --store and --topic or --all-topics)"
+    "not counting runs that reached --max-results; topics without one get no date "
+    "(needs --store and --topic or --all-topics)"
 )
 SINCE_HELP = {
     SourceName.PUBMED: "only search results PubMed added since this date (YYYY-MM-DD); "
@@ -352,6 +353,18 @@ def _topics(seeds: Sequence[ScrapeRequest]) -> list[str]:
     return list(dict.fromkeys(topic for seed in seeds for topic in seed.topics))
 
 
+def _since_auto_line(seeds: Sequence[ScrapeRequest]) -> str:
+    """What `--since auto` resolved to: the oldest date, and the seeds without one."""
+    dates = [seed.since for seed in seeds if seed.since is not None]
+    if not dates:
+        return "since auto: no successful run yet, so no date"
+    line = f"since auto: {min(dates).isoformat()}"
+    undated = len(seeds) - len(dates)
+    if undated:
+        line += f"; {undated} seed(s) of topics without a successful run: no date"
+    return line
+
+
 async def refresh_videos(
     url: str,
     seeds: Sequence[ScrapeRequest],
@@ -495,11 +508,13 @@ def main(argv: Sequence[str] | None = None) -> int:
             stored = asyncio.run(prepare_store(url, source, load_ids=options.max_depth > 0))
             options = options.model_copy(update={"known_ids": options.known_ids | stored})
             if resume:
-                topics = _topics(seeds)
-                last_runs = asyncio.run(last_successful_runs(url, source, topics))
-                since = resume_date(last_runs, topics)
-                seeds = [seed.model_copy(update={"since": since}) for seed in seeds]
-                print(f"since auto: {since.isoformat()}", file=sys.stderr)
+                last_runs = asyncio.run(last_successful_runs(url, source, _topics(seeds)))
+                # Each seed continues from its own topics, so a new topic gets its first run.
+                seeds = [
+                    seed.model_copy(update={"since": resume_date(last_runs, seed.topics)})
+                    for seed in seeds
+                ]
+                print(_since_auto_line(seeds), file=sys.stderr)
         started_at = datetime.now(UTC)
         result = asyncio.run(run_requests(seeds, options=options))
         finished_at = datetime.now(UTC)

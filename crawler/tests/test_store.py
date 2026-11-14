@@ -216,10 +216,9 @@ def test_resume_date_is_two_days_before_the_oldest_last_run_in_utc() -> None:
     assert resume_date(last_runs, ["prostate_cancer", "type2_diabetes"]) == date(2026, 11, 4)
 
 
-def test_resume_date_needs_a_successful_run_of_every_topic() -> None:
+def test_resume_date_is_none_while_a_topic_has_no_successful_run() -> None:
     last_runs = {"a": datetime(2026, 11, 7, tzinfo=UTC)}
 
-    with pytest.raises(StoreError, match="yet for b, c; run them once without --since first"):
-        resume_date(last_runs, ["a", "b", "c"])
-    with pytest.raises(StoreError, match="yet for t1, t2, t3, t4, t5 and 2 more; "):
-        resume_date(last_runs, [f"t{number}" for number in range(1, 8)])
+    assert resume_date(last_runs, ["a", "b"]) is None
+    assert resume_date(last_runs, ["b"]) is None
+    assert resume_date(last_runs, []) is None

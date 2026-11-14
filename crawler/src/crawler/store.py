@@ -206,17 +206,12 @@ async def videos_to_refresh(url: str, channel_ids: Sequence[str]) -> list[str]:
     return [str(row["native_id"]) for row in rows]
 
 
-def resume_date(last_runs: Mapping[str, datetime], topics: Sequence[str]) -> date:
+def resume_date(last_runs: Mapping[str, datetime], topics: Sequence[str]) -> date | None:
     """The date `--since auto` stands for: `RESUME_OVERLAP` before the oldest of the topics' last
-    successful runs, so no topic misses a day. A topic without one needs a run without `--since`
-    first."""
-    missing = [topic for topic in topics if topic not in last_runs]
-    if missing:
-        more = f" and {len(missing) - 5} more" if len(missing) > 5 else ""
-        raise StoreError(
-            f"--since auto: no successful run with --store yet for {', '.join(missing[:5])}"
-            f"{more}; run them once without --since first"
-        )
+    successful runs, so no topic misses a day. None while a topic has none yet: its first run
+    goes without a date, up to `--max-results` per seed."""
+    if not topics or any(topic not in last_runs for topic in topics):
+        return None
     oldest = min(last_runs[topic] for topic in topics)
     return (oldest - RESUME_OVERLAP).astimezone(UTC).date()
 
