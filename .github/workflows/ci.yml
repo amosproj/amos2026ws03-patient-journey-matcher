@@ -56,6 +56,11 @@ jobs:
       # as a service container cannot preload pg_textsearch.
       - run: docker compose up -d --wait
         working-directory: .
+      - uses: astral-sh/setup-uv@v10.3.3
+      - run: uv sync --locked
+        working-directory: crawler
+      - run: uv run mypy tests/integration_support/crawl.py
+        working-directory: crawler
       - uses: pnpm/action-setup@v6
         with:
           package_json_file: matcher/package.json
@@ -66,3 +71,4 @@ jobs:
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test
+      - run: pnpm test:integration
