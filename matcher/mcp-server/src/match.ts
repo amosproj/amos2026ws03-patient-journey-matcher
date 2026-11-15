@@ -2,7 +2,7 @@ import type { Approach, Hit } from "@matcher/core";
 import type { DocumentRow, DocumentStore } from "@matcher/db";
 import type { MatchResult } from "./contract.ts";
 import { journeyState } from "./journey.ts";
-import { type MatchService, ToolError } from "./server.ts";
+import { type MatchService, ToolError, withSqlState } from "./server.ts";
 import { toSourceDownloads, toSourceReference } from "./sources.ts";
 
 /**
@@ -50,7 +50,8 @@ export function createMatchService(
           degraded: false,
         };
       } catch (error) {
-        // Exception properties can hold journey data; keep ordinary logs generic.
+        console.error(withSqlState(`${algorithm} search failed`, error));
+        // The trace goes back to the developer who sent the journey, so it gets the message.
         const details =
           typeof error === "object" && error !== null ? error : {};
         const { name, code, message } = details as {
@@ -58,8 +59,6 @@ export function createMatchService(
           code?: unknown;
           message?: unknown;
         };
-        console.error(`${algorithm} search failed`);
-        // The trace goes back to the developer who sent the journey, so it gets the message.
         debug.trace?.("error", { name, code, message });
         return {
           ...answer,
@@ -72,10 +71,7 @@ export function createMatchService(
     async getSource(sourceId) {
       const document = await store.getDocument(sourceId);
       if (document === undefined) {
-        throw new ToolError(
-          "SOURCE_NOT_FOUND",
-          "The requested source was not found.",
-        );
+        throw new ToolError("SOURCE_NOT_FOUND", `Unknown source ${sourceId}.`);
       }
       return toSourceDownloads(document);
     },

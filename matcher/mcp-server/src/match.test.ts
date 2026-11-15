@@ -102,10 +102,14 @@ test("answers with the stored documents of the matcher's hits, in its order", as
   });
 });
 
-test("answers degraded when the matcher fails", async () => {
-  vi.spyOn(console, "error").mockImplementation(() => {});
+test("answers degraded when the matcher fails, and logs only the SQLSTATE", async () => {
+  const log = vi.spyOn(console, "error").mockImplementation(() => {});
   const service = createMatchService(
-    [keyword(new Error("relation does not exist"))],
+    [
+      keyword(
+        Object.assign(new Error("relation does not exist"), { code: "42P01" }),
+      ),
+    ],
     store([]),
   );
 
@@ -122,6 +126,7 @@ test("answers degraded when the matcher fails", async () => {
     degraded: true,
     degraded_reason: "The keyword index could not be searched.",
   });
+  expect(log).toHaveBeenCalledWith("keyword search failed: 42P01");
 });
 
 test("passes a trace and tuning on, and traces the journey and why a search failed", async () => {
@@ -170,7 +175,7 @@ test("refuses a source that is not stored", async () => {
 
   await expect(service.getSource("pubmed:1")).rejects.toMatchObject({
     code: "SOURCE_NOT_FOUND",
-    message: "The requested source was not found.",
+    message: "Unknown source pubmed:1.",
   });
 });
 
