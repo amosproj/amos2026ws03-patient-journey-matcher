@@ -71,8 +71,8 @@ npx @modelcontextprotocol/inspector --cli http://127.0.0.1:3000/mcp --transport 
 | `make debug PORT=9000` | Starts the debug UI on another port |
 | `DATABASE_URL=… make index`, `TEST_DATABASE_URL=… make test` | Uses another database; a variable that is set wins over `.env` |
 | `YOUTUBE_API_KEY` in `crawler/.env` | `make seed` also crawls YouTube; without it, YouTube is skipped |
-| `GEMINI_API_KEY` in `backend/.env` or the environment | Needed by `make graph`. A free key from Google AI Studio works, but allows only some documents per day: the run stops, and the next run goes on with the next document |
-| `VERTEX_LLM_MODEL=… GEMINI_PACER_MIN_INTERVAL_S=5 make graph PATIENT=Patient-5` | Uses another model than `gemini-2.5-flash` and waits 5 s between two calls, to stay below the per-minute limit of a free key |
+| `GEMINI_API_KEY` in `backend/.env` or the environment | Needed by `make graph`. A free key from Google AI Studio works, but allows only some documents per day: the run stops with an error, and the next run goes on with the next document |
+| `VERTEX_LLM_MODEL=… GEMINI_PACER_MIN_INTERVAL_S=5 make graph PATIENT=Patient-5` | Uses another model than `gemini-2.5-flash` and waits 5 s between two calls of Graphiti's LLM, which make up most of the requests. Reading the PDF and the embeddings are not paced |
 | `WHISPER_MODEL=tiny-q5_1 make index APPROACHES=keyword` | Also transcribes podcast episodes without a transcript, offline; smallest recommended multilingual model (32 MB). `base-q5_1` (60 MB) is an accuracy option; [podcasts](sources/podcasts.md#indexing) |
 | `cd crawler && uv run crawler refresh` | Backfills stored metadata languages and OpenAlex locators, without source recrawling or a database reset; reindex afterwards ([refresh](storage.md#refresh-stored-enrichment)) |
 | `cd crawler && uv run python ../scripts/coverage.py` | Reports full-text links, successfully read texts, indexed texts, pending rows and failures from `DATABASE_URL`, after indexing |
