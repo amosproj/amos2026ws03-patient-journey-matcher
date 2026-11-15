@@ -51,6 +51,24 @@
 - **synonym handling:**  How reliably are synonyms and repeated mentions merged? ICD (International Classification of Diseases) codes are optional
 - how does the **output** exactly look like
 
+### First answers from a real graph (Patient-5)
+
+The two SS26 graph steps (read the PDF, build the graph) were run locally for Patient-5 as a first try for #53. The run stopped at the request limit of the free API key after 26 of 35 documents. It used a smaller model than the SS26 setup and an embedded Kuzu database instead of Neo4j, so this is a first look at one patient. The graph file is not in the repository yet; it comes with #53.
+
+Result: 34 nodes and 136 edges.
+
+- **Direction of edges:** edges are directed, each has a source and a target node. `CONFIRMED_BY` goes PathologyResult → Diagnosis (2 edges). `INDICATES` goes LabTest / TumorMarker / ImagingResult → Diagnosis (9). `SYMPTOM_OF` goes Symptom → Diagnosis (1). There is no `TREATED_BY` edge in this graph. The two Medication nodes hang only on the patient through `PRESCRIBED`, so the graph does not say which diagnosis a medication treats. For the working example in section 2 we have to build that link ourselves, for example from Patient → Medication and Patient → Diagnosis.
+- **Negation/uncertainty:** there is no field for it, edges have no attributes. "suspected" appears only in the fact sentence of an edge (3 of 136 edges). "no evidence of distant metastasis" appears only in the outcome text of a Procedure node. A matcher that looks only at edge types reads a suspected diagnosis as a confirmed one.
+- **Time of events:** every edge has `valid_at`, and 22 also have `invalid_at`. A document date was found in all 26 documents, so the fallback to the processing date did not happen here. Repeated measurements become a chain of edges: PSA is 13,4 ng/ml from 2026-11-06 and <0,1 ng/ml from 2027-01-22, and edges replaced by a newer statement get `invalid_at`. The value is in the fact sentence, mostly on a generic `RELATES_TO` edge, not on a TumorMarker node.
+- **Synonym handling:** not reliable. The same cancer is split over the Diagnosis nodes "prostate cancer" (10 `HAS_DIAGNOSIS` edges) and "C61 Prostatakarzinom" (11). "radical prostatectomy" and "RPE" are two Procedure nodes. German and English names are mixed. Both Diagnosis nodes carry `icd_code` C61, so the ICD code is a better key than the name. There are no MeSH IDs.
+- **Output:** one JSON per patient with `nodes` (name, labels, summary, attributes), `edges` (name, fact, source and target node, `valid_at`, `invalid_at`), `episodes` (one per document) and a `journey_summary` text.
+
+What this means for the matching proposal:
+
+- The patient side needs a mapping step from names and ICD codes to MeSH IDs before it can be compared with PubTator3.
+- Not every node helps. 12 of 34 nodes are Provider nodes, 29 edges are `MANAGED_AT` and 38 are the generic `RELATES_TO`. The graph should be filtered to the medical node types first.
+- Labels can be wrong: one of the two Medication nodes is a urinary catheter.
+
 ## 2. Questions Our Matching Proposal Must Answer
 
 Working example: a patient has diagnosis A treated with medication B. A paper about B for A should be distinguished from a paper about B for C. Mentioning the same concepts does not necessarily establish the same relationship.
