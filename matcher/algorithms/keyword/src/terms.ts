@@ -11,6 +11,8 @@ const GENERIC = new Set(german.generic);
 const NEGATES_FOLLOWING = new Set(german.negations.following);
 // negates the whole clause: "Lymphknoten unauffällig"
 const NEGATES_CLAUSE = new Set(german.negations.clause);
+// negates the next word only: "nicht nachweisbar"
+const NEGATES_NEXT = new Set(german.negations.next);
 // not the comma of "87,7" or the point of "11.25"
 const CLAUSE_END = /[;:()]|[,.]\s|\s[–—-]\s/;
 
@@ -49,14 +51,21 @@ export function eventWords(event: TermSource): EventWord[] {
 
 function clauseWords(clause: string): EventWord[] {
   const words = clause.match(/[\p{L}\p{N}]+/gu) ?? [];
-  const negatedFrom = words.some((word) => NEGATES_CLAUSE.has(word))
+  const afterNext = (index: number) => NEGATES_NEXT.has(words[index - 1] ?? "");
+  // "nicht ausgeschlossen": a negation word after one of NEGATES_NEXT is cancelled
+  const negates = (list: Set<string>) => (word: string, index: number) =>
+    list.has(word) && !afterNext(index);
+  const negatedFrom = words.some(negates(NEGATES_CLAUSE))
     ? 0
-    : words.findIndex((word) => NEGATES_FOLLOWING.has(word));
+    : words.findIndex(negates(NEGATES_FOLLOWING));
   return words.map((word, index) => {
-    const negation = NEGATES_CLAUSE.has(word) || NEGATES_FOLLOWING.has(word);
-    if (negatedFrom !== -1 && index >= negatedFrom && !negation) {
-      return { word, term: null, negated: true };
-    }
+    const negation =
+      NEGATES_CLAUSE.has(word) ||
+      NEGATES_FOLLOWING.has(word) ||
+      NEGATES_NEXT.has(word);
+    const negated =
+      (negatedFrom !== -1 && index >= negatedFrom) || afterNext(index);
+    if (negated && !negation) return { word, term: null, negated: true };
     return {
       word,
       term:

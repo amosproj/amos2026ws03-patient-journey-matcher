@@ -19,7 +19,7 @@ Nothing else writes the schema. Deleting a document deletes its index rows.
 |---|---|---|
 | `translations` | German words, codes and abbreviations | `Knochenmetastasen` → bone metastases, `RPE` → radical prostatectomy, `ADT` → androgen deprivation therapy, `R1` → positive margins |
 | `skip` | Function words, units, time spans, codes of absent findings and a stable PSA trend | `nach`, `ng`, `Wochen`, `R0`, `stable` |
-| `negations` | Words that negate a finding: `following` up to the end of its clause, `clause` the whole clause | "Lokalrezidiv, keine Fernmetastasen" → local recurrence; "Lymphknoten unauffällig" → nothing |
+| `negations` | Words that negate a finding: `following` up to the end of its clause, `clause` the whole clause, `next` the next word only | "Lokalrezidiv, keine Fernmetastasen" → local recurrence; "Lymphknoten unauffällig" → nothing; "PSA nicht nachweisbar" → PSA |
 | `generic` | English terms that say little about a patient | initial, follow up, urology |
 
 Drug names and other words without an entry pass unchanged (Olaparib, PSA); numbers are dropped. No LLM or outside service sees the journey.

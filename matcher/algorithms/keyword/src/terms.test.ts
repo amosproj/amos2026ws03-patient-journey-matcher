@@ -96,6 +96,19 @@ test("leaves out negated findings, up to the end of their clause", () => {
   ).toEqual(["bone metastases"]);
 });
 
+test('leaves out only the word after "nicht", which also cancels a negation', () => {
+  expect(
+    eventTerms({ label: "PSA nicht nachweisbar nach Prostatektomie" }),
+  ).toEqual(["psa", "prostatectomy"]);
+  expect(
+    eventTerms({ label: "Nicht metastasiertes Prostatakarzinom" }),
+  ).toEqual(["prostate cancer"]);
+  expect(eventTerms({ label: "BRCA2-Mutation nicht ausgeschlossen" })).toEqual([
+    "brca2",
+    "mutation",
+  ]);
+});
+
 test("marks the words of a negated finding", () => {
   expect(eventWords({ label: "Rezidiv, keine Fernmetastasen" })).toEqual([
     { word: "rezidiv", term: "recurrence" },

@@ -274,12 +274,11 @@
       "negativ",
       "negative",
       "negativer",
-      "nicht",
-      "not",
       "unauffällig",
       "unauffällige",
       "unauffälliger"
-    ]
+    ],
+    "next": ["nicht", "not"]
   },
   "generic": [
     "admission",
