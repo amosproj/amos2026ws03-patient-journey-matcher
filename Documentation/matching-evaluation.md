@@ -96,7 +96,7 @@ The test in `matcher/evaluation/src/evaluate.test.ts` checks that `judgments.jso
 
 The first 58 judgments (5 to 7 per point) were graded from the PubMed titles and spot-checked against the abstracts in review. They use real PubMed records that a matcher can also find, with the `source_id` the crawler uses (`pubmed:<PMID>`). If a grade turns out wrong, fix it in `judgments.json` with a short note.
 
-**LLM grades for the keyword approach (#58)** are in a file of their own, [`keyword-llm-judgments.json`](../matcher/evaluation/keyword-llm-judgments.json): 8,996 grades for 129 points, only for sources that the keyword ranking found. They are not part of `judgments.json`; see [keyword matching](keyword-matching.md#checking-a-change).
+**LLM grades for the keyword approach (#58)** are in a file of their own, [`keyword-llm-judgments.json`](../matcher/evaluation/keyword-llm-judgments.json): 9,028 grades for 129 points, only for sources that the keyword ranking found. They are not part of `judgments.json`; see [keyword matching](keyword-matching.md#checking-a-change).
 
 ## Open questions
 
