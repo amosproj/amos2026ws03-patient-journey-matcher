@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { graphJourney, patientGraphSchema } from "./graph.ts";
 
 // Field names follow the timeline.json of the synthetic journey generator,
 // so a generated journey can be sent as it is. Unknown fields are dropped.
@@ -41,12 +42,37 @@ export const contentTypeSchema = z.enum([
   "podcast_episode",
 ]);
 
-export const matchJourneyInputSchema = z.object({
-  journey: patientJourneySchema,
-  algorithm: algorithmSchema.default("keyword"),
-  limit: z.number().int().min(1).max(50).default(10),
-  content_types: z.array(contentTypeSchema).min(1).optional(),
-});
+// The patient comes as a journey or as the patient graph of the real app. A graph is turned
+// into its journey here, so the tools and the matchers only ever get a journey.
+export const matchJourneyInputSchema = z
+  .object({
+    journey: patientJourneySchema.optional(),
+    graph: patientGraphSchema.optional(),
+    algorithm: algorithmSchema.default("keyword"),
+    limit: z.number().int().min(1).max(50).default(10),
+    content_types: z.array(contentTypeSchema).min(1).optional(),
+  })
+  .refine(
+    ({ journey, graph }) => (journey === undefined) !== (graph === undefined),
+    { message: "Send either journey or graph, not both and not neither." },
+  )
+  .transform(({ journey, graph, ...request }, context) => {
+    if (journey !== undefined) return { journey, ...request };
+    // The refinement above ensures the graph. Its journey has to pass the same checks as one
+    // that a client sends.
+    const made = patientJourneySchema.safeParse(
+      graphJourney(graph as z.output<typeof patientGraphSchema>),
+    );
+    if (made.success) return { journey: made.data, ...request };
+    for (const { message } of made.error.issues) {
+      context.addIssue({
+        code: "custom",
+        path: ["graph"],
+        message: `The journey made from the graph is not valid. ${message}`,
+      });
+    }
+    return z.NEVER;
+  });
 
 export const sourceReferenceSchema = z.object({
   source_id: z.string().min(1),

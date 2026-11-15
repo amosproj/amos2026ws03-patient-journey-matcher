@@ -45,6 +45,42 @@ test("answers like match_journey and lists the steps of the match", async () => 
   });
 });
 
+test("takes a patient graph like match_journey does", async () => {
+  const matching = service(async () => answer);
+  const graph = {
+    nodes: [
+      { uuid: "patient", name: "Patient-1", labels: ["Entity", "Patient"] },
+      { uuid: "psa", name: "PSA", labels: ["Entity", "LabTest"] },
+    ],
+    edges: [
+      {
+        uuid: "e1",
+        name: "HAD_LAB_TEST",
+        fact: "Patient-1 had a PSA test.",
+        source_node_uuid: "patient",
+        target_node_uuid: "psa",
+        valid_at: "2026-01-10T00:00:00",
+      },
+    ],
+  };
+
+  await explain(matching, { graph, tuning: { focusWeight: 5 } });
+
+  expect(matching.matchJourney).toHaveBeenCalledWith(
+    {
+      journey: {
+        patient_id: "Patient-1",
+        events: [
+          { id: "2026-01-10", type: "facts", label: "PSA", date: "2026-01-10" },
+        ],
+      },
+      algorithm: "keyword",
+      limit: 10,
+    },
+    { tuning: { focusWeight: 5 }, trace: expect.any(Function) },
+  );
+});
+
 test("names what is wrong with a request the contract refuses", async () => {
   const matching = service(async () => answer);
 

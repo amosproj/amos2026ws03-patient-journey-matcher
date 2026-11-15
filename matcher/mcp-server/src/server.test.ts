@@ -36,6 +36,28 @@ const journey = {
   ],
 };
 
+// The smallest patient graph: the patient, a diagnosis and one dated fact between them.
+const graph = {
+  nodes: [
+    { uuid: "patient", name: "Patient-5", labels: ["Entity", "Patient"] },
+    {
+      uuid: "cancer",
+      name: "C61 Prostatakarzinom",
+      labels: ["Entity", "Diagnosis"],
+    },
+  ],
+  edges: [
+    {
+      uuid: "e1",
+      name: "HAS_DIAGNOSIS",
+      fact: "Patient-5 has a diagnosis of C61 Prostatakarzinom.",
+      source_node_uuid: "patient",
+      target_node_uuid: "cancer",
+      valid_at: "2026-12-08T00:00:00" as string | null,
+    },
+  ],
+};
+
 const matchResult: MatchResult = {
   algorithm: "keyword",
   focus_event_id: "e02",
@@ -154,6 +176,70 @@ test("accepts an as_of on the date of the first event", async () => {
 
   expect(result.isError).toBeFalsy();
   expect(received?.journey.as_of).toBe("2026-10-31");
+});
+
+test("accepts a patient graph and passes on its journey", async () => {
+  const result = await client.callTool({
+    name: "match_journey",
+    arguments: { graph },
+  });
+
+  expect(result.isError).toBeFalsy();
+  expect(received).not.toHaveProperty("graph");
+  expect(received?.journey).toEqual({
+    patient_id: "Patient-5",
+    events: [
+      {
+        id: "2026-12-08",
+        type: "facts",
+        label: "C61 Prostatakarzinom",
+        date: "2026-12-08",
+      },
+    ],
+  });
+});
+
+test.each([
+  ["a journey and a graph", { journey, graph }],
+  ["neither a journey nor a graph", {}],
+])("rejects a request with %s", async (_, patient) => {
+  const result = await client.callTool({
+    name: "match_journey",
+    arguments: patient,
+  });
+
+  expect(result.isError).toBe(true);
+  expect(JSON.stringify(result.content)).toContain(
+    "Send either journey or graph, not both and not neither.",
+  );
+  expect(received).toBeUndefined();
+});
+
+test.each([
+  [
+    "without a dated fact",
+    { ...graph, edges: [{ ...graph.edges[0], valid_at: null }] },
+    "The journey made from the graph is not valid.",
+  ],
+  [
+    "whose as_of is earlier than its first fact",
+    { ...graph, as_of: "2026-12-07" },
+    "as_of must not be earlier than the first event.",
+  ],
+  [
+    "with an edge to a node that is not in it",
+    { ...graph, nodes: graph.nodes.slice(0, 1) },
+    "The edge points to a node that is not in the graph.",
+  ],
+])("rejects a graph %s", async (_, broken, message) => {
+  const result = await client.callTool({
+    name: "match_journey",
+    arguments: { graph: broken },
+  });
+
+  expect(result.isError).toBe(true);
+  expect(JSON.stringify(result.content)).toContain(message);
+  expect(received).toBeUndefined();
 });
 
 test("returns the download links of a source", async () => {

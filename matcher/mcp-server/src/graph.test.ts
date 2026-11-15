@@ -190,16 +190,10 @@ test("sorts the events by day, whatever the order of the edges", () => {
 });
 
 test("passes as_of on to the journey, where it picks the most recent event", () => {
-  const journey = graphJourney(read(graph), "2026-12-31");
+  const journey = graphJourney(read({ ...graph, as_of: "2026-12-31" }));
 
   expect(journey.as_of).toBe("2026-12-31");
   expect(journeyState(journey).focus.id).toBe("2026-12-08");
-});
-
-test("rejects an as_of before the first fact, like the contract", () => {
-  expect(() => graphJourney(read(graph), "2026-01-01")).toThrow(
-    "as_of must not be earlier than the first event.",
-  );
 });
 
 test("makes no event from a fact that names only the patient", () => {
@@ -211,7 +205,7 @@ test("makes no event from a fact that names only the patient", () => {
   expect(graphJourney(read({ ...graph, edges })).events).toHaveLength(2);
 });
 
-test("gives a journey that match_journey takes", async () => {
+test("match_journey takes a graph and matches its journey", async () => {
   const match = vi.fn<Matcher["match"]>(async () => []);
   const store: DocumentStore = {
     getDocuments: async () => [],
@@ -225,7 +219,7 @@ test("gives a journey that match_journey takes", async () => {
   );
 
   const result = await service.matchJourney(
-    matchJourneyInputSchema.parse({ journey: graphJourney(read(graph)) }),
+    matchJourneyInputSchema.parse({ graph }),
   );
 
   expect(result).toMatchObject({
@@ -237,13 +231,13 @@ test("gives a journey that match_journey takes", async () => {
   ]);
 });
 
-test("rejects a graph without a dated fact, like the contract an empty journey", () => {
+test("gives no event for a graph without a dated fact", () => {
   const edges = [edge("e5", ["psa", "cancer"], null)];
 
-  expect(() => graphJourney(read({ ...graph, edges }))).toThrow();
+  expect(graphJourney(read({ ...graph, edges })).events).toEqual([]);
 });
 
-test("rejects a graph with facts on more than 500 days", () => {
+test("match_journey rejects a graph with facts on more than 500 days, like a journey", () => {
   const days = (count: number) => ({
     ...graph,
     edges: Array.from({ length: count }, (_, index) =>
@@ -255,8 +249,11 @@ test("rejects a graph with facts on more than 500 days", () => {
     ),
   });
 
-  expect(graphJourney(read(days(500))).events).toHaveLength(500);
-  expect(() => graphJourney(read(days(501)))).toThrow();
+  const request = (count: number) =>
+    matchJourneyInputSchema.safeParse({ graph: days(count) });
+
+  expect(request(500).data?.journey.events).toHaveLength(500);
+  expect(request(501).success).toBe(false);
 });
 
 test("reads the generated graph of Patient-5, which ends on the day its timeline ends", () => {

@@ -1,5 +1,5 @@
+import type { JourneyEvent } from "@matcher/core";
 import { z } from "zod";
-import { type MatchJourneyInput, patientJourneySchema } from "./contract.ts";
 
 // Graphiti writes its times as ISO date-times, with or without a time zone. A journey needs the
 // day, as it is written: a time zone does not move it.
@@ -28,6 +28,8 @@ const edgeSchema = z.object({
 // are dropped.
 export const patientGraphSchema = z
   .object({
+    // The "now" of the patient, like `as_of` of a journey.
+    as_of: z.iso.date().optional(),
     nodes: z.array(nodeSchema).min(1),
     edges: z.array(edgeSchema).min(1),
   })
@@ -94,14 +96,14 @@ function isPatient({ labels }: Node): boolean {
  * later report describes it again. The fact sentences stay in the graph: the keyword matcher
  * reads event texts as German journey words and would turn the English "as" into a search term.
  *
- * `as_of` is passed on to the journey, where it picks the most recent event. Throws like the
- * contract does for a journey: without an event, with more than 500, or with an `as_of` before
- * the first one.
+ * `as_of` is passed on to the journey, where it picks the most recent event. The journey is not
+ * checked here: the contract checks it like one that a client sends, e.g. that it has an event.
  */
-export function graphJourney(
-  { nodes, edges }: PatientGraph,
-  as_of?: string,
-): MatchJourneyInput["journey"] {
+export function graphJourney({ as_of, nodes, edges }: PatientGraph): {
+  patient_id: string;
+  as_of?: string;
+  events: JourneyEvent[];
+} {
   // The schema ensures the Patient node and that both ends of an edge are in the graph.
   const patient = nodes.find(isPatient) as Node;
   const byUuid = new Map(nodes.map((node) => [node.uuid, node]));
@@ -122,7 +124,7 @@ export function graphJourney(
       days.set(valid_at, names.add(node.name));
     }
   }
-  return patientJourneySchema.parse({
+  return {
     patient_id: patient.name,
     as_of,
     events: [...days]
@@ -134,5 +136,5 @@ export function graphJourney(
         label: [...names].sort().join(", "),
         date,
       })),
-  });
+  };
 }
