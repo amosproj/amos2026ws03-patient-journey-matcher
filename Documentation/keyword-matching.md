@@ -129,7 +129,8 @@ On 7,914 documents nDCG@10 is 0.72, up from 0.54 before #58 (measured before #57
 
 | Now | Before |
 |---|---|
-| Every word of the journeys is translated, skipped, read as negated or marked generic | One translation list: "keine Fernmetastasen" searched distant metastases, and filler words like "is" were searched |
+| Every word of the journeys is translated, skipped or marked generic | One translation list: filler words like "is" were searched |
+| Negated findings are left out, by listed words and phrases that each have their reach: "keine Fernmetastasen", "Lymphknoten nicht befallen", "PSA nicht mehr nachweisbar" (searches PSA) | No negation: "keine Fernmetastasen" searched distant metastases |
 | The focus counts 12 times, and only the 10 context terms that the most older events name are searched | The focus counted 3 times and every older term once: late in a journey the history outweighed the current step |
 | Without a full text, the metadata rank of a document counts for its full text too | Two thirds of the documents have no full text, and they ranked below every document that has one |
 | The participants of a tumor board and a stable PSA trend are not searched | "Strahlentherapie" among the participants searched radiotherapy at a decision for surgery, and "stable" found papers on stable disease under a therapy |
@@ -201,7 +202,14 @@ The file covers what the keyword ranking found. Another approach's first 10 will
 
 **This version**
 
-- **Hand-made term lists.** They cover the 20 synthetic journeys (#14). An unknown German word finds nothing, an unknown generic word counts as medical, and a finding negated in an unlisted way ("o. B.", "noch nie") is searched as if present. How far a negation reaches is a rule per word, not grammar: "nicht" negates the next searched word, or the whole clause in a listed phrase such as "nicht befallen". To be extended for AIlixir's data (#44).
+- **Hand-made term lists.** They cover the 20 synthetic journeys (#14). An unknown German word finds nothing, and an unknown generic word counts as medical. To be extended for AIlixir's data (#44).
+- **Negation by listed words, not grammar.** How far a negation reaches is a rule per word or phrase. Not covered:
+  - a finding negated in an unlisted way ("o. B.", "noch nie") is searched as if present;
+  - a finding named before "nicht" is dropped only in a listed phrase: "Lymphknoten nicht befallen" yes, "Lymphknoten nicht tastbar" no, and inflected forms ("nicht befallenen") no;
+  - "nicht nur" (not only) wrongly drops the next word;
+  - "not detected in lymph nodes" still searches the lymph nodes.
+
+  The synthetic journeys negate with "kein" and "negative" only, so the rules for "nicht" are checked by examples, not measured.
 - **Tuned on synthetic prostate cancer journeys with LLM grades.** Real journeys may need other constants (#44).
 - **Keyword filter.** It drops a few medical words ("doctor", "rising" for "rise") and keeps rare non-medical ones (names, typos).
 - **Scores** compare within one list only, not between journeys or algorithms.
