@@ -96,17 +96,34 @@ test("leaves out negated findings, up to the end of their clause", () => {
   ).toEqual(["bone metastases"]);
 });
 
-test('leaves out only the word after "nicht", which also cancels a negation', () => {
-  expect(
-    eventTerms({ label: "PSA nicht nachweisbar nach Prostatektomie" }),
-  ).toEqual(["psa", "prostatectomy"]);
-  expect(
-    eventTerms({ label: "Nicht metastasiertes Prostatakarzinom" }),
-  ).toEqual(["prostate cancer"]);
-  expect(eventTerms({ label: "BRCA2-Mutation nicht ausgeschlossen" })).toEqual([
+test('lets "nicht" negate the next searched word, or cancel a negation', () => {
+  const terms = (label: string) => eventTerms({ label });
+
+  expect(terms("PSA nicht nachweisbar nach Prostatektomie")).toEqual([
+    "psa",
+    "prostatectomy",
+  ]);
+  expect(terms("Nicht metastasiertes Prostatakarzinom")).toEqual([
+    "prostate cancer",
+  ]);
+  expect(terms("PSA nicht mehr nachweisbar")).toEqual(["psa"]);
+  expect(terms("Prostatakarzinom nicht in den Samenblasen")).toEqual([
+    "prostate cancer",
+  ]);
+  expect(terms("BRCA2-Mutation nicht ausgeschlossen")).toEqual([
     "brca2",
     "mutation",
   ]);
+  expect(terms("Knochenmetastasen nicht sicher ausgeschlossen")).toEqual([
+    "bone metastases",
+  ]);
+});
+
+test("takes a listed phrase as one negation", () => {
+  expect(eventTerms({ label: "Lymphknoten nicht befallen" })).toEqual([]);
+  expect(
+    eventTerms({ label: "Prostatakarzinom, frei von Fernmetastasen" }),
+  ).toEqual(["prostate cancer"]);
 });
 
 test("marks the words of a negated finding", () => {

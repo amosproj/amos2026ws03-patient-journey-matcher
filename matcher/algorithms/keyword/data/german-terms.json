@@ -1,5 +1,5 @@
 {
-  "description": "The words of the patient journeys (#14, #58): English translations of German words and codes (\"as\" is active surveillance), words to skip, words that negate a finding, and English terms too general to say much about a patient.",
+  "description": "The words of the patient journeys (#14, #58): English translations of German words and codes (\"as\" is active surveillance), words to skip, words and phrases that negate a finding, and English terms too general to say much about a patient.",
   "translations": {
     "abirateron": "abiraterone",
     "adjuvante": "adjuvant",
@@ -173,6 +173,7 @@
     "die",
     "durch",
     "ein",
+    "eindeutig",
     "eine",
     "einem",
     "einen",
@@ -201,6 +202,7 @@
     "kg",
     "klinisch",
     "m",
+    "mehr",
     "mg",
     "mit",
     "ml",
@@ -224,7 +226,9 @@
     "reguläre",
     "seit",
     "sich",
+    "sicher",
     "sie",
+    "signifikant",
     "signifikante",
     "sind",
     "sowie",
@@ -259,6 +263,8 @@
   ],
   "negations": {
     "following": [
+      "frei von",
+      "free of",
       "kein",
       "keine",
       "keinem",
@@ -274,6 +280,15 @@
       "negativ",
       "negative",
       "negativer",
+      "nicht befallen",
+      "nicht betroffen",
+      "nicht infiltriert",
+      "nicht suspekt",
+      "nicht vergrößert",
+      "nicht überschritten",
+      "not enlarged",
+      "not involved",
+      "not suspicious",
       "unauffällig",
       "unauffällige",
       "unauffälliger"

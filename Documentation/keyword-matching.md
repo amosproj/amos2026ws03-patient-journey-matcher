@@ -19,7 +19,7 @@ Nothing else writes the schema. Deleting a document deletes its index rows.
 |---|---|---|
 | `translations` | German words, codes and abbreviations | `Knochenmetastasen` → bone metastases, `RPE` → radical prostatectomy, `ADT` → androgen deprivation therapy, `R1` → positive margins |
 | `skip` | Function words, units, time spans, codes of absent findings and a stable PSA trend | `nach`, `ng`, `Wochen`, `R0`, `stable` |
-| `negations` | Words that negate a finding: `following` up to the end of its clause, `clause` the whole clause, `next` the next word only | "Lokalrezidiv, keine Fernmetastasen" → local recurrence; "Lymphknoten unauffällig" → nothing; "PSA nicht nachweisbar" → PSA |
+| `negations` | Words and phrases that negate a finding: `following` up to the end of its clause, `clause` the whole clause, `next` the next searched word | "Lokalrezidiv, keine Fernmetastasen" → local recurrence; "Lymphknoten unauffällig" and "Lymphknoten nicht befallen" → nothing; "PSA nicht mehr nachweisbar" → PSA |
 | `generic` | English terms that say little about a patient | initial, follow up, urology |
 
 Drug names and other words without an entry pass unchanged (Olaparib, PSA); numbers are dropped. No LLM or outside service sees the journey.
@@ -201,7 +201,7 @@ The file covers what the keyword ranking found. Another approach's first 10 will
 
 **This version**
 
-- **Hand-made term lists.** They cover the 20 synthetic journeys (#14). An unknown German word finds nothing, an unknown generic word counts as medical, and a finding negated in an unlisted way ("frei von", "o. B.") is searched as if present. To be extended for AIlixir's data (#44).
+- **Hand-made term lists.** They cover the 20 synthetic journeys (#14). An unknown German word finds nothing, an unknown generic word counts as medical, and a finding negated in an unlisted way ("o. B.", "noch nie") is searched as if present. How far a negation reaches is a rule per word, not grammar: "nicht" negates the next searched word, or the whole clause in a listed phrase such as "nicht befallen". To be extended for AIlixir's data (#44).
 - **Tuned on synthetic prostate cancer journeys with LLM grades.** Real journeys may need other constants (#44).
 - **Keyword filter.** It drops a few medical words ("doctor", "rising" for "rise") and keeps rare non-medical ones (names, typos).
 - **Scores** compare within one list only, not between journeys or algorithms.

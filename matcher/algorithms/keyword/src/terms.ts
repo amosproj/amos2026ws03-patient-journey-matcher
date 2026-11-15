@@ -7,12 +7,16 @@ import german from "../data/german-terms.json" with { type: "json" };
 const ENGLISH = new Map<string, string>(Object.entries(german.translations));
 const SKIP = new Set(german.skip);
 const GENERIC = new Set(german.generic);
-// negates the rest of the clause: "keine Fernmetastasen"
-const NEGATES_FOLLOWING = new Set(german.negations.following);
-// negates the whole clause: "Lymphknoten unauffällig"
-const NEGATES_CLAUSE = new Set(german.negations.clause);
-// negates the next word only: "nicht nachweisbar"
-const NEGATES_NEXT = new Set(german.negations.next);
+type Scope = keyof typeof german.negations;
+// negation words and phrases with their scope; longest first: "nicht befallen" beats "nicht"
+const NEGATIONS = Object.entries(german.negations)
+  .flatMap(([scope, entries]) =>
+    entries.map((entry) => ({
+      scope: scope as Scope,
+      words: entry.split(" "),
+    })),
+  )
+  .sort((a, b) => b.words.length - a.words.length);
 // not the comma of "87,7" or the point of "11.25"
 const CLAUSE_END = /[;:()]|[,.]\s|\s[–—-]\s/;
 
@@ -51,27 +55,49 @@ export function eventWords(event: TermSource): EventWord[] {
 
 function clauseWords(clause: string): EventWord[] {
   const words = clause.match(/[\p{L}\p{N}]+/gu) ?? [];
-  const afterNext = (index: number) => NEGATES_NEXT.has(words[index - 1] ?? "");
-  // "nicht ausgeschlossen": a negation word after one of NEGATES_NEXT is cancelled
-  const negates = (list: Set<string>) => (word: string, index: number) =>
-    list.has(word) && !afterNext(index);
-  const negatedFrom = words.some(negates(NEGATES_CLAUSE))
-    ? 0
-    : words.findIndex(negates(NEGATES_FOLLOWING));
-  return words.map((word, index) => {
-    const negation =
-      NEGATES_CLAUSE.has(word) ||
-      NEGATES_FOLLOWING.has(word) ||
-      NEGATES_NEXT.has(word);
-    const negated =
-      (negatedFrom !== -1 && index >= negatedFrom) || afterNext(index);
-    if (negated && !negation) return { word, term: null, negated: true };
+  // per word: the scope of the negation it is part of
+  const scopes = words.map((): Scope | undefined => undefined);
+  words.forEach((_, at) => {
+    if (scopes[at]) return;
+    const found = NEGATIONS.find((negation) =>
+      negation.words.every((word, offset) => words[at + offset] === word),
+    );
+    if (found) scopes.fill(found.scope, at, at + found.words.length);
+  });
+  const searched = (word: string, at: number) =>
+    !scopes[at] && /\p{L}/u.test(word) && !SKIP.has(word);
+  const negatedNext = new Set<number>();
+  const cancelled = new Set<number>();
+  scopes.forEach((scope, at) => {
+    if (scope !== "next") return;
+    // over skipped words: "nicht in die Samenblasen", "nicht sicher ausgeschlossen"
+    const target = words.findIndex(
+      (word, index) =>
+        index > at &&
+        scopes[index] !== "next" &&
+        (scopes[index] || searched(word, index)),
+    );
+    if (target === -1) return;
+    if (!scopes[target]) {
+      negatedNext.add(target);
+      return;
+    }
+    // a negated negation negates nothing
+    for (let index = target; scopes[index] === scopes[target]; index++) {
+      cancelled.add(index);
+    }
+  });
+  const first = (scope: Scope) =>
+    scopes.findIndex((found, at) => found === scope && !cancelled.has(at));
+  const negatedFrom = first("clause") === -1 ? first("following") : 0;
+  return words.map((word, at) => {
+    if (scopes[at]) return { word, term: null };
+    if ((negatedFrom !== -1 && at >= negatedFrom) || negatedNext.has(at)) {
+      return { word, term: null, negated: true };
+    }
     return {
       word,
-      term:
-        /\p{L}/u.test(word) && !SKIP.has(word) && !negation
-          ? (ENGLISH.get(word) ?? word)
-          : null,
+      term: searched(word, at) ? (ENGLISH.get(word) ?? word) : null,
     };
   });
 }
