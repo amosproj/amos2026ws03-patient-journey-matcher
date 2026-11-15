@@ -15,6 +15,7 @@ export function testDatabaseUrl(): string | undefined {
 }
 
 export interface TestDatabase {
+  readonly connectionString: string;
   pool: Pool;
   drop(): Promise<void>;
 }
@@ -26,20 +27,37 @@ export interface TestDatabase {
 export async function createTestDatabase(url: string): Promise<TestDatabase> {
   const admin = new Pool({ connectionString: url });
   const name = `test_${randomUUID().replaceAll("-", "").slice(0, 12)}`;
-  await admin.query(`CREATE DATABASE ${name}`);
+  try {
+    await admin.query(`CREATE DATABASE ${name} TEMPLATE template0 LOCALE 'C'`);
+  } catch (error) {
+    await admin.end();
+    throw error;
+  }
   const target = new URL(url);
   target.pathname = `/${name}`;
-  const pool = new Pool({ connectionString: target.toString() });
-  const files = (await readdir(INIT_DIR)).filter((file) =>
-    file.endsWith(".sql"),
-  );
-  for (const file of files.sort()) {
-    await pool.query(await readFile(new URL(file, INIT_DIR), "utf8"));
+  const connectionString = target.toString();
+  const pool = new Pool({ connectionString });
+  try {
+    const files = (await readdir(INIT_DIR)).filter((file) =>
+      file.endsWith(".sql"),
+    );
+    for (const file of files.sort()) {
+      await pool.query(await readFile(new URL(file, INIT_DIR), "utf8"));
+    }
+  } catch (error) {
+    await Promise.allSettled([pool.end()]);
+    try {
+      await admin.query(`DROP DATABASE ${name} WITH (FORCE)`);
+    } finally {
+      await admin.end();
+    }
+    throw error;
   }
   return {
+    connectionString,
     pool,
     async drop() {
-      const ended = pool.end();
+      await pool.end();
       try {
         // no FORCE: it kills connections still closing; Postgres waits 5 s for them
         await admin.query(`DROP DATABASE ${name}`);
@@ -50,7 +68,6 @@ export async function createTestDatabase(url: string): Promise<TestDatabase> {
       } finally {
         await admin.end();
       }
-      await ended;
     },
   };
 }

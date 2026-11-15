@@ -39,6 +39,7 @@ export interface DownloaderOptions {
   /** Milliseconds between two requests to the same host. */
   intervalMs?: (host: string) => number;
   maxBytes?: number;
+  timeoutMs?: number;
   /** Speech-to-text for audio files; without it, audio is not read. */
   transcribe?: Transcribe;
   maxAudioBytes?: number;
@@ -82,6 +83,7 @@ export function createDownloader({
   sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms)),
   intervalMs = (host) => INTERVAL_MS[host] ?? DEFAULT_INTERVAL_MS,
   maxBytes = MAX_BYTES,
+  timeoutMs = TIMEOUT_MS,
   transcribe,
   maxAudioBytes = MAX_AUDIO_BYTES,
 }: DownloaderOptions = {}): Downloader {
@@ -107,7 +109,7 @@ export function createDownloader({
       try {
         response = await fetch(url, {
           headers: { "User-Agent": USER_AGENT },
-          signal: AbortSignal.timeout(TIMEOUT_MS),
+          signal: AbortSignal.timeout(timeoutMs),
         });
         if (response.ok) return await readBody(response, maxBytes);
       } catch (error) {
