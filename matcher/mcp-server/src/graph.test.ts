@@ -4,6 +4,7 @@ import type { DocumentStore } from "@matcher/db";
 import { expect, test, vi } from "vitest";
 import { matchJourneyInputSchema } from "./contract.ts";
 import { graphJourney, patientGraphSchema } from "./graph.ts";
+import { journeyState } from "./journey.ts";
 import { createMatchService } from "./match.ts";
 
 function node(uuid: string, name: string, type: string) {
@@ -27,7 +28,7 @@ function edge(
   };
 }
 
-// A small part of a generated graph: a diagnosis, a PSA value that the operation replaces, a
+// A small part of a generated graph: a diagnosis, a PSA value that a newer one replaces, a
 // fact without a date and a fact about the clinic.
 const graph = {
   nodes: [
@@ -127,24 +128,52 @@ test("rejects two nodes with the same uuid", () => {
   const nodes = [...graph.nodes, node("cancer", "Olaparib", "Medication")];
 
   expect(issues({ ...graph, nodes })).toEqual([
-    { path: ["nodes", 5, "uuid"], message: "Another node has the same uuid." },
+    {
+      path: ["nodes", 5, "uuid"],
+      message: "Another entry of nodes has the same uuid.",
+    },
   ]);
 });
 
-test("makes one event per day and leaves out replaced, undated and provider facts", () => {
+test("rejects two edges with the same uuid", () => {
+  const edges = [...graph.edges, edge("e1", ["patient", "psa"], "2027-03-01")];
+
+  expect(issues({ ...graph, edges })).toEqual([
+    {
+      path: ["edges", 6, "uuid"],
+      message: "Another entry of edges has the same uuid.",
+    },
+  ]);
+});
+
+test("rejects a fact that ends before it starts", () => {
+  const edges = [
+    edge("e1", ["patient", "cancer"], "2027-02-01", "2027-01-01"),
+    edge("e2", ["patient", "psa"], "2027-02-01", "2027-02-01"),
+  ];
+
+  expect(issues({ ...graph, edges })).toEqual([
+    {
+      path: ["edges", 0, "invalid_at"],
+      message: "The fact ends before it starts.",
+    },
+  ]);
+});
+
+test("makes one event per day, keeps a replaced fact, leaves out undated and provider facts", () => {
   expect(graphJourney(read(graph))).toEqual({
     patient_id: "Patient-5",
     events: [
       {
         id: "2026-12-08",
         type: "facts",
-        label: "C61 Prostatakarzinom",
+        label: "C61 Prostatakarzinom, PSA",
         date: "2026-12-08",
       },
       {
         id: "2027-01-22",
         type: "facts",
-        label: "radical prostatectomy, PSA",
+        label: "PSA, radical prostatectomy",
         date: "2027-01-22",
       },
     ],
@@ -160,14 +189,16 @@ test("sorts the events by day, whatever the order of the edges", () => {
   ]);
 });
 
-test.each([
-  ["keeps a fact that is replaced after as_of", "2027-01-21", true],
-  ["leaves out a fact that is replaced on as_of", "2027-01-22", false],
-])("%s", (_, as_of, kept) => {
-  const { events } = graphJourney(read(graph), as_of);
+test("passes as_of on to the journey, where it picks the most recent event", () => {
+  const journey = graphJourney(read(graph), "2026-12-31");
 
-  expect(events[0]?.label).toBe(
-    kept ? "C61 Prostatakarzinom, PSA" : "C61 Prostatakarzinom",
+  expect(journey.as_of).toBe("2026-12-31");
+  expect(journeyState(journey).focus.id).toBe("2026-12-08");
+});
+
+test("rejects an as_of before the first fact, like the contract", () => {
+  expect(() => graphJourney(read(graph), "2026-01-01")).toThrow(
+    "as_of must not be earlier than the first event.",
   );
 });
 

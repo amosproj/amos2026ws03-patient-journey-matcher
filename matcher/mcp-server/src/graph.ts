@@ -39,17 +39,23 @@ export const patientGraphSchema = z
         message: "The graph must have exactly one Patient node.",
       });
     }
-    const known = new Set<string>();
-    nodes.forEach(({ uuid }, index) => {
-      if (known.has(uuid)) {
-        context.addIssue({
-          code: "custom",
-          path: ["nodes", index, "uuid"],
-          message: "Another node has the same uuid.",
-        });
-      }
-      known.add(uuid);
-    });
+    for (const [list, entries] of [
+      ["nodes", nodes],
+      ["edges", edges],
+    ] as const) {
+      const seen = new Set<string>();
+      entries.forEach(({ uuid }, index) => {
+        if (seen.has(uuid)) {
+          context.addIssue({
+            code: "custom",
+            path: [list, index, "uuid"],
+            message: `Another entry of ${list} has the same uuid.`,
+          });
+        }
+        seen.add(uuid);
+      });
+    }
+    const known = new Set(nodes.map(({ uuid }) => uuid));
     edges.forEach((edge, index) => {
       for (const end of ["source_node_uuid", "target_node_uuid"] as const) {
         if (!known.has(edge[end])) {
@@ -59,6 +65,14 @@ export const patientGraphSchema = z
             message: "The edge points to a node that is not in the graph.",
           });
         }
+      }
+      const { valid_at, invalid_at } = edge;
+      if (valid_at != null && invalid_at != null && invalid_at < valid_at) {
+        context.addIssue({
+          code: "custom",
+          path: ["edges", index, "invalid_at"],
+          message: "The fact ends before it starts.",
+        });
       }
     });
   });
@@ -74,13 +88,15 @@ function isPatient({ labels }: Node): boolean {
  * The journey of a patient graph, in the format `match_journey` takes: one event per day, named
  * by the nodes of the facts that start on that day.
  *
- * Left out are facts without a date, facts about a provider (who treated the patient and where
- * does not help to find literature) and facts that a newer one replaced on or before `as_of`,
- * or at any time without `as_of`. The fact sentences stay in the graph: the keyword matcher
+ * Left out are facts without a date and facts about a provider: who treated the patient and
+ * where does not help to find literature. A fact that a newer one replaced (`invalid_at`) stays,
+ * because it still happened on its day: Graphiti also marks an operation as replaced when a
+ * later report describes it again. The fact sentences stay in the graph: the keyword matcher
  * reads event texts as German journey words and would turn the English "as" into a search term.
  *
- * Throws like the contract does for a journey: without an event, with more than 500, or with
- * an `as_of` before the first one.
+ * `as_of` is passed on to the journey, where it picks the most recent event. Throws like the
+ * contract does for a journey: without an event, with more than 500, or with an `as_of` before
+ * the first one.
  */
 export function graphJourney(
   { nodes, edges }: PatientGraph,
@@ -91,16 +107,14 @@ export function graphJourney(
   const byUuid = new Map(nodes.map((node) => [node.uuid, node]));
   const days = new Map<string, Set<string>>();
   for (const edge of edges) {
-    const { valid_at, invalid_at } = edge;
+    const { valid_at } = edge;
     const ends = [edge.source_node_uuid, edge.target_node_uuid].map(
       (uuid) => byUuid.get(uuid) as Node,
     );
-    const replaced =
-      invalid_at != null && (as_of === undefined || invalid_at <= as_of);
     const aboutProvider = ends.some(({ labels }) =>
       labels.includes("Provider"),
     );
-    if (valid_at == null || replaced || aboutProvider) continue;
+    if (valid_at == null || aboutProvider) continue;
 
     for (const node of ends) {
       if (node === patient) continue;
@@ -116,7 +130,8 @@ export function graphJourney(
       .map(([date, names]) => ({
         id: date,
         type: "facts",
-        label: [...names].join(", "),
+        // Sorted, so the label does not depend on the order of the edges.
+        label: [...names].sort().join(", "),
         date,
       })),
   });

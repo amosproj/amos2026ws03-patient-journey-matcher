@@ -182,28 +182,29 @@ This is the graph that the SS26 pipeline builds. We have the code in [`backend/w
 **What this means for `match_journey`.**
 
 - A graph input needs the nodes and edges with their dates, read from Neo4j or sent as JSON. The Cypher export is not enough.
-- The most recent event is then the newest day with a fact on or before `as_of`, with the facts that are still valid at that time.
+- The most recent event is then the newest day with a fact on or before `as_of`.
 - Real graphs for tests come from the SS26 graph steps, run on the generated PDFs, see [Generating a graph](#generating-a-graph). For the patients without a graph, the generated `timeline.json` covers the same events.
 
 **Reading a graph.** [`graph.ts`](../matcher/mcp-server/src/graph.ts) reads a graph as JSON with the lists `nodes` and `edges` in Graphiti's field names and turns it into a journey for `match_journey`.
 
-- **Checked on reading:** every node has `uuid`, `name` and `labels`, and no two nodes share a `uuid`. Every edge has `uuid`, `name`, `fact` and the IDs of its two nodes, and both nodes are in the graph. There is exactly one `Patient` node. `valid_at` and `invalid_at` are an ISO date or date-time, `null` or left out; an empty string is rejected. A graph that fails a check is rejected with the place of the error. Other fields are dropped.
+- **Checked on reading:** every node has `uuid`, `name` and `labels`. Every edge has `uuid`, `name`, `fact` and the IDs of its two nodes, and both nodes are in the graph. No two nodes and no two edges share a `uuid`. A fact does not end (`invalid_at`) before it starts (`valid_at`). There is exactly one `Patient` node. `valid_at` and `invalid_at` are an ISO date or date-time, `null` or left out; an empty string is rejected. A graph that fails a check is rejected with the place of the error. Other fields are dropped.
 - **The day of a time** is the day as it is written. `2027-01-22T00:30:00+02:00` counts as 22 January; the time zone does not move it.
-- **One event per day:** the facts whose `valid_at` is that day. The `id` of the event is the date. Its `label` holds the names of the nodes of these facts, each once and without the patient.
-- **Left out:** facts without `valid_at`, facts about a `Provider`, facts that name only the patient, and facts that a newer one replaced on or before `as_of`. Without `as_of`, every fact with `invalid_at` is left out.
-- **The fact sentences are not passed on.** The keyword matcher reads event texts as German journey words, so the English word "as" in a sentence became the search term "active surveillance". The sentences stay in the graph for the approaches that read it directly.
+- **One event per day:** the facts whose `valid_at` is that day. The `id` of the event is the date. Its `label` holds the names of the nodes of these facts, each once, in alphabetical order and without the patient.
+- **Left out:** facts without `valid_at`, facts about a `Provider` and facts that name only the patient.
+- **Replaced facts stay.** A fact with `invalid_at` still happened on its day. Graphiti also sets `invalid_at` on an operation when a later report describes it again: in the graph of Patient-5 the radical prostatectomy of 22 January 2027 is marked as replaced a week later. Leaving such facts out removed the operation from its own day.
+- **The fact sentences are not passed on.** The keyword matcher reads event texts as German journey words, so the English word "as" in a sentence became the search term "active surveillance". So the matcher sees which concepts a day names, but not their values, and not whether a finding was confirmed or ruled out. The sentences stay in the graph for the approaches that read it directly.
 - **`patient_id`** is the name of the `Patient` node.
 - **The journey has to pass the contract** like any other: a graph without a dated fact or with facts on more than 500 days is rejected, and so is an `as_of` before the first event.
 
-The graph of Patient-5 in [`patientdata/Patient-5/graph.json`](../patientdata/Patient-5/graph.json) holds all 35 documents: 34 nodes and 174 edges, which become 22 events. Each of these 22 days is the date of an event in its `timeline.json`, and the last one is the last event of the timeline. `match_journey` does not take a graph yet, this waits for the answer to [open question](#open-questions) 1. How well the keyword matcher ranks with a journey made from a graph is not measured yet.
+The graph of Patient-5 in [`patientdata/Patient-5/graph.json`](../patientdata/Patient-5/graph.json) holds all 35 documents: 34 nodes and 174 edges, which become 23 events. These 23 days are exactly the 23 dates of the events in its `timeline.json`. `match_journey` does not take a graph yet, this waits for the answer to [open question](#open-questions) 1. How well the keyword matcher ranks with a journey made from a graph is not measured yet.
 
 ### Generating a graph
 
 `make graph PATIENT=Patient-5` builds the graph of one generated patient and writes it to `patientdata/Patient-5/graph.json` ([`scripts/patient_graph.py`](../scripts/patient_graph.py)). It needs `GEMINI_API_KEY`, see [build options](build.md#options).
 
-- **Same steps as SS26.** For each PDF of the patient, oldest first, Gemini reads the PDF ([`extractor.py`](../backend/workers/pipeline/llm/extractor.py)) and Graphiti adds it to the graph ([`builder.py`](../backend/workers/pipeline/graph/builder.py)). The code of both steps is unchanged.
+- **Same steps as SS26.** For each PDF of the patient, in the order of the event numbers in the file names (`_e01`, `_e02`, …), Gemini reads the PDF ([`extractor.py`](../backend/workers/pipeline/llm/extractor.py)) and Graphiti adds it to the graph ([`builder.py`](../backend/workers/pipeline/graph/builder.py)). The code of both steps is unchanged.
 - **Two differences, so that it runs without a Google Cloud project.** It uses an API key from Google AI Studio instead of Vertex AI, with the embedding model `gemini-embedding-001` instead of `text-embedding-005`. And it uses an embedded Kuzu database under `out/patient-graph/` instead of Neo4j, so no server is needed.
-- **It can stop and go on.** A free key allows only some documents per day. The run then stops and writes the graph of the documents read so far. The next run goes on with the next document. `documents` in `graph.json` lists the PDFs that are in the graph.
+- **It can stop and go on.** A free key allows only some documents per day. The run then stops, writes the graph of the documents read so far and ends with an error. The next run goes on with the next document: the database knows which documents it holds, so none is added twice. `documents` in `graph.json` lists the PDFs that are in the graph.
 - **The file** holds `patient`, `documents`, and the `nodes` and `edges` as Graphiti holds them, without the embeddings. The reader takes it as it is.
 - **Kuzu is deprecated in Graphiti.** graphiti-core 0.31.2 warns that its Kuzu backend will be removed, because Kuzu is no longer maintained. The versions are pinned in `backend/uv.lock`, so the script keeps working. If we need it for longer, it should move to Neo4j, like SS26.
 
