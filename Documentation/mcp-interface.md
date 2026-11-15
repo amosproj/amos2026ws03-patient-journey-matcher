@@ -207,11 +207,3 @@ For the team:
 
 4. How does the AIlixir backend reach the server, and how does it authenticate? We decide this with the deployment (#42).
 5. Is `keyword` the right default until the evaluation in #11 has results?
-
-Integration error behavior: SDK input validation returns `isError: true` and may use plain
-text. Known tool failures use JSON text with `error_code` and `message`; unexpected failures
-return generic `INTERNAL_ERROR`. Unsearchable indexes return a successful structured payload
-with `degraded: true`, empty results and a safe reason. A valid search without matches has
-`degraded: false`. Indexing download failures are stored in indexing status and do not degrade
-otherwise working metadata searches. `get_source` returns stored links, including when a
-subsequent client download fails; it does not perform a download itself.

@@ -6,6 +6,7 @@ Run these commands from the repository root. You need the tools listed under [Pr
 |---|---|
 | `make build` | Installs the locked dependencies of `crawler/` and `matcher/`, and typechecks `matcher/` |
 | `make test` | Builds, then runs the same checks as [CI](github-ci.md); with the root `.env`, the database tests use the database from `make db` |
+| `make test-integration` | Builds, then runs only the [end-to-end tests](e2e-tests.md) |
 | `make start` | Builds, then starts the MCP server on `http://127.0.0.1:3000/mcp`; needs the root `.env` for the database |
 | `make debug` | Starts the [debug UI](../debug/crawler/README.md) for the crawler, the database, the index and the matcher on `http://127.0.0.1:8765` |
 | `make db` | Starts the [database](database.md) and applies `db/init/`; needs the root `.env` |
@@ -87,16 +88,3 @@ npx @modelcontextprotocol/inspector --cli http://127.0.0.1:3000/mcp --transport 
 - **The seed is a small sample.** Journeys on diseases it barely covers find little. How the ranking can go wrong: [keyword matching](keyword-matching.md#known-limitations).
 - **Local use only.** The server listens on `127.0.0.1` and has no authentication.
 - **Old database volumes** warn "collation version mismatch": [database](database.md#data-and-initialization).
-
-MCP workflow integration tests run with `make test-integration`. First start the project
-PostgreSQL image with `make db` and set `TEST_DATABASE_URL` (the root `.env` supplies it
-for Make commands). The account must create and drop databases. The target installs locked
-Python and Node dependencies; direct `cd matcher && pnpm test:integration` requires those
-already installed. Missing prerequisites fail the explicit command. Ordinary `pnpm test`
-excludes the integration suite; `make test` and matcher CI run both.
-
-The suite uses disposable databases, real Python source parsers and collection/storage,
-real downloads and keyword indexing, and an MCP SDK client over loopback HTTP. Provider
-requests are mapped to local fixtures; unknown destinations and redirects are rejected.
-No provider credentials or speech model are required. Files execute sequentially with
-60-second case/hook limits and bounded crawler subprocess output and deadlines.

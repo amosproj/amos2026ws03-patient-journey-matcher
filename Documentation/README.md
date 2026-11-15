@@ -8,6 +8,8 @@ Build, user, and technical documentation
 
 [Build, run and test](build.md)
 
+[End-to-end tests](e2e-tests.md)
+
 [External sources: metadata, storage and indexing](sources/README.md)
 
 [Resource storage and retrieval](storage.md)
