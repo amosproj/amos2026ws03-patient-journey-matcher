@@ -1,226 +1,221 @@
-import { afterAll, beforeAll, expect, test } from "vitest";
-import { matchResultSchema, sourceDownloadsSchema } from "../contract.ts";
-import { createHarness } from "./harness.ts";
+import { testDatabaseUrl } from "@matcher/db/testing";
+import {
+  afterAll,
+  beforeAll,
+  describe,
+  expect,
+  onTestFinished,
+  test,
+} from "vitest";
+import {
+  ARTICLE,
+  createHarness,
+  type Harness,
+  JOURNEY,
+  zenodoSearch,
+} from "./harness.ts";
 
-let h: Awaited<ReturnType<typeof createHarness>>;
-const journey = {
-  patient_id: "synthetic",
-  events: [
-    { id: "focus", type: "therapy", label: "Olaparib", date: "2026-01-01" },
-  ],
-};
-const article = `<html><body>${"The patients in this study were given a treatment and the results of the study showed that the therapy was effective. ".repeat(30)} Olaparib improves treatment outcomes.</body></html>`;
+const databaseUrl = testDatabaseUrl();
 const file = "/api/records/101/files/article.html/content";
-beforeAll(async () => {
-  h = await createHarness();
-});
-afterAll(async () => {
-  await h?.close();
-});
-async function match(extra = {}) {
-  const result = await h.client.callTool({
-    name: "match_journey",
-    arguments: { journey, ...extra },
-  });
-  expect(result.isError).not.toBe(true);
-  return matchResultSchema.parse(result.structuredContent);
-}
+const event = JOURNEY.events[0];
 
-test("real crawler, full-text indexing, MCP discovery, matching, retrieval and reindexing", async () => {
-  const records = [
-    { id: 101, title: "Clinical treatment evidence", files: true },
-    { id: 102, title: "Olaparib clinical evidence", files: false },
-    { id: 103, title: "Weather observations", files: false },
-  ].map((r) => ({
-    id: String(r.id),
-    metadata: {
-      title: r.title,
-      resource_type: { id: "publication-article" },
-      publication_date: "2025-01-01",
-      languages: [{ id: "eng" }],
-    },
-    access: { status: "open" },
-    files: {
-      enabled: true,
-      entries: r.files
-        ? { "article.html": { key: "article.html", mimetype: "text/html" } }
-        : {},
-    },
-  }));
-  h.providers.routes.set("/api/records", [
-    {
-      body: JSON.stringify({ hits: { hits: records } }),
-      type: "application/json",
-    },
-  ]);
-  h.providers.routes.set(file, [{ body: article }]);
-  const summary = await h.crawl();
-  expect(summary.failures).toBe(0);
-  expect(summary.ids.sort()).toEqual([
-    "zenodo:101",
-    "zenodo:102",
-    "zenodo:103",
-  ]);
-  expect((await h.db.pool.query("SELECT ok FROM crawl_runs")).rows).toEqual([
-    { ok: true },
-  ]);
-  const tools = await h.client.listTools();
-  expect(tools.tools.map((t) => t.name).sort()).toEqual([
-    "get_source",
-    "match_journey",
-  ]);
-  expect((await match()).degraded).toBe(true);
-  await h.index();
-  const answer = await match();
-  expect(answer.degraded).toBe(false);
-  expect(answer.focus_event_id).toBe("focus");
-  expect(answer.results.map((r) => r.source_id).sort()).toEqual([
-    "zenodo:101",
-    "zenodo:102",
-  ]);
-  const indexed = await h.db.pool.query(
-    "SELECT status, terms::text FROM keyword.full_texts WHERE document_id = 'zenodo:101'",
-  );
-  expect(indexed.rows[0].status).toBe("indexed");
-  expect(indexed.rows[0].terms).toContain("olaparib");
-  const source = sourceDownloadsSchema.parse(
-    (
-      await h.client.callTool({
+describe.skipIf(!databaseUrl)("crawl, index and MCP", () => {
+  let h: Harness;
+  let crawled: Awaited<ReturnType<Harness["crawl"]>>;
+  let degradedBeforeIndexing: boolean;
+
+  beforeAll(async () => {
+    h = await createHarness(databaseUrl as string);
+    h.providers.routes.set("/api/records", [
+      zenodoSearch([
+        {
+          id: "101",
+          title: "Clinical treatment evidence",
+          files: {
+            "article.html": { key: "article.html", mimetype: "text/html" },
+          },
+        },
+        { id: "102", title: "Olaparib clinical evidence" },
+        { id: "103", title: "Weather observations" },
+      ]),
+    ]);
+    h.providers.routes.set(file, [{ body: ARTICLE }]);
+    crawled = await h.crawl();
+    degradedBeforeIndexing = (await h.match()).degraded;
+    await h.index();
+  });
+  afterAll(async () => {
+    await h?.close();
+  });
+
+  test("the crawler stores every record in a successful run", async () => {
+    expect(crawled.failures).toBe(0);
+    expect(crawled.ids.sort()).toEqual([
+      "zenodo:101",
+      "zenodo:102",
+      "zenodo:103",
+    ]);
+    expect((await h.db.pool.query("SELECT ok FROM crawl_runs")).rows).toEqual([
+      { ok: true },
+    ]);
+  });
+
+  test("search is degraded until the first index run", () => {
+    expect(degradedBeforeIndexing).toBe(true);
+  });
+
+  test("MCP lists both tools", async () => {
+    const { tools } = await h.client.listTools();
+    expect(tools.map((tool) => tool.name).sort()).toEqual([
+      "get_source",
+      "match_journey",
+    ]);
+  });
+
+  test("a word only in the downloaded full text matches like one in a title", async () => {
+    const answer = await h.match();
+    expect(answer.degraded).toBe(false);
+    expect(answer.focus_event_id).toBe("focus");
+    expect(answer.results.map((r) => r.source_id).sort()).toEqual([
+      "zenodo:101",
+      "zenodo:102",
+    ]);
+    const indexed = await h.db.pool.query(
+      "SELECT status, terms::text FROM keyword.full_texts WHERE document_id = 'zenodo:101'",
+    );
+    expect(indexed.rows[0].status).toBe("indexed");
+    expect(indexed.rows[0].terms).toContain("olaparib");
+  });
+
+  test("get_source returns the links the client downloads", async () => {
+    const source = await h.source("zenodo:101");
+    expect(source.downloads).toHaveLength(1);
+    const download = await h.providers.fetchLocal(source.downloads[0].url);
+    expect(await download.text()).toContain("Olaparib");
+    expect((await h.source("zenodo:102")).downloads).toEqual([]);
+  });
+
+  test("as_of, limit and content types shape the answer", async () => {
+    const future = {
+      id: "future",
+      type: "therapy",
+      label: "Pembrolizumab",
+      date: "2027-01-01",
+    };
+    const historic = await h.match({
+      journey: { ...JOURNEY, as_of: "2026-01-02", events: [event, future] },
+    });
+    expect(historic.focus_event_id).toBe("focus");
+    expect(historic.results.map((r) => r.source_id)).toContain("zenodo:101");
+    expect((await h.match({ limit: 1 })).results).toHaveLength(1);
+    const podcasts = await h.match({ content_types: ["podcast_episode"] });
+    expect(podcasts.results).toEqual([]);
+  });
+
+  test("a journey without matches is not degraded", async () => {
+    const answer = await h.match({
+      journey: { ...JOURNEY, events: [{ ...event, label: "Pembrolizumab" }] },
+    });
+    expect(answer).toMatchObject({ degraded: false, results: [] });
+  });
+
+  test("reindexing unchanged documents downloads nothing", async () => {
+    const count = h.providers.requests.length;
+    await h.index();
+    expect(h.providers.requests).toHaveLength(count);
+  });
+
+  test("invalid requests name the bad field, and the server keeps working", async () => {
+    const invalid: [Record<string, unknown>, string][] = [
+      [{ journey: {} }, "journey.patient_id"],
+      [
+        { journey: { ...JOURNEY, patient_id: undefined } },
+        "journey.patient_id",
+      ],
+      [{ journey: { ...JOURNEY, as_of: "2020-01-01" } }, "journey.as_of"],
+      [
+        { journey: { ...JOURNEY, events: [{ ...event, date: "invalid" }] } },
+        "journey.events.0.date",
+      ],
+      [
+        { journey: { ...JOURNEY, events: [{ ...event, label: undefined }] } },
+        "journey.events.0.label",
+      ],
+      [
+        {
+          journey: {
+            ...JOURNEY,
+            events: Array.from({ length: 501 }, () => event),
+          },
+        },
+        "journey.events",
+      ],
+      [{ journey: { ...JOURNEY, events: [] } }, "journey.events"],
+      [{ limit: 0 }, "limit"],
+      [{ limit: 51 }, "limit"],
+      [{ content_types: ["invalid"] }, "content_types.0"],
+    ];
+    for (const [args, field] of invalid) {
+      const result = await h.client.callTool({
+        name: "match_journey",
+        arguments: { journey: JOURNEY, ...args },
+      });
+      expect(result.isError).toBe(true);
+      expect(result.structuredContent).toBeUndefined();
+      const text = JSON.stringify(result.content);
+      expect(text).toContain("Input validation error");
+      expect(text).toContain(field);
+      expect((await h.match()).degraded).toBe(false);
+    }
+  });
+
+  test("an unavailable algorithm, an unknown source and a failing database answer with error codes", async () => {
+    const graph = await h.client.callTool({
+      name: "match_journey",
+      arguments: { journey: JOURNEY, algorithm: "graph" },
+    });
+    expect(graph.isError).toBe(true);
+    expect(JSON.stringify(graph.content)).toContain("NOT_AVAILABLE");
+    const missing = await h.client.callTool({
+      name: "get_source",
+      arguments: { source_id: "absent" },
+    });
+    expect(missing.isError).toBe(true);
+    expect(JSON.stringify(missing.content)).toContain("SOURCE_NOT_FOUND");
+    const empty = await h.client.callTool({
+      name: "get_source",
+      arguments: { source_id: "" },
+    });
+    expect(empty.isError).toBe(true);
+    expect(JSON.stringify(empty.content)).toContain("Input validation error");
+    expect(JSON.stringify(empty.content)).toContain("source_id");
+    await h.db.pool.query("ALTER TABLE documents RENAME TO hidden_documents");
+    try {
+      const failed = await h.client.callTool({
         name: "get_source",
         arguments: { source_id: "zenodo:101" },
-      })
-    ).structuredContent,
-  );
-  expect(source.downloads).toHaveLength(1);
-  expect(
-    await (await h.providers.fetchLocal(source.downloads[0].url)).text(),
-  ).toContain("Olaparib");
-  const noFiles = sourceDownloadsSchema.parse(
-    (
-      await h.client.callTool({
-        name: "get_source",
-        arguments: { source_id: "zenodo:102" },
-      })
-    ).structuredContent,
-  );
-  expect(noFiles.downloads).toEqual([]);
-  const historic = await match({
-    journey: {
-      ...journey,
-      as_of: "2026-01-02",
-      events: [
-        ...journey.events,
-        {
-          id: "future",
-          label: "Pembrolizumab",
-          type: "therapy",
-          date: "2027-01-01",
-        },
-      ],
-    },
+      });
+      expect(failed.isError).toBe(true);
+      expect(JSON.stringify(failed.content)).toContain("INTERNAL_ERROR");
+      expect(JSON.stringify(failed.content)).not.toContain("hidden_documents");
+    } finally {
+      await h.db.pool.query("ALTER TABLE hidden_documents RENAME TO documents");
+    }
+    expect((await h.match()).degraded).toBe(false);
   });
-  expect(historic.focus_event_id).toBe("focus");
-  expect(historic.results.map((r) => r.source_id)).toContain("zenodo:101");
-  const noMatch = await match({
-    journey: {
-      ...journey,
-      events: [{ ...journey.events[0], label: "Pembrolizumab" }],
-    },
-  });
-  expect(noMatch).toMatchObject({ degraded: false, results: [] });
-  const empty = await h.client.callTool({
-    name: "get_source",
-    arguments: { source_id: "" },
-  });
-  expect(empty.isError).toBe(true);
-  const count = h.providers.requests.length;
-  await h.index();
-  expect(h.providers.requests).toHaveLength(count);
-  expect((await match({ limit: 1 })).results).toHaveLength(1);
-  expect((await match({ content_types: ["podcast_episode"] })).results).toEqual(
-    [],
-  );
-  expect(
-    (
-      await match({
-        journey: {
-          ...journey,
-          events: [{ ...journey.events[0], label: "Pembrolizumab" }],
-        },
-      })
-    ).degraded,
-  ).toBe(false);
-  expect(h.providers.unexpected).toEqual([]);
-});
 
-test("invalid SDK inputs and unavailable tools recover on the same HTTP server", async () => {
-  for (const args of [
-    { journey: {} },
-    { journey: { ...journey, patient_id: undefined } },
-    { journey: { ...journey, as_of: "2020-01-01" } },
-    {
-      journey: {
-        ...journey,
-        events: [{ ...journey.events[0], date: "invalid" }],
-      },
-    },
-    {
-      journey: {
-        ...journey,
-        events: [{ ...journey.events[0], label: undefined }],
-      },
-    },
-    {
-      journey: {
-        ...journey,
-        events: Array.from({ length: 501 }, () => journey.events[0]),
-      },
-    },
-    { journey: { ...journey, events: [] } },
-    { journey, limit: 0 },
-    { journey, limit: 51 },
-    { journey, content_types: ["invalid"] },
-    { journey, algorithm: "graph" },
-  ]) {
-    const result = await h.client.callTool({
-      name: "match_journey",
-      arguments: args,
+  test("get_source still returns a link whose file is gone", async () => {
+    h.providers.routes.set(file, [{ status: 404, body: "gone" }]);
+    onTestFinished(() => {
+      h.providers.routes.set(file, [{ body: ARTICLE }]);
     });
-    expect(result.isError).toBe(true);
-    expect(result.structuredContent).toBeUndefined();
-    expect(JSON.stringify(result.content).length).toBeGreaterThan(20);
-    expect((await match()).degraded).toBe(false);
-  }
-  const missing = await h.client.callTool({
-    name: "get_source",
-    arguments: { source_id: "absent" },
+    const source = await h.source("zenodo:101");
+    const download = await h.providers.fetchLocal(source.downloads[0].url);
+    expect(download.status).toBe(404);
+    expect((await h.match()).degraded).toBe(false);
   });
-  expect(missing.isError).toBe(true);
-  expect(JSON.stringify(missing.content)).toContain("SOURCE_NOT_FOUND");
-  await h.db.pool.query("ALTER TABLE documents RENAME TO hidden_documents");
-  try {
-    const failed = await h.client.callTool({
-      name: "get_source",
-      arguments: { source_id: "zenodo:101" },
-    });
-    expect(failed.isError).toBe(true);
-    expect(JSON.stringify(failed.content)).toContain("INTERNAL_ERROR");
-    expect(JSON.stringify(failed.content)).not.toContain("hidden_documents");
-  } finally {
-    await h.db.pool.query("ALTER TABLE hidden_documents RENAME TO documents");
-  }
-  expect((await match()).degraded).toBe(false);
-});
 
-test("source links remain available when a client download later fails", async () => {
-  h.providers.routes.set(file, [{ status: 404, body: "gone" }]);
-  const result = await h.client.callTool({
-    name: "get_source",
-    arguments: { source_id: "zenodo:101" },
+  test("no request reached an unknown fixture route", () => {
+    expect(h.providers.unexpected).toEqual([]);
   });
-  const source = sourceDownloadsSchema.parse(result.structuredContent);
-  expect((await h.providers.fetchLocal(source.downloads[0].url)).status).toBe(
-    404,
-  );
-  expect((await match()).degraded).toBe(false);
 });

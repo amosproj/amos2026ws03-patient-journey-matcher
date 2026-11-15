@@ -3,17 +3,52 @@ import { once } from "node:events";
 import { fileURLToPath } from "node:url";
 import { createApproaches } from "@matcher/approaches";
 import { createDocumentStore } from "@matcher/db";
-import { createTestDatabase, testDatabaseUrl } from "@matcher/db/testing";
+import { createTestDatabase } from "@matcher/db/testing";
 import { createDownloader } from "@matcher/download";
 import {
   Client,
   StreamableHTTPClientTransport,
 } from "@modelcontextprotocol/client";
+import { expect } from "vitest";
+import { matchResultSchema, sourceDownloadsSchema } from "../contract.ts";
 import { createMcpHttpServer } from "../http.ts";
 import { createMatchService } from "../match.ts";
-import { createProviders } from "./providers.ts";
+import { createProviders, type Reply } from "./providers.ts";
 
-export async function createHarness() {
+// Common English words: the indexer keeps only full texts that read as English (full-texts.ts).
+export const FILLER =
+  "The patients in this study were given a treatment and the results of the study showed that the therapy was effective. ".repeat(
+    30,
+  );
+export const ARTICLE = `<html><body>${FILLER} Olaparib improves treatment outcomes.</body></html>`;
+export const JOURNEY = {
+  patient_id: "synthetic",
+  events: [
+    { id: "focus", type: "therapy", label: "Olaparib", date: "2026-01-01" },
+  ],
+};
+
+/** Zenodo's search answer with these records; `files` are the entries of a record's files. */
+export function zenodoSearch(
+  records: { id: string; title: string; files?: Record<string, unknown> }[],
+): Reply {
+  const hits = records.map(({ id, title, files = {} }) => ({
+    id,
+    metadata: {
+      title,
+      resource_type: { id: "publication-article" },
+      publication_date: "2025-01-01",
+      languages: [{ id: "eng" }],
+    },
+    access: { status: "open" },
+    files: { enabled: true, entries: files },
+  }));
+  return { type: "application/json", body: JSON.stringify({ hits: { hits } }) };
+}
+
+export type Harness = Awaited<ReturnType<typeof createHarness>>;
+
+export async function createHarness(url: string) {
   const cleanup: (() => Promise<unknown>)[] = [];
   async function close() {
     const failures: unknown[] = [];
@@ -29,11 +64,6 @@ export async function createHarness() {
       throw new AggregateError(failures, "Integration cleanup failed");
   }
   try {
-    const url = testDatabaseUrl();
-    if (!url)
-      throw new Error(
-        "Integration tests require TEST_DATABASE_URL and make db",
-      );
     const db = await createTestDatabase(url);
     cleanup.push(() => db.drop());
     const providers = await createProviders();
@@ -165,6 +195,23 @@ export async function createHarness() {
       async index() {
         for (const approach of approaches)
           await approach.indexer.index(() => {});
+      },
+      /** `match_journey` for `JOURNEY`; `args` adds options or replaces the journey. */
+      async match(args = {}) {
+        const result = await client.callTool({
+          name: "match_journey",
+          arguments: { journey: JOURNEY, ...args },
+        });
+        expect(result.isError).not.toBe(true);
+        return matchResultSchema.parse(result.structuredContent);
+      },
+      async source(sourceId: string) {
+        const result = await client.callTool({
+          name: "get_source",
+          arguments: { source_id: sourceId },
+        });
+        expect(result.isError).not.toBe(true);
+        return sourceDownloadsSchema.parse(result.structuredContent);
       },
     };
   } catch (error) {

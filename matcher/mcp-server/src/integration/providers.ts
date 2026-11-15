@@ -13,21 +13,9 @@ export async function createProviders() {
   const routes = new Map<string, Reply[] | ((url: URL) => Reply)>();
   const requests: string[] = [];
   const unexpected: string[] = [];
-  const records: {
-    method: string;
-    route: string;
-    query: string;
-    attempt: number;
-  }[] = [];
   const server = createServer((req, res) => {
     const url = new URL(req.url ?? "/", "http://localhost");
     requests.push(url.pathname);
-    records.push({
-      method: req.method ?? "GET",
-      route: url.pathname,
-      query: url.search,
-      attempt: requests.filter((path) => path === url.pathname).length,
-    });
     const replies = routes.get(url.pathname);
     const reply =
       typeof replies === "function"
@@ -82,7 +70,6 @@ export async function createProviders() {
   return {
     routes,
     requests,
-    records,
     unexpected,
     baseUrl,
     fetchLocal,
