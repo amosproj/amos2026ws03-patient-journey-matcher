@@ -137,7 +137,7 @@ On 7,914 documents nDCG@10 is 0.72, up from 0.54 before #58 (measured before #57
 
 The first three brought most of the gain (about +0.16 when first measured), the others the rest.
 
-**Variants against the built ranking,** on all 129 points:
+**Variants against the built ranking,** on all 129 points. The focus weight is a trade-off: raising it brings more sources that fit the focus exactly into the first 10, and more on the wrong disease or setting; lowering it does the reverse.
 
 | Variant | Δ nDCG@10 (95 % interval) | Grade 0 in the first 10 (built: 38 of 1,290) |
 |---|---|---|
@@ -160,7 +160,10 @@ The first three brought most of the gain (about +0.16 when first measured), the 
 
 **What the numbers say.**
 
-- **The focus weight is 12, on a plateau.** From 3 to 30 no weight differs from 12 beyond chance; only a weight of 1 is far worse (about −0.2), as the context then outweighs the focus. A higher weight brings more sources on the wrong disease or setting, a lower one fewer: 12 is a middle value, and 8 would serve as well.
+- **The focus weight trades two things, and 12 is a middle value.**
+  - Higher: the current event dominates. More sources of grade 3 (760 at a weight of 20, 703 at 3), so nDCG@10 rises a little, within chance.
+  - Lower: the older events anchor the disease and the phase. Fewer sources of grade 0 (12 fewer at 3, 7 more at 20, both beyond chance), but some of grade 3 give way to grade 2.
+  - nDCG@10 counts a grade 3 more than twice as much as a grade 2, so it leans to the higher weight. If sources that confuse a patient weigh more, a lower weight such as 8 is the better choice. Only a weight of 1 is far worse (about −0.2): the context then outweighs the focus.
 - **No extra rule for the title.** Ranking the hits with a focus term in their title before all others, as #58 did first, gained nothing and put the metadata index's best hit outside the first 10 in 39 of 129 points, once at place 82. The title is in the metadata index already.
 - **Context: the 10 terms that the most older events name,** the more recent first on a tie. Without context, more hits are on other diseases; 20 terms rank worse. A weight that falls with each newer event dropped a surgery from the context of later check-ups.
 - **A stable PSA trend is not searched.** Of the first-20 sources with "stable", 43 % fit the patient, against 75 % of the others. The gain is small and its interval ends at 0; it was kept because it removes 8 of 46 sources on the wrong disease or setting. Leaving out "initial" too ranked worse.
