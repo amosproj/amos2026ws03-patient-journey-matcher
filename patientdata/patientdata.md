@@ -84,6 +84,16 @@ contains event-specific clinical details. The `documents` list identifies
 the document types generated for that event. `repeat_index` identifies
 repeated events where applicable and is otherwise `null`.
 
+A `graph.json` holds the patient graph that the SS26 graph steps build from the PDFs of a patient. It is the input of the graph reader (`matcher/mcp-server/src/graph.ts`) and exists only for the patients that were run so far. `make graph PATIENT=Patient-5` builds it, see [Generating a graph](../Documentation/mcp-interface.md#generating-a-graph).
+
+| Field | Description |
+|---|---|
+| `patient` | Synthetic patient identifier matching the folder name. |
+| `documents` | The PDFs that are in the graph, in the order they were read. The graph is complete when it lists every PDF of the folder. |
+| `nodes`, `edges` | The graph as Graphiti holds it, without the embeddings. |
+
+So far only Patient-5 has a graph. It holds all 35 PDFs and was built with a free API key and the model `gemini-3.5-flash-lite`, not with `gemini-2.5-flash` that SS26 uses, because the free key allows `gemini-2.5-flash` only 20 requests a day.
+
 ## Decision on the LLM Layer
 
 Template-based patient journeys without an LLM layer are sufficient for the intended development and testing purposes. In the sample comparison, the relevant clinical information and timelines were already represented. LLM enrichment mainly changed wording and text length; it did not provide substantial additional value for our tests. The reviewed LLM document set also contained inconsistencies in patient demographics and the chronological presentation of findings.

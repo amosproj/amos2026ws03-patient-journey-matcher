@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import type { Matcher } from "@matcher/core";
 import type { DocumentStore } from "@matcher/db";
 import { expect, test, vi } from "vitest";
@@ -225,4 +226,16 @@ test("rejects a graph with facts on more than 500 days", () => {
 
   expect(graphJourney(read(days(500))).events).toHaveLength(500);
   expect(() => graphJourney(read(days(501)))).toThrow();
+});
+
+test("reads the generated graph of Patient-5, which ends on the day its timeline ends", () => {
+  const folder = new URL("../../../patientdata/Patient-5/", import.meta.url);
+  const file = (name: string) =>
+    JSON.parse(readFileSync(new URL(name, folder), "utf8"));
+  const timeline = file("timeline.json");
+
+  const journey = graphJourney(read(file("graph.json")));
+
+  expect(journey.patient_id).toBe(timeline.patient_id);
+  expect(journey.events.at(-1)?.date).toBe(timeline.events.at(-1).date);
 });

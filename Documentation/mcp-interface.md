@@ -195,7 +195,7 @@ This is the graph that the SS26 pipeline builds. We have the code in [`backend/w
 - **`patient_id`** is the name of the `Patient` node.
 - **The journey has to pass the contract** like any other: a graph without a dated fact or with facts on more than 500 days is rejected, and so is an `as_of` before the first event.
 
-A first local run of the SS26 graph steps for Patient-5 (26 of 35 documents) gave 136 edges, which become 19 events. `match_journey` does not take a graph yet, this waits for the answer to [open question](#open-questions) 1. How well the keyword matcher ranks with a journey made from a graph is not measured yet.
+The graph of Patient-5 in [`patientdata/Patient-5/graph.json`](../patientdata/Patient-5/graph.json) holds all 35 documents: 34 nodes and 174 edges, which become 22 events. Each of these 22 days is the date of an event in its `timeline.json`, and the last one is the last event of the timeline. `match_journey` does not take a graph yet, this waits for the answer to [open question](#open-questions) 1. How well the keyword matcher ranks with a journey made from a graph is not measured yet.
 
 ### Generating a graph
 
