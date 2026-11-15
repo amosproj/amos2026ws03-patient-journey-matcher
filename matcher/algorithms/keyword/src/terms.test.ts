@@ -133,9 +133,7 @@ test("tells generic terms from medical ones", () => {
   ]);
 });
 
-// The words of patientdata/ (#14) that are searched as they are: drug names, abbreviations,
-// codes and English parameter values. A new one fails here: translate or skip a German word in
-// german-terms.json, or add an English one to this list.
+// patientdata/ words searched as they are; a new one fails: translate or skip it, or add it here
 const UNCHANGED =
   "abdomen abiraterone active alt alternative ap ast bilateral biochemical bone brca2 cabazitaxel castrate castration chemotherapy concurrent ct ct1c ct2a ct2b ct3a deceased declining depot disease docetaxel eau enzalutamide expected extended flare gleason goserelin hb inhibitor initial intention isup latitude ldh liver lymph management molecular multiple mutation nadir node olaparib oncology open pain parp patient pet phosphatase pi primary progression propel prostatectomy psa psma psycho pt2 pt2c radical radiotherapy radium rads recurrence resistance retropubic rising s3 salvage screening short staging stampede suppressed surveillance terminal testing testosterone vinci xofigo".split(
     " ",

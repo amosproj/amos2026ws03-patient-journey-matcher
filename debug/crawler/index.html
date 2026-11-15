@@ -333,8 +333,7 @@ td.link:hover { color: var(--accent); text-decoration: underline; }
 .yes { color: var(--good); font-weight: 600; }
 .no { color: var(--muted); }
 
-/* One scrollbar for the whole column: terms, tabs and results take the height they need, so an
-   open event list never hides the results. */
+/* one scrollbar for the column: an open event list never hides the results */
 .match-main { grid-template-rows: auto auto auto auto auto; align-content: start; overflow-y: auto; }
 /* A long journey scrolls in its own row instead of widening the page. */
 .match-main > * { min-width: 0; }
@@ -365,7 +364,7 @@ td.title { min-width: 260px; max-width: 460px; }
 .ev .label { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 12px; line-height: 1.3; }
 .ev:hover .label { color: var(--accent); }
 .terms { display: grid; gap: 5px; padding: 8px 16px; border-top: 1px solid var(--line); }
-/* Label left, chips right: a chip that wraps starts a new line under the first chip, not the label. */
+/* label left, chips right: wrapped chips stay under the first chip */
 .term-row { display: grid; grid-template-columns: 132px 1fr; gap: 5px; align-items: baseline; }
 .term-row > .row-label { font-size: 12px; font-weight: 600; color: var(--muted); }
 .term-row > .row-label small { display: block; font-size: 11px; font-weight: 400; }
@@ -410,8 +409,7 @@ td.title { min-width: 260px; max-width: 460px; }
 .ranks .m { background: var(--meta); }
 .ranks .f { background: var(--full); }
 td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: tabular-nums; color: var(--muted); }
-/* The results header: labels at the bottom, under the vertical term names, with a line on how to
-   read the column. */
+/* results header: labels at the bottom, under the vertical term names */
 #mt-head th { vertical-align: bottom; white-space: nowrap; }
 #mt-head th small { display: block; margin-top: 2px; font-size: 11px; font-weight: 400; }
 #mt-head .swatch { width: 8px; height: 8px; margin-right: 3px; vertical-align: 0; }
@@ -419,8 +417,7 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
 .rank-axis { position: relative; width: 132px; height: 15px; margin-top: 4px; border-top: 1px solid var(--muted); }
 .rank-axis i { position: absolute; top: -4px; height: 4px; border-left: 1px solid var(--muted); }
 .rank-axis span { position: absolute; top: 1px; font-size: 10.5px; font-variant-numeric: tabular-nums; }
-/* Which query term is in which index of a hit: left half metadata, right half full text. The
-   names stand upright and are cut at one height, so a long term does not stretch the header. */
+/* per hit and query term: left half metadata, right half full text; names cut at one height */
 .heat-head, .heat { display: flex; gap: 2px; }
 .heat-head span { width: 18px; max-height: 96px; writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 400; }
 .heat-head span.focus { color: var(--text); font-weight: 700; }
@@ -3041,7 +3038,7 @@ function mtRenderResults() {
   const traced = Boolean(mtStep("candidates"));
   $("#mt-legend").hidden = !traced;
   $("#mt-mcp-note").hidden = mt.via !== "mcp";
-  // Ticks of the rank scale: 1, 10, 100 … up to the number of candidates, on the log scale of mtRankStrip.
+  // ticks at 1, 10, 100 … up to the candidates, on mtRankStrip's log scale
   const ticks = [...new Set([...[1, 10, 100, 1000].filter((rank) => rank < last), last])];
   const at = (rank) => (last > 1 ? (100 * Math.log(rank)) / Math.log(last) : 0);
   const axis = h("div", { class: "rank-axis" }, ticks.flatMap((rank, index) => [

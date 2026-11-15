@@ -9,21 +9,15 @@ import {
 import type { Queryable } from "@matcher/db";
 import { eventTerms, eventWords, isGeneric } from "./terms.ts";
 
-// The ranking constants. `tuning` in the match options sets other values by name, from `min`
-// to `max`, for experiments (debug UI, #11).
+// ranking constants; `tuning` sets others within min..max (debug UI)
 const SETTINGS = {
-  // BM25 counts repeated query terms, so the medical focus terms go in twelve times: this alone
-  // puts the hits on the focus first. On graded lists of 129 calls (#58), 12 and 20 ranked best
-  // and 3 to 8 worse; a weight that gives the focus a fixed share of the query, whatever its
-  // number of terms, did not rank better.
+  // BM25 counts repeated query terms: this alone puts focus hits first; 12 and 20 ranked best (#58)
   focusWeight: { value: 12, min: 1, max: 20, whole: true },
-  // The query holds this many context terms, the weightiest first. None put more sources on
-  // other diseases first and ranked worse; 20 ranked as well as 10 (#58).
+  // weightiest first; none ranked worse, 20 no better (#58)
   contextTerms: { value: 10, min: 0, max: 100, whole: true },
-  // Full texts count as much as the metadata; half or twice the weight ranked as well (#58).
+  // half or twice the weight ranked as well (#58)
   fullTextWeight: { value: 1, min: 0, max: 10, whole: false },
-  // Each index gives its best candidates, in its order; only the BM25 index scan is fast for full
-  // texts, as scoring one outside of it costs milliseconds.
+  // per index: scoring a full text outside the BM25 index scan costs milliseconds
   candidates: { value: 100, min: 1, max: 1000, whole: true },
   rankConstant: { value: RANK_CONSTANT, min: 1, max: 1000, whole: false },
 };
@@ -31,11 +25,10 @@ type Setting = keyof typeof SETTINGS;
 
 const FILTERS = `(d.expires_at IS NULL OR d.expires_at > now())
   AND ($2::text[] IS NULL OR d.content_type = ANY ($2::text[]))`;
-// pg_textsearch's BM25 score, negated: the best first.
+// pg_textsearch's BM25 score, negated: best first
 const METADATA_BM25 = `k.content <@> to_bm25query($1, 'keyword.documents_content_idx')`;
 const FULL_TEXT_BM25 = `f.terms <@> to_bm25query($1, 'keyword.full_texts_terms_idx')`;
-// `candidates` is a whole number that `settings` checked. `scored` selects the score too, for the
-// trace only: outside the index scan it costs about 2 ms per full text.
+// `candidates`: whole number checked by `settings`; `scored`: trace only, ~2 ms per full text
 const metadataRanking = (candidates: number, scored: boolean) => `
   SELECT k.document_id AS id${scored ? `, ${METADATA_BM25} AS score` : ""}
   FROM keyword.documents AS k
@@ -62,10 +55,7 @@ const CANDIDATE_DETAILS = `
   CROSS JOIN LATERAL to_tsvector('english', k.content) AS metadata
   WHERE k.document_id = ANY ($1::text[])`;
 
-/**
- * BM25 on the words a document shares with the journey, in its metadata and its full text; the
- * two rankings merged by rank fusion. Trace steps: `settings`, `terms`, `rankings`, `candidates`.
- */
+/** BM25 on metadata and full texts, merged by rank fusion. Traces `settings`, `terms`, `rankings`, `candidates`. */
 export function createKeywordMatcher(db: Queryable): Matcher {
   return {
     async match(
@@ -80,14 +70,14 @@ export function createKeywordMatcher(db: Queryable): Matcher {
         ...limits
       } = settings(tuning, trace);
       const focusTerms = eventTerms(focus).filter((term) => !isGeneric(term));
-      // Generic terms count once, and for the focus only: "initial", "follow up".
+      // generic terms: once, focus only ("initial", "follow up")
       const genericTerms = eventTerms(focus).filter(isGeneric);
       const contextTerms = weightiestTerms(context, focusTerms).slice(
         0,
         limits.contextTerms,
       );
       const terms = [...focusTerms, ...genericTerms, ...contextTerms];
-      // The focus terms repeated: their weight (see SETTINGS).
+      // repeated focus terms = their weight
       const text = [
         ...Array.from({ length: focusWeight }, () => focusTerms).flat(),
         ...genericTerms,
@@ -103,7 +93,7 @@ export function createKeywordMatcher(db: Queryable): Matcher {
           words: eventWords(event),
         })),
       });
-      // Generic terms alone say nothing about the patient.
+      // generic terms alone say nothing about the patient
       if (focusTerms.length + contextTerms.length === 0) return [];
       const parameters = [text, contentTypes ?? null];
       const scored = trace !== undefined;
@@ -134,12 +124,11 @@ export function createKeywordMatcher(db: Queryable): Matcher {
             row.full_text_terms.includes(term),
         ),
       }));
-      // Every hit shares a medical term with the journey. This also drops the documents without
-      // any term, which an index scores 0 when Postgres scores every row instead of using its index.
+      // a hit needs a medical term; also drops the 0-score rows of a scan without the index
       const matched = details.filter((row) =>
         row.matchedTerms.some((term) => !isGeneric(term)),
       );
-      // Likewise, an index counts only for the documents in which it finds a term.
+      // an index counts only where it finds a term
       const byId = new Map(details.map((row) => [row.id, row]));
       const withTerms = (
         ranks: Map<string, number>,
@@ -149,8 +138,7 @@ export function createKeywordMatcher(db: Queryable): Matcher {
       const rankings = [
         { ranks: metadataRanks, weight: 1 },
         {
-          // Without a full text, the metadata rank stands in for it: most papers have none, and
-          // they ranked below every document that has one (#58).
+          // no full text: the metadata rank stands in, else these rank below all that have one (#58)
           ranks: new Map([
             ...withTerms(fullTexts, "full_text_terms"),
             ...[...metadataRanks].filter(
@@ -160,21 +148,19 @@ export function createKeywordMatcher(db: Queryable): Matcher {
           weight: fullTextWeight,
         },
       ];
-      // Rank fusion alone orders the hits. Ranking a hit with a focus term in its title before all
-      // others, as #58 did first, put the metadata index's best hit outside the first 10 in 39 of
-      // 129 calls and ranked no better: the title is in the metadata already.
+      // no title rule: it buried the metadata index's best hit in 39 of 129 calls (#58)
       const fused = reciprocalRankFusion(rankings, rankConstant);
       const ranked = matched
         .map((row) => ({ ...row, score: fused.get(row.id) ?? 0 }))
         .sort((a, b) => b.score - a.score || (a.id < b.id ? -1 : 1));
       if (trace) {
-        // What each ranking adds to `score`, to tune the constants of rank fusion.
+        // what each ranking adds to `score`
         const [metadataScores, fullTextScores] = rankings.map((ranking) =>
           reciprocalRankFusion([ranking], rankConstant),
         );
         trace(
           "candidates",
-          // The ranked ones, best first, then those dropped for matching no term.
+          // ranked first, then those dropped for matching no term
           [...ranked, ...details.filter((row) => !matched.includes(row))].map(
             (row) => {
               const score = "score" in row ? row.score : null;
@@ -197,7 +183,7 @@ export function createKeywordMatcher(db: Queryable): Matcher {
           ),
         );
       }
-      // A full-text weight of 0 can leave every score at 0.
+      // a full-text weight of 0 leaves every score at 0
       const best = ranked[0]?.score || 1;
       return ranked.slice(0, limit).map((row) => ({
         documentId: row.id,
@@ -208,16 +194,12 @@ export function createKeywordMatcher(db: Queryable): Matcher {
   };
 }
 
-/**
- * The medical terms of the older events, the weightiest first: a term weighs more the more events
- * name it; of two that weigh the same, the one named more recently comes first. Without the terms
- * of the focus.
- */
+/** Medical terms of the older events, without the focus's: named by most events first, then most recent. */
 function weightiestTerms(
   context: readonly JourneyEvent[],
   focusTerms: readonly string[],
 ): string[] {
-  // The newest first; of two events on one day, the one listed last.
+  // newest first; on one day, the one listed last
   const newestFirst = context
     .toReversed()
     .sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0));
@@ -228,11 +210,11 @@ function weightiestTerms(
       events.set(term, (events.get(term) ?? 0) + 1);
     }
   }
-  // A stable sort: terms named equally often keep the order in which the newest events name them.
+  // stable sort: ties keep the order of the newest events
   return [...events].sort((a, b) => b[1] - a[1]).map(([term]) => term);
 }
 
-/** The ranking constants with the values of `tuning`; traces them and refuses values out of range. */
+/** The constants with `tuning` applied; traced, and refused when out of range. */
 function settings(
   tuning: MatchOptions["tuning"] = {},
   trace: MatchOptions["trace"],

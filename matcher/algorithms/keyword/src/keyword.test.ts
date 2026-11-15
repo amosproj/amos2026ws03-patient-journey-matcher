@@ -25,8 +25,7 @@ const databaseUrl = testDatabaseUrl();
 const LONG_AGO = new Date("2000-01-01T00:00:00Z");
 const FAR_AHEAD = new Date("2999-01-01T00:00:00Z");
 
-// A database of its own, not a schema per test: the keyword index lives in the fixed schema
-// `keyword` and needs the pg_textsearch extension of its database.
+// own database, not a schema per test: the index lives in the fixed schema `keyword`
 describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
   let pool: TestDatabase["pool"];
 
@@ -393,8 +392,7 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
         "https://example.org/2.xml": "Olaparib for prostate cancer",
       }),
     );
-    // Without its BM25 index, Postgres scores every row: the metadata ranking also lists
-    // pubmed:2 and pubmed:3, with a score of 0.
+    // without its BM25 index, Postgres also lists pubmed:2 and pubmed:3, scored 0
     const client = await pool.connect();
     onTestFinished(() => client.release(true));
     await client.query("SET enable_indexscan = off");
@@ -409,8 +407,7 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     expect(steps.get("rankings")).toMatchObject({
       metadata: expect.arrayContaining(["pubmed:2", "pubmed:3"]),
     });
-    // Each is found by one index only, at rank 1; pubmed:1 has no full text, so that rank
-    // counts twice.
+    // each found by one index, at rank 1; pubmed:1 has no full text, so its rank counts twice
     expect(hits.map((hit) => hit.documentId)).toEqual(["pubmed:1", "pubmed:2"]);
     expect(steps.get("candidates")).toContainEqual(
       expect.objectContaining({ id: "pubmed:2", metadataScore: 0 }),

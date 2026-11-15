@@ -1,17 +1,17 @@
 import type { JourneyEvent } from "@matcher/core";
 
-// The words of the journeys: English translations, words to skip, negations and generic terms.
+// journey vocabulary: translations, skip words, negations, generic terms
 import german from "../data/german-terms.json" with { type: "json" };
 
-// A Map, not the object: a plain object also answers "constructor".
+// Map: a plain object also answers "constructor"
 const ENGLISH = new Map<string, string>(Object.entries(german.translations));
 const SKIP = new Set(german.skip);
 const GENERIC = new Set(german.generic);
-// A finding after one of these is absent, up to the end of its clause: "keine Fernmetastasen".
+// negates the rest of the clause: "keine Fernmetastasen"
 const NEGATES_FOLLOWING = new Set(german.negations.following);
-// With one of these, the whole clause is: "Lymphknoten unauffällig".
+// negates the whole clause: "Lymphknoten unauffällig"
 const NEGATES_CLAUSE = new Set(german.negations.clause);
-// Not the comma of "87,7" or the point of "11.25".
+// not the comma of "87,7" or the point of "11.25"
 const CLAUSE_END = /[;:()]|[,.]\s|\s[–—-]\s/;
 
 /** The words of the English terms, e.g. "radical" and "prostatectomy". */
@@ -29,14 +29,11 @@ export interface EventWord {
 
 type TermSource = Pick<JourneyEvent, "label" | "parameters">;
 
-/**
- * The words of an event, in order: its label, text parameters and the names of true flags. Not
- * who took part: the specialties at a tumor board are no finding, and "Strahlentherapie" searched
- * radiotherapy at a decision for surgery (#58).
- */
+/** The words of an event, in order: label, text parameters, names of true flags. */
 export function eventWords(event: TermSource): EventWord[] {
   const texts = [event.label];
   for (const [key, value] of Object.entries(event.parameters ?? {})) {
+    // specialties at a tumor board are no finding
     if (key === "participants") continue;
     if (value === true) texts.push(key);
     for (const item of [value].flat()) {
@@ -75,7 +72,7 @@ export function eventTerms(event: TermSource): string[] {
   return [...new Set(eventWords(event).flatMap(({ term }) => term ?? []))];
 }
 
-/** Whether a search term is too general to say much about a patient, e.g. "initial". */
+/** Too general to say much about a patient, e.g. "initial". */
 export function isGeneric(term: string): boolean {
   return GENERIC.has(term);
 }
