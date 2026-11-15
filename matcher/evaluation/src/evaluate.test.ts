@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 import { evaluate } from "./evaluate.ts";
-import { type JudgmentFile, loadGrades, loadJudgments } from "./judgments.ts";
+import { type JudgmentFile, loadGrades } from "./judgments.ts";
 
 const point = {
   journey: "Patient-5",
@@ -44,7 +44,7 @@ test("unjudged results in the top 10 are listed for the next round", () => {
 });
 
 test("judgments.json is valid and has no duplicates", async () => {
-  const { points } = await loadJudgments();
+  const { points } = await loadGrades();
   expect(new Set(points.map(({ id }) => id)).size).toBe(points.length);
   for (const { judgments } of points) {
     const ids = judgments.map(({ source_id }) => source_id);

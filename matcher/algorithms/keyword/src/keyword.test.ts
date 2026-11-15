@@ -341,7 +341,7 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     ).toEqual([{ terms: "" }]);
   });
 
-  test("ranks a document without a full text below one that both indexes find", async () => {
+  test("lets the metadata rank stand in for a missing full text", async () => {
     // pubmed:1 leads the metadata but has no full text; pubmed:2 is second there and has one.
     await insert("pubmed:1", "Olaparib olaparib for prostate cancer");
     await insert("pubmed:2", "Olaparib in prostate cancer care", {

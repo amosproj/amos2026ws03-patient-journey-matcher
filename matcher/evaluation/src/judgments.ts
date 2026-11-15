@@ -30,10 +30,6 @@ export type JudgmentFile = z.output<typeof judgmentFileSchema>;
 
 export const judgmentsPath = new URL("../judgments.json", import.meta.url);
 
-export async function loadJudgments(file: URL | string = judgmentsPath) {
-  return judgmentFileSchema.parse(JSON.parse(await readFile(file, "utf8")));
-}
-
 // Many grades in few lines: per point and grade, the source_ids in one string.
 const gradeListSchema = z.object({
   version: z.literal(1),
