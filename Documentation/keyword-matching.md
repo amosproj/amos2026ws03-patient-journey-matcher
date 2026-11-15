@@ -2,6 +2,8 @@
 
 The keyword baseline (#8): `match_journey` with `algorithm: keyword` ranks the stored documents by [BM25](https://en.wikipedia.org/wiki/Okapi_BM25) on the words they share with the patient journey, in their metadata and full texts. It is one of the interchangeable approaches ([adding an approach](../matcher/algorithms/README.md)). Code: [`matcher/algorithms/keyword/`](../matcher/algorithms/keyword/src/), downloads: [`matcher/download/`](../matcher/download/src/). How to run it: [build and run](build.md#run-the-matcher-locally).
 
+This page describes [how it works](#how-it-works), [how we improved it by measurement](#how-we-improved-it), the [results](#results) and what it [cannot do](#known-limitations).
+
 ## How it works
 
 **Indexing.** `make index` ([`matcher/indexer/`](../matcher/indexer/src/main.ts)) reads the new and changed documents ([storage](storage.md#reading)) and writes two tables in the schema `keyword`, each with a BM25 index of [pg_textsearch](https://github.com/timescale/pg_textsearch) (PostgreSQL License; English stemming and stop words):
@@ -24,7 +26,17 @@ Drug names and other words without an entry pass unchanged (Olaparib, PSA); numb
 
 The query holds the medical focus terms twelve times, the generic focus terms once and the 10 context terms that weigh most once. A context term weighs more the more events name it; of two that weigh the same, the one named more recently comes first. Generic terms of older events are left out.
 
-**Ranking.** Each index returns its best 100 documents, and [reciprocal rank fusion](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf) merges the two rankings with equal weight into the order of the results. An index adds to a document's score only if it finds one of the query terms in it. Without a full text (most papers, videos, most podcast episodes), the metadata rank of a document counts for its full text too, so it does not rank below the documents that have one. `score` is relative to the best hit (1). `matched_terms` lists the query terms found in a document; one without a medical term is not returned.
+**Ranking.** Each index returns its best 100 documents for the query. Their BM25 scores cannot be compared, as abstracts are short and full texts long, so only the ranks are merged, by [reciprocal rank fusion](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf):
+
+```math
+\mathrm{score}(d) = \sum_{i \in \{\text{metadata},\ \text{full text}\}} \frac{1}{k + \mathrm{rank}_i(d)}, \qquad k = 60
+```
+
+A document that is first in both indexes scores 2/61, one that is 30th in both 2/90, and one that only one index finds first 1/61: being found by both counts more than a top place in one. The constant k = 60, the value of the paper, keeps the first places close together. Three details:
+
+- An index adds to a document's score only if it finds one of the query terms in it.
+- Without a full text (two thirds of the documents: most papers, videos, most podcast episodes), the metadata rank is used for the full-text part too, so such a document does not rank below those that have one.
+- `score` in the answer is relative to the best hit (1). `matched_terms` lists the query terms found in a document; one without a medical term is not returned.
 
 **New journey data.** A word outside the lists is searched as it is, so a German one finds nothing. The Matcher screen of the [debug UI](../debug/crawler/README.md) shows what became of each word of a journey. [`terms.test.ts`](../matcher/algorithms/keyword/src/terms.test.ts) lists the words of the synthetic journeys (#14) that pass unchanged and fails for a new one: translate or skip it, or add an English word to the test.
 
@@ -71,11 +83,47 @@ Full texts keep their medical words, even those named once; numbers and basic wo
 
 **Credits.** MeSH 2026, courtesy of the U.S. National Library of Medicine; NLM does not endorse this project. Word frequencies: wordfreq v3.2 by Robyn Speer (CC BY-SA 4.0), including SUBTLEX by Marc Brysbaert et al. (freely available data), OpenSubtitles and the other sources wordfreq lists. `basic-words.json` is CC BY-SA 4.0 too.
 
+## How we improved it
+
+#58 changed the ranking by measurement, in a loop:
+
+1. **Measure** the ranking on a fixed set of journey points whose results are graded.
+2. **Read the failures:** the points that score worst, and what the poor sources in their first 10 have in common.
+3. **Change one thing,** as a variant of the ranking, and run all points again.
+4. **Grade** every source that is new in a first 10, so that no variant is judged by missing grades.
+5. **Keep the change only if it holds:** on the journeys it was chosen on and on those it was not, beyond chance, and without burying good sources.
+
+About 150 variants went through this loop. The script that runs them is not in the repository; it reproduces the matcher (identical lists on all points) and changes one thing per option. The grades are in the repository ([checking a change](#checking-a-change)).
+
+**Test set.** 129 points from 10 synthetic journeys, one per pathway ([evaluation points](matching-evaluation.md#evaluation-points)): every event as the focus, as `match_journey` cuts the journey. Of a run of identical check-ups only the first and the last count, and none after the patient died. Five journeys (67 points) are the sample on which a change is chosen, the other five (62 points) the holdout on which it must hold.
+
+**Relevance grades.** A source gets a grade for a point: 3 fits the focus, 2 fits the context, 1 is the right disease but generic or another setting, 0 is the wrong disease or a setting that does not apply ([scale and rules](matching-evaluation.md#what-makes-a-match-relevant)). An LLM graded every source that a variant put in a first 10, from the journey up to the focus and the source's title, abstract and subjects: 9,028 grades. Two LLM judges agree with each other and with the 58 judgments of #11 within one grade (weighted kappa 0.89). That shows consistency, not truth: no clinician has checked the grades.
+
+**Measurements.**
+
+| Measurement | What it tells |
+|---|---|
+| nDCG@10 | The main number: do the best known sources stand at the top of the first 10? |
+| Grade 0 in the first 10 | Sources on the wrong disease or setting, the ones that confuse a patient |
+| First three events against later ones | The start of a journey has little to search |
+| Place of the metadata index's best hit | A guard: a change must not push it out of the first 10 more often |
+| Grade-3 sources that fall below place 20, and points that lose 0.15 or more | Read one by one before a change is kept |
+
+**nDCG@10** (normalized discounted cumulative gain at 10) is the usual measure for a ranked list with graded relevance. Each of the first 10 results earns a gain for its grade g (7, 3, 1 or 0), which counts less the further down it stands, and the sum is divided by that of the best possible order of all graded sources:
+
+```math
+\mathrm{DCG@10} = \sum_{i=1}^{10} \frac{2^{g_i} - 1}{\log_2(i + 1)}, \qquad \mathrm{nDCG@10} = \frac{\mathrm{DCG@10}}{\mathrm{DCG@10}\ \text{of the best order}}
+```
+
+It runs from 0 to 1, and 1 means the ten best known sources in the best order. If ten sources of grade 3 are known, a list with five of them on top and grade-1 sources below scores 0.70. More: our [metrics](matching-evaluation.md#metrics), [Wikipedia](https://en.wikipedia.org/wiki/Discounted_cumulative_gain), and Järvelin and Kekäläinen, "Cumulated gain-based evaluation of IR techniques" (2002), which introduced it.
+
+**Chance.** A difference between two rankings is the mean of the differences per point, with a 95 % interval from 4,000 bootstrap resamples of the points. If the interval includes 0, the difference may be chance. With 129 points, differences below about 0.01 cannot be told from chance.
+
+**Decision rule.** A change was kept only if nDCG@10 rose on the sample and on the holdout, the interval over all points did not go below 0, the guards held, and it was a soft change with one constant: nothing that overrides the merged order, as the title rule below did.
+
 ## Results
 
-**How we measure.** We judge the matcher at 129 points of the synthetic journeys: every event of one journey per pathway as the focus. Each source in a first 10 has a grade from 0 (wrong disease or setting) to 3 (fits the current situation), see [matching evaluation](matching-evaluation.md). The main number is **nDCG@10**: do the best sources we know for a point stand at the top of its first 10? It runs from 0 to 1, and 1 means the ten best known sources in the best order ([how to read it](matching-evaluation.md#metrics)). A difference between two rankings comes with a 95 % interval: if it includes 0, the difference may be chance. Changes were chosen on five journeys and had to hold on the other five.
-
-**Where it stands.** On 7,914 documents nDCG@10 is 0.72, up from 0.54 before #58 (measured before #57 added 275 full texts, which did not move the new ranking). It is 0.63 on the first three events of a journey and 0.74 later. About 3 of 100 first-10 sources are on the wrong disease or setting. The grades come from an LLM and the journeys are synthetic: the numbers compare rankings, they do not say how good the results are for patients.
+On 7,914 documents nDCG@10 is 0.72, up from 0.54 before #58 (measured before #57 added 275 full texts, which did not move the new ranking). It is 0.63 on the first three events of a journey and 0.74 later. About 3 of 100 first-10 sources are on the wrong disease or setting. The grades come from an LLM and the journeys are synthetic: the numbers compare rankings, they do not say how good the results are for patients.
 
 **What #58 changed.**
 
@@ -89,26 +137,44 @@ Full texts keep their medical words, even those named once; numbers and basic wo
 
 The first three brought most of the gain (about +0.16 when first measured), the others the rest.
 
-## Choices
+**Variants against the built ranking,** on all 129 points:
 
-Each was compared with its alternatives on the graded lists.
+| Variant | Δ nDCG@10 (95 % interval) | Grade 0 in the first 10 (built: 38 of 1,290) |
+|---|---|---|
+| Focus weight 3 | −0.012 (−0.032 to +0.008) | 26 |
+| Focus weight 5 | −0.013 (−0.028 to +0.002) | 30 |
+| Focus weight 8 | −0.006 (−0.017 to +0.004) | 33 |
+| Focus weight 16 | +0.004 (−0.003 to +0.011) | 42 |
+| Focus weight 20 | +0.004 (−0.005 to +0.013) | 45 |
+| Focus weight 30 | 0.000 (−0.013 to +0.013) | 43 |
+| "stable" searched again | −0.006 (−0.012 to 0.000) | 46 |
+| "prostate" as an extra query term | 0.000 (−0.002 to +0.002) | 36 |
+| Titles as a third ranking, a quarter of the weight | +0.014 (+0.004 to +0.024) | 40 |
+| Bonus for reviews and meta-analyses | +0.026 (+0.015 to +0.036) | 33 |
+| No context terms \* | −0.064 (−0.090 to −0.042) | more, also on other diseases |
+| 20 context terms \* | −0.018 (−0.029 to −0.008) | about the same |
+| Hits with a focus term in the title first \* | −0.004 (−0.022 to +0.013) | about the same |
+| No stand-in for a missing full text \* | about −0.2 | about the same |
 
-- **The focus leads through its weight.** 12 and 20 ranked best, 3 to 8 worse, and so did a weight that adapts to the number of focus terms.
-- **No extra rule for the title.** The title is in the metadata index already. Ranking the hits with a focus term in their title before all others, as #58 did first, put the metadata index's best hit outside the first 10 in 39 of 129 points, once at place 82.
-- **Context: the 10 terms that the most older events name**, the more recent first on a tie. Without context, more hits were on other diseases; 20 terms ranked no better. A weight that falls with each newer event dropped a surgery from the context of later check-ups.
-- **Generic terms count once and never make a hit,** so "initial" or "follow up" alone find nothing.
-- **A stable PSA trend is not searched.** Of the first-20 sources with "stable", 43 % fit the patient, against 75 % of the others. Without it, 38 instead of 46 of 1,290 first-10 sources are on the wrong disease or setting (nDCG@10 +0.006, interval +0.000 to +0.012). Leaving out "initial" too ranked worse.
+\* Measured before #57's full texts. "No context terms" and "no stand-in" bring sources into the first 10 that have no grade and count as 0, so their loss is overstated.
+
+**What the numbers say.**
+
+- **The focus weight is 12, on a plateau.** From 3 to 30 no weight differs from 12 beyond chance; only a weight of 1 is far worse (about −0.2), as the context then outweighs the focus. A higher weight brings more sources on the wrong disease or setting, a lower one fewer: 12 is a middle value, and 8 would serve as well.
+- **No extra rule for the title.** Ranking the hits with a focus term in their title before all others, as #58 did first, gained nothing and put the metadata index's best hit outside the first 10 in 39 of 129 points, once at place 82. The title is in the metadata index already.
+- **Context: the 10 terms that the most older events name,** the more recent first on a tie. Without context, more hits are on other diseases; 20 terms rank worse. A weight that falls with each newer event dropped a surgery from the context of later check-ups.
+- **A stable PSA trend is not searched.** Of the first-20 sources with "stable", 43 % fit the patient, against 75 % of the others. The gain is small and its interval ends at 0; it was kept because it removes 8 of 46 sources on the wrong disease or setting. Leaving out "initial" too ranked worse.
 - **Both indexes weigh the same.** A full-text weight of 0.5 or 2, another rank constant and 300 candidates per index changed nothing.
-- **Tried, without a gain or worse:** ranking by the number or the rarity of the focus terms found, separate queries for focus and context, putting hits that share no term with an older event last, other BM25 constants, score fusion instead of rank fusion, pseudo-relevance feedback, context terms chosen by rarity, each word of the focus once, and "prostate" as an extra query term.
+- **Tried, without a gain or worse:** ranking by the number or the rarity of the focus terms found, separate queries for focus and context, putting hits that share no term with an older event last, other BM25 constants, score fusion instead of rank fusion, pseudo-relevance feedback, context terms chosen by rarity, and each word of the focus once.
 - **Open, with a gain:**
-  - A small bonus for reviews and meta-analyses: nDCG@10 +0.026 (+0.015 to +0.036), on both sets of journeys. But 71 % instead of 54 % of the first 10 are then reviews, videos and podcasts never get the bonus, and the metadata index's best hit leaves the first 10 in 3 more points. What the app should show is not a ranking question.
-  - The titles as a third ranking with a quarter of the weight: +0.014 (+0.004 to +0.024), but within chance on the holdout journeys, and it needs a third index and query.
+  - The bonus for reviews. But 71 % instead of 54 % of the first 10 are then reviews, videos and podcasts never get it, and the metadata index's best hit leaves the first 10 in 3 more points. What the app should show is not a ranking question.
+  - The titles as a third ranking. But the gain is within chance on the holdout journeys, and it needs a third index and query.
 
 ## Checking a change
 
 Save the answers of `match_journey` for the points of the [matching evaluation](matching-evaluation.md#compare-matchers) before and after a change, on the same documents, and compare the metrics and the ranks of the judged sources. A source without a grade counts as 0: a list can get better while its nDCG falls, so read the lists too.
 
-To compare ranking variants, grade every source that one of them puts in its first 10 for a point, so that no compared source counts as 0. #58 did this with an LLM; its 8,996 grades for the 129 points are in [`keyword-llm-judgments.json`](../matcher/evaluation/keyword-llm-judgments.json), with `set` telling the journeys to choose a change on (`sample`) from those to confirm it on (`holdout`):
+To compare ranking variants, grade every source that one of them puts in its first 10 for a point, so that no compared source counts as 0. #58 did this with an LLM; its 9,028 grades for the 129 points are in [`keyword-llm-judgments.json`](../matcher/evaluation/keyword-llm-judgments.json), with `set` telling the journeys to choose a change on (`sample`) from those to confirm it on (`holdout`):
 
 ```sh
 cd matcher

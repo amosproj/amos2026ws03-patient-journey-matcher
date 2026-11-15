@@ -11,7 +11,7 @@ import { eventTerms, eventWords, isGeneric } from "./terms.ts";
 
 // ranking constants; `tuning` sets others within min..max (debug UI)
 const SETTINGS = {
-  // BM25 counts repeated query terms: this alone puts focus hits first; 12 and 20 ranked best (#58)
+  // BM25 counts repeated query terms: this alone puts focus hits first; 3 to 30 ranked alike (#58)
   focusWeight: { value: 12, min: 1, max: 20, whole: true },
   // weightiest first; none ranked worse, 20 no better (#58)
   contextTerms: { value: 10, min: 0, max: 100, whole: true },
