@@ -1,4 +1,4 @@
-.PHONY: build test start debug db seed index
+.PHONY: build test start debug db seed index graph
 
 PORT ?= 8765
 
@@ -46,3 +46,9 @@ seed: db
 # crawl. All approaches, or the ones named, e.g. `make index APPROACHES=keyword`.
 index: build
 	cd matcher && pnpm --filter @matcher/indexer start $(APPROACHES)
+
+# Builds the graph of one generated patient with the SS26 graph steps and writes it to
+# patientdata/<patient>/graph.json, e.g. `make graph PATIENT=Patient-5`; needs GEMINI_API_KEY,
+# see scripts/patient_graph.py.
+graph:
+	cd backend && uv run --locked --group graph python ../scripts/patient_graph.py $(PATIENT)

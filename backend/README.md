@@ -52,3 +52,4 @@ The chat endpoint and its pipeline (contextualizer, answerer, titler), voice and
   - `workers/pipeline/graph/builder.py` uses the current time when a document date cannot be parsed.
   - `workers/pipeline/graph/exporter.py` is optional; what-to-keep.md suggests removing it together with its fields.
 - For the SBOM: the Neo4j server is GPL-3.0.
+- For the SBOM: [`scripts/patient_graph.py`](../scripts/patient_graph.py) (`make graph`) uses four packages of this folder directly, at the versions in `uv.lock`: graphiti-core 0.31.2 (Apache-2.0), google-genai 2.34.0 (Apache-2.0), python-dotenv 1.0.1 (BSD-3-Clause) and kuzu 0.11.3 (MIT), the only new one, in the dependency group `graph`. None of them is copyleft. [`scripts/dependencies.py`](../scripts/dependencies.py) lists only `crawler/` and `matcher/`, so these four have to be added to the bill of materials by hand.
