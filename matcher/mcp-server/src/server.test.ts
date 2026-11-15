@@ -130,6 +130,8 @@ test("offers the documented tools", async () => {
     "match_journey",
     "get_source",
   ]);
+  // The listed schema shows `journey` and `graph` as optional, so the description has the rule.
+  expect(tools[0]?.description).toContain("Send either `journey` or `graph`");
 });
 
 test("accepts a generated journey and applies the defaults", async () => {

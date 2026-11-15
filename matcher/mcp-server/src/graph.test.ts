@@ -75,9 +75,11 @@ test("reads Graphiti's nodes and edges and drops other fields", () => {
   });
 
   expect(nodes[0]).toEqual(graph.nodes[0]);
-  expect(edges[1]).toMatchObject({
+  expect(edges[1]).toEqual({
+    uuid: "e2",
+    source_node_uuid: "patient",
+    target_node_uuid: "psa",
     valid_at: "2026-12-08",
-    invalid_at: "2027-01-22",
   });
   expect(edges[4]?.valid_at).toBeNull();
 });
@@ -146,17 +148,22 @@ test("rejects two edges with the same uuid", () => {
   ]);
 });
 
-test("rejects a fact that ends before it starts", () => {
+test("does not reject a graph for the edge fields it does not read", () => {
   const edges = [
+    // Graphiti takes both times from the LLM and does not check their order.
     edge("e1", ["patient", "cancer"], "2027-02-01", "2027-01-01"),
-    edge("e2", ["patient", "psa"], "2027-02-01", "2027-02-01"),
+    // No `name` and no `fact`, and an `invalid_at` that is not a time.
+    {
+      uuid: "e2",
+      source_node_uuid: "patient",
+      target_node_uuid: "psa",
+      valid_at: "2027-02-01",
+      invalid_at: "next week",
+    },
   ];
 
-  expect(issues({ ...graph, edges })).toEqual([
-    {
-      path: ["edges", 0, "invalid_at"],
-      message: "The fact ends before it starts.",
-    },
+  expect(graphJourney(read({ ...graph, edges })).events).toMatchObject([
+    { id: "2027-02-01", label: "C61 Prostatakarzinom, PSA" },
   ]);
 });
 

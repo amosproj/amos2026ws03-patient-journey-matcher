@@ -17,7 +17,7 @@ The server speaks MCP over Streamable HTTP at `POST /mcp`. It listens on `127.0.
 
 | Tool | Purpose |
 |---|---|
-| `match_journey` | Returns the sources most relevant to the most recent event of a patient journey |
+| `match_journey` | Returns the sources most relevant to the most recent event of a patient journey. Takes either a `journey` or a `graph`, not both |
 | `get_source` | Returns the links to the files of one matched source at its origin. The client downloads them itself |
 
 To compare the three algorithms, a client calls `match_journey` once per algorithm with the same journey.
@@ -50,7 +50,7 @@ To compare the three algorithms, a client calls `match_journey` once per algorit
 
 ### Graph input
 
-`graph` is the [patient graph](#patient-graph) as JSON, in Graphiti's field names. A generated `graph.json` can be sent unchanged. Other fields, such as `patient`, `documents`, `summary` and `attributes`, are dropped.
+`graph` is the [patient graph](#patient-graph) as JSON, in Graphiti's field names. A generated `graph.json` can be sent unchanged. The table lists the fields that the server reads. All other fields are dropped without a check, such as `patient`, `documents`, `summary` and `attributes`, and `name`, `fact` and `invalid_at` of an edge.
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
@@ -61,10 +61,8 @@ To compare the three algorithms, a client calls `match_journey` once per algorit
 | `nodes[].labels` | list of strings | yes | The type of the node, such as `Diagnosis` |
 | `edges` | list, at least 1 | yes | |
 | `edges[].uuid` | string | yes | Unique in the list |
-| `edges[].name` | string | yes | The type of the edge, such as `HAS_DIAGNOSIS` |
-| `edges[].fact` | string | yes | One sentence |
 | `edges[].source_node_uuid`, `edges[].target_node_uuid` | string | yes | Both nodes are in `nodes` |
-| `edges[].valid_at`, `edges[].invalid_at` | ISO date or date-time, or `null` | no | |
+| `edges[].valid_at` | ISO date or date-time, or `null` | no | The day the fact starts |
 
 The server turns the graph into a journey and matches that, with the same rules as for a `journey`. How it does this is described in [Reading a graph](#patient-graph). In the answer, `focus_event_id` is then the day of the most recent event, such as `2030-12-16`, because the events of this journey are days.
 
@@ -208,7 +206,8 @@ This is the graph that the SS26 pipeline builds. We have the code in [`backend/w
 
 **Reading a graph.** [`graph.ts`](../matcher/mcp-server/src/graph.ts) reads a graph as JSON with the lists `nodes` and `edges` in Graphiti's field names and turns it into a journey. `match_journey` does this for a request with [`graph`](#graph-input).
 
-- **Checked on reading:** every node has `uuid`, `name` and `labels`. Every edge has `uuid`, `name`, `fact` and the IDs of its two nodes, and both nodes are in the graph. No two nodes and no two edges share a `uuid`. A fact does not end (`invalid_at`) before it starts (`valid_at`). There is exactly one `Patient` node. `valid_at` and `invalid_at` are an ISO date or date-time, `null` or left out; an empty string is rejected. A graph that fails a check is rejected with the place of the error. Other fields are dropped.
+- **Checked on reading:** every node has `uuid`, `name` and `labels`. Every edge has `uuid` and the IDs of its two nodes, and both nodes are in the graph. No two nodes and no two edges share a `uuid`. There is exactly one `Patient` node. `valid_at` is an ISO date or date-time, `null` or left out; an empty string is rejected. A graph that fails a check is rejected with the place of the error.
+- **Not checked:** the fields that the reader does not use, such as `name`, `fact` and `invalid_at` of an edge. They are dropped. Graphiti takes the two times of a fact from the LLM and does not check their order, so one odd fact would otherwise reject the whole graph of a patient on every call.
 - **The day of a time** is the day as it is written. `2027-01-22T00:30:00+02:00` counts as 22 January; the time zone does not move it.
 - **One event per day:** the facts whose `valid_at` is that day. The `id` of the event is the date. Its `label` holds the names of the nodes of these facts, each once, in alphabetical order and without the patient.
 - **Left out:** facts without `valid_at`, facts about a `Provider` and facts that name only the patient.
@@ -243,7 +242,7 @@ The graph of Patient-5 in [`patientdata/Patient-5/graph.json`](../patientdata/Pa
 
 For AIlixir:
 
-1. Can the app send the graph as JSON with `valid_at` and `invalid_at`, as [`graph`](#graph-input) now expects it, or should the matcher read it from Neo4j? The format and the dates are answered in [Patient graph](#patient-graph).
+1. Can the app send the graph as JSON with `valid_at` on its edges, as [`graph`](#graph-input) now expects it, or should the matcher read it from Neo4j? The format and the dates are answered in [Patient graph](#patient-graph).
 2. Is it enough that `get_source` returns the download links, so that the app fetches a source itself?
 3. Does the app need an `error_code` for invalid input too, or is the plain text enough?
 

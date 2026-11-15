@@ -15,17 +15,16 @@ const nodeSchema = z.object({
 
 const edgeSchema = z.object({
   uuid: z.string().min(1),
-  name: z.string().min(1),
-  fact: z.string().min(1),
   source_node_uuid: z.string().min(1),
   target_node_uuid: z.string().min(1),
   valid_at: daySchema.nullish(),
-  invalid_at: daySchema.nullish(),
 });
 
 // The patient graph of the SS26 pipeline, see "Patient graph" in Documentation/mcp-interface.md.
-// Field names are Graphiti's, so its nodes and edges can be read as they are. Unknown fields
-// are dropped.
+// Field names are Graphiti's, so its nodes and edges can be read as they are. Only the fields
+// that the journey is made from are checked. All others are dropped, such as `fact` and
+// `invalid_at` of an edge: Graphiti takes them from the LLM, and an odd value in a field that
+// is not read must not reject the whole graph.
 export const patientGraphSchema = z
   .object({
     // The "now" of the patient, like `as_of` of a journey.
@@ -67,14 +66,6 @@ export const patientGraphSchema = z
             message: "The edge points to a node that is not in the graph.",
           });
         }
-      }
-      const { valid_at, invalid_at } = edge;
-      if (valid_at != null && invalid_at != null && invalid_at < valid_at) {
-        context.addIssue({
-          code: "custom",
-          path: ["edges", index, "invalid_at"],
-          message: "The fact ends before it starts.",
-        });
       }
     });
   });
