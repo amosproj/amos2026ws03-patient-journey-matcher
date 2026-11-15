@@ -170,6 +170,45 @@ test("refuses a source that is not stored", async () => {
 
   await expect(service.getSource("pubmed:1")).rejects.toMatchObject({
     code: "SOURCE_NOT_FOUND",
-    message: "Unknown source pubmed:1.",
+    message: "The requested source was not found.",
   });
 });
+
+test.each([
+  null,
+  undefined,
+  42,
+  "PRIVATE_MARKER",
+  { name: "PRIVATE_MARKER", code: "PRIVATE_MARKER", message: "PRIVATE_MARKER" },
+])(
+  "unknown thrown values degrade safely without leaking to ordinary logs: %j",
+  async (thrown) => {
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      const service = createMatchService(
+        [
+          {
+            name: "keyword",
+            matcher: {
+              match: async () => {
+                throw thrown;
+              },
+            },
+          },
+        ],
+        store([]),
+      );
+      const result = await service.matchJourney({
+        journey,
+        algorithm: "keyword",
+        limit: 10,
+      });
+      expect(result.degraded).toBe(true);
+      expect(result.results).toEqual([]);
+      expect(JSON.stringify(result)).not.toContain("PRIVATE_MARKER");
+      expect(JSON.stringify(log.mock.calls)).not.toContain("PRIVATE_MARKER");
+    } finally {
+      log.mockRestore();
+    }
+  },
+);

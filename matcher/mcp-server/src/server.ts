@@ -24,8 +24,7 @@ export class ToolError extends Error {
 function toToolError(error: unknown): ToolError {
   if (error instanceof ToolError) return error;
   // The message can hold journey data, so it is neither returned nor logged.
-  const name = error instanceof Error ? error.name : typeof error;
-  console.error(`Unexpected ${name} during a tool call`);
+  console.error("Unexpected failure during a tool call");
   return new ToolError("INTERNAL_ERROR", "The request failed unexpectedly.");
 }
 

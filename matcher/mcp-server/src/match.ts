@@ -50,15 +50,15 @@ export function createMatchService(
           degraded: false,
         };
       } catch (error) {
-        // Name and SQLSTATE only: a message can hold terms of the journey.
-        const { name, code, message } = error as {
-          name?: string;
-          code?: string;
-          message?: string;
+        // Exception properties can hold journey data; keep ordinary logs generic.
+        const details =
+          typeof error === "object" && error !== null ? error : {};
+        const { name, code, message } = details as {
+          name?: unknown;
+          code?: unknown;
+          message?: unknown;
         };
-        console.error(
-          `${algorithm} search failed: ${name} ${code ?? ""}`.trim(),
-        );
+        console.error(`${algorithm} search failed`);
         // The trace goes back to the developer who sent the journey, so it gets the message.
         debug.trace?.("error", { name, code, message });
         return {
@@ -72,7 +72,10 @@ export function createMatchService(
     async getSource(sourceId) {
       const document = await store.getDocument(sourceId);
       if (document === undefined) {
-        throw new ToolError("SOURCE_NOT_FOUND", `Unknown source ${sourceId}.`);
+        throw new ToolError(
+          "SOURCE_NOT_FOUND",
+          "The requested source was not found.",
+        );
       }
       return toSourceDownloads(document);
     },
