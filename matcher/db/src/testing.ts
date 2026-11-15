@@ -28,7 +28,8 @@ export async function createTestDatabase(url: string): Promise<TestDatabase> {
   const admin = new Pool({ connectionString: url });
   const name = `test_${randomUUID().replaceAll("-", "").slice(0, 12)}`;
   try {
-    await admin.query(`CREATE DATABASE ${name} TEMPLATE template0 LOCALE 'C'`);
+    // template0 records no collation version, so an old volume's mismatch cannot stop the copy
+    await admin.query(`CREATE DATABASE ${name} TEMPLATE template0`);
   } catch (error) {
     await admin.end();
     throw error;
@@ -57,7 +58,7 @@ export async function createTestDatabase(url: string): Promise<TestDatabase> {
     connectionString,
     pool,
     async drop() {
-      await pool.end();
+      const ended = pool.end();
       try {
         // no FORCE: it kills connections still closing; Postgres waits 5 s for them
         await admin.query(`DROP DATABASE ${name}`);
@@ -68,6 +69,7 @@ export async function createTestDatabase(url: string): Promise<TestDatabase> {
       } finally {
         await admin.end();
       }
+      await ended;
     },
   };
 }
