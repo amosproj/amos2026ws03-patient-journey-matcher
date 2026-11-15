@@ -72,6 +72,8 @@ The runner computes four numbers for every point and their mean over all points.
 
 A point with no result file scores 0, so every matcher is compared on all points.
 
+**Reading nDCG@10** (normalized discounted cumulative gain). Each of the first 10 results earns points for its grade: 7 for a 3, 3 for a 2, 1 for a 1, none for a 0 or no grade. Further down it earns less of them: all at place 1, half at place 3, under a third at place 10. The sum is divided by what the best order of all graded sources of the point would earn. So 1 means the ten best known sources in the best order, and 0 nothing useful in the first 10. Example: if ten sources of grade 3 are known, a list with five of them at places 1 to 5 and grade-1 sources below scores 0.70. The score depends on what has been graded, so compare matchers only on the same judgments.
+
 ## Compare matchers
 
 The same steps work for every matcher we add later.
@@ -93,6 +95,8 @@ The test in `matcher/evaluation/src/evaluate.test.ts` checks that `judgments.jso
 ## Status of the judgments
 
 The first 58 judgments (5 to 7 per point) were graded from the PubMed titles and spot-checked against the abstracts in review. They use real PubMed records that a matcher can also find, with the `source_id` the crawler uses (`pubmed:<PMID>`). If a grade turns out wrong, fix it in `judgments.json` with a short note.
+
+**LLM grades for the keyword approach (#58)** are in a file of their own, [`keyword-llm-judgments.json`](../matcher/evaluation/keyword-llm-judgments.json): 8,996 grades for 129 points, only for sources that the keyword ranking found. They are not part of `judgments.json`; see [keyword matching](keyword-matching.md#checking-a-change).
 
 ## Open questions
 
