@@ -182,8 +182,20 @@ This is the graph that the SS26 pipeline builds. We have the code in [`backend/w
 **What this means for `match_journey`.**
 
 - A graph input needs the nodes and edges with their dates, read from Neo4j or sent as JSON. The Cypher export is not enough.
-- The most recent event is then the newest document on or before `as_of`, with the facts that are still valid at that time.
+- The most recent event is then the newest day with a fact on or before `as_of`, with the facts that are still valid at that time.
 - To get real graphs for tests we have to run the SS26 pipeline on the generated PDFs. This needs a Gemini key and Neo4j. Until then the generated `timeline.json` covers the same patients and events.
+
+**Reading a graph.** [`graph.ts`](../matcher/mcp-server/src/graph.ts) reads a graph as JSON with the lists `nodes` and `edges` in Graphiti's field names and turns it into a journey for `match_journey`.
+
+- **Checked on reading:** every node has `uuid`, `name` and `labels`, and no two nodes share a `uuid`. Every edge has `uuid`, `name`, `fact` and the IDs of its two nodes, and both nodes are in the graph. There is exactly one `Patient` node. `valid_at` and `invalid_at` are an ISO date or date-time, `null` or left out; an empty string is rejected. A graph that fails a check is rejected with the place of the error. Other fields are dropped.
+- **The day of a time** is the day as it is written. `2027-01-22T00:30:00+02:00` counts as 22 January; the time zone does not move it.
+- **One event per day:** the facts whose `valid_at` is that day. The `id` of the event is the date. Its `label` holds the names of the nodes of these facts, each once and without the patient.
+- **Left out:** facts without `valid_at`, facts about a `Provider`, facts that name only the patient, and facts that a newer one replaced on or before `as_of`. Without `as_of`, every fact with `invalid_at` is left out.
+- **The fact sentences are not passed on.** The keyword matcher reads event texts as German journey words, so the English word "as" in a sentence became the search term "active surveillance". The sentences stay in the graph for the approaches that read it directly.
+- **`patient_id`** is the name of the `Patient` node.
+- **The journey has to pass the contract** like any other: a graph without a dated fact or with facts on more than 500 days is rejected, and so is an `as_of` before the first event.
+
+A first local run of the SS26 graph steps for Patient-5 (26 of 35 documents) gave 136 edges, which become 19 events. `match_journey` does not take a graph yet, this waits for the answer to [open question](#open-questions) 1. How well the keyword matcher ranks with a journey made from a graph is not measured yet.
 
 ## Check against AIlixir's integration needs
 
@@ -193,7 +205,7 @@ This is the graph that the SS26 pipeline builds. We have the code in [`backend/w
 | Tell "nothing relevant" from "search failed" | `degraded` and `degraded_reason` in the SS26 `PaperRetrievalResult` | Same field names |
 | Match when the profile changes, not live | Partner meeting 06.11. | No state in the server, AIlixir decides when to call |
 | Send generated journeys | Generator `timeline.json` | Checked with one generated journey for each of the 10 pathways |
-| Send journeys of the real app | Partner meeting 06.11.: the whole patient graph | Format known, see [Patient graph](#patient-graph). The graph input itself is not built yet |
+| Send journeys of the real app | Partner meeting 06.11.: the whole patient graph | Format known, see [Patient graph](#patient-graph). The reader turns a graph into a journey, but `match_journey` does not take a graph yet |
 
 ## Open questions
 
