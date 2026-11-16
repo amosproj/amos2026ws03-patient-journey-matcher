@@ -1,0 +1,1244 @@
+{
+  "version": 1,
+  "about": "LLM grades for the keyword approach (#58): the sources that a variant of the keyword ranking put in its first 10. A point patient-<n>-<event> is journey patientdata/Patient-<n> with that event as the focus, the latest on as_of. grades: per grade 3 to 0, the source_ids. set: choose a change on sample, confirm it on holdout. Scale and rules: Documentation/matching-evaluation.md.",
+  "points": {
+    "patient-1-e01": {
+      "set": "sample",
+      "as_of": "2026-11-06",
+      "grades": {
+        "3": "pubmed:11818479 pubmed:14979060 pubmed:16314892 pubmed:21297655 pubmed:21717898 pubmed:23016259 pubmed:23862239 pubmed:24195246 pubmed:24981126 pubmed:26169584 pubmed:28977112 pubmed:29420975 pubmed:30097885 pubmed:30185521 pubmed:33099450 pubmed:34391509 pubmed:35226140 pubmed:36180907 pubmed:37096582 pubmed:38647107 pubmed:38743100 pubmed:38820236 pubmed:38869693 pubmed:38913583 pubmed:39205324 pubmed:39320245 pubmed:40273171 pubmed:41972986 pubmed:7505969 zenodo:11214279 zenodo:23032842 zenodo:7126985",
+        "2": "pubmed:21922459 pubmed:27619665 pubmed:29800999 pubmed:30420254 pubmed:33486571 pubmed:34497024 pubmed:36149214 pubmed:36999432 pubmed:39090221 pubmed:39145960 pubmed:39145974 zenodo:17190799 zenodo:2565471",
+        "1": "pubmed:26656523 pubmed:32674974 pubmed:34043813 pubmed:38546078 pubmed:42251454 pubmed:42930166 zenodo:4310553 zenodo:7107577",
+        "0": "zenodo:17775665"
+      }
+    },
+    "patient-1-e02": {
+      "set": "sample",
+      "as_of": "2026-11-09",
+      "grades": {
+        "3": "pubmed:10663192 pubmed:11233061 pubmed:11818479 pubmed:14979060 pubmed:16314892 pubmed:18655340 pubmed:20890581 pubmed:20959954 pubmed:21095422 pubmed:21297655 pubmed:21717898 pubmed:22198258 pubmed:24005707 pubmed:24195246 pubmed:24816306 pubmed:26169584 pubmed:26768791 pubmed:27337755 pubmed:27792187 pubmed:29420975 pubmed:33099450 pubmed:36309745 pubmed:37329212 pubmed:38820236 pubmed:38913583 pubmed:39320245 pubmed:39991796 pubmed:40273171 pubmed:40554445 pubmed:41744286 pubmed:41972986 pubmed:7505969 zenodo:10016464 zenodo:11111798 zenodo:11193096 zenodo:11214279 zenodo:11312297 zenodo:17694381 zenodo:2565471",
+        "2": "pubmed:19486654 pubmed:23016259 pubmed:23862239 pubmed:26656523 pubmed:26991008 pubmed:27557386 pubmed:30185521 pubmed:34497024 pubmed:36149214 pubmed:38363332 pubmed:39090221 pubmed:39145960 pubmed:9741413 zenodo:17190799",
+        "1": "arxiv:2608.16964 arxiv:2609.23814 pubmed:11076649 pubmed:11369951 pubmed:14680309 pubmed:20589707 pubmed:21304009 pubmed:25123041 pubmed:25727153 pubmed:26449841 pubmed:26621054 pubmed:28528448 pubmed:29772100 pubmed:30843003 pubmed:31122242 pubmed:31659564 pubmed:33856136 pubmed:34043813 pubmed:34905632 pubmed:35026706 pubmed:37109015 pubmed:37256425 pubmed:37481706 pubmed:38583574 pubmed:39417214 pubmed:39721830 pubmed:40846621 pubmed:40862795 pubmed:41266854 pubmed:42251454 pubmed:42930166 pubmed:7526513 pubmed:8869957 pubmed:9609622 zenodo:12732578 zenodo:4310553",
+        "0": "pubmed:10052875 pubmed:10663189 pubmed:11068312 pubmed:12949429 pubmed:14971088 pubmed:15666516 pubmed:15976063 pubmed:16229369 pubmed:16474521 pubmed:19395894 pubmed:23647296 pubmed:25658232 pubmed:25871992 pubmed:29039897 pubmed:29807949 pubmed:31220400 pubmed:32248258 pubmed:33813397 pubmed:34385241 pubmed:35485635 pubmed:36214146 pubmed:37679602 pubmed:37981171 pubmed:38520513 pubmed:39153094 pubmed:39485266 pubmed:41721835 pubmed:41818713 pubmed:9806507 zenodo:18097100"
+      }
+    },
+    "patient-1-e03": {
+      "set": "sample",
+      "as_of": "2026-12-12",
+      "grades": {
+        "3": "pubmed:25126559 pubmed:25466942 pubmed:27123316 pubmed:27193787 pubmed:27641839 pubmed:28670154 pubmed:28721448 pubmed:29371727 pubmed:29552975 pubmed:29908876 pubmed:30104656 pubmed:30255394 pubmed:31397038 pubmed:31399825 pubmed:32620227 pubmed:33127298 pubmed:34046969 pubmed:34098371 pubmed:34455239 pubmed:35596009 pubmed:36344178 pubmed:37315913 pubmed:37438925 pubmed:37758334 pubmed:38311703 pubmed:38363332 pubmed:38865697 pubmed:38971674 pubmed:39032957 pubmed:39093531 pubmed:39991796 pubmed:40172658 pubmed:40324456 pubmed:40788246 pubmed:40863883 pubmed:41173751 pubmed:41266003 pubmed:42152154 pubmed:42837038 zenodo:11312297 zenodo:12787200 zenodo:12804706 zenodo:23032842",
+        "2": "arxiv:2611.04155 pubmed:17555916 pubmed:25794094 pubmed:32812795 pubmed:35226140 pubmed:35312821 pubmed:37129487 pubmed:39106118 pubmed:40759601",
+        "1": "arxiv:2611.02197 pubmed:27776423 pubmed:32390076 pubmed:33820533 pubmed:33856136 pubmed:34693502 pubmed:35255716 pubmed:35578110 pubmed:36938552 pubmed:37210343 pubmed:37973247 pubmed:38051187 pubmed:38105093 pubmed:38307562 pubmed:39308142 pubmed:39542951 pubmed:39608681 pubmed:40252100 pubmed:40355631 zenodo:10159155 zenodo:12155463",
+        "0": "pubmed:31788708 pubmed:39718497 pubmed:40035668"
+      }
+    },
+    "patient-1-e04": {
+      "set": "sample",
+      "as_of": "2027-01-09",
+      "grades": {
+        "3": "pubmed:17342490 pubmed:17720304 pubmed:17823604 pubmed:20222795 pubmed:21931344 pubmed:25126559 pubmed:26749141 pubmed:26907717 pubmed:27123316 pubmed:29552975 pubmed:30859516 pubmed:31864796 pubmed:32382097 pubmed:33127298 pubmed:33820533 pubmed:33856136 pubmed:34013185 pubmed:34259038 pubmed:35930069 pubmed:36344178 pubmed:36426834 pubmed:36719644 pubmed:36938557 pubmed:37096575 pubmed:37696743 pubmed:38053418 pubmed:38363332 pubmed:38508895 pubmed:39095298 pubmed:39800984 pubmed:40226078 pubmed:40272749 pubmed:40289077 pubmed:9118393 pubmed:9869832 zenodo:11312297 zenodo:12787200 zenodo:12804706 zenodo:23032842",
+        "2": "pubmed:17283708 pubmed:19352394 pubmed:26396046 pubmed:27694164 pubmed:29908876 pubmed:30255394 pubmed:30534661 pubmed:31399825 pubmed:31436569 pubmed:32040781 pubmed:32691544 pubmed:34428921 pubmed:35063445 pubmed:35570157 pubmed:35596009 pubmed:37874731 pubmed:38369287 pubmed:39032957 pubmed:39093531 pubmed:39320245 pubmed:39991796 pubmed:40138013 pubmed:41744286 zenodo:11090357 zenodo:11193096",
+        "1": "arxiv:1011.2107 arxiv:2609.08879 arxiv:2609.15150 pubmed:20003566 pubmed:21692866 pubmed:26926407 pubmed:30117172 pubmed:32415394 pubmed:33435132 pubmed:34499551 pubmed:36591714 pubmed:38551310 pubmed:38551314 pubmed:38913583 pubmed:41403018 pubmed:42837038 zenodo:7126985"
+      }
+    },
+    "patient-1-e05": {
+      "set": "sample",
+      "as_of": "2027-01-23",
+      "grades": {
+        "3": "pubmed:22351515 pubmed:22925240 pubmed:25123041 pubmed:26621054 pubmed:26633167 pubmed:27322161 pubmed:30179620 pubmed:31016332 pubmed:31115364 pubmed:33856136 pubmed:34200878 pubmed:34503059 pubmed:35216924 pubmed:36225285 pubmed:36443163 pubmed:37042807 pubmed:37109015 pubmed:37160473 pubmed:37777716 pubmed:38363332 pubmed:40185922 pubmed:40571442 pubmed:41266006 pubmed:41536013 pubmed:42930166",
+        "2": "pubmed:24556193 pubmed:28801885 pubmed:30255394 pubmed:32019719 pubmed:33245071 pubmed:33820533 pubmed:35266907 pubmed:35596009 pubmed:36063405 pubmed:36183329 pubmed:36344178 pubmed:38971674 pubmed:39032957 pubmed:40850234 zenodo:11312297 zenodo:12787200 zenodo:12804706 zenodo:17190799",
+        "1": "pubmed:24840073 pubmed:28753804 pubmed:30117172 pubmed:30843003 pubmed:31271825 pubmed:39347950 pubmed:39809998 pubmed:39985052 pubmed:39991796 zenodo:7126985"
+      }
+    },
+    "patient-1-e06": {
+      "set": "sample",
+      "as_of": "2027-01-27",
+      "grades": {
+        "3": "pubmed:22925240 pubmed:24914843 pubmed:26178391 pubmed:26621054 pubmed:27123316 pubmed:27322161 pubmed:28589399 pubmed:29692262 pubmed:30726506 pubmed:31016332 pubmed:33070989 pubmed:33623103 pubmed:33655428 pubmed:33856136 pubmed:34503059 pubmed:34775795 pubmed:34788547 pubmed:35277378 pubmed:36225285 pubmed:37109015 pubmed:37160473 pubmed:37787097 pubmed:37973246 pubmed:38093673 pubmed:38363332 pubmed:39608681 pubmed:39939565 pubmed:39962886 pubmed:40185922",
+        "2": "pubmed:26749141 pubmed:28801885 pubmed:29552975 pubmed:31436567 pubmed:32019719 pubmed:32382097 pubmed:33820533 pubmed:34648048 pubmed:35044491 pubmed:36183329 pubmed:36344178 pubmed:37777716 pubmed:41989063 zenodo:11312297 zenodo:12787200",
+        "1": "pubmed:31399825 pubmed:32658588 pubmed:34479565 pubmed:34669358 pubmed:39413377",
+        "0": "pubmed:34014342 pubmed:35381866"
+      }
+    },
+    "patient-1-e07": {
+      "set": "sample",
+      "as_of": "2027-04-27",
+      "grades": {
+        "3": "arxiv:2607.13506 pubmed:22450149 pubmed:24914843 pubmed:25123041 pubmed:25525592 pubmed:26621054 pubmed:26954333 pubmed:27123316 pubmed:27322161 pubmed:27726415 pubmed:28589399 pubmed:30726506 pubmed:31016332 pubmed:31797025 pubmed:32019719 pubmed:33856136 pubmed:34503059 pubmed:35216924 pubmed:35277378 pubmed:36225285 pubmed:36443163 pubmed:36719642 pubmed:37042807 pubmed:37109015 pubmed:38363332 pubmed:38546791 pubmed:39608681 pubmed:40185922 pubmed:41266006 pubmed:41536013 pubmed:41813844 pubmed:42930166",
+        "2": "pubmed:21922459 pubmed:28801885 pubmed:33820533 pubmed:36183329 pubmed:37777716 pubmed:39032957 zenodo:11312297 zenodo:12787200 zenodo:12804706",
+        "1": "pubmed:35136289 pubmed:41454965 zenodo:23032842"
+      }
+    },
+    "patient-1-e13": {
+      "set": "sample",
+      "as_of": "2029-05-15",
+      "grades": {
+        "3": "arxiv:2607.13506 pubmed:22450149 pubmed:24914843 pubmed:25123041 pubmed:25525592 pubmed:26621054 pubmed:26954333 pubmed:27123316 pubmed:27322161 pubmed:27726415 pubmed:28589399 pubmed:30726506 pubmed:31016332 pubmed:31797025 pubmed:32019719 pubmed:33856136 pubmed:34503059 pubmed:35216924 pubmed:35277378 pubmed:36225285 pubmed:36443163 pubmed:36719642 pubmed:37042807 pubmed:37109015 pubmed:38363332 pubmed:38546791 pubmed:39032957 pubmed:39608681 pubmed:40185922 pubmed:41266006 pubmed:41536013 pubmed:41813844 pubmed:42930166",
+        "2": "pubmed:21922459 pubmed:28801885 pubmed:33820533 pubmed:36183329 pubmed:37777716 zenodo:11312297 zenodo:12787200 zenodo:23032842",
+        "1": "pubmed:35136289 pubmed:41454965"
+      }
+    },
+    "patient-2-e01": {
+      "set": "holdout",
+      "as_of": "2026-11-06",
+      "grades": {
+        "3": "pubmed:25613154 pubmed:30097885 pubmed:31876229 pubmed:36309745 pubmed:36418491 pubmed:37202311 pubmed:40658396 zenodo:12804706 zenodo:17190799 zenodo:7126985",
+        "2": "pubmed:30086589 pubmed:35978138",
+        "1": "pubmed:10796739 pubmed:12670566 pubmed:20039975 pubmed:25823641 pubmed:27476129 pubmed:28748576 pubmed:29665997 pubmed:30534439 pubmed:31180946 pubmed:31586470 pubmed:33539897 pubmed:35643580 pubmed:36061573 pubmed:36069170 pubmed:36201466 pubmed:39547977 pubmed:39818305 pubmed:40437508 pubmed:40531150 pubmed:40565999 pubmed:41752758",
+        "0": "pubmed:10591256 pubmed:38708869 zenodo:781634"
+      }
+    },
+    "patient-2-e02": {
+      "set": "holdout",
+      "as_of": "2026-11-16",
+      "grades": {
+        "3": "pubmed:10663192 pubmed:11233061 pubmed:11818479 pubmed:18655340 pubmed:24816306 pubmed:27337755 pubmed:30097885 pubmed:31876229 pubmed:36309745 pubmed:39320245 pubmed:9741413 zenodo:10016464 zenodo:11111798 zenodo:11214279 zenodo:11312297 zenodo:12707546 zenodo:12745896 zenodo:12804706 zenodo:17190799 zenodo:17694381",
+        "2": "pubmed:14979060 pubmed:19486654 pubmed:20959954 pubmed:24195246 pubmed:25613154 pubmed:38363332 pubmed:38913583 pubmed:9617617",
+        "1": "pubmed:11068312 pubmed:12100934 pubmed:18765126 pubmed:21297655 pubmed:21717898 pubmed:22198258 pubmed:22370955 pubmed:23862239 pubmed:24005707 pubmed:31180946 pubmed:31586470 pubmed:31659564 pubmed:34043813 pubmed:34212237 pubmed:36063405 pubmed:39818305 pubmed:40846621 pubmed:41054556 pubmed:41752758 pubmed:41818713 pubmed:42251454 pubmed:42930166 zenodo:18097100 zenodo:4310553",
+        "0": "pubmed:10796739 pubmed:12949429 pubmed:31220400 pubmed:31757401 pubmed:34666728 pubmed:38520513 pubmed:38703938 pubmed:41349029"
+      }
+    },
+    "patient-2-e03": {
+      "set": "holdout",
+      "as_of": "2026-12-03",
+      "grades": {
+        "3": "pubmed:10828667 pubmed:17283708 pubmed:17342490 pubmed:17720304 pubmed:20222795 pubmed:25704504 pubmed:30104656 pubmed:31864796 pubmed:32253585 pubmed:34612746 pubmed:35063445 pubmed:35813256 pubmed:36719644 pubmed:37696743 pubmed:38053418 pubmed:40289077 pubmed:42251454 pubmed:9118393 zenodo:11090357 zenodo:17190799 zenodo:23032842 zenodo:7126985",
+        "2": "pubmed:25126559 pubmed:30097885 pubmed:30255394 pubmed:31399825 pubmed:31644434 pubmed:32691544 pubmed:34259038 pubmed:36938557 pubmed:37874731 pubmed:39320245 pubmed:39991796 pubmed:40138013 pubmed:41339755 pubmed:41744286 pubmed:9869832 zenodo:11193096 zenodo:11312297 zenodo:12745896 zenodo:12787200",
+        "1": "arxiv:2608.14796 arxiv:2609.08879 arxiv:2609.15150 pubmed:12100934 pubmed:17823604 pubmed:19486654 pubmed:21692866 pubmed:26396046 pubmed:26926407 pubmed:30741847 pubmed:31180946 pubmed:31876229 pubmed:32415394 pubmed:32873277 pubmed:33127298 pubmed:33435132 pubmed:34237810 pubmed:36309745 pubmed:37096582 pubmed:37867335 pubmed:38363332 pubmed:38419309 pubmed:38551310 pubmed:38551314 pubmed:38913583 pubmed:39818305 pubmed:41403018 pubmed:42236170 pubmed:42837038 zenodo:11214279 zenodo:18097100",
+        "0": "pubmed:26554408 pubmed:26621054 pubmed:27314568 pubmed:33539897 pubmed:36063405 pubmed:37109015 pubmed:39800984 pubmed:42930166"
+      }
+    },
+    "patient-2-e04": {
+      "set": "holdout",
+      "as_of": "2026-12-15",
+      "grades": {
+        "3": "pubmed:10664667 pubmed:10803318 pubmed:10994145 pubmed:11488734 pubmed:15126770 pubmed:17392247 pubmed:21304009 pubmed:21492911 pubmed:23227460 pubmed:24321784 pubmed:29043431 pubmed:30834999 pubmed:30843003 pubmed:31113757 pubmed:32671604 pubmed:32701720 pubmed:32723519 pubmed:34693502 pubmed:35220244 pubmed:35939081 pubmed:36183329 pubmed:37032189 pubmed:37493837 pubmed:37596138 pubmed:39308142 pubmed:40319443 pubmed:40347415 pubmed:41358937 pubmed:41593361 pubmed:42236002 pubmed:9126236 zenodo:18463793",
+        "2": "pubmed:22617062 pubmed:30069582 pubmed:35758394 pubmed:40704877 pubmed:41068010",
+        "1": "pubmed:1465483 pubmed:22475908 pubmed:33257377 pubmed:34729614 pubmed:37148297",
+        "0": "pubmed:17964957 pubmed:28532400"
+      }
+    },
+    "patient-2-e05": {
+      "set": "holdout",
+      "as_of": "2026-12-28",
+      "grades": {
+        "3": "pubmed:21220228 pubmed:24840073 pubmed:27837416 pubmed:30729683 pubmed:37667894 pubmed:41206286 pubmed:41752758 pubmed:42866815",
+        "2": "pubmed:15126770 pubmed:16630525 pubmed:21492911 pubmed:25358908 pubmed:31271825 pubmed:35462397 pubmed:35813256 pubmed:35939081 pubmed:36183329 pubmed:40063046 pubmed:9749478 zenodo:17190799",
+        "1": "pubmed:18391629 pubmed:28296582 pubmed:29772100 pubmed:30042163 pubmed:30266309 pubmed:30972506 pubmed:31836682 pubmed:33924669 pubmed:34296282 pubmed:34385241 pubmed:34453699 pubmed:35485635 pubmed:35569466 pubmed:36795843 pubmed:38041475 pubmed:38261983 pubmed:38286895 pubmed:38644146 pubmed:39809998 pubmed:40437508 pubmed:41216639 pubmed:41486043 pubmed:41593361 pubmed:41779619 pubmed:8869957 zenodo:11206827 zenodo:18097100 zenodo:7126985",
+        "0": "pubmed:28532400 pubmed:40371496"
+      }
+    },
+    "patient-2-e06": {
+      "set": "holdout",
+      "as_of": "2027-01-02",
+      "grades": {
+        "3": "pubmed:10221266 pubmed:10794807 pubmed:15226323 pubmed:15389811 pubmed:16689291 pubmed:18071861 pubmed:18201145 pubmed:18666210 pubmed:19035858 pubmed:19440008 pubmed:19838837 pubmed:20592607 pubmed:21807761 pubmed:22248394 pubmed:22751146 pubmed:25097095 pubmed:25327530 pubmed:25338271 pubmed:25592210 pubmed:26372364 pubmed:27349496 pubmed:27768220 pubmed:27826989 pubmed:28209634 pubmed:29388185 pubmed:29569731 pubmed:30053039 pubmed:30312560 pubmed:30446448 pubmed:30729683 pubmed:30745202 pubmed:31247696 pubmed:31643199 pubmed:31643987 pubmed:31707924 pubmed:31832978 pubmed:31869126 pubmed:32469183 pubmed:33470403 pubmed:33480983 pubmed:34156518 pubmed:34396210 pubmed:34409852 pubmed:34459214 pubmed:34489536 pubmed:34590590 pubmed:34743290 pubmed:35108137 pubmed:35343198 pubmed:35343371 pubmed:35409505 pubmed:35491331 pubmed:36349380 pubmed:36534950 pubmed:36652173 pubmed:37229882 pubmed:37667894 pubmed:38148124 pubmed:38256338 pubmed:38285742 pubmed:38318809 pubmed:38376624 pubmed:38720547 pubmed:40189880 pubmed:40397707 pubmed:40433020 pubmed:41392000 pubmed:41660902 pubmed:41706486 pubmed:41752758 pubmed:42615451 pubmed:42682049 pubmed:8717465 zenodo:18625973 zenodo:642517",
+        "2": "pubmed:19747011 pubmed:22971474 pubmed:23257248 pubmed:30612936 pubmed:35662493 pubmed:35866612 pubmed:36183329 pubmed:36597735 pubmed:38589645 pubmed:40712215 pubmed:41247145 pubmed:41518446 zenodo:11312275",
+        "1": "arxiv:2503.08927 arxiv:2511.13825 pubmed:21239016 pubmed:23743823 pubmed:25261259 pubmed:28816716 pubmed:29600433 pubmed:29980331 pubmed:30227222 pubmed:30266309 pubmed:31614208 pubmed:32035581 pubmed:32480269 pubmed:34385241 pubmed:34400799 pubmed:34471256 pubmed:34618582 pubmed:35403746 pubmed:35405085 pubmed:35485635 pubmed:35569466 pubmed:35995644 pubmed:36080493 pubmed:36733800 pubmed:36763112 pubmed:36795843 pubmed:36807496 pubmed:37092583 pubmed:37305018 pubmed:37470614 pubmed:37679602 pubmed:37922910 pubmed:38763153 pubmed:38763154 pubmed:41216639 pubmed:9400459 zenodo:13988466 zenodo:14625761",
+        "0": "pubmed:41824265 zenodo:17285702"
+      }
+    },
+    "patient-2-e07": {
+      "set": "holdout",
+      "as_of": "2027-01-17",
+      "grades": {
+        "3": "pubmed:10794807 pubmed:15226323 pubmed:1835221 pubmed:19035858 pubmed:22500884 pubmed:26293510 pubmed:27826989 pubmed:29388185 pubmed:29946798 pubmed:31643987 pubmed:31707924 pubmed:32469183 pubmed:32655041 pubmed:32804697 pubmed:34216282 pubmed:34396210 pubmed:34408793 pubmed:34409852 pubmed:34459214 pubmed:35108137 pubmed:36652173 pubmed:38148124 pubmed:39555581 pubmed:40189880 pubmed:41706486 pubmed:41752758 pubmed:41987547 pubmed:42615451 zenodo:642517",
+        "2": "pubmed:19912212 pubmed:20110043 pubmed:25791895 pubmed:35662493 pubmed:41247145 pubmed:7541359",
+        "1": "pubmed:25261259 pubmed:29600433 pubmed:34385241 pubmed:36183329 pubmed:36733800 pubmed:37679602 pubmed:38184704 pubmed:38451492 pubmed:38763153",
+        "0": "pubmed:41824265"
+      }
+    },
+    "patient-2-e08": {
+      "set": "holdout",
+      "as_of": "2027-04-17",
+      "grades": {
+        "3": "pubmed:17084167 pubmed:17161994 pubmed:17923854 pubmed:18071861 pubmed:18201145 pubmed:18666210 pubmed:19035858 pubmed:19838837 pubmed:19901958 pubmed:20592607 pubmed:21161451 pubmed:21426285 pubmed:21807761 pubmed:22248394 pubmed:22751146 pubmed:24769788 pubmed:25097095 pubmed:25144145 pubmed:25327530 pubmed:25338271 pubmed:25592210 pubmed:26372364 pubmed:27349496 pubmed:28209634 pubmed:28925899 pubmed:29569731 pubmed:29633945 pubmed:30053039 pubmed:30312560 pubmed:30446448 pubmed:30729683 pubmed:30745202 pubmed:31353680 pubmed:31760582 pubmed:31832978 pubmed:32020289 pubmed:32469183 pubmed:32532121 pubmed:32655041 pubmed:32804697 pubmed:32862568 pubmed:33119791 pubmed:33480983 pubmed:34489536 pubmed:34542155 pubmed:34590590 pubmed:34743290 pubmed:34972863 pubmed:35090339 pubmed:35108137 pubmed:35167609 pubmed:35343371 pubmed:35409505 pubmed:35491331 pubmed:36196418 pubmed:36349380 pubmed:36376762 pubmed:36534950 pubmed:37117113 pubmed:37229882 pubmed:37667894 pubmed:37932568 pubmed:38256338 pubmed:38376624 pubmed:39021590 pubmed:39555581 pubmed:40357899 pubmed:40397707 pubmed:41392000 pubmed:41660902 pubmed:41752758 pubmed:42608357 pubmed:42682049 zenodo:18625973 zenodo:642517",
+        "2": "pubmed:15389811 pubmed:19747011 pubmed:29980331 pubmed:30612936 pubmed:33028943 pubmed:33755233 pubmed:34409852 pubmed:35662493 pubmed:36597735 pubmed:36652173 pubmed:40712215 pubmed:41247145 zenodo:11312275",
+        "1": "arxiv:2503.08927 arxiv:2511.13825 arxiv:2608.16964 pubmed:10052875 pubmed:10663189 pubmed:11076649 pubmed:14680309 pubmed:14971088 pubmed:15625524 pubmed:15976063 pubmed:16474521 pubmed:18655340 pubmed:20589707 pubmed:23647296 pubmed:24816306 pubmed:25727153 pubmed:25871992 pubmed:26449841 pubmed:26768791 pubmed:27337755 pubmed:27557386 pubmed:27586506 pubmed:27792187 pubmed:28528448 pubmed:28532278 pubmed:28532400 pubmed:28655021 pubmed:28816716 pubmed:29039897 pubmed:29384722 pubmed:29772100 pubmed:29807949 pubmed:30227222 pubmed:30266309 pubmed:31122242 pubmed:31659564 pubmed:32035581 pubmed:32480269 pubmed:33542230 pubmed:33813397 pubmed:34385241 pubmed:34400799 pubmed:34618582 pubmed:34905632 pubmed:35403746 pubmed:35405085 pubmed:35569466 pubmed:35995644 pubmed:36080493 pubmed:36183329 pubmed:36214146 pubmed:36733800 pubmed:36749798 pubmed:36763112 pubmed:36795843 pubmed:36807496 pubmed:37092583 pubmed:37256425 pubmed:37305018 pubmed:37470614 pubmed:37481706 pubmed:37528487 pubmed:37545899 pubmed:37708629 pubmed:37922910 pubmed:37981171 pubmed:38261983 pubmed:38583574 pubmed:39417214 pubmed:39485266 pubmed:39786493 pubmed:40315400 pubmed:41046179 pubmed:41266854 pubmed:7526513 pubmed:8869957 pubmed:9609622 pubmed:9806507 zenodo:10016464 zenodo:11111798 zenodo:11193096 zenodo:11214279 zenodo:13988466 zenodo:14625761 zenodo:17285702",
+        "0": "arxiv:2609.23814 pubmed:10663192 pubmed:11233061 pubmed:11818479 pubmed:15666516 pubmed:16229369 pubmed:16314892 pubmed:20959954 pubmed:21095422 pubmed:21297655 pubmed:21717898 pubmed:22198258 pubmed:23016259 pubmed:25123041 pubmed:26656523 pubmed:32248258 pubmed:33099450 pubmed:34497024 pubmed:39090221 pubmed:39145960 pubmed:39721830 pubmed:40554445 pubmed:41972986 zenodo:12732578"
+      }
+    },
+    "patient-2-e12": {
+      "set": "holdout",
+      "as_of": "2028-09-28",
+      "grades": {
+        "3": "pubmed:17084167 pubmed:17161994 pubmed:19901958 pubmed:21161451 pubmed:22751146 pubmed:24769788 pubmed:28925899 pubmed:31353680 pubmed:32167698 pubmed:32220946 pubmed:32469183 pubmed:32532121 pubmed:32655041 pubmed:32804697 pubmed:34409852 pubmed:34542155 pubmed:34743290 pubmed:35108137 pubmed:35491331 pubmed:36196418 pubmed:36652173 pubmed:37932568 pubmed:38256338 pubmed:39021590 pubmed:39555581 pubmed:40357899 pubmed:42608357 pubmed:42682049",
+        "2": "pubmed:19035858 pubmed:19747011 pubmed:29633945 pubmed:33028943 pubmed:33755233 pubmed:41247145 zenodo:14625761",
+        "1": "pubmed:15625524 pubmed:27586506 pubmed:28532400 pubmed:30266309 pubmed:34385241 pubmed:37545899 pubmed:38261983 pubmed:39786493"
+      }
+    },
+    "patient-3-e01": {
+      "set": "holdout",
+      "as_of": "2026-11-06",
+      "grades": {
+        "3": "pubmed:11818479 pubmed:16314892 pubmed:21297655 pubmed:21717898 pubmed:23016259 pubmed:24195246 pubmed:26169584 pubmed:28977112 pubmed:33099450 pubmed:35226140 pubmed:36180907 pubmed:37096582 pubmed:38647107 pubmed:38820236 pubmed:38869693 pubmed:39320245 pubmed:41972986 pubmed:7505969 zenodo:11214279 zenodo:7126985",
+        "2": "pubmed:21922459 pubmed:23862239 pubmed:34497024 pubmed:36999432 pubmed:39090221 pubmed:40273171 zenodo:17190799 zenodo:2565471",
+        "1": "pubmed:26656523 pubmed:30420254 pubmed:34043813 pubmed:42251454 pubmed:42930166 zenodo:4310553 zenodo:7107577"
+      }
+    },
+    "patient-3-e02": {
+      "set": "holdout",
+      "as_of": "2026-11-12",
+      "grades": {
+        "3": "pubmed:10663192 pubmed:11233061 pubmed:11818479 pubmed:14979060 pubmed:16314892 pubmed:18655340 pubmed:20890581 pubmed:21297655 pubmed:22198258 pubmed:23227460 pubmed:24195246 pubmed:24816306 pubmed:26169584 pubmed:38869693 pubmed:39320245 pubmed:7505969 pubmed:9741413 zenodo:11214279 zenodo:11312297 zenodo:17190799 zenodo:7126985",
+        "2": "pubmed:11720279 pubmed:1719610 pubmed:21717898 pubmed:23016259 pubmed:23862239 pubmed:38363332 pubmed:38820236 pubmed:39090221",
+        "1": "pubmed:25123041 pubmed:26656523 pubmed:34043813 pubmed:37109015 pubmed:37777716 pubmed:40185922 pubmed:40273171 pubmed:41985783 pubmed:42251454 pubmed:42930166 zenodo:18097100 zenodo:4310553 zenodo:7107577",
+        "0": "pubmed:34385241"
+      }
+    },
+    "patient-3-e03": {
+      "set": "holdout",
+      "as_of": "2026-12-02",
+      "grades": {
+        "3": "pubmed:17555916 pubmed:27123316 pubmed:27193787 pubmed:27641839 pubmed:28196759 pubmed:28670154 pubmed:29371727 pubmed:30104656 pubmed:30255394 pubmed:31399825 pubmed:32390076 pubmed:32620227 pubmed:33127298 pubmed:34098371 pubmed:35596009 pubmed:36006067 pubmed:36344178 pubmed:37315913 pubmed:37490189 pubmed:37758334 pubmed:37973247 pubmed:38307562 pubmed:38311703 pubmed:38369287 pubmed:38865697 pubmed:39032957 pubmed:39106118 pubmed:39991796 pubmed:40324456 pubmed:40863883 pubmed:41173751 pubmed:41266003 pubmed:42152154 pubmed:42837038 zenodo:11312297 zenodo:12787200 zenodo:12804706 zenodo:23032842",
+        "2": "pubmed:25794094 pubmed:33002371 pubmed:40759601",
+        "1": "arxiv:2611.02197 arxiv:2611.04155 pubmed:27776423 pubmed:33820533 pubmed:33856136 pubmed:34046969 pubmed:34499551 pubmed:34693502 pubmed:35226140 pubmed:35312821 pubmed:35578110 pubmed:36938552 pubmed:37210343 pubmed:38051187 pubmed:38105093 pubmed:38363332 pubmed:38971674 pubmed:39308142 pubmed:39542951 pubmed:39608681 pubmed:40172658 pubmed:40252100 pubmed:40355631 pubmed:40788246 pubmed:42658725 zenodo:10159155 zenodo:12155463",
+        "0": "pubmed:31788708 pubmed:40035668"
+      }
+    },
+    "patient-3-e04": {
+      "set": "holdout",
+      "as_of": "2026-12-21",
+      "grades": {
+        "3": "pubmed:25126559 pubmed:26396046 pubmed:26749141 pubmed:26907717 pubmed:27123316 pubmed:29107270 pubmed:30104656 pubmed:30255394 pubmed:31644434 pubmed:31825763 pubmed:32390076 pubmed:32691544 pubmed:33127298 pubmed:34013185 pubmed:34259038 pubmed:34428921 pubmed:34499551 pubmed:34544650 pubmed:36344178 pubmed:36719644 pubmed:37315913 pubmed:39057180 pubmed:39215055 pubmed:39692414 pubmed:40138013 pubmed:42236170 zenodo:11312297 zenodo:12787200 zenodo:23032842",
+        "2": "pubmed:31399825 pubmed:33820533 pubmed:33856136 pubmed:39032957 pubmed:39991796 zenodo:22898861",
+        "1": "pubmed:29785491 pubmed:38363332 pubmed:41395658 pubmed:42837038"
+      }
+    },
+    "patient-3-e05": {
+      "set": "holdout",
+      "as_of": "2027-01-02",
+      "grades": {
+        "3": "pubmed:10765103 pubmed:17619732 pubmed:30430487 pubmed:31045262 pubmed:31837592 pubmed:32972895 pubmed:35578110 pubmed:35818912 pubmed:35972023 pubmed:38195985 pubmed:39302458 pubmed:40355631 pubmed:41076397 pubmed:41870549 pubmed:9609622 zenodo:23032842",
+        "2": "pubmed:19841101 pubmed:25539273 pubmed:33820533 pubmed:33924669 pubmed:36183329 pubmed:36509932 pubmed:41266854 pubmed:41779619 pubmed:42214858 pubmed:42251454",
+        "1": "pubmed:10663189 pubmed:15976063 pubmed:16474521 pubmed:17283717 pubmed:17361915 pubmed:20237908 pubmed:20589707 pubmed:30972506 pubmed:31016332 pubmed:31122242 pubmed:34920922 pubmed:35813256 pubmed:38363332 pubmed:41721835 zenodo:14702869 zenodo:7126985"
+      }
+    },
+    "patient-3-e06": {
+      "set": "holdout",
+      "as_of": "2027-01-26",
+      "grades": {
+        "3": "pubmed:10765103 pubmed:12851781 pubmed:14972471 pubmed:15357040 pubmed:15809776 pubmed:17619732 pubmed:17896553 pubmed:18303539 pubmed:18584180 pubmed:18635233 pubmed:18814526 pubmed:19050687 pubmed:19365894 pubmed:19799045 pubmed:20470000 pubmed:20864364 pubmed:21993567 pubmed:23106163 pubmed:23841851 pubmed:25424387 pubmed:26031821 pubmed:26358012 pubmed:28169123 pubmed:28429951 pubmed:29116405 pubmed:29421921 pubmed:30938366 pubmed:31039101 pubmed:31120453 pubmed:31971494 pubmed:32746829 pubmed:3314061 pubmed:33550690 pubmed:33554284 pubmed:35578110 pubmed:36065059 pubmed:36205571 pubmed:36306101 pubmed:36938550 pubmed:37269137 pubmed:37477486 pubmed:37639456 pubmed:37721644 pubmed:38036328 pubmed:38195985 pubmed:39299693 pubmed:39347950 pubmed:39382717 pubmed:40148877 pubmed:41779619 zenodo:7068121 zenodo:7879125 zenodo:8033876 zenodo:8054698",
+        "2": "pubmed:11590810 pubmed:28006957 pubmed:30972506 pubmed:33590768 pubmed:37036165 zenodo:11206827 zenodo:23032842",
+        "1": "arxiv:2606.09453 arxiv:2606.14587 pubmed:28901630 pubmed:34229680 pubmed:36941084 pubmed:37247118 pubmed:37882808 pubmed:39039389 pubmed:8015079"
+      }
+    },
+    "patient-3-e07": {
+      "set": "holdout",
+      "as_of": "2027-01-27",
+      "grades": {
+        "3": "pubmed:12851781 pubmed:17896553 pubmed:18814526 pubmed:19050687 pubmed:19050688 pubmed:20470000 pubmed:23106163 pubmed:26031821 pubmed:26358012 pubmed:28429951 pubmed:29116405 pubmed:29421921 pubmed:30938366 pubmed:31039101 pubmed:32746829 pubmed:32931133 pubmed:33554284 pubmed:35325307 pubmed:35578110 pubmed:36065059 pubmed:36938550 pubmed:37036165 pubmed:37477486 pubmed:37639456 pubmed:38036328 pubmed:38195985 pubmed:38287319 pubmed:38904929 pubmed:39299693 pubmed:39382717 pubmed:40148877 pubmed:40358638 pubmed:41779619 zenodo:7879125",
+        "2": "pubmed:28006957",
+        "1": "pubmed:28901630 pubmed:34229680 pubmed:35112460 pubmed:37247118 pubmed:39039389",
+        "0": "pubmed:41049821"
+      }
+    },
+    "patient-3-e08": {
+      "set": "holdout",
+      "as_of": "2027-02-08",
+      "grades": {
+        "3": "pubmed:17619732 pubmed:27306657 pubmed:27555432 pubmed:28429951 pubmed:31045262 pubmed:31303561 pubmed:31566779 pubmed:31673831 pubmed:35248474 pubmed:35439175 pubmed:39382717 pubmed:39825481",
+        "2": "pubmed:10765103 pubmed:20802467 pubmed:28243789 pubmed:28904361 pubmed:29116405 pubmed:30504811 pubmed:32130814 pubmed:32382097 pubmed:34694141 pubmed:35536200 pubmed:35578110 pubmed:37676466 pubmed:38036328 pubmed:39302458 pubmed:40728405 pubmed:41779619 pubmed:42214858 zenodo:12707546 zenodo:7879125",
+        "1": "arxiv:2611.05974 pubmed:17196737 pubmed:27105389 pubmed:32367438 pubmed:33554284 pubmed:34612746 pubmed:34963334 pubmed:35233813 pubmed:35255716 pubmed:37669707 pubmed:37874731 pubmed:40355631 pubmed:41723534 zenodo:12787200",
+        "0": "pubmed:39448058 pubmed:41108488"
+      }
+    },
+    "patient-3-e09": {
+      "set": "holdout",
+      "as_of": "2027-02-09",
+      "grades": {
+        "3": "pubmed:11076649 pubmed:14680309 pubmed:14972471 pubmed:15357040 pubmed:15809776 pubmed:17619732 pubmed:17896553 pubmed:18303539 pubmed:18584180 pubmed:19050687 pubmed:19365894 pubmed:20470000 pubmed:23647296 pubmed:26358012 pubmed:27337755 pubmed:28169123 pubmed:28429951 pubmed:28528448 pubmed:28904361 pubmed:29039897 pubmed:31039101 pubmed:31673831 pubmed:3314061 pubmed:36306101 pubmed:37481706 pubmed:38195985 pubmed:38583574 pubmed:39417214 pubmed:39710841 pubmed:39825481 pubmed:7526513 zenodo:7068121 zenodo:8054698",
+        "2": "arxiv:2606.09453 pubmed:10663189 pubmed:10765103 pubmed:14971088 pubmed:15976063 pubmed:17283717 pubmed:18814526 pubmed:20864364 pubmed:24816306 pubmed:25424387 pubmed:26166626 pubmed:26991008 pubmed:27393141 pubmed:27415753 pubmed:28753804 pubmed:29116405 pubmed:30430487 pubmed:30859516 pubmed:31045262 pubmed:31122242 pubmed:31303561 pubmed:31566779 pubmed:32683729 pubmed:33079976 pubmed:33554284 pubmed:34648048 pubmed:34694141 pubmed:34905632 pubmed:35248474 pubmed:35536200 pubmed:35972023 pubmed:36205571 pubmed:36344178 pubmed:37256425 pubmed:39306583 pubmed:39347950 pubmed:39382717 pubmed:39485266 pubmed:40148877 pubmed:40736715 pubmed:41266854 pubmed:42214858 pubmed:9609622 zenodo:23032842 zenodo:7879125 zenodo:8033876",
+        "1": "arxiv:2606.14587 arxiv:2607.23594 arxiv:2608.16964 arxiv:2609.23814 pubmed:10052875 pubmed:11233061 pubmed:11590810 pubmed:11818479 pubmed:15666516 pubmed:16229369 pubmed:16314892 pubmed:16474521 pubmed:18635233 pubmed:18655340 pubmed:19841101 pubmed:20589707 pubmed:21297655 pubmed:21717898 pubmed:21993567 pubmed:22925240 pubmed:25123041 pubmed:25539273 pubmed:25727153 pubmed:25837493 pubmed:26031821 pubmed:26449841 pubmed:26633167 pubmed:26768791 pubmed:27091809 pubmed:27557386 pubmed:27792187 pubmed:29772100 pubmed:29807949 pubmed:30104757 pubmed:30972506 pubmed:31412009 pubmed:31476359 pubmed:31659564 pubmed:32248258 pubmed:32382097 pubmed:32406055 pubmed:32894109 pubmed:33099450 pubmed:33143905 pubmed:33472645 pubmed:33820533 pubmed:34161656 pubmed:34229680 pubmed:34497024 pubmed:34783714 pubmed:35120773 pubmed:35578110 pubmed:36214146 pubmed:36434164 pubmed:36938550 pubmed:36941084 pubmed:37126310 pubmed:37126311 pubmed:37247118 pubmed:37867335 pubmed:37981171 pubmed:38036328 pubmed:38041475 pubmed:38308030 pubmed:39090221 pubmed:39302458 pubmed:40355631 pubmed:41177875 pubmed:41779619 pubmed:41972986 pubmed:8015079 pubmed:8869957 pubmed:9806507 zenodo:11111798 zenodo:11193096 zenodo:11206827 zenodo:11214279 zenodo:12707546 zenodo:12745896 zenodo:12804706 zenodo:17190799 zenodo:7126985",
+        "0": "pubmed:10663192 pubmed:20959954 pubmed:21095422 pubmed:22198258 pubmed:23016259 pubmed:25871992 pubmed:26656523 pubmed:33813397 pubmed:39145960 pubmed:39721830 pubmed:40554445 zenodo:10016464 zenodo:12732578"
+      }
+    },
+    "patient-3-e10": {
+      "set": "holdout",
+      "as_of": "2027-04-06",
+      "grades": {
+        "3": "pubmed:17283717 pubmed:17619732 pubmed:17896553 pubmed:28429951 pubmed:28528448 pubmed:31039101 pubmed:31673831 pubmed:39417214 pubmed:7526513",
+        "2": "pubmed:10663189 pubmed:15976063 pubmed:18584180 pubmed:23106163 pubmed:29367503 pubmed:30972506 pubmed:31045262 pubmed:31303561 pubmed:35325307 pubmed:37477486 pubmed:38155061 pubmed:38195985 pubmed:39299693 pubmed:39347950 pubmed:39382717 pubmed:39710841 pubmed:9609622 zenodo:23032842 zenodo:7879125",
+        "1": "pubmed:10765103 pubmed:12851781 pubmed:16229369 pubmed:28901630 pubmed:29116405 pubmed:32382097 pubmed:33554284 pubmed:34229680 pubmed:35024944 pubmed:35578110 pubmed:35813256 pubmed:37247118 pubmed:37639456 pubmed:38036328 pubmed:39039389 pubmed:39302458 pubmed:40355631 pubmed:41779619"
+      }
+    },
+    "patient-3-e16": {
+      "set": "holdout",
+      "as_of": "2029-06-10",
+      "grades": {
+        "3": "pubmed:17283717 pubmed:28528448 pubmed:31673831 pubmed:7526513",
+        "2": "pubmed:10663189 pubmed:17619732 pubmed:17896553 pubmed:23106163 pubmed:28429951 pubmed:29367503 pubmed:31039101 pubmed:31045262 pubmed:35325307 pubmed:38155061 pubmed:38195985 pubmed:39299693 pubmed:39710841 pubmed:9609622",
+        "1": "pubmed:10765103 pubmed:12851781 pubmed:15976063 pubmed:16229369 pubmed:18584180 pubmed:28901630 pubmed:29116405 pubmed:30972506 pubmed:31303561 pubmed:32382097 pubmed:33554284 pubmed:34229680 pubmed:35024944 pubmed:35578110 pubmed:35813256 pubmed:37247118 pubmed:37477486 pubmed:38036328 pubmed:39039389 pubmed:39302458 pubmed:39347950 pubmed:39382717 pubmed:39417214 pubmed:40355631 pubmed:41779619 zenodo:23032842 zenodo:7879125"
+      }
+    },
+    "patient-4-e01": {
+      "set": "sample",
+      "as_of": "2026-11-06",
+      "grades": {
+        "3": "pubmed:10663192 pubmed:11233061 pubmed:11720279 pubmed:11818479 pubmed:16314892 pubmed:18655340 pubmed:20890581 pubmed:20959954 pubmed:21095422 pubmed:21922459 pubmed:23227460 pubmed:24816306 pubmed:26768791 pubmed:27337755 pubmed:27557386 pubmed:27792187 pubmed:30097885 pubmed:33099450 pubmed:36180907 pubmed:38869693 pubmed:38913583 pubmed:39320245 pubmed:40554445 pubmed:7505969 pubmed:9741413 zenodo:10016464 zenodo:11111798 zenodo:11193096 zenodo:11214279 zenodo:11312297 zenodo:12804706 zenodo:17190799 zenodo:17694381 zenodo:7126985",
+        "2": "pubmed:21717898 pubmed:22198258 pubmed:22343493 pubmed:23016259 pubmed:23862239 pubmed:24005707 pubmed:24195246 pubmed:36149214 pubmed:39145960 pubmed:41972986 pubmed:9126236",
+        "1": "arxiv:2608.16964 arxiv:2609.23814 pubmed:10663189 pubmed:11076649 pubmed:12100934 pubmed:14680309 pubmed:14971088 pubmed:18217533 pubmed:18452459 pubmed:20589707 pubmed:21297655 pubmed:21304009 pubmed:23647296 pubmed:24484652 pubmed:25123041 pubmed:25727153 pubmed:26118565 pubmed:26449841 pubmed:26656523 pubmed:28528448 pubmed:29772100 pubmed:31122242 pubmed:31220400 pubmed:31659564 pubmed:34043813 pubmed:34497024 pubmed:34905632 pubmed:36418491 pubmed:36999432 pubmed:37248105 pubmed:37256425 pubmed:37481706 pubmed:38401099 pubmed:38520513 pubmed:38583574 pubmed:39090221 pubmed:39417214 pubmed:39485266 pubmed:39721830 pubmed:41266854 pubmed:42251454 pubmed:42930166 pubmed:7508789 pubmed:8869957 pubmed:9609622 pubmed:9806507 zenodo:10777347 zenodo:12732578 zenodo:18097100 zenodo:4310553",
+        "0": "pubmed:10052875 pubmed:11068312 pubmed:12949429 pubmed:15666516 pubmed:15976063 pubmed:16229369 pubmed:16474521 pubmed:25871992 pubmed:26975660 pubmed:29039897 pubmed:29807949 pubmed:31653712 pubmed:32248258 pubmed:33813397 pubmed:35024944 pubmed:36214146 pubmed:37981171 pubmed:40846621 pubmed:7526513"
+      }
+    },
+    "patient-4-e02": {
+      "set": "sample",
+      "as_of": "2026-11-11",
+      "grades": {
+        "3": "pubmed:10663192 pubmed:11233061 pubmed:11720279 pubmed:11818479 pubmed:18655340 pubmed:20890581 pubmed:20959954 pubmed:22343493 pubmed:24195246 pubmed:24978363 pubmed:26169584 pubmed:27337755 pubmed:29420975 pubmed:39991796 pubmed:7505969 pubmed:9741413 zenodo:10016464 zenodo:11090357 zenodo:11111798 zenodo:11214279 zenodo:11312297 zenodo:17190799 zenodo:17694381",
+        "2": "pubmed:14979060 pubmed:16314892 pubmed:19486654 pubmed:21297655 pubmed:21304009 pubmed:21717898 pubmed:26991008 pubmed:36149214 pubmed:38363332 pubmed:38820236 pubmed:38913583",
+        "1": "pubmed:11076649 pubmed:11482317 pubmed:12100934 pubmed:12949429 pubmed:23862239 pubmed:24484652 pubmed:25613154 pubmed:26178391 pubmed:26975660 pubmed:28528448 pubmed:29090673 pubmed:30772034 pubmed:30843003 pubmed:31220400 pubmed:31659564 pubmed:33856136 pubmed:34043813 pubmed:35026706 pubmed:35485635 pubmed:37097540 pubmed:37109015 pubmed:37777716 pubmed:38520513 pubmed:39090221 pubmed:39153094 pubmed:39417214 pubmed:39485266 pubmed:40273171 pubmed:40846621 pubmed:41818713 pubmed:42251454 pubmed:42930166 pubmed:8869957 zenodo:18097100 zenodo:2565471 zenodo:4310553",
+        "0": "pubmed:11068312 pubmed:25658232 pubmed:25871992 pubmed:29807949 pubmed:30119985 pubmed:32035581 pubmed:34385241 pubmed:34453699 pubmed:35024944 pubmed:36229939 pubmed:37679602 pubmed:39327114 pubmed:40578932 pubmed:41721835"
+      }
+    },
+    "patient-4-e03": {
+      "set": "sample",
+      "as_of": "2026-11-29",
+      "grades": {
+        "3": "pubmed:25126559 pubmed:27123316 pubmed:28670154 pubmed:28721448 pubmed:29552975 pubmed:29908876 pubmed:30255394 pubmed:31397038 pubmed:34098371 pubmed:34225808 pubmed:34455239 pubmed:35596009 pubmed:36006067 pubmed:37129487 pubmed:37315913 pubmed:37973247 pubmed:39991796 pubmed:40863883 pubmed:41173751 pubmed:42152154 pubmed:42837038 zenodo:11312297 zenodo:12787200 zenodo:12804706 zenodo:23032842",
+        "2": "arxiv:2611.04155 pubmed:32390076 pubmed:32812795 pubmed:40252100 pubmed:42192391",
+        "1": "arxiv:2611.02197 pubmed:31045262 pubmed:33820533 pubmed:33856136 pubmed:34046969 pubmed:34499551 pubmed:35255716 pubmed:35312821 pubmed:35578110 pubmed:37210343 pubmed:38363332 pubmed:38971674 pubmed:39809998 pubmed:40172658 pubmed:40355631",
+        "0": "pubmed:29755006 pubmed:39718497 pubmed:40035668"
+      }
+    },
+    "patient-4-e04": {
+      "set": "sample",
+      "as_of": "2026-12-10",
+      "grades": {
+        "3": "pubmed:17283708 pubmed:17342490 pubmed:17720304 pubmed:17823604 pubmed:20222795 pubmed:25126559 pubmed:27123316 pubmed:29552975 pubmed:30104656 pubmed:31644434 pubmed:31825763 pubmed:32382097 pubmed:32390076 pubmed:32691544 pubmed:33127298 pubmed:34259038 pubmed:34428921 pubmed:36006067 pubmed:36344178 pubmed:36509932 pubmed:36938557 pubmed:37315913 pubmed:39057180 pubmed:39215055 pubmed:39692414 pubmed:40728405 pubmed:42236170 pubmed:42251454 pubmed:9118393 zenodo:11312297 zenodo:12787200 zenodo:12804706 zenodo:23032842",
+        "2": "pubmed:26396046 pubmed:29908876 pubmed:30255394 pubmed:31399825 pubmed:32812795 pubmed:34225808 pubmed:34455239 pubmed:35578110 pubmed:35596009 pubmed:39032957 pubmed:39093531 pubmed:39410690 pubmed:39991796 pubmed:40863883 pubmed:41173751 pubmed:42152154",
+        "1": "arxiv:2608.14796 arxiv:2611.04155 pubmed:10828667 pubmed:20003566 pubmed:21692866 pubmed:28196759 pubmed:30117172 pubmed:30382379 pubmed:31038866 pubmed:33435132 pubmed:33820533 pubmed:33856136 pubmed:34499551 pubmed:38363332 pubmed:38971674 pubmed:40020264 pubmed:40788246 pubmed:42837038"
+      }
+    },
+    "patient-4-e05": {
+      "set": "sample",
+      "as_of": "2026-12-23",
+      "grades": {
+        "3": "pubmed:11076649 pubmed:11590810 pubmed:11963672 pubmed:14972471 pubmed:15809776 pubmed:16792322 pubmed:18584180 pubmed:18814526 pubmed:19365894 pubmed:19799045 pubmed:21993567 pubmed:22790035 pubmed:23106163 pubmed:23872627 pubmed:25459359 pubmed:26358012 pubmed:29116405 pubmed:29421921 pubmed:29948044 pubmed:30342844 pubmed:30430487 pubmed:30565400 pubmed:31039101 pubmed:31495569 pubmed:32382097 pubmed:32390076 pubmed:32746829 pubmed:32972895 pubmed:33067016 pubmed:33904755 pubmed:34023239 pubmed:34970758 pubmed:35578110 pubmed:35972023 pubmed:37477486 pubmed:38166221 pubmed:39302458 pubmed:40100830 pubmed:40252100 pubmed:40355631 pubmed:41779619 pubmed:8521134 pubmed:9609622 zenodo:10159155 zenodo:23032842 zenodo:8033876",
+        "2": "pubmed:21670752 pubmed:23647296 pubmed:26449841 pubmed:31045262 pubmed:32130814 pubmed:32648430 pubmed:34161656 pubmed:34391651 pubmed:34816646 pubmed:35813256 pubmed:35946183 pubmed:36107203 pubmed:36183329 pubmed:36344178 pubmed:36509932 pubmed:36938557 pubmed:37696743 pubmed:38583574 pubmed:42214858 pubmed:42251454 pubmed:8976259",
+        "1": "pubmed:10052875 pubmed:10663189 pubmed:15666516 pubmed:15976063 pubmed:16229369 pubmed:20216316 pubmed:23069384 pubmed:28189428 pubmed:28922958 pubmed:29807949 pubmed:30255394 pubmed:31122242 pubmed:31375279 pubmed:32248258 pubmed:33582104 pubmed:33820533 pubmed:34319588 pubmed:35027314 pubmed:36171482 pubmed:36214146 pubmed:36941084 pubmed:37981171 pubmed:39039389 pubmed:39991796 pubmed:40185922 pubmed:42837038 pubmed:8855651"
+      }
+    },
+    "patient-4-e06": {
+      "set": "sample",
+      "as_of": "2027-01-23",
+      "grades": {
+        "3": "pubmed:11076649 pubmed:11590810 pubmed:11963672 pubmed:12851781 pubmed:14972471 pubmed:15809776 pubmed:16792322 pubmed:18584180 pubmed:18814526 pubmed:19365894 pubmed:21944081 pubmed:21993567 pubmed:22790035 pubmed:23106163 pubmed:26358012 pubmed:28417427 pubmed:29116405 pubmed:29421921 pubmed:30430487 pubmed:30565400 pubmed:31039101 pubmed:32746829 pubmed:33550690 pubmed:34023239 pubmed:34970758 pubmed:35578110 pubmed:35972023 pubmed:36205571 pubmed:37477486 pubmed:37639456 pubmed:37696743 pubmed:40355631 pubmed:41779619 pubmed:42214858 pubmed:7526513 zenodo:10159155 zenodo:8033876",
+        "2": "pubmed:28661898 pubmed:28901630 pubmed:29948044 pubmed:31045262 pubmed:31495569 pubmed:32130814 pubmed:32382097 pubmed:32390076 pubmed:33904755 pubmed:35596009 pubmed:36183329 pubmed:36344178 pubmed:36509932 pubmed:37277573 pubmed:37973247 pubmed:39302458 pubmed:40252100 pubmed:8976259 pubmed:9609622 zenodo:12787200 zenodo:23032842",
+        "1": "pubmed:10663189 pubmed:15666516 pubmed:15976063 pubmed:23069384 pubmed:30255394 pubmed:31122242 pubmed:32248258 pubmed:33582104 pubmed:33820533 pubmed:34229680 pubmed:34816646 pubmed:36107203 pubmed:36941084 pubmed:37981171 pubmed:39039389 pubmed:39991796 pubmed:40185922 pubmed:8855651",
+        "0": "pubmed:36214146"
+      }
+    },
+    "patient-4-e07": {
+      "set": "sample",
+      "as_of": "2027-01-24",
+      "grades": {
+        "3": "pubmed:10828666 pubmed:11076649 pubmed:11590810 pubmed:14972471 pubmed:15711608 pubmed:17196737 pubmed:18303539 pubmed:20800031 pubmed:23872627 pubmed:25424387 pubmed:28904361 pubmed:29116405 pubmed:31039101 pubmed:32382097 pubmed:32931133 pubmed:35536200 pubmed:35578110 pubmed:36306101 pubmed:36372633 pubmed:37676466 pubmed:38478106 pubmed:39341919 pubmed:39607183 pubmed:40355631 pubmed:41779619 pubmed:8521134 pubmed:9112522 pubmed:9414194 zenodo:10159155 zenodo:7068121 zenodo:8033876 zenodo:8213181",
+        "2": "pubmed:15809776 pubmed:16792322 pubmed:18584180 pubmed:22790035 pubmed:31045262 pubmed:32390076 pubmed:36344178 pubmed:37277573 pubmed:38195985 pubmed:40148877 pubmed:40252100 pubmed:40358638 pubmed:42214858 zenodo:23032842",
+        "1": "pubmed:17100168 pubmed:30255394 pubmed:32248258 pubmed:32746829 pubmed:33820533 pubmed:34229680 pubmed:35349074 pubmed:35596009 pubmed:36214146 pubmed:37981171 pubmed:39991796 pubmed:8976259 pubmed:9763084 zenodo:12787200",
+        "0": "pubmed:41049821"
+      }
+    },
+    "patient-4-e08": {
+      "set": "sample",
+      "as_of": "2027-02-03",
+      "grades": {
+        "3": "pubmed:20802467 pubmed:30729683 pubmed:30967332 pubmed:31375279 pubmed:31825470 pubmed:31837592 pubmed:34161656 pubmed:35946183",
+        "2": "pubmed:29116405 pubmed:30504811 pubmed:30667329 pubmed:30928608 pubmed:31122242 pubmed:31971494 pubmed:32157427 pubmed:32390076 pubmed:34227174 pubmed:35448167 pubmed:35578110 pubmed:37140551 pubmed:37676466 pubmed:38109699 pubmed:38166221 pubmed:39302458 pubmed:40355631 pubmed:41645030 pubmed:41723534 pubmed:41779619 pubmed:42214858 pubmed:9414194 zenodo:23032842",
+        "1": "pubmed:31715511 pubmed:32972895 pubmed:33820533 pubmed:33994494 pubmed:34225808 pubmed:35001161 pubmed:35536200 pubmed:37315913 pubmed:38036328 pubmed:38326749 pubmed:38670874 pubmed:39382717 pubmed:39809998 pubmed:40252100 pubmed:40830810 pubmed:40841351 pubmed:42192391 pubmed:42251454 zenodo:12804706",
+        "0": "pubmed:38363332"
+      }
+    },
+    "patient-4-e09": {
+      "set": "sample",
+      "as_of": "2027-02-06",
+      "grades": {
+        "3": "pubmed:14972471 pubmed:19365894 pubmed:29766319 pubmed:30967332 pubmed:31039101 pubmed:31122242 pubmed:31375279 pubmed:31411971 pubmed:31566779 pubmed:31718600 pubmed:31825470 pubmed:31837592 pubmed:32229268 pubmed:3314061 pubmed:33941458 pubmed:34161656 pubmed:35946183 pubmed:36859711 pubmed:40191860 zenodo:11206827 zenodo:7068121 zenodo:8054698",
+        "2": "arxiv:2606.09453 pubmed:11074612 pubmed:11590810 pubmed:15809776 pubmed:17619732 pubmed:18584180 pubmed:20802467 pubmed:24188255 pubmed:25424387 pubmed:26166626 pubmed:26991008 pubmed:27393141 pubmed:27415753 pubmed:28169123 pubmed:28243789 pubmed:29116405 pubmed:30504811 pubmed:30667329 pubmed:30729683 pubmed:30859516 pubmed:30929849 pubmed:31715511 pubmed:32027043 pubmed:32390076 pubmed:32683729 pubmed:33067016 pubmed:33079976 pubmed:33924669 pubmed:34227174 pubmed:34648048 pubmed:35578110 pubmed:35972023 pubmed:36306101 pubmed:36336728 pubmed:37140551 pubmed:37691209 pubmed:38109699 pubmed:38166221 pubmed:39347950 pubmed:40355631 pubmed:40736715 pubmed:40787959 pubmed:41288326 pubmed:41723534 pubmed:41779619 pubmed:42214858 zenodo:12707546 zenodo:17190799 zenodo:23032842 zenodo:8033876",
+        "1": "arxiv:2606.14587 arxiv:2607.23594 pubmed:10765103 pubmed:15357040 pubmed:17896553 pubmed:18303539 pubmed:18635233 pubmed:18814526 pubmed:19050687 pubmed:20470000 pubmed:20864364 pubmed:21993567 pubmed:25837493 pubmed:26031821 pubmed:26358012 pubmed:26633167 pubmed:27091809 pubmed:27105389 pubmed:27986368 pubmed:28753804 pubmed:30104757 pubmed:30928608 pubmed:31045262 pubmed:31303561 pubmed:31412009 pubmed:31476359 pubmed:31971494 pubmed:32157427 pubmed:32382097 pubmed:32406055 pubmed:32894109 pubmed:32972895 pubmed:33143905 pubmed:33472645 pubmed:33554284 pubmed:33820533 pubmed:33994494 pubmed:34225808 pubmed:34229680 pubmed:34783714 pubmed:34920922 pubmed:34963334 pubmed:35001161 pubmed:35027314 pubmed:35448167 pubmed:35536200 pubmed:36205571 pubmed:36344178 pubmed:36938550 pubmed:36941084 pubmed:37126310 pubmed:37126311 pubmed:37142824 pubmed:37247118 pubmed:37277573 pubmed:37487824 pubmed:37603211 pubmed:37867335 pubmed:38036328 pubmed:38287507 pubmed:38308030 pubmed:38326749 pubmed:38520649 pubmed:38647728 pubmed:38670874 pubmed:39302458 pubmed:39382717 pubmed:39576420 pubmed:39615194 pubmed:40073383 pubmed:40252100 pubmed:40813162 pubmed:40830810 pubmed:40841351 pubmed:40910573 pubmed:41177875 pubmed:41364797 pubmed:41645030 pubmed:42240110 pubmed:42251454 pubmed:8015079 pubmed:9414194 zenodo:12745896 zenodo:12804706 zenodo:7126985 zenodo:7879125",
+        "0": "pubmed:22925240 pubmed:35120773"
+      }
+    },
+    "patient-4-e10": {
+      "set": "sample",
+      "as_of": "2027-03-18",
+      "grades": {
+        "3": "pubmed:17105795 pubmed:17907065 pubmed:18501455 pubmed:20216316 pubmed:21670752 pubmed:22161411 pubmed:22673744 pubmed:23619579 pubmed:23763888 pubmed:25195116 pubmed:25204643 pubmed:25909199 pubmed:26568790 pubmed:27542509 pubmed:27617311 pubmed:28189428 pubmed:28225445 pubmed:28922958 pubmed:29178983 pubmed:29807949 pubmed:31375279 pubmed:31566779 pubmed:32129297 pubmed:32182149 pubmed:32229268 pubmed:32648430 pubmed:33002431 pubmed:33002437 pubmed:34049780 pubmed:34391651 pubmed:34400088 pubmed:34538759 pubmed:34595542 pubmed:35488121 pubmed:35569466 pubmed:35946183 pubmed:36795862 pubmed:38583574 pubmed:40659894 zenodo:3577390",
+        "2": "pubmed:11076649 pubmed:15040870 pubmed:16752721 pubmed:18082588 pubmed:20590940 pubmed:21118060 pubmed:21178999 pubmed:22292443 pubmed:23622075 pubmed:26112487 pubmed:28281047 pubmed:30843898 pubmed:31115116 pubmed:31122242 pubmed:35605175 pubmed:36434164 pubmed:36938553 pubmed:38041475 pubmed:39530099 pubmed:40277768 pubmed:40516972 zenodo:23596586",
+        "1": "arxiv:1607.01078 arxiv:2604.10227 arxiv:2605.13713 arxiv:2606.09898 pubmed:11383249 pubmed:12504845 pubmed:16861119 pubmed:17432560 pubmed:17492410 pubmed:21940734 pubmed:22705100 pubmed:23584344 pubmed:23648323 pubmed:23973460 pubmed:25234700 pubmed:25480014 pubmed:25598137 pubmed:25752244 pubmed:25973556 pubmed:26408674 pubmed:27056435 pubmed:27296648 pubmed:27377157 pubmed:27628966 pubmed:28296582 pubmed:28343352 pubmed:28366513 pubmed:28917248 pubmed:28983664 pubmed:29496279 pubmed:30718087 pubmed:30850855 pubmed:31227373 pubmed:31359187 pubmed:31441133 pubmed:31540791 pubmed:31703647 pubmed:31718600 pubmed:31739952 pubmed:32969548 pubmed:32976788 pubmed:33966623 pubmed:34247896 pubmed:34274223 pubmed:34496707 pubmed:34528538 pubmed:35485635 pubmed:35578110 pubmed:35878715 pubmed:36135065 pubmed:36183329 pubmed:36308526 pubmed:36550217 pubmed:36717113 pubmed:36938551 pubmed:37374348 pubmed:37395949 pubmed:37754502 pubmed:38503591 pubmed:39061006 pubmed:39271420 pubmed:39681174 pubmed:40355631 pubmed:40483656 pubmed:40516968 pubmed:40620056 pubmed:40743809 pubmed:40840169 pubmed:41131510 pubmed:41365376 pubmed:41437135 pubmed:41655576 pubmed:42777298 pubmed:7536141 zenodo:10282246 zenodo:13988466 zenodo:13988544 zenodo:13988746 zenodo:14621959 zenodo:20409438 zenodo:23285005 zenodo:3580516 zenodo:7902054",
+        "0": "pubmed:25182528 pubmed:28576177 pubmed:37470602 zenodo:10683536"
+      }
+    },
+    "patient-4-e11": {
+      "set": "sample",
+      "as_of": "2027-06-16",
+      "grades": {
+        "3": "pubmed:11076649 pubmed:18501455 pubmed:19167731 pubmed:20216316 pubmed:20224263 pubmed:22161411 pubmed:25195116 pubmed:26568790 pubmed:28189428 pubmed:28922958 pubmed:31375279 pubmed:32525510 pubmed:32648430 pubmed:33002431 pubmed:33002437 pubmed:33502568 pubmed:34391651 pubmed:35478143 pubmed:38583574",
+        "2": "pubmed:12787711 pubmed:21670752 pubmed:26112487 pubmed:27542509 pubmed:29178983 pubmed:29807949 pubmed:30729683 pubmed:31122242 pubmed:31566779 pubmed:31718600 pubmed:32229268 pubmed:33002438 pubmed:34049780 pubmed:34161656 pubmed:34538759 pubmed:35946183 pubmed:38041475",
+        "1": "pubmed:26893137 pubmed:31045262 pubmed:32150055 pubmed:33820533 pubmed:35485635 pubmed:35578110 pubmed:36183329 pubmed:36434164 pubmed:40355631 pubmed:41779619 zenodo:3577390",
+        "0": "pubmed:33358467 pubmed:34756691 pubmed:38758563"
+      }
+    },
+    "patient-4-e17": {
+      "set": "sample",
+      "as_of": "2029-11-06",
+      "grades": {
+        "3": "pubmed:11076649 pubmed:20224263 pubmed:25195116 pubmed:26568790 pubmed:31375279 pubmed:33002437 pubmed:33502568 pubmed:35478143 pubmed:38583574",
+        "2": "pubmed:18501455 pubmed:19167731 pubmed:20216316 pubmed:21670752 pubmed:22161411 pubmed:27542509 pubmed:28189428 pubmed:28922958 pubmed:29178983 pubmed:29807949 pubmed:30729683 pubmed:31122242 pubmed:31566779 pubmed:32229268 pubmed:32525510 pubmed:32648430 pubmed:33002431 pubmed:33002438 pubmed:34049780 pubmed:34161656 pubmed:34391651 pubmed:34538759 pubmed:35569466 pubmed:35946183 pubmed:38041475",
+        "1": "pubmed:26112487 pubmed:26893137 pubmed:31718600 pubmed:32150055 pubmed:35485635 pubmed:35578110 pubmed:36183329 pubmed:36434164 pubmed:37973247 pubmed:40355631 pubmed:41779619 zenodo:3577390",
+        "0": "pubmed:33358467 pubmed:34756691 pubmed:38363332 pubmed:38758563"
+      }
+    },
+    "patient-5-e01": {
+      "set": "sample",
+      "as_of": "2026-11-06",
+      "grades": {
+        "3": "pubmed:10663192 pubmed:11233061 pubmed:11720279 pubmed:11818479 pubmed:16314892 pubmed:18655340 pubmed:20890581 pubmed:21922459 pubmed:23227460 pubmed:23862239 pubmed:24195246 pubmed:30097885 pubmed:36180907 pubmed:38869693 pubmed:39320245 pubmed:7505969 pubmed:9741413 zenodo:10016464 zenodo:11111798 zenodo:11214279 zenodo:11312297 zenodo:12804706 zenodo:17190799 zenodo:17694381 zenodo:7126985",
+        "2": "pubmed:22343493 pubmed:24005707 pubmed:36149214 pubmed:36999432 pubmed:38913583 pubmed:39090221 pubmed:9126236",
+        "1": "pubmed:11076649 pubmed:12100934 pubmed:18452459 pubmed:21304009 pubmed:24484652 pubmed:31659564 pubmed:34043813 pubmed:36418491 pubmed:37248105 pubmed:38401099 pubmed:40846621 pubmed:42251454 pubmed:42930166 pubmed:7508789 pubmed:8869957 zenodo:10777347 zenodo:18097100 zenodo:4310553",
+        "0": "pubmed:11068312 pubmed:12949429 pubmed:18217533 pubmed:26118565 pubmed:26975660 pubmed:31220400 pubmed:31653712 pubmed:35024944 pubmed:38520513"
+      }
+    },
+    "patient-5-e02": {
+      "set": "sample",
+      "as_of": "2026-11-12",
+      "grades": {
+        "3": "pubmed:10663192 pubmed:11233061 pubmed:11720279 pubmed:11818479 pubmed:16314892 pubmed:18655340 pubmed:20890581 pubmed:20959954 pubmed:21095422 pubmed:22343493 pubmed:24195246 pubmed:24816306 pubmed:24978363 pubmed:26768791 pubmed:27337755 pubmed:27557386 pubmed:27792187 pubmed:37096582 pubmed:40554445 pubmed:7505969 pubmed:9617617 pubmed:9741413 zenodo:10016464 zenodo:11111798 zenodo:11193096 zenodo:11214279 zenodo:17190799",
+        "2": "pubmed:19486654 pubmed:21297655 pubmed:21717898 pubmed:23016259 pubmed:33099450 pubmed:36149214 pubmed:38363332 pubmed:41972986",
+        "1": "arxiv:2608.16964 arxiv:2609.23814 pubmed:10663189 pubmed:11076649 pubmed:12100934 pubmed:14680309 pubmed:20589707 pubmed:21304009 pubmed:22198258 pubmed:24484652 pubmed:25123041 pubmed:25727153 pubmed:26449841 pubmed:26656523 pubmed:28528448 pubmed:29039897 pubmed:29090673 pubmed:29772100 pubmed:30772034 pubmed:31122242 pubmed:31220400 pubmed:31659564 pubmed:32035581 pubmed:33856136 pubmed:34090651 pubmed:34497024 pubmed:34905632 pubmed:35026706 pubmed:37256425 pubmed:37481706 pubmed:38583574 pubmed:39090221 pubmed:39145960 pubmed:39153094 pubmed:39417214 pubmed:39721830 pubmed:40862795 pubmed:41266006 pubmed:41266854 pubmed:41353166 pubmed:42251454 pubmed:7526513 pubmed:8869957 pubmed:9609622 pubmed:9806507 zenodo:12732578 zenodo:18097100 zenodo:20408891 zenodo:4310553",
+        "0": "pubmed:10052875 pubmed:11068312 pubmed:12949429 pubmed:14971088 pubmed:15666516 pubmed:15976063 pubmed:16229369 pubmed:16474521 pubmed:23053208 pubmed:23647296 pubmed:25665794 pubmed:25871992 pubmed:26975660 pubmed:28532400 pubmed:29807949 pubmed:32248258 pubmed:33813397 pubmed:34212237 pubmed:34382352 pubmed:34453699 pubmed:35024944 pubmed:35804188 pubmed:36156455 pubmed:36214146 pubmed:36229939 pubmed:37097540 pubmed:37981171 pubmed:38446353 pubmed:38520513 pubmed:38703938 pubmed:39242323 pubmed:39327114 pubmed:39485266 pubmed:40578932 pubmed:40705094 pubmed:40846621 pubmed:41609418 pubmed:41721835 zenodo:7245279"
+      }
+    },
+    "patient-5-e03": {
+      "set": "sample",
+      "as_of": "2026-11-27",
+      "grades": {
+        "3": "pubmed:25126559 pubmed:27123316 pubmed:28670154 pubmed:28721448 pubmed:29552975 pubmed:29908876 pubmed:30255394 pubmed:31397038 pubmed:32390076 pubmed:34098371 pubmed:34225808 pubmed:34455239 pubmed:35596009 pubmed:36006067 pubmed:37129487 pubmed:37315913 pubmed:37973247 pubmed:39991796 pubmed:40863883 pubmed:41173751 pubmed:42152154 zenodo:11312297 zenodo:12787200 zenodo:12804706 zenodo:23032842",
+        "2": "arxiv:2611.04155 pubmed:32812795 pubmed:40252100 pubmed:42192391 pubmed:42837038",
+        "1": "arxiv:2611.02197 pubmed:31045262 pubmed:33820533 pubmed:33856136 pubmed:34046969 pubmed:34499551 pubmed:35255716 pubmed:35312821 pubmed:35578110 pubmed:37210343 pubmed:38363332 pubmed:38971674 pubmed:39809998 pubmed:40172658 pubmed:40355631",
+        "0": "pubmed:29755006 pubmed:39718497 pubmed:40035668"
+      }
+    },
+    "patient-5-e04": {
+      "set": "sample",
+      "as_of": "2026-12-08",
+      "grades": {
+        "3": "pubmed:17283708 pubmed:17342490 pubmed:17720304 pubmed:17823604 pubmed:20222795 pubmed:25126559 pubmed:27123316 pubmed:29552975 pubmed:30104656 pubmed:31644434 pubmed:31825763 pubmed:31864796 pubmed:32382097 pubmed:32390076 pubmed:32691544 pubmed:33127298 pubmed:33245071 pubmed:34013185 pubmed:34259038 pubmed:34428921 pubmed:34499551 pubmed:34544650 pubmed:35063445 pubmed:36006067 pubmed:36344178 pubmed:36509932 pubmed:36719644 pubmed:36938557 pubmed:37315913 pubmed:37696743 pubmed:38053418 pubmed:39057180 pubmed:39215055 pubmed:39692414 pubmed:39991796 pubmed:40138013 pubmed:40289077 pubmed:40728405 pubmed:42236170 pubmed:9118393 zenodo:11090357 zenodo:11312297 zenodo:12787200 zenodo:12804706 zenodo:23032842",
+        "2": "pubmed:26396046 pubmed:29908876 pubmed:30255394 pubmed:31399825 pubmed:32812795 pubmed:33820533 pubmed:33856136 pubmed:34225808 pubmed:34455239 pubmed:35578110 pubmed:35596009 pubmed:37874731 pubmed:39032957 pubmed:39093531 pubmed:39410690 pubmed:40863883 pubmed:41173751 pubmed:41744286 pubmed:42152154 pubmed:9869832 zenodo:11193096 zenodo:7126985",
+        "1": "arxiv:2609.08879 arxiv:2609.15150 arxiv:2611.04155 pubmed:10828667 pubmed:20003566 pubmed:21692866 pubmed:28196759 pubmed:30117172 pubmed:32415394 pubmed:33435132 pubmed:35255716 pubmed:38311703 pubmed:38363332 pubmed:38551310 pubmed:38551314 pubmed:38913583 pubmed:38971674 pubmed:39800984 pubmed:40020264 pubmed:40788246 pubmed:41403018 pubmed:41484253 pubmed:42837038",
+        "0": "pubmed:12487280"
+      }
+    },
+    "patient-5-e05": {
+      "set": "sample",
+      "as_of": "2026-12-19",
+      "grades": {
+        "3": "pubmed:11076649 pubmed:11590810 pubmed:15809776 pubmed:16792322 pubmed:18814526 pubmed:19365894 pubmed:21993567 pubmed:23106163 pubmed:26358012 pubmed:29116405 pubmed:29948044 pubmed:30342844 pubmed:31039101 pubmed:31045262 pubmed:31495569 pubmed:32382097 pubmed:32390076 pubmed:32972895 pubmed:33067016 pubmed:34023239 pubmed:34970758 pubmed:35578110 pubmed:35972023 pubmed:36205571 pubmed:37477486 pubmed:37696743 pubmed:38166221 pubmed:38755453 pubmed:39302458 pubmed:40252100 pubmed:40355631 pubmed:42214858 pubmed:8521134 pubmed:9609622 zenodo:10159155 zenodo:23032842",
+        "2": "pubmed:23069384 pubmed:25459359 pubmed:31375279 pubmed:32130814 pubmed:34161656 pubmed:35027314 pubmed:36344178 pubmed:36509932 pubmed:36938557 pubmed:38583574 pubmed:41779619 pubmed:42251454",
+        "1": "pubmed:10663189 pubmed:15666516 pubmed:15976063 pubmed:16229369 pubmed:20216316 pubmed:21670752 pubmed:23647296 pubmed:26449841 pubmed:28189428 pubmed:28922958 pubmed:29807949 pubmed:30255394 pubmed:31122242 pubmed:32248258 pubmed:32648430 pubmed:33582104 pubmed:33820533 pubmed:34319588 pubmed:34391651 pubmed:34816646 pubmed:35813256 pubmed:35946183 pubmed:36171482 pubmed:36941084 pubmed:37981171 pubmed:39039389 pubmed:39991796 pubmed:42837038 pubmed:8015079 pubmed:8976259",
+        "0": "pubmed:10052875 pubmed:36214146"
+      }
+    },
+    "patient-5-e06": {
+      "set": "sample",
+      "as_of": "2027-01-20",
+      "grades": {
+        "3": "pubmed:11076649 pubmed:11590810 pubmed:11963672 pubmed:14972471 pubmed:15809776 pubmed:16792322 pubmed:18584180 pubmed:18814526 pubmed:19365894 pubmed:19799045 pubmed:21993567 pubmed:22790035 pubmed:23106163 pubmed:23841851 pubmed:26358012 pubmed:29116405 pubmed:29421921 pubmed:30430487 pubmed:31039101 pubmed:31045262 pubmed:32382097 pubmed:33904755 pubmed:34970758 pubmed:35578110 pubmed:36205571 pubmed:37477486 pubmed:37639456 pubmed:40355631 pubmed:41779619 pubmed:42214858 pubmed:7526513 zenodo:10159155 zenodo:8033876",
+        "2": "pubmed:28661898 pubmed:28901630 pubmed:29948044 pubmed:31495569 pubmed:32130814 pubmed:32390076 pubmed:33820533 pubmed:36344178 pubmed:36509932 pubmed:37277573 pubmed:37696743 pubmed:40252100 pubmed:8976259 pubmed:9609622 zenodo:12787200 zenodo:12804706 zenodo:23032842",
+        "1": "pubmed:10663189 pubmed:15666516 pubmed:15976063 pubmed:23069384 pubmed:30255394 pubmed:31122242 pubmed:32248258 pubmed:33582104 pubmed:34229680 pubmed:34816646 pubmed:35596009 pubmed:36941084 pubmed:37981171 pubmed:39039389 pubmed:39991796",
+        "0": "pubmed:36214146"
+      }
+    },
+    "patient-5-e07": {
+      "set": "sample",
+      "as_of": "2027-01-22",
+      "grades": {
+        "3": "pubmed:12851781 pubmed:18584180 pubmed:18814526 pubmed:19050687 pubmed:19799045 pubmed:22790035 pubmed:23106163 pubmed:23841851 pubmed:23872627 pubmed:26031821 pubmed:26358012 pubmed:28169123 pubmed:28429951 pubmed:29116405 pubmed:29421921 pubmed:30565400 pubmed:30938366 pubmed:31039101 pubmed:31718600 pubmed:32746829 pubmed:33067016 pubmed:33067018 pubmed:33550690 pubmed:33554284 pubmed:33590768 pubmed:34970758 pubmed:35578110 pubmed:36205571 pubmed:36938550 pubmed:37269137 pubmed:37477486 pubmed:37639456 pubmed:38036328 pubmed:38195985 pubmed:39299693 pubmed:39347950 pubmed:39382717 pubmed:40100830 pubmed:40148877 pubmed:40355631 pubmed:40358638 pubmed:40653671 pubmed:41779619 pubmed:41999318 zenodo:7879125",
+        "2": "pubmed:21993567 pubmed:28006957 pubmed:30667329 pubmed:32382097 pubmed:32390076 pubmed:36344178 pubmed:37036165 pubmed:40252100 pubmed:42214858 zenodo:10159155 zenodo:23032842",
+        "1": "pubmed:28901630 pubmed:30789615 pubmed:32248258 pubmed:33820533 pubmed:34229680 pubmed:34816646 pubmed:35448207 pubmed:36941084 pubmed:37247118 pubmed:37981171 pubmed:39039389"
+      }
+    },
+    "patient-5-e08": {
+      "set": "sample",
+      "as_of": "2027-01-29",
+      "grades": {
+        "3": "pubmed:17619732 pubmed:19365894 pubmed:23841851 pubmed:28429951 pubmed:31045262 pubmed:31411971 pubmed:33067016 pubmed:35972023 pubmed:38195985 pubmed:39299693 pubmed:39347950 pubmed:39382717 pubmed:40191860 pubmed:42214858",
+        "2": "pubmed:14972471 pubmed:15809776 pubmed:15976063 pubmed:18584180 pubmed:18814526 pubmed:19451893 pubmed:19799045 pubmed:22790035 pubmed:23106163 pubmed:23872627 pubmed:26358012 pubmed:29116405 pubmed:29421921 pubmed:29948044 pubmed:30938366 pubmed:30972506 pubmed:31039101 pubmed:31122242 pubmed:32382097 pubmed:32746829 pubmed:34970758 pubmed:35578110 pubmed:36205571 pubmed:36344178 pubmed:36509932 pubmed:37269137 pubmed:37477486 pubmed:38036328 pubmed:38166221 pubmed:38326749 pubmed:40100830 pubmed:40148877 pubmed:40355631 pubmed:41779619 zenodo:10159155 zenodo:11206827 zenodo:23032842 zenodo:8033876",
+        "1": "pubmed:11590810 pubmed:12851781 pubmed:16229369 pubmed:16792322 pubmed:20216316 pubmed:21993567 pubmed:23069384 pubmed:26031821 pubmed:28893523 pubmed:28901630 pubmed:30069582 pubmed:30565400 pubmed:30667329 pubmed:31056859 pubmed:31495569 pubmed:32248258 pubmed:32390076 pubmed:32972895 pubmed:33502568 pubmed:33550690 pubmed:33582104 pubmed:33820533 pubmed:34229680 pubmed:34816646 pubmed:35946183 pubmed:36941084 pubmed:37247118 pubmed:37639456 pubmed:37891072 pubmed:37981171 pubmed:38629205 pubmed:39039389 pubmed:39302458 pubmed:41721835 pubmed:8015079 pubmed:8976259",
+        "0": "pubmed:39004950"
+      }
+    },
+    "patient-5-e09": {
+      "set": "sample",
+      "as_of": "2027-02-01",
+      "grades": {
+        "3": "pubmed:17896553 pubmed:19365894 pubmed:23106163 pubmed:31039101 pubmed:38195985 pubmed:39299693 pubmed:7526513",
+        "2": "pubmed:15976063 pubmed:18814526 pubmed:22790035 pubmed:26358012 pubmed:28006957 pubmed:28661898 pubmed:29116405 pubmed:29421921 pubmed:31045262 pubmed:33079976 pubmed:33488334 pubmed:33550690 pubmed:34970758 pubmed:35972023 pubmed:36205571 pubmed:37477486 pubmed:37639456 pubmed:42214858 pubmed:9609622 zenodo:23032842 zenodo:7879125",
+        "1": "pubmed:15666516 pubmed:21993567 pubmed:28589400 pubmed:28901630 pubmed:29948044 pubmed:30069582 pubmed:30667329 pubmed:32248258 pubmed:32382097 pubmed:32390076 pubmed:33502568 pubmed:33582104 pubmed:33820533 pubmed:34229680 pubmed:35578110 pubmed:36509932 pubmed:36941084 pubmed:37247118 pubmed:37891072 pubmed:37981171 pubmed:38036328 pubmed:38166221 pubmed:38629205 pubmed:38650416 pubmed:39039389 pubmed:39302458 pubmed:40355631 pubmed:41721835 pubmed:41779619 zenodo:10159155",
+        "0": "pubmed:39004950"
+      }
+    },
+    "patient-5-e10": {
+      "set": "sample",
+      "as_of": "2027-03-20",
+      "grades": {
+        "3": "pubmed:10663189 pubmed:11076649 pubmed:12677777 pubmed:17283717 pubmed:28429951 pubmed:28528448 pubmed:30772034 pubmed:31039101 pubmed:38195985 pubmed:39417214 pubmed:7526513",
+        "2": "pubmed:14971088 pubmed:15976063 pubmed:17619732 pubmed:17896553 pubmed:18814526 pubmed:30972506 pubmed:31045262 pubmed:33075151 pubmed:33790418 pubmed:35188993 pubmed:38287319 pubmed:42214858 pubmed:9609622 zenodo:23032842",
+        "1": "pubmed:10052875 pubmed:10663192 pubmed:12949429 pubmed:16229369 pubmed:18655340 pubmed:21922459 pubmed:21993567 pubmed:23069920 pubmed:23227460 pubmed:24484652 pubmed:24978363 pubmed:25539273 pubmed:29772100 pubmed:29807949 pubmed:31174878 pubmed:31220400 pubmed:31659564 pubmed:31825763 pubmed:32382097 pubmed:32972895 pubmed:33502568 pubmed:33820533 pubmed:34229680 pubmed:34385241 pubmed:34453699 pubmed:34878175 pubmed:34970758 pubmed:35024944 pubmed:35485635 pubmed:35578110 pubmed:35995580 pubmed:36205571 pubmed:36858151 pubmed:36941084 pubmed:37097540 pubmed:37247118 pubmed:37248105 pubmed:37981171 pubmed:38166221 pubmed:38363332 pubmed:39302458 pubmed:39347950 pubmed:39382717 pubmed:39710841 pubmed:39827986 pubmed:39991796 pubmed:40355631 pubmed:41645030 pubmed:41721835 pubmed:41779619 pubmed:8650872 pubmed:8869957 pubmed:9806507 zenodo:10016464 zenodo:11312297 zenodo:12804706 zenodo:642140",
+        "0": "pubmed:11233061 pubmed:11818479 pubmed:16314892 pubmed:23016259 pubmed:25665794 pubmed:26975660 pubmed:34212237 pubmed:38913583 pubmed:39242323 pubmed:40788246 zenodo:20408891"
+      }
+    },
+    "patient-5-e14": {
+      "set": "sample",
+      "as_of": "2028-08-02",
+      "grades": {
+        "3": "pubmed:10663189 pubmed:11076649 pubmed:12677777 pubmed:14971088 pubmed:15976063 pubmed:16229369 pubmed:17283717 pubmed:25301759 pubmed:26118565 pubmed:28528448 pubmed:31220400 pubmed:37981171 pubmed:39827986 pubmed:41721835 pubmed:7526513",
+        "2": "pubmed:1376192 pubmed:17619732 pubmed:27337755 pubmed:30972506 pubmed:31039101 pubmed:31045262 pubmed:34453699 pubmed:8869957",
+        "1": "pubmed:10052875 pubmed:18655340 pubmed:18814526 pubmed:21922459 pubmed:21993567 pubmed:23227460 pubmed:30772034 pubmed:31659564 pubmed:33820533 pubmed:34229680 pubmed:34385241 pubmed:34970758 pubmed:35024944 pubmed:35578110 pubmed:36205571 pubmed:36941084 pubmed:37477486 pubmed:38166221 pubmed:39382717 pubmed:39417214 pubmed:39710841 pubmed:40355631 pubmed:41454965 pubmed:41645030 pubmed:41779619 pubmed:42214858 pubmed:9609622 zenodo:11111798 zenodo:11312297 zenodo:12804706 zenodo:23032842 zenodo:642140",
+        "0": "pubmed:10663192 pubmed:11233061 pubmed:24978363 pubmed:34212237 pubmed:38363332"
+      }
+    },
+    "patient-5-e15": {
+      "set": "sample",
+      "as_of": "2028-12-25",
+      "grades": {
+        "3": "pubmed:10663189 pubmed:14680309 pubmed:14747043 pubmed:15666516 pubmed:16046649 pubmed:16474521 pubmed:17006699 pubmed:17283717 pubmed:24188259 pubmed:25301759 pubmed:29039897 pubmed:29161715 pubmed:29807949 pubmed:30979820 pubmed:31673831 pubmed:31836682 pubmed:32248258 pubmed:35016755 pubmed:37097540 pubmed:37481706 pubmed:37770370 pubmed:37981171 pubmed:38286895 pubmed:39827986 pubmed:41609418 pubmed:41721835 pubmed:41973167 pubmed:42117295",
+        "2": "pubmed:11076649 pubmed:26358012 pubmed:27337755 pubmed:30972506 pubmed:31045262 pubmed:35818912 pubmed:38142683",
+        "1": "pubmed:10052875 pubmed:18814526 pubmed:27012712 pubmed:32088155 pubmed:33820533 pubmed:34229680 pubmed:34385241 pubmed:35024944 pubmed:35578110 pubmed:36941084 pubmed:37247118 pubmed:38041475 pubmed:39201655 pubmed:39306583 pubmed:40659894 pubmed:41364231 pubmed:41779619 zenodo:23032842",
+        "0": "pubmed:37109015"
+      }
+    },
+    "patient-5-e16": {
+      "set": "sample",
+      "as_of": "2029-01-02",
+      "grades": {
+        "3": "pubmed:15666516 pubmed:23647296 pubmed:23763888 pubmed:26449841 pubmed:29161715 pubmed:29807949 pubmed:30729683 pubmed:31472746 pubmed:31629656 pubmed:32035581 pubmed:33002437 pubmed:33002438 pubmed:34049780 pubmed:34391651 pubmed:35016755 pubmed:35569466 pubmed:36795862 pubmed:37679602 pubmed:38763154 pubmed:40985821",
+        "2": "pubmed:11076649 pubmed:18391629 pubmed:33784675 pubmed:34385241 pubmed:41216639",
+        "1": "pubmed:10052875 pubmed:17619732 pubmed:23953795 pubmed:26112477 pubmed:27986213 pubmed:31718600 pubmed:33581491 pubmed:33914101 pubmed:35485635 pubmed:35578110 pubmed:35864293 pubmed:36183329 pubmed:36214146 pubmed:37247118 pubmed:39415463 pubmed:39809998 pubmed:40035188 pubmed:41779619 pubmed:42866815"
+      }
+    },
+    "patient-5-e18": {
+      "set": "sample",
+      "as_of": "2029-01-04",
+      "grades": {
+        "3": "pubmed:19035858 pubmed:19440008 pubmed:26293510 pubmed:26991743 pubmed:27826989 pubmed:29388185 pubmed:31643987 pubmed:32035581 pubmed:32469183 pubmed:32655041 pubmed:32804697 pubmed:34409852 pubmed:34459214 pubmed:35016755 pubmed:35108137 pubmed:35343198 pubmed:35569466 pubmed:36652173 pubmed:37679602 pubmed:38285742 pubmed:38763153 pubmed:40433020 pubmed:41247145 pubmed:41706486 pubmed:42682049",
+        "2": "pubmed:10794807 pubmed:11076649 pubmed:19747011 pubmed:25791895 pubmed:27825432 pubmed:29320333 pubmed:30042163 pubmed:31836682 pubmed:32157427 pubmed:34385241 pubmed:34408793 pubmed:35662493 pubmed:38261983 pubmed:38318809 pubmed:38323376 pubmed:38451492 pubmed:38720547 pubmed:39555581 pubmed:40189880 pubmed:41216639 pubmed:42472322 zenodo:642517",
+        "1": "pubmed:19912212 pubmed:25261259 pubmed:35578110 pubmed:35864293 pubmed:36733800 pubmed:37395949 pubmed:37922910 pubmed:39809998 pubmed:40473460 pubmed:41101975 pubmed:41593361 pubmed:41779619 pubmed:42251454 zenodo:23032842",
+        "0": "pubmed:19914530 pubmed:30266309 pubmed:41824265"
+      }
+    },
+    "patient-5-e19": {
+      "set": "sample",
+      "as_of": "2029-01-22",
+      "grades": {
+        "3": "pubmed:23763888 pubmed:28988662 pubmed:29161715 pubmed:29178983 pubmed:29807949 pubmed:31629656 pubmed:32035581 pubmed:33002437 pubmed:34049780 pubmed:34595542 pubmed:35016755 pubmed:35503984 pubmed:35569466 pubmed:36795862 pubmed:37679602 pubmed:38583574 pubmed:38763154 pubmed:40516966 pubmed:40985821",
+        "2": "pubmed:11076649 pubmed:17907065 pubmed:25234700 pubmed:30850855 pubmed:32157427 pubmed:33517323 pubmed:40516972 pubmed:41216639 zenodo:3577390",
+        "1": "pubmed:18407430 pubmed:25192626 pubmed:25480014 pubmed:28983664 pubmed:30411504 pubmed:30521067 pubmed:32077006 pubmed:32418156 pubmed:33309278 pubmed:34247896 pubmed:34436023 pubmed:34972727 pubmed:35485635 pubmed:35864293 pubmed:37395949 pubmed:37528487 pubmed:39415463 pubmed:39681174 pubmed:40208274 pubmed:40572035 pubmed:40639765 zenodo:20022646 zenodo:20409438"
+      }
+    },
+    "patient-5-e20": {
+      "set": "sample",
+      "as_of": "2029-04-22",
+      "grades": {
+        "3": "pubmed:14747043 pubmed:15666516 pubmed:16229369 pubmed:16474521 pubmed:17006699 pubmed:20718248 pubmed:23763888 pubmed:26449841 pubmed:28189428 pubmed:28922958 pubmed:29807949 pubmed:31629656 pubmed:32035581 pubmed:33854206 pubmed:34391651 pubmed:34400088 pubmed:35569466 pubmed:36795862 pubmed:37679602 pubmed:38156694 pubmed:40985821",
+        "2": "pubmed:11076649 pubmed:20216316 pubmed:21670752 pubmed:23069920 pubmed:29161715 pubmed:31472746 pubmed:31680398 pubmed:32157427 pubmed:32248258 pubmed:33002437 pubmed:33517323 pubmed:34049780 pubmed:35016755 pubmed:38041475 pubmed:38583574 pubmed:41216639 pubmed:41973167 zenodo:23290591",
+        "1": "pubmed:17685384 pubmed:22772432 pubmed:23053208 pubmed:23763889 pubmed:23953795 pubmed:24910288 pubmed:25192626 pubmed:26112477 pubmed:27012712 pubmed:27986213 pubmed:28688020 pubmed:30850855 pubmed:31421999 pubmed:31718600 pubmed:32077006 pubmed:32418156 pubmed:33309278 pubmed:33965893 pubmed:34247896 pubmed:34448402 pubmed:35024944 pubmed:36717113 pubmed:37038063 pubmed:37059334 pubmed:37150849 pubmed:37395949 pubmed:39256147 pubmed:39389844 pubmed:39561634 pubmed:39681174 pubmed:40035188 pubmed:40639765 pubmed:41038281 pubmed:41454965 pubmed:41670815 pubmed:41759222 pubmed:41779619 zenodo:20022646 zenodo:23285005 zenodo:23980819 zenodo:3577390 zenodo:642140"
+      }
+    },
+    "patient-5-e24": {
+      "set": "sample",
+      "as_of": "2030-12-16",
+      "grades": {
+        "3": "pubmed:14747043 pubmed:15666516 pubmed:29807949 pubmed:31629656 pubmed:33854206 pubmed:35569466",
+        "2": "pubmed:11076649 pubmed:12949429 pubmed:16229369 pubmed:20216316 pubmed:21670752 pubmed:23069920 pubmed:23763888 pubmed:26449841 pubmed:28189428 pubmed:28922958 pubmed:29161715 pubmed:31472746 pubmed:31680398 pubmed:32035581 pubmed:32157427 pubmed:33002437 pubmed:34049780 pubmed:34391651 pubmed:35016755 pubmed:35024944 pubmed:36795862 pubmed:37679602 pubmed:38156694 pubmed:38583574 pubmed:40985821 pubmed:41973167 pubmed:42167806",
+        "1": "pubmed:17685384 pubmed:23763889 pubmed:23953795 pubmed:24910288 pubmed:25192626 pubmed:26112477 pubmed:27012712 pubmed:27986213 pubmed:28688020 pubmed:30850855 pubmed:32077006 pubmed:32418156 pubmed:33309278 pubmed:33965893 pubmed:34247896 pubmed:36214146 pubmed:36717113 pubmed:37059334 pubmed:38041475 pubmed:39256147 pubmed:39389844 pubmed:39681174 pubmed:41038281 pubmed:41216639 pubmed:41454965 pubmed:41670815 pubmed:41759222 pubmed:41779619 zenodo:20022646 zenodo:20409438 zenodo:3577390"
+      }
+    },
+    "patient-6-e01": {
+      "set": "holdout",
+      "as_of": "2026-11-06",
+      "grades": {
+        "3": "pubmed:25613154 pubmed:30097885 pubmed:31876229 pubmed:36309745 pubmed:36418491 pubmed:37202311 pubmed:39051612 pubmed:39320245 pubmed:40658396 pubmed:41339755 zenodo:11214279 zenodo:12804706 zenodo:17190799 zenodo:7126985",
+        "2": "pubmed:11482317 pubmed:20065527 pubmed:29406059 pubmed:36999432",
+        "1": "pubmed:12711484 pubmed:15091050 pubmed:17896557 pubmed:20039975 pubmed:21045705 pubmed:27476122 pubmed:28748576 pubmed:30345497 pubmed:31180946 pubmed:31757401 pubmed:33539897 pubmed:34212237 pubmed:35778579 pubmed:36063405 pubmed:38644139 pubmed:39818305 pubmed:40413608 pubmed:41752758 pubmed:41813844 pubmed:42930166 zenodo:12537124 zenodo:4310553",
+        "0": "pubmed:17577460 pubmed:35132519 pubmed:38092575 pubmed:39547977 pubmed:40565999"
+      }
+    },
+    "patient-6-e02": {
+      "set": "holdout",
+      "as_of": "2026-11-12",
+      "grades": {
+        "3": "pubmed:10663192 pubmed:11233061 pubmed:11818479 pubmed:16314892 pubmed:18655340 pubmed:20890581 pubmed:20959954 pubmed:21095422 pubmed:24816306 pubmed:24978363 pubmed:26768791 pubmed:27337755 pubmed:27792187 pubmed:30097885 pubmed:31876229 pubmed:36309745 pubmed:37096582 pubmed:40554445 pubmed:7505969 pubmed:9741413 zenodo:10016464 zenodo:11111798 zenodo:11193096 zenodo:11214279 zenodo:12745896 zenodo:12804706 zenodo:17190799 zenodo:17694381 zenodo:22898861 zenodo:7126985",
+        "2": "pubmed:19486654 pubmed:22198258 pubmed:24195246 pubmed:25613154 pubmed:27557386 pubmed:33099450 pubmed:36418491 pubmed:38363332",
+        "1": "arxiv:2608.16964 arxiv:2609.23814 pubmed:10663189 pubmed:11076649 pubmed:12100934 pubmed:14680309 pubmed:16229369 pubmed:16474521 pubmed:20039975 pubmed:20589707 pubmed:21297655 pubmed:21717898 pubmed:23016259 pubmed:23647296 pubmed:25123041 pubmed:25727153 pubmed:26621054 pubmed:26656523 pubmed:28528448 pubmed:29039897 pubmed:29772100 pubmed:29807949 pubmed:31122242 pubmed:31180946 pubmed:31220400 pubmed:31659564 pubmed:33539897 pubmed:33813397 pubmed:33856136 pubmed:34090651 pubmed:34497024 pubmed:34905632 pubmed:35026706 pubmed:36063405 pubmed:36229939 pubmed:37256425 pubmed:37481706 pubmed:38446353 pubmed:38583574 pubmed:39090221 pubmed:39145960 pubmed:39417214 pubmed:39485266 pubmed:39721830 pubmed:39818305 pubmed:40572035 pubmed:40846621 pubmed:40862795 pubmed:41266854 pubmed:41353166 pubmed:41752758 pubmed:41972986 pubmed:42251454 pubmed:42930166 pubmed:7526513 pubmed:8869957 pubmed:9609622 pubmed:9806507 zenodo:12732578 zenodo:18097100",
+        "0": "pubmed:10052875 pubmed:11068312 pubmed:12949429 pubmed:14971088 pubmed:15666516 pubmed:15976063 pubmed:25871992 pubmed:26449841 pubmed:32248258 pubmed:34212237 pubmed:35804188 pubmed:36214146 pubmed:37981171 pubmed:38703938 pubmed:39327114 pubmed:41981710"
+      }
+    },
+    "patient-6-e03": {
+      "set": "holdout",
+      "as_of": "2026-12-03",
+      "grades": {
+        "3": "pubmed:25466942 pubmed:26427566 pubmed:28670154 pubmed:28721448 pubmed:29908876 pubmed:30255394 pubmed:31397038 pubmed:31825763 pubmed:32390076 pubmed:34098371 pubmed:34455239 pubmed:35570157 pubmed:35596009 pubmed:36006067 pubmed:36183329 pubmed:36344178 pubmed:37315913 pubmed:39032957 pubmed:39093531 pubmed:39991796 pubmed:40783866 pubmed:40863883 pubmed:41173751 pubmed:41484253 pubmed:42152154 pubmed:42192391 zenodo:11312297 zenodo:12787200 zenodo:12804706 zenodo:23032842",
+        "2": "pubmed:37129487 pubmed:39103428 pubmed:42837038",
+        "1": "arxiv:2611.04155 pubmed:32812795 pubmed:33820533 pubmed:33856136 pubmed:35255716 pubmed:35312821 pubmed:35578110 pubmed:38363332",
+        "0": "pubmed:29755006 pubmed:40035668"
+      }
+    },
+    "patient-6-e04": {
+      "set": "holdout",
+      "as_of": "2026-12-11",
+      "grades": {
+        "3": "pubmed:25126559 pubmed:26907717 pubmed:27123316 pubmed:30104656 pubmed:30255394 pubmed:31825763 pubmed:32382097 pubmed:32691544 pubmed:33127298 pubmed:34544650 pubmed:36006067 pubmed:36183329 pubmed:36344178 pubmed:37315913 pubmed:39692414 pubmed:42236170 zenodo:11090357 zenodo:11312297 zenodo:12787200 zenodo:12804706 zenodo:23032842",
+        "2": "pubmed:26396046 pubmed:29908876 pubmed:31038866 pubmed:31399825 pubmed:34455239 pubmed:35570157 pubmed:35596009 pubmed:39032957 pubmed:39093531 pubmed:39991796 pubmed:40863883 pubmed:41173751 pubmed:41989063 pubmed:42152154 pubmed:42310281",
+        "1": "arxiv:2611.04155 pubmed:20003566 pubmed:32812795 pubmed:33435132 pubmed:33820533 pubmed:33856136 pubmed:35312821 pubmed:38363332 pubmed:39103428 pubmed:42837038"
+      }
+    },
+    "patient-6-e05": {
+      "set": "holdout",
+      "as_of": "2026-12-20",
+      "grades": {
+        "3": "pubmed:17492410 pubmed:27586506 pubmed:28983664 pubmed:30729683 pubmed:33784675 pubmed:35813256 pubmed:38782388 pubmed:39809998 pubmed:39985052 pubmed:9749478",
+        "2": "pubmed:10828666 pubmed:18391629 pubmed:25358908 pubmed:31825763 pubmed:32390076 pubmed:33581491 pubmed:34878175 pubmed:35864293 pubmed:36183329 pubmed:36344178 pubmed:42866815",
+        "1": "pubmed:26893137 pubmed:27859018 pubmed:29807949 pubmed:31122242 pubmed:31629656 pubmed:31836682 pubmed:32035581 pubmed:32933887 pubmed:33002438 pubmed:33738901 pubmed:33820533 pubmed:34049780 pubmed:34385241 pubmed:34391651 pubmed:35485635 pubmed:35569466 pubmed:35578110 pubmed:36434164 pubmed:36795862 pubmed:37248105 pubmed:37981171 pubmed:38763153 pubmed:38763154 pubmed:39347950 pubmed:41216639 pubmed:41779619 zenodo:11206827",
+        "0": "pubmed:24997127"
+      }
+    },
+    "patient-6-e06": {
+      "set": "holdout",
+      "as_of": "2026-12-29",
+      "grades": {
+        "3": "pubmed:18407430 pubmed:20590940 pubmed:20592607 pubmed:22673744 pubmed:25234700 pubmed:25909199 pubmed:27056435 pubmed:27929498 pubmed:28983664 pubmed:28988662 pubmed:30411504 pubmed:30729683 pubmed:30850855 pubmed:31115116 pubmed:33507680 pubmed:34590590 pubmed:34972727 pubmed:35488121 pubmed:36733800 pubmed:37754502 pubmed:39968120 pubmed:40208274 pubmed:40277768 zenodo:23596586",
+        "2": "pubmed:29980331 pubmed:31540791 pubmed:35813256 pubmed:35864293 pubmed:36183329 pubmed:38386171 pubmed:39809998 pubmed:40516972 zenodo:12804706",
+        "1": "pubmed:25192626 pubmed:27542509 pubmed:29807949 pubmed:30266309 pubmed:30718087 pubmed:31629656 pubmed:33820533 pubmed:34385241 pubmed:35405085 pubmed:35485635 pubmed:35569466 pubmed:35578110 pubmed:35956069 pubmed:38102902 pubmed:38363332 pubmed:38763153 pubmed:39415463 pubmed:39681174 pubmed:41216639 pubmed:41645030 pubmed:42251454"
+      }
+    },
+    "patient-6-e07": {
+      "set": "holdout",
+      "as_of": "2027-01-08",
+      "grades": {
+        "3": "pubmed:10368200 pubmed:10794807 pubmed:11022711 pubmed:12355959 pubmed:12740498 pubmed:17161994 pubmed:17257094 pubmed:17607304 pubmed:18201145 pubmed:1835221 pubmed:18666210 pubmed:22500884 pubmed:23257248 pubmed:25327530 pubmed:28983664 pubmed:30729683 pubmed:32655041 pubmed:32804697 pubmed:33470403 pubmed:34590590 pubmed:34743290 pubmed:35343198 pubmed:35491331 pubmed:36733800 pubmed:38318809 pubmed:39555581 pubmed:40189880 pubmed:40433020 pubmed:41752758 pubmed:42682049",
+        "2": "pubmed:16689291 pubmed:19747011 pubmed:31643199 pubmed:34408793 pubmed:35864293 pubmed:36652173 pubmed:39809998 pubmed:7541359 pubmed:7613021",
+        "1": "pubmed:22921963 pubmed:27586506 pubmed:30266309 pubmed:31629656 pubmed:33581491 pubmed:33820533 pubmed:34385241 pubmed:35405085 pubmed:35485635 pubmed:35569466 pubmed:35956069 pubmed:36183329 pubmed:36597735 pubmed:37679602 pubmed:38763153 pubmed:41216639 pubmed:8172710 zenodo:12804706"
+      }
+    },
+    "patient-6-e08": {
+      "set": "holdout",
+      "as_of": "2027-02-04",
+      "grades": {
+        "3": "pubmed:11383249 pubmed:12504845 pubmed:15040870 pubmed:15161570 pubmed:16238144 pubmed:16752721 pubmed:16861119 pubmed:17432560 pubmed:17907065 pubmed:18082588 pubmed:23584344 pubmed:23622075 pubmed:23648323 pubmed:23973460 pubmed:24018567 pubmed:25204643 pubmed:25234700 pubmed:26112487 pubmed:26545764 pubmed:27056435 pubmed:27617311 pubmed:27628966 pubmed:27926521 pubmed:28296582 pubmed:28343352 pubmed:28983664 pubmed:28988662 pubmed:29384928 pubmed:29496279 pubmed:30324346 pubmed:30850855 pubmed:31115116 pubmed:31227373 pubmed:31359187 pubmed:31540791 pubmed:31703647 pubmed:31739952 pubmed:31808397 pubmed:32833036 pubmed:33471548 pubmed:33507680 pubmed:36550217 pubmed:36938553 pubmed:37754502 pubmed:39019208 pubmed:39271420 pubmed:39968120 pubmed:40277768 pubmed:40743809 pubmed:41131510 pubmed:41365376 pubmed:41437135 pubmed:41655576 pubmed:42777298 zenodo:10282246 zenodo:13988466 zenodo:13988746 zenodo:23596586",
+        "2": "pubmed:22292443 pubmed:25480014 pubmed:25752244 pubmed:26408674 pubmed:27296648 pubmed:33966623 pubmed:34274223 pubmed:34496707 pubmed:37374348 pubmed:40516968 pubmed:40620056 pubmed:40840169 zenodo:14621959",
+        "1": "arxiv:1607.01078 arxiv:2604.10227 arxiv:2605.13713 arxiv:2606.09898 pubmed:21670752 pubmed:25195116 pubmed:26112477 pubmed:28267458 pubmed:28917248 pubmed:28922958 pubmed:29178983 pubmed:30718087 pubmed:31441133 pubmed:32182149 pubmed:32976788 pubmed:33820533 pubmed:34350542 pubmed:34353749 pubmed:34448402 pubmed:35016755 pubmed:35578110 pubmed:35878715 pubmed:35946183 pubmed:36135065 pubmed:36183329 pubmed:36717113 pubmed:37395949 pubmed:38503591 pubmed:39061006 pubmed:39415463 pubmed:40572035 pubmed:41094662 zenodo:13988544 zenodo:23285005 zenodo:3580516 zenodo:7902054",
+        "0": "pubmed:25182528 pubmed:37470602 zenodo:10683536"
+      }
+    },
+    "patient-6-e09": {
+      "set": "holdout",
+      "as_of": "2027-05-05",
+      "grades": {
+        "3": "pubmed:30411504 pubmed:30729683 pubmed:30850855 pubmed:40176275 pubmed:41206286 pubmed:8869957",
+        "2": "pubmed:10975494 pubmed:17492410 pubmed:24484652 pubmed:28296582 pubmed:35864293 pubmed:39809998 pubmed:42866815 pubmed:9749478",
+        "1": "pubmed:10052875 pubmed:11068312 pubmed:11076649 pubmed:28532400 pubmed:29772100 pubmed:29807949 pubmed:30266309 pubmed:31629656 pubmed:32035581 pubmed:32077006 pubmed:33581491 pubmed:34385241 pubmed:35485635 pubmed:35569466 pubmed:35956069 pubmed:36080493 pubmed:36795862 pubmed:37097540 pubmed:37528487 pubmed:37648321 pubmed:37679602 pubmed:38644146 pubmed:39985052 pubmed:41216639 zenodo:20022646",
+        "0": "pubmed:25090289 pubmed:34212237"
+      }
+    },
+    "patient-6-e17": {
+      "set": "holdout",
+      "as_of": "2030-08-01",
+      "grades": {
+        "3": "pubmed:22248394 pubmed:30411504 pubmed:30729683 pubmed:40176275 pubmed:7526513 pubmed:8869957",
+        "2": "pubmed:10975494 pubmed:12504845 pubmed:15040870 pubmed:15663992 pubmed:16752721 pubmed:17432560 pubmed:17492410 pubmed:18082588 pubmed:18201145 pubmed:18666210 pubmed:19838837 pubmed:20592607 pubmed:22292443 pubmed:23584344 pubmed:23622075 pubmed:23648323 pubmed:24484652 pubmed:24816306 pubmed:25097095 pubmed:25234700 pubmed:25327530 pubmed:25338271 pubmed:25592210 pubmed:26372364 pubmed:27056435 pubmed:27337755 pubmed:27349496 pubmed:27617311 pubmed:28209634 pubmed:28296582 pubmed:28983664 pubmed:29569731 pubmed:29980331 pubmed:30053039 pubmed:30312560 pubmed:30446448 pubmed:30612936 pubmed:30745202 pubmed:30850855 pubmed:31115116 pubmed:31227373 pubmed:31703647 pubmed:31739952 pubmed:31832978 pubmed:34400799 pubmed:34489536 pubmed:34590590 pubmed:34743290 pubmed:35108137 pubmed:35343371 pubmed:35409505 pubmed:35491331 pubmed:35864293 pubmed:36349380 pubmed:36534950 pubmed:36733800 pubmed:36938553 pubmed:37229882 pubmed:37470614 pubmed:37667894 pubmed:37754502 pubmed:38256338 pubmed:38376624 pubmed:39271420 pubmed:39809998 pubmed:40397707 pubmed:41131510 pubmed:41206286 pubmed:41392000 pubmed:41437135 pubmed:41655576 pubmed:41660902 pubmed:42777298 pubmed:9749478 zenodo:13988466 zenodo:13988746 zenodo:18625973 zenodo:642517",
+        "1": "arxiv:1607.01078 arxiv:2503.08927 arxiv:2511.13825 arxiv:2604.10227 arxiv:2605.13713 arxiv:2606.09898 arxiv:2608.16964 pubmed:10052875 pubmed:10663189 pubmed:11068312 pubmed:11076649 pubmed:11383249 pubmed:14680309 pubmed:14971088 pubmed:15389811 pubmed:15666516 pubmed:15976063 pubmed:16474521 pubmed:16861119 pubmed:18071861 pubmed:18655340 pubmed:20589707 pubmed:21670752 pubmed:23647296 pubmed:23973460 pubmed:25480014 pubmed:25727153 pubmed:25752244 pubmed:26408674 pubmed:26449841 pubmed:26768791 pubmed:27296648 pubmed:27557386 pubmed:27628966 pubmed:27792187 pubmed:28343352 pubmed:28528448 pubmed:28532400 pubmed:28816716 pubmed:28917248 pubmed:29039897 pubmed:29161715 pubmed:29178983 pubmed:29496279 pubmed:29772100 pubmed:30227222 pubmed:30718087 pubmed:31122242 pubmed:31359187 pubmed:31540791 pubmed:31629656 pubmed:31659564 pubmed:32035581 pubmed:32077006 pubmed:32182149 pubmed:32248258 pubmed:32480269 pubmed:32976788 pubmed:33480983 pubmed:33581491 pubmed:33813397 pubmed:33966623 pubmed:34274223 pubmed:34385241 pubmed:34391651 pubmed:34496707 pubmed:34618582 pubmed:34905632 pubmed:35403746 pubmed:35405085 pubmed:35485635 pubmed:35569466 pubmed:35662493 pubmed:35878715 pubmed:35956069 pubmed:35995644 pubmed:36080493 pubmed:36135065 pubmed:36183329 pubmed:36214146 pubmed:36550217 pubmed:36597735 pubmed:36717113 pubmed:36763112 pubmed:36795843 pubmed:36795862 pubmed:36807496 pubmed:37092583 pubmed:37097540 pubmed:37256425 pubmed:37305018 pubmed:37374348 pubmed:37395949 pubmed:37481706 pubmed:37528487 pubmed:37648321 pubmed:37679602 pubmed:37922910 pubmed:37981171 pubmed:38503591 pubmed:38583574 pubmed:38644146 pubmed:39061006 pubmed:39417214 pubmed:39985052 pubmed:40516968 pubmed:40620056 pubmed:40712215 pubmed:40743809 pubmed:40840169 pubmed:41216639 pubmed:41266854 pubmed:41818713 pubmed:9609622 pubmed:9806507 zenodo:10282246 zenodo:11111798 zenodo:11193096 zenodo:11214279 zenodo:11312275 zenodo:13988544 zenodo:14621959 zenodo:14625761 zenodo:20022646 zenodo:23285005 zenodo:3580516 zenodo:7902054",
+        "0": "arxiv:2609.23814 pubmed:10663192 pubmed:11233061 pubmed:11818479 pubmed:16229369 pubmed:16314892 pubmed:20959954 pubmed:21095422 pubmed:21297655 pubmed:21717898 pubmed:22198258 pubmed:23016259 pubmed:25123041 pubmed:25871992 pubmed:26656523 pubmed:28922958 pubmed:29807949 pubmed:30266309 pubmed:33099450 pubmed:34212237 pubmed:34497024 pubmed:39090221 pubmed:39145960 pubmed:39485266 pubmed:39721830 pubmed:40554445 pubmed:41972986 zenodo:10016464 zenodo:10683536 zenodo:12732578 zenodo:17285702"
+      }
+    },
+    "patient-7-e01": {
+      "set": "holdout",
+      "as_of": "2026-11-06",
+      "grades": {
+        "3": "pubmed:10581602 pubmed:10994145 pubmed:11488734 pubmed:11888345 pubmed:12890079 pubmed:15808959 pubmed:19901958 pubmed:23227460 pubmed:23918298 pubmed:24069538 pubmed:24435057 pubmed:24839802 pubmed:25058109 pubmed:25270847 pubmed:32167698 pubmed:32220946 pubmed:34304921 pubmed:38401099 pubmed:38980676 pubmed:39260798 pubmed:41027802 pubmed:8428335 zenodo:3242327",
+        "2": "pubmed:21110764 pubmed:27878318 pubmed:31801267 pubmed:8879262 pubmed:9050137",
+        "1": "pubmed:11076649 pubmed:16474521 pubmed:20536932 pubmed:24929891 pubmed:26118565 pubmed:26975660 pubmed:28805551 pubmed:29099380 pubmed:33813397 pubmed:34385241 pubmed:35024944 pubmed:35428207 pubmed:35804188 pubmed:36156455 pubmed:41097041 pubmed:41185726 pubmed:41609418 pubmed:7505969 zenodo:18097100 zenodo:642140",
+        "0": "pubmed:23016259 pubmed:24005707 pubmed:40949733"
+      }
+    },
+    "patient-7-e02": {
+      "set": "holdout",
+      "as_of": "2026-11-08",
+      "grades": {
+        "3": "pubmed:10470213 pubmed:11488734 pubmed:1376192 pubmed:15536950 pubmed:16729914 pubmed:1719610 pubmed:17561711 pubmed:18452459 pubmed:2029400 pubmed:22751146 pubmed:2455908 pubmed:2455911 pubmed:36138505 pubmed:37072487 pubmed:37818332 pubmed:41027802 pubmed:8632571 pubmed:9313666",
+        "2": "pubmed:36348577",
+        "1": "pubmed:11076649 pubmed:14571412 pubmed:18655340 pubmed:24929891 pubmed:25871992 pubmed:26178336 pubmed:26975660 pubmed:27337755 pubmed:28006818 pubmed:28361223 pubmed:28410987 pubmed:28453701 pubmed:29046247 pubmed:30050933 pubmed:31136607 pubmed:31659564 pubmed:33686456 pubmed:33813397 pubmed:34382352 pubmed:35804188 pubmed:36156455 pubmed:36582085 pubmed:36749250 pubmed:39789153 pubmed:41346006 pubmed:8869957 zenodo:14397182 zenodo:3242327 zenodo:4904009 zenodo:642140",
+        "0": "pubmed:10210740 pubmed:10663192 pubmed:11233061 pubmed:11818479 pubmed:21297655 pubmed:21717898 pubmed:23016259 pubmed:34737212 pubmed:36775679 pubmed:38246651 pubmed:39578911 pubmed:40949733 pubmed:41121398 pubmed:41268154"
+      }
+    },
+    "patient-7-e03": {
+      "set": "holdout",
+      "as_of": "2026-11-17",
+      "grades": {
+        "3": "pubmed:10470213 pubmed:11488734 pubmed:15536950 pubmed:17283708 pubmed:17561711 pubmed:34612746 pubmed:36138505 pubmed:38896314 pubmed:39704796 pubmed:39937427",
+        "2": "pubmed:17720304 pubmed:17823604 pubmed:29552975 pubmed:30104656 pubmed:31644434 pubmed:34259038 pubmed:9313666 zenodo:18097100",
+        "1": "pubmed:10828667 pubmed:11076649 pubmed:14632848 pubmed:21692866 pubmed:24929891 pubmed:26396046 pubmed:26975660 pubmed:27792187 pubmed:28361223 pubmed:28410987 pubmed:28453701 pubmed:29699892 pubmed:30050933 pubmed:31045262 pubmed:31136607 pubmed:31399825 pubmed:31525487 pubmed:32415394 pubmed:33435132 pubmed:33686456 pubmed:35804188 pubmed:35871993 pubmed:36156455 pubmed:36582085 pubmed:36938557 pubmed:37867335 pubmed:38061007 pubmed:39195285 pubmed:39752185 pubmed:39991796 pubmed:41346006 pubmed:42251454 zenodo:11193096 zenodo:11214279 zenodo:3242327",
+        "0": "pubmed:12100934 pubmed:28589399 pubmed:30741847 pubmed:32873277 pubmed:34237810 pubmed:38419309 pubmed:38703938 pubmed:38913583 pubmed:42837038"
+      }
+    },
+    "patient-7-e04": {
+      "set": "holdout",
+      "as_of": "2026-11-30",
+      "grades": {
+        "3": "pubmed:11488734 pubmed:1283500 pubmed:15126770 pubmed:15536950 pubmed:17392247 pubmed:19801219 pubmed:19901958 pubmed:2070330 pubmed:29043431 pubmed:30218382 pubmed:31113757 pubmed:34693502 pubmed:35220244 pubmed:35758394 pubmed:36348577 pubmed:40319443 pubmed:40347415 pubmed:8632571",
+        "2": "pubmed:23823804 pubmed:25058109 pubmed:28559456 pubmed:32396050 pubmed:35939081 pubmed:39704796 zenodo:18097100",
+        "1": "pubmed:10803318 pubmed:1465483 pubmed:15814638 pubmed:28532400 pubmed:30489033 pubmed:31283605 pubmed:31680398 pubmed:32723519 pubmed:35183184 pubmed:35804188 pubmed:390886 pubmed:41593361"
+      }
+    },
+    "patient-7-e05": {
+      "set": "holdout",
+      "as_of": "2026-12-10",
+      "grades": {
+        "3": "pubmed:26223224 pubmed:28816716 pubmed:29263421 pubmed:30489034 pubmed:30747897 pubmed:31127324 pubmed:32406281 pubmed:32701855 pubmed:35411939 pubmed:35811293 pubmed:36152486 pubmed:36795843 pubmed:36938560 pubmed:37542594 pubmed:38644146 pubmed:38767468 pubmed:39527466 pubmed:40467357 pubmed:40772795 pubmed:41088624 pubmed:41310272 zenodo:18097100",
+        "2": "pubmed:28817399 pubmed:30691365 pubmed:30826218 pubmed:36348577 pubmed:39279580",
+        "1": "pubmed:34385241 pubmed:36183329"
+      }
+    },
+    "patient-7-e07": {
+      "set": "holdout",
+      "as_of": "2026-12-28",
+      "grades": {
+        "3": "pubmed:26223224 pubmed:27345496 pubmed:29063869 pubmed:29263421 pubmed:29384722 pubmed:30747897 pubmed:31127324 pubmed:32406281 pubmed:35724342 pubmed:35811293 pubmed:35964470 pubmed:35995644 pubmed:36763112 pubmed:36795843 pubmed:37542594 pubmed:38644146 pubmed:38767468 pubmed:39527466 pubmed:40772795",
+        "2": "pubmed:28816716 pubmed:28817399 pubmed:34242474 pubmed:36348577 zenodo:18097100",
+        "1": "pubmed:11340899 pubmed:14716141 pubmed:20351071 pubmed:22048000 pubmed:23867574 pubmed:26975660 pubmed:34382352 pubmed:35183184 pubmed:35428207 pubmed:35804188 pubmed:36183329 pubmed:36749250 pubmed:36822388 pubmed:41346006 pubmed:41543856 zenodo:642140"
+      }
+    },
+    "patient-7-e08": {
+      "set": "holdout",
+      "as_of": "2026-12-31",
+      "grades": {
+        "3": "pubmed:26223224 pubmed:29107277 pubmed:29263421 pubmed:30121492 pubmed:30295043 pubmed:30747897 pubmed:30933324 pubmed:32406281 pubmed:32701855 pubmed:35179323 pubmed:35405085 pubmed:35811293 pubmed:35964470 pubmed:36795843 pubmed:37183160 pubmed:37542594 pubmed:38592590 pubmed:38644146 pubmed:38722620 pubmed:38767468 pubmed:38962407 pubmed:39150340 pubmed:39527466 pubmed:39651632 pubmed:40772795 pubmed:41088624 pubmed:41317235 pubmed:41366131 pubmed:41692947",
+        "2": "pubmed:28817399 pubmed:36807496 pubmed:37339479 pubmed:40106307 pubmed:40252319 zenodo:18097100",
+        "1": "pubmed:22048000 pubmed:39996439 pubmed:40670254 pubmed:41346006"
+      }
+    },
+    "patient-7-e09": {
+      "set": "holdout",
+      "as_of": "2027-01-21",
+      "grades": {
+        "3": "pubmed:29107277 pubmed:29263421 pubmed:30747897 pubmed:30933324 pubmed:31127324 pubmed:32406281 pubmed:32701855 pubmed:35179323 pubmed:35405085 pubmed:35811293 pubmed:35964470 pubmed:35995644 pubmed:36152486 pubmed:36763112 pubmed:36795843 pubmed:37542594 pubmed:38644146 pubmed:38722620 pubmed:38767468 pubmed:40772795 pubmed:41088624",
+        "2": "pubmed:36348577 pubmed:36807496 pubmed:37183160 pubmed:37339479 pubmed:39279580 pubmed:39527466 pubmed:40106307 zenodo:18097100",
+        "1": "pubmed:26975660 pubmed:28532400 pubmed:36749250 pubmed:41346006 zenodo:642140"
+      }
+    },
+    "patient-7-e13": {
+      "set": "holdout",
+      "as_of": "2027-04-15",
+      "grades": {
+        "3": "pubmed:29107277 pubmed:29263421 pubmed:30747897 pubmed:30933324 pubmed:31127324 pubmed:32406281 pubmed:32701855 pubmed:35179323 pubmed:35405085 pubmed:35811293 pubmed:35964470 pubmed:35995644 pubmed:36152486 pubmed:36763112 pubmed:36795843 pubmed:37183160 pubmed:38644146 pubmed:38722620 pubmed:38767468 pubmed:39527466 pubmed:40772795 pubmed:41088624",
+        "2": "pubmed:36348577 pubmed:36807496 pubmed:37339479 pubmed:37542594 pubmed:39279580 pubmed:40106307 zenodo:18097100",
+        "1": "pubmed:26975660 pubmed:28532400 pubmed:36749250 pubmed:41346006 zenodo:642140"
+      }
+    },
+    "patient-7-e14": {
+      "set": "holdout",
+      "as_of": "2027-09-16",
+      "grades": {
+        "3": "pubmed:1376192 pubmed:1719610 pubmed:29107277 pubmed:29633945 pubmed:30747897 pubmed:38644146 pubmed:38767468 pubmed:39150340 pubmed:40772795",
+        "2": "pubmed:18593619 pubmed:19747011 pubmed:2455908 pubmed:32804697 pubmed:35758394 pubmed:36348577 pubmed:36858151 pubmed:38184704 pubmed:38940282 pubmed:39417629 pubmed:40063046 pubmed:40846621 pubmed:41027802 pubmed:41353294 pubmed:41818713 pubmed:41880596 zenodo:18097100 zenodo:20408891",
+        "1": "pubmed:14969807 pubmed:20890581 pubmed:23227460 pubmed:25665794 pubmed:25871992 pubmed:26975660 pubmed:27337755 pubmed:28453701 pubmed:28532400 pubmed:31659564 pubmed:34385241 pubmed:35804188 pubmed:36156455 pubmed:36183329 pubmed:36229939 pubmed:37585665 pubmed:38261983 pubmed:38318809 pubmed:39327114 pubmed:41346006 pubmed:8869957 zenodo:11111798 zenodo:642140",
+        "0": "pubmed:10052875 pubmed:10663189 pubmed:11233061 pubmed:11818479 pubmed:16314892 pubmed:18655340 pubmed:20959954 pubmed:24484652 pubmed:24978363 pubmed:35569466 pubmed:37981171 pubmed:9741413 pubmed:9749478"
+      }
+    },
+    "patient-7-e15": {
+      "set": "holdout",
+      "as_of": "2027-12-24",
+      "grades": {
+        "3": "pubmed:18593619 pubmed:19838837 pubmed:22129242 pubmed:22248394 pubmed:23752182 pubmed:24100689 pubmed:24458946 pubmed:24503416 pubmed:24775725 pubmed:25097095 pubmed:25261259 pubmed:25327530 pubmed:25338271 pubmed:25592210 pubmed:25871992 pubmed:26113300 pubmed:26170619 pubmed:26329698 pubmed:26372364 pubmed:26583636 pubmed:27349496 pubmed:27680191 pubmed:28577511 pubmed:30324351 pubmed:30446448 pubmed:30446464 pubmed:30610102 pubmed:30691365 pubmed:30745202 pubmed:30772358 pubmed:30889620 pubmed:31231006 pubmed:31598745 pubmed:31832978 pubmed:31874108 pubmed:32710316 pubmed:32745972 pubmed:32980775 pubmed:33478015 pubmed:33480983 pubmed:34246347 pubmed:34318984 pubmed:34381565 pubmed:34517086 pubmed:34572433 pubmed:34743290 pubmed:35108137 pubmed:35190335 pubmed:35343371 pubmed:35390118 pubmed:35409505 pubmed:35491331 pubmed:35804188 pubmed:36156455 pubmed:36534950 pubmed:36582085 pubmed:36851864 pubmed:37229882 pubmed:37783836 pubmed:37904040 pubmed:37987784 pubmed:38588362 pubmed:38588365 pubmed:38917250 pubmed:39308935 pubmed:39453576 pubmed:40397707 pubmed:40605657 pubmed:40647544 pubmed:40659047 pubmed:40670254 pubmed:41200193 pubmed:41346006 pubmed:41392000 pubmed:41660902 pubmed:41986026 pubmed:42602251 zenodo:13150541 zenodo:7331455 zenodo:7660663",
+        "2": "arxiv:2601.20046 pubmed:15389811 pubmed:18201145 pubmed:18666210 pubmed:20592607 pubmed:24929891 pubmed:26975487 pubmed:28209634 pubmed:28361223 pubmed:28816716 pubmed:29107277 pubmed:29569731 pubmed:29633945 pubmed:29792198 pubmed:30053039 pubmed:30295043 pubmed:30312560 pubmed:30344307 pubmed:30345007 pubmed:30612936 pubmed:30747897 pubmed:30933324 pubmed:30995089 pubmed:31294133 pubmed:31646092 pubmed:32480269 pubmed:33008010 pubmed:33853469 pubmed:34053583 pubmed:34489536 pubmed:34590590 pubmed:35405085 pubmed:35428207 pubmed:35662493 pubmed:36349380 pubmed:36597735 pubmed:36763112 pubmed:36807496 pubmed:37603022 pubmed:37932568 pubmed:38251778 pubmed:38256338 pubmed:38376624 pubmed:38609797 pubmed:38644146 pubmed:39324718 pubmed:40712215 pubmed:41200281 pubmed:41280561 zenodo:17586296 zenodo:18625973 zenodo:642517",
+        "1": "arxiv:2503.08927 arxiv:2511.13825 arxiv:2603.13676 arxiv:2606.28704 arxiv:2608.16964 pubmed:11076649 pubmed:14680309 pubmed:14971088 pubmed:18071861 pubmed:24816306 pubmed:25727153 pubmed:26028493 pubmed:27337755 pubmed:27557386 pubmed:28528448 pubmed:28532278 pubmed:29276148 pubmed:29772100 pubmed:29980331 pubmed:30227222 pubmed:30266309 pubmed:30684842 pubmed:30729683 pubmed:31122242 pubmed:31659564 pubmed:32216246 pubmed:32783772 pubmed:32804697 pubmed:33813397 pubmed:34129460 pubmed:34400799 pubmed:34618582 pubmed:34905632 pubmed:35403746 pubmed:35582542 pubmed:35995644 pubmed:36080493 pubmed:36183329 pubmed:36273936 pubmed:36795843 pubmed:36858151 pubmed:37092583 pubmed:37305018 pubmed:37322621 pubmed:37470614 pubmed:37585665 pubmed:37667894 pubmed:37922910 pubmed:38261983 pubmed:38765461 pubmed:39150340 pubmed:39279580 pubmed:39417214 pubmed:39417629 pubmed:39890307 pubmed:39996915 pubmed:40132221 pubmed:41030221 pubmed:41266854 pubmed:41317235 pubmed:42747576 pubmed:7526513 pubmed:8869957 zenodo:11111798 zenodo:11193096 zenodo:11312275 zenodo:14625761 zenodo:14932603 zenodo:15180440 zenodo:17285702 zenodo:20612484 zenodo:3606277 zenodo:3672542",
+        "0": "arxiv:2609.23814 pubmed:10052875 pubmed:10663189 pubmed:10663192 pubmed:11233061 pubmed:11818479 pubmed:15666516 pubmed:15976063 pubmed:16229369 pubmed:16314892 pubmed:16474521 pubmed:18655340 pubmed:20589707 pubmed:20959954 pubmed:21095422 pubmed:21297655 pubmed:21717898 pubmed:22198258 pubmed:23016259 pubmed:23647296 pubmed:25123041 pubmed:26449841 pubmed:26656523 pubmed:26768791 pubmed:27792187 pubmed:29039897 pubmed:29807949 pubmed:32035581 pubmed:32248258 pubmed:33099450 pubmed:34385241 pubmed:34497024 pubmed:36214146 pubmed:36733800 pubmed:37256425 pubmed:37481706 pubmed:37981171 pubmed:38583574 pubmed:39090221 pubmed:39145960 pubmed:39485266 pubmed:39721830 pubmed:40554445 pubmed:41972986 pubmed:9609622 pubmed:9806507 zenodo:10016464 zenodo:11214279 zenodo:12732578 zenodo:13988466"
+      }
+    },
+    "patient-7-e16": {
+      "set": "holdout",
+      "as_of": "2028-01-04",
+      "grades": {
+        "3": "pubmed:23316941 pubmed:24052017 pubmed:24503416 pubmed:24713838 pubmed:25261259 pubmed:25658232 pubmed:25681834 pubmed:25740232 pubmed:26529826 pubmed:26583636 pubmed:27377415 pubmed:27680191 pubmed:27793893 pubmed:28427521 pubmed:28577511 pubmed:28649893 pubmed:28711312 pubmed:28919714 pubmed:29022046 pubmed:29046247 pubmed:29234845 pubmed:29380085 pubmed:29489974 pubmed:29623850 pubmed:30041891 pubmed:30324351 pubmed:30489033 pubmed:30558834 pubmed:30738780 pubmed:30889620 pubmed:31096849 pubmed:31136607 pubmed:31223127 pubmed:31231006 pubmed:31298017 pubmed:31471713 pubmed:31598745 pubmed:31986318 pubmed:32534790 pubmed:33246638 pubmed:33686456 pubmed:34572433 pubmed:35123846 pubmed:35717046 pubmed:35804188 pubmed:36156455 pubmed:36582085 pubmed:36749250 pubmed:36942803 pubmed:37783836 pubmed:40058740 pubmed:40315400 pubmed:40450503 pubmed:40579287 pubmed:40670254 pubmed:41090322 pubmed:41346006 pubmed:41763609 pubmed:41986026 pubmed:42640563 zenodo:14306947 zenodo:14397182 zenodo:3242327",
+        "2": "arxiv:2601.20046 pubmed:26329698 pubmed:28361223 pubmed:29792198 pubmed:30295043 pubmed:30610102 pubmed:30691365 pubmed:30772358 pubmed:30995089 pubmed:31646092 pubmed:31874108 pubmed:32710316 pubmed:32745972 pubmed:32980775 pubmed:33478015 pubmed:34053583 pubmed:34246347 pubmed:34318984 pubmed:34381565 pubmed:34517086 pubmed:35190335 pubmed:35428207 pubmed:36348577 pubmed:37603022 pubmed:37904040 pubmed:37987784 pubmed:38218192 pubmed:38917250 pubmed:39308935 pubmed:39453576 pubmed:40605657 pubmed:40647544 pubmed:40659047 pubmed:41119954 pubmed:41200193 pubmed:41280561 pubmed:42602251 zenodo:13150541 zenodo:7331455",
+        "1": "arxiv:2305.17117 arxiv:2603.13676 arxiv:2606.28704 pubmed:26028493 pubmed:28532278 pubmed:30344307 pubmed:30657953 pubmed:30684842 pubmed:32216246 pubmed:32762539 pubmed:33008010 pubmed:33853469 pubmed:34382352 pubmed:35582542 pubmed:36183329 pubmed:36273936 pubmed:38588362 pubmed:38588365 pubmed:38609797 pubmed:38765461 pubmed:39324718 pubmed:39890307 pubmed:41030221 pubmed:41185726 pubmed:41200281 pubmed:42747576 zenodo:14932603 zenodo:15180440 zenodo:17586296 zenodo:20612484 zenodo:3606277 zenodo:3672542 zenodo:7660663",
+        "0": "zenodo:10571672 zenodo:14787001"
+      }
+    },
+    "patient-7-e17": {
+      "set": "holdout",
+      "as_of": "2028-01-29",
+      "grades": {
+        "3": "pubmed:23598981 pubmed:24069538 pubmed:24398856 pubmed:25261259 pubmed:25681834 pubmed:25740232 pubmed:26529826 pubmed:27825434 pubmed:28427521 pubmed:28649893 pubmed:28711312 pubmed:28919714 pubmed:29022046 pubmed:29046247 pubmed:29234845 pubmed:29380085 pubmed:31096849 pubmed:31100964 pubmed:31136607 pubmed:31223127 pubmed:31598745 pubmed:33246638 pubmed:35717046 pubmed:35804188 pubmed:36156455 pubmed:36749250 pubmed:41049583 pubmed:41346006 pubmed:42640563 zenodo:14306947 zenodo:3242327",
+        "2": "pubmed:35428207 pubmed:39150340"
+      }
+    },
+    "patient-7-e22": {
+      "set": "holdout",
+      "as_of": "2028-06-17",
+      "grades": {
+        "3": "pubmed:23598981 pubmed:24069538 pubmed:24398856 pubmed:25261259 pubmed:25681834 pubmed:25740232 pubmed:26529826 pubmed:27825434 pubmed:28427521 pubmed:28649893 pubmed:28711312 pubmed:28919714 pubmed:29022046 pubmed:29046247 pubmed:29234845 pubmed:29380085 pubmed:31096849 pubmed:31100964 pubmed:31136607 pubmed:31223127 pubmed:31598745 pubmed:33246638 pubmed:35717046 pubmed:35804188 pubmed:36156455 pubmed:36749250 pubmed:41049583 pubmed:41346006 pubmed:42640563 zenodo:14306947 zenodo:3242327",
+        "2": "pubmed:35428207",
+        "1": "pubmed:39150340"
+      }
+    },
+    "patient-7-e23": {
+      "set": "holdout",
+      "as_of": "2028-09-04",
+      "grades": {
+        "3": "pubmed:10361560 pubmed:10581602 pubmed:11200206 pubmed:11888345 pubmed:1283500 pubmed:15356678 pubmed:15808959 pubmed:17628024 pubmed:21110764 pubmed:22318612 pubmed:22470904 pubmed:23084526 pubmed:23918298 pubmed:24069538 pubmed:24839802 pubmed:25899740 pubmed:26262831 pubmed:27878318 pubmed:29553053 pubmed:31337229 pubmed:31801267 pubmed:34304921 pubmed:34969695 pubmed:35175783 pubmed:35690909 pubmed:35697884 pubmed:36515785 pubmed:38913213 pubmed:39014978 pubmed:41390998 pubmed:42640563 pubmed:8428335 pubmed:9050141 zenodo:3242327",
+        "2": "pubmed:10706648 pubmed:15272941 pubmed:17264863 pubmed:18307689 pubmed:18726672 pubmed:19901958 pubmed:24044801 pubmed:25090289 pubmed:26632812 pubmed:26975660 pubmed:28919714 pubmed:29234845 pubmed:30446448 pubmed:31052089 pubmed:32220946 pubmed:32430252 pubmed:35038783 pubmed:35428207 pubmed:35804188 pubmed:36156455 pubmed:36749250 pubmed:38232756 pubmed:38418597 pubmed:38780478 pubmed:41346006 pubmed:8795651",
+        "1": "pubmed:16046052 pubmed:16321765 pubmed:18684066 pubmed:22508809 pubmed:26891611 pubmed:30610736 pubmed:31062066 pubmed:32897169 pubmed:36183329 pubmed:38896314 pubmed:38977496 pubmed:39150340 pubmed:4138838 pubmed:9154097 zenodo:18097100",
+        "0": "pubmed:17873181 pubmed:27032645 pubmed:28982506 pubmed:30390762 pubmed:31577095 pubmed:34385241 pubmed:38650398 pubmed:7530679"
+      }
+    },
+    "patient-8-e01": {
+      "set": "sample",
+      "as_of": "2026-11-06",
+      "grades": {
+        "3": "pubmed:10361560 pubmed:10581602 pubmed:10994145 pubmed:11488734 pubmed:11888345 pubmed:12890079 pubmed:15808959 pubmed:21304009 pubmed:22318612 pubmed:23918298 pubmed:32220946 pubmed:38980676 pubmed:41027802 pubmed:8428335",
+        "2": "pubmed:17628024 pubmed:19901958 pubmed:21110764 pubmed:24839802 pubmed:25058109 pubmed:25270847 pubmed:32167698 pubmed:35690909 pubmed:38896314",
+        "1": "pubmed:11076649 pubmed:11210994 pubmed:15356678 pubmed:16145365 pubmed:18684066 pubmed:20536932 pubmed:21419262 pubmed:24503416 pubmed:26975660 pubmed:29099380 pubmed:31801267 pubmed:34304921 pubmed:34385241 pubmed:35428207 pubmed:35804188 pubmed:36156455 pubmed:39789153 pubmed:8879262 zenodo:18097100 zenodo:3242327 zenodo:4310553 zenodo:642140"
+      }
+    },
+    "patient-8-e02": {
+      "set": "sample",
+      "as_of": "2026-11-08",
+      "grades": {
+        "3": "pubmed:10470213 pubmed:10581602 pubmed:15536950 pubmed:15808959 pubmed:17561711 pubmed:31558410 pubmed:32452656 pubmed:36138505 pubmed:37818332 zenodo:11111798 zenodo:11193096",
+        "2": "pubmed:11888345 pubmed:21723797 pubmed:23918298 pubmed:24816306 pubmed:24839802 pubmed:27725639 pubmed:39260798 pubmed:41027802 pubmed:8428335",
+        "1": "arxiv:2608.16964 arxiv:2609.23814 pubmed:10663192 pubmed:11076649 pubmed:11200206 pubmed:11233061 pubmed:11720279 pubmed:11818479 pubmed:14680309 pubmed:14971088 pubmed:16314892 pubmed:18602742 pubmed:18655340 pubmed:19661347 pubmed:20959954 pubmed:23647296 pubmed:24929891 pubmed:25727153 pubmed:25871992 pubmed:25984930 pubmed:26048031 pubmed:26548101 pubmed:26768791 pubmed:26975660 pubmed:27337755 pubmed:27557386 pubmed:27792187 pubmed:27878318 pubmed:28361223 pubmed:28410987 pubmed:28453701 pubmed:28528448 pubmed:29699892 pubmed:29772100 pubmed:29807949 pubmed:31122242 pubmed:31653712 pubmed:31659564 pubmed:31913197 pubmed:33099450 pubmed:33813397 pubmed:34090651 pubmed:34304921 pubmed:34385241 pubmed:34905632 pubmed:35804188 pubmed:36708571 pubmed:37256425 pubmed:37481706 pubmed:37867335 pubmed:38061007 pubmed:38446353 pubmed:38583574 pubmed:39090221 pubmed:39309439 pubmed:39417214 pubmed:39890307 pubmed:40554445 pubmed:41105391 pubmed:41186991 pubmed:41266854 pubmed:41269739 pubmed:41346006 pubmed:41609418 pubmed:7526513 pubmed:8869957 pubmed:9806507 zenodo:10016464 zenodo:11214279 zenodo:3242327 zenodo:642140",
+        "0": "pubmed:10052875 pubmed:10663189 pubmed:15666516 pubmed:15976063 pubmed:16229369 pubmed:16474521 pubmed:20589707 pubmed:21095422 pubmed:21297655 pubmed:21717898 pubmed:22198258 pubmed:23016259 pubmed:25123041 pubmed:26449841 pubmed:26656523 pubmed:28767733 pubmed:29039897 pubmed:32248258 pubmed:34200878 pubmed:34497024 pubmed:34503059 pubmed:34639707 pubmed:34737212 pubmed:36214146 pubmed:36775679 pubmed:37171944 pubmed:37289405 pubmed:37981171 pubmed:38246651 pubmed:39145960 pubmed:39485266 pubmed:39721830 pubmed:39818305 pubmed:40020696 pubmed:40126530 pubmed:40273171 pubmed:41121398 pubmed:41972986 pubmed:9609622 zenodo:12732578 zenodo:5055899"
+      }
+    },
+    "patient-8-e03": {
+      "set": "sample",
+      "as_of": "2026-11-24",
+      "grades": {
+        "3": "pubmed:11888345 pubmed:17283708 pubmed:17342490 pubmed:17823604 pubmed:34612746 pubmed:38896314 pubmed:39095298 zenodo:11090357",
+        "2": "pubmed:10581602 pubmed:15808959 pubmed:17720304 pubmed:20222795 pubmed:24839802 pubmed:29552975 pubmed:34259038 pubmed:34304921 pubmed:39027654 pubmed:41027802 pubmed:8428335 zenodo:18097100",
+        "1": "arxiv:2606.14587 pubmed:10828667 pubmed:11076649 pubmed:11210994 pubmed:21692866 pubmed:24929891 pubmed:26396046 pubmed:26548101 pubmed:26975660 pubmed:29699892 pubmed:30104656 pubmed:32415394 pubmed:32691544 pubmed:35804188 pubmed:36938557 pubmed:37867335 pubmed:37874731 pubmed:38061007 pubmed:38363332 pubmed:38446353 pubmed:39104228 pubmed:39991796 pubmed:40138013 pubmed:41186991 pubmed:41609418 pubmed:42251454 zenodo:11193096 zenodo:22898861 zenodo:3242327 zenodo:4310553",
+        "0": "pubmed:12100934 pubmed:12487280 pubmed:23016259 pubmed:26554408 pubmed:29644440 pubmed:32180032 pubmed:32873277 pubmed:34391509 pubmed:34737212 pubmed:37240238 pubmed:38703938 pubmed:38913583 pubmed:39800984 pubmed:39818305 pubmed:42837038 zenodo:20065685"
+      }
+    },
+    "patient-8-e04": {
+      "set": "sample",
+      "as_of": "2026-12-05",
+      "grades": {
+        "3": "pubmed:1283500 pubmed:15126770 pubmed:17392247 pubmed:19801219 pubmed:29043431 pubmed:30218382 pubmed:31113757 pubmed:33599706 pubmed:34911650 pubmed:35220244 pubmed:36348577 pubmed:40319443 pubmed:40347415 pubmed:8632571",
+        "2": "pubmed:31680398 pubmed:31973751 pubmed:32723519 pubmed:32976691 pubmed:33750437 pubmed:35288662 pubmed:35939081 pubmed:36576728 zenodo:18097100",
+        "1": "pubmed:10803318 pubmed:15814638 pubmed:17972146 pubmed:18544986 pubmed:21220228 pubmed:27344294 pubmed:28753787 pubmed:32157427 pubmed:34729614 pubmed:35183184 pubmed:35866190 pubmed:37395949 pubmed:39051893 pubmed:39477430 pubmed:39999214",
+        "0": "pubmed:17964957 pubmed:23250812 pubmed:28767733 pubmed:35569466"
+      }
+    },
+    "patient-8-e05": {
+      "set": "sample",
+      "as_of": "2026-12-12",
+      "grades": {
+        "3": "pubmed:28578607 pubmed:28578639 pubmed:28816716 pubmed:29263421 pubmed:30295043 pubmed:30345007 pubmed:30747897 pubmed:30933324 pubmed:31127324 pubmed:31286275 pubmed:32701855 pubmed:35405085 pubmed:35411939 pubmed:36152486 pubmed:36938560 pubmed:38722620 pubmed:39417629 pubmed:40467357 pubmed:40772795 pubmed:41045691 pubmed:41692947",
+        "2": "pubmed:19801219 pubmed:30218382 pubmed:30319125 pubmed:30691365 pubmed:30826218 pubmed:31113757 pubmed:34090651 pubmed:34911650 pubmed:35220244 pubmed:36348577 pubmed:36795843 pubmed:37507278 pubmed:37542594 pubmed:39279580 pubmed:39527466 pubmed:41027802 pubmed:42838582",
+        "1": "pubmed:18544986 pubmed:21220228 pubmed:30101644 pubmed:30344307 pubmed:33581491 pubmed:34175227 pubmed:34734294 pubmed:35939081 pubmed:36183329 pubmed:37248105 pubmed:41216639 pubmed:42250604"
+      }
+    },
+    "patient-8-e06": {
+      "set": "sample",
+      "as_of": "2026-12-29",
+      "grades": {
+        "3": "pubmed:26068639 pubmed:27826989 pubmed:28578607 pubmed:28816716 pubmed:29263421 pubmed:30747897 pubmed:30933324 pubmed:31127324 pubmed:31286275 pubmed:32220946 pubmed:32532121 pubmed:33480983 pubmed:33856289 pubmed:34590590 pubmed:35108137 pubmed:35405085 pubmed:35411939 pubmed:39417629 pubmed:41045691",
+        "2": "pubmed:15126770 pubmed:20225998 pubmed:22451619 pubmed:23228172 pubmed:30266309 pubmed:30319125 pubmed:30826218 pubmed:35709600 pubmed:35866612 pubmed:36348577 pubmed:36795843 pubmed:39702472 pubmed:41057655",
+        "1": "pubmed:18544986 pubmed:21220228 pubmed:22048000 pubmed:25261259 pubmed:25692752 pubmed:30344307 pubmed:31566937 pubmed:33738901 pubmed:34385241 pubmed:34734294 pubmed:35220244 pubmed:36695246 pubmed:36994854 pubmed:37399894 pubmed:38261983 pubmed:38588365 pubmed:39478563 pubmed:42250604 zenodo:18673267"
+      }
+    },
+    "patient-8-e07": {
+      "set": "sample",
+      "as_of": "2027-03-29",
+      "grades": {
+        "3": "pubmed:27826989 pubmed:27878318 pubmed:28578607 pubmed:28578639 pubmed:28816716 pubmed:29263421 pubmed:30287277 pubmed:30345007 pubmed:30741558 pubmed:30747897 pubmed:30933324 pubmed:31127324 pubmed:32220946 pubmed:32406281 pubmed:32701855 pubmed:33480983 pubmed:33856289 pubmed:35405085 pubmed:35411939 pubmed:36763112 pubmed:36807496 pubmed:36858151 pubmed:37142371 pubmed:39417629 pubmed:39702472",
+        "2": "pubmed:20225998 pubmed:23199349 pubmed:26975660 pubmed:30826218 pubmed:31951037 pubmed:36348577 pubmed:38980676 pubmed:39279580 pubmed:41057655 pubmed:41598623 zenodo:20408891",
+        "1": "pubmed:23228172 pubmed:25261259 pubmed:33581491 pubmed:34385241 pubmed:35584629 pubmed:35939081 pubmed:37542594 pubmed:38261983 pubmed:39987332 pubmed:40056906 pubmed:42250604 zenodo:18097100"
+      }
+    },
+    "patient-8-e14": {
+      "set": "sample",
+      "as_of": "2028-12-18",
+      "grades": {
+        "3": "pubmed:27826989 pubmed:28578607 pubmed:28816716 pubmed:29263421 pubmed:30345007 pubmed:30741558 pubmed:30747897 pubmed:30933324 pubmed:31127324 pubmed:31286275 pubmed:32167698 pubmed:32220946 pubmed:32406281 pubmed:32701855 pubmed:33480983 pubmed:33856289 pubmed:35405085 pubmed:35411939 pubmed:36807496 pubmed:37142371 pubmed:39417629",
+        "2": "pubmed:20225998 pubmed:23199349 pubmed:23228172 pubmed:30287277 pubmed:31951037 pubmed:36348577 pubmed:36763112 pubmed:36795843 pubmed:38980676 pubmed:39279580 pubmed:40106307 pubmed:41057655 pubmed:41598623",
+        "1": "pubmed:25261259 pubmed:26975660 pubmed:28532400 pubmed:30826218 pubmed:33581491 pubmed:34385241 pubmed:35939081 pubmed:37542594 pubmed:38261983 pubmed:39987332 pubmed:42250604 zenodo:18097100"
+      }
+    },
+    "patient-8-e15": {
+      "set": "sample",
+      "as_of": "2030-04-30",
+      "grades": {
+        "3": "arxiv:2110.02698 pubmed:23362491 pubmed:23441761 pubmed:24100689 pubmed:24458946 pubmed:24503416 pubmed:25261259 pubmed:25638257 pubmed:26170619 pubmed:26329698 pubmed:26342718 pubmed:26384731 pubmed:26583636 pubmed:27477525 pubmed:27680191 pubmed:28101887 pubmed:28577511 pubmed:30324351 pubmed:30344307 pubmed:30610102 pubmed:30691365 pubmed:30772358 pubmed:30889620 pubmed:31557062 pubmed:31566937 pubmed:31597030 pubmed:31597031 pubmed:31986318 pubmed:32529950 pubmed:32980775 pubmed:33480983 pubmed:34114527 pubmed:34381565 pubmed:34517086 pubmed:34572433 pubmed:35080190 pubmed:35397772 pubmed:35709600 pubmed:35833211 pubmed:37783836 pubmed:37904040 pubmed:39275993 pubmed:39308935 pubmed:40058740 pubmed:40450503 pubmed:40605657 pubmed:40647544 pubmed:40670254 pubmed:41186991 pubmed:41200193 pubmed:41763609 pubmed:41986026 pubmed:42602251 pubmed:42640563 zenodo:13150541 zenodo:7331455",
+        "2": "arxiv:2110.04164 arxiv:2601.20046 pubmed:26975660 pubmed:28361223 pubmed:28578607 pubmed:29263421 pubmed:29792198 pubmed:30345007 pubmed:30747897 pubmed:30933324 pubmed:30995089 pubmed:31231006 pubmed:31564004 pubmed:31598745 pubmed:31646092 pubmed:31874108 pubmed:32701855 pubmed:32710316 pubmed:32745972 pubmed:33478015 pubmed:33853469 pubmed:33951556 pubmed:34053583 pubmed:34318984 pubmed:34330654 pubmed:35190335 pubmed:35804188 pubmed:36156455 pubmed:36348577 pubmed:36582085 pubmed:36870797 pubmed:37603022 pubmed:37987784 pubmed:38609797 pubmed:38917250 pubmed:39324718 pubmed:39417629 pubmed:39453576 pubmed:40659047 pubmed:41045691 pubmed:41280561 pubmed:41346006 pubmed:41981710 zenodo:17586296 zenodo:3242327 zenodo:7660663",
+        "1": "arxiv:2603.13676 arxiv:2606.28704 pubmed:26028493 pubmed:28532278 pubmed:30684842 pubmed:32216246 pubmed:32783772 pubmed:33008010 pubmed:33150960 pubmed:33543650 pubmed:34246347 pubmed:34621011 pubmed:35406564 pubmed:35582542 pubmed:36273936 pubmed:37147019 pubmed:37263338 pubmed:37596700 pubmed:37882449 pubmed:38160898 pubmed:38169497 pubmed:38169498 pubmed:38261983 pubmed:38323376 pubmed:38588362 pubmed:38588365 pubmed:38765461 pubmed:38880227 pubmed:38918645 pubmed:39097593 pubmed:39208673 pubmed:39253786 pubmed:39279580 pubmed:39890307 pubmed:39987332 pubmed:40106307 pubmed:40572035 pubmed:40862781 pubmed:41030221 pubmed:41200281 pubmed:41331871 pubmed:41633900 pubmed:41787526 pubmed:42747576 zenodo:14932603 zenodo:15180440 zenodo:19593470 zenodo:20612484 zenodo:23386328 zenodo:3606277 zenodo:3672542 zenodo:3932989"
+      }
+    },
+    "patient-8-e16": {
+      "set": "sample",
+      "as_of": "2030-05-12",
+      "grades": {
+        "3": "arxiv:2110.02698 pubmed:23362491 pubmed:23441761 pubmed:24069538 pubmed:24100689 pubmed:24458946 pubmed:24503416 pubmed:25261259 pubmed:25638257 pubmed:26022286 pubmed:26170619 pubmed:26329698 pubmed:26583636 pubmed:27477525 pubmed:27637350 pubmed:27680191 pubmed:28577511 pubmed:30324351 pubmed:30610102 pubmed:30848157 pubmed:30889620 pubmed:31557062 pubmed:31597030 pubmed:31597031 pubmed:32529950 pubmed:34114527 pubmed:34381565 pubmed:34572433 pubmed:34572748 pubmed:35709600 pubmed:35833211 pubmed:35950899 pubmed:37783836 pubmed:37904040 pubmed:38049622 pubmed:38901175 pubmed:39195285 pubmed:39275993 pubmed:40058740 pubmed:40315400 pubmed:40450503 pubmed:40583299 pubmed:40605657 pubmed:40647544 pubmed:40670254 pubmed:40683290 pubmed:41200193 pubmed:41763609 pubmed:41986026 pubmed:42640563 zenodo:13150541 zenodo:7331455",
+        "2": "arxiv:2110.04164 pubmed:26975660 pubmed:28101887 pubmed:28361223 pubmed:28711312 pubmed:29792198 pubmed:30295043 pubmed:30345007 pubmed:30691365 pubmed:30747897 pubmed:30772358 pubmed:30995089 pubmed:31231006 pubmed:31566937 pubmed:31598745 pubmed:31646092 pubmed:31874108 pubmed:32701855 pubmed:32710316 pubmed:32745972 pubmed:32783772 pubmed:32955174 pubmed:32980775 pubmed:33008010 pubmed:33478015 pubmed:33480983 pubmed:33853469 pubmed:33951556 pubmed:34053583 pubmed:34246347 pubmed:34318984 pubmed:34330654 pubmed:34517086 pubmed:35080190 pubmed:35190335 pubmed:35804188 pubmed:36348577 pubmed:36582085 pubmed:37603022 pubmed:37987784 pubmed:38378521 pubmed:38917250 pubmed:39308935 pubmed:39324718 pubmed:39417629 pubmed:39453576 pubmed:40645860 pubmed:40659047 pubmed:40683287 pubmed:41045691 pubmed:41186991 pubmed:41280561 pubmed:41346006 pubmed:42602251 zenodo:7660663",
+        "1": "arxiv:2601.20046 arxiv:2603.13676 arxiv:2606.28704 pubmed:26028493 pubmed:28532278 pubmed:30344307 pubmed:30684842 pubmed:30933324 pubmed:31695432 pubmed:32216246 pubmed:33150960 pubmed:33543650 pubmed:34385241 pubmed:35406564 pubmed:35582542 pubmed:36183329 pubmed:36273936 pubmed:37147019 pubmed:37263338 pubmed:37596700 pubmed:37882449 pubmed:38160898 pubmed:38169497 pubmed:38169498 pubmed:38323376 pubmed:38588362 pubmed:38588365 pubmed:38589645 pubmed:38609797 pubmed:38765461 pubmed:38880227 pubmed:39097593 pubmed:39208673 pubmed:39253786 pubmed:39890307 pubmed:39987332 pubmed:39996915 pubmed:41030221 pubmed:41200281 pubmed:41331871 pubmed:41633900 pubmed:41787526 pubmed:42747576 zenodo:14932603 zenodo:15180440 zenodo:17586296 zenodo:19593470 zenodo:20612484 zenodo:23386328 zenodo:3606277 zenodo:3672542 zenodo:3932989"
+      }
+    },
+    "patient-8-e17": {
+      "set": "sample",
+      "as_of": "2030-05-21",
+      "grades": {
+        "3": "pubmed:24069538 pubmed:24100689 pubmed:24458946 pubmed:25261259 pubmed:25638257 pubmed:26170619 pubmed:27637350 pubmed:30848157 pubmed:30889620 pubmed:32273196 pubmed:32529950 pubmed:35709600 pubmed:35833211 pubmed:38913213 pubmed:39195285 pubmed:39275993 pubmed:40058740 pubmed:40315400 pubmed:40450503 pubmed:40583299 pubmed:40670254 pubmed:40683290 pubmed:41186991 pubmed:41763609 pubmed:42640563 zenodo:7331455",
+        "2": "pubmed:26975660 pubmed:27826989 pubmed:30295043 pubmed:30345007 pubmed:30747897 pubmed:31566937 pubmed:32783772 pubmed:33150960 pubmed:33480983 pubmed:33951556 pubmed:34252319 pubmed:35080190 pubmed:35804188 pubmed:35950899 pubmed:38049622 pubmed:39417629 pubmed:39427229 pubmed:39453576 pubmed:40645860 pubmed:40683287 pubmed:41045691 pubmed:41346006",
+        "1": "pubmed:30344307 pubmed:35406564 pubmed:36797129 pubmed:37882449 pubmed:38160898 pubmed:38323376 pubmed:38378521 pubmed:38589645 pubmed:39987332 pubmed:39996915 pubmed:40873813"
+      }
+    },
+    "patient-8-e18": {
+      "set": "sample",
+      "as_of": "2030-08-19",
+      "grades": {
+        "3": "pubmed:23441761 pubmed:24069538 pubmed:24100689 pubmed:24458946 pubmed:25261259 pubmed:26170619 pubmed:26839021 pubmed:27477525 pubmed:28557065 pubmed:31757478 pubmed:32273196 pubmed:32529950 pubmed:35397772 pubmed:35709600 pubmed:35833211 pubmed:37569810 pubmed:39195285 pubmed:39275993 pubmed:40450503 pubmed:41186991 pubmed:41346006 pubmed:41763609 pubmed:42640563",
+        "2": "pubmed:25638257 pubmed:26975660 pubmed:28101887 pubmed:28578607 pubmed:30295043 pubmed:30344307 pubmed:30345007 pubmed:30747897 pubmed:30933324 pubmed:31566937 pubmed:33150960 pubmed:33480983 pubmed:33951556 pubmed:35411939 pubmed:35804188 pubmed:36348577 pubmed:37285865 pubmed:38049622 pubmed:39417629 pubmed:39453576 pubmed:40683287 pubmed:40683290 pubmed:41045691",
+        "1": "pubmed:32783772 pubmed:34385241 pubmed:35584629 pubmed:37585665 pubmed:37676279 pubmed:37882449 pubmed:38160898 pubmed:38323376 pubmed:38378521 pubmed:38589645 pubmed:39987332 pubmed:40572035 pubmed:40772795 pubmed:40873813 pubmed:41633900 pubmed:42875559"
+      }
+    },
+    "patient-8-e22": {
+      "set": "sample",
+      "as_of": "2031-08-14",
+      "grades": {
+        "3": "pubmed:23441761 pubmed:24069538 pubmed:24458946 pubmed:25261259 pubmed:26170619 pubmed:26839021 pubmed:27477525 pubmed:28557065 pubmed:31757478 pubmed:32273196 pubmed:33150960 pubmed:35804188 pubmed:35833211 pubmed:37569810 pubmed:39195285 pubmed:39275993 pubmed:41186991 pubmed:41346006 pubmed:42640563",
+        "2": "pubmed:24100689 pubmed:25638257 pubmed:28101887 pubmed:28578607 pubmed:30295043 pubmed:30345007 pubmed:30747897 pubmed:30933324 pubmed:31566937 pubmed:32529950 pubmed:33480983 pubmed:35397772 pubmed:35411939 pubmed:35709600 pubmed:36348577 pubmed:37285865 pubmed:39453576 pubmed:40450503 pubmed:40683287 pubmed:40683290 pubmed:41045691 pubmed:41763609",
+        "1": "pubmed:26975660 pubmed:30344307 pubmed:32783772 pubmed:33951556 pubmed:34385241 pubmed:35584629 pubmed:37585665 pubmed:37676279 pubmed:37882449 pubmed:38049622 pubmed:38160898 pubmed:38323376 pubmed:38378521 pubmed:38589645 pubmed:39417629 pubmed:39987332 pubmed:40572035 pubmed:40772795 pubmed:40873813 pubmed:41633900 pubmed:42875559"
+      }
+    },
+    "patient-9-e01": {
+      "set": "holdout",
+      "as_of": "2026-11-06",
+      "grades": {
+        "3": "pubmed:10663192 pubmed:11233061 pubmed:11720279 pubmed:11818479 pubmed:16314892 pubmed:18655340 pubmed:20959954 pubmed:21095422 pubmed:24195246 pubmed:24816306 pubmed:26768791 pubmed:27337755 pubmed:27557386 pubmed:27792187 pubmed:33099450 pubmed:36149214 pubmed:36180907 pubmed:38869693 pubmed:38913583 pubmed:39320245 pubmed:40554445 pubmed:41972986 pubmed:7505969 zenodo:10016464 zenodo:11111798 zenodo:11193096 zenodo:11214279 zenodo:11312297 zenodo:17694381 zenodo:7126985",
+        "2": "pubmed:20890581 pubmed:21297655 pubmed:21717898 pubmed:22198258 pubmed:24005707 pubmed:34497024 pubmed:36999432 pubmed:38363332 pubmed:39090221 pubmed:39145960 pubmed:9741413 zenodo:17190799",
+        "1": "arxiv:2608.16964 arxiv:2608.21497 arxiv:2609.23814 pubmed:10663189 pubmed:11076649 pubmed:12100934 pubmed:14680309 pubmed:14971088 pubmed:18217533 pubmed:20589707 pubmed:23016259 pubmed:23862239 pubmed:24484652 pubmed:25123041 pubmed:25727153 pubmed:26656523 pubmed:28528448 pubmed:29772100 pubmed:31122242 pubmed:31659564 pubmed:32873277 pubmed:33856136 pubmed:34905632 pubmed:37256425 pubmed:37481706 pubmed:38401099 pubmed:38583574 pubmed:38820236 pubmed:39153094 pubmed:39417214 pubmed:39721830 pubmed:40846621 pubmed:41266854 pubmed:42251454 pubmed:8869957 pubmed:9609622 pubmed:9806507 zenodo:12732578 zenodo:18097100",
+        "0": "pubmed:10052875 pubmed:11068312 pubmed:12949429 pubmed:15666516 pubmed:15976063 pubmed:16229369 pubmed:16474521 pubmed:23647296 pubmed:25871992 pubmed:26118565 pubmed:26449841 pubmed:29039897 pubmed:29807949 pubmed:31220400 pubmed:31653712 pubmed:32248258 pubmed:33813397 pubmed:35024944 pubmed:36156455 pubmed:36214146 pubmed:37981171 pubmed:38520513 pubmed:39485266 pubmed:41818713 pubmed:7526513"
+      }
+    },
+    "patient-9-e02": {
+      "set": "holdout",
+      "as_of": "2026-11-11",
+      "grades": {
+        "3": "pubmed:10663192 pubmed:11233061 pubmed:11720279 pubmed:11818479 pubmed:18655340 pubmed:20890581 pubmed:21297655 pubmed:22343493 pubmed:24195246 pubmed:24978363 pubmed:27337755 pubmed:27792187 pubmed:9617617 pubmed:9741413 zenodo:10016464 zenodo:17190799",
+        "2": "pubmed:19486654 pubmed:21717898 pubmed:38363332 pubmed:39090221 zenodo:11111798",
+        "1": "pubmed:12100934 pubmed:24484652 pubmed:28528448 pubmed:29090673 pubmed:31220400 pubmed:31659564 pubmed:33856136 pubmed:35026706 pubmed:37109015 pubmed:39153094 pubmed:39417214 pubmed:40862795 pubmed:41266006 pubmed:42251454 pubmed:8869957 zenodo:18097100",
+        "0": "pubmed:10663189 pubmed:11068312 pubmed:12949429 pubmed:25665794 pubmed:25871992 pubmed:28532400 pubmed:34090651 pubmed:34382352 pubmed:35804188 pubmed:36229939 pubmed:38446353 pubmed:39327114 pubmed:39485266 pubmed:40705094 pubmed:40846621 pubmed:41353166 pubmed:41609418 pubmed:41721835"
+      }
+    },
+    "patient-9-e03": {
+      "set": "holdout",
+      "as_of": "2026-11-29",
+      "grades": {
+        "3": "pubmed:12100934 pubmed:17283708 pubmed:17720304 pubmed:26907717 pubmed:29552975 pubmed:30104656 pubmed:31045262 pubmed:31825763 pubmed:34259038 pubmed:34612746 pubmed:36938557 pubmed:37315913 pubmed:42251454 zenodo:17190799 zenodo:23032842",
+        "2": "pubmed:10828667 pubmed:17823604 pubmed:26621054 pubmed:27123316 pubmed:31644434 pubmed:33856136 pubmed:34237810 pubmed:37096575 pubmed:39991796 zenodo:11312297 zenodo:7126985",
+        "1": "arxiv:2606.14587 arxiv:2608.14796 pubmed:21692866 pubmed:24978363 pubmed:26396046 pubmed:28589399 pubmed:30741847 pubmed:31399825 pubmed:32415394 pubmed:32873277 pubmed:33127298 pubmed:33435132 pubmed:36209237 pubmed:37329212 pubmed:37867335 pubmed:38363332 pubmed:38419309 pubmed:38913583 pubmed:39818305 pubmed:41403018 pubmed:42837038 zenodo:11193096 zenodo:11214279 zenodo:18097100",
+        "0": "pubmed:12487280 pubmed:38657187"
+      }
+    },
+    "patient-9-e04": {
+      "set": "holdout",
+      "as_of": "2026-12-10",
+      "grades": {
+        "3": "pubmed:10765103 pubmed:11076649 pubmed:11590810 pubmed:14972471 pubmed:15357040 pubmed:15809776 pubmed:16792322 pubmed:17619732 pubmed:17896553 pubmed:18303539 pubmed:18584180 pubmed:18635233 pubmed:18814526 pubmed:19050687 pubmed:19365894 pubmed:20470000 pubmed:20864364 pubmed:21993567 pubmed:22790035 pubmed:23106163 pubmed:25424387 pubmed:26031821 pubmed:26358012 pubmed:28169123 pubmed:29116405 pubmed:29421921 pubmed:30430487 pubmed:30859516 pubmed:31039101 pubmed:31045262 pubmed:31495569 pubmed:31837592 pubmed:3314061 pubmed:33554284 pubmed:33924669 pubmed:35972023 pubmed:36205571 pubmed:36306101 pubmed:36938550 pubmed:37477486 pubmed:37639456 pubmed:37676466 pubmed:38036328 pubmed:40355631 pubmed:7526513 pubmed:8521134 pubmed:9609622 zenodo:7068121 zenodo:7879125 zenodo:8033876 zenodo:8054698",
+        "2": "pubmed:10828666 pubmed:12677777 pubmed:20802467 pubmed:28901630 pubmed:30972506 pubmed:32894109 pubmed:33820533 pubmed:35027314 pubmed:42251454 pubmed:8015079 zenodo:11206827 zenodo:23032842",
+        "1": "arxiv:2606.09453 arxiv:2606.14587 pubmed:10663189 pubmed:12949429 pubmed:15666516 pubmed:15976063 pubmed:16229369 pubmed:20589707 pubmed:23069384 pubmed:31122242 pubmed:32248258 pubmed:34229680 pubmed:34816646 pubmed:35813256 pubmed:36941084 pubmed:37247118 pubmed:39039389 pubmed:41721835 pubmed:8976259"
+      }
+    },
+    "patient-9-e05": {
+      "set": "holdout",
+      "as_of": "2026-12-30",
+      "grades": {
+        "3": "pubmed:12851781 pubmed:18584180 pubmed:18814526 pubmed:19050687 pubmed:19799045 pubmed:22790035 pubmed:23106163 pubmed:23841851 pubmed:23872627 pubmed:26031821 pubmed:26358012 pubmed:29116405 pubmed:29421921 pubmed:30938366 pubmed:31039101 pubmed:33550690 pubmed:33554284 pubmed:35578110 pubmed:36065059 pubmed:36205571 pubmed:36938550 pubmed:37477486 pubmed:37639456 pubmed:38036328 pubmed:38195985 pubmed:39299693 pubmed:39382717 pubmed:40148877 pubmed:40952272 zenodo:7879125 zenodo:8033876",
+        "2": "pubmed:28006957 pubmed:28901630 pubmed:37036165",
+        "1": "pubmed:34229680 pubmed:34816646 pubmed:36941084 pubmed:37247118 pubmed:39039389"
+      }
+    },
+    "patient-9-e06": {
+      "set": "holdout",
+      "as_of": "2027-01-01",
+      "grades": {
+        "3": "pubmed:12851781 pubmed:18584180 pubmed:18814526 pubmed:19050687 pubmed:19799045 pubmed:23106163 pubmed:23841851 pubmed:26031821 pubmed:26358012 pubmed:29116405 pubmed:29421921 pubmed:30938366 pubmed:31039101 pubmed:31120453 pubmed:32746829 pubmed:33554284 pubmed:36065059 pubmed:36938550 pubmed:37036165 pubmed:37269137 pubmed:37477486 pubmed:37639456 pubmed:38036328 pubmed:38195985 pubmed:39299693 pubmed:39382717 pubmed:40148877 pubmed:40952272 zenodo:7879125",
+        "2": "pubmed:28006957 pubmed:28901630 pubmed:33590768",
+        "1": "pubmed:34229680 pubmed:34816646 pubmed:36941084 pubmed:37247118 pubmed:39039389",
+        "0": "pubmed:33133670 pubmed:41049821"
+      }
+    },
+    "patient-9-e07": {
+      "set": "holdout",
+      "as_of": "2027-01-15",
+      "grades": {
+        "3": "pubmed:17619732 pubmed:18584180 pubmed:19050687 pubmed:23841851 pubmed:28429951 pubmed:30938366 pubmed:31673831 pubmed:38195985 pubmed:39347950 pubmed:39382717",
+        "2": "pubmed:23106163 pubmed:26358012 pubmed:29116405 pubmed:30972506 pubmed:31039101 pubmed:31120453 pubmed:31718600 pubmed:31971494 pubmed:37477486 pubmed:38015550 pubmed:38036328 pubmed:39299693 pubmed:40148877 zenodo:11206827 zenodo:7879125 zenodo:8033876",
+        "1": "pubmed:12851781 pubmed:26031821 pubmed:28901630 pubmed:29421921 pubmed:32894109 pubmed:33502568 pubmed:33554284 pubmed:34229680 pubmed:36938550 pubmed:36941084 pubmed:37247118 pubmed:37639456 pubmed:38629205 pubmed:39039389 pubmed:39302458 pubmed:41721835 pubmed:42267679 zenodo:642140",
+        "0": "pubmed:30069582 pubmed:39004950"
+      }
+    },
+    "patient-9-e08": {
+      "set": "holdout",
+      "as_of": "2027-01-17",
+      "grades": {
+        "3": "pubmed:19050687 pubmed:23106163 pubmed:26358012 pubmed:28169123 pubmed:28429951 pubmed:30938366 pubmed:31039101 pubmed:36065059 pubmed:38195985 pubmed:39299693 pubmed:40148877",
+        "2": "pubmed:18814526 pubmed:22790035 pubmed:28006957 pubmed:29116405 pubmed:29421921 pubmed:30972506 pubmed:31718600 pubmed:33554284 pubmed:36205571 pubmed:37477486 pubmed:37639456 pubmed:39382717 zenodo:7879125 zenodo:8033876",
+        "1": "pubmed:26031821 pubmed:28901630 pubmed:30069582 pubmed:33502568 pubmed:33550690 pubmed:34229680 pubmed:34816646 pubmed:36938550 pubmed:36941084 pubmed:37036165 pubmed:37247118 pubmed:38036328 pubmed:38629205 pubmed:38650416 pubmed:39039389 pubmed:39302458 pubmed:41721835 zenodo:23032842"
+      }
+    },
+    "patient-9-e09": {
+      "set": "holdout",
+      "as_of": "2027-03-06",
+      "grades": {
+        "3": "pubmed:10663189 pubmed:11076649 pubmed:12677777 pubmed:17283717 pubmed:17619732 pubmed:30772034 pubmed:36065059 pubmed:39417214 pubmed:7526513",
+        "2": "pubmed:15976063 pubmed:17896553 pubmed:18584180 pubmed:23106163 pubmed:28429951 pubmed:29116405 pubmed:29367503 pubmed:29421921 pubmed:30972506 pubmed:31039101 pubmed:31718600 pubmed:35325307 pubmed:36201466 pubmed:38155061 pubmed:38195985 pubmed:38287319 pubmed:39299693 pubmed:39382717 pubmed:9609622",
+        "1": "pubmed:10052875 pubmed:14971088 pubmed:16229369 pubmed:16314892 pubmed:18655340 pubmed:23227460 pubmed:24978363 pubmed:29772100 pubmed:31220400 pubmed:33554284 pubmed:34229680 pubmed:34453699 pubmed:35024944 pubmed:35448207 pubmed:35578110 pubmed:37639456 pubmed:37981171 pubmed:38036328 pubmed:39039389 pubmed:39710841 pubmed:39827986 pubmed:41779619 zenodo:23032842 zenodo:642140 zenodo:7879125",
+        "0": "pubmed:29998354 pubmed:34212237"
+      }
+    },
+    "patient-9-e12": {
+      "set": "holdout",
+      "as_of": "2028-06-28",
+      "grades": {
+        "3": "pubmed:10663189 pubmed:11076649 pubmed:12677777 pubmed:14971088 pubmed:15976063 pubmed:16229369 pubmed:25301759 pubmed:26118565 pubmed:28528448 pubmed:31220400 pubmed:37981171 pubmed:39827986 pubmed:41721835 pubmed:7526513",
+        "2": "pubmed:17619732 pubmed:17896553 pubmed:19451893 pubmed:28429951 pubmed:29367503 pubmed:30772034 pubmed:30972506 pubmed:34453699 pubmed:35024944 pubmed:36201466 pubmed:38195985 zenodo:642140",
+        "1": "pubmed:10052875 pubmed:1376192 pubmed:18584180 pubmed:18655340 pubmed:18814526 pubmed:21922459 pubmed:23227460 pubmed:29116405 pubmed:29772100 pubmed:33554284 pubmed:34229680 pubmed:35325307 pubmed:35448207 pubmed:35578110 pubmed:36941084 pubmed:37477486 pubmed:37639456 pubmed:38036328 pubmed:38155061 pubmed:38287319 pubmed:39039389 pubmed:39382717 pubmed:39417214 pubmed:39710841 pubmed:41779619 pubmed:9609622 zenodo:23032842 zenodo:7879125",
+        "0": "pubmed:10663192 pubmed:24978363 pubmed:34212237"
+      }
+    },
+    "patient-9-e13": {
+      "set": "holdout",
+      "as_of": "2028-11-12",
+      "grades": {
+        "3": "pubmed:10663189 pubmed:14680309 pubmed:14747043 pubmed:15666516 pubmed:16046649 pubmed:16474521 pubmed:17006699 pubmed:17283717 pubmed:24188259 pubmed:25301759 pubmed:29039897 pubmed:29807949 pubmed:30979820 pubmed:31673831 pubmed:31836682 pubmed:32248258 pubmed:34385241 pubmed:37097540 pubmed:37770370 pubmed:37981171 pubmed:38286895 pubmed:39827986 pubmed:41609418 pubmed:41721835 pubmed:41973167 pubmed:42117295",
+        "2": "pubmed:11076649 pubmed:17619732 pubmed:17896553 pubmed:26358012 pubmed:30972506 pubmed:35818912 pubmed:37481706 pubmed:38142683 pubmed:38195985 pubmed:39299693 zenodo:11206827 zenodo:642140",
+        "1": "pubmed:27012712 pubmed:28243789 pubmed:29116405 pubmed:29970100 pubmed:32088155 pubmed:34229680 pubmed:35448207 pubmed:36305671 pubmed:37247118 pubmed:38036328 pubmed:39201655 pubmed:39306583 pubmed:39382717 pubmed:40659894 pubmed:41779619"
+      }
+    },
+    "patient-9-e14": {
+      "set": "holdout",
+      "as_of": "2028-12-01",
+      "grades": {
+        "3": "pubmed:15666516 pubmed:22748289 pubmed:23069920 pubmed:27825432 pubmed:29320333 pubmed:30042163 pubmed:30281701 pubmed:30834999 pubmed:30920593 pubmed:30979820 pubmed:31472746 pubmed:31680398 pubmed:31836682 pubmed:32047993 pubmed:32157427 pubmed:32248258 pubmed:32671604 pubmed:34916246 pubmed:35016755 pubmed:37493837 pubmed:37770370 pubmed:38782456 pubmed:40319443 pubmed:40539467 pubmed:41973167 pubmed:42242874",
+        "2": "pubmed:26880517 pubmed:37148297 pubmed:37395949 pubmed:41721835 pubmed:42117295",
+        "1": "pubmed:33790418 pubmed:36305586 pubmed:37528487 pubmed:41671998 pubmed:41870549"
+      }
+    },
+    "patient-9-e15": {
+      "set": "holdout",
+      "as_of": "2028-12-14",
+      "grades": {
+        "3": "pubmed:15666516 pubmed:23763888 pubmed:26449841 pubmed:29161715 pubmed:29807949 pubmed:31472746 pubmed:31629656 pubmed:32035581 pubmed:33002438 pubmed:34049780 pubmed:34391651 pubmed:35016755 pubmed:35569466 pubmed:36795862 pubmed:37679602 pubmed:38763153 pubmed:38763154 pubmed:40371496 pubmed:40985821",
+        "2": "pubmed:11076649 pubmed:31680398 pubmed:32157427 pubmed:33784675 pubmed:41216639",
+        "1": "pubmed:18391629 pubmed:23953795 pubmed:26112477 pubmed:27986213 pubmed:31718600 pubmed:32418156 pubmed:33914101 pubmed:34385241 pubmed:35485635 pubmed:35864293 pubmed:36080493 pubmed:40035188 pubmed:41759222",
+        "0": "pubmed:39996915"
+      }
+    },
+    "patient-9-e16": {
+      "set": "holdout",
+      "as_of": "2028-12-19",
+      "grades": {
+        "3": "pubmed:19035858 pubmed:19440008 pubmed:26293510 pubmed:26449841 pubmed:26991743 pubmed:27826989 pubmed:29807949 pubmed:31629656 pubmed:31643987 pubmed:32469183 pubmed:32655041 pubmed:32804697 pubmed:34391651 pubmed:34409852 pubmed:34459214 pubmed:34590590 pubmed:35016755 pubmed:35108137 pubmed:35343198 pubmed:35569466 pubmed:36652173 pubmed:36795862 pubmed:37679602 pubmed:38285742 pubmed:38318809 pubmed:38451492 pubmed:38763153 pubmed:38763154 pubmed:41247145 pubmed:41706486 pubmed:42682049",
+        "2": "pubmed:10794807 pubmed:19747011 pubmed:25791895 pubmed:30042163 pubmed:31680398 pubmed:32157427 pubmed:34408793 pubmed:38261983 pubmed:38323376 pubmed:39555581 pubmed:41216639",
+        "1": "pubmed:25261259 pubmed:34229680 pubmed:34385241 pubmed:35864293 pubmed:36733800 pubmed:37528487 pubmed:39996915 pubmed:41752758",
+        "0": "pubmed:41824265"
+      }
+    },
+    "patient-9-e17": {
+      "set": "holdout",
+      "as_of": "2029-01-10",
+      "grades": {
+        "3": "pubmed:14747043 pubmed:15666516 pubmed:17907065 pubmed:20216316 pubmed:21670752 pubmed:23763888 pubmed:25195116 pubmed:29161715 pubmed:29178983 pubmed:29807949 pubmed:31115116 pubmed:31629656 pubmed:32035581 pubmed:33002431 pubmed:34400088 pubmed:34595542 pubmed:35016755 pubmed:35569466 pubmed:37679602 pubmed:38583574 pubmed:38763154 pubmed:42167806 zenodo:3577390",
+        "2": "pubmed:11076649 pubmed:32157427 pubmed:33517323",
+        "1": "pubmed:18407430 pubmed:25192626 pubmed:25480014 pubmed:26112477 pubmed:28366513 pubmed:32077006 pubmed:34247896 pubmed:35485635 pubmed:39415463 pubmed:39681174 pubmed:41216639 zenodo:20022646"
+      }
+    },
+    "patient-9-e18": {
+      "set": "holdout",
+      "as_of": "2029-04-10",
+      "grades": {
+        "3": "pubmed:15666516 pubmed:16229369 pubmed:26449841 pubmed:28189428 pubmed:28922958 pubmed:29807949 pubmed:30037499 pubmed:31629656 pubmed:32035581 pubmed:34391651 pubmed:35569466 pubmed:36795862 pubmed:38583574 pubmed:38763154 pubmed:42167806",
+        "2": "pubmed:11076649 pubmed:20216316 pubmed:21670752 pubmed:29161715 pubmed:31472746 pubmed:31680398 pubmed:32157427 pubmed:33002437 pubmed:33002438 pubmed:33517323 pubmed:33784675 pubmed:34049780 pubmed:35016755 pubmed:37679602 pubmed:41216639",
+        "1": "pubmed:25192626 pubmed:27986213 pubmed:28599663 pubmed:31718600 pubmed:32077006 pubmed:32418156 pubmed:33309278 pubmed:34247896 pubmed:35485635 pubmed:38212264 pubmed:39415463 pubmed:39681174 pubmed:40572035 pubmed:41759222 zenodo:3577390",
+        "0": "pubmed:39996915"
+      }
+    },
+    "patient-9-e21": {
+      "set": "holdout",
+      "as_of": "2030-04-28",
+      "grades": {
+        "3": "pubmed:12949429 pubmed:14747043 pubmed:15666516 pubmed:16229369 pubmed:17006699 pubmed:20718248 pubmed:27617311 pubmed:29807949 pubmed:31629656 pubmed:33002438 pubmed:35569466 pubmed:38763154 pubmed:42167806",
+        "2": "pubmed:11076649 pubmed:16752721 pubmed:18082588 pubmed:20216316 pubmed:21670752 pubmed:23622075 pubmed:23763888 pubmed:26449841 pubmed:28189428 pubmed:28922958 pubmed:29161715 pubmed:29178983 pubmed:30037499 pubmed:31115116 pubmed:31472746 pubmed:31680398 pubmed:32035581 pubmed:32157427 pubmed:32182149 pubmed:33002431 pubmed:33002437 pubmed:33517323 pubmed:33784675 pubmed:34049780 pubmed:34391651 pubmed:34400088 pubmed:35016755 pubmed:36795862 pubmed:37679602 pubmed:38583574",
+        "1": "arxiv:1607.01078 arxiv:2604.10227 arxiv:2605.13713 arxiv:2606.09898 pubmed:11383249 pubmed:12504845 pubmed:15040870 pubmed:16861119 pubmed:17432560 pubmed:22292443 pubmed:22772432 pubmed:23053208 pubmed:23584344 pubmed:23648323 pubmed:23973460 pubmed:24910288 pubmed:25192626 pubmed:25234700 pubmed:25480014 pubmed:25752244 pubmed:26112477 pubmed:26408674 pubmed:27012712 pubmed:27056435 pubmed:27296648 pubmed:27628966 pubmed:27986213 pubmed:28296582 pubmed:28343352 pubmed:28599663 pubmed:28688020 pubmed:28917248 pubmed:28983664 pubmed:29496279 pubmed:30718087 pubmed:30850855 pubmed:31227373 pubmed:31359187 pubmed:31421999 pubmed:31540791 pubmed:31703647 pubmed:31718600 pubmed:31739952 pubmed:32077006 pubmed:32418156 pubmed:32976788 pubmed:33309278 pubmed:33966623 pubmed:34247896 pubmed:34274223 pubmed:34448402 pubmed:34496707 pubmed:35485635 pubmed:35864293 pubmed:35878715 pubmed:36135065 pubmed:36550217 pubmed:36717113 pubmed:36938553 pubmed:37038063 pubmed:37059334 pubmed:37150849 pubmed:37374348 pubmed:37395949 pubmed:37754502 pubmed:38212264 pubmed:38503591 pubmed:39061006 pubmed:39271420 pubmed:39389844 pubmed:39415463 pubmed:39561634 pubmed:39681174 pubmed:40035188 pubmed:40516968 pubmed:40620056 pubmed:40639765 pubmed:40743809 pubmed:40840169 pubmed:41038281 pubmed:41131510 pubmed:41216639 pubmed:41437135 pubmed:41655576 pubmed:41670815 pubmed:41759222 pubmed:42777298 zenodo:10282246 zenodo:13988466 zenodo:13988544 zenodo:13988746 zenodo:14621959 zenodo:20022646 zenodo:23285005 zenodo:23290591 zenodo:23980819 zenodo:3577390 zenodo:3580516 zenodo:7902054",
+        "0": "pubmed:39996915 zenodo:10683536"
+      }
+    },
+    "patient-10-e01": {
+      "set": "sample",
+      "as_of": "2026-11-06",
+      "grades": {
+        "3": "pubmed:10361560 pubmed:10581602 pubmed:11488734 pubmed:11888345 pubmed:15356678 pubmed:15808959 pubmed:17264863 pubmed:20682370 pubmed:23084529 pubmed:23918298 pubmed:24435057 pubmed:24839802 pubmed:25058109 pubmed:25270847 pubmed:32220946 pubmed:34304921 pubmed:35690909 pubmed:38980676 pubmed:39279580 pubmed:41027802 pubmed:42640563 pubmed:8428335 pubmed:8879262 pubmed:8996583",
+        "2": "pubmed:19838837 pubmed:21110764 pubmed:24069538 pubmed:30446448 pubmed:31801267 pubmed:35428207 zenodo:18097100",
+        "1": "pubmed:11210994 pubmed:20536932 pubmed:30101644 pubmed:30625479 pubmed:31052089 pubmed:31980895 pubmed:35804188 pubmed:36156455 pubmed:40572035 pubmed:41981710 zenodo:3242327",
+        "0": "pubmed:22343227 pubmed:25006190 pubmed:26303657 pubmed:31755030 pubmed:37328938 pubmed:39259100 pubmed:41742825 zenodo:781634"
+      }
+    },
+    "patient-10-e02": {
+      "set": "sample",
+      "as_of": "2026-11-08",
+      "grades": {
+        "3": "pubmed:31558410 pubmed:32007439 pubmed:33237577 pubmed:36138505 pubmed:37072487 pubmed:41027802",
+        "2": "pubmed:10361560 pubmed:11888345 pubmed:25984930 pubmed:29700205 pubmed:30446448 pubmed:32151941 zenodo:11111798",
+        "1": "arxiv:2608.16964 arxiv:2609.23814 pubmed:10052875 pubmed:11076649 pubmed:11818479 pubmed:14971088 pubmed:18655340 pubmed:21922459 pubmed:24816306 pubmed:24929891 pubmed:25727153 pubmed:25871992 pubmed:26048031 pubmed:26975660 pubmed:27337755 pubmed:27557386 pubmed:27725639 pubmed:27792187 pubmed:28453701 pubmed:28528448 pubmed:29772100 pubmed:29792198 pubmed:30291192 pubmed:31122242 pubmed:31588674 pubmed:31653712 pubmed:31659564 pubmed:31913197 pubmed:33581798 pubmed:33813397 pubmed:34385241 pubmed:34905632 pubmed:35804188 pubmed:37256425 pubmed:38446353 pubmed:38583574 pubmed:39244641 pubmed:39417214 pubmed:40554445 pubmed:40898949 pubmed:41266854 pubmed:41346006 pubmed:7526513 pubmed:8869957 zenodo:10016464 zenodo:11193096 zenodo:11214279 zenodo:12804706 zenodo:3242327 zenodo:642140",
+        "0": "pubmed:10663189 pubmed:10663192 pubmed:11233061 pubmed:14680309 pubmed:15666516 pubmed:15976063 pubmed:16229369 pubmed:16314892 pubmed:16474521 pubmed:17873181 pubmed:18602742 pubmed:20589707 pubmed:20959954 pubmed:21095422 pubmed:21297655 pubmed:21717898 pubmed:22198258 pubmed:23016259 pubmed:23647296 pubmed:25006190 pubmed:25123041 pubmed:26449841 pubmed:26656523 pubmed:26768791 pubmed:28767733 pubmed:29039897 pubmed:29807949 pubmed:32248258 pubmed:33099450 pubmed:33995271 pubmed:34410322 pubmed:34497024 pubmed:34737212 pubmed:36214146 pubmed:36477632 pubmed:36775679 pubmed:37481706 pubmed:37770820 pubmed:37974258 pubmed:37981171 pubmed:38226931 pubmed:38246651 pubmed:39004950 pubmed:39090221 pubmed:39145960 pubmed:39305219 pubmed:39485266 pubmed:39521884 pubmed:39625637 pubmed:39721830 pubmed:40126530 pubmed:40199846 pubmed:41121398 pubmed:41220583 pubmed:41972986 pubmed:9609622 pubmed:9806507 zenodo:10968294 zenodo:12732578 zenodo:13621278 zenodo:14516851 zenodo:19724559"
+      }
+    },
+    "patient-10-e03": {
+      "set": "sample",
+      "as_of": "2026-11-21",
+      "grades": {
+        "3": "pubmed:31874108 pubmed:33630412 pubmed:36966502 pubmed:37714762 pubmed:38537659 pubmed:39354185 pubmed:41027802",
+        "2": "pubmed:15808959 pubmed:27725639 pubmed:30068710 pubmed:30382379 pubmed:31591549 pubmed:33494937 pubmed:8996583",
+        "1": "pubmed:11720279 pubmed:16314892 pubmed:18655340 pubmed:22292443 pubmed:25126559 pubmed:26054411 pubmed:28361223 pubmed:31659564 pubmed:35804188 pubmed:37569810 pubmed:38446353 pubmed:39752185 pubmed:39890307 pubmed:41403018 pubmed:41465110 zenodo:22898861 zenodo:3242327",
+        "0": "pubmed:25032257 pubmed:26554408 pubmed:29644440 pubmed:32180032 pubmed:32591241 pubmed:33389149 pubmed:33995271 pubmed:34200878 pubmed:34246791 pubmed:37936498 pubmed:38904502 pubmed:42497395"
+      }
+    },
+    "patient-10-e04": {
+      "set": "sample",
+      "as_of": "2026-12-05",
+      "grades": {
+        "3": "pubmed:15126770 pubmed:19801219 pubmed:22617062 pubmed:24132735 pubmed:27825432 pubmed:28762288 pubmed:29043431 pubmed:30218382 pubmed:30843003 pubmed:31113757 pubmed:32396050 pubmed:32671604 pubmed:35220244 pubmed:36348577 pubmed:36576728 pubmed:37493837 pubmed:39225954 pubmed:39241021 pubmed:39308142 pubmed:39704796 pubmed:40319443 pubmed:40347415 pubmed:40772795 zenodo:18463793",
+        "2": "pubmed:17392247 pubmed:26951312 pubmed:30069582 pubmed:31680398 pubmed:32723519 pubmed:34693502 pubmed:36288618 pubmed:37507278 pubmed:41358937 pubmed:41593361",
+        "1": "pubmed:10803318 pubmed:1465483 pubmed:15814638 pubmed:17972146 pubmed:21220228 pubmed:22475908 pubmed:27344294 pubmed:28532400 pubmed:31283605 pubmed:33750437 pubmed:35406467 pubmed:35939081 pubmed:37395949 pubmed:38363231 pubmed:38765461 pubmed:39051893 pubmed:41364231"
+      }
+    },
+    "patient-10-e05": {
+      "set": "sample",
+      "as_of": "2027-01-02",
+      "grades": {
+        "3": "pubmed:31085765 pubmed:31974718 pubmed:34210490 pubmed:34381565 pubmed:35238838 pubmed:35449224 pubmed:35657157 pubmed:36115772 pubmed:36362213 pubmed:36623239 pubmed:37410655 pubmed:39103259 pubmed:39354185 pubmed:39541765 pubmed:39798235 pubmed:40247739 pubmed:40405569 pubmed:41330714",
+        "2": "pubmed:30218382 pubmed:31113757 pubmed:31214711 pubmed:31816118 pubmed:35220244 pubmed:37562861",
+        "1": "pubmed:15126770 pubmed:21220228 pubmed:33608381 pubmed:34210494 pubmed:37569810 pubmed:41266002",
+        "0": "pubmed:31986064 pubmed:32091409 pubmed:35260807 pubmed:37395949 pubmed:38151326 pubmed:38215513 pubmed:41364231"
+      }
+    },
+    "patient-10-e06": {
+      "set": "sample",
+      "as_of": "2027-01-13",
+      "grades": {
+        "3": "pubmed:28280302 pubmed:28540598 pubmed:31357527 pubmed:32982407 pubmed:33517260 pubmed:33781305 pubmed:34256353 pubmed:34904808 pubmed:35511402 pubmed:37152924 pubmed:38718711 pubmed:39135527 pubmed:39308935 pubmed:41598623",
+        "2": "pubmed:26510020 pubmed:29595348 pubmed:30730411 pubmed:32790034 pubmed:33406057 pubmed:34381565 pubmed:34552338 pubmed:35657157 pubmed:35931885 pubmed:35967752 pubmed:36362213 pubmed:36980735 pubmed:37410655 pubmed:38319811 pubmed:38398706 pubmed:38958846 pubmed:39103259 pubmed:39354185 pubmed:39798235 pubmed:39937427 pubmed:40247739 pubmed:40397306 pubmed:41440220",
+        "1": "pubmed:25366685 pubmed:33608381 pubmed:36183329 pubmed:39396849 pubmed:42312474 zenodo:19593470",
+        "0": "pubmed:34081848 pubmed:38215513"
+      }
+    },
+    "patient-10-e07": {
+      "set": "sample",
+      "as_of": "2027-01-23",
+      "grades": {
+        "3": "pubmed:10794807 pubmed:18201145 pubmed:18666210 pubmed:19035858 pubmed:19838837 pubmed:20592607 pubmed:22248394 pubmed:22751146 pubmed:25097095 pubmed:25327530 pubmed:25338271 pubmed:25592210 pubmed:26372364 pubmed:27349496 pubmed:27826989 pubmed:28209634 pubmed:28280302 pubmed:28540598 pubmed:29569731 pubmed:30053039 pubmed:30312560 pubmed:30446448 pubmed:30745202 pubmed:31357527 pubmed:31643199 pubmed:31643987 pubmed:31832978 pubmed:31869126 pubmed:32469183 pubmed:32758032 pubmed:32982407 pubmed:33084183 pubmed:33406057 pubmed:33470403 pubmed:33480983 pubmed:33517260 pubmed:33769071 pubmed:33781305 pubmed:33818052 pubmed:33951556 pubmed:34156518 pubmed:34256353 pubmed:34459214 pubmed:34489536 pubmed:34590590 pubmed:34743290 pubmed:34779643 pubmed:34904808 pubmed:35108137 pubmed:35343198 pubmed:35343371 pubmed:35409505 pubmed:35491331 pubmed:35511402 pubmed:35931885 pubmed:35993980 pubmed:36349380 pubmed:36534950 pubmed:36765184 pubmed:37152924 pubmed:37229882 pubmed:37783649 pubmed:37856213 pubmed:38256338 pubmed:38376624 pubmed:38720547 pubmed:39476131 pubmed:39947976 pubmed:40115493 pubmed:40189880 pubmed:40397707 pubmed:40433020 pubmed:40582078 pubmed:40712215 pubmed:41002593 pubmed:41057655 pubmed:41213253 pubmed:41310272 pubmed:41392000 pubmed:41598623 pubmed:41660902 pubmed:41706486 pubmed:42223064 zenodo:18625973",
+        "2": "pubmed:15389811 pubmed:19747011 pubmed:22522501 pubmed:22971474 pubmed:25609491 pubmed:26510020 pubmed:27225637 pubmed:27768220 pubmed:27802360 pubmed:27899188 pubmed:28578607 pubmed:28816716 pubmed:29595348 pubmed:30231388 pubmed:30266309 pubmed:30295043 pubmed:30587443 pubmed:30612936 pubmed:30691365 pubmed:30730411 pubmed:30747897 pubmed:30808988 pubmed:30900310 pubmed:30933324 pubmed:31214711 pubmed:31286275 pubmed:31915789 pubmed:32406281 pubmed:32534790 pubmed:32701855 pubmed:32790034 pubmed:32846071 pubmed:32885994 pubmed:32930958 pubmed:32955174 pubmed:33761222 pubmed:33914595 pubmed:33916521 pubmed:34252319 pubmed:34552338 pubmed:35405085 pubmed:35440240 pubmed:35593453 pubmed:35657157 pubmed:35662493 pubmed:35750683 pubmed:35866612 pubmed:35967752 pubmed:35995644 pubmed:36183329 pubmed:36270435 pubmed:36283420 pubmed:36362213 pubmed:36597735 pubmed:36652173 pubmed:36763112 pubmed:36795843 pubmed:36807496 pubmed:36938560 pubmed:36980735 pubmed:37410655 pubmed:37562861 pubmed:37569810 pubmed:37714168 pubmed:37882449 pubmed:37963304 pubmed:38291265 pubmed:38319800 pubmed:38319811 pubmed:38417742 pubmed:38592590 pubmed:38644146 pubmed:38718711 pubmed:38767468 pubmed:39103259 pubmed:39115414 pubmed:39135527 pubmed:39150340 pubmed:39417629 pubmed:39577422 pubmed:39613567 pubmed:39643549 pubmed:39798235 pubmed:40086424 pubmed:40198033 pubmed:40247739 pubmed:40397306 pubmed:40772795 pubmed:40846621 pubmed:41027802 pubmed:41076396 pubmed:41088624 pubmed:41247145 pubmed:41317235 pubmed:41366131 pubmed:41578933 pubmed:41633900 zenodo:14557926 zenodo:14625761 zenodo:20408891 zenodo:5543238 zenodo:642517",
+        "1": "arxiv:2410.16005 arxiv:2503.08927 arxiv:2511.13825 pubmed:16689291 pubmed:18071861 pubmed:21239016 pubmed:25261259 pubmed:25366685 pubmed:25837493 pubmed:26074382 pubmed:29980331 pubmed:30227222 pubmed:30382379 pubmed:30729683 pubmed:31549213 pubmed:31705198 pubmed:32343890 pubmed:32480269 pubmed:32532514 pubmed:32588203 pubmed:32762539 pubmed:32846072 pubmed:33321757 pubmed:33406487 pubmed:33542230 pubmed:33608381 pubmed:33685318 pubmed:33761221 pubmed:33761223 pubmed:34400799 pubmed:34618582 pubmed:34963702 pubmed:35037527 pubmed:35403746 pubmed:36080493 pubmed:36318705 pubmed:36397405 pubmed:36456467 pubmed:36650183 pubmed:36733800 pubmed:36795891 pubmed:37017928 pubmed:37092583 pubmed:37305018 pubmed:37429011 pubmed:37581614 pubmed:37667894 pubmed:37922910 pubmed:37934606 pubmed:38440716 pubmed:38570246 pubmed:38677933 pubmed:38913213 pubmed:39321214 pubmed:39396849 pubmed:40315400 pubmed:40439959 pubmed:40578041 pubmed:40578344 pubmed:40729484 pubmed:40788283 pubmed:41418797 pubmed:41818713 pubmed:42108466 pubmed:42312474 pubmed:42370172 pubmed:8717465 zenodo:10801655 zenodo:11312275 zenodo:16917621 zenodo:17285702 zenodo:17368404 zenodo:17586296 zenodo:17786795 zenodo:18457155 zenodo:3729952 zenodo:3932989 zenodo:7113518",
+        "0": "pubmed:32035581 pubmed:34081848 pubmed:34385241 pubmed:37470614 pubmed:37797734 pubmed:38215513 pubmed:38839570 pubmed:41824265 zenodo:10841673 zenodo:13988466 zenodo:15162033 zenodo:17608158"
+      }
+    },
+    "patient-10-e08": {
+      "set": "sample",
+      "as_of": "2027-04-23",
+      "grades": {
+        "3": "pubmed:17161994 pubmed:18201145 pubmed:18666210 pubmed:19838837 pubmed:20592607 pubmed:22248394 pubmed:25097095 pubmed:25327530 pubmed:25338271 pubmed:25592210 pubmed:26372364 pubmed:27349496 pubmed:27826989 pubmed:28209634 pubmed:28280302 pubmed:28540598 pubmed:29569731 pubmed:30053039 pubmed:30312560 pubmed:30446448 pubmed:30745202 pubmed:31832978 pubmed:33406057 pubmed:33517260 pubmed:34489536 pubmed:34590590 pubmed:34743290 pubmed:35108137 pubmed:35343371 pubmed:35409505 pubmed:35491331 pubmed:35931885 pubmed:36283420 pubmed:36349380 pubmed:36534950 pubmed:37229882 pubmed:38256338 pubmed:38376624 pubmed:40397707 pubmed:40712215 pubmed:41002593 pubmed:41392000 pubmed:41598623 pubmed:41660902 pubmed:42682049",
+        "2": "pubmed:15389811 pubmed:26510020 pubmed:28816716 pubmed:30266309 pubmed:30612936 pubmed:30730411 pubmed:30747897 pubmed:32343890 pubmed:32790034 pubmed:32846071 pubmed:32846072 pubmed:32955174 pubmed:33480983 pubmed:33761223 pubmed:33769071 pubmed:34252319 pubmed:34381565 pubmed:34552338 pubmed:34779643 pubmed:34904808 pubmed:35405085 pubmed:35440240 pubmed:35657157 pubmed:35662493 pubmed:35750683 pubmed:35967752 pubmed:35995644 pubmed:36051614 pubmed:36348577 pubmed:36763112 pubmed:36795843 pubmed:36807496 pubmed:36858151 pubmed:37542594 pubmed:37569810 pubmed:37714168 pubmed:37963304 pubmed:38319800 pubmed:38319811 pubmed:39135527 pubmed:39354185 pubmed:40198033 pubmed:40397306 zenodo:14625761 zenodo:18625973 zenodo:5543238 zenodo:642517",
+        "1": "arxiv:2503.08927 arxiv:2511.13825 pubmed:18071861 pubmed:25366685 pubmed:29980331 pubmed:30227222 pubmed:30729683 pubmed:32480269 pubmed:33542230 pubmed:33608381 pubmed:33761221 pubmed:33761222 pubmed:34618582 pubmed:35037527 pubmed:35183184 pubmed:35403746 pubmed:36080493 pubmed:36183329 pubmed:36318705 pubmed:36597735 pubmed:37092583 pubmed:37305018 pubmed:37470614 pubmed:37667894 pubmed:37922910 pubmed:38440716 pubmed:38913213 pubmed:39115414 pubmed:40315400 pubmed:40578041 pubmed:40956994 zenodo:11312275 zenodo:16917621 zenodo:17285702 zenodo:3729952 zenodo:7113518",
+        "0": "pubmed:30345884 pubmed:32035581 pubmed:33743851 pubmed:34400799 pubmed:36733800 pubmed:37797734 zenodo:13988466 zenodo:17608158"
+      }
+    },
+    "patient-10-e10": {
+      "set": "sample",
+      "as_of": "2027-10-20",
+      "grades": {
+        "3": "pubmed:17161994 pubmed:18201145 pubmed:25327530 pubmed:27826989 pubmed:28280302 pubmed:28540598 pubmed:30446448 pubmed:33517260 pubmed:34743290 pubmed:34779643 pubmed:34904808 pubmed:35108137 pubmed:35491331 pubmed:41002593 pubmed:41598623 pubmed:42682049",
+        "2": "pubmed:26510020 pubmed:30730411 pubmed:32790034 pubmed:33406057 pubmed:33608381 pubmed:34252319 pubmed:34381565 pubmed:34552338 pubmed:35931885 pubmed:35967752 pubmed:36283420 pubmed:36348577 pubmed:36858151 pubmed:37542594 pubmed:38319811 pubmed:39115414 pubmed:39135527 pubmed:39354185 pubmed:40315400 pubmed:40397306",
+        "1": "pubmed:25366685 pubmed:32343890 pubmed:33542230 pubmed:35183184 pubmed:36597735 pubmed:37569810 pubmed:38440716 pubmed:40956994",
+        "0": "pubmed:30345884 pubmed:33743851 pubmed:34081848 pubmed:37797734"
+      }
+    },
+    "patient-10-e11": {
+      "set": "sample",
+      "as_of": "2028-01-31",
+      "grades": {
+        "3": "pubmed:26510020 pubmed:28895177 pubmed:32343890 pubmed:32955174 pubmed:33406057 pubmed:33517260 pubmed:34252319 pubmed:34256353 pubmed:34552338 pubmed:34779643 pubmed:34904808 pubmed:35440240 pubmed:35931885 pubmed:35967752 pubmed:36225282 pubmed:37869079 pubmed:38281877 pubmed:38319800 pubmed:38319811 pubmed:39115414 pubmed:39135527 pubmed:40397306 pubmed:41002593 pubmed:41598623 pubmed:42115448",
+        "2": "pubmed:28280302 pubmed:30069770 pubmed:32790034 pubmed:33608381 pubmed:34381565 pubmed:35657157 pubmed:36318705 pubmed:36348577 pubmed:36362213 pubmed:37569810 pubmed:39354185",
+        "1": "pubmed:25366685 pubmed:27337755 pubmed:35183184 pubmed:38440716 pubmed:40578041 pubmed:41185726",
+        "0": "pubmed:10052875 pubmed:10663189 pubmed:28754483 pubmed:30345884 pubmed:33743851 pubmed:34623572 pubmed:35024944 pubmed:36484513 pubmed:37797734 pubmed:41380962"
+      }
+    },
+    "patient-10-e12": {
+      "set": "sample",
+      "as_of": "2028-06-21",
+      "grades": {
+        "3": "pubmed:29595348 pubmed:32745972 pubmed:33406057 pubmed:33781305 pubmed:34552338 pubmed:34904808 pubmed:35931885 pubmed:35967752 pubmed:36497408 pubmed:37569810 pubmed:37689306 pubmed:39115414 pubmed:39308935 pubmed:39396849 pubmed:40115493 pubmed:40397306 pubmed:41598623",
+        "2": "pubmed:26510020 pubmed:28540598 pubmed:31357527 pubmed:32790034 pubmed:32982407 pubmed:33517260 pubmed:34256353 pubmed:35511402 pubmed:36051614 pubmed:36980735 pubmed:37152924 pubmed:37668196 pubmed:38319811 pubmed:39135527 pubmed:39354185 pubmed:40956994 pubmed:42312474",
+        "1": "pubmed:36321991 pubmed:37880048 pubmed:40729484 pubmed:41185726 zenodo:19593470",
+        "0": "pubmed:29205122 pubmed:29605737 pubmed:33784822 pubmed:37797734 pubmed:39246166 pubmed:41191357 zenodo:17608158"
+      }
+    },
+    "patient-10-e13": {
+      "set": "sample",
+      "as_of": "2028-06-30",
+      "grades": {
+        "3": "pubmed:21406025 pubmed:21448449 pubmed:21463139 pubmed:24217332 pubmed:31313526 pubmed:31566937 pubmed:33463373 pubmed:34242474 pubmed:34572433 pubmed:34572748 pubmed:37904040 pubmed:38913213 pubmed:39996439 pubmed:40315400 zenodo:13150541",
+        "2": "pubmed:26510020 pubmed:29595348 pubmed:32745972 pubmed:32982407 pubmed:33406057 pubmed:33517260 pubmed:33781305 pubmed:34252319 pubmed:34552338 pubmed:34729995 pubmed:34904808 pubmed:35599196 pubmed:35931885 pubmed:36980735 pubmed:37183059 pubmed:39115414 pubmed:39135527 pubmed:39354185 pubmed:39396849 pubmed:39453576 pubmed:39476131 pubmed:39711161 pubmed:39987332 pubmed:40397306 pubmed:41219112 pubmed:41598623 pubmed:42312474 pubmed:42602251",
+        "1": "pubmed:35098653 pubmed:36321991 pubmed:40729484 pubmed:40956994 pubmed:41185726 pubmed:41200281 zenodo:19593470 zenodo:3729952"
+      }
+    },
+    "patient-10-e14": {
+      "set": "sample",
+      "as_of": "2028-07-13",
+      "grades": {
+        "3": "pubmed:20888992 pubmed:21152241 pubmed:21448449 pubmed:21463139 pubmed:22048000 pubmed:23098113 pubmed:23867574 pubmed:24217332 pubmed:30446464 pubmed:31313526 pubmed:31566937 pubmed:31638341 pubmed:33463373 pubmed:34242474 pubmed:34517086 pubmed:34572748 pubmed:35599196 pubmed:37661578 pubmed:37904040 pubmed:38913213 pubmed:39996439 pubmed:40315400 pubmed:41186991 zenodo:14308357",
+        "2": "pubmed:26510020 pubmed:28577511 pubmed:31974718 pubmed:33406057 pubmed:33517260 pubmed:34252319 pubmed:34381565 pubmed:34382352 pubmed:34904808 pubmed:35931885 pubmed:37569810 pubmed:39135527 pubmed:39354185 pubmed:39453576 pubmed:39987332 pubmed:40397306 pubmed:42312474 pubmed:42529062",
+        "1": "pubmed:30747897 pubmed:31525487 pubmed:35183184 pubmed:35628979 pubmed:36822388 pubmed:40772795 pubmed:41185726 pubmed:41880596 zenodo:15180440"
+      }
+    },
+    "patient-10-e15": {
+      "set": "sample",
+      "as_of": "2028-07-15",
+      "grades": {
+        "3": "pubmed:20888992 pubmed:21406025 pubmed:21448449 pubmed:21463139 pubmed:22048000 pubmed:22950608 pubmed:23098113 pubmed:23532557 pubmed:23867574 pubmed:24217332 pubmed:31313526 pubmed:31566937 pubmed:33463373 pubmed:34242474 pubmed:34382352 pubmed:34572748 pubmed:35599196 pubmed:36168966 pubmed:37904040 pubmed:38913213 pubmed:39367721 pubmed:39987332 pubmed:39996439 pubmed:40315400 zenodo:14308357",
+        "2": "pubmed:26510020 pubmed:31974718 pubmed:33406057 pubmed:34252319 pubmed:34904808 pubmed:35931885 pubmed:37569810 pubmed:39115414 pubmed:39135527 pubmed:39354185 pubmed:39453576 pubmed:40397306 pubmed:42312474",
+        "1": "pubmed:29276148 pubmed:30747897 pubmed:31525487 pubmed:31799745 pubmed:32562805 pubmed:33729485 pubmed:35183184 pubmed:36822388 pubmed:37247914 pubmed:38592590 pubmed:39150340 pubmed:41880596 zenodo:15180440 zenodo:3345554"
+      }
+    },
+    "patient-10-e20": {
+      "set": "sample",
+      "as_of": "2028-10-28",
+      "grades": {
+        "3": "pubmed:20888992 pubmed:21406025 pubmed:21448449 pubmed:21463139 pubmed:22048000 pubmed:22950608 pubmed:23098113 pubmed:23532557 pubmed:23867574 pubmed:24217332 pubmed:31313526 pubmed:31566937 pubmed:33463373 pubmed:34242474 pubmed:34572748 pubmed:36168966 pubmed:37904040 pubmed:38913213 pubmed:39367721 pubmed:39987332 pubmed:39996439 pubmed:40315400",
+        "2": "pubmed:26510020 pubmed:31974718 pubmed:33406057 pubmed:34252319 pubmed:34382352 pubmed:34904808 pubmed:35428207 pubmed:35599196 pubmed:35931885 pubmed:37569810 pubmed:39115414 pubmed:39135527 pubmed:39354185 pubmed:39453576 pubmed:40397306 pubmed:41880596",
+        "1": "pubmed:29276148 pubmed:30747897 pubmed:31525487 pubmed:31799745 pubmed:32562805 pubmed:33729485 pubmed:35183184 pubmed:36822388 pubmed:37247914 pubmed:38592590 pubmed:39150340 pubmed:40572035 zenodo:15180440 zenodo:19593470 zenodo:3345554"
+      }
+    },
+    "patient-10-e21": {
+      "set": "sample",
+      "as_of": "2028-10-29",
+      "grades": {
+        "3": "pubmed:20888992 pubmed:21448449 pubmed:21463139 pubmed:23098113 pubmed:23867574 pubmed:24217332 pubmed:31313526 pubmed:31515154 pubmed:31566937 pubmed:31638341 pubmed:33463373 pubmed:34242474 pubmed:34572433 pubmed:34572748 pubmed:35098653 pubmed:35628979 pubmed:37904040 pubmed:38913213 pubmed:39996439 pubmed:40315400 pubmed:41186991 pubmed:42529062 zenodo:14308357",
+        "2": "pubmed:26510020 pubmed:31974718 pubmed:32343890 pubmed:33406057 pubmed:33478015 pubmed:33517260 pubmed:34252319 pubmed:34381565 pubmed:34382352 pubmed:34552338 pubmed:34904808 pubmed:35599196 pubmed:35931885 pubmed:35967752 pubmed:37569810 pubmed:37661578 pubmed:39115414 pubmed:39135527 pubmed:39354185 pubmed:39453576 pubmed:39711161 pubmed:39987332 pubmed:40397306 pubmed:42312474",
+        "1": "pubmed:37183059 pubmed:37399894 pubmed:38440716 pubmed:40729484 pubmed:41002593 pubmed:41880596"
+      }
+    },
+    "patient-10-e22": {
+      "set": "sample",
+      "as_of": "2028-12-22",
+      "grades": {
+        "3": "pubmed:10065082 pubmed:10361560 pubmed:10581602 pubmed:11200206 pubmed:11888345 pubmed:15356678 pubmed:17628024 pubmed:18544993 pubmed:21419262 pubmed:22318612 pubmed:23084526 pubmed:24839802 pubmed:27878318 pubmed:31337229 pubmed:34304921 pubmed:38913213 pubmed:40315400 pubmed:9050141",
+        "2": "pubmed:21110764 pubmed:33406057 pubmed:33517260 pubmed:34904808 pubmed:35931885 pubmed:35967752 pubmed:36980735 pubmed:37569810 pubmed:38232756 pubmed:38418597 pubmed:39354185 pubmed:41134363 pubmed:42312474 pubmed:42640563 pubmed:8795651 zenodo:20409438",
+        "1": "pubmed:32343890 pubmed:36156455 pubmed:36183329 pubmed:39115414 pubmed:39135527 pubmed:40397306 pubmed:40572035 pubmed:41002593 zenodo:17285702 zenodo:18097100 zenodo:19593470",
+        "0": "pubmed:17873181 pubmed:27032645 pubmed:28982506 pubmed:30390762 pubmed:31335747 pubmed:36529652 pubmed:36913399 pubmed:39466244 pubmed:41310810 pubmed:7530679"
+      }
+    }
+  }
+}

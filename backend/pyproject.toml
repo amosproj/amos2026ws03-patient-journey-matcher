@@ -34,6 +34,10 @@ dependencies = [
 dev = [
     "pytest>=9.2.0",
 ]
+# For scripts/patient_graph.py: the embedded graph database it uses instead of Neo4j.
+graph = [
+    "kuzu>=0.11.3",
+]
 
 [tool.uv]
 # Not an installable package: api/, workers/ and shared/ are imported from backend/.

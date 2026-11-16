@@ -67,7 +67,7 @@ export function buildServer(service: MatchService): McpServer {
     {
       title: "Match a patient journey",
       description:
-        "Returns the sources most relevant to the most recent event of a patient journey.",
+        "Returns the sources most relevant to the most recent event of a patient journey. Send either `journey` or `graph`, not both: the journey itself, or the patient graph it is made from.",
       inputSchema: matchJourneyInputSchema,
       outputSchema: matchResultSchema,
       annotations: { readOnlyHint: true, openWorldHint: false },

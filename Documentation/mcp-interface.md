@@ -17,7 +17,7 @@ The server speaks MCP over Streamable HTTP at `POST /mcp`. It listens on `127.0.
 
 | Tool | Purpose |
 |---|---|
-| `match_journey` | Returns the sources most relevant to the most recent event of a patient journey |
+| `match_journey` | Returns the sources most relevant to the most recent event of a patient journey. Takes either a `journey` or a `graph`, not both |
 | `get_source` | Returns the links to the files of one matched source at its origin. The client downloads them itself |
 
 To compare the three algorithms, a client calls `match_journey` once per algorithm with the same journey.
@@ -26,12 +26,13 @@ To compare the three algorithms, a client calls `match_journey` once per algorit
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
-| `journey` | object | yes | See below |
+| `journey` | object | one of the two | The patient as a list of events, see below |
+| `graph` | object | one of the two | The patient as the patient graph, see [graph input](#graph-input) |
 | `algorithm` | `keyword`, `graph`, `ai_summary` | no | Default `keyword` |
 | `limit` | integer, 1 to 50 | no | Default 10 |
 | `content_types` | list of `content_type` values, see [output](#match_journey-output) | no | Default: all types |
 
-`journey` has the format of the generator's `timeline.json`, so a generated journey can be sent unchanged. The real app will send its patient graph instead, see [Review with AIlixir](#review-with-ailixir). Other fields, such as `pathway_id`, `start_date` and `documents`, are dropped.
+`journey` has the format of the generator's `timeline.json`, so a generated journey can be sent unchanged. The real app sends its patient graph as `graph` instead, see [Review with AIlixir](#review-with-ailixir). A request with both or with neither is rejected. Other fields, such as `pathway_id`, `start_date` and `documents`, are dropped.
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
@@ -46,6 +47,24 @@ To compare the three algorithms, a client calls `match_journey` once per algorit
 | `events[].parameters` | object | no | Event details such as `psa_value` or `decision` |
 
 **Most recent event.** This is the last event dated on or before `as_of`. If several events share that date, the last one in the list counts. Without `as_of`, it is the last event of the whole journey. An `as_of` earlier than every event is rejected, because then there is no most recent event. `as_of` exists because generated journeys run years into the future, so a client may want to match against a point in the middle of a journey.
+
+### Graph input
+
+`graph` is the [patient graph](#patient-graph) as JSON, in Graphiti's field names. A generated `graph.json` can be sent unchanged. The table lists the fields that the server reads. All other fields are dropped without a check, such as `patient`, `documents`, `summary` and `attributes`, and `name`, `fact` and `invalid_at` of an edge.
+
+| Field | Type | Required | Notes |
+|---|---|---|---|
+| `as_of` | ISO date | no | The "now" of the patient, like `as_of` of a journey |
+| `nodes` | list, at least 1 | yes | Exactly one node has the label `Patient` |
+| `nodes[].uuid` | string | yes | Unique in the list |
+| `nodes[].name` | string | yes | For the `Patient` node a pseudonym, never a real identifier |
+| `nodes[].labels` | list of strings | yes | The type of the node, such as `Diagnosis` |
+| `edges` | list, at least 1 | yes | |
+| `edges[].uuid` | string | yes | Unique in the list |
+| `edges[].source_node_uuid`, `edges[].target_node_uuid` | string | yes | Both nodes are in `nodes` |
+| `edges[].valid_at` | ISO date or date-time, or `null` | no | The day the fact starts |
+
+The server turns the graph into a journey and matches that, with the same rules as for a `journey`. How it does this is described in [Reading a graph](#patient-graph). In the answer, `focus_event_id` is then the day of the most recent event, such as `2030-12-16`, because the events of this journey are days.
 
 ### `match_journey` output
 
@@ -153,7 +172,7 @@ The server does not store or log the journey. It also does not log the message o
 Results of the partner meeting on 06.11.2026:
 
 - **Matching runs offline, not live.** AIlixir calls `match_journey` when a patient profile changes, for example when a new report comes in, or on a schedule. The tools keep no state, so this needs no change here.
-- **Input is the whole patient graph.** AIlixir will send the complete patient profile graph with entities, relationships and history, not `timeline.json`. Older events can stay relevant depending on the medical context and trends over time. The graph format is described in [Patient graph](#patient-graph). Until a graph input exists, `timeline.json` stays the input for generated journeys and tests.
+- **Input is the whole patient graph.** AIlixir will send the complete patient profile graph with entities, relationships and history, not `timeline.json`. Older events can stay relevant depending on the medical context and trends over time. The graph format is described in [Patient graph](#patient-graph), and `match_journey` takes it as [`graph`](#graph-input). `timeline.json` stays an input for generated journeys and tests.
 - **Output is a card.** Each result needs at least a title, a link and a short summary or abstract, and a picture if possible. That is why `summary` and `image_url` were added.
 
 Result of the data request in #44 (Slack, 09.11.2026):
@@ -182,8 +201,32 @@ This is the graph that the SS26 pipeline builds. We have the code in [`backend/w
 **What this means for `match_journey`.**
 
 - A graph input needs the nodes and edges with their dates, read from Neo4j or sent as JSON. The Cypher export is not enough.
-- The most recent event is then the newest document on or before `as_of`, with the facts that are still valid at that time.
-- To get real graphs for tests we have to run the SS26 pipeline on the generated PDFs. This needs a Gemini key and Neo4j. Until then the generated `timeline.json` covers the same patients and events.
+- The most recent event is then the newest day with a fact on or before `as_of`.
+- Real graphs for tests come from the SS26 graph steps, run on the generated PDFs, see [Generating a graph](#generating-a-graph). For the patients without a graph, the generated `timeline.json` covers the same events.
+
+**Reading a graph.** [`graph.ts`](../matcher/mcp-server/src/graph.ts) reads a graph as JSON with the lists `nodes` and `edges` in Graphiti's field names and turns it into a journey. `match_journey` does this for a request with [`graph`](#graph-input).
+
+- **Checked on reading:** every node has `uuid`, `name` and `labels`. Every edge has `uuid` and the IDs of its two nodes, and both nodes are in the graph. No two nodes and no two edges share a `uuid`. There is exactly one `Patient` node. `valid_at` is an ISO date or date-time, `null` or left out; an empty string is rejected. A graph that fails a check is rejected with the place of the error.
+- **Not checked:** the fields that the reader does not use, such as `name`, `fact` and `invalid_at` of an edge. They are dropped. Graphiti takes the two times of a fact from the LLM and does not check their order, so one odd fact would otherwise reject the whole graph of a patient on every call.
+- **The day of a time** is the day as it is written. `2027-01-22T00:30:00+02:00` counts as 22 January; the time zone does not move it.
+- **One event per day:** the facts whose `valid_at` is that day. The `id` of the event is the date. Its `label` holds the names of the nodes of these facts, each once, in alphabetical order and without the patient.
+- **Left out:** facts without `valid_at`, facts about a `Provider` and facts that name only the patient.
+- **Replaced facts stay.** A fact with `invalid_at` still happened on its day. Graphiti also sets `invalid_at` on an operation when a later report describes it again: in the graph of Patient-5 the radical prostatectomy of 22 January 2027 is marked as replaced a week later. Leaving such facts out removed the operation from its own day.
+- **The fact sentences are not passed on.** The keyword matcher reads event texts as German journey words, so the English word "as" in a sentence became the search term "active surveillance". So the matcher sees which concepts a day names, but not their values, and not whether a finding was confirmed or ruled out. The sentences stay in the graph for the approaches that read it directly.
+- **`patient_id`** is the name of the `Patient` node.
+- **The journey has to pass the contract** like any other: a graph without a dated fact or with facts on more than 500 days is rejected, and so is an `as_of` before the first event.
+
+The graph of Patient-5 in [`patientdata/Patient-5/graph.json`](../patientdata/Patient-5/graph.json) holds all 35 documents: 34 nodes and 174 edges, which become 23 events. These 23 days are exactly the 23 dates of the events in its `timeline.json`. How well the keyword matcher ranks with a journey made from a graph is not measured yet.
+
+### Generating a graph
+
+`make graph PATIENT=Patient-5` builds the graph of one generated patient and writes it to `patientdata/Patient-5/graph.json` ([`scripts/patient_graph.py`](../scripts/patient_graph.py)). It needs `GEMINI_API_KEY`, see [build options](build.md#options).
+
+- **Same steps as SS26.** For each PDF of the patient, in the order of the event numbers in the file names (`_e01`, `_e02`, …), Gemini reads the PDF ([`extractor.py`](../backend/workers/pipeline/llm/extractor.py)) and Graphiti adds it to the graph ([`builder.py`](../backend/workers/pipeline/graph/builder.py)). The code of both steps is unchanged.
+- **Two differences, so that it runs without a Google Cloud project.** It uses an API key from Google AI Studio instead of Vertex AI, with the embedding model `gemini-embedding-001` instead of `text-embedding-005`. And it uses an embedded Kuzu database under `out/patient-graph/` instead of Neo4j, so no server is needed.
+- **It can stop and go on.** A free key allows only some documents per day. The run then stops, writes the graph of the documents read so far and ends with an error. The next run goes on with the next document: the database knows which documents it holds, so none is added twice. `documents` in `graph.json` lists the PDFs that are in the graph.
+- **The file** holds `patient`, `documents`, and the `nodes` and `edges` as Graphiti holds them, without the embeddings. The reader takes it as it is.
+- **Kuzu is deprecated in Graphiti.** graphiti-core 0.31.2 warns that its Kuzu backend will be removed, because Kuzu is no longer maintained. The versions are pinned in `backend/uv.lock`, so the script keeps working. If we need it for longer, it should move to Neo4j, like SS26.
 
 ## Check against AIlixir's integration needs
 
@@ -193,13 +236,13 @@ This is the graph that the SS26 pipeline builds. We have the code in [`backend/w
 | Tell "nothing relevant" from "search failed" | `degraded` and `degraded_reason` in the SS26 `PaperRetrievalResult` | Same field names |
 | Match when the profile changes, not live | Partner meeting 06.11. | No state in the server, AIlixir decides when to call |
 | Send generated journeys | Generator `timeline.json` | Checked with one generated journey for each of the 10 pathways |
-| Send journeys of the real app | Partner meeting 06.11.: the whole patient graph | Format known, see [Patient graph](#patient-graph). The graph input itself is not built yet |
+| Send journeys of the real app | Partner meeting 06.11.: the whole patient graph | `match_journey` takes the graph as [`graph`](#graph-input) and matches the journey made from it. Checked with the generated graph of Patient-5 |
 
 ## Open questions
 
 For AIlixir:
 
-1. Can the app send the graph as JSON with `valid_at` and `invalid_at`, or should the matcher read it from Neo4j? The format and the dates are answered in [Patient graph](#patient-graph).
+1. Can the app send the graph as JSON with `valid_at` on its edges, as [`graph`](#graph-input) now expects it, or should the matcher read it from Neo4j? The format and the dates are answered in [Patient graph](#patient-graph).
 2. Is it enough that `get_source` returns the download links, so that the app fetches a source itself?
 3. Does the app need an `error_code` for invalid input too, or is the plain text enough?
 
