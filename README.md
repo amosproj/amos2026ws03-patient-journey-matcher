@@ -6,7 +6,7 @@
 The Patient Journey Matcher is an MCP server for the AIlixir app. A client sends a patient journey, a dated list of events such as diagnoses and operations, and gets back research papers, preprints, YouTube videos and podcast episodes that fit the most recent points in that journey.
 
 - **Crawler (Python):** indexes PubMed, arXiv, Zenodo, YouTube and podcast feeds in advance. It stores only metadata and links in PostgreSQL, never the full texts.
-- **Indexer (TypeScript):** downloads each text again, keeps it in memory and builds three competing indexes: word statistics, a graph of medical entities and relations, and AI summaries.
+- **Indexer (TypeScript):** downloads each text again, keeps it in memory and builds the index of each matching approach: [keyword matching](Documentation/keyword-matching.md) on word statistics, a graph of medical entities and relations (in progress) and AI summaries (in progress).
 - **MCP server (TypeScript):** matches the journey against the indexes and returns the best sources with links to the originals.
 
 Details: [software architecture](Documentation/architecture/software-architecture.html).

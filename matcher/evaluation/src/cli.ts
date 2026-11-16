@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { z } from "zod";
 import { evaluate } from "./evaluate.ts";
-import { loadJudgments } from "./judgments.ts";
+import { loadGrades } from "./judgments.ts";
 
 // Only the fields the evaluation needs from a match_journey result.
 const matchResultSchema = z.object({
@@ -12,15 +12,19 @@ const matchResultSchema = z.object({
   ),
 });
 
-const runDir = process.argv[2];
+const [runDir, judgmentFile] = process.argv.slice(2);
 if (runDir === undefined) {
-  console.error("Usage: pnpm evaluate <run-dir>");
+  console.error("Usage: pnpm evaluate <run-dir> [judgment-file]");
   console.error("<run-dir> holds one match_journey result per point.");
+  console.error("[judgment-file] defaults to judgments.json.");
   process.exit(2);
 }
-const base = path.resolve(process.env.INIT_CWD ?? process.cwd(), runDir);
+const cwd = process.env.INIT_CWD ?? process.cwd();
+const base = path.resolve(cwd, runDir);
 
-const file = await loadJudgments();
+const file = await loadGrades(
+  judgmentFile === undefined ? undefined : path.resolve(cwd, judgmentFile),
+);
 const run = new Map<string, string[]>();
 for (const point of file.points) {
   const text = await readFile(

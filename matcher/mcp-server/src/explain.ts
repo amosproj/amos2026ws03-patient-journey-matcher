@@ -8,9 +8,9 @@ import {
 import { type MatchService, ToolError } from "./server.ts";
 
 // The arguments of `match_journey`, plus other values for the matcher's ranking constants.
-const explainInputSchema = matchJourneyInputSchema.extend({
-  tuning: z.record(z.string(), z.number()).optional(),
-});
+const explainInputSchema = matchJourneyInputSchema.and(
+  z.object({ tuning: z.record(z.string(), z.number()).optional() }),
+);
 
 export interface Explanation {
   /** What `match_journey` answers; left out if it refuses the request. */

@@ -25,8 +25,7 @@ const databaseUrl = testDatabaseUrl();
 const LONG_AGO = new Date("2000-01-01T00:00:00Z");
 const FAR_AHEAD = new Date("2999-01-01T00:00:00Z");
 
-// A database of its own, not a schema per test: the keyword index lives in the fixed schema
-// `keyword` and needs the pg_textsearch extension of its database.
+// own database, not a schema per test: the index lives in the fixed schema `keyword`
 describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
   let pool: TestDatabase["pool"];
 
@@ -342,7 +341,7 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     ).toEqual([{ terms: "" }]);
   });
 
-  test("ranks a document without a full text below one that both indexes find", async () => {
+  test("lets the metadata rank stand in for a missing full text", async () => {
     // pubmed:1 leads the metadata but has no full text; pubmed:2 is second there and has one.
     await insert("pubmed:1", "Olaparib olaparib for prostate cancer");
     await insert("pubmed:2", "Olaparib in prostate cancer care", {
@@ -366,7 +365,17 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
       metadata: ["pubmed:1", "pubmed:2"],
       fullTexts: ["pubmed:2"],
     });
-    expect(hits.map((hit) => hit.documentId)).toEqual(["pubmed:2", "pubmed:1"]);
+    // 2 / 61 for pubmed:1, 1 / 62 + 1 / 61 for pubmed:2.
+    expect(hits.map((hit) => hit.documentId)).toEqual(["pubmed:1", "pubmed:2"]);
+    const candidates = steps.get("candidates") as { id: string }[];
+    expect(candidates[0]).toMatchObject({
+      id: "pubmed:1",
+      hasFullText: false,
+      fullTextRank: null,
+    });
+    expect(
+      (candidates[0] as { fullTextScore?: number }).fullTextScore,
+    ).toBeCloseTo(1 / 61);
   });
 
   test("counts an index only for the documents in which it finds a term", async () => {
@@ -383,8 +392,7 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
         "https://example.org/2.xml": "Olaparib for prostate cancer",
       }),
     );
-    // Without its BM25 index, Postgres scores every row: the metadata ranking also lists
-    // pubmed:2 and pubmed:3, with a score of 0.
+    // without its BM25 index, Postgres also lists pubmed:2 and pubmed:3, scored 0
     const client = await pool.connect();
     onTestFinished(() => client.release(true));
     await client.query("SET enable_indexscan = off");
@@ -399,7 +407,7 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     expect(steps.get("rankings")).toMatchObject({
       metadata: expect.arrayContaining(["pubmed:2", "pubmed:3"]),
     });
-    // Each counts in one index only, at rank 1: a tie, in the order of the IDs.
+    // each found by one index, at rank 1; pubmed:1 has no full text, so its rank counts twice
     expect(hits.map((hit) => hit.documentId)).toEqual(["pubmed:1", "pubmed:2"]);
     expect(steps.get("candidates")).toContainEqual(
       expect.objectContaining({ id: "pubmed:2", metadataScore: 0 }),
@@ -497,6 +505,95 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     expect(hits[2]?.matchedTerms).toEqual(["prostate cancer"]);
   });
 
+  test("ranks the documents on the focus before those that share only older events", async () => {
+    await insert("pubmed:1", "Cabazitaxel dosing");
+    await insert(
+      "pubmed:2",
+      "Prostate cancer: biopsy, staging, radiotherapy, docetaxel and enzalutamide",
+    );
+    await indexMetadata(pool);
+
+    const hits = await createKeywordMatcher(pool).match(
+      {
+        focus: event("Cabazitaxel"),
+        context: [
+          event("Stanzbiopsie Prostata"),
+          event("Staging"),
+          event("Strahlentherapie"),
+          event("Docetaxel"),
+          event("Enzalutamid bei Prostatakarzinom"),
+        ],
+      },
+      { limit: 10 },
+    );
+
+    expect(hits.map((hit) => hit.documentId)).toEqual(["pubmed:1", "pubmed:2"]);
+  });
+
+  test("searches only the context terms that weigh most: of many events, then of new ones", async () => {
+    await insert("pubmed:1", "Olaparib");
+    await indexMetadata(pool);
+    const steps = new Map<string, unknown>();
+    const context = (tuning?: Record<string, number>) =>
+      createKeywordMatcher(pool)
+        .match(
+          {
+            focus: event("Olaparib"),
+            // Oldest first, as the journey lists them.
+            context: [
+              event("PSA"),
+              event("PSA unter Abirateron"),
+              event("Docetaxel"),
+              event("Stanzbiopsie vor Olaparib"),
+              event("Enzalutamid"),
+            ],
+          },
+          { limit: 10, tuning, trace: (step, data) => steps.set(step, data) },
+        )
+        .then(() => (steps.get("terms") as { context: string[] }).context);
+
+    // PSA is in the two oldest events, enzalutamide in the newest one; olaparib is a focus term.
+    expect(await context({ contextTerms: 2 })).toEqual(["psa", "enzalutamide"]);
+    expect(await context({ contextTerms: 0 })).toEqual([]);
+    expect(await context()).toEqual([
+      "psa",
+      "enzalutamide",
+      "biopsy",
+      "docetaxel",
+      "abiraterone",
+    ]);
+  });
+
+  test("counts generic terms once, for the focus only, and not as a hit", async () => {
+    await insert("pubmed:1", "Olaparib in prostate cancer");
+    await insert("pubmed:2", "Rising costs: follow up after heart surgery");
+    await indexMetadata(pool);
+    const steps = new Map<string, unknown>();
+
+    const hits = await createKeywordMatcher(pool).match(
+      {
+        focus: {
+          ...event("Verlaufskontrolle unter Olaparib"),
+          parameters: { psa_trend: "rising" },
+        },
+        context: [event("Erstvorstellung Prostatakarzinom")],
+      },
+      {
+        limit: 10,
+        tuning: { focusWeight: 2 },
+        trace: (step, data) => steps.set(step, data),
+      },
+    );
+
+    expect(steps.get("terms")).toMatchObject({
+      focus: ["olaparib"],
+      generic: ["follow up", "rising"],
+      context: ["prostate cancer"],
+      query: "olaparib olaparib follow up rising prostate cancer",
+    });
+    expect(hits.map((hit) => hit.documentId)).toEqual(["pubmed:1"]);
+  });
+
   test("filters by content type and leaves out expired and deleted documents", async () => {
     await insert("pubmed:1", "Prostate cancer");
     await insert("pubmed:2", "Prostate cancer screening");
@@ -566,13 +663,14 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     expect(steps.get("settings")).toContainEqual({
       name: "focusWeight",
       value: 2,
-      default: 3,
+      default: 12,
       min: 1,
       max: 20,
       whole: true,
     });
     expect(steps.get("terms")).toEqual({
       focus: ["olaparib"],
+      generic: [],
       context: ["prostate cancer"],
       query: "olaparib olaparib prostate cancer",
       events: [
@@ -614,11 +712,10 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     // BM25 of each index, positive; nothing from an index that did not return it.
     expect(first?.metadataBm25).toBeGreaterThan(0);
     expect(first?.fullTextBm25).toBeGreaterThan(0);
-    expect(candidates.find(({ id }) => id === "pubmed:2")).toMatchObject({
-      hasFullText: false,
-      fullTextBm25: null,
-      fullTextScore: 0,
-    });
+    // Without a full text, the metadata rank counts for it too.
+    const second = candidates.find(({ id }) => id === "pubmed:2");
+    expect(second).toMatchObject({ hasFullText: false, fullTextBm25: null });
+    expect(second?.fullTextScore).toBeCloseTo(second?.metadataScore ?? 0);
     // A candidate that matches no term is dropped: it has no score.
     expect(
       candidates.filter(({ score }) => score !== null).map(({ id }) => id),

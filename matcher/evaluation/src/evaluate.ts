@@ -1,4 +1,4 @@
-import type { JudgmentFile } from "./judgments.ts";
+import type { Graded } from "./judgments.ts";
 import { judgedAt, ndcgAt, offTargetAt, precisionAt } from "./metrics.ts";
 
 // Ranked source_ids per evaluation point id, from one algorithm.
@@ -13,7 +13,7 @@ export type PointScore = {
 };
 
 // A point without results scores 0, so every algorithm is compared on all points.
-export function evaluate(file: JudgmentFile, run: Run) {
+export function evaluate(file: Graded, run: Run) {
   const unjudged = new Map<string, string[]>();
   const points: PointScore[] = file.points.map((point) => {
     const ranked = run.get(point.id) ?? [];
