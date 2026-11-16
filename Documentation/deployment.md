@@ -66,7 +66,7 @@ On the VM:
 | State of the server | `systemctl status matcher-mcp` |
 | Log of the server | `journalctl -u matcher-mcp -f` |
 | Restart the server | `sudo systemctl restart matcher-mcp` |
-| Update to the newest `main` | `cd /opt/patient-journey-matcher && git pull && sudo systemctl restart matcher-mcp` |
+| Update to the newest `main` | `cd /opt/patient-journey-matcher && git pull && sudo bash deploy/vm-setup.sh` |
 | Log of the setup | `/var/log/matcher-setup.log` |
 
 ## Scheduled crawls
@@ -119,7 +119,7 @@ docker exec -i amos-postgres sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES
 3. **Configuration:** paste the content of `deploy/vm-setup.sh` into **Customisation Script**.
 4. Launch. The setup takes about 4 minutes. Follow it in the **Log** tab of the instance; it ends with the line `matcher-setup: done`.
 
-On a VM that already exists, run the script with `sudo bash deploy/vm-setup.sh`. It is safe to run again.
+On a VM that already exists, run the update command from [Use the server](#use-the-server). It pulls before it runs the script, so the newest version of the script runs. It is safe to run again.
 
 ## Limitations
 
