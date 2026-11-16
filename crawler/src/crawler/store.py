@@ -83,8 +83,7 @@ _URL_PASSWORD = re.compile(r"(\w+://[^:/@\s]*:)[^@\s]*@")
 
 
 class StoreError(Exception):
-    """The database is not configured or not reachable, lacks the schema, refused a write, or
-    has no run for `--since auto` to continue from."""
+    """The database is not configured or not reachable, lacks the schema, or refused a write."""
 
 
 class RunInfo(BaseModel):
@@ -185,8 +184,8 @@ async def last_successful_runs(
     url: str, source: SourceName, topics: Sequence[str]
 ) -> dict[str, datetime]:
     """When the last successful run of `source` started, per topic; topics without one are left
-    out. Runs that reached `--max-results` do not count: they may have cut off older documents,
-    so the next `--since auto` run covers their period again."""
+    out. Runs that reached `--max-results` count: sources list the newest results first, so a
+    rerun with the same cap would only fetch the same newest documents again."""
     async with _connect(url) as connection:
         try:
             rows = await connection.fetch(_LAST_RUNS, source.value, list(topics))
@@ -206,17 +205,12 @@ async def videos_to_refresh(url: str, channel_ids: Sequence[str]) -> list[str]:
     return [str(row["native_id"]) for row in rows]
 
 
-def resume_date(last_runs: Mapping[str, datetime], topics: Sequence[str]) -> date:
+def resume_date(last_runs: Mapping[str, datetime], topics: Sequence[str]) -> date | None:
     """The date `--since auto` stands for: `RESUME_OVERLAP` before the oldest of the topics' last
-    successful runs, so no topic misses a day. A topic without one needs a run without `--since`
-    first."""
-    missing = [topic for topic in topics if topic not in last_runs]
-    if missing:
-        more = f" and {len(missing) - 5} more" if len(missing) > 5 else ""
-        raise StoreError(
-            f"--since auto: no successful run with --store yet for {', '.join(missing[:5])}"
-            f"{more}; run them once without --since first"
-        )
+    successful runs, so no topic misses a day. None while a topic has none yet: its first run
+    goes without a date, up to `--max-results` per seed."""
+    if not topics or any(topic not in last_runs for topic in topics):
+        return None
     oldest = min(last_runs[topic] for topic in topics)
     return (oldest - RESUME_OVERLAP).astimezone(UTC).date()
 
@@ -348,7 +342,6 @@ _LAST_RUNS = """
 SELECT topic, max(started_at) AS started_at
 FROM crawl_runs, unnest(topics) AS topic
 WHERE source = $1 AND ok AND topic = ANY($2::text[])
-    AND coalesce((stats ->> 'max_results_reached')::int, 0) = 0
 GROUP BY topic
 """
 

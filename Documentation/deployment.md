@@ -1,6 +1,6 @@
 # Deployment on the FAU Compute Cloud
 
-The matcher runs on one VM in our project of the [FAU Compute Cloud](https://cc.rrze.de) (CC), an OpenStack cloud of the RRZE. The VM runs the same commands as a developer machine ([build and run](build.md)): the database in Docker and the MCP server as a service.
+The matcher runs on one VM in our project of the [FAU Compute Cloud](https://cc.rrze.de) (CC), an OpenStack cloud of the RRZE. The VM runs the same commands as a developer machine ([build and run](build.md)): the database and the crawlers in Docker, the MCP server as a service, and timers for the crawls and the index.
 
 ## The VM
 
@@ -15,6 +15,8 @@ The matcher runs on one VM in our project of the [FAU Compute Cloud](https://cc.
 | Repository on the VM | `/opt/patient-journey-matcher` |
 | MCP server | Service `matcher-mcp`, `http://127.0.0.1:3000/mcp` on the VM |
 | Database | Docker container `amos-postgres`, `127.0.0.1:5432` on the VM |
+| Crawlers and index | Timers `crawler-<source>` and `matcher-index`, see [scheduled crawls](#scheduled-crawls) |
+| Backups | `/var/backups/matcher`, see [backups and cleanup](#backups-and-cleanup) |
 
 Our quota is 20 vCPUs, 50 GB RAM and 1000 GB volume storage. The flavour is the largest that fits the RAM quota. Together with the `vaultwarden` VM, 3 vCPUs, 17 GB RAM and 290 GB volume storage are left for other VMs.
 
@@ -64,23 +66,63 @@ On the VM:
 | State of the server | `systemctl status matcher-mcp` |
 | Log of the server | `journalctl -u matcher-mcp -f` |
 | Restart the server | `sudo systemctl restart matcher-mcp` |
-| Update to the newest `main` | `cd /opt/patient-journey-matcher && git pull && sudo systemctl restart matcher-mcp` |
-| Fill the database and the index | `cd /opt/patient-journey-matcher && make seed && make index` |
+| Update to the newest `main` | `cd /opt/patient-journey-matcher && git pull && sudo bash deploy/vm-setup.sh` |
 | Log of the setup | `/var/log/matcher-setup.log` |
+
+## Scheduled crawls
+
+Every night a systemd timer starts one crawler container per source (`crawler-<source>` in [`compose.yaml`](../compose.yaml)), and in the morning `make index` adds the new documents to the indexes. Each run continues from the source's last successful run (`--since auto`, see [crawler](../crawler/README.md#run)). A topic without one, as on a new VM or with a new topic file, is crawled without a date. `--max-results` caps every query, channel or feed in every run, so it also sets the size of this first crawl. Any successful run counts, even a small one such as that of `make seed`, and a query, channel or feed added to a topic later starts from the topic's last run. To fill in such a topic, crawl it once without a date and with the results per run below (see the tasks).
+
+| Source | Starts (UTC) | Results per run | Bound by |
+|---|---|---|---|
+| PubMed | 03:00 | 50 per query | NCBI: 3 requests/s, 5 with our key, large jobs between 21:00 and 05:00 US Eastern. Under an hour, the first crawl a few hours. |
+| arXiv | 00:00 | 3 per query | 1 request every 3 s: at least 3 hours for the 3,615 queries, the first crawl about 12 hours. |
+| Zenodo | 00:10 | 25 per query (one page) | 30 searches a minute: about 2 hours. |
+| YouTube | 00:30 | 50 per channel | 10,000 quota units a day, a run needs about 1,400. Stored videos expire after 30 days unless a run refreshes them, so it must run at least every 14 days. |
+| Podcasts | 00:20 | 100 per feed | One request per feed and day, 277 feeds: about 15 minutes. |
+| Index | 06:00 | New and changed documents | arXiv allows one download every 15 s: the first index after the first crawl takes 1–2 days. |
+
+The scheduled runs do not follow references (`--max-depth 0`): on a first crawl they would fetch millions of cited papers.
+
+**API keys** go into `/opt/patient-journey-matcher/crawler/.env`, which the setup creates from [`crawler/.env.example`](../crawler/.env.example). YouTube needs `YOUTUBE_API_KEY`; PubMed should have `NCBI_ENTREZ_EMAIL` and `NCBI_API_KEY`. Without a YouTube key, turn its timer off: `sudo systemctl disable --now crawler-youtube.timer`.
+
+| Task | Command |
+|---|---|
+| Next and last runs | `systemctl list-timers 'crawler-*' matcher-index.timer` |
+| Log of a run | `journalctl -u crawler@pubmed`, `journalctl -u matcher-index` |
+| Crawl a source now | `sudo systemctl start --no-block crawler@pubmed` |
+| Fill in a topic | `cd /opt/patient-journey-matcher && docker compose run --rm --build crawler-pubmed pubmed --topic prostate_cancer --store --max-results 50 --max-depth 0` |
+| Stored runs | `docker exec amos-postgres psql -U amos -d patient_journey_matcher -c 'SELECT source, started_at, ok, inserted FROM crawl_runs ORDER BY id DESC LIMIT 10'` |
+| Failed runs | `systemctl --failed` |
+
+## Backups and cleanup
+
+**Backups.** Every night at 23:00 UTC, [`deploy/backup-db.sh`](../deploy/backup-db.sh) dumps the database to `/var/backups/matcher/matcher-<date>.dump` and keeps the newest 7. The dumps are on the same volume as the database: they help against a broken database or `docker compose down -v`, not against losing the VM. To restore one, stop the timers that write to the database, then:
+
+```sh
+docker exec -i amos-postgres sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --clean --if-exists' \
+  < /var/backups/matcher/matcher-2026-11-20.dump
+```
+
+**Cleanup.** Every Sunday at 23:30 UTC, `matcher-prune` removes Docker images that newer builds replaced and build cache older than a week.
+
+| Task | Command |
+|---|---|
+| Back up now | `sudo systemctl start matcher-backup` |
 
 ## Set up a new VM
 
-[`deploy/vm-setup.sh`](../deploy/vm-setup.sh) does the whole setup: it installs Docker, Node.js 24, pnpm 12 and uv, clones this repository, writes a `.env` with a random database password, starts the database, runs the tests and starts the MCP server as a service.
+[`deploy/vm-setup.sh`](../deploy/vm-setup.sh) does the whole setup: it installs Docker, Node.js 24, pnpm 12 and uv, clones this repository, writes a `.env` with a random database password, starts the database, runs the tests, starts the MCP server as a service and installs the timers for the crawls, the index, the backups and the cleanup.
 
 1. In the dashboard, open **Compute → Instances → Launch Instance**.
 2. **Details:** a name. **Source:** image `Debian 13`, create a new volume. **Flavour:** one without a root disk, such as `SCS-4V-8`. **Networks:** `FAU-Intern`. **Key Pair:** your key.
 3. **Configuration:** paste the content of `deploy/vm-setup.sh` into **Customisation Script**.
 4. Launch. The setup takes about 4 minutes. Follow it in the **Log** tab of the instance; it ends with the line `matcher-setup: done`.
 
-On a VM that already exists, run the script with `sudo bash deploy/vm-setup.sh`. It is safe to run again.
+On a VM that already exists, run the update command from [Use the server](#use-the-server). It pulls before it runs the script, so the newest version of the script runs. It is safe to run again.
 
 ## Limitations
 
 - **No access from outside the FAU network.** The VM has no public address. AIlixir's app cannot call the server yet; this needs authentication first ([MCP interface](mcp-interface.md#open-questions), question 4).
-- **The database is empty after the setup.** Run `make seed` and `make index` once; the first index run takes about 30 minutes ([limitations](build.md#limitations)).
-- **Secrets stay on the VM.** The database password is in `/opt/patient-journey-matcher/.env`, readable only by `debian`. No API keys are needed.
+- **The database is empty until the first night.** Then every source crawls all topics for the first time ([scheduled crawls](#scheduled-crawls)).
+- **Secrets stay on the VM.** The database password is in `/opt/patient-journey-matcher/.env` and the API keys are in `crawler/.env`, both readable only by `debian`.

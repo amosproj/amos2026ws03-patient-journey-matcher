@@ -90,7 +90,7 @@
   <rect class="py" x="180" y="394" width="120" height="52" rx="5"/>
   <g text-anchor="middle">
     <text class="h" x="105" y="245">Scheduler</text>
-    <text class="b" x="105" y="262">daily cron</text>
+    <text class="b" x="105" y="262">systemd timer</text>
     <text class="b" x="105" y="277">topic YAML</text>
     <text class="h" x="170" y="323">Source scraper</text>
     <text class="b" x="170" y="341">PubMed · arXiv · YouTube · Zenodo</text>
