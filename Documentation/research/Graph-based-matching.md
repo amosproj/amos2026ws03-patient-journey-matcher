@@ -121,7 +121,26 @@ Graph matching becomes a third approach next to keyword, built like it (see [mat
 5. Evaluation as in section 2, with added "trap" judgments (same drug, other disease).
 6. Decide on the fallback.
 
-## 5. Literature Research
+## 5. Graph DB vs PostgreSQL
+
+The graph index lives in PostgreSQL, in a schema `graph` next to `keyword`. "Graph" describes how we model the data, not where we store it.
+
+**Our matching is shallow.** We compare the few triples of one paper with the few triples of the patient (Patient-5: 3 concepts, 2 triples; papers: 0 to 2 relations). Each pattern is one triple deep, such as `?Treatment –treat→ prostate cancer`. Graph databases are fastest at following long paths across many nodes, which we do not do.
+
+**The matching runs in our code.** The database answers two indexed lookups: which papers mention a concept, and which relations those papers have. Scoring happens in TypeScript (section 2), where it can be tuned, traced for the debug UI and unit-tested, like keyword's rank fusion.
+
+| | PostgreSQL | Graph DB (e.g. Neo4j) |
+|---|---|---|
+| One-triple lookups | fast with an index on the concept ID | fast |
+| Long paths (drug → gene → pathway → disease) | slow, recursive joins | built for it |
+| Already in use | crawler, keyword, tests, CI | new service |
+| Link to `documents` | `ON DELETE CASCADE` | synced by hand |
+| Filters and fusion with keyword | same database | across two systems |
+| Licence | PostgreSQL License | Neo4j Community: GPLv3 |
+
+**When a graph DB would fit.** If we merged the triples of all papers into one knowledge graph and searched paths across papers. Example: a patient with a BRCA2 mutation, where one paper links BRCA2 to PARP1 and another links olaparib to PARP1, so olaparib is suggested although no paper links it to the patient's cancer. That infers links across papers, which section 2 rules out for now. If we need it later, [Apache AGE](https://age.apache.org/) adds graph queries (Cypher) to PostgreSQL without a second database.
+
+## 6. Literature Research
 
 ### Narrative query graphs
 
