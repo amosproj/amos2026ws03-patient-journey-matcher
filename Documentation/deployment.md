@@ -71,7 +71,7 @@ On the VM:
 
 ## Scheduled crawls
 
-Every night a systemd timer starts one crawler container per source (`crawler-<source>` in [`compose.yaml`](../compose.yaml)), and in the morning `make index` adds the new documents to the indexes. Each run continues from the source's last successful run (`--since auto`, see [crawler](../crawler/README.md#run)). A topic without one, as on a new VM or with a new topic file, is crawled without a date. `--max-results` caps every query, channel or feed in every run, so it also sets the size of this first crawl.
+Every night a systemd timer starts one crawler container per source (`crawler-<source>` in [`compose.yaml`](../compose.yaml)), and in the morning `make index` adds the new documents to the indexes. Each run continues from the source's last successful run (`--since auto`, see [crawler](../crawler/README.md#run)). A topic without one, as on a new VM or with a new topic file, is crawled without a date. `--max-results` caps every query, channel or feed in every run, so it also sets the size of this first crawl. Any successful run counts, even a small one such as that of `make seed`, and a query, channel or feed added to a topic later starts from the topic's last run. To fill in such a topic, crawl it once without a date and with the results per run below (see the tasks).
 
 | Source | Starts (UTC) | Results per run | Bound by |
 |---|---|---|---|
@@ -91,6 +91,7 @@ The scheduled runs do not follow references (`--max-depth 0`): on a first crawl 
 | Next and last runs | `systemctl list-timers 'crawler-*' matcher-index.timer` |
 | Log of a run | `journalctl -u crawler@pubmed`, `journalctl -u matcher-index` |
 | Crawl a source now | `sudo systemctl start --no-block crawler@pubmed` |
+| Fill in a topic | `cd /opt/patient-journey-matcher && docker compose run --rm --build crawler-pubmed pubmed --topic prostate_cancer --store --max-results 50 --max-depth 0` |
 | Stored runs | `docker exec amos-postgres psql -U amos -d patient_journey_matcher -c 'SELECT source, started_at, ok, inserted FROM crawl_runs ORDER BY id DESC LIMIT 10'` |
 | Failed runs | `systemctl --failed` |
 
