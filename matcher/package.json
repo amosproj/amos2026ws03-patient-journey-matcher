@@ -9,7 +9,8 @@
   "scripts": {
     "typecheck": "tsc",
     "test": "vitest run --passWithNoTests",
-    "lint": "biome check ."
+    "lint": "biome check .",
+    "test:integration": "vitest run --config vitest.integration.config.ts"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.6.3",

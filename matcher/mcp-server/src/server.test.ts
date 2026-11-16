@@ -290,6 +290,6 @@ test("keeps the text of an unexpected failure out of the result and the log", as
       }),
     },
   ]);
-  expect(log).toHaveBeenCalledWith("Unexpected Error during a tool call");
+  expect(log).toHaveBeenCalledWith("Unexpected failure during a tool call");
   log.mockRestore();
 });

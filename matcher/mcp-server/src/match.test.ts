@@ -102,10 +102,14 @@ test("answers with the stored documents of the matcher's hits, in its order", as
   });
 });
 
-test("answers degraded when the matcher fails", async () => {
-  vi.spyOn(console, "error").mockImplementation(() => {});
+test("answers degraded when the matcher fails, and logs only the SQLSTATE", async () => {
+  const log = vi.spyOn(console, "error").mockImplementation(() => {});
   const service = createMatchService(
-    [keyword(new Error("relation does not exist"))],
+    [
+      keyword(
+        Object.assign(new Error("relation does not exist"), { code: "42P01" }),
+      ),
+    ],
     store([]),
   );
 
@@ -122,6 +126,7 @@ test("answers degraded when the matcher fails", async () => {
     degraded: true,
     degraded_reason: "The keyword index could not be searched.",
   });
+  expect(log).toHaveBeenCalledWith("keyword search failed: 42P01");
 });
 
 test("passes a trace and tuning on, and traces the journey and why a search failed", async () => {
@@ -173,3 +178,42 @@ test("refuses a source that is not stored", async () => {
     message: "Unknown source pubmed:1.",
   });
 });
+
+test.each([
+  null,
+  undefined,
+  42,
+  "PRIVATE_MARKER",
+  { name: "PRIVATE_MARKER", code: "PRIVATE_MARKER", message: "PRIVATE_MARKER" },
+])(
+  "unknown thrown values degrade safely without leaking to ordinary logs: %j",
+  async (thrown) => {
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      const service = createMatchService(
+        [
+          {
+            name: "keyword",
+            matcher: {
+              match: async () => {
+                throw thrown;
+              },
+            },
+          },
+        ],
+        store([]),
+      );
+      const result = await service.matchJourney({
+        journey,
+        algorithm: "keyword",
+        limit: 10,
+      });
+      expect(result.degraded).toBe(true);
+      expect(result.results).toEqual([]);
+      expect(JSON.stringify(result)).not.toContain("PRIVATE_MARKER");
+      expect(JSON.stringify(log.mock.calls)).not.toContain("PRIVATE_MARKER");
+    } finally {
+      log.mockRestore();
+    }
+  },
+);

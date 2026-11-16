@@ -64,7 +64,7 @@ How to build, test and run the matcher locally, from the database to a matched j
    pnpm install --frozen-lockfile
    ```
 
-2. Run the tools: `pnpm typecheck`, `pnpm test`, `pnpm lint`. The database tests of `@matcher/db` and `@matcher/keyword` are skipped unless `TEST_DATABASE_URL` points to a PostgreSQL database.
+2. Run the tools: `pnpm typecheck`, `pnpm test`, `pnpm lint`, and `pnpm test:integration` for the [end-to-end tests](Documentation/e2e-tests.md), which also need the crawler installed. The database tests of `@matcher/db` and `@matcher/keyword` and the end-to-end tests are skipped unless `TEST_DATABASE_URL` points to a PostgreSQL database.
 3. Add a dependency to one package: `pnpm --filter @matcher/indexer add <package>`. Add shared dev tools to the root with `pnpm add -w -D <package>`.
 4. Start and try the MCP server: [`Documentation/build.md`](Documentation/build.md#run-the-matcher-locally).
 

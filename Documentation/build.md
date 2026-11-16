@@ -6,6 +6,7 @@ Run these commands from the repository root. You need the tools listed under [Pr
 |---|---|
 | `make build` | Installs the locked dependencies of `crawler/` and `matcher/`, and typechecks `matcher/` |
 | `make test` | Builds, then runs the same checks as [CI](github-ci.md); with the root `.env`, the database tests use the database from `make db` |
+| `make test-integration` | Builds, then runs only the [end-to-end tests](e2e-tests.md) |
 | `make start` | Builds, then starts the MCP server on `http://127.0.0.1:3000/mcp`; needs the root `.env` for the database |
 | `make debug` | Starts the [debug UI](../debug/crawler/README.md) for the crawler, the database, the index and the matcher on `http://127.0.0.1:8765` |
 | `make db` | Starts the [database](database.md) and applies `db/init/`; needs the root `.env` |

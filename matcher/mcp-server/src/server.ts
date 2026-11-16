@@ -21,11 +21,18 @@ export class ToolError extends Error {
   }
 }
 
+/** `text` plus the SQLSTATE of a database error, such as 42P01; names and messages can hold journey data. */
+export function withSqlState(text: string, error: unknown): string {
+  const code = (error as { code?: unknown } | null | undefined)?.code;
+  return typeof code === "string" && /^[0-9A-Z]{5}$/.test(code)
+    ? `${text}: ${code}`
+    : text;
+}
+
 function toToolError(error: unknown): ToolError {
   if (error instanceof ToolError) return error;
   // The message can hold journey data, so it is neither returned nor logged.
-  const name = error instanceof Error ? error.name : typeof error;
-  console.error(`Unexpected ${name} during a tool call`);
+  console.error(withSqlState("Unexpected failure during a tool call", error));
   return new ToolError("INTERNAL_ERROR", "The request failed unexpectedly.");
 }
 

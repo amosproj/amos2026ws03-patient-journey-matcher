@@ -21,9 +21,11 @@ test: build
 	cd crawler && uv run ruff check .
 	cd crawler && uv run ruff format --check .
 	cd crawler && uv run mypy src
+	cd crawler && uv run mypy tests/integration_support/crawl.py
 	cd crawler && uv run pytest
 	cd matcher && pnpm lint
 	cd matcher && pnpm test
+	cd matcher && pnpm test:integration
 
 start: build
 	cd matcher && pnpm --filter @matcher/mcp-server start
@@ -46,6 +48,10 @@ seed: db
 # crawl. All approaches, or the ones named, e.g. `make index APPROACHES=keyword`.
 index: build
 	cd matcher && pnpm --filter @matcher/indexer start $(APPROACHES)
+
+.PHONY: test-integration
+test-integration: build
+	cd matcher && pnpm test:integration
 
 # Builds the graph of one generated patient with the SS26 graph steps and writes it to
 # patientdata/<patient>/graph.json, e.g. `make graph PATIENT=Patient-5`; needs GEMINI_API_KEY,

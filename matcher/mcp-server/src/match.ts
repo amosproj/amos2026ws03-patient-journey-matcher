@@ -2,7 +2,7 @@ import type { Approach, Hit } from "@matcher/core";
 import type { DocumentRow, DocumentStore } from "@matcher/db";
 import type { MatchResult } from "./contract.ts";
 import { journeyState } from "./journey.ts";
-import { type MatchService, ToolError } from "./server.ts";
+import { type MatchService, ToolError, withSqlState } from "./server.ts";
 import { toSourceDownloads, toSourceReference } from "./sources.ts";
 
 /**
@@ -50,16 +50,15 @@ export function createMatchService(
           degraded: false,
         };
       } catch (error) {
-        // Name and SQLSTATE only: a message can hold terms of the journey.
-        const { name, code, message } = error as {
-          name?: string;
-          code?: string;
-          message?: string;
-        };
-        console.error(
-          `${algorithm} search failed: ${name} ${code ?? ""}`.trim(),
-        );
+        console.error(withSqlState(`${algorithm} search failed`, error));
         // The trace goes back to the developer who sent the journey, so it gets the message.
+        const details =
+          typeof error === "object" && error !== null ? error : {};
+        const { name, code, message } = details as {
+          name?: unknown;
+          code?: unknown;
+          message?: unknown;
+        };
         debug.trace?.("error", { name, code, message });
         return {
           ...answer,
