@@ -97,7 +97,31 @@ The following is a proposed design, not an implemented algorithm. Numerical weig
 5. **Match patterns.** Compare the query patterns with each paper's triples, including small connected patterns for additional context. Shared variables must refer to the same entity. Allow partial matches and a weaker diagnosis-only fallback; a shared drug used for a different disease gives no treatment match. Record matched relationships, missing information and explicit contradictions.
 6. **Rank and explain results.** Apply the criteria in section 2, considering patient context, relation matches and whether a relationship is central or only mentioned. Count each distinct relationship once. Research focus requires additional text analysis beyond the triples. Return ranked resources with matching reasons and supporting evidence; validate the ranking using [matching-evaluation.md](../matching-evaluation.md).
 
-## 4. Literature Research
+## 4. Implementation Strategy
+
+Graph matching becomes a third approach next to keyword, built like it (see [matching approaches](../../matcher/algorithms/README.md)). `match_journey` already accepts `algorithm: "graph"` ([`contract.ts`](../../matcher/mcp-server/src/contract.ts)); it works once the approach is in [`registry.ts`](../../matcher/approaches/src/registry.ts).
+
+| Part | Place | What it does |
+|---|---|---|
+| Indexer | `matcher/algorithms/graph/src/indexer.ts` | `make index`: fetch PubTator3 annotations by PMID and store them in `graph.entities` and `graph.relations` |
+| Mapping | `matcher/algorithms/graph/data/` | ICD codes and names → MeSH, plus the MeSH tree for narrower concepts |
+| Matcher | `matcher/algorithms/graph/src/matcher.ts` | Candidates by diagnosis, scoring as in section 2, matched concepts as explanation |
+| Contract | [`graph.ts`](../../matcher/mcp-server/src/graph.ts), [`contracts.ts`](../../matcher/core/src/contracts.ts) | Pass the graph to the matchers (see below) |
+
+**Contract change.** Matchers only get a `JourneyState` with flattened events. Proposal: add an optional `graph` to it, which keyword ignores. The graph reader also has to keep the edge type, `invalid_at` and `icd_code`. When only a journey is sent, the graph matcher maps event labels to concepts and runs without relations.
+
+**Fallback.** Non-PubMed sources and papers without annotations are invisible to graph matching. We evaluate graph alone first, then graph + keyword merged with `reciprocalRankFusion`.
+
+**Order of work:**
+
+1. Indexer and a coverage report: how many crawled papers have relations, and how many have `treat`. A first check on the five papers judged for Patient-5 found three relations, none of them `treat`.
+2. Mapping data with tests.
+3. Contract change.
+4. Matcher and registry entry.
+5. Evaluation as in section 2, with added "trap" judgments (same drug, other disease).
+6. Decide on the fallback.
+
+## 5. Literature Research
 
 ### Narrative query graphs
 
