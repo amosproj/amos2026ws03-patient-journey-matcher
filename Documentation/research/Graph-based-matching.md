@@ -90,6 +90,20 @@ The following is a proposed design, not an implemented algorithm. Numerical weig
 
 ## 3. Steps for Graph-based matching
 
+**Overview.** Some steps run once, before any patient is matched, and some run for each query:
+
+```
+crawler → documents ─┬→ keyword index
+                     └→ PubTator3 by PMID → paper triples ─┐
+patient PDFs → graph.json → filtered, mapped to MeSH ───────┴→ match → rank → results
+```
+
+- **Once per crawl:** the crawler stores the papers in `documents`, PubMed papers with IDs such as `pubmed:12345`. The indexer fetches the PubTator3 annotations of each PMID and stores them as triples next to the keyword index. We do not build the paper graph ourselves, and PubTator3 is not called at query time.
+- **Once per patient:** `make graph` turns the PDFs of the patient into `graph.json` (section 1). It is filtered to the medical node types and mapped to MeSH, the IDs PubTator3 uses.
+- **Per query:** `match_journey` with `algorithm: "graph"` looks up the stored triples of the patient's diagnoses, compares them with the patient's triples and ranks the papers.
+
+Papers without a PMID get no triples (see Fallback in section 4). In the steps below, step 2 runs once per crawl and steps 4 to 6 per query.
+
 1. **Read and select patient information.** Load `graph.json` through the graph reader and consider only information known at `as_of`. Select relevant diagnoses, treatments and continuing context. Existing edges already form subject-predicate-object triples; do not invent missing diagnosis-treatment links.
 2. **Prepare resource triples.** Retrieve available PubTator3 annotations for supported papers and relationships. Convert them into triples and retain source IDs and supporting text. Prefer accessible full text where supported; otherwise use abstracts or other available text. Uncovered resources require separate extraction. Store annotations for reuse across patient queries.
 3. **Normalize both inputs.** Map synonyms and concept identifiers to a shared representation, and align relation types and directions without losing negation or uncertainty. A treatment being studied must not automatically be represented as proven effective.
