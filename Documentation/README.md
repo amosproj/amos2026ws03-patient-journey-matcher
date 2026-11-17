@@ -15,3 +15,5 @@ Build, user, and technical documentation
 [Resource storage and retrieval](storage.md)
 
 [Keyword matching](keyword-matching.md)
+
+[AI matching research](research/ai-based-matching.md) · [Simple AI matching report (PDF)](research/ai-matching-results/ai-matching-report.pdf) · [Detailed report (PDF)](research/ai-matching-results/detailed/ai-matching-report-detailed.pdf) · [Models used](research/ai-matching-results/models-used.md) · [Report summary](research/ai-matching-results/performance-report.md)
