@@ -6,72 +6,22 @@
 
 ## 1. Input: Patient Journey Graph
 
--> based on [medical_schema.py](../../backend/workers/pipeline/graph/medical_schema.py) & graph builder
-### Nodes
+Based on [medical_schema.py](../../backend/workers/pipeline/graph/medical_schema.py) and the graph builder.
 
 - **Node types:** `Patient`, `Diagnosis`, `Medication`, `LabTest`, `Procedure`, `Provider`, `PathologyResult`, `TumorMarker`, `TreatmentPlan`, `ImagingResult`, `Symptom`, `Allergy`, `VitalSigns`, `Referral`, `Appointment`.
+- **Edge types:** `HAS_DIAGNOSIS`, `UNDERWENT`, `PRESCRIBED`, `HAD_LAB_TEST`, `HAS_TUMOR_MARKER`, `HAS_PATHOLOGY`, `HAS_IMAGING`, `HAS_SYMPTOM`, `HAS_ALLERGY`, `HAS_VITAL_SIGNS`, `WAS_REFERRED`, `HAS_APPOINTMENT`, `MANAGED_AT`, `HAS_TREATMENT_PLAN`, `TREATED_BY`, `CONFIRMED_BY`, `INDICATES`, `SYMPTOM_OF`, `PERFORMED_BY`, `REFERRED_TO`, `RELATES_TO`.
 
-### Edges and possible mapping
-(`/` separates alternative node types)
+### Input format and findings
 
-| Source | Edge type | Target |
-|---|---|---|
-| Patient | `HAS_DIAGNOSIS` | Diagnosis |
-| Patient | `UNDERWENT` | Procedure |
-| Patient | `PRESCRIBED` | Medication |
-| Patient | `HAD_LAB_TEST` | LabTest |
-| Patient | `HAS_TUMOR_MARKER` | TumorMarker |
-| Patient | `HAS_PATHOLOGY` | PathologyResult |
-| Patient | `HAS_IMAGING` | ImagingResult |
-| Patient | `HAS_SYMPTOM` | Symptom |
-| Patient | `HAS_ALLERGY` | Allergy |
-| Patient | `HAS_VITAL_SIGNS` | VitalSigns |
-| Patient | `WAS_REFERRED` | Referral |
-| Patient | `HAS_APPOINTMENT` | Appointment |
-| Patient | `MANAGED_AT` | Provider |
-| Patient / Diagnosis | `HAS_TREATMENT_PLAN` | TreatmentPlan |
-| Diagnosis | `TREATED_BY` | Medication |
-| Medication | `TREATED_BY` | Diagnosis (direction needs clarification) |
-| Diagnosis | `CONFIRMED_BY` | LabTest / PathologyResult / ImagingResult |
-| PathologyResult | `CONFIRMED_BY` | Diagnosis (direction needs clarification) |
-| LabTest / TumorMarker / ImagingResult | `INDICATES` | Diagnosis |
-| Symptom | `SYMPTOM_OF` | Diagnosis |
-| Procedure / ImagingResult | `PERFORMED_BY` | Provider |
-| Referral | `REFERRED_TO` | Provider |
-| Appointment | `RELATES_TO` | Provider |
-| Entity | `RELATES_TO` | Entity (generic fallback) |
+The documented Patient-5 run from #53 processed 35 documents and produced **34 nodes and 174 edges**, using Kuzu instead of Neo4j. These observations describe one sample, not guarantees for every graph.
 
-### To be clarified 
--> can be answered after finishing issue Integrate Patient Graph Generation and Implement Graph Reader
-#53
-
-- **direction of edges** e.g. `TREATED_BY` and `CONFIRMED_BY` -> is it a directed edge 
-- **Negation/uncertainty:** how are statements such as "no metastases" or "suspected diagnosis" represented? negation field? 
-- **Time of events:** How are current vs. historical findings, repeated measurements, and treatment changes represented? -> builder uses processing date when the document date is missing or unparseable -> wrong representation
-- **synonym handling:**  How reliably are synonyms and repeated mentions merged? ICD (International Classification of Diseases) codes are optional
-- how does the **output** exactly look like
-
-### First answers from a real graph (Patient-5)
-
-The two SS26 graph steps (read the PDF, build the graph) were run for Patient-5 in #53, on all 35 documents. The run used a smaller model than the SS26 setup (`gemini-3.5-flash-lite`) and an embedded Kuzu database instead of Neo4j, so this is a look at one patient. The graph is on `main` in [`patientdata/Patient-5/graph.json`](../../patientdata/Patient-5/graph.json), and `make graph PATIENT=Patient-5` builds it.
-
-Result: 34 nodes and 174 edges.
-
-- **Direction of edges:** edges are directed, each has a source and a target node. `CONFIRMED_BY` goes PathologyResult → Diagnosis (2 edges). `INDICATES` goes LabTest / TumorMarker / ImagingResult → Diagnosis (12). `SYMPTOM_OF` goes Symptom → Diagnosis (1). There is no `TREATED_BY` edge in this graph. The two Medication nodes hang only on the patient through `PRESCRIBED`, so the graph does not say which diagnosis a medication treats.
-> TBD: can we derive Dignosis -> treated_by > medication just because there are Medication nodes and a diagnosis node which are not linked directly? 
-> Or do we decide that separate patient-diagnosis and patient-medication edges do not establish a treatment indication. A diagnosis-medication link requires explicit evidence from the patient documents; otherwise it remains unknown. The concepts can still contribute individually, but no full patient-relation bonus is awarded.
-- **Negation/uncertainty:** there is no field for it, edges have no attributes. "suspected" appears only in the fact sentence of an edge (3 of 174 edges). "no evidence of distant metastasis" is not on any edge: it appears only in the outcome text of a Procedure node and in the summary text of the Patient node. A matcher that looks only at edge types reads a suspected diagnosis as a confirmed one.
-- **Time of events:** every edge has `valid_at`, and 32 also have `invalid_at`. The facts fall on 23 days, and these are exactly the 23 event dates in the `timeline.json` of the patient, so the fallback to the processing date does not show in this graph. Repeated measurements become a chain of edges: PSA is 13,4 ng/ml from 2026-11-06, <0,1 from 2027-01-22, 0,2 from 2028-08-02, 0,9 from 2028-12-25, 0,3 from 2029-04-22 and <0,1 again from 2029-08-26. Edges replaced by a newer statement get `invalid_at`. The value is in the fact sentence, mostly on a generic `RELATES_TO` edge from the patient to the LabTest node "PSA" (21 edges), not on a TumorMarker node. `invalid_at` does not always mean an outdated value: the radical prostatectomy of 2027-01-22 gets `invalid_at` 2027-01-29, when a later report describes it again.
-- **Synonym handling:** not reliable. The same cancer is split over the Diagnosis nodes "C61 Prostatakarzinom" (17 `HAS_DIAGNOSIS` edges) and "prostate cancer" (10). A third Diagnosis node, "Biochemisches Rezidiv – Salvage-Therapie" (4), mixes a diagnosis with a therapy. "radical prostatectomy" and "RPE" are two Procedure nodes. German and English names are mixed. The two prostate cancer nodes carry `icd_code` C61, so the ICD code is a better key than the name; the third node has no code. There are no MeSH IDs.
-- **Output:** one JSON per patient with `patient`, `documents` (the PDFs that are in the graph), `nodes` (name, labels, summary, attributes) and `edges` (name, fact, source and target node, `valid_at`, `invalid_at`). `match_journey` takes this file as its `graph` input, see [Graph input](../mcp-interface.md#graph-input).
-
-What this means for the matching proposal:
-
-- The patient side needs a mapping step from names and ICD codes to MeSH IDs before it can be compared with PubTator3.
-- Not every node helps. 12 of 34 nodes are Provider nodes, 41 edges are `MANAGED_AT` and 53 are the generic `RELATES_TO`. The graph should be filtered to the medical node types first.
-- Labels can be wrong: one of the two Medication nodes is a urinary catheter.
-- The reader from #53 does not give the graph to a matcher. It turns the graph into a journey with one event per day, named by the nodes of the facts of that day, and drops the edge types and the fact sentences. A graph matcher needs the nodes and edges themselves, so `match_journey` has to pass the graph on to it. That is a change in the contract, not in the graph file.
-
+- **Format:** One `graph.json` with `patient`, `documents`, `nodes` (name, labels, summary, attributes) and `edges` (name, fact, source/target references, `valid_at`, `invalid_at`). Resolving edge endpoints produces entity-relation-entity triples.
+- **Directions and missing links:** Edges are directed, but their meaning and direction need normalization. Patient-5 has no `TREATED_BY` edge. Separate patient-diagnosis and patient-medication edges do not establish a treatment indication. Require explicit evidence; otherwise the relationship remains unknown.
+- **Negation and uncertainty:** No dedicated fields were observed. Suspected diagnoses and negative findings occur in fact sentences or node text. Preserve this evidence and determine status before using statements as positive matches; unknown status must remain distinguishable.
+- **Time:** All sample edges have `valid_at`; 32 also have `invalid_at`. Values may occur in fact text on generic edges. Invalidation can reflect a later restatement rather than the end of a lasting medical effect. Define these semantics before filtering by `as_of`; the builder's processing-date fallback for missing document dates remains a risk.
+- **Normalization:** German/English synonyms can form duplicate nodes. Two prostate cancer nodes share ICD C61, while others lack codes or mix diagnosis and therapy. Map names and codes to compatible PubTator3 identifiers (MeSH for the initial disease/drug scope); mappings are not automatically one-to-one.
+- **Selection and quality:** The sample includes 12 Provider nodes, many generic `RELATES_TO` edges and a urinary catheter mislabeled as Medication. Filter administrative context and validate labels. Generic relations must not be interpreted as specific treatment assertions.
+- **Integration:** The documented reader from #53 flattens graphs into daily events and loses relationship information. Preserve the original nodes, edges, evidence and attributes in the matcher contract (section 4); confirm reader integration against the branch implementing #53.
 ## 2. Questions Our Matching Proposal Must Answer
 
 Working example: a patient has diagnosis A treated with medication B. A paper about B for A should be distinguished from a paper about B for C. Mentioning the same concepts does not necessarily establish the same relationship.
@@ -80,10 +30,10 @@ The following is a proposed design, not an implemented algorithm. Numerical weig
 
 | Question | Explanation | Our decision |
 |---|---|---|
-| What does the algorithm receive? | Patient data and required preprocessing | `graph.json` with the nodes, edges, attributes and evidence described in section 1, provided through the reader from #53. Use `as_of` to reconstruct only information known at that point. Select relevant medical concepts and relationships; normalize concept IDs, synonyms, relation types and directions. Dependencies include the graph reader, terminology mapping and reliable time/status information. |
-| What information is needed from resources? | Comparable concepts, relationships and supporting context | Subject-predicate-object triples, preferably extracted from accessible full text; otherwise from abstracts, descriptions or transcripts. Keep normalized entity IDs, relation type/direction, resource ID and supporting text, plus negation/uncertainty where available. Use PubTator3 for supported annotations; extraction for uncovered content remains a separate dependency. Distinguishing central investigation, comparison and background mention requires additional text analysis, not just triples. Studying a treatment must not be confused with proving its effectiveness. |
-| What counts as a match? | Proposed graph-based algorithm | Use diagnosis-anchored graph pattern matching: normalize both sides, retrieve candidates through a concept-to-resource index, then compare triples and small connected patterns. At least one non-negated patient diagnosis must match the same normalized concept; synonyms count, broader diagnoses do not automatically count. Query both a fixed treatment and a typed treatment placeholder to find new treatments for that diagnosis. A shared drug linked only to another disease gives no treatment match or bonus. Connected patterns must bind shared variables consistently. Allow partial matches and a weaker diagnosis-only fallback when no relation is extracted. Do not infer a patient treatment indication from separate patient-diagnosis and patient-medication edges; only explicit evidence supports a full patient-relation match. JSON and indexes are sufficient for an initial prototype; a graph database is optional. |
-| How are resources ranked? | Relevance features and scoring rules | Use an explainable weighted ranking, informed by focus and continuing context in [matching-evaluation.md](../matching-evaluation.md). Relationships count more than concept overlap. Central investigation counts more than comparison or background mention; count each distinct relationship once. Give small bonuses for an existing treatment linked to the matched diagnosis in the paper, an explicitly matching patient relationship, and additional compatible patient details. A centrally studied new treatment should outrank a passing mention of an existing one. Negative study results remain relevant. Prioritize current relevance while retaining older events with lasting effects; downweight suspected diagnoses, exclude negated diagnoses as positive criteria, and mark missing status as unknown. Explicit contradictions lower relevance; missing information is not a contradiction. Exact weights, aggregation across patterns and diagnoses, unknown research focus, and handling of clearly incompatible stages/populations remain to be specified and evaluated. |
+| What does the algorithm receive? | Patient data and required preprocessing | `graph.json` with the nodes, edges, attributes and evidence described in section 1, passed intact through an extended matcher contract (section 4); flattened events alone are insufficient. Use `as_of` to reconstruct only information known at that point. Select relevant medical concepts and relationships; normalize concept IDs, synonyms, relation types and directions. Dependencies include the graph reader, terminology mapping and reliable time/status information. |
+| What information is needed from resources? | Comparable concepts, relationships and supporting context | Subject-predicate-object triples, preferably extracted from accessible full text; otherwise from abstracts, descriptions or transcripts. Keep normalized entity IDs, relation type/direction, resource ID and supporting text, plus negation/uncertainty where available. Retrieve supported PubTator3 annotations by PMID during offline indexing and store normalized triples and entity mentions in PostgreSQL. Do not call PubTator3 at query time. Unsupported content uses the optional keyword fallback; separate extraction is outside the initial workflow. Distinguishing central investigation, comparison and background mention requires additional text analysis, not just triples. Studying a treatment must not be confused with proving its effectiveness. |
+| What counts as a match? | Proposed graph-based algorithm | Compare normalized patient entity-relation-entity triples with stored PubTator3 triples per paper, then rank the matching results. Use diagnosis-anchored graph pattern matching: normalize both sides, retrieve candidates through a concept-to-resource index, then compare triples and small connected patterns. At least one non-negated patient diagnosis must match the same normalized concept; synonyms count, broader diagnoses do not automatically count. Exact matches require both entities, the relation and its direction to agree. Typed treatment placeholders additionally find new treatments for that diagnosis; label these as exploratory pattern matches rather than identical patient-triple matches. Patient-to-concept edges supply context, not a Patient node to find in a paper. A shared drug linked only to another disease gives no treatment match or bonus. Connected patterns must bind shared variables consistently. Allow partial matches and a weaker diagnosis-only fallback when no relation is extracted. Do not infer a patient treatment indication from separate patient-diagnosis and patient-medication edges; only explicit evidence supports a full patient-relation match. JSON and indexes are sufficient for an initial prototype; a graph database is optional. |
+| How are resources ranked? | Relevance features and scoring rules | After matching, aggregate distinct matched triples and exploratory pattern matches per resource into an explainable weighted ranking, informed by focus and continuing context in [matching-evaluation.md](../matching-evaluation.md). Relationships count more than concept overlap. Central investigation counts more than comparison or background mention; count each distinct relationship once. Give small bonuses for an existing treatment linked to the matched diagnosis in the paper, an explicitly matching patient relationship, and additional compatible patient details. A centrally studied new treatment should outrank a passing mention of an existing one. Negative study results remain relevant. Prioritize current relevance while retaining older events with lasting effects; downweight suspected diagnoses, exclude negated diagnoses as positive criteria, and mark missing status as unknown. Explicit contradictions lower relevance; missing information is not a contradiction. Exact weights, aggregation across patterns and diagnoses, unknown research focus, and handling of clearly incompatible stages/populations remain to be specified and evaluated. |
 | Why choose this approach? | Expected benefit over keyword matching | Match medical relationships rather than shared words alone: distinguish a drug studied for the patient's disease from the same drug studied for another disease. Shared concept IDs handle synonyms; typed placeholders support discovery of new treatments. Matched patterns and evidence make results explainable. Improved relevance is a hypothesis to test, not an established result. |
 | What are the performance risks? | Relevance, runtime and operational risks | Missing or incorrect entities, relations, directions, negation or terminology mappings can cause false matches and missed results. Exact diagnosis matching can miss broader but relevant studies; sparse abstracts and unsupported relation types reduce coverage. Incorrect temporal filtering can leak future information. Full-text extraction and research-focus analysis add processing time and possible model costs; external APIs introduce rate limits and availability dependencies. Stored triples, evidence and indexes increase storage and memory requirements. Larger graphs and more connected query patterns can increase matching latency. Cache resource annotations, index candidates by diagnosis and keep query patterns small; measure preprocessing costs separately from query runtime. |
 | How will we evaluate it? | Relevance and efficiency against the baseline | Follow [matching-evaluation.md](../matching-evaluation.md), using the same resource corpus, source IDs, evaluation points and `as_of` cutoffs. Compare keyword matching, normalized-concept matching and concept-plus-relation matching to isolate the contribution of relations. Use the existing `judgments.json` and runner: `ndcg_10` is primary; report `precision_5`, `off_target_10` and `judged_10`. Judge newly retrieved ungraded sources and rerun all variants; ungraded does not mean irrelevant. Develop on Patient-1 to Patient-10 and reserve Patient-11 to Patient-20 for a later held-out check. Adapt the current timeline-based evaluation input to equivalent graph snapshots without exposing judgments to the matcher. Include same-drug/wrong-disease, wrong-stage, missing-relation and new-treatment cases. Measure preprocessing time/cost separately from matching latency and memory. Keep source-text availability comparable; test full-text enrichment separately from abstract-only runs. |
@@ -92,20 +42,16 @@ The following is a proposed design, not an implemented algorithm. Numerical weig
 
 **Overview.** Some steps run once, before any patient is matched, and some run for each query:
 
-```
-crawler → documents ─┬→ keyword index
-                     └→ PubTator3 by PMID → paper triples ─┐
-patient PDFs → graph.json → filtered, mapped to MeSH ───────┴→ match → rank → results
-```
+Paper annotations and patient graph edges are normalized into comparable entity-relation-entity triples. Matching records their agreement per paper; ranking then scores and orders those papers.
 
 - **Once per crawl:** the crawler stores the papers in `documents`, PubMed papers with IDs such as `pubmed:12345`. The indexer fetches the PubTator3 annotations of each PMID and stores them as triples next to the keyword index. We do not build the paper graph ourselves, and PubTator3 is not called at query time.
-- **Once per patient:** `make graph` turns the PDFs of the patient into `graph.json` (section 1). It is filtered to the medical node types and mapped to MeSH, the IDs PubTator3 uses.
+- **Once per patient:** `make graph` turns the PDFs of the patient into `graph.json` (section 1). Its medical concepts and relations are normalized after creation or updates, using compatible IDs (MeSH for the initial disease/drug scope). Temporal selection runs per query.
 - **Per query:** `match_journey` with `algorithm: "graph"` looks up the stored triples of the patient's diagnoses, compares them with the patient's triples and ranks the papers.
 
 Papers without a PMID get no triples (see Fallback in section 4). In the steps below, step 2 runs once per crawl and steps 4 to 6 per query.
 
-1. **Read and select patient information.** Load `graph.json` through the graph reader and consider only information known at `as_of`. Select relevant diagnoses, treatments and continuing context. Existing edges already form subject-predicate-object triples; do not invent missing diagnosis-treatment links.
-2. **Prepare resource triples.** Retrieve available PubTator3 annotations for supported papers and relationships. Convert them into triples and retain source IDs and supporting text. Prefer accessible full text where supported; otherwise use abstracts or other available text. Uncovered resources require separate extraction. Store annotations for reuse across patient queries.
+1. **Read and select patient information.** Load the preserved nodes and edges from `graph.json` through the extended matcher contract and consider only information known at `as_of`. Select relevant diagnoses, treatments and continuing context. Existing edges already form subject-predicate-object triples; do not invent missing diagnosis-treatment links.
+2. **Prepare resource triples.** Retrieve available PubTator3 annotations for supported papers and relationships. Convert them into triples and retain source IDs and supporting text. Prefer accessible full text where supported; otherwise use abstracts or other available text. Uncovered resources use the optional keyword fallback; separate extraction is outside the initial workflow. Store annotations for reuse across patient queries.
 3. **Normalize both inputs.** Map synonyms and concept identifiers to a shared representation, and align relation types and directions without losing negation or uncertainty. A treatment being studied must not automatically be represented as proven effective.
 4. **Build query patterns and select candidates.** Keep the diagnosis fixed and create both concrete patterns (`B - treatment_for -> A`) and patterns with a typed variable (`?Treatment - treatment_for -> A`). Use a concept-to-resource index to select papers containing a matching diagnosis.
 5. **Match patterns.** Compare the query patterns with each paper's triples, including small connected patterns for additional context. Shared variables must refer to the same entity. Allow partial matches and a weaker diagnosis-only fallback; a shared drug used for a different disease gives no treatment match. Record matched relationships, missing information and explicit contradictions.
@@ -113,47 +59,40 @@ Papers without a PMID get no triples (see Fallback in section 4). In the steps b
 
 ## 4. Implementation Strategy
 
-Graph matching becomes a third approach next to keyword, built like it (see [matching approaches](../../matcher/algorithms/README.md)). `match_journey` already accepts `algorithm: "graph"` ([`contract.ts`](../../matcher/mcp-server/src/contract.ts)); it works once the approach is in [`registry.ts`](../../matcher/approaches/src/registry.ts).
+Implement **offline PubTator3 indexing**, followed by **patient-triple matching and resource ranking at query time**. Use the existing [approach interfaces](../../matcher/algorithms/README.md). Paths below are proposed implementation locations; registration alone does not provide a working matcher.
 
-| Part | Place | What it does |
+| Part | Proposed place | Responsibility |
 |---|---|---|
-| Indexer | `matcher/algorithms/graph/src/indexer.ts` | `make index`: fetch PubTator3 annotations by PMID and store them in `graph.entities` and `graph.relations` |
-| Mapping | `matcher/algorithms/graph/data/` | ICD codes and names → MeSH, plus the MeSH tree for narrower concepts |
-| Matcher | `matcher/algorithms/graph/src/matcher.ts` | Candidates by diagnosis, scoring as in section 2, matched concepts as explanation |
-| Contract | [`graph.ts`](../../matcher/mcp-server/src/graph.ts), [`contracts.ts`](../../matcher/core/src/contracts.ts) | Pass the graph to the matchers (see below) |
+| Indexer | `matcher/algorithms/graph/src/indexer.ts` | After crawls, fetch annotations by PMID. Normalize/deduplicate triples and store entities, relations, evidence and document references in PostgreSQL. Report coverage and failures. |
+| Mapping | `matcher/algorithms/graph/data/` | Align identifiers, synonyms, relation labels and directions. Start with disease/drug concepts. Broader/narrower concept expansion remains a later experiment. |
+| Matcher | `matcher/algorithms/graph/src/matcher.ts` | Select patient facts at `as_of`, derive triples and patterns, retrieve candidates by diagnosis and compare stored paper triples. Record exact matches, exploratory matches, missing information and contradictions. |
+| Ranking | Within the graph approach | Score each paper from these matching results using section 2. Return document IDs, scores and matched relationships with evidence. Research-focus weighting requires additional text-derived features. |
+| Contract and registry | `matcher/core/src/contracts.ts`, MCP input handling and approach registry | Preserve the graph and query cutoff for the matcher; register the graph approach. Verify integration with #53 in the target branch. |
 
-**Contract change.** Matchers only get a `JourneyState` with flattened events. Proposal: add an optional `graph` to it, which keyword ignores. The graph reader also has to keep the edge type, `invalid_at` and `icd_code`. When only a journey is sent, the graph matcher maps event labels to concepts and runs without relations.
+**Contract change.** The current `JourneyState` exposes focus/context events, not graph triples. Add an optional graph payload retaining node IDs, labels, codes, edge types, endpoints, fact text, timestamps and source references where available. Preserve the query cutoff. Normalize after patient graph updates, but apply temporal selection per query. If only a timeline is supplied, explicitly use concept-only or keyword fallback; do not claim relation matching.
 
-**Fallback.** Non-PubMed sources and papers without annotations are invisible to graph matching. We evaluate graph alone first, then graph + keyword merged with `reciprocalRankFusion`.
+**Coverage and fallback.** Entity annotations without matching relations can support the weaker diagnosis-only score from section 2. Resources without usable annotations cannot contribute PubTator3 matches. Evaluate graph alone first, then optionally merge graph and keyword rankings using `reciprocalRankFusion`, preserving which approach supplied each result.
 
 **Order of work:**
 
-1. Indexer and a coverage report: how many crawled papers have relations, and how many have `treat`. A first check on the five papers judged for Patient-5 found three relations, none of them `treat`.
-2. Mapping data with tests.
-3. Contract change.
-4. Matcher and registry entry.
-5. Evaluation as in section 2, with added "trap" judgments (same drug, other disease).
-6. Decide on the fallback.
-
+1. Implement the indexer and coverage report: resources with entities, relations and treatment relations. The documented check on five Patient-5 papers found three relations and no `treat`; verify coverage across the corpus.
+2. Define and test concept/relation mappings, including direction and unsupported predicates.
+3. Extend the contract to preserve graph structure and cutoff.
+4. Implement triple/pattern comparison, then ranking and explanations; register the approach.
+5. Evaluate as in section 2, including same-drug/wrong-disease cases and annotation gaps.
+6. Evaluate and decide on keyword fusion.
 ## 5. Graph DB vs PostgreSQL
 
-The graph index lives in PostgreSQL, in a schema `graph` next to `keyword`. "Graph" describes how we model the data, not where we store it.
+**Decision: PostgreSQL is sufficient for this workflow.** Graph-based matching describes the data model and comparison logic; a graph database is not required. This decision concerns the matching index, independently of the database used to generate patient graphs.
 
-**Our matching is shallow.** We compare the few triples of one paper with the few triples of the patient (Patient-5: 3 concepts, 2 triples; papers: 0 to 2 relations). Each pattern is one triple deep, such as `?Treatment –treat→ prostate cancer`. Graph databases are fastest at following long paths across many nodes, which we do not do.
+- Store resource concept mentions in `graph.entities` and triples in `graph.relations`, linked to `documents`.
+- A relation row can contain `document_id`, `subject_id`, `relation_type`, `object_id` and evidence metadata. Preserve identifier namespaces and normalize directions.
+- Index concept mentions for candidate retrieval and relation endpoints for triple lookup. Choose composite index order according to query filters; see [PostgreSQL multicolumn indexes](https://www.postgresql.org/docs/current/indexes-multicolumn.html).
+- Retrieve candidate papers and their triples with SQL. Compare against patient triples and rank in TypeScript. Small connected patterns can be checked in code or through joins constrained to the same paper.
+- Keep the patient graph in the request payload or a separate cache. A persistent shared patient-paper graph is unnecessary.
+- Reuse existing PostgreSQL infrastructure and document references. Measure latency, memory and index size before making performance claims.
 
-**The matching runs in our code.** The database answers two indexed lookups: which papers mention a concept, and which relations those papers have. Scoring happens in TypeScript (section 2), where it can be tuned, traced for the debug UI and unit-tested, like keyword's rank fusion.
-
-| | PostgreSQL | Graph DB (e.g. Neo4j) |
-|---|---|---|
-| One-triple lookups | fast with an index on the concept ID | fast |
-| Long paths (drug → gene → pathway → disease) | slow, recursive joins | built for it |
-| Already in use | crawler, keyword, tests, CI | new service |
-| Link to `documents` | `ON DELETE CASCADE` | synced by hand |
-| Filters and fusion with keyword | same database | across two systems |
-| Licence | PostgreSQL License | Neo4j Community: GPLv3 |
-
-**When a graph DB would fit.** If we merged the triples of all papers into one knowledge graph and searched paths across papers. Example: a patient with a BRCA2 mutation, where one paper links BRCA2 to PARP1 and another links olaparib to PARP1, so olaparib is suggested although no paper links it to the patient's cancer. That infers links across papers, which section 2 rules out for now. If we need it later, [Apache AGE](https://age.apache.org/) adds graph queries (Cypher) to PostgreSQL without a second database.
-
+Reconsider a graph database if future requirements involve frequent deep traversals or complex paths across a large shared knowledge graph. PostgreSQL also supports [recursive queries](https://www.postgresql.org/docs/current/queries-with.html); neither option is universally faster. Cross-paper inference is outside the current workflow, and any future shared graph must preserve statement provenance.
 ## 6. Literature Research
 
 ### Narrative query graphs
