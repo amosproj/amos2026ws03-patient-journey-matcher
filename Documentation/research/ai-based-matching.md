@@ -1,5 +1,7 @@
 # AI-based Matching Research
 
+Results: [short visual report (PDF)](ai-matching-results/ai-matching-report.pdf) · [detailed report (PDF)](ai-matching-results/detailed/ai-matching-report-detailed.pdf) · [exact models used](ai-matching-results/models-used.md) · [plain-language summary](ai-matching-results/performance-report.md).
+
 **Goal:** investigate whether AI improves the relevance and usefulness of the resources returned for a patient journey
 
 
