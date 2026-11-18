@@ -71,11 +71,11 @@ On the VM:
 
 ## Scheduled crawls
 
-Every night a systemd timer starts one crawler container per source (`crawler-<source>` in [`compose.yaml`](../compose.yaml)), and in the morning `make index` adds the new documents to the indexes. Each run continues from the source's last successful run (`--since auto`, see [crawler](../crawler/README.md#run)). A topic without one, as on a new VM or with a new topic file, is crawled without a date. `--max-results` caps every query, channel or feed in every run, so it also sets the size of this first crawl. Any successful run counts, even a small one such as that of `make seed`, and a query, channel or feed added to a topic later starts from the topic's last run. To fill in such a topic, crawl it once without a date and with the results per run below (see the tasks).
+Every night a systemd timer starts one crawler container per source (`crawler-<source>` in [`compose.yaml`](../compose.yaml)), and in the morning `make index` adds the new documents to the indexes. Each run goes through the topics one after another, stores each when it is done and continues from that topic's last successful run (`--since auto`, see [crawler](../crawler/README.md#run)). A topic without one, as on a new VM or with a new topic file, is crawled without a date. `--max-results` caps every query, channel or feed in every run, so it also sets the size of this first crawl. Any successful run counts, even a small one such as that of `make seed`, and a query, channel or feed added to a topic later starts from the topic's last run. To fill in such a topic, crawl it once without a date and with the results per run below (see the tasks).
 
 | Source | Starts (UTC) | Results per run | Bound by |
 |---|---|---|---|
-| PubMed | 03:00 | 50 per query | NCBI: 3 requests/s, 5 with our key, large jobs between 21:00 and 05:00 US Eastern. Under an hour, the first crawl a few hours. |
+| PubMed | 03:00 | 50 per query | NCBI: 3 requests/s, 5 with our key, large jobs between 21:00 and 05:00 US Eastern. Under an hour, the first crawl about 16 hours. |
 | arXiv | 00:00 | 3 per query | 1 request every 3 s: at least 3 hours for the 3,615 queries, the first crawl about 12 hours. |
 | Zenodo | 00:10 | 25 per query (one page) | 30 searches a minute: about 2 hours. |
 | YouTube | 00:30 | 50 per channel | 10,000 quota units a day, a run needs about 1,400. Stored videos expire after 30 days unless a run refreshes them, so it must run at least every 14 days. |
@@ -92,8 +92,18 @@ The scheduled runs do not follow references (`--max-depth 0`): on a first crawl 
 | Log of a run | `journalctl -u crawler@pubmed`, `journalctl -u matcher-index` |
 | Crawl a source now | `sudo systemctl start --no-block crawler@pubmed` |
 | Fill in a topic | `cd /opt/patient-journey-matcher && docker compose run --rm --build crawler-pubmed pubmed --topic prostate_cancer --store --max-results 50 --max-depth 0` |
-| Stored runs | `docker exec amos-postgres psql -U amos -d patient_journey_matcher -c 'SELECT source, started_at, ok, inserted FROM crawl_runs ORDER BY id DESC LIMIT 10'` |
+| Stored runs | `docker exec amos-postgres psql -U amos -d patient_journey_matcher -c 'SELECT source, topics, started_at, ok, inserted FROM crawl_runs ORDER BY id DESC LIMIT 10'` |
 | Failed runs | `systemctl --failed` |
+
+### Crawl the cited papers
+
+`crawler-pubmed-references` in [`compose.yaml`](../compose.yaml) runs every PubMed search again and fetches the papers that at least two search results of a topic cite (`--min-citations 2`); those with a term of that topic are stored. It takes more than a day and is not scheduled:
+
+```sh
+sudo systemctl start --no-block crawler@pubmed-references
+```
+
+It stores topic by topic, and `systemctl stop` lets it store what it has of the topic it is working on. After a stop, a crash or a reboot, start it again: it skips the topics that are stored (`--resume`) and goes on with the one it was working on and with those that had a failed request. Afterwards the index has to read the new documents.
 
 ## Backups and cleanup
 
@@ -119,7 +129,7 @@ docker exec -i amos-postgres sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES
 3. **Configuration:** paste the content of `deploy/vm-setup.sh` into **Customisation Script**.
 4. Launch. The setup takes about 4 minutes. Follow it in the **Log** tab of the instance; it ends with the line `matcher-setup: done`.
 
-On a VM that already exists, run the update command from [Use the server](#use-the-server). It pulls before it runs the script, so the newest version of the script runs. It is safe to run again.
+On a VM that already exists, run the update command from [Use the server](#use-the-server). It pulls before it runs the script, so the newest version of the script runs. It is safe to run again. A crawl that is running goes on with the version it started with; to move it to the new one, restart it (`sudo systemctl restart --no-block crawler@pubmed-references`): it goes on with the topic it was working on.
 
 ## Limitations
 

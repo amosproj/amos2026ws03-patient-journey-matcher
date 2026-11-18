@@ -99,6 +99,10 @@ UNIT
 }
 
 # One run of crawler-<source> from compose.yaml; stdout only repeats the stored documents.
+# Stopping the unit ends the docker client, not the container. So the container has a fixed
+# name: a start removes one that was left behind, and a stop sends it Ctrl+C, on which the
+# crawler finishes the request at work and stores what it has (killed after 120 s). 130 is
+# the exit code of a stopped client and of a stopped crawler: no failure.
 cat > /etc/systemd/system/crawler@.service <<UNIT
 [Unit]
 Description=Crawl %i (Documentation/deployment.md)
@@ -109,7 +113,11 @@ Wants=docker.service
 Type=oneshot
 User=$APP_USER
 WorkingDirectory=$APP_DIR
-ExecStart=/usr/bin/docker compose run --rm --build -T crawler-%i
+ExecStartPre=-/bin/sh -c '/usr/bin/docker rm -f crawler-%i >/dev/null 2>&1'
+ExecStart=/usr/bin/docker compose run --rm --build -T --name crawler-%i crawler-%i
+ExecStopPost=-/bin/sh -c '/usr/bin/docker stop -s INT -t 120 crawler-%i >/dev/null 2>&1'
+TimeoutStopSec=150
+SuccessExitStatus=130
 StandardOutput=null
 UNIT
 # Daily in UTC, a few minutes apart; PubMed in NCBI's off-peak hours (21:00-05:00 US Eastern).
