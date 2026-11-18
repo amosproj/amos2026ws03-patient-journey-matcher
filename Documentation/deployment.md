@@ -103,7 +103,9 @@ The scheduled runs do not follow references (`--max-depth 0`): on a first crawl 
 sudo systemctl start --no-block crawler@pubmed-references
 ```
 
-It stores topic by topic, and `systemctl stop` lets it store what it has of the topic it is working on. After a stop, a crash or a reboot, start it again: it skips the topics that are stored (`--resume`) and goes on with the one it was working on and with those that had a failed request. Afterwards the index has to read the new documents.
+`crawler-arxiv-references` does the same for arXiv (`crawler@arxiv-references`, more than a day), with every cited arXiv paper that has a term of the topic. Its reference lists come from Semantic Scholar, which refuses many requests without `SEMANTIC_SCHOLAR_API_KEY` in `crawler/.env`. arXiv allows one request every three seconds in all, so the nightly arXiv crawl must not run next to it: `sudo systemctl stop crawler-arxiv.timer crawler@arxiv` before, `sudo systemctl start crawler-arxiv.timer` afterwards. An update of the VM starts the timer again.
+
+Both store topic by topic. On `systemctl stop` a crawl finishes the request it is working on and stores what it has of its topic, if that takes under two minutes; a lookup of 100 arXiv papers takes five. After a stop, a crash or a reboot, start the crawl again: it skips the topics that are stored (`--resume`) and goes on with the one it was working on and with those that had a failed request. Afterwards the index has to read the new documents.
 
 ## Backups and cleanup
 
