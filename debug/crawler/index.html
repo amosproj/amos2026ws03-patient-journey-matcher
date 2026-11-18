@@ -3,70 +3,120 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Debug UI</title>
+<title>Journey Matcher · Debug console</title>
 <link rel="icon" href="data:,">
 <style>
+/* Graphite: the interface is ink on grey. Colour marks only data (--meta, --full, --cited,
+   --seed) and states (--good, --pending, --critical). */
 :root {
-  --bg: #f5f6f8; --panel: #ffffff; --text: #1d2127; --muted: #6a7280; --line: #e3e6ea;
-  --accent: #2f6fde; --seed: #2f6fde; --cited: #1f9d55; --dropped: #a2a9b4;
-  --error: #d64545; --warn: #c27c0e; --hover: #f0f3f8; --code: #f2f4f7;
+  color-scheme: light;
+  --bg: #f3f4f6; --panel: #ffffff; --raised: #ffffff; --text: #16181d; --muted: #5d6470;
+  --line: #e2e4e9; --line-strong: #cdd1d8; --hover: #f4f5f7; --selected: #e9ebef; --code: #f1f3f5;
+  --accent: #16181d; --action: #16181d; --action-text: #ffffff; --action-hover: #2e323a; --series: #4d5461;
+  --error: #c4302b; --warn: #9a5b00; --danger: #c9302c;
+  --meta: #2556cf; --full: #e0662c; --cited: var(--meta); --seed: var(--full); --dropped: #a1a7b3;
+  --good: #1a9a55; --pending: #e8a200; --critical: #d33b3b;
+  --shadow: 0 1px 2px rgb(16 18 24 / .05); --shadow-pop: 0 12px 32px rgb(16 18 24 / .14), 0 2px 6px rgb(16 18 24 / .06);
+  --gutter: clamp(12px, 2vw, 32px);
 }
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #101216; --panel: #171a20; --text: #e4e7eb; --muted: #949ba6; --line: #2a2f38;
-    --accent: #6ea2ff; --seed: #6ea2ff; --cited: #48c47c; --dropped: #5d6470;
-    --error: #ff7b7b; --warn: #f0b44c; --hover: #1e232b; --code: #1d2129;
+    color-scheme: dark;
+    --bg: #0f1012; --panel: #16171a; --raised: #2b2e34; --text: #e9eaed; --muted: #adb2bc;
+    --line: #2a2c31; --line-strong: #3b3e45; --hover: #1f2125; --selected: #26282d; --code: #1c1e22;
+    --accent: #e9eaed; --action: #e9eaed; --action-text: #16171a; --action-hover: #ffffff; --series: #aeb3bc;
+    --error: #ff9690; --warn: #eab35a; --danger: #d23a3a;
+    --meta: #4a86f0; --full: #d9692f; --dropped: #575d69;
+    --good: #2fa968; --pending: #e6ad2e; --critical: #e05252;
+    --shadow: 0 1px 2px rgb(0 0 0 / .4); --shadow-pop: 0 16px 40px rgb(0 0 0 / .55);
   }
 }
+html { scrollbar-color: var(--line-strong) transparent; }
 * { box-sizing: border-box; }
 html, body { height: 100%; }
 body {
-  margin: 0; font: 13px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+  margin: 0; font: 14px/1.45 "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   background: var(--bg); color: var(--text);
-  display: grid; grid-template-rows: auto 1fr; overflow: hidden;
+  display: grid; grid-template-rows: auto minmax(0, 1fr); overflow: hidden;
 }
-a { color: var(--accent); text-decoration: none; }
-a:hover { text-decoration: underline; }
+a { color: var(--text); cursor: pointer; text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); text-underline-offset: 2px; }
+a:hover { text-decoration-color: currentColor; }
 button, input, select { font: inherit; color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+input { accent-color: var(--accent); }
 header {
-  display: flex; align-items: center; gap: 14px; padding: 10px 16px;
-  background: var(--panel); border-bottom: 1px solid var(--line);
+  display: flex; align-items: center; gap: clamp(8px, 1.5vw, 20px); padding: 7px var(--gutter);
+  background: var(--panel); border-bottom: 1px solid var(--line); position: relative; z-index: 4;
 }
-header h1 { margin: 0; font-size: 15px; font-weight: 650; }
+.brand { display: flex; align-items: center; gap: 10px; }
+.brand-mark {
+  display: block; flex: none; width: 42px; height: 42px; padding: 4px;
+  object-fit: contain; border-radius: 10px; background: #fff;
+}
+.brand h1 { margin: 0; white-space: nowrap; font-size: 18px; line-height: 1.15; letter-spacing: -.035em; }
+.brand small { font-size: 11px; color: var(--muted); }
+.brand:has(.status:not([hidden]), .match-feedback:not([hidden]):not(:empty)) small { display: none; }
+.environment { margin-left: auto; position: relative; }
+.environment summary, .controls-toggle {
+  font-size: 13px; font-weight: 600; cursor: pointer; border-radius: 8px; padding: 7px 12px;
+}
+.environment summary { color: var(--muted); }
+.environment summary:hover { background: var(--hover); }
+.environment .chips {
+  position: absolute; right: 0; top: calc(100% + 8px); width: min(290px, 85vw);
+  background: var(--panel); border: 1px solid var(--line); border-radius: 12px; padding: 14px;
+  box-shadow: var(--shadow-pop);
+}
+.status, .match-feedback { display: flex; align-items: center; gap: 6px; color: var(--muted); font-size: 12px; }
+.match-feedback:empty { display: none; }
+.match-feedback::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--good); flex: none; }
+.match-feedback[data-state="busy"]::before {
+  width: 11px; height: 11px; background: none; border: 2px solid var(--line); border-top-color: var(--accent);
+  animation: match-spin .8s linear infinite;
+}
+.match-feedback[data-state="error"]::before { background: var(--critical); }
+@keyframes match-spin { to { transform: rotate(1turn); } }
+.controls-toggle { display: flex; gap: 8px; align-items: center; flex-shrink: 0; background: var(--panel); border: 1px solid var(--line-strong); color: var(--text); }
+.controls-toggle:hover { background: var(--hover); }
+.controls-toggle::before { content: ""; width: 13px; height: 11px; border: 1.5px solid currentColor; border-radius: 3px; background: linear-gradient(90deg, transparent 28%, currentColor 28% 39%, transparent 39%); }
 .chips { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
 .chip {
   font-size: 11px; padding: 2px 8px; border-radius: 999px;
   border: 1px solid var(--line); color: var(--muted);
 }
-.chip.on { color: var(--cited); border-color: color-mix(in srgb, var(--cited) 50%, transparent); }
+.chip.on { color: var(--text); border-color: color-mix(in srgb, var(--good) 45%, transparent); background: color-mix(in srgb, var(--good) 10%, transparent); }
 .hint { color: var(--warn); font-size: 12px; }
-.status { margin-left: auto; display: flex; align-items: center; gap: 8px; font-weight: 600; }
 .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--dropped); }
 .status.running .dot { background: var(--accent); animation: pulse 1s infinite; }
-.status.finished .dot { background: var(--cited); }
-.status.failed .dot, .status.cancelled .dot { background: var(--error); }
+.status.finished .dot { background: var(--good); }
+.status.failed .dot, .status.cancelled .dot { background: var(--critical); }
 @keyframes pulse { 50% { opacity: .3; } }
 
-.layout { display: grid; grid-template-columns: 330px 1fr; min-height: 0; }
-.side {
-  background: var(--panel); border-right: 1px solid var(--line);
-  overflow: auto; padding: 14px 16px; display: flex; flex-direction: column; gap: 14px;
+.layout {
+  display: grid; grid-template-columns: clamp(285px, 24vw, 345px) minmax(0, 1fr);
+  gap: 16px; min-height: 0; padding: 16px var(--gutter);
 }
+.layout > .side, .layout > main { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); }
+.side { min-width: 0; overflow: auto; padding: 18px; display: flex; flex-direction: column; gap: 14px; }
+.side > * { flex-shrink: 0; }
+.layout > main { overflow: hidden; }
+body.controls-hidden .layout { grid-template-columns: minmax(0, 1fr); }
+body.controls-hidden .layout > .side { display: none; }
 .side-head { display: flex; align-items: baseline; justify-content: space-between; margin-top: 4px; }
 .side h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 0; }
 .link-button { border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 12px; padding: 0; }
-.link-button:hover { color: var(--error); }
+.link-button:hover { color: var(--accent); text-decoration: underline; }
 .link-button.armed { color: var(--error); font-weight: 600; }
 .field { display: flex; flex-direction: column; gap: 5px; }
 .field > span { font-size: 12px; color: var(--muted); }
-.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
-.seg button { border: 0; background: transparent; padding: 6px 4px; cursor: pointer; }
-.seg button + button { border-left: 1px solid var(--line); }
-.seg button.active { background: var(--accent); color: #fff; }
+.seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; padding: 2px; border-radius: 8px; background: var(--code); overflow: hidden; }
+.seg button { border: 0; border-radius: 6px; background: transparent; padding: 5px 4px; cursor: pointer; color: var(--muted); }
+.seg button:hover { color: var(--text); }
+.seg button.active { background: var(--raised); color: var(--text); box-shadow: 0 0 0 1px var(--line), var(--shadow); }
 input[type=text], input[type=number], input[type=date], select {
-  width: 100%; padding: 6px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel);
+  width: 100%; padding: 6px 8px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--panel);
 }
-input:focus, select:focus { outline: 2px solid color-mix(in srgb, var(--accent) 40%, transparent); border-color: var(--accent); }
+input:not([type=checkbox], [type=radio], [type=range]):focus, select:focus { outline: 3px solid color-mix(in srgb, var(--accent) 15%, transparent); outline-offset: 0; border-color: var(--accent); }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .topics { display: flex; flex-direction: column; gap: 2px; max-height: 220px; overflow: auto; border: 1px solid var(--line); border-radius: 6px; padding: 4px; }
 .topics label { display: flex; gap: 8px; align-items: baseline; padding: 4px 6px; border-radius: 5px; cursor: pointer; }
@@ -74,10 +124,13 @@ input:focus, select:focus { outline: 2px solid color-mix(in srgb, var(--accent) 
 .topics label.disabled { opacity: .45; cursor: default; }
 .topics small { color: var(--muted); margin-left: auto; white-space: nowrap; }
 .buttons { display: flex; gap: 8px; }
-.buttons button { flex: 1; padding: 8px; border-radius: 7px; border: 1px solid var(--line); background: var(--panel); cursor: pointer; font-weight: 600; }
-.buttons button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.buttons button { flex: 1; padding: 8px; border-radius: 7px; border: 1px solid var(--line-strong); background: var(--panel); cursor: pointer; font-weight: 600; }
+.buttons button:not(.primary, .danger):hover:not(:disabled) { background: var(--hover); }
+.buttons button.primary { background: var(--action); border-color: var(--action); color: var(--action-text); }
+.buttons button.primary:hover:not(:disabled) { background: var(--action-hover); border-color: var(--action-hover); }
 .buttons button:disabled { opacity: .45; cursor: default; }
 .cmd { display: block; font: 11.5px ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--code); padding: 7px 8px; border-radius: 6px; word-break: break-all; color: var(--muted); }
+.error:empty { display: none; }
 .error { color: var(--error); font-size: 12px; }
 
 .runs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
@@ -86,7 +139,7 @@ input:focus, select:focus { outline: 2px solid color-mix(in srgb, var(--accent) 
   display: grid; grid-template-columns: auto 1fr auto auto; gap: 2px 8px; align-items: center;
 }
 .runs li:hover { background: var(--hover); }
-.runs li.active { border-color: var(--accent); background: var(--hover); }
+.runs li.active { border-color: var(--line-strong); background: var(--selected); }
 .runs li.empty { cursor: default; color: var(--muted); display: block; }
 .runs .when { font-weight: 600; }
 .runs .what { grid-column: 2 / 5; color: var(--muted); font: 11px ui-monospace, Menlo, monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -96,24 +149,29 @@ input:focus, select:focus { outline: 2px solid color-mix(in srgb, var(--accent) 
   font-size: 12px; padding: 0 5px; border-radius: 5px; line-height: 18px;
 }
 .runs .del:hover { color: var(--error); border-color: var(--line); }
-.runs .del.armed { color: #fff; background: var(--error); border-color: var(--error); }
+.runs .del.armed { color: #fff; background: var(--danger); border-color: var(--danger); }
 .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--dropped); grid-row: 1 / 3; }
-.status-dot.finished { background: var(--cited); }
+.status-dot.finished { background: var(--good); }
 .status-dot.running { background: var(--accent); animation: pulse 1s infinite; }
-.status-dot.failed, .status-dot.cancelled { background: var(--error); }
+.status-dot.failed, .status-dot.cancelled { background: var(--critical); }
 
 main { display: grid; grid-template-rows: auto auto 1fr; min-width: 0; min-height: 0; }
-.stats { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 8px; padding: 12px 16px 4px; }
-.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; }
-.card b { display: block; font-size: 18px; font-variant-numeric: tabular-nums; }
+.stats {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(min(124px, 100%), 1fr)); gap: 0;
+  background: var(--panel); border-bottom: 1px solid var(--line);
+}
+.stats:empty { border: 0; }
+.card { background: var(--panel); box-shadow: inset -1px -1px var(--line); padding: 12px 16px; min-width: 0; overflow-wrap: anywhere; }
+.card b { display: block; font-size: clamp(19px, 1.8vw, 26px); line-height: 1.2; letter-spacing: -.035em; font-variant-numeric: tabular-nums; }
 .card span { font-size: 11.5px; color: var(--muted); }
 .card.bad b { color: var(--error); }
 .card.muted b { color: var(--muted); }
-.tabs { display: flex; gap: 2px; padding: 8px 16px 0; border-bottom: 1px solid var(--line); }
+.tabs { display: flex; overflow-x: auto; overflow-y: hidden; flex-shrink: 0; white-space: nowrap; gap: 2px; padding: 8px 16px 0; border-bottom: 1px solid var(--line); }
 .tabs button { border: 0; background: none; padding: 8px 12px; cursor: pointer; color: var(--muted); border-bottom: 2px solid transparent; margin-bottom: -1px; }
-.tabs button.active { color: var(--text); border-bottom-color: var(--accent); font-weight: 600; }
+.tabs button:hover { color: var(--text); }
+.tabs button.active { color: var(--text); border-bottom-color: var(--accent); font-weight: 650; }
 .tabs .badge { font-size: 11px; background: var(--code); border-radius: 999px; padding: 0 6px; margin-left: 4px; }
-.tabs .badge.bad { background: var(--error); color: #fff; }
+.tabs .badge.bad { background: color-mix(in srgb, var(--critical) 14%, transparent); color: color-mix(in oklab, var(--critical) 55%, var(--text)); font-weight: 600; }
 .content { position: relative; min-height: 0; overflow: hidden; }
 .tab { position: absolute; inset: 0; display: none; }
 .tab.active { display: flex; flex-direction: column; }
@@ -141,14 +199,18 @@ th { position: sticky; top: 0; background: var(--panel); text-align: left; font-
 td { padding: 6px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
 tbody tr { cursor: pointer; }
 tbody tr:hover { background: var(--hover); }
-tbody tr.selected { background: color-mix(in srgb, var(--accent) 14%, transparent); }
+tbody tr.selected { background: var(--selected); }
 td.id { font: 11.5px ui-monospace, Menlo, monospace; white-space: nowrap; }
 td.small { color: var(--muted); font-size: 12px; }
 td.found { min-width: 190px; }
-.pill { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 999px; color: #fff; white-space: nowrap; }
-.pill.seed { background: var(--seed); }
-.pill.cited { background: var(--cited); }
-.pill.dropped { background: var(--dropped); }
+/* Badges: a light tint of their colour; the label mixes that colour with ink to stay readable. */
+.pill {
+  --pill: var(--dropped); display: inline-block; font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 999px; white-space: nowrap;
+  color: color-mix(in oklab, var(--pill) 55%, var(--text)); background: color-mix(in srgb, var(--pill) 12%, transparent);
+}
+.pill.seed { --pill: var(--seed); }
+.pill.cited { --pill: var(--cited); }
+.pill.dropped { --pill: var(--dropped); }
 
 #tab-graph canvas { flex: 1; width: 100%; height: 100%; display: block; cursor: grab; }
 #tab-graph canvas.dragging { cursor: grabbing; }
@@ -165,11 +227,11 @@ td.found { min-width: 190px; }
 .tip {
   position: fixed; z-index: 50; max-width: 280px; padding: 8px 10px; border-radius: 7px;
   background: var(--text); color: var(--bg); font-size: 12px; line-height: 1.45;
-  box-shadow: 0 6px 20px rgba(0,0,0,.18); pointer-events: none; display: none;
+  box-shadow: var(--shadow-pop); pointer-events: none; display: none;
 }
-.tooltip { position: absolute; pointer-events: none; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; max-width: 380px; font-size: 12px; box-shadow: 0 4px 14px rgba(0,0,0,.12); display: none; z-index: 5; }
+.tooltip { position: absolute; pointer-events: none; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; max-width: 380px; font-size: 12px; box-shadow: var(--shadow-pop); display: none; z-index: 5; }
 
-.detail { position: absolute; top: 0; right: 0; bottom: 0; width: min(440px, 92%); background: var(--panel); border-left: 1px solid var(--line); box-shadow: -8px 0 24px rgba(0,0,0,.08); overflow: auto; padding: 16px 18px; z-index: 10; display: none; }
+.detail { position: absolute; top: 0; right: 0; bottom: 0; width: min(440px, 92%); background: var(--panel); border-left: 1px solid var(--line); box-shadow: var(--shadow-pop); overflow: auto; padding: 16px 18px; z-index: 10; display: none; }
 .detail.open { display: block; }
 .detail h3 { margin: 6px 0 10px; font-size: 15px; line-height: 1.35; }
 .detail .close { position: absolute; top: 10px; right: 12px; border: 0; background: none; font-size: 18px; cursor: pointer; color: var(--muted); }
@@ -188,44 +250,41 @@ td.found { min-width: 190px; }
 
 /* Screens and the database view */
 [hidden] { display: none !important; }
-.views { display: flex; border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
-.views button { border: 0; background: transparent; padding: 4px 12px; cursor: pointer; color: var(--muted); font-weight: 600; }
-.views button + button { border-left: 1px solid var(--line); }
-.views button.active { background: var(--accent); color: #fff; }
+.views { display: flex; gap: 3px; padding: 3px; border-radius: 10px; background: var(--code); }
+.views button { border: 1px solid transparent; background: transparent; border-radius: 7px; padding: 6px 14px; cursor: pointer; color: var(--muted); font-weight: 600; }
+.views button:hover { color: var(--text); }
+.views button.active { background: var(--raised); color: var(--text); border-color: var(--line); box-shadow: var(--shadow); }
 .check { display: flex; align-items: center; gap: 7px; font-size: 12.5px; cursor: pointer; }
 .check:has(input:disabled) { opacity: .5; cursor: default; }
 .muted { color: var(--muted); }
 .mono { font: 11.5px ui-monospace, SFMono-Regular, Menlo, monospace; }
 .expired, .red { color: var(--error); }
 .expiring { color: var(--warn); }
-.pill.src-pubmed { background: #2f6fde; }
-.pill.src-arxiv { background: #7c4dcc; }
-.pill.src-zenodo { background: #0f8a80; }
-.pill.src-youtube { background: #d93025; }
-.pill.src-podcast { background: #d9822b; }
-.pill.ok { background: var(--cited); }
-.pill.failed { background: var(--error); }
-.pill.plain { background: var(--code); color: var(--text); }
+/* The badge names the source, so sources stay neutral and colour is left to states. */
+.pill.plain, .pill[class*="src-"] { color: var(--text); background: var(--code); box-shadow: inset 0 0 0 1px var(--line); }
+.pill.ok { --pill: var(--good); }
+.pill.failed { --pill: var(--critical); }
 .db-conn { border: 1px solid var(--line); border-radius: 8px; padding: 9px 11px; display: grid; gap: 3px; font-size: 12.5px; }
-.db-conn b::before { content: "●"; margin-right: 6px; color: var(--cited); }
-.db-conn.down b::before { color: var(--error); }
-.db-conn.warn b::before { color: var(--warn); }
+.db-conn b::before { content: "●"; margin-right: 6px; color: var(--good); }
+.db-conn.down b::before { color: var(--critical); }
+.db-conn.warn b::before { color: var(--pending); }
 .db-conn small { color: var(--muted); word-break: break-word; }
 .db-conn .hint { color: var(--warn); font-size: 12px; }
 .db-tables { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
 .db-tables li { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; padding: 6px 8px; border-radius: 6px; cursor: pointer; border: 1px solid transparent; }
 .db-tables li:hover { background: var(--hover); }
-.db-tables li.active { border-color: var(--accent); background: var(--hover); }
+.db-tables li.active { border-color: var(--line-strong); background: var(--selected); }
 .db-tables li.empty { cursor: default; color: var(--muted); }
 .db-tables small { color: var(--muted); white-space: nowrap; }
 .filters { display: flex; flex-direction: column; gap: 9px; }
-.filter-chip { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 5px 8px; border-radius: 6px; background: color-mix(in srgb, var(--accent) 14%, transparent); font-size: 12px; }
+.filter-chip { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 5px 8px; border-radius: 6px; background: var(--selected); font-size: 12px; }
 .filter-chip button { border: 0; background: none; cursor: pointer; color: var(--muted); font-size: 15px; line-height: 1; padding: 0 2px; }
 .filter-chip button:hover { color: var(--error); }
 .dbtab { position: absolute; inset: 0; display: none; }
 .dbtab.active { display: flex; flex-direction: column; }
 .pager { display: flex; align-items: center; gap: 8px; font-size: 12px; }
-.pager button { border: 1px solid var(--line); background: var(--panel); border-radius: 6px; padding: 3px 9px; cursor: pointer; }
+.pager button { border: 1px solid var(--line-strong); background: var(--panel); border-radius: 6px; padding: 3px 9px; cursor: pointer; }
+.pager button:hover:not(:disabled) { background: var(--hover); }
 .pager button:disabled { opacity: .4; cursor: default; }
 .pager select { width: auto; padding: 3px 6px; }
 th.sortable { cursor: pointer; user-select: none; }
@@ -250,44 +309,42 @@ td.cell { font-size: 12px; max-width: 320px; overflow: hidden; text-overflow: el
 .db-down-box { max-width: 540px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 18px 20px; }
 .db-down-box h3 { margin: 0 0 6px; font-size: 15px; }
 .db-down-box p { margin: 6px 0; word-break: break-word; }
-.db-down-box button { margin-top: 8px; padding: 6px 14px; border-radius: 7px; border: 1px solid var(--line); background: var(--panel); cursor: pointer; font-weight: 600; }
+.db-down-box button { margin-top: 8px; padding: 6px 14px; border-radius: 7px; border: 1px solid var(--line-strong); background: var(--panel); cursor: pointer; font-weight: 600; }
 .copy { border: 1px solid var(--line); background: none; border-radius: 5px; font-size: 11px; padding: 0 6px; margin-left: 6px; cursor: pointer; color: var(--muted); }
 .copy:hover { color: var(--accent); }
 .detail .actions { display: flex; gap: 8px; margin: 10px 0; }
-.detail .actions button { padding: 5px 10px; border-radius: 6px; border: 1px solid var(--accent); background: none; color: var(--accent); cursor: pointer; font-weight: 600; }
-.detail .actions button:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+.detail .actions button { padding: 5px 10px; border-radius: 6px; border: 1px solid var(--line-strong); background: none; color: var(--text); cursor: pointer; font-weight: 600; }
+.detail .actions button:hover { background: var(--hover); }
 .detail .label { color: var(--muted); font-size: 12px; margin-top: 10px; }
 .db-tables li { position: relative; }
 .db-tables .empty-table { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); visibility: hidden; border: 1px solid var(--error); background: var(--panel); color: var(--error); border-radius: 5px; font-size: 11px; padding: 0 7px; line-height: 18px; cursor: pointer; }
 .db-tables li:hover .empty-table { visibility: visible; }
 .db-tables li:hover small { visibility: hidden; }
-.db-notice { border-radius: 8px; padding: 8px 10px; font-size: 12px; background: color-mix(in srgb, var(--cited) 15%, transparent); color: var(--text); }
-dialog.confirm { border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; width: min(470px, 92vw); background: var(--panel); color: var(--text); box-shadow: 0 20px 60px rgba(0, 0, 0, .35); }
-dialog.confirm::backdrop { background: rgba(0, 0, 0, .45); }
+.db-notice { border-radius: 8px; padding: 8px 10px; font-size: 12px; background: color-mix(in srgb, var(--good) 12%, transparent); color: var(--text); }
+dialog.confirm { border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; width: min(470px, 92vw); background: var(--panel); color: var(--text); box-shadow: var(--shadow-pop); }
+dialog.confirm::backdrop { background: rgb(10 11 13 / .5); }
 dialog.confirm h3 { margin: 0 0 6px; font-size: 15px; color: var(--error); }
 dialog.confirm p { margin: 6px 0; }
 .empty-list { list-style: none; margin: 10px 0; padding: 0; border: 1px solid var(--line); border-radius: 8px; }
 .empty-list li { display: flex; justify-content: space-between; gap: 10px; padding: 6px 10px; }
 .empty-list li + li { border-top: 1px solid var(--line); }
 .empty-list small { color: var(--muted); }
-.buttons button.danger { background: var(--error); border-color: var(--error); color: #fff; }
+.buttons button.danger { background: var(--danger); border-color: var(--danger); color: #fff; }
 
-/* Index and Matcher screens. Chart colours: one hue (--accent) for single series; --meta and
+/* Index and Matcher screens. Chart colours: graphite (--series) for single series; --meta and
    --full tell the two keyword indexes apart; --good, --pending and --critical are states and
    always come with a label. */
-:root { --meta: #2a78d6; --full: #eb6834; --good: #0ca30c; --pending: #fab219; --critical: #d03b3b; }
-@media (prefers-color-scheme: dark) { :root { --meta: #3987e5; --full: #d95926; } }
 textarea {
   font: 11.5px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; color: inherit; width: 100%; min-height: 170px;
-  resize: vertical; padding: 7px 8px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel);
+  resize: vertical; padding: 7px 8px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--panel);
 }
-textarea:focus { outline: 2px solid color-mix(in srgb, var(--accent) 40%, transparent); border-color: var(--accent); }
+textarea:focus { outline: 3px solid color-mix(in srgb, var(--accent) 15%, transparent); outline-offset: 0; border-color: var(--accent); }
 .db-tables li.schema-name { cursor: default; padding: 8px 8px 2px; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
 .db-tables li.schema-name:hover { background: none; }
 .db-tables li.plain { cursor: default; }
 .db-tables li.plain:hover { background: none; }
-.heat .any { background: var(--accent); }
-.pill.none { background: var(--code); color: var(--muted); }
+.heat .any { background: var(--series); }
+.pill.none { background: none; color: var(--muted); box-shadow: inset 0 0 0 1px var(--line); }
 .ixtab, .mttab { position: absolute; inset: 0; display: none; }
 .ixtab.active, .mttab.active { display: flex; flex-direction: column; }
 .panels { flex: 1; overflow: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 14px; }
@@ -297,10 +354,10 @@ textarea:focus { outline: 2px solid color-mix(in srgb, var(--accent) 40%, transp
 .panel > h3 .spacer { flex: 1; }
 .panel th { position: static; }
 .panel-body { padding: 10px 12px 12px; display: grid; gap: 10px; }
-.mini-seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; font-size: 12px; font-weight: 400; }
-.mini-seg button { border: 0; background: none; padding: 2px 9px; cursor: pointer; color: var(--muted); }
-.mini-seg button + button { border-left: 1px solid var(--line); }
-.mini-seg button.active { background: var(--accent); color: #fff; }
+.mini-seg { display: inline-flex; padding: 2px; border-radius: 7px; background: var(--code); overflow: hidden; font-size: 12px; font-weight: 400; }
+.mini-seg button { border: 0; border-radius: 5px; background: none; padding: 1px 9px; cursor: pointer; color: var(--muted); }
+.mini-seg button:hover { color: var(--text); }
+.mini-seg button.active { background: var(--raised); color: var(--text); box-shadow: 0 0 0 1px var(--line), var(--shadow); }
 .legend-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; font-size: 12px; color: var(--muted); }
 .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
 .s-indexed, .swatch.good { background: var(--good); }
@@ -322,7 +379,7 @@ td.link:hover { color: var(--accent); text-decoration: underline; }
 .bar-row.link:hover { background: var(--hover); }
 .bar-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .bar-track { height: 8px; }
-.bar-track i { display: block; height: 100%; background: var(--accent); border-radius: 0 4px 4px 0; }
+.bar-track i { display: block; height: 100%; background: var(--series); border-radius: 0 4px 4px 0; }
 .bar-value { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
 .bar-value small { color: var(--muted); }
 .detail .bars { margin: 6px 0 10px; }
@@ -330,40 +387,65 @@ td.link:hover { color: var(--accent); text-decoration: underline; }
 .detail .bar-track { height: 6px; }
 .term-test { display: grid; gap: 4px; margin: 8px 0; }
 .term-test small { color: var(--muted); }
-.yes { color: var(--good); font-weight: 600; }
+.yes { color: color-mix(in oklab, var(--good) 70%, var(--text)); font-weight: 600; }
 .no { color: var(--muted); }
 
 /* one scrollbar for the column: an open event list never hides the results */
-.match-main { grid-template-rows: auto auto auto auto auto; align-content: start; overflow-y: auto; }
+.layout > .match-main { grid-template-rows: auto auto auto auto auto; align-content: start; overflow-y: auto; }
 /* A long journey scrolls in its own row instead of widening the page. */
 .match-main > * { min-width: 0; }
 /* Fixed rows: the results keep the last one when the terms are hidden (MCP server). */
 .match-main > .tabs { grid-row: 4; }
 .match-main > .content { grid-row: 5; overflow: visible; }
 .match-main .mttab { position: static; }
-/* No scrollbars of their own; the table header sticks to the top of the column. */
-.match-main .table-wrap, .match-main .rank-lists, .match-main .raw, .match-main .client { overflow: visible; }
+/* Keep vertical scrolling in the main column. Wide result matrices can pan sideways. */
+.match-main .rank-lists, .match-main .raw, .match-main .client { overflow: visible; }
+.match-main .table-wrap { overflow-x: auto; }
 /* A document opens beside the column, wherever it is scrolled. */
 #mt-detail { position: fixed; }
 td.title { min-width: 260px; max-width: 460px; }
-.journey-bar { display: flex; align-items: center; gap: 12px; padding: 8px 16px 0; font-size: 12.5px; }
-.journey-bar input[type=range] { flex: 0 1 380px; accent-color: var(--accent); }
-.journey-bar b, .journey-bar > span:first-child { font-variant-numeric: tabular-nums; white-space: nowrap; }
-.timeline { display: flex; overflow-x: auto; padding: 6px 16px 10px; }
-.timeline .empty { padding: 14px 0; text-align: left; }
-.ev { flex: 0 0 136px; position: relative; border: 0; background: none; padding: 0 10px 0 0; text-align: left; color: inherit; cursor: pointer; }
-.ev::before { content: ""; position: absolute; left: 0; right: 0; top: 23px; height: 2px; background: var(--line); }
-.ev:last-child::before { right: auto; width: 14px; }
-.ev .when { display: block; height: 16px; font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
-.ev .dot { position: relative; display: block; width: 14px; height: 14px; margin: 1px 0 5px; border-radius: 50%; background: var(--panel); border: 2px solid var(--muted); }
-.ev.context .dot { border-color: var(--accent); }
-.ev.focus .dot { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 28%, transparent); }
-.ev.future { opacity: .45; }
-.ev .what { display: block; font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.ev .what b { color: var(--text); font-size: 12px; }
-.ev .label { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; font-size: 12px; line-height: 1.3; }
-.ev:hover .label { color: var(--accent); }
-.terms { display: grid; gap: 5px; padding: 8px 16px; border-top: 1px solid var(--line); }
+.journey-panel { margin: 16px 16px 8px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.journey-bar { position: relative; overflow: hidden; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 12px 14px; background: var(--code); }
+.match-main[aria-busy="true"] .journey-bar::after {
+  content: ""; position: absolute; bottom: 0; left: 0; width: 44%; height: 3px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  animation: match-sweep 1.4s ease-in-out infinite;
+}
+@keyframes match-sweep { from { transform: translateX(-100%); } to { transform: translateX(230%); } }
+.match-main[aria-busy="true"] .mttab.active { opacity: .6; }
+.journey-bar h2 { font-size: 16px; margin: 0 auto 0 0; letter-spacing: -.025em; }
+.journey-bar label, .journey-bar b { font-size: 12px; }
+.journey-bar input { width: clamp(64px, 10vw, 170px); }
+.journey-bar b { font-variant-numeric: tabular-nums; }
+.timeline { display: flex; align-items: stretch; overflow-x: auto; padding: 12px 14px 8px; }
+.timeline .empty { padding: 12px 0; text-align: left; }
+.ev {
+  flex: 1 0 164px; max-width: 255px; position: relative; display: grid; grid-template-rows: auto auto 1fr auto; align-content: start;
+  text-align: left; border: 0; background: transparent; border-radius: 8px; padding: 6px 10px; cursor: pointer;
+}
+.ev::before { content: ""; position: absolute; left: 12px; right: -12px; top: 32px; height: 2px; background: var(--line); }
+.ev:last-child::before { display: none; }
+.ev .when { display: block; font-size: 12px; line-height: 16px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.ev .dot { position: relative; z-index: 1; display: block; height: 12px; width: 12px; border: 2px solid var(--muted); background: var(--panel); margin: 5px 0 7px; }
+.ev.context .dot, .ev.focus .dot { border-color: var(--accent); }
+.ev.focus, .ev.focus:hover { background: var(--selected); }
+.ev.focus .dot { background: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+.ev.focus .when, .ev.focus .what { color: var(--accent); font-weight: 650; }
+.ev.future { color: var(--muted); }
+.ev.future .dot { border-style: dashed; }
+.ev .what { display: block; margin-top: 4px; font-size: 11px; color: var(--muted); overflow-wrap: anywhere; }
+.ev .label { font-size: 14px; line-height: 1.3; font-weight: 600; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.ev:hover { background: var(--hover); }
+#mt-asof-note { display: block; padding: 0 14px 10px; font-size: 12px; }
+#mt-asof-note:empty { display: none; }
+.disclosure { border: 1px solid var(--line); border-radius: 9px; }
+.disclosure > summary { padding: 9px 12px; color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; }
+.disclosure > summary:hover { color: var(--accent); }
+.tuning-body { padding: 0 12px 12px; }
+.tuning-body .link-button { margin: 8px 0; }
+.request-editor textarea { margin: 0 10px 10px; width: calc(100% - 20px); background: var(--code); }
+.terms-disclosure { margin: 0 16px 6px; }
+.terms { display: grid; gap: 7px; padding: 4px 12px 12px; }
 /* label left, chips right: wrapped chips stay under the first chip */
 .term-row { display: grid; grid-template-columns: 132px 1fr; gap: 5px; align-items: baseline; }
 .term-row > .row-label { font-size: 12px; font-weight: 600; color: var(--muted); }
@@ -395,7 +477,7 @@ td.title { min-width: 260px; max-width: 460px; }
 .ev-terms.key .chips { gap: 4px 16px; }
 .key-item { display: inline-flex; gap: 6px; align-items: baseline; color: var(--muted); }
 .meter { display: inline-block; width: 56px; height: 6px; margin-right: 7px; border-radius: 999px; background: var(--code); overflow: hidden; vertical-align: 1px; }
-.meter i { display: block; height: 100%; border-radius: 999px; background: var(--accent); }
+.meter i { display: block; height: 100%; border-radius: 999px; background: var(--series); }
 /* The parts of a rank-fusion score side by side: metadata, then full text. */
 .meter.split { display: inline-flex; width: 80px; }
 .meter.split i { border-radius: 0; }
@@ -432,32 +514,35 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
 .rank-item:hover { background: var(--hover); }
 .rank-item .n { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
 .rank-item small { color: var(--muted); }
-.pill.hit { background: var(--accent); }
+.pill.hit { background: var(--text); color: var(--panel); }
 .raw { flex: 1; overflow: auto; padding: 12px 16px; }
 .raw pre { margin: 0 0 12px; padding: 10px; border-radius: 6px; background: var(--code); font-size: 11px; overflow: auto; }
 .raw summary { cursor: pointer; margin-bottom: 8px; color: var(--muted); }
-.notice { margin: 12px 16px 0; padding: 9px 12px; border-radius: 8px; background: color-mix(in srgb, var(--error) 12%, transparent); font-size: 12.5px; white-space: pre-wrap; }
+.notice { margin: 12px 16px 0; padding: 9px 12px; border-radius: 8px; background: color-mix(in srgb, var(--critical) 10%, transparent); font-size: 12.5px; white-space: pre-wrap; }
 .notice.quiet { background: var(--code); color: var(--muted); }
 /* Example client: the answer as an app could show it, from the fields of the tools only. */
 .client { flex: 1; overflow: auto; padding: 0 16px 24px; }
-.client > * { max-width: 800px; margin-left: auto; margin-right: auto; }
-.client-note { margin-top: 12px; margin-bottom: 0; color: var(--muted); font-size: 12px; }
+.client > * { max-width: 940px; margin-left: auto; margin-right: auto; }
+.match-main:has(#mttab-client.active) > :is(.stats, .terms-disclosure) { display: none; }
+.client { background: var(--bg); display: flow-root; }
+.client .notice { margin-block: 12px; }
 .client-head { margin-top: 14px; margin-bottom: 10px; }
 .client-head small { color: var(--muted); }
-.client-head h3 { margin: 2px 0 0; font-size: 16px; line-height: 1.3; }
-.client .notice { margin-top: 0; margin-bottom: 10px; }
-.src-card { display: grid; gap: 14px; margin-bottom: 10px; padding: 12px 14px; background: var(--panel); border: 1px solid var(--line); border-radius: 10px; }
+.client-head h3 { margin: 4px 0 0; font-size: clamp(18px, 2vw, 25px); letter-spacing: -.035em; line-height: 1.3; }
+
+.src-card { display: grid; gap: 16px; margin-bottom: 12px; padding: 18px 20px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); }
+.src-card.top-result { border-inline-start: 4px solid var(--accent); }
 .src-card.has-image { grid-template-columns: 176px 1fr; }
 .src-card > img { width: 176px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 6px; background: var(--code); }
 .src-card > div { min-width: 0; }
 .src-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
-.src-meta .rank { margin-left: auto; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.src-meta .rank { color: var(--accent); font-size: 15px; font-weight: 650; margin-left: auto; white-space: nowrap; font-variant-numeric: tabular-nums; }
 .src-meta .meter { margin: 0 0 0 7px; }
-.src-card h4 { margin: 6px 0 2px; font-size: 14.5px; font-weight: 650; line-height: 1.35; }
-.src-card h4 a { color: var(--text); }
-.src-card h4 a:hover { color: var(--accent); }
+.src-card h4 { margin: 9px 0 4px; font-size: clamp(17px, 1.6vw, 22px); letter-spacing: -.025em; font-weight: 650; line-height: 1.35; }
+.src-card h4 a { color: var(--text); text-decoration: none; }
+.src-card h4 a:hover { text-decoration: underline; }
 .src-card .byline { font-size: 12px; color: var(--muted); }
-.src-card .summary { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin: 6px 0 0; font-size: 12.5px; line-height: 1.5; white-space: pre-line; overflow-wrap: anywhere; }
+.src-card .summary { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin: 9px 0 0; font-size: 14px; line-height: 1.55; white-space: pre-line; overflow-wrap: anywhere; }
 .src-card.more .summary { display: block; }
 .src-card .summary.none { color: var(--muted); }
 .src-foot { display: flex; gap: 6px 12px; align-items: center; flex-wrap: wrap; margin-top: 9px; font-size: 12px; color: var(--muted); }
@@ -471,24 +556,62 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
 .file a { overflow-wrap: anywhere; }
 .files summary { margin-top: 4px; cursor: pointer; color: var(--muted); font-size: 12px; }
 .files pre { max-height: 260px; overflow: auto; margin: 6px 0 0; padding: 10px; border-radius: 6px; background: var(--code); font-size: 11px; white-space: pre-wrap; overflow-wrap: anywhere; }
-@media (max-width: 760px) { .src-card.has-image { grid-template-columns: 1fr; } .src-card > img { width: 100%; } }
+@media (max-width: 840px) {
+  header { flex-wrap: wrap; gap: 6px 12px; padding-block: 8px; }
+  .views { order: 1; width: 100%; }
+  .views button { flex: 1; padding: 6px 4px; }
+  .controls-toggle { font-size: 12px; padding: 6px 8px; }
+}
+@media (max-width: 760px) {
+  .layout { grid-template-columns: minmax(0, 1fr); padding: 8px; }
+  body:not(.controls-hidden) .layout > main { display: none; }
+  .layout > main { border-radius: 10px; }
+  .stats { grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); max-height: 24vh; overflow-y: auto; }
+  .card { padding: 7px 10px; }
+  .toolbar, .log-tools { flex-wrap: wrap; }
+  .journey-panel, .terms-disclosure { margin-inline: 8px; }
+  .journey-bar h2 { flex-basis: 100%; }
+  .rank-lists { display: block; }
+  .term-row, .ev-terms { grid-template-columns: 1fr; }
+  .term-key { margin-left: 0; }
+  .src-card.has-image { grid-template-columns: 1fr; }
+  .src-card > img { width: 100%; max-height: 160px; }
+  .graph-note { top: 8px; bottom: auto; }
+  .legend { flex-wrap: wrap; gap: 4px 10px; }
+}
+@media (max-width: 480px) {
+  header { gap: 5px 8px; }
+  .environment summary { padding-inline: 6px; }
+  .controls-toggle { font-size: 0; gap: 0; padding: 9px; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::after, *::before { animation: none !important; } }
 </style>
 </head>
 <body>
 <header>
-  <h1>Debug</h1>
-  <nav class="views" id="views" title="The pipeline: crawl, store, index, match">
-    <button type="button" data-screen="runs" class="active">Runs</button>
+  <div class="brand">
+    <!-- Icon from Documentation/logo.png, embedded for the single-page debug server. -->
+    <img class="brand-mark" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEgAAABICAMAAABiM0N1AAAAYFBMVEX///////7//v7+///+/v7+/v39/v78/f38/Pzs9fW32NpztrkmoJoJlI0GlI0Gk40Gk4wGk4sGkowFkosZj48AjYYlg4spS3cRNmcPNWYONWYPNGUONGYONGUNNGUEK16BCGt8AAAFaElEQVR42u2X6WKrOAyF3RRsbENCcEjC/v5vOUeSCw6kd2Y687NqszQ1X6SjxUapX/u1/8eyvRll/cGsMvGfjv/S2/rvQFj6XA729KqQf1Zt295c5O5Beb5+XCiHyw42L45JRdl6V7blG48AoZ9oeaHuy3Oa+q7vp6kbp77vYP1zIZcQdVVZZcPNbi5toMSfzHzox/Icx7EHaJymid8S6A6QVvYWXOHaMlEpBYlLeM7NhwFowsUAdB0wEzslIATu26qsWr85lK8a5XlkkZmPQjyCUUzkFL0KqFC2hNbBW60NGcn7CsrkkQkIHkEjPLoO/gx4xyBDnOCdw1WGLzZp1kSk6JZmEEGIgleSG24xiP1xdL2RYmOlEhDrI7nTrBEnio20HqE6g4RTFMVJS4yl/TTHgmSeUQISd/o1fQQioT0FSCzUkkdNaf3iUR4xeS6hgcKVBBL/9n0ElYqDKsuS66mieto8WusoBfVUAiijnn3qIsh/Ja4NlVOueQVFBhOjRhTPRBE9WaluBSkdE+fbm79xPW2hFakZzlosoW5ZpAj6FWR8Gyhx7Je3WQIyu7myZm3q5vt95rrsqNcYZKms8XVKO+e0KjaxZcIk9pi7nnv2uTwUtTBx5qeNIDSbNtnJnOL1evXA70bP3CGmoSOQz7Sn8uyk+UsGtTSMjCmKDB64YuW4ZX4dPejUaZiINkMMN5NC88PC89D6T/KIaoA8oOz5YnMIrUU/0HSYWJyOJwgiQzj2OXc81jLIi5TbCiDUAPIWkL0btwwbz7FpGvqREkWggf6eZASdaDzNCIxmI/UHkma1AoA6RGTbgaYheoSOjyDoUpCETyfp9sRpvSGhLuUNrVbsQXBiGLtxgMYDu4T4KFE0yZa7ZU4olYY/XqDO0ugu2+Y1NHjRESh6I1P6gY0ADYWVBUKpAkqDGt65OEzo9bZyVo+ofgcJDAW9xBLk6YMrQtXQPoTnENpA8eALwEx6jUE04KHQQKQBvjh8ikyZ0jOmrSoAVsP0wP5WFjIjU9BAue8oWwOXMRp7ROko23JjVNUVrNuXlagd1FRJZWmyFMRl2NETv10eKNvHcs8U9h3eN+CDs5tBnqoG6KTT7eh+3J+p4rx0KQaOa69bjtkKV4XqAHKHAwP3jxsdpfniqGi8OtlkHWl/BL0zbDgFqsfhe/GurKyWsfhl1fl8BCGHB3s8sgxdCnVY7aj4ZnV9qd5otLb9dvSgpsg1uhTLUUyftgxV3dSXSx1NQNkOhAE/zWzjSE8yfjQavabjgkW2W3jRCAI0PN6COPsyUakKwHk6TECE04Ta0TDG28v5QpT6cj5fvkCadrEE1PGGyM9yhHlQu/smhJrVpiF0htVngv0ZJIZBzXuhVSfqr4ZAXnFNnqPBKQLhH6U+6TwBYUJ2q9C8X1BveGpQGEDaYKYhssSqs3wDb4Vr+h/LnBpzSpInNMgTNYlrKaLwYhi7n+ZFbGXvj9SeXNHc7JwlPnwiZ1vTSueuB9ttX1P2xbj64A1JVDfNGZVcU2vtV5n98dgU+wZpqfjAYI8apIm0Kl8XafPmnG0Sw+5PAtURdKnJt5qTlC4zf3vyp32wZp0Dk5qayolA6W1Dat+AZJAFDk2C4/T9GAQvgBGVKHs/90hyf8bj+p9AsYgkbT8HUTxBEncV2j8E5UdQtOuVw3sB5a+vu8Po13mUQTwJY0FSaCEBbXdTB9B2yoaJRxdKft1IgZNiDJLbg+Q0/XqbJR/Fe6R8FZvKKLBCIYhH5mvVdpre3a/JbYgsMrQhVkeTW7QN9Fbs+BWyRsvZcG8lbtHy9dbu+/RvHuv8zeZLu68WBXY303/eaX/t1/6N/QXBwrqYtFlAigAAAABJRU5ErkJggg==" alt="">
+    <div>
+      <h1>Journey Matcher</h1>
+      <small>Debug console</small>
+      <div class="status" id="status"><span class="dot"></span><span>Crawler <span id="status-text">ready</span></span></div>
+      <span class="match-feedback" id="mt-feedback" role="status" aria-atomic="true" hidden></span>
+    </div>
+  </div>
+  <nav class="views" id="views" aria-label="Pipeline screens">
+    <button type="button" data-screen="runs" class="active" aria-current="page">Runs</button>
     <button type="button" data-screen="db">Database</button>
     <button type="button" data-screen="index">Index</button>
     <button type="button" data-screen="match">Matcher</button>
   </nav>
-  <div class="chips" id="env"></div>
-  <div class="status" id="status"><span class="dot"></span><span id="status-text">ready</span></div>
+  <details class="environment"><summary>Environment</summary><div class="chips" id="env"></div></details>
+  <button type="button" class="controls-toggle" id="controls-toggle" aria-expanded="true" aria-controls="runs-controls">Hide controls</button>
 </header>
 
 <div class="layout" id="runs-view">
-  <aside class="side">
+  <aside class="side" id="runs-controls">
+    <h2>Run settings</h2>
     <form id="form" autocomplete="off">
       <div class="field">
         <span>Source <i class="info" tabindex="0" data-tip="Which source to search. PubMed and arXiv return papers and follow their reference lists. Zenodo returns articles, preprints, conference papers, reports, posters, presentations and videos, without references. YouTube lists a channel's latest public videos (needs YOUTUBE_API_KEY). Podcasts lists the episodes of curated RSS feeds.">i</i></span>
@@ -532,13 +655,13 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
       <code class="cmd" id="cmd" style="margin-top:10px" title="The same run in the terminal"></code>
     </form>
     <div class="side-head">
-      <h2>Runs</h2>
+      <h2>Run history</h2>
       <button type="button" class="link-button" id="clear-runs" title="Delete all finished runs">Clear all</button>
     </div>
     <ul class="runs" id="runs"></ul>
   </aside>
 
-  <main>
+  <main aria-label="Crawler runs">
     <div class="stats" id="stats"></div>
     <nav class="tabs" id="tabs">
       <button data-tab="live" class="active">Live log</button>
@@ -549,7 +672,7 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
     <div class="content">
       <section class="tab active" id="tab-live">
         <div class="log-tools"><label><input type="checkbox" id="show-starts"> Show request starts</label><label><input type="checkbox" id="follow" checked> Follow</label><span id="run-command"></span></div>
-        <div class="log" id="log"><div class="empty">Start a run on the left or pick an earlier one.</div></div>
+        <div class="log" id="log"><div class="empty">Start a crawler run or select one from the run history.</div></div>
       </section>
       <section class="tab" id="tab-docs">
         <div class="toolbar">
@@ -595,7 +718,7 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
 </div>
 
 <div class="layout" id="db-view" hidden>
-  <aside class="side">
+  <aside class="side" id="db-controls">
     <div class="side-head">
       <h2>Database</h2>
       <button type="button" class="link-button" id="db-refresh" title="Load everything again">↻ Refresh</button>
@@ -634,7 +757,7 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
     </div>
   </aside>
 
-  <main>
+  <main aria-label="Document database">
     <div class="stats" id="db-stats"></div>
     <nav class="tabs" id="db-tabs">
       <button data-dbtab="documents" class="active">Documents <span class="badge" id="db-docs-count">0</span></button>
@@ -678,7 +801,7 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
 </div>
 
 <div class="layout" id="index-view" hidden>
-  <aside class="side">
+  <aside class="side" id="index-controls">
     <div class="side-head">
       <h2>Keyword index</h2>
       <button type="button" class="link-button" id="ix-refresh" title="Load everything again">↻ Refresh</button>
@@ -700,7 +823,7 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
     <ul class="db-tables" id="ix-hosts"></ul>
   </aside>
 
-  <main>
+  <main aria-label="Keyword index">
     <div class="stats" id="ix-stats"></div>
     <nav class="tabs" id="ix-tabs">
       <button data-ixtab="coverage" class="active">Coverage</button>
@@ -712,7 +835,7 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
       <section class="ixtab active" id="ixtab-coverage"><div class="panels" id="ix-coverage"></div></section>
       <section class="ixtab" id="ixtab-log">
         <div class="log-tools"><label><input type="checkbox" id="ix-follow" checked> Follow</label><span id="ix-run"></span></div>
-        <div class="log" id="ix-log"><div class="empty">No indexer run since this server started. Start one on the left.</div></div>
+        <div class="log" id="ix-log"><div class="empty">No indexer run yet. Use Start indexing in the controls.</div></div>
       </section>
       <section class="ixtab" id="ixtab-vocabulary">
         <div class="toolbar">
@@ -742,38 +865,46 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
 </div>
 
 <div class="layout" id="match-view" hidden>
-  <aside class="side">
+  <aside class="side" id="match-controls">
     <div class="side-head">
       <h2>Journey <i class="info" tabindex="0" data-tip="Puts a journey into the arguments below and keeps their other fields: a synthetic journey of patientdata/, the one of the example in Documentation/build.md, or a timeline.json from disk. Only synthetic journeys belong here: the journey goes to the matcher and back, it is not stored or logged.">i</i></h2>
       <button type="button" class="link-button" id="mt-open" title="Put a timeline.json from disk into the arguments">Open file …</button>
     </div>
-    <select id="mt-journey"></select>
+    <select id="mt-journey" aria-label="Patient journey"></select>
     <input type="file" id="mt-file" accept=".json,application/json" hidden>
-    <div class="side-head">
-      <h2>Arguments of match_journey <i class="info" tabindex="0" data-tip="One JSON object, sent as it is: the same as “Edit as JSON” in the Tools tab of the MCP Inspector, or --tool-args-json of its CLI. journey: the timeline.json fits as it is. algorithm: keyword (graph and ai_summary answer NOT_AVAILABLE). limit: 1 to 50, default 10. content_types: default all. The as-of slider writes journey.as_of. All fields: Documentation/mcp-interface.md.">i</i></h2>
-    </div>
-    <textarea id="mt-json" spellcheck="false" autocomplete="off" placeholder='{"journey": {"patient_id": "…", "events": [{"id": "e1", "type": "…", "label": "…", "date": "2026-01-31"}]}, "algorithm": "keyword", "limit": 10}'></textarea>
+    <details class="disclosure request-editor">
+      <summary title="Edit the same arguments as in the MCP Inspector. Send a journey or a graph. The default algorithm is keyword, and the result limit is 1 to 50.">Match request JSON</summary>
+      <textarea aria-label="Arguments of match_journey" id="mt-json" spellcheck="false" autocomplete="off" placeholder='{"journey": {"patient_id": "…", "events": [{"id": "e1", "type": "…", "label": "…", "date": "2026-01-31"}]}, "algorithm": "keyword", "limit": 10}'></textarea>
+    </details>
     <div class="error" id="mt-json-error"></div>
-    <div id="mt-tuning-box" hidden>
-      <div class="side-head">
-        <h2>Ranking constants <i class="info" tabindex="0" data-tip="The constants the matcher ranks with. Other values apply to this screen only; the MCP server keeps its own. The defaults are in the matcher's code.">i</i></h2>
-        <button type="button" class="link-button" id="mt-tuning-reset" title="Back to the matcher's values">Reset</button>
+    <details class="disclosure" id="mt-tuning-box" hidden>
+      <summary title="These values apply to local matches. The MCP server uses its own settings.">Ranking constants</summary>
+      <div class="tuning-body">
+        <div class="grid2" id="mt-tuning"></div>
+        <button type="button" class="link-button" id="mt-tuning-reset" title="Back to the matcher's values">Reset to defaults</button>
       </div>
-      <div class="grid2" id="mt-tuning" style="margin-top:8px"></div>
-    </div>
+    </details>
     <label class="check"><input type="checkbox" id="mt-mcp"> Through the MCP server <i class="info" tabindex="0" data-tip="Off: this screen runs the matcher's code itself with the arguments and shows the steps of the match. On: it sends the same arguments to match_journey of the running MCP server (make start), like a client would; the answer comes without the steps, and the ranking constants are the server's.">i</i></label>
     <small class="muted" id="mt-mcp-state" style="margin-top:-10px"></small>
     <div class="buttons"><button type="button" class="primary" id="mt-run">Match</button></div>
     <div class="error" id="mt-error"></div>
   </aside>
 
-  <main class="match-main">
+  <main class="match-main" aria-label="Journey matcher">
     <div class="stats" id="mt-stats"></div>
-    <div>
-      <div class="journey-bar"><span class="muted">as of</span><input type="range" id="mt-asof" min="0" max="0" value="0" title="The date the journey is cut at: the latest event up to it is the focus"><b id="mt-asof-date">–</b><span class="muted" id="mt-asof-note"></span></div>
+    <section class="journey-panel" aria-labelledby="timeline-title">
+      <div class="journey-bar">
+        <h2 id="timeline-title">Patient timeline</h2>
+        <label for="mt-asof">As of</label><input type="range" id="mt-asof" min="0" max="0" value="0">
+        <b id="mt-asof-date">–</b>
+      </div>
       <div class="timeline" id="mt-timeline"></div>
-    </div>
-    <div class="terms" id="mt-terms"></div>
+      <small class="muted" id="mt-asof-note"></small>
+    </section>
+    <details class="disclosure terms-disclosure" id="mt-term-details" hidden>
+      <summary>Search terms</summary>
+      <div class="terms" id="mt-terms"></div>
+    </details>
     <nav class="tabs" id="mt-tabs">
       <button data-mttab="results" class="active">Results <span class="badge" id="mt-count">0</span></button>
       <button data-mttab="rankings" title="The best candidates of each index before rank fusion, and where each one ended">Index rankings</button>
@@ -917,7 +1048,7 @@ function showEmptyView() {
   state.view = null;
   state.liveStart = null;
   resetView();
-  $("#log").replaceChildren(h("div", { class: "empty" }, "Start a run on the left or pick an earlier one."));
+  $("#log").replaceChildren(h("div", { class: "empty" }, "Start a crawler run or select one from the run history."));
   setStatus("idle");
   scheduleRender();
 }
@@ -1396,7 +1527,7 @@ function draw() {
   }
   ctx.stroke();
   if (highlighted.length) {
-    ctx.strokeStyle = cssVar("--accent"); ctx.lineWidth = 1.6 / graph.scale;
+    ctx.strokeStyle = cssVar("--series"); ctx.lineWidth = 1.6 / graph.scale;
     ctx.beginPath();
     for (const [a, b] of highlighted) { ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y); }
     ctx.stroke();
@@ -1558,8 +1689,14 @@ function renderTopics() {
 
 function renderEnv() {
   const env = state.meta?.env || {};
-  const labels = { NCBI_ENTREZ_EMAIL: "NCBI email", NCBI_API_KEY: "NCBI key", SEMANTIC_SCHOLAR_API_KEY: "Semantic Scholar", YOUTUBE_API_KEY: "YouTube" };
-  const chips = Object.entries(labels).map(([key, label]) => h("span", { class: `chip ${env[key] ? "on" : ""}`, title: `${key} is ${env[key] ? "set" : "not set"}` }, `${env[key] ? "✓" : "–"} ${label}`));
+  const labels = {
+    NCBI_ENTREZ_EMAIL: "NCBI email", NCBI_API_KEY: "NCBI key", OPENALEX_API_KEY: "OpenAlex",
+    SEMANTIC_SCHOLAR_API_KEY: "Semantic Scholar", YOUTUBE_API_KEY: "YouTube",
+  };
+  const chips = Object.entries(labels).map(([key, label]) => {
+    if (!(key in env)) return h("span", { class: "chip", title: `Restart make debug to check ${key}` }, `? ${label}`);
+    return h("span", { class: `chip ${env[key] ? "on" : ""}`, title: `${key} is ${env[key] ? "set" : "not set"}` }, `${env[key] ? "✓" : "–"} ${label}`);
+  });
   const database = Boolean(state.meta?.database);
   chips.push(h("span", { class: `chip ${database ? "on" : ""}`, title: `DATABASE_URL is ${database ? "set" : "not set"}` }, `${database ? "✓" : "–"} Database`));
   if (state.meta && !state.meta.env_file_exists) chips.push(h("span", { class: "hint", title: state.meta.env_file }, "crawler/.env missing (cp .env.example .env)"));
@@ -2312,9 +2449,31 @@ function dbSwitchTab(tab, load = true) {
 
 const SCREENS = { runs: "#runs-view", db: "#db-view", index: "#index-view", match: "#match-view" };
 
+const narrowScreen = window.matchMedia("(max-width: 760px)");
+const controlsToggle = $("#controls-toggle");
+
+function setControlsVisible(visible) {
+  document.body.classList.toggle("controls-hidden", !visible);
+  controlsToggle.setAttribute("aria-expanded", String(visible));
+  controlsToggle.textContent = visible ? "Hide controls" : "Show controls";
+  controlsToggle.title = controlsToggle.textContent;
+  if (state.screen === "runs" && state.tab === "graph") resizeCanvas();
+}
+setControlsVisible(!narrowScreen.matches);
+controlsToggle.addEventListener("click", () => setControlsVisible(document.body.classList.contains("controls-hidden")));
+narrowScreen.addEventListener("change", () => setControlsVisible(!narrowScreen.matches));
+
 function showScreen(screen) {
   state.screen = screen;
-  for (const button of document.querySelectorAll("#views button")) button.classList.toggle("active", button.dataset.screen === screen);
+  $("#status").hidden = screen !== "runs";
+  $("#mt-feedback").hidden = screen !== "match";
+  controlsToggle.setAttribute("aria-controls", `${screen}-controls`);
+  for (const button of document.querySelectorAll("#views button")) {
+    const active = button.dataset.screen === screen;
+    button.classList.toggle("active", active);
+    if (active) button.setAttribute("aria-current", "page");
+    else button.removeAttribute("aria-current");
+  }
   for (const [name, view] of Object.entries(SCREENS)) $(view).hidden = name !== screen;
   if (screen === "db") { dbSwitchTab(db.tab, false); dbRefresh(); }
   else if (screen === "index") { ixSwitchTab(ix.tab); ixRefresh(); }
@@ -2531,7 +2690,7 @@ function renderIxCoverage() {
   if (snapshot === ix.rendered) return;
   ix.rendered = snapshot;
   const parts = [coveragePanel()];
-  if (!ix.overview.exists) parts.unshift(h("div", { class: "notice quiet", style: "margin:0" }, "No keyword index yet, so no document is indexed. Start the indexer on the left, or run make index; the first run reads every full text and takes a while (see “Next run downloads”)."));
+  if (!ix.overview.exists) parts.unshift(h("div", { class: "notice quiet", style: "margin:0" }, "No keyword index yet, so no document is indexed. Use Start indexing in the controls, or run make index; the first run reads every full text and takes a while (see “Next run downloads”)."));
   else parts.push(reasonsPanel(), wordsPanel(), formatsPanel());
   $("#ix-coverage").replaceChildren(...parts.filter(Boolean));
 }
@@ -2744,7 +2903,7 @@ function mtParse() {
 function mtShowAsOf() {
   $("#mt-asof").value = Math.max(0, mt.dates.indexOf(mt.asOf));
   const asOf = mt.args?.journey?.as_of;
-  $("#mt-asof-date").textContent = typeof asOf === "string" ? asOf : "no as_of";
+  $("#mt-asof-date").textContent = typeof asOf === "string" ? asOf : mt.asOf || "–";
   const ahead = (mt.args?.journey?.events || []).filter((event) => mt.asOf && event?.date > mt.asOf).length;
   const where = mt.asOf ? `date ${mt.dates.indexOf(mt.asOf) + 1} of ${mt.dates.length}` : "before the first event";
   $("#mt-asof-note").textContent = mt.dates.length > 1 ? `${typeof asOf === "string" ? "" : "the latest event is the focus · "}${where}${ahead ? ` · ${plural(ahead, "later event")} left out` : ""} · drag, or click an event` : "";
@@ -2781,6 +2940,16 @@ async function mtEnrich(result) {
   result.titles = Object.fromEntries((titles?.rows || []).map((row) => [row.id, row]));
 }
 
+function mtFeedback(state, message) {
+  const busy = state === "busy";
+  const status = $("#mt-feedback");
+  status.dataset.state = state;
+  status.textContent = message;
+  $(".match-main").setAttribute("aria-busy", String(busy));
+  $("#mt-run").disabled = busy;
+  $("#mt-run").textContent = busy ? "Matching …" : "Match";
+}
+
 // `fresh`: ask the matcher again, e.g. after its code or the index changed; else an answer
 // seen for the same request is shown again, which keeps the as-of slider quick.
 async function mtRun(fresh) {
@@ -2793,24 +2962,28 @@ async function mtRun(fresh) {
   $("#mt-error").textContent = "";
   let result = mt.cache.get(key);
   if (!result) {
-    $("#mt-run").disabled = true;
-    $("#mt-run").textContent = "Matching …";
+    mtFeedback("busy", "Matching sources…");
     try {
       result = await api("/api/match", { method: "POST", body: JSON.stringify({ request, via }) });
+      if (ticket !== mt.ticket) return;
       await mtEnrich(result);
+      if (ticket !== mt.ticket) return;
       mt.cache.set(key, result);
     } catch (error) {
-      if (ticket === mt.ticket) $("#mt-error").textContent = error.message;
+      if (ticket === mt.ticket) {
+        $("#mt-error").textContent = error.message;
+        mtFeedback("error", mt.result ? "Match failed · showing previous result" : "Match failed");
+      }
       return;
-    } finally {
-      if (ticket === mt.ticket) { $("#mt-run").disabled = false; $("#mt-run").textContent = "Match"; }
     }
   }
-  if (ticket !== mt.ticket) return;
   mt.request = request;
   mt.via = via;
   mt.result = result;
   mtRender();
+  if (result.error) mtFeedback("error", "Request rejected");
+  else if (result.answer.degraded) mtFeedback("error", "Search unavailable");
+  else mtFeedback("ready", `${plural(result.answer.results.length, "source")} found`);
 }
 
 function mtRender() {
@@ -2860,8 +3033,8 @@ function mtRenderTimeline() {
     return h("button", { type: "button", class: `ev ${role}`, title: `${event.label || ""}${says ? `\n${says}` : ""}\nClick: cut the journey at ${date(event)}`, onclick: () => mtSetAsOf(date(event)) },
       h("span", { class: "when" }, date(event) || "no date"),
       h("span", { class: "dot" }),
-      h("span", { class: "what" }, h("b", {}, event.id ?? "?"), ` ${event.type || ""}`),
-      h("span", { class: "label" }, event.label || ""));
+      h("span", { class: "label" }, event.label || ""),
+      h("span", { class: "what" }, [role ? { focus: "Focus", context: "Context", future: "Later" }[role] : null, event.id, event.type].filter(Boolean).join(" · ")));
   }));
   const shown = box.querySelector(".ev.focus") || [...box.querySelectorAll(".ev:not(.future)")].at(-1);
   if (shown) box.scrollLeft = Math.max(0, shown.offsetLeft - box.offsetLeft - box.clientWidth / 2 + shown.offsetWidth / 2);
@@ -2870,7 +3043,7 @@ function mtRenderTimeline() {
 function mtRenderTerms() {
   const box = $("#mt-terms");
   const terms = mtStep("terms");
-  box.hidden = !terms;
+  $("#mt-term-details").hidden = !terms;
   if (!terms) return;
   const found = new Map((mt.result.found?.terms || []).map((term) => [term.term, term]));
   const totals = mt.result.found?.totals;
@@ -3124,18 +3297,17 @@ const CLIENT_FILES = 8;
 function mtRenderClient() {
   const box = $("#mt-client");
   const result = mt.result;
-  const note = h("p", { class: "client-note" }, "An example of a client. The cards hold only what match_journey answers; “Files” asks get_source for one source.");
   if (result.error) {
-    box.replaceChildren(note, h("div", { class: "client-head" }), h("div", { class: "notice" }, `The request was refused (${result.error.code}).`));
+    box.replaceChildren(h("div", { class: "notice" }, `The request was refused (${result.error.code}).`));
     return;
   }
   const answer = result.answer;
   const focus = (mt.request?.journey?.events || []).find((event) => event?.id === answer.focus_event_id);
   const state = answer.degraded ? h("div", { class: "notice" }, `The search is not available right now, so this is not “nothing relevant”.\n${answer.degraded_reason || ""}`)
     : answer.results.length ? null : h("div", { class: "notice quiet" }, "Nothing relevant for this event.");
-  box.replaceChildren(...[note,
+  box.replaceChildren(...[
     h("div", { class: "client-head" },
-      h("small", {}, ["Sources for the latest event", focus?.date].filter(Boolean).join(" · ")),
+      h("small", {}, [plural(answer.results.length, "source"), focus?.date].filter(Boolean).join(" · ")),
       h("h3", {}, focus?.label || answer.focus_event_id)),
     state, ...answer.results.map(mtClientCard)].filter(Boolean));
 }
@@ -3144,7 +3316,7 @@ function mtClientCard(result) {
   const authors = result.authors || [];
   const files = h("div", { class: "files" });
   const long = result.summary && (result.summary.length > 220 || result.summary.includes("\n"));
-  const card = h("article", { class: `src-card${result.image_url ? " has-image" : ""}` },
+  const card = h("article", { class: `src-card${result.rank === 1 ? " top-result" : ""}${result.image_url ? " has-image" : ""}` },
     result.image_url ? h("img", { src: result.image_url, alt: "", loading: "lazy" }) : null,
     h("div", {},
       h("div", { class: "src-meta" },

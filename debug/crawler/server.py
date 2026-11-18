@@ -63,7 +63,13 @@ HERE = Path(__file__).resolve().parent
 ROOT = HERE.parent.parent
 MATCHER_DIR = ROOT / "matcher"
 RUNS_DIR = HERE / "runs"
-ENV_KEYS = ("NCBI_ENTREZ_EMAIL", "NCBI_API_KEY", "SEMANTIC_SCHOLAR_API_KEY", "YOUTUBE_API_KEY")
+ENV_KEYS = (
+    "NCBI_ENTREZ_EMAIL",
+    "NCBI_API_KEY",
+    "OPENALEX_API_KEY",
+    "SEMANTIC_SCHOLAR_API_KEY",
+    "YOUTUBE_API_KEY",
+)
 SHELL_KEYS = {key for key in ENV_KEYS if os.environ.get(key)}
 RUN_ID = re.compile(r"[0-9A-Za-z-]+")
 ALLOWED_HOSTS: set[str] = set()
