@@ -253,6 +253,8 @@ class CollectionStats(BaseModel):
     skipped_duplicate: int = 0
     skipped_known: int = 0
     skipped_invalid: int = 0
+    skipped_rarely_cited: int = 0
+    """References to papers that fewer collected papers cite than `min_citations` asks for."""
     skipped_off_topic: int = 0
     max_results_reached: int = 0
     """Seed requests with `since` that returned `max_results` documents. Sources list the newest
@@ -270,10 +272,13 @@ class CollectionResult(BaseModel):
     max_results_reached: list[str] = Field(default_factory=list)
     """Query, channel or feed key of each seed request counted in `stats.max_results_reached`."""
     run_error: str | None = None
+    interrupted: bool = False
+    """The run was stopped (Ctrl+C) while requests were left in the queue."""
 
     @property
     def ok(self) -> bool:
-        """Every queued request finished: none failed, none was left over (`max_requests`)."""
+        """Every queued request finished: none failed, none was left over (`max_requests`, or
+        the run was stopped)."""
         return not self.failures and self.run_error is None and not self.stats.unprocessed_requests
 
 

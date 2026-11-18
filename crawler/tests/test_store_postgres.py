@@ -3,7 +3,8 @@
 import asyncio
 import json
 import os
-from collections.abc import Iterator, Sequence
+from collections.abc import Iterable, Iterator, Sequence
+from contextlib import contextmanager
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -12,6 +13,8 @@ from uuid import uuid4
 import asyncpg
 import pytest
 
+from crawler import cli
+from crawler.links.base import LinkExtractor
 from crawler.models import (
     CitationProvenance,
     CollectionResult,
@@ -19,10 +22,13 @@ from crawler.models import (
     FullTextLocator,
     QueryProvenance,
     RequestFailure,
+    ScrapeRequest,
     SourceDocument,
     SourceName,
 )
 from crawler.refresh import refresh_documents
+from crawler.runner import CollectionOptions, run_requests
+from crawler.sources.base import BaseScraper
 from crawler.sources.openalex import OpenAccessCopy
 from crawler.store import (
     RunInfo,
@@ -32,6 +38,7 @@ from crawler.store import (
     prepare_store,
     resume_date,
     save_result,
+    stored_topics,
     videos_to_refresh,
 )
 
@@ -97,9 +104,9 @@ def database() -> str:
     return url
 
 
-@pytest.fixture
-def url(database: str) -> Iterator[str]:
-    """A URL whose search path is a fresh schema with `db/init/` applied."""
+@contextmanager
+def fresh_schema(database: str) -> Iterator[str]:
+    """A URL whose search path is a fresh schema with `db/init/` applied; dropped at the end."""
     schema = f"test_{uuid4().hex[:12]}"
     asyncio.run(execute(database, f"CREATE SCHEMA {schema}"))
     try:
@@ -108,6 +115,12 @@ def url(database: str) -> Iterator[str]:
         yield scoped
     finally:
         asyncio.run(execute(database, f"DROP SCHEMA {schema} CASCADE"))
+
+
+@pytest.fixture
+def url(database: str) -> Iterator[str]:
+    with fresh_schema(database) as scoped:
+        yield scoped
 
 
 def paper(native_id: str, **fields: Any) -> SourceDocument:
@@ -381,6 +394,7 @@ def log_run(
     ok: bool = True,
     source: SourceName = SourceName.PUBMED,
     max_results_reached: int = 0,
+    arguments: list[str] | None = None,
 ) -> None:
     failure = RequestFailure(
         kind="search",
@@ -399,7 +413,7 @@ def log_run(
     run = RunInfo(
         source=source,
         topics=topics,
-        arguments=[source.value, "--store"],
+        arguments=arguments or [source.value, "--store"],
         started_at=started_at,
         finished_at=started_at + timedelta(minutes=5),
     )
@@ -426,6 +440,169 @@ def test_a_run_that_reached_max_results_moves_the_start_date(url: str) -> None:
 
     assert last == {"a": RETRIEVED + timedelta(days=1)}
     assert resume_date(last, ["a"]) == date(2026, 10, 31)
+
+
+def test_stored_topics_are_those_of_successful_runs_with_the_same_arguments(url: str) -> None:
+    command = ["pubmed", "--all-topics", "--store", "--resume"]
+    log_run(url, ["a"], RETRIEVED, arguments=command)
+    log_run(url, ["b"], RETRIEVED, arguments=command, ok=False)
+    log_run(url, ["c"], RETRIEVED, arguments=[*command, "--max-depth", "0"])
+    log_run(url, ["d"], RETRIEVED, arguments=command, source=SourceName.ARXIV)
+
+    assert asyncio.run(stored_topics(url, SourceName.PUBMED, command)) == {"a"}
+
+
+def test_a_stopped_run_is_logged_as_interrupted(url: str) -> None:
+    result = CollectionResult(
+        documents=[paper("1")],
+        stats=CollectionStats(documents=1, unprocessed_requests=3),
+        interrupted=True,
+    )
+    run = RunInfo(
+        source=SourceName.PUBMED,
+        topics=["a"],
+        arguments=["pubmed", "--topic", "a", "--store"],
+        started_at=RETRIEVED,
+        finished_at=RETRIEVED,
+    )
+
+    asyncio.run(save_result(url, result, run))
+
+    assert query(url, "SELECT ok, run_error FROM crawl_runs") == [
+        {"ok": False, "run_error": "interrupted"}
+    ]
+    assert query(url, "SELECT id FROM documents") == [{"id": "pubmed:1"}]
+
+
+class TopicSource(BaseScraper):
+    """Three topics with one search each; paper 2 is a result of two of them."""
+
+    source = SourceName.PUBMED
+    SEARCHES = {"alpha": ["1", "2"], "beta": ["3", "2"], "gamma": ["4"]}
+    # 11 matches no topic and the source does not know 14.
+    TITLES = {
+        "1": "Alpha one",
+        "2": "Alpha and beta",
+        "3": "Beta three",
+        "4": "Gamma four",
+        "10": "An alpha study",
+        "11": "Unrelated",
+        "12": "Gamma findings",
+        "13": "A beta trial",
+    }
+
+    def __init__(self) -> None:
+        self.lookups: list[list[str]] = []
+
+    def scrape(self, request: ScrapeRequest) -> list[SourceDocument]:
+        if request.is_lookup:
+            self.lookups.append(list(request.ids))
+        native_ids = request.ids if request.is_lookup else self.SEARCHES[request.query or ""]
+        return [paper(i, title=self.TITLES[i]) for i in native_ids if i in self.TITLES]
+
+
+class TopicLinks(LinkExtractor):
+    """10 and 11 are cited from two topics; 12 from alpha, though it is about gamma."""
+
+    source = SourceName.PUBMED
+    REFERENCES = {"1": ["10", "11", "12"], "2": ["10"], "3": ["10", "11", "13"], "4": ["12", "14"]}
+
+    def cited_ids(self, native_ids: Sequence[str]) -> dict[str, list[str]]:
+        return {native_id: self.REFERENCES.get(native_id, []) for native_id in native_ids}
+
+
+class Killed(BaseException):
+    """Ends the crawler where it stands, as `kill -9` or a crash does."""
+
+
+class TopicCrawl:
+    """`crawler pubmed --topic alpha --topic beta --topic gamma --store --resume` on the fakes."""
+
+    def __init__(self, directory: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+        self.argv = ["pubmed"]
+        for topic in ("alpha", "beta", "gamma"):
+            path = directory / f"{topic}.yaml"
+            text = f"id: {topic}\nlabel: {topic}\nterms: [{topic}]\nqueries: [{topic}]\n"
+            path.write_text(text, encoding="utf-8")
+            self.argv += ["--topic", str(path)]
+        self.argv += ["--store", "--resume"]
+        self.monkeypatch = monkeypatch
+        self.source = TopicSource()
+        self.crawled: list[str] = []
+
+    def start(self, url: str, *, kill: str | None = None) -> int:
+        """Run the command against `url`; `kill`: die once this topic is crawled, unstored."""
+
+        async def crawl(
+            seeds: Iterable[ScrapeRequest], *, options: CollectionOptions
+        ) -> CollectionResult:
+            seeds = list(seeds)
+            self.crawled.append(seeds[0].topics[0])
+            result = await run_requests(
+                seeds,
+                options=options,
+                source_factory=lambda _source: self.source,
+                link_extractor_factory=lambda _source: TopicLinks(),
+            )
+            if seeds[0].topics == [kill]:
+                raise Killed
+            return result
+
+        self.crawled.clear()
+        self.source.lookups.clear()
+        self.monkeypatch.setattr(cli, "database_url", lambda: url)
+        self.monkeypatch.setattr(cli, "run_requests", crawl)
+        return cli.main(self.argv)
+
+
+def stored(url: str) -> dict[str, set[str]]:
+    """The stored documents with the ways they were found, whatever their order."""
+    rows = query(url, "SELECT id, found_by FROM documents")
+    return {
+        row["id"]: {json.dumps(entry, sort_keys=True) for entry in row["found_by"]} for row in rows
+    }
+
+
+def test_a_crawl_killed_in_its_second_topic_continues_and_ends_like_one_that_ran_through(
+    url: str, database: str, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    crawl = TopicCrawl(tmp_path, monkeypatch)
+
+    # First start: killed after the second topic was crawled, before it is stored.
+    with pytest.raises(Killed):
+        crawl.start(url, kill="beta")
+
+    assert crawl.crawled == ["alpha", "beta"]
+    assert query(url, "SELECT topics, ok FROM crawl_runs") == [{"topics": ["alpha"], "ok": True}]
+    # 12 is cited by an alpha paper but has no alpha term: each topic keeps what is its own.
+    assert set(stored(url)) == {"pubmed:1", "pubmed:2", "pubmed:10"}
+
+    # Second start of the same command: the first topic is skipped, the rest is crawled.
+    assert crawl.start(url) == 0
+
+    assert crawl.crawled == ["beta", "gamma"]
+    # 10 is stored and not fetched again; 12 is fetched for gamma, which keeps it.
+    assert crawl.source.lookups == [["11", "13"], ["12", "14"]]
+    runs = query(url, "SELECT topics, ok, arguments FROM crawl_runs ORDER BY id")
+    assert [(run["topics"], run["ok"]) for run in runs] == [
+        (["alpha"], True),
+        (["beta"], True),
+        (["gamma"], True),
+    ]
+    assert all(run["arguments"] == crawl.argv for run in runs)
+    assert set(stored(url)) == {
+        f"pubmed:{native_id}" for native_id in ("1", "2", "3", "4", "10", "12", "13")
+    }
+
+    # The same documents, found the same ways, as the command stores without the kill.
+    with fresh_schema(database) as other:
+        assert crawl.start(other) == 0
+        assert crawl.crawled == ["alpha", "beta", "gamma"]
+        assert stored(other) == stored(url)
+
+    # Third start: nothing is left.
+    assert crawl.start(url) == 0
+    assert crawl.crawled == []
 
 
 def test_duplicates_by_doi_and_the_last_run_of_a_source(url: str) -> None:

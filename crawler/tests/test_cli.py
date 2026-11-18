@@ -91,6 +91,16 @@ def test_the_words_of_an_arxiv_query_filter_cited_papers(mode: str, match_all: b
     assert options.match_all_terms is match_all
 
 
+def test_min_citations_is_one_unless_asked_for() -> None:
+    _seeds, options = requests_from_args(parser().parse_args(["pubmed", "prostate cancer"]))
+    assert options.min_citations == 1
+
+    _seeds, options = requests_from_args(
+        parser().parse_args(["arxiv", "prostate cancer", "--min-citations", "2"])
+    )
+    assert options.min_citations == 2
+
+
 def test_cli_builds_zenodo_request_without_reference_following() -> None:
     arguments = parser().parse_args(
         ["zenodo", "prostate cancer", "--since", "2026-01-01", "--query-mode", "or"]
@@ -366,6 +376,17 @@ def test_a_run_stopped_at_max_requests_exits_with_1(
     assert "stopped at --max-requests: 2 request(s) not processed" in capsys.readouterr().err
 
 
+def test_the_summary_counts_the_references_to_papers_cited_too_rarely(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    stats = CollectionStats(documents=1, references_found=9, skipped_rarely_cited=7)
+    result = CollectionResult(documents=[document()], stats=stats)
+    monkeypatch.setattr(cli, "run_requests", fake_run(result))
+
+    assert main(["pubmed", "prostate cancer", "--min-citations", "2"]) == 0
+    assert "0 invalid, 7 cited too rarely, 0 off-topic" in capsys.readouterr().err
+
+
 def test_seeds_that_reached_max_results_are_listed_but_do_not_fail_the_run(
     monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
 ) -> None:
@@ -437,32 +458,57 @@ class FakeStore:
         *,
         stored: frozenset[str] = frozenset(),
         last_runs: dict[str, datetime] | None = None,
+        done: frozenset[str] = frozenset(),
         prepare_error: str | None = None,
         save_error: str | None = None,
+        save_errors: int | None = None,
         refresh: tuple[int, list[SourceDocument]] = (0, []),
         refresh_error: Exception | None = None,
+        results: Sequence[CollectionResult] = (),
     ) -> None:
         self.result = result
+        self.results = list(results)
+        """The results of the first runs, one per topic; later runs return `result`."""
         self.stored = stored
         self.last_runs = last_runs or {}
+        self.done = done
         self.prepare_error = prepare_error
         self.save_error = save_error
+        self.save_errors = save_errors
+        """How many store attempts fail with `save_error`; None: all of them."""
         self.refresh = refresh
         self.refresh_error = refresh_error
         self.calls: list[str] = []
         self.load_ids: bool | None = None
-        self.seeds: list[ScrapeRequest] = []
-        self.options: CollectionOptions | None = None
-        self.run: RunInfo | None = None
+        self.resumed: list[str] | None = None
+        self.sleeps: list[float] = []
+        # Of every run, one per topic; `seeds`, `options` and `run` are those of the last one.
+        self.parts: list[list[ScrapeRequest]] = []
+        self.part_options: list[CollectionOptions] = []
+        self.runs: list[RunInfo] = []
         self.refreshed: list[SourceDocument] | None = None
+
+    @property
+    def seeds(self) -> list[ScrapeRequest]:
+        return self.parts[-1] if self.parts else []
+
+    @property
+    def options(self) -> CollectionOptions | None:
+        return self.part_options[-1] if self.part_options else None
+
+    @property
+    def run(self) -> RunInfo | None:
+        return self.runs[-1] if self.runs else None
 
     def install(self, monkeypatch: pytest.MonkeyPatch) -> None:
         monkeypatch.setattr(cli, "database_url", lambda: "postgresql://test/db")
         monkeypatch.setattr(cli, "prepare_store", self.prepare_store)
         monkeypatch.setattr(cli, "last_successful_runs", self.last_successful_runs)
+        monkeypatch.setattr(cli, "stored_topics", self.stored_topics)
         monkeypatch.setattr(cli, "run_requests", self.run_requests)
         monkeypatch.setattr(cli, "refresh_videos", self.refresh_videos)
         monkeypatch.setattr(cli, "save_result", self.save_result)
+        monkeypatch.setattr(cli.time, "sleep", self.sleeps.append)
 
     async def prepare_store(
         self, _url: str, _source: SourceName, *, load_ids: bool
@@ -479,13 +525,20 @@ class FakeStore:
         self.calls.append("last_runs")
         return {topic: start for topic, start in self.last_runs.items() if topic in topics}
 
+    async def stored_topics(
+        self, _url: str, _source: SourceName, arguments: Sequence[str]
+    ) -> frozenset[str]:
+        self.calls.append("stored_topics")
+        self.resumed = list(arguments)
+        return self.done
+
     async def run_requests(
         self, seeds: Iterable[ScrapeRequest], *, options: CollectionOptions
     ) -> CollectionResult:
         self.calls.append("run")
-        self.seeds = list(seeds)
-        self.options = options
-        return self.result
+        self.parts.append(list(seeds))
+        self.part_options.append(options)
+        return self.results.pop(0) if self.results else self.result
 
     async def refresh_videos(
         self, _url: str, _seeds: Sequence[ScrapeRequest], _result: CollectionResult
@@ -504,10 +557,12 @@ class FakeStore:
         refreshed: Sequence[SourceDocument] = (),
     ) -> StoreReport:
         self.calls.append("save")
-        self.run = run
         self.refreshed = list(refreshed)
-        if self.save_error is not None:
+        if self.save_error is not None and self.save_errors != 0:
+            if self.save_errors is not None:
+                self.save_errors -= 1
             raise StoreError(self.save_error)
+        self.runs.append(run)
         return StoreReport(run_id=7, inserted=1, changed=0, unchanged=0, cited=2, expired=0)
 
 
@@ -621,11 +676,11 @@ def test_since_auto_dates_each_seed_by_its_own_topics(
     argv = ["pubmed", "--topic", str(known), "--topic", str(new), "--since", "auto", "--store"]
     assert main(argv) == 0
 
-    assert {seed.query: seed.since for seed in fake.seeds} == {
-        "prostate cancer": None,  # shared with the new topic
-        "prostate cancer biopsy": date(2026, 11, 5),
-        "prostate cancer screening": None,
-    }
+    # The query the topics share runs once for each of them, from its own date.
+    assert [{seed.query: seed.since for seed in part} for part in fake.parts] == [
+        {"prostate cancer": date(2026, 11, 5), "prostate cancer biopsy": date(2026, 11, 5)},
+        {"prostate cancer": None, "prostate cancer screening": None},
+    ]
     assert (
         "since auto: 2026-11-05; 2 seed(s) of topics without a successful run: no date"
         in capsys.readouterr().err
@@ -730,9 +785,28 @@ def test_a_failed_store_still_prints_the_documents_and_exits_with_1(
 
     output = capsys.readouterr()
     assert exit_code == 1
-    assert fake.calls == ["prepare", "run", "save"]
+    assert fake.calls == ["prepare", "run", *["save"] * 5]
+    assert fake.sleeps == [5, 15, 30, 60]
     assert [json.loads(line)["id"] for line in output.out.splitlines()] == ["pubmed:1"]
-    assert "storing failed: cannot write to the database" in output.err
+    assert "storing failed: cannot write to the database; trying again in 5 s" in output.err
+    assert output.err.rstrip().endswith("storing failed: cannot write to the database")
+
+
+def test_storing_is_tried_again_while_the_database_is_away(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    fake = FakeStore(
+        CollectionResult(documents=[document()]),
+        save_error="cannot connect to the database",
+        save_errors=2,
+    )
+    fake.install(monkeypatch)
+
+    assert main(["pubmed", "q", "--store"]) == 0
+
+    assert fake.calls == ["prepare", "run", "save", "save", "save"]
+    assert fake.sleeps == [5, 15]
+    assert "stored (run 7)" in capsys.readouterr().err
 
 
 def test_runs_with_failures_are_stored_and_exit_with_1(
@@ -755,6 +829,253 @@ def test_runs_with_failures_are_stored_and_exit_with_1(
     assert exit_code == 1
     assert fake.calls == ["prepare", "run", "save"]
     assert "stored (run 7)" in capsys.readouterr().err
+
+
+TOPIC_FILES = {
+    "alpha": "terms: [alpha]\nqueries: [alpha, shared]\n",
+    "beta": "terms: [beta]\nqueries: [beta, shared]\n",
+    "gamma": "terms: [gamma]\nqueries: [gamma]\n",
+}
+
+
+def topic_arguments(directory: Path) -> list[str]:
+    """`--topic` for three topic files in `directory`; alpha and beta share a query."""
+    arguments: list[str] = []
+    for topic_id, content in TOPIC_FILES.items():
+        path = directory / f"{topic_id}.yaml"
+        path.write_text(f"id: {topic_id}\nlabel: {topic_id}\n{content}", encoding="utf-8")
+        arguments += ["--topic", str(path)]
+    return arguments
+
+
+def test_a_store_run_over_several_topics_crawls_and_stores_them_one_by_one(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    fake = FakeStore(CollectionResult(documents=[document()]))
+    fake.install(monkeypatch)
+    argv = ["pubmed", *topic_arguments(tmp_path), "--store"]
+
+    assert main(argv) == 0
+
+    assert fake.calls == ["prepare", "run", "save", "run", "save", "run", "save"]
+    # The query two topics share runs for each of them, under that topic alone.
+    assert [[(seed.query, seed.topics) for seed in part] for part in fake.parts] == [
+        [("alpha", ["alpha"]), ("shared", ["alpha"])],
+        [("shared", ["beta"]), ("beta", ["beta"])],
+        [("gamma", ["gamma"])],
+    ]
+    assert [run.topics for run in fake.runs] == [["alpha"], ["beta"], ["gamma"]]
+    assert all(run.arguments == argv for run in fake.runs)
+    # Each topic keeps the cited papers with a term of its own.
+    assert [options.topic_terms for options in fake.part_options] == [
+        ("alpha",),
+        ("beta",),
+        ("gamma",),
+    ]
+    output = capsys.readouterr()
+    assert len(output.out.splitlines()) == 3
+    assert "topic 2 of 3: beta" in output.err
+    assert output.err.rstrip().endswith("3 of 3 topic(s) crawled, 3 without failures")
+
+
+def test_several_topics_without_store_stay_one_run(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    fake = FakeStore(CollectionResult(documents=[document()]))
+    fake.install(monkeypatch)
+
+    assert main(["pubmed", *topic_arguments(tmp_path)]) == 0
+
+    assert fake.calls == ["run"]
+    assert [(seed.query, seed.topics) for seed in fake.seeds] == [
+        ("alpha", ["alpha"]),
+        ("shared", ["alpha", "beta"]),
+        ("beta", ["beta"]),
+        ("gamma", ["gamma"]),
+    ]
+    assert fake.options is not None
+    assert fake.options.topic_terms == ("alpha", "beta", "gamma")
+
+
+def test_later_topics_do_not_fetch_what_earlier_ones_stored(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    fake = FakeStore(
+        CollectionResult(documents=[]),
+        results=[CollectionResult(documents=[document()])],
+        stored=frozenset({"pubmed:5"}),
+    )
+    fake.install(monkeypatch)
+    argv = ["pubmed", *topic_arguments(tmp_path), "--store", "--min-citations", "2"]
+
+    assert main(argv) == 0
+
+    alpha, beta, gamma = fake.part_options
+    assert alpha.known_ids == {"pubmed:5"}
+    assert beta.known_ids == gamma.known_ids == {"pubmed:5", "pubmed:1"}
+    assert [options.min_citations for options in fake.part_options] == [2, 2, 2]
+
+
+def failed_search() -> RequestFailure:
+    return RequestFailure(
+        kind="search",
+        source=SourceName.PUBMED,
+        detail="alpha",
+        depth=0,
+        error="HTTPError: HTTP Error 500",
+        retries=3,
+        retryable=True,
+    )
+
+
+def test_a_topic_with_failures_does_not_stop_the_others(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    fake = FakeStore(
+        CollectionResult(documents=[]),
+        results=[CollectionResult(documents=[document()], failures=[failed_search()])],
+    )
+    fake.install(monkeypatch)
+
+    assert main(["pubmed", *topic_arguments(tmp_path), "--store"]) == 1
+
+    assert [run.topics for run in fake.runs] == [["alpha"], ["beta"], ["gamma"]]
+    assert capsys.readouterr().err.rstrip().endswith("3 of 3 topic(s) crawled, 2 without failures")
+
+
+def test_resume_skips_the_topics_the_same_command_has_stored(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    fake = FakeStore(CollectionResult(documents=[]), done=frozenset({"alpha", "gamma"}))
+    fake.install(monkeypatch)
+    argv = ["pubmed", *topic_arguments(tmp_path), "--store", "--resume"]
+
+    assert main(argv) == 0
+
+    assert fake.calls == ["prepare", "stored_topics", "run", "save"]
+    assert fake.resumed == argv
+    assert [run.topics for run in fake.runs] == [["beta"]]
+    output = capsys.readouterr().err
+    assert "resume: 2 of 3 topic(s) already stored" in output
+    assert "topic 1 of 1: beta" in output
+
+
+def test_resume_with_every_topic_stored_crawls_nothing(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    fake = FakeStore(CollectionResult(documents=[]), done=frozenset(TOPIC_FILES))
+    fake.install(monkeypatch)
+
+    assert main(["pubmed", *topic_arguments(tmp_path), "--store", "--resume"]) == 0
+
+    assert fake.calls == ["prepare", "stored_topics"]
+    assert capsys.readouterr().err.rstrip() == "resume: 3 of 3 topic(s) already stored"
+
+
+@pytest.mark.parametrize(
+    ("argv", "message"),
+    [
+        (["pubmed", "--all-topics", "--resume"], "--resume needs --store"),
+        (["pubmed", "q", "--store", "--resume"], "--resume needs --topic or --all-topics"),
+        (
+            ["pubmed", "--all-topics", "--store", "--resume", "--since", "auto"],
+            "--since auto continues on its own",
+        ),
+    ],
+)
+def test_resume_needs_store_and_topics_and_no_since_auto(
+    argv: list[str],
+    message: str,
+    monkeypatch: pytest.MonkeyPatch,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    fake = FakeStore(CollectionResult(documents=[]))
+    fake.install(monkeypatch)
+
+    with pytest.raises(SystemExit) as exit_info:
+        main(argv)
+
+    assert exit_info.value.code == 2
+    assert message in capsys.readouterr().err
+    assert fake.calls == []
+
+
+def test_a_stopped_crawl_stores_its_topic_and_leaves_the_others(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    stopped = CollectionResult(
+        documents=[document()],
+        stats=CollectionStats(documents=1, unprocessed_requests=4),
+        interrupted=True,
+    )
+    fake = FakeStore(CollectionResult(documents=[]), results=[stopped])
+    fake.install(monkeypatch)
+
+    exit_code = main(["pubmed", *topic_arguments(tmp_path), "--store"])
+
+    assert exit_code == 130
+    assert fake.calls == ["prepare", "run", "save"]
+    assert [run.topics for run in fake.runs] == [["alpha"]]
+    output = capsys.readouterr().err
+    assert "interrupted: 4 request(s) not processed" in output
+    assert output.rstrip().endswith(
+        "1 of 3 topic(s) crawled, 0 without failures; stopped: interrupted"
+    )
+
+
+def test_ctrl_c_outside_a_crawl_exits_with_130(
+    monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    fake = FakeStore(CollectionResult(documents=[document()]))
+    fake.install(monkeypatch)
+
+    async def save_result(*_arguments: object, **_options: object) -> StoreReport:
+        raise KeyboardInterrupt
+
+    monkeypatch.setattr(cli, "save_result", save_result)
+
+    assert main(["pubmed", "q", "--store"]) == 130
+    assert capsys.readouterr().err.rstrip().endswith("interrupted")
+
+
+def test_a_database_that_stays_away_stops_the_crawl(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    fake = FakeStore(
+        CollectionResult(documents=[document()]), save_error="cannot connect to the database"
+    )
+    fake.install(monkeypatch)
+
+    assert main(["pubmed", *topic_arguments(tmp_path), "--store"]) == 1
+
+    # The second topic is not crawled: it could not be stored either.
+    assert fake.calls == ["prepare", "run", *["save"] * 5]
+    assert (
+        capsys.readouterr()
+        .err.rstrip()
+        .endswith("1 of 3 topic(s) crawled, 0 without failures; stopped: storing failed")
+    )
+
+
+def test_max_requests_caps_the_whole_crawl_not_each_topic(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, capsys: pytest.CaptureFixture[str]
+) -> None:
+    def requests(finished: int, failed: int = 0) -> CollectionResult:
+        stats = CollectionStats(finished_requests=finished, failed_requests=failed)
+        return CollectionResult(documents=[], stats=stats)
+
+    fake = FakeStore(CollectionResult(documents=[]), results=[requests(2), requests(2, 1)])
+    fake.install(monkeypatch)
+
+    exit_code = main(["pubmed", *topic_arguments(tmp_path), "--store", "--max-requests", "5"])
+
+    assert exit_code == 1
+    assert [options.max_requests for options in fake.part_options] == [5, 3]
+    assert (
+        capsys.readouterr()
+        .err.rstrip()
+        .endswith("2 of 3 topic(s) crawled, 2 without failures; stopped: --max-requests")
+    )
 
 
 def video(native_id: str) -> SourceDocument:

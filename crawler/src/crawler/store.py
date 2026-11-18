@@ -33,6 +33,7 @@ __all__ = [
     "prepare_store",
     "resume_date",
     "save_result",
+    "stored_topics",
     "videos_to_refresh",
 ]
 
@@ -194,6 +195,17 @@ async def last_successful_runs(
     return {str(row["topic"]): row["started_at"] for row in rows}
 
 
+async def stored_topics(url: str, source: SourceName, arguments: Sequence[str]) -> frozenset[str]:
+    """The topics that a successful run of `source` with exactly these arguments has stored,
+    whenever that was: what `--resume` skips."""
+    async with _connect(url) as connection:
+        try:
+            rows = await connection.fetch(_STORED_TOPICS, source.value, list(arguments))
+        except _DATABASE_ERRORS as error:
+            raise StoreError(f"cannot read from the database: {_describe(error)}") from error
+    return frozenset(str(row["topic"]) for row in rows)
+
+
 async def videos_to_refresh(url: str, channel_ids: Sequence[str]) -> list[str]:
     """Video IDs of the stored videos of the channels that expire within `REFRESH_WITHIN`,
     expired ones included."""
@@ -261,7 +273,7 @@ async def save_result(
                     result.ok,
                     stats,
                     failures,
-                    _storable(result.run_error),
+                    _storable(result.run_error) or ("interrupted" if result.interrupted else None),
                     inserted,
                     changed,
                     unchanged,
@@ -343,6 +355,12 @@ SELECT topic, max(started_at) AS started_at
 FROM crawl_runs, unnest(topics) AS topic
 WHERE source = $1 AND ok AND topic = ANY($2::text[])
 GROUP BY topic
+"""
+
+_STORED_TOPICS = """
+SELECT DISTINCT topic
+FROM crawl_runs, unnest(topics) AS topic
+WHERE source = $1 AND ok AND arguments = $2::text[]
 """
 
 _LOG_RUN = """

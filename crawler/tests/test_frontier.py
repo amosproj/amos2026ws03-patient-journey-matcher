@@ -159,6 +159,23 @@ def test_lookups_drop_off_topic_papers_and_count_missing_ones() -> None:
     assert result.stats.lookups_missing == 1
 
 
+def test_a_cited_paper_is_looked_up_once_enough_collected_papers_cite_it() -> None:
+    state = frontier(min_citations=2, known_ids=frozenset({"pubmed:9"}))
+    state.add_documents(SEED, 0, [paper("1"), paper("2"), paper("3")], expand=True)
+
+    first = state.add_references(SourceName.PUBMED, {"1": ["5", "6", "9"]})
+    later = state.add_references(SourceName.PUBMED, {"2": ["5", "9"], "3": ["5", "7"]})
+
+    # 5 is looked up at its second reference; 6 and 7 are cited once; 9 is stored.
+    assert (first, later) == ([], [["5"]])
+    stats = state.stats
+    assert stats.references_found == 7
+    assert (stats.lookups_queued, stats.skipped_duplicate, stats.skipped_rarely_cited) == (1, 2, 2)
+    # A stored paper keeps every citation, however few.
+    assert stats.skipped_known == 2
+    assert state.result([]).citations == {"pubmed:9": ["pubmed:1", "pubmed:2"]}
+
+
 def test_seeds_with_since_that_return_max_results_are_noted() -> None:
     state = frontier()
     since = date(2026, 11, 1)
