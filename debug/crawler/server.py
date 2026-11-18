@@ -46,7 +46,7 @@ from pydantic import ValidationError
 from crawler.cli import parser as cli_parser
 from crawler.cli import refresh_videos, requests_from_args
 from crawler.links.base import LinkExtractor
-from crawler.models import ScrapeRequest, SourceDocument, SourceName
+from crawler.models import ScrapeRequest, SourceDocument, SourceName, validation_message
 from crawler.runner import ENV_FILE, link_extractor_from_env, run_requests, source_from_env
 from crawler.seeds import TOPICS_DIR, TopicFileError, load_topic
 from crawler.sources.base import BaseScraper, redact_secrets
@@ -278,7 +278,7 @@ def execute(run: Run, seeds: list[Any], options: Any) -> None:
         run.result = result.model_dump(mode="json")
         run.duration = round(time.monotonic() - run.started, 2)
         # Crawlee stops on cancellation and returns what it has, so the result is partial.
-        run.status = "cancelled" if run.cancel_requested else "finished"
+        status = "cancelled" if run.cancel_requested else "finished"
         run.emit(
             "run_cancelled" if run.cancel_requested else "run_finished",
             ok=result.ok,
@@ -286,8 +286,12 @@ def execute(run: Run, seeds: list[Any], options: Any) -> None:
             failures=len(result.failures),
             run_error=result.run_error,
         )
-        if run.store_url is not None and run.status == "finished":
+        # Still running while it stores, so the live log gets the store lines before its end.
+        if run.store_url is not None and status == "finished":
             store(run, loop, seeds, result)
+        with run.changed:
+            run.status = status
+            run.changed.notify_all()
     except asyncio.CancelledError:
         run.duration = round(time.monotonic() - run.started, 2)
         run.status = "cancelled"
@@ -447,7 +451,8 @@ def build_argv(body: dict[str, Any]) -> list[str]:
     else:
         value = str(body.get("query") or "").strip()
         if not value:
-            raise ValueError("Enter a query or a channel")
+            missing = {"youtube": "Enter a channel", "podcast": "Enter a feed key"}
+            raise ValueError(missing.get(source, "Enter a query"))
         argv.extend(["--", value] if value.startswith("-") else [value])
     return argv
 
@@ -462,7 +467,9 @@ def parse_run(argv: list[str]) -> tuple[list[Any], Any]:
         raise ValueError(lines[-1] if lines else "Invalid arguments") from error
     try:
         return requests_from_args(arguments)
-    except (TopicFileError, ValidationError, ValueError) as error:
+    except ValidationError as error:  # a ValueError too: catch it first, without pydantic's dump
+        raise ValueError(validation_message(error)) from error
+    except (TopicFileError, ValueError) as error:
         raise ValueError(str(error)) from error
 
 
@@ -560,8 +567,11 @@ def connection_hint(error: BaseException) -> str:
     if isinstance(error, asyncpg.InvalidCatalogNameError):
         return "Check the database name in DATABASE_URL against POSTGRES_DB in the root .env."
     if isinstance(error, ValueError | asyncpg.InterfaceError):
-        return "DATABASE_URL is no postgresql:// URL, see crawler/.env.example."
-    return "Start it from the repository root: make db (or docker compose up -d)."
+        return "Check DATABASE_URL: a postgresql:// URL as in crawler/.env.example."
+    return (
+        "If the database is not running, start it from the repository root: make db"
+        " (or docker compose up -d). Else check host and port in DATABASE_URL."
+    )
 
 
 def run_db(query: Callable[[Any], Awaitable[Any]], *, write: bool = False) -> Any:
@@ -1503,7 +1513,15 @@ def call_mcp(tool: str, arguments: dict[str, Any]) -> dict[str, Any]:
     except urllib.error.HTTPError as error:
         raise RuntimeError(f"The MCP server answered HTTP {error.code}") from error
     except OSError as error:
-        raise RuntimeError(f"No MCP server on {url}: run make start") from error
+        # urllib wraps what went wrong on connecting; a timeout while reading comes as it is.
+        reason = error.reason if isinstance(error, urllib.error.URLError) else error
+        if isinstance(reason, ConnectionRefusedError):
+            raise RuntimeError(f"No MCP server on {url}: run make start") from error
+        if isinstance(reason, TimeoutError):
+            raise RuntimeError(
+                f"The MCP server on {url} did not answer within {MATCH_TIMEOUT} s"
+            ) from error
+        raise RuntimeError(f"The MCP server on {url} could not be reached: {reason}") from error
     # The server answers as an event stream with one message.
     data = [line[5:] for line in body.splitlines() if line.startswith("data:")]
     not_mcp = f"{url} did not answer like an MCP server"
@@ -1671,7 +1689,7 @@ class Handler(BaseHTTPRequestHandler):
             return
         run = CURRENT
         if run is not None and run.store_url is not None:
-            self.send_json({"error": "A run is storing into the database; wait for it"}, 409)
+            self.send_json({"error": "A crawler run with Store is in progress; wait for it"}, 409)
             return
         if INDEXING is not None and INDEXING.status == "running":
             self.send_json({"error": "The indexer is running; stop it first"}, 409)
