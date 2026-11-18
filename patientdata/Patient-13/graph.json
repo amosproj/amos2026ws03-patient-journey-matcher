@@ -1,0 +1,1982 @@
+{
+ "patient": "Patient-13",
+ "documents": [
+  "ueberweisungsbrief_e01.pdf",
+  "laborbericht_e02.pdf",
+  "befundbericht_e03.pdf",
+  "pathologiebericht_e04.pdf",
+  "tumorkonferenzprotokoll_e05.pdf",
+  "einweisungsbrief_e06.pdf",
+  "op_bericht_e07.pdf",
+  "pathologiebericht_e08.pdf",
+  "entlassungsbrief_e09.pdf",
+  "laborbericht_e10.pdf",
+  "verlaufsbericht_e10.pdf",
+  "laborbericht_e11.pdf",
+  "verlaufsbericht_e11.pdf",
+  "laborbericht_e12.pdf",
+  "verlaufsbericht_e12.pdf",
+  "laborbericht_e13.pdf",
+  "verlaufsbericht_e13.pdf",
+  "laborbericht_e14.pdf",
+  "verlaufsbericht_e14.pdf",
+  "laborbericht_e15.pdf",
+  "verlaufsbericht_e15.pdf"
+ ],
+ "nodes": [
+  {
+   "uuid": "7abc195d-bb8a-4dd9-a2ab-0b49a15b50e8",
+   "name": "Dr. med. Arzt-11",
+   "group_id": "Patient-13",
+   "labels": [
+    "Provider",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:39:02.162192",
+   "summary": "Dr. med. Arzt-11 issued a referral letter for patient Patient-13 to the Urologische Klinik at Klinikum Bremen on November 6, 2026.\nPatient-13 underwent laboratory testing ordered by Dr. med. Arzt-11.\nThe interdisciplinary tumor conference protocol issued by the Urologische Klinik at Klinikum Bremen was chaired by Dr. med. Arzt-11.\nDr. med. Arzt-11 practices at the Urologische Klinik at Klinikum Bremen.\nThe robotic-assisted radical prostatectomy was performed by Dr. med. Arzt-11.\nPatient-13 was discharged under the care of Dr. med. Arzt-11 following a radical prostatectomy on February 11, 2027.\nPatient-13 was evaluated by attending physician Dr. med. Arzt-11 during a postoperative follow-up evaluation.\nPatient-13 received care from Dr. med. Arzt-11 during a follow-up evaluation at the Urologische Klinik, Klinikum Bremen on April 4, 2027.\nDr. med. Arzt-11 ordered routine postoperative laboratory evaluation for patient Patient-13 at the Urologische Klinik, Klinikum Bremen.\nDr. med. Arzt-11 ordered routine postoperative laboratory evaluation at the Urologische Klinik, Klinikum Bremen.\nPatient-13 presented to Dr. med. Arzt-11 for a routine postoperative follow-up.\nDr. med. Arzt-11 ordered a routine postoperative laboratory evaluation at the Urologische Klinik, Klinikum Bremen – Klinik-11.\nPatient-13 presented to Dr. med. Arzt-11 at the Urologische Klinik, Klinikum Bremen, for a routine postoperative follow-up evaluation regarding a localized C61 Prostatakarzinom.\nPatient Patient-13 had routine postoperative laboratory evaluation ordered by Dr. med. Arzt-11 on June 25, 2028.\nPatient-13 was under the care of Dr. med. Arzt-11 for follow-up laboratory evaluation.\nPatient-13 was evaluated by Dr. med. Arzt-11 during a follow-up consultation on December 13, 2028.\nPatient Patient-13 presented to Dr. med. Arzt-11 for a routine postoperative follow-up evaluation on May 21, 2029.",
+   "attributes": {
+    "specialty": "Urologie",
+    "institution": "Klinikum Bremen",
+    "department": "Urologische Klinik"
+   }
+  },
+  {
+   "uuid": "b8ed1992-2e12-4a3f-8766-9e4b109f9912",
+   "name": "Dr. med. Arzt-13",
+   "group_id": "Patient-13",
+   "labels": [
+    "Entity",
+    "Provider"
+   ],
+   "created_at": "2026-11-18T18:39:34.566560",
+   "summary": "The prostate MRI was performed and signed by Dr. med. Arzt-13.",
+   "attributes": {
+    "specialty": "Radiologie",
+    "institution": "Klinikum Stuttgart",
+    "department": "Institut für Diagnostische Radiologie"
+   }
+  },
+  {
+   "uuid": "52e5ed46-5e3a-4387-8c1d-a06f98b557a5",
+   "name": "Dr. med. Arzt-14",
+   "group_id": "Patient-13",
+   "labels": [
+    "Entity",
+    "Provider"
+   ],
+   "created_at": "2026-11-18T18:41:16.492226",
+   "summary": "Dr. med. Arzt-14 issued the pathological-histological report at the Institut für Pathologie, Klinikum Stuttgart.",
+   "attributes": {
+    "specialty": null,
+    "institution": "Klinikum Stuttgart",
+    "department": "Institut für Pathologie"
+   }
+  },
+  {
+   "uuid": "6696a615-1ffa-413b-b606-a68b3511f867",
+   "name": "ECOG performance status",
+   "group_id": "Patient-13",
+   "labels": [
+    "VitalSigns",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:45:31.672002",
+   "summary": "Patient Patient-13 has an ECOG performance status of 0.",
+   "attributes": {
+    "measurement_date": null,
+    "blood_pressure": null,
+    "heart_rate": null,
+    "weight": null,
+    "height": null,
+    "temperature": null,
+    "oxygen_saturation": null
+   }
+  },
+  {
+   "uuid": "a258f91d-4dc7-489b-a1b4-11d16c1ff458",
+   "name": "Gleason score of 3+4=7",
+   "group_id": "Patient-13",
+   "labels": [
+    "PathologyResult",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:40:12.519991",
+   "summary": "Patient-13 has a Gleason score of 3+4=7 (ISUP grade 2) confirming prostate cancer.\nThe diagnosis of Prostatakarzinom is supported by the pathology findings of Gleason score of 3+4=7 (ISUP grade 2).\nPatient-13 showed an adenocarcinoma of the prostate with a Gleason score of 3+4=7 (ISUP 2) on pathology.\nThe diagnosis of C61 Prostatakarzinom is confirmed by the pathology finding of adenocarcinoma of the prostate with a Gleason score of 3+4=7 (ISUP 2).\nPatient-13 has a confirmed Gleason score of 3+4 for the resected prostate adenocarcinoma.",
+   "attributes": {
+    "grade": "3+4=7",
+    "finding": "C61 Prostatakarzinom (Adenokarzinom der Prostata)",
+    "specimen_site": "Prostata",
+    "pathology_date": "2026-12-16"
+   }
+  },
+  {
+   "uuid": "9e1fd5c0-4396-4186-a3fb-b9128f4ae9fa",
+   "name": "Institut für Diagnostische Radiologie, Klinikum Stuttgart – Klinik-12",
+   "group_id": "Patient-13",
+   "labels": [
+    "Entity",
+    "Provider"
+   ],
+   "created_at": "2026-11-18T18:39:34.566539",
+   "summary": "The prostate MRI was performed at the Institut für Diagnostische Radiologie, Klinikum Stuttgart – Klinik-12.",
+   "attributes": {
+    "specialty": "Radiologie",
+    "institution": "Klinikum Stuttgart – Klinik-12",
+    "department": "Institut für Diagnostische Radiologie"
+   }
+  },
+  {
+   "uuid": "ef773233-e3c4-4b50-817d-6f2959af6f4d",
+   "name": "Institut für Pathologie at Klinikum Bremen – Klinik-11",
+   "group_id": "Patient-13",
+   "labels": [
+    "Provider",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:39:52.466744",
+   "summary": "The diagnosis of C61 Prostatakarzinom (Adenokarzinom der Prostata) was confirmed by the pathology report from the Institut für Pathologie at Klinikum Bremen – Klinik-11.",
+   "attributes": {
+    "specialty": "Pathologie",
+    "institution": "Klinikum Bremen",
+    "department": "Institut für Pathologie"
+   }
+  },
+  {
+   "uuid": "198a6013-6e8c-462c-957a-f3be7b6d8307",
+   "name": "Institut für Pathologie, Klinikum Stuttgart",
+   "group_id": "Patient-13",
+   "labels": [
+    "Entity",
+    "Provider"
+   ],
+   "created_at": "2026-11-18T18:41:16.492295",
+   "summary": "Dr. med. Arzt-14 issued the pathological-histological report at the Institut für Pathologie, Klinikum Stuttgart.",
+   "attributes": {
+    "specialty": "Pathologie",
+    "institution": "Klinikum Stuttgart",
+    "department": "Institut für Pathologie"
+   }
+  },
+  {
+   "uuid": "444f1a96-9f7c-448c-a03e-087c73a3e1ff",
+   "name": "MRI-fusionierte Stanzbiopsie",
+   "group_id": "Patient-13",
+   "labels": [
+    "Procedure",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:39:52.466736",
+   "summary": "Patient-13 underwent an MRI-fusionierte Stanzbiopsie consisting of 14 core biopsies at the Urologische Klinik.",
+   "attributes": {
+    "procedure_date": "December 16, 2026",
+    "outcome": "3 to 6 cores were positive",
+    "indication": "preoperative PSA level of 11.8 ng/ml"
+   }
+  },
+  {
+   "uuid": "59d130fa-b15c-4454-945d-11a49aed788e",
+   "name": "PSA",
+   "group_id": "Patient-13",
+   "labels": [
+    "TumorMarker",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:39:02.162229",
+   "summary": "Patient-13 has a routine screening PSA level of 10 ng/ml and a previous PSA value of 11,8 ng/ml.\nElevated PSA levels of 10 ng/ml and 11,8 ng/ml indicate a working diagnosis of Prostatakarzinom.\nPatient-13 has a laboratory result for the tumor marker PSA (gesamt) showing a value of 11.8 ng/ml.\nThe tumor marker PSA (gesamt) value of 11.8 ng/ml is evaluated as elevated and associated with Vd. a. Prostatakarzinom.\nPatient-13 has a preoperative PSA level of 11.8 ng/ml.\nPatient-13 has a current tumor marker PSA lab result of 11.8 ng/ml.\nThe tumor marker PSA value of 11.8 ng/ml is associated with the clinical diagnosis of C61 Prostatakarzinom.\nPatient-13 had a postoperative total prostate-specific antigen level of <0,1 ng/ml evaluated as normal and unremarkable.\nPatient-13 has a current PSA level of <0.1 ng/ml with a declining and stable progression during the follow-up on April 4, 2027.\nTotal PSA value of <0,1 ng/ml falls within the normal reference range for patient Patient-13 diagnosed with C61 Prostatakarzinom.\nPatient-13 has a stable current PSA-Wert of <0.1 ng/ml.\nPatient-13 has a total PSA tumor marker value of <0,1 ng/ml.\nPatient Patient-13 has a total PSA level of <0,1 ng/ml evaluated as normal and unremarkable on June 25, 2028.\nThe total PSA level of <0,1 ng/ml indicates a normal and unremarkable status for C61 Prostatakarzinom (Lokal begrenzt – Radikale Prostatektomie (RPE)) on June 25, 2028.\nThe Zentrallabor at Klinikum Bremen – Klinik-11 electronically validated and released the total PSA level report on June 25, 2028.\nPatient-13 has a current PSA-Wert tumor marker level of <0,1 ng/ml with a stable PSA-Verlauf.\nThe tumor marker PSA (gesamt) value of <0,1 ng/ml indicates a normal and unremarkable evaluation for C61 Prostatakarzinom (lokal begrenzt – Radikale Prostatektomie (RPE)).\nThe laboratory report for PSA (gesamt) was electronically validated and released by the Zentrallabor, Klinikum Bremen – Klinik-11.",
+   "attributes": {
+    "marker_value": "<0,1",
+    "unit": "ng/ml",
+    "reference_range": "0,00 – 4,00 ng/ml",
+    "test_date": "2029-05-21"
+   }
+  },
+  {
+   "uuid": "73be977b-ab32-4642-9cb6-02aadb84f8d1",
+   "name": "PSA control test",
+   "group_id": "Patient-13",
+   "labels": [
+    "LabTest",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:41:37.144838",
+   "summary": "A PSA control test was recommended for Patient-13 in 6 weeks following discharge on February 11, 2027.",
+   "attributes": {
+    "test_value": null,
+    "unit": null,
+    "reference_range": null,
+    "test_date": null,
+    "result_status": null
+   }
+  },
+  {
+   "uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "name": "Patient-13",
+   "group_id": "Patient-13",
+   "labels": [
+    "Patient",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:39:02.162135",
+   "summary": "Patient-13, born July 25, 1959 under case number URO-2026-0013, has a clinical diagnosis of C61 Prostatakarzinom (cT2a cN0 cM0, Gleason 3+4=7, ISUP 2) with a preoperative PSA level of 11.8 ng/ml. On February 1, 2027, Patient-13 underwent a robotic-assisted radical prostatectomy performed by Dr. med. Arzt-11 at the Urologische Klinik, Klinikum Bremen. Pathology confirmed pT2, R0 status with 0/18 lymph nodes affected. Patient-13 was discharged in stable condition on February 11, 2027. Routine postoperative follow-up evaluations through May 21, 2029, showed an ECOG performance status of 0, a stable clinical course, and persistently undetectable total PSA values of <0.1 ng/ml with no evidence of disease progression.\nPatient Patient-13 presented to Dr. med. Arzt-11 for a routine postoperative follow-up evaluation on May 21, 2029.\nPatient Patient-13 received care at the Urologische Klinik, Klinikum Bremen on May 21, 2029.\nPatient Patient-13 has a diagnosis of C61 Prostatakarzinom.\nPatient Patient-13 has localized prostate cancer.\nPatient Patient-13 has an ECOG performance status of 0.",
+   "attributes": {
+    "patient_id": "Patient-13",
+    "date_of_birth": "July 25, 1959",
+    "gender": null
+   }
+  },
+  {
+   "uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "name": "Prostatakarzinom",
+   "group_id": "Patient-13",
+   "labels": [
+    "Diagnosis",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:39:02.162241",
+   "summary": "Patient-13 was diagnosed with C61 Prostatakarzinom (Adenokarzinom der Prostata) with a Gleason score of 3+4=7 (ISUP 2) and staged as cT2a cN0 cM0. The diagnosis was confirmed following an elevated PSA level of 11.8 ng/ml, a PI-RADS score of 4 on prostate MRI, an MRI-fusion biopsy, and a robotic-assisted radical prostatectomy performed on February 1, 2027, by Dr. med. Arzt-11 at Klinikum Bremen. Final histopathology confirmed pT2, R0 status with 0 out of 18 lymph nodes affected. Postoperative follow-up evaluations on April 4, 2027, and September 6, 2027, showed a stable clinical course and normal, undetectable PSA levels below 0.1 ng/ml with no signs of disease progression.\nPatient-13 has a clinical diagnosis of C61 Prostatakarzinom.\nPatient-13 has a clinical diagnosis of C61 Prostatakarzinom following a radical prostatectomy.\nPatient-13 was evaluated for a localized C61 Prostatakarzinom status post Radikale Prostatektomie.\nPatient Patient-13 has a diagnosis of C61 Prostatakarzinom (Lokal begrenzt – Radikale Prostatektomie (RPE)) on June 25, 2028.\nThe total PSA level of <0,1 ng/ml indicates a normal and unremarkable status for C61 Prostatakarzinom (Lokal begrenzt – Radikale Prostatektomie (RPE)) on June 25, 2028.\nPatient-13 has a medical history of C61 Prostatakarzinom.\nThe tumor marker PSA (gesamt) value of <0,1 ng/ml indicates a normal and unremarkable evaluation for C61 Prostatakarzinom (lokal begrenzt – Radikale Prostatektomie (RPE)).\nPatient Patient-13 has a diagnosis of C61 Prostatakarzinom.\nPatient Patient-13 has localized prostate cancer.\nPatient Patient-13 has a diagnosis of C61 Prostatakarzinom.\nPatient Patient-13 has localized prostate cancer.",
+   "attributes": {
+    "icd_code": "C61",
+    "stage": "pT2",
+    "date_confirmed": "2026-12-16",
+    "status": "remission"
+   }
+  },
+  {
+   "uuid": "63031b26-1fc8-45cc-af1d-9b886e7d5de4",
+   "name": "Radical Prostatectomy",
+   "group_id": "Patient-13",
+   "labels": [
+    "Procedure",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:40:12.520009",
+   "summary": "The tumor board consensus recommendation for Patient-13 is a Radical Prostatectomy with curative intention.\nPatient-13 is scheduled for a planned robotic-assisted radical prostatectomy at the Urologische Klinik at Klinikum Bremen.\nPatient Patient-13 underwent a robotic-assisted radical prostatectomy at the Urologische Klinik, Klinikum Bremen.\nThe robotic-assisted radical prostatectomy was performed at the Urologische Klinik, Klinikum Bremen.\nThe robotic-assisted radical prostatectomy was performed by Dr. med. Arzt-11.\nPatient-13 underwent a radical prostatectomy specimen analysis.\nPatient-13 underwent a radical prostatectomy prior to being discharged on February 11, 2027.\nPatient-13 was managed via a prior radical prostatectomy for a localized tumor status of C61 Prostatakarzinom.\nPatient Patient-13 is status post radical prostatectomy for C61 Prostatakarzinom.\nPatient-13 underwent a local-treatment radical prostatectomy.\nPatient-13 underwent a radical prostatectomy (RPE).\nPatient-13 underwent status post Radikale Prostatektomie for localized C61 Prostatakarzinom.",
+   "attributes": {
+    "procedure_date": "February 1, 2027",
+    "outcome": "transferred to the recovery room with stable circulatory parameters (Kreislaufparameter stabil)",
+    "indication": "localized prostate carcinoma"
+   }
+  },
+  {
+   "uuid": "43a363d8-f279-4185-8bb8-7e7ae2eee675",
+   "name": "Urologische Klinik at Klinikum Bremen",
+   "group_id": "Patient-13",
+   "labels": [
+    "Entity",
+    "Provider"
+   ],
+   "created_at": "2026-11-18T18:39:02.162214",
+   "summary": "Patient-13 was referred to the Urologische Klinik at Klinikum Bremen for specialist consultation and further urological workup. Patient-13 underwent laboratory testing at the Urologische Klinik, Klinikum Bremen. Patient-13 was evaluated by Dr. med. Arzt-11 at the Urologische Klinik, Klinikum Bremen following a preoperative PSA level of 11.8 ng/ml. The interdisciplinary tumor conference protocol issued by the Urologische Klinik at Klinikum Bremen was chaired by Dr. med. Arzt-11. The inpatient referral sends Patient-13 to the Urologische Klinik at Klinikum Bremen for a planned robotic-assisted radical prostatectomy. Dr. med. Arzt-11 practices at the Urologische Klinik at Klinikum Bremen. The robotic-assisted radical prostatectomy was performed at the Urologische Klinik, Klinikum Bremen. Patient-13 was discharged in a complication-free, stable condition from the Urologische Klinik at Klinikum Bremen on February 11, 2027.\nPatient-13 underwent follow-up laboratory evaluation at the Urologische Klinik, Klinikum Bremen.\nPatient-13 attended a routine follow-up consultation at Urologische Klinik, Klinikum Bremen – Klinik-11 on December 13, 2028.\nPatient-13 underwent a laboratory evaluation ordered by Dr. med. Arzt-11 at the Urologische Klinik, Klinikum Bremen.\nPatient Patient-13 received care at the Urologische Klinik, Klinikum Bremen on May 21, 2029.",
+   "attributes": {
+    "specialty": "Urologie",
+    "institution": "Klinikum Bremen",
+    "department": "Urologische Klinik"
+   }
+  },
+  {
+   "uuid": "82c751fa-63ec-4649-80da-a224f56fd4d2",
+   "name": "Zentrallabor at Klinikum Bremen – Klinik-11",
+   "group_id": "Patient-13",
+   "labels": [
+    "Provider",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:43:54.966481",
+   "summary": "The Zentrallabor at Klinikum Bremen – Klinik-11 electronically validated and released the total PSA level report on June 25, 2028.\nThe laboratory report for PSA (gesamt) was electronically validated and released by the Zentrallabor, Klinikum Bremen – Klinik-11.",
+   "attributes": {
+    "specialty": null,
+    "institution": "Klinikum Bremen",
+    "department": "Zentrallabor"
+   }
+  },
+  {
+   "uuid": "6829a683-9db0-48fb-840a-dc0a156d03d6",
+   "name": "bilateral extended lymphadenectomy",
+   "group_id": "Patient-13",
+   "labels": [
+    "Procedure",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:40:56.149766",
+   "summary": "Patient Patient-13 underwent a bilateral extended lymphadenectomy during the procedure.",
+   "attributes": {
+    "procedure_date": "February 1, 2027",
+    "outcome": "unremarkable leak test",
+    "indication": "localized prostate carcinoma"
+   }
+  },
+  {
+   "uuid": "0d4adb80-3a5b-419d-a8b0-d2e965e5c1c9",
+   "name": "inpatient referral",
+   "group_id": "Patient-13",
+   "labels": [
+    "Referral",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:40:32.534982",
+   "summary": "Patient-13 received an inpatient referral issued by Dr. med. Arzt-11 to the Urologische Klinik at Klinikum Bremen for a planned robotic-assisted radical prostatectomy.\nThe inpatient referral sends Patient-13 to the Urologische Klinik at Klinikum Bremen for a planned robotic-assisted radical prostatectomy.",
+   "attributes": {
+    "referral_date": "January 30, 2027",
+    "reason": "planned robotic-assisted radical prostatectomy (RARP)",
+    "urgency": null,
+    "referring_provider": "Dr. med. Arzt-11 from the Urologische Klinik at Klinikum Bremen",
+    "target_specialty": "Urologische Klinik at Klinikum Bremen"
+   }
+  },
+  {
+   "uuid": "d57138b8-1e4d-48de-a573-2b6da2c878a5",
+   "name": "prostate MRI",
+   "group_id": "Patient-13",
+   "labels": [
+    "ImagingResult",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:39:34.566510",
+   "summary": "Patient Patient-13 underwent a prostate MRI on December 3, 2026 at the Institut für Diagnostische Radiologie, Klinikum Stuttgart – Klinik-12.\nThe prostate MRI was performed at the Institut für Diagnostische Radiologie, Klinikum Stuttgart – Klinik-12.\nThe prostate MRI was performed and signed by Dr. med. Arzt-13.\nThe prostate MRI revealed a PI-RADS score of 4, indicating suspected prostate cancer.",
+   "attributes": {
+    "modality": "MRI",
+    "body_region": "prostate",
+    "finding": "PI-RADS score of 4, indicating that a clinically significant lesion is likely",
+    "impression": "suspected prostate cancer, PI-RADS 4",
+    "imaging_date": "December 3, 2026"
+   }
+  }
+ ],
+ "edges": [
+  {
+   "uuid": "04d15d6c-9cd9-45f7-ad6b-b0e7dbebfc62",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "43a363d8-f279-4185-8bb8-7e7ae2eee675",
+   "created_at": "2026-11-18T18:39:05.969587",
+   "name": "RELATES_TO",
+   "fact": "Patient-13 was referred to the Urologische Klinik at Klinikum Bremen for specialist consultation and further urological workup.",
+   "episodes": [
+    "38965c1c-0cf3-49bc-ba62-626fc80a1b1c"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "0a0b261c-52ca-436b-a734-db2b867de1dc",
+   "group_id": "Patient-13",
+   "source_node_uuid": "7abc195d-bb8a-4dd9-a2ab-0b49a15b50e8",
+   "target_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "created_at": "2026-11-18T18:39:05.969473",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-11 issued a referral letter for patient Patient-13 to the Urologische Klinik at Klinikum Bremen on November 6, 2026.",
+   "episodes": [
+    "38965c1c-0cf3-49bc-ba62-626fc80a1b1c"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "7686af2f-e5a4-40e1-9433-df1cc0c626ea",
+   "group_id": "Patient-13",
+   "source_node_uuid": "59d130fa-b15c-4454-945d-11a49aed788e",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:39:05.969773",
+   "name": "INDICATES",
+   "fact": "Elevated PSA levels of 10 ng/ml and 11,8 ng/ml indicate a working diagnosis of Prostatakarzinom.",
+   "episodes": [
+    "38965c1c-0cf3-49bc-ba62-626fc80a1b1c"
+   ],
+   "expired_at": "2026-11-18T18:42:47.995991",
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": "2027-09-06T00:00:00",
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "7862754b-511f-441c-81f1-f2f6b2700758",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:39:05.969703",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-13 has a working diagnosis of Vd. a. Prostatakarzinom (C61).",
+   "episodes": [
+    "38965c1c-0cf3-49bc-ba62-626fc80a1b1c",
+    "2bf6b76e-b7d9-46ae-a5eb-a4e6552b093d"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a0de4d59-3d79-4e7a-8269-6366f90706c2",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "59d130fa-b15c-4454-945d-11a49aed788e",
+   "created_at": "2026-11-18T18:39:05.969654",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-13 has a routine screening PSA level of 10 ng/ml and a previous PSA value of 11,8 ng/ml.",
+   "episodes": [
+    "38965c1c-0cf3-49bc-ba62-626fc80a1b1c"
+   ],
+   "expired_at": "2026-11-18T18:42:26.176380",
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": "2027-04-04T00:00:00",
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "481fe019-3750-4392-b30d-01aeed0cd0e4",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "59d130fa-b15c-4454-945d-11a49aed788e",
+   "created_at": "2026-11-18T18:39:21.148021",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-13 has a laboratory result for the tumor marker PSA (gesamt) showing a value of 11.8 ng/ml.",
+   "episodes": [
+    "2bf6b76e-b7d9-46ae-a5eb-a4e6552b093d",
+    "3894484e-c877-4cf5-b2fd-a1c9d0dd8fb1"
+   ],
+   "expired_at": "2026-11-18T18:42:26.176386",
+   "valid_at": "2026-11-11T00:00:00",
+   "invalid_at": "2027-04-04T00:00:00",
+   "reference_time": "2026-11-11T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "7d3d9ab9-e3e7-4b48-894b-d0d2959b4b6a",
+   "group_id": "Patient-13",
+   "source_node_uuid": "59d130fa-b15c-4454-945d-11a49aed788e",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:39:21.148177",
+   "name": "INDICATES",
+   "fact": "The tumor marker PSA (gesamt) value of 11.8 ng/ml is evaluated as elevated and associated with Vd. a. Prostatakarzinom.",
+   "episodes": [
+    "2bf6b76e-b7d9-46ae-a5eb-a4e6552b093d"
+   ],
+   "expired_at": "2026-11-18T18:42:47.995999",
+   "valid_at": "2026-11-11T00:00:00",
+   "invalid_at": "2027-09-06T00:00:00",
+   "reference_time": "2026-11-11T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "cefc62b6-a52e-44df-aec6-de5ba738956f",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "43a363d8-f279-4185-8bb8-7e7ae2eee675",
+   "created_at": "2026-11-18T18:39:21.147692",
+   "name": "MANAGED_AT",
+   "fact": "Patient-13 underwent laboratory testing at the Urologische Klinik, Klinikum Bremen.",
+   "episodes": [
+    "2bf6b76e-b7d9-46ae-a5eb-a4e6552b093d"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-11T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-11T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "daed1286-4f52-4465-84ab-647c4f8f579f",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "7abc195d-bb8a-4dd9-a2ab-0b49a15b50e8",
+   "created_at": "2026-11-18T18:39:21.147482",
+   "name": "MANAGED_AT",
+   "fact": "Patient-13 underwent laboratory testing ordered by Dr. med. Arzt-11.",
+   "episodes": [
+    "2bf6b76e-b7d9-46ae-a5eb-a4e6552b093d",
+    "35ebfe33-911a-4e49-83f9-4b293d3d3f33"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-11T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-11T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "186f5ebe-99df-4c0f-b3ee-c200cb662145",
+   "group_id": "Patient-13",
+   "source_node_uuid": "d57138b8-1e4d-48de-a573-2b6da2c878a5",
+   "target_node_uuid": "9e1fd5c0-4396-4186-a3fb-b9128f4ae9fa",
+   "created_at": "2026-11-18T18:39:38.414667",
+   "name": "PERFORMED_BY",
+   "fact": "The prostate MRI was performed at the Institut für Diagnostische Radiologie, Klinikum Stuttgart – Klinik-12.",
+   "episodes": [
+    "e7ec819e-ea27-4dc6-8f63-dd5035158d62"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-03T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-03T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "3ce685ae-bd2a-41e4-979d-80f9a1eaac1c",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "d57138b8-1e4d-48de-a573-2b6da2c878a5",
+   "created_at": "2026-11-18T18:39:38.414494",
+   "name": "HAS_IMAGING",
+   "fact": "Patient Patient-13 underwent a prostate MRI on December 3, 2026 at the Institut für Diagnostische Radiologie, Klinikum Stuttgart – Klinik-12.",
+   "episodes": [
+    "e7ec819e-ea27-4dc6-8f63-dd5035158d62"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-03T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-03T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "4f1d99ea-65c3-40bf-a6c4-12e583a889ee",
+   "group_id": "Patient-13",
+   "source_node_uuid": "d57138b8-1e4d-48de-a573-2b6da2c878a5",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:39:38.414859",
+   "name": "INDICATES",
+   "fact": "The prostate MRI revealed a PI-RADS score of 4, indicating suspected prostate cancer.",
+   "episodes": [
+    "e7ec819e-ea27-4dc6-8f63-dd5035158d62"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-03T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-03T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "85a2e138-b071-4576-95a1-dbb04dfbcdc4",
+   "group_id": "Patient-13",
+   "source_node_uuid": "d57138b8-1e4d-48de-a573-2b6da2c878a5",
+   "target_node_uuid": "b8ed1992-2e12-4a3f-8766-9e4b109f9912",
+   "created_at": "2026-11-18T18:39:38.414762",
+   "name": "PERFORMED_BY",
+   "fact": "The prostate MRI was performed and signed by Dr. med. Arzt-13.",
+   "episodes": [
+    "e7ec819e-ea27-4dc6-8f63-dd5035158d62"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-03T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-03T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "bb191272-9687-4eeb-a0d5-274bdead5707",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:39:38.414969",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient Patient-13 received a radiological diagnosis of suspected prostate cancer with a PI-RADS score of 4.",
+   "episodes": [
+    "e7ec819e-ea27-4dc6-8f63-dd5035158d62"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-03T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-03T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "093528b3-d675-4c2e-9353-3c16b6a61854",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "59d130fa-b15c-4454-945d-11a49aed788e",
+   "created_at": "2026-11-18T18:39:57.461620",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-13 has a preoperative PSA level of 11.8 ng/ml.",
+   "episodes": [
+    "bbf37a68-469c-4744-93a7-9945bbf0a404",
+    "7b8267d1-0021-4889-a925-101e961379b4",
+    "9a1fbcb7-4d79-4665-853e-fd150cc5c1ce"
+   ],
+   "expired_at": "2026-11-18T18:42:47.995941",
+   "valid_at": "2026-12-16T00:00:00",
+   "invalid_at": "2027-04-04T00:00:00",
+   "reference_time": "2026-12-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "17bf3026-4c76-418f-a7b4-14c8a718b5b1",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:39:57.461750",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-13 was diagnosed with C61 Prostatakarzinom (Adenokarzinom der Prostata) confirmed by the pathology report.",
+   "episodes": [
+    "bbf37a68-469c-4744-93a7-9945bbf0a404",
+    "9a1fbcb7-4d79-4665-853e-fd150cc5c1ce"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "304827d8-6b14-4ee3-bcc1-063eb0242b90",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "43a363d8-f279-4185-8bb8-7e7ae2eee675",
+   "created_at": "2026-11-18T18:39:57.461546",
+   "name": "MANAGED_AT",
+   "fact": "Patient-13 was evaluated by Dr. med. Arzt-11 at the Urologische Klinik, Klinikum Bremen following a preoperative PSA level of 11.8 ng/ml.",
+   "episodes": [
+    "bbf37a68-469c-4744-93a7-9945bbf0a404"
+   ],
+   "expired_at": "2026-11-18T18:43:26.010770",
+   "valid_at": "2026-12-16T00:00:00",
+   "invalid_at": "2028-02-20T00:00:00",
+   "reference_time": "2026-12-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "6930aeff-bd49-416d-88af-44ce23519ee2",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "444f1a96-9f7c-448c-a03e-087c73a3e1ff",
+   "created_at": "2026-11-18T18:39:57.461686",
+   "name": "UNDERWENT",
+   "fact": "Patient-13 underwent an MRI-fusionierte Stanzbiopsie consisting of 14 core biopsies at the Urologische Klinik.",
+   "episodes": [
+    "bbf37a68-469c-4744-93a7-9945bbf0a404"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "e1ac1cf9-64d1-42e8-a153-2968cd7454ff",
+   "group_id": "Patient-13",
+   "source_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "target_node_uuid": "ef773233-e3c4-4b50-817d-6f2959af6f4d",
+   "created_at": "2026-11-18T18:39:57.461850",
+   "name": "RELATES_TO",
+   "fact": "The diagnosis of C61 Prostatakarzinom (Adenokarzinom der Prostata) was confirmed by the pathology report from the Institut für Pathologie at Klinikum Bremen – Klinik-11.",
+   "episodes": [
+    "bbf37a68-469c-4744-93a7-9945bbf0a404"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "0dae5388-7e8e-429c-bcd0-16b6c696e417",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "63031b26-1fc8-45cc-af1d-9b886e7d5de4",
+   "created_at": "2026-11-18T18:40:17.194551",
+   "name": "UNDERWENT",
+   "fact": "The tumor board consensus recommendation for Patient-13 is a Radical Prostatectomy with curative intention.",
+   "episodes": [
+    "7b8267d1-0021-4889-a925-101e961379b4"
+   ],
+   "expired_at": "2026-11-18T18:43:44.416229",
+   "valid_at": "2026-12-25T00:00:00",
+   "invalid_at": "2027-04-04T00:00:00",
+   "reference_time": "2026-12-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "1937ea1e-3685-4864-a9c7-c3fe51bd90b9",
+   "group_id": "Patient-13",
+   "source_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "target_node_uuid": "a258f91d-4dc7-489b-a1b4-11d16c1ff458",
+   "created_at": "2026-11-18T18:40:17.194606",
+   "name": "CONFIRMED_BY",
+   "fact": "The diagnosis of Prostatakarzinom is supported by the pathology findings of Gleason score of 3+4=7 (ISUP grade 2).",
+   "episodes": [
+    "7b8267d1-0021-4889-a925-101e961379b4"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "225de6d2-05cf-450c-8db1-bf9d90e5423b",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:40:17.194366",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-13 presents with a locally limited C61 Prostatakarzinom staged as cT2a cN0 cM0.",
+   "episodes": [
+    "7b8267d1-0021-4889-a925-101e961379b4"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "451e43e3-113a-4091-9a52-7349e3d03320",
+   "group_id": "Patient-13",
+   "source_node_uuid": "43a363d8-f279-4185-8bb8-7e7ae2eee675",
+   "target_node_uuid": "7abc195d-bb8a-4dd9-a2ab-0b49a15b50e8",
+   "created_at": "2026-11-18T18:40:17.194665",
+   "name": "RELATES_TO",
+   "fact": "The interdisciplinary tumor conference protocol issued by the Urologische Klinik at Klinikum Bremen was chaired by Dr. med. Arzt-11.",
+   "episodes": [
+    "7b8267d1-0021-4889-a925-101e961379b4"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "7a071c34-5fbc-4a4c-90e5-41381529d321",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "a258f91d-4dc7-489b-a1b4-11d16c1ff458",
+   "created_at": "2026-11-18T18:40:17.194454",
+   "name": "HAS_PATHOLOGY",
+   "fact": "Patient-13 has a Gleason score of 3+4=7 (ISUP grade 2) confirming prostate cancer.",
+   "episodes": [
+    "7b8267d1-0021-4889-a925-101e961379b4"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "062b84f5-3161-4e78-9cc7-c71da6310f76",
+   "group_id": "Patient-13",
+   "source_node_uuid": "59d130fa-b15c-4454-945d-11a49aed788e",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:40:37.394920",
+   "name": "INDICATES",
+   "fact": "The tumor marker PSA value of 11.8 ng/ml is associated with the clinical diagnosis of C61 Prostatakarzinom.",
+   "episodes": [
+    "3f874461-dfa4-43bb-8c3a-9675fdca2399"
+   ],
+   "expired_at": "2026-11-18T18:42:47.996007",
+   "valid_at": "2027-01-30T00:00:00",
+   "invalid_at": "2027-09-06T00:00:00",
+   "reference_time": "2027-01-30T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "30108e1a-c6a0-47c0-81ae-764ceb754af8",
+   "group_id": "Patient-13",
+   "source_node_uuid": "0d4adb80-3a5b-419d-a8b0-d2e965e5c1c9",
+   "target_node_uuid": "43a363d8-f279-4185-8bb8-7e7ae2eee675",
+   "created_at": "2026-11-18T18:40:37.394207",
+   "name": "REFERRED_TO",
+   "fact": "The inpatient referral sends Patient-13 to the Urologische Klinik at Klinikum Bremen for a planned robotic-assisted radical prostatectomy.",
+   "episodes": [
+    "3f874461-dfa4-43bb-8c3a-9675fdca2399"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-30T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-30T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "46f9f858-fc26-4e42-a8dc-1ceb93871bd2",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "0d4adb80-3a5b-419d-a8b0-d2e965e5c1c9",
+   "created_at": "2026-11-18T18:40:37.393920",
+   "name": "WAS_REFERRED",
+   "fact": "Patient-13 received an inpatient referral issued by Dr. med. Arzt-11 to the Urologische Klinik at Klinikum Bremen for a planned robotic-assisted radical prostatectomy.",
+   "episodes": [
+    "3f874461-dfa4-43bb-8c3a-9675fdca2399"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-30T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-30T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a476d9ea-22dd-46df-9566-c5cbb5a05118",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:40:37.394603",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-13 has a clinical diagnosis of C61 Prostatakarzinom, described as locally limited and requiring radical prostatectomy.",
+   "episodes": [
+    "3f874461-dfa4-43bb-8c3a-9675fdca2399",
+    "e0783cd8-66fc-4032-bf23-fa3a265a2920"
+   ],
+   "expired_at": "2026-11-18T18:43:44.416233",
+   "valid_at": "2027-01-30T00:00:00",
+   "invalid_at": "2027-09-06T00:00:00",
+   "reference_time": "2027-01-30T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a56e69b2-6081-4f2b-8cdd-318de8d6e602",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "59d130fa-b15c-4454-945d-11a49aed788e",
+   "created_at": "2026-11-18T18:40:37.394739",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-13 has a current tumor marker PSA lab result of 11.8 ng/ml.",
+   "episodes": [
+    "3f874461-dfa4-43bb-8c3a-9675fdca2399"
+   ],
+   "expired_at": "2026-11-18T18:42:26.176390",
+   "valid_at": "2027-01-30T00:00:00",
+   "invalid_at": "2027-04-04T00:00:00",
+   "reference_time": "2027-01-30T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "bf4e309d-2375-4dd9-b20c-5b76c5b2267b",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "63031b26-1fc8-45cc-af1d-9b886e7d5de4",
+   "created_at": "2026-11-18T18:40:37.394413",
+   "name": "UNDERWENT",
+   "fact": "Patient-13 is scheduled for a planned robotic-assisted radical prostatectomy at the Urologische Klinik at Klinikum Bremen.",
+   "episodes": [
+    "3f874461-dfa4-43bb-8c3a-9675fdca2399"
+   ],
+   "expired_at": "2026-11-18T18:41:05.692610",
+   "valid_at": "2027-01-30T00:00:00",
+   "invalid_at": "2027-02-01T00:00:00",
+   "reference_time": "2027-01-30T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "dfe6994e-dddd-4231-9c55-1105a9412ed6",
+   "group_id": "Patient-13",
+   "source_node_uuid": "7abc195d-bb8a-4dd9-a2ab-0b49a15b50e8",
+   "target_node_uuid": "43a363d8-f279-4185-8bb8-7e7ae2eee675",
+   "created_at": "2026-11-18T18:40:37.395069",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-11 practices at the Urologische Klinik at Klinikum Bremen.",
+   "episodes": [
+    "3f874461-dfa4-43bb-8c3a-9675fdca2399",
+    "9f5648d1-ba09-4e7b-816b-df3a1b12347a"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-30T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-30T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "27094f2f-1f7a-4154-81d8-bd4f81b78a03",
+   "group_id": "Patient-13",
+   "source_node_uuid": "63031b26-1fc8-45cc-af1d-9b886e7d5de4",
+   "target_node_uuid": "43a363d8-f279-4185-8bb8-7e7ae2eee675",
+   "created_at": "2026-11-18T18:41:00.796765",
+   "name": "PERFORMED_BY",
+   "fact": "The robotic-assisted radical prostatectomy was performed at the Urologische Klinik, Klinikum Bremen.",
+   "episodes": [
+    "3894484e-c877-4cf5-b2fd-a1c9d0dd8fb1"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-01T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-01T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "6a8ad29c-8cc7-4299-94d8-aada9b01cbf9",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "6829a683-9db0-48fb-840a-dc0a156d03d6",
+   "created_at": "2026-11-18T18:41:00.797263",
+   "name": "UNDERWENT",
+   "fact": "Patient Patient-13 underwent a bilateral extended lymphadenectomy during the procedure.",
+   "episodes": [
+    "3894484e-c877-4cf5-b2fd-a1c9d0dd8fb1"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-01T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-01T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "771b131c-9382-4ca6-845c-506de3f3e938",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:41:00.797056",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient Patient-13 has a preoperative diagnosis of C61 Prostatakarzinom (cT2a cN0 cM0, Gleason 3+4=7, ISUP 2).",
+   "episodes": [
+    "3894484e-c877-4cf5-b2fd-a1c9d0dd8fb1"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-01T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-01T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "d1369f57-4137-4508-96a9-088a33372780",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "63031b26-1fc8-45cc-af1d-9b886e7d5de4",
+   "created_at": "2026-11-18T18:41:00.796561",
+   "name": "UNDERWENT",
+   "fact": "Patient Patient-13 underwent a robotic-assisted radical prostatectomy at the Urologische Klinik, Klinikum Bremen.",
+   "episodes": [
+    "3894484e-c877-4cf5-b2fd-a1c9d0dd8fb1"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-01T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-01T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "d72ba785-422b-457b-a41c-abcb2aae5286",
+   "group_id": "Patient-13",
+   "source_node_uuid": "63031b26-1fc8-45cc-af1d-9b886e7d5de4",
+   "target_node_uuid": "7abc195d-bb8a-4dd9-a2ab-0b49a15b50e8",
+   "created_at": "2026-11-18T18:41:00.796914",
+   "name": "PERFORMED_BY",
+   "fact": "The robotic-assisted radical prostatectomy was performed by Dr. med. Arzt-11.",
+   "episodes": [
+    "3894484e-c877-4cf5-b2fd-a1c9d0dd8fb1"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-01T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-01T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "1b4a3027-f381-4230-b04d-34c3ccedb1fa",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "a258f91d-4dc7-489b-a1b4-11d16c1ff458",
+   "created_at": "2026-11-18T18:41:21.333682",
+   "name": "HAS_PATHOLOGY",
+   "fact": "Patient-13 showed an adenocarcinoma of the prostate with a Gleason score of 3+4=7 (ISUP 2) on pathology.",
+   "episodes": [
+    "9a1fbcb7-4d79-4665-853e-fd150cc5c1ce"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-09T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-09T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "27be884a-5f59-4c85-a459-a62f75338333",
+   "group_id": "Patient-13",
+   "source_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "target_node_uuid": "a258f91d-4dc7-489b-a1b4-11d16c1ff458",
+   "created_at": "2026-11-18T18:41:21.333860",
+   "name": "CONFIRMED_BY",
+   "fact": "The diagnosis of C61 Prostatakarzinom is confirmed by the pathology finding of adenocarcinoma of the prostate with a Gleason score of 3+4=7 (ISUP 2).",
+   "episodes": [
+    "9a1fbcb7-4d79-4665-853e-fd150cc5c1ce"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-09T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-09T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "27c2889d-fabe-422f-a3f7-e5e6c5bec5d5",
+   "group_id": "Patient-13",
+   "source_node_uuid": "198a6013-6e8c-462c-957a-f3be7b6d8307",
+   "target_node_uuid": "52e5ed46-5e3a-4387-8c1d-a06f98b557a5",
+   "created_at": "2026-11-18T18:41:21.334031",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-14 issued the pathological-histological report at the Institut für Pathologie, Klinikum Stuttgart.",
+   "episodes": [
+    "9a1fbcb7-4d79-4665-853e-fd150cc5c1ce"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-09T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-09T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "693c4757-1cf2-45f0-ac53-f8b38130d7a0",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "63031b26-1fc8-45cc-af1d-9b886e7d5de4",
+   "created_at": "2026-11-18T18:41:21.333532",
+   "name": "UNDERWENT",
+   "fact": "Patient-13 underwent a radical prostatectomy specimen analysis.",
+   "episodes": [
+    "9a1fbcb7-4d79-4665-853e-fd150cc5c1ce"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-09T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-09T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "4ff81684-fe4b-4228-bf3f-9d4cd6c17974",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "7abc195d-bb8a-4dd9-a2ab-0b49a15b50e8",
+   "created_at": "2026-11-18T18:41:41.954352",
+   "name": "MANAGED_AT",
+   "fact": "Patient-13 was discharged under the care of Dr. med. Arzt-11 following a radical prostatectomy on February 11, 2027.",
+   "episodes": [
+    "6c6e7aa6-c1a0-4165-acc9-4d614822baa7"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-11T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-11T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "5bce29ef-0c17-4007-92bc-2b97dd0f167d",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:41:41.954477",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-13 has a confirmed diagnosis of pT2 R0 prostate adenocarcinoma (ICD code C61).",
+   "episodes": [
+    "6c6e7aa6-c1a0-4165-acc9-4d614822baa7"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-11T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-11T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ac79e126-854d-4dc3-b23d-d561e91e92bc",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "a258f91d-4dc7-489b-a1b4-11d16c1ff458",
+   "created_at": "2026-11-18T18:41:41.954536",
+   "name": "HAS_PATHOLOGY",
+   "fact": "Patient-13 has a confirmed Gleason score of 3+4 for the resected prostate adenocarcinoma.",
+   "episodes": [
+    "6c6e7aa6-c1a0-4165-acc9-4d614822baa7"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-11T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-11T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "bc31a70b-4d27-4d38-b429-e02c2e846179",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "73be977b-ab32-4642-9cb6-02aadb84f8d1",
+   "created_at": "2026-11-18T18:41:41.954600",
+   "name": "HAD_LAB_TEST",
+   "fact": "A PSA control test was recommended for Patient-13 in 6 weeks following discharge on February 11, 2027.",
+   "episodes": [
+    "6c6e7aa6-c1a0-4165-acc9-4d614822baa7"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-11T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-11T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c76f5bf4-f9a3-4e92-8fc5-dedbc9c7dc1c",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "43a363d8-f279-4185-8bb8-7e7ae2eee675",
+   "created_at": "2026-11-18T18:41:41.954247",
+   "name": "MANAGED_AT",
+   "fact": "Patient-13 was discharged in a complication-free, stable condition from the Urologische Klinik at Klinikum Bremen on February 11, 2027.",
+   "episodes": [
+    "6c6e7aa6-c1a0-4165-acc9-4d614822baa7"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-11T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-11T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ed6a434b-6358-4353-b6cd-e3d0d2ca4eb9",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "63031b26-1fc8-45cc-af1d-9b886e7d5de4",
+   "created_at": "2026-11-18T18:41:41.954415",
+   "name": "UNDERWENT",
+   "fact": "Patient-13 underwent a radical prostatectomy prior to being discharged on February 11, 2027.",
+   "episodes": [
+    "6c6e7aa6-c1a0-4165-acc9-4d614822baa7"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-11T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-11T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "0009cd90-a4f8-49db-a8cd-fec1240950b2",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "59d130fa-b15c-4454-945d-11a49aed788e",
+   "created_at": "2026-11-18T18:42:22.198518",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-13 has a current PSA level of <0.1 ng/ml with a declining and stable progression during the follow-up on April 4, 2027.",
+   "episodes": [
+    "96b0a8bb-5d2c-4c1a-9a76-3cc9577f8887"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "090f4d58-49dc-4d87-8d43-70a7d84bb2ab",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "7abc195d-bb8a-4dd9-a2ab-0b49a15b50e8",
+   "created_at": "2026-11-18T18:42:03.514323",
+   "name": "RELATES_TO",
+   "fact": "Patient-13 was evaluated by attending physician Dr. med. Arzt-11 during a postoperative follow-up evaluation.",
+   "episodes": [
+    "48aaccf2-cef2-4921-bde1-dc665087d7c0"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "12cc379e-91c7-462c-8d73-c6b75512a6e8",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:42:22.198223",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-13 has a confirmed diagnosis of C61 Prostatakarzinom as of April 4, 2027.",
+   "episodes": [
+    "96b0a8bb-5d2c-4c1a-9a76-3cc9577f8887"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "4d69971a-dd61-4bf5-8405-f2aa4c872f59",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:42:03.514407",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-13 has a clinical diagnosis of C61 Prostatakarzinom with documentation noting a localized tumor status managed via a prior radical prostatectomy.",
+   "episodes": [
+    "48aaccf2-cef2-4921-bde1-dc665087d7c0"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "57ab4453-d4b3-4206-ab12-0597baf8d8f4",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "43a363d8-f279-4185-8bb8-7e7ae2eee675",
+   "created_at": "2026-11-18T18:42:22.197775",
+   "name": "MANAGED_AT",
+   "fact": "Patient-13 presented for a routine follow-up evaluation at the Urologische Klinik, Klinikum Bremen under the care of Dr. med. Arzt-11 on April 4, 2027.",
+   "episodes": [
+    "96b0a8bb-5d2c-4c1a-9a76-3cc9577f8887"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "6a10da15-a92b-49e9-b745-4652c3593670",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "63031b26-1fc8-45cc-af1d-9b886e7d5de4",
+   "created_at": "2026-11-18T18:42:03.514472",
+   "name": "UNDERWENT",
+   "fact": "Patient-13 was managed via a prior radical prostatectomy for a localized tumor status of C61 Prostatakarzinom.",
+   "episodes": [
+    "48aaccf2-cef2-4921-bde1-dc665087d7c0",
+    "96b0a8bb-5d2c-4c1a-9a76-3cc9577f8887",
+    "d395d6a9-6a5e-4ca7-8431-90a38d8ad440"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "6d8d39c0-1e52-4396-8557-af782fcb05e0",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "43a363d8-f279-4185-8bb8-7e7ae2eee675",
+   "created_at": "2026-11-18T18:42:03.514215",
+   "name": "MANAGED_AT",
+   "fact": "Patient-13 underwent a postoperative follow-up evaluation at the Urologische Klinik, Klinikum Bremen – Klinik-11 on April 4, 2027.",
+   "episodes": [
+    "48aaccf2-cef2-4921-bde1-dc665087d7c0"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "8d61e3ca-a969-4eb3-98f5-58738fdeaa85",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "59d130fa-b15c-4454-945d-11a49aed788e",
+   "created_at": "2026-11-18T18:42:03.514536",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-13 had a postoperative total prostate-specific antigen level of <0,1 ng/ml evaluated as normal and unremarkable.",
+   "episodes": [
+    "48aaccf2-cef2-4921-bde1-dc665087d7c0",
+    "e433d382-1d9c-4e94-aa85-98920a5483b4"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c2031d7b-1fca-4448-a8c8-6a40e8b8d7e4",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "7abc195d-bb8a-4dd9-a2ab-0b49a15b50e8",
+   "created_at": "2026-11-18T18:42:22.198071",
+   "name": "RELATES_TO",
+   "fact": "Patient-13 received care from Dr. med. Arzt-11 during a follow-up evaluation at the Urologische Klinik, Klinikum Bremen on April 4, 2027.",
+   "episodes": [
+    "96b0a8bb-5d2c-4c1a-9a76-3cc9577f8887"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "1629e557-c9e5-4546-aa94-778a70dbde94",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "43a363d8-f279-4185-8bb8-7e7ae2eee675",
+   "created_at": "2026-11-18T18:42:42.430716",
+   "name": "MANAGED_AT",
+   "fact": "Patient Patient-13 underwent routine postoperative laboratory evaluation ordered by Dr. med. Arzt-11 at the Urologische Klinik, Klinikum Bremen.",
+   "episodes": [
+    "e433d382-1d9c-4e94-aa85-98920a5483b4"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-09-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-09-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "1e786e6f-5706-4d1f-b369-7cdd86fe8a7c",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:42:42.430849",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient Patient-13 has a clinical diagnosis of C61 Prostatakarzinom, described as locally restricted and status post radical prostatectomy.",
+   "episodes": [
+    "e433d382-1d9c-4e94-aa85-98920a5483b4",
+    "9f5648d1-ba09-4e7b-816b-df3a1b12347a"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-09-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-09-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "30efe226-8cfe-40fb-b003-a623f4f81410",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "63031b26-1fc8-45cc-af1d-9b886e7d5de4",
+   "created_at": "2026-11-18T18:42:42.430886",
+   "name": "UNDERWENT",
+   "fact": "Patient Patient-13 is status post radical prostatectomy for C61 Prostatakarzinom.",
+   "episodes": [
+    "e433d382-1d9c-4e94-aa85-98920a5483b4"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-09-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-09-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "69446d65-857f-4ea6-91a8-d07df9e2eefb",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "7abc195d-bb8a-4dd9-a2ab-0b49a15b50e8",
+   "created_at": "2026-11-18T18:42:42.430805",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-11 ordered routine postoperative laboratory evaluation for patient Patient-13 at the Urologische Klinik, Klinikum Bremen.",
+   "episodes": [
+    "e433d382-1d9c-4e94-aa85-98920a5483b4"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-09-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-09-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "6da897b4-6558-4c6d-b96d-37038ee5e2eb",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "43a363d8-f279-4185-8bb8-7e7ae2eee675",
+   "created_at": "2026-11-18T18:43:04.546602",
+   "name": "MANAGED_AT",
+   "fact": "Patient-13 presented for routine follow-up at the Urologische Klinik, Klinikum Bremen.",
+   "episodes": [
+    "30424fad-da7e-4b23-bd43-df619eba5604"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-09-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-09-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "70ade1dc-ed22-4a3e-9dbd-6c4992e28e6c",
+   "group_id": "Patient-13",
+   "source_node_uuid": "59d130fa-b15c-4454-945d-11a49aed788e",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:42:42.430967",
+   "name": "INDICATES",
+   "fact": "Total PSA value of <0,1 ng/ml falls within the normal reference range for patient Patient-13 diagnosed with C61 Prostatakarzinom.",
+   "episodes": [
+    "e433d382-1d9c-4e94-aa85-98920a5483b4"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-09-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-09-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "7e954153-157a-4659-945c-4007e86fd736",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:43:04.546237",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-13 has a clinical diagnosis of C61 Prostatakarzinom.",
+   "episodes": [
+    "30424fad-da7e-4b23-bd43-df619eba5604",
+    "35ebfe33-911a-4e49-83f9-4b293d3d3f33"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-09-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-09-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "864e2722-5c81-4f8f-b05f-9a414f24e92d",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "7abc195d-bb8a-4dd9-a2ab-0b49a15b50e8",
+   "created_at": "2026-11-18T18:43:04.546453",
+   "name": "RELATES_TO",
+   "fact": "Patient-13 presented to Dr. med. Arzt-11 for a routine postoperative follow-up.",
+   "episodes": [
+    "30424fad-da7e-4b23-bd43-df619eba5604"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-09-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-09-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "b24d1bd4-e12d-4797-80a4-60989d4d1ae4",
+   "group_id": "Patient-13",
+   "source_node_uuid": "7abc195d-bb8a-4dd9-a2ab-0b49a15b50e8",
+   "target_node_uuid": "43a363d8-f279-4185-8bb8-7e7ae2eee675",
+   "created_at": "2026-11-18T18:42:42.430997",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-11 ordered routine postoperative laboratory evaluation at the Urologische Klinik, Klinikum Bremen.",
+   "episodes": [
+    "e433d382-1d9c-4e94-aa85-98920a5483b4"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-09-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-09-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "e1ed1dce-23de-4181-bf4c-bd84ab4f1d71",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "63031b26-1fc8-45cc-af1d-9b886e7d5de4",
+   "created_at": "2026-11-18T18:43:04.546714",
+   "name": "UNDERWENT",
+   "fact": "Patient-13 underwent a local-treatment radical prostatectomy.",
+   "episodes": [
+    "30424fad-da7e-4b23-bd43-df619eba5604"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-09-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-09-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "e9dcf96d-b944-41d2-b17e-3ff11a1d8f0d",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "59d130fa-b15c-4454-945d-11a49aed788e",
+   "created_at": "2026-11-18T18:43:04.546815",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-13 has a stable current PSA-Wert of <0.1 ng/ml.",
+   "episodes": [
+    "30424fad-da7e-4b23-bd43-df619eba5604",
+    "d6216eb0-db66-4f32-9f9c-61634b840c6c",
+    "9f5648d1-ba09-4e7b-816b-df3a1b12347a"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-09-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-09-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "2d714657-4a07-426e-a7a6-62bcb2154472",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "59d130fa-b15c-4454-945d-11a49aed788e",
+   "created_at": "2026-11-18T18:43:22.574162",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-13 has a total PSA tumor marker value of <0,1 ng/ml.",
+   "episodes": [
+    "e356cc40-b94d-442b-b450-ff8ef6f0ad57",
+    "e0783cd8-66fc-4032-bf23-fa3a265a2920",
+    "35ebfe33-911a-4e49-83f9-4b293d3d3f33"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-02-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-02-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "3fa03a60-05aa-4ced-8bf9-3b924a0bd934",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "63031b26-1fc8-45cc-af1d-9b886e7d5de4",
+   "created_at": "2026-11-18T18:43:40.180386",
+   "name": "UNDERWENT",
+   "fact": "Patient-13 underwent status post Radikale Prostatektomie for localized C61 Prostatakarzinom.",
+   "episodes": [
+    "d6216eb0-db66-4f32-9f9c-61634b840c6c"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-02-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-02-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "5e19c93e-a605-4c3a-9092-e6fab5399875",
+   "group_id": "Patient-13",
+   "source_node_uuid": "7abc195d-bb8a-4dd9-a2ab-0b49a15b50e8",
+   "target_node_uuid": "43a363d8-f279-4185-8bb8-7e7ae2eee675",
+   "created_at": "2026-11-18T18:43:22.574243",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-11 ordered a routine postoperative laboratory evaluation at the Urologische Klinik, Klinikum Bremen – Klinik-11.",
+   "episodes": [
+    "e356cc40-b94d-442b-b450-ff8ef6f0ad57"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-02-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-02-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c1d11bc1-8160-45ea-a14b-dcb317ccb719",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "43a363d8-f279-4185-8bb8-7e7ae2eee675",
+   "created_at": "2026-11-18T18:43:40.180091",
+   "name": "MANAGED_AT",
+   "fact": "Patient-13 presented for a routine postoperative follow-up evaluation at the Urologische Klinik, Klinikum Bremen.",
+   "episodes": [
+    "d6216eb0-db66-4f32-9f9c-61634b840c6c"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-02-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-02-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c7a14836-7158-41e3-892d-9fe0851fc0d9",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "7abc195d-bb8a-4dd9-a2ab-0b49a15b50e8",
+   "created_at": "2026-11-18T18:43:40.179834",
+   "name": "MANAGED_AT",
+   "fact": "Patient-13 presented to Dr. med. Arzt-11 at the Urologische Klinik, Klinikum Bremen, for a routine postoperative follow-up evaluation regarding a localized C61 Prostatakarzinom.",
+   "episodes": [
+    "d6216eb0-db66-4f32-9f9c-61634b840c6c"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-02-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-02-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "cd4e33a8-0bfe-41b2-8444-dd48edbba255",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:43:22.574029",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-13 has a clinical diagnosis of C61 Prostatakarzinom following a radical prostatectomy.",
+   "episodes": [
+    "e356cc40-b94d-442b-b450-ff8ef6f0ad57"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-02-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-02-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "dc74fc41-e929-43d5-a8a5-aaf5c5a60656",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "63031b26-1fc8-45cc-af1d-9b886e7d5de4",
+   "created_at": "2026-11-18T18:43:22.574110",
+   "name": "UNDERWENT",
+   "fact": "Patient-13 underwent a radical prostatectomy (RPE).",
+   "episodes": [
+    "e356cc40-b94d-442b-b450-ff8ef6f0ad57",
+    "9f5648d1-ba09-4e7b-816b-df3a1b12347a",
+    "ddf9905e-10f7-4261-8e03-344696eac6ab"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-02-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-02-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ec610f3f-4e64-4225-8f33-83e9a9221ff6",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:43:40.180252",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-13 was evaluated for a localized C61 Prostatakarzinom status post Radikale Prostatektomie.",
+   "episodes": [
+    "d6216eb0-db66-4f32-9f9c-61634b840c6c"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-02-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-02-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "10c8e56d-674c-45a5-ab92-dbeedd0bce29",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "59d130fa-b15c-4454-945d-11a49aed788e",
+   "created_at": "2026-11-18T18:43:59.630720",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient Patient-13 has a total PSA level of <0,1 ng/ml evaluated as normal and unremarkable on June 25, 2028.",
+   "episodes": [
+    "d4076fb5-9c82-4de9-a4fa-40637c3511c0"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "2771b11b-5030-49c6-acf0-c8aa7b4cbcb8",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "43a363d8-f279-4185-8bb8-7e7ae2eee675",
+   "created_at": "2026-11-18T18:43:59.630766",
+   "name": "MANAGED_AT",
+   "fact": "Patient Patient-13 underwent routine postoperative laboratory evaluation ordered by Dr. med. Arzt-11 at the Urologische Klinik, Klinikum Bremen on June 25, 2028.",
+   "episodes": [
+    "d4076fb5-9c82-4de9-a4fa-40637c3511c0"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "4172642f-622d-4f36-86d4-8c275497f01d",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "7abc195d-bb8a-4dd9-a2ab-0b49a15b50e8",
+   "created_at": "2026-11-18T18:43:59.630801",
+   "name": "RELATES_TO",
+   "fact": "Patient Patient-13 had routine postoperative laboratory evaluation ordered by Dr. med. Arzt-11 on June 25, 2028.",
+   "episodes": [
+    "d4076fb5-9c82-4de9-a4fa-40637c3511c0"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "5b6181b3-4b24-4c22-977f-14cea2987abb",
+   "group_id": "Patient-13",
+   "source_node_uuid": "59d130fa-b15c-4454-945d-11a49aed788e",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:43:59.630856",
+   "name": "INDICATES",
+   "fact": "The total PSA level of <0,1 ng/ml indicates a normal and unremarkable status for C61 Prostatakarzinom (Lokal begrenzt – Radikale Prostatektomie (RPE)) on June 25, 2028.",
+   "episodes": [
+    "d4076fb5-9c82-4de9-a4fa-40637c3511c0"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "9a913882-0a37-4756-ae00-789ea8a310ed",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:43:59.630652",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient Patient-13 has a diagnosis of C61 Prostatakarzinom (Lokal begrenzt – Radikale Prostatektomie (RPE)) on June 25, 2028.",
+   "episodes": [
+    "d4076fb5-9c82-4de9-a4fa-40637c3511c0"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a5bc39d4-daa7-419a-9f3c-1dbcfd988906",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "43a363d8-f279-4185-8bb8-7e7ae2eee675",
+   "created_at": "2026-11-18T18:44:18.677734",
+   "name": "MANAGED_AT",
+   "fact": "Patient-13 is managed and receives follow-up examinations at the Urologische Klinik, Klinikum Bremen.",
+   "episodes": [
+    "9f5648d1-ba09-4e7b-816b-df3a1b12347a"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "eaeddc55-cca7-43b7-a138-15e266acbc1e",
+   "group_id": "Patient-13",
+   "source_node_uuid": "82c751fa-63ec-4649-80da-a224f56fd4d2",
+   "target_node_uuid": "59d130fa-b15c-4454-945d-11a49aed788e",
+   "created_at": "2026-11-18T18:43:59.630909",
+   "name": "RELATES_TO",
+   "fact": "The Zentrallabor at Klinikum Bremen – Klinik-11 electronically validated and released the total PSA level report on June 25, 2028.",
+   "episodes": [
+    "d4076fb5-9c82-4de9-a4fa-40637c3511c0"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "29cdd964-f031-4ae8-bea6-936d166e4a82",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "7abc195d-bb8a-4dd9-a2ab-0b49a15b50e8",
+   "created_at": "2026-11-18T18:44:56.149741",
+   "name": "RELATES_TO",
+   "fact": "Patient-13 was evaluated by Dr. med. Arzt-11 during a follow-up consultation on December 13, 2028.",
+   "episodes": [
+    "d395d6a9-6a5e-4ca7-8431-90a38d8ad440"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-12-13T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-12-13T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "6062e63b-9677-4fa6-beee-e16d19df932a",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "59d130fa-b15c-4454-945d-11a49aed788e",
+   "created_at": "2026-11-18T18:44:56.149935",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-13 has a current PSA-Wert tumor marker level of <0,1 ng/ml with a stable PSA-Verlauf.",
+   "episodes": [
+    "d395d6a9-6a5e-4ca7-8431-90a38d8ad440",
+    "ddf9905e-10f7-4261-8e03-344696eac6ab"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-12-13T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-12-13T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "6074e7c5-8169-4e79-b7df-6d7681a52e54",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "7abc195d-bb8a-4dd9-a2ab-0b49a15b50e8",
+   "created_at": "2026-11-18T18:44:38.544026",
+   "name": "MANAGED_AT",
+   "fact": "Patient-13 was under the care of Dr. med. Arzt-11 for follow-up laboratory evaluation.",
+   "episodes": [
+    "e0783cd8-66fc-4032-bf23-fa3a265a2920"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-12-13T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-12-13T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "841068e3-5e9e-46d6-bd96-668f23bd1166",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "43a363d8-f279-4185-8bb8-7e7ae2eee675",
+   "created_at": "2026-11-18T18:44:38.544085",
+   "name": "MANAGED_AT",
+   "fact": "Patient-13 underwent follow-up laboratory evaluation at the Urologische Klinik, Klinikum Bremen.",
+   "episodes": [
+    "e0783cd8-66fc-4032-bf23-fa3a265a2920"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-12-13T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-12-13T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "e0be7501-698d-45f5-b531-378040e7c6b9",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:44:56.149795",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-13 has a medical history of C61 Prostatakarzinom.",
+   "episodes": [
+    "d395d6a9-6a5e-4ca7-8431-90a38d8ad440"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-12-13T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-12-13T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "e94715e8-318b-479e-a983-9634b9097e52",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "43a363d8-f279-4185-8bb8-7e7ae2eee675",
+   "created_at": "2026-11-18T18:44:56.149633",
+   "name": "MANAGED_AT",
+   "fact": "Patient-13 attended a routine follow-up consultation at Urologische Klinik, Klinikum Bremen – Klinik-11 on December 13, 2028.",
+   "episodes": [
+    "d395d6a9-6a5e-4ca7-8431-90a38d8ad440"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-12-13T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-12-13T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "01e7f934-74ac-4102-a040-6719dd5b7662",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:45:36.705569",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient Patient-13 has localized prostate cancer.",
+   "episodes": [
+    "ddf9905e-10f7-4261-8e03-344696eac6ab"
+   ],
+   "expired_at": null,
+   "valid_at": "2029-05-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2029-05-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "02b65073-a36a-4a7d-a23f-391414207c3f",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "7abc195d-bb8a-4dd9-a2ab-0b49a15b50e8",
+   "created_at": "2026-11-18T18:45:36.705045",
+   "name": "MANAGED_AT",
+   "fact": "Patient Patient-13 presented to Dr. med. Arzt-11 for a routine postoperative follow-up evaluation on May 21, 2029.",
+   "episodes": [
+    "ddf9905e-10f7-4261-8e03-344696eac6ab"
+   ],
+   "expired_at": null,
+   "valid_at": "2029-05-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2029-05-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "100e668f-4732-4318-bea8-6e0c01c1e4fd",
+   "group_id": "Patient-13",
+   "source_node_uuid": "82c751fa-63ec-4649-80da-a224f56fd4d2",
+   "target_node_uuid": "59d130fa-b15c-4454-945d-11a49aed788e",
+   "created_at": "2026-11-18T18:45:16.129231",
+   "name": "RELATES_TO",
+   "fact": "The laboratory report for PSA (gesamt) was electronically validated and released by the Zentrallabor, Klinikum Bremen – Klinik-11.",
+   "episodes": [
+    "35ebfe33-911a-4e49-83f9-4b293d3d3f33"
+   ],
+   "expired_at": null,
+   "valid_at": "2029-05-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2029-05-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "4fea049d-ce8f-43a0-b463-76c4213219fb",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:45:36.705449",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient Patient-13 has a diagnosis of C61 Prostatakarzinom.",
+   "episodes": [
+    "ddf9905e-10f7-4261-8e03-344696eac6ab"
+   ],
+   "expired_at": null,
+   "valid_at": "2029-05-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2029-05-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "53ba5418-3828-44d3-ab50-0aa2b78206ae",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "6696a615-1ffa-413b-b606-a68b3511f867",
+   "created_at": "2026-11-18T18:45:36.705808",
+   "name": "HAS_VITAL_SIGNS",
+   "fact": "Patient Patient-13 has an ECOG performance status of 0.",
+   "episodes": [
+    "ddf9905e-10f7-4261-8e03-344696eac6ab"
+   ],
+   "expired_at": null,
+   "valid_at": "2029-05-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2029-05-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "80c5519b-9cd3-4a9d-a5c2-bca6cb6dd201",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "43a363d8-f279-4185-8bb8-7e7ae2eee675",
+   "created_at": "2026-11-18T18:45:16.128694",
+   "name": "MANAGED_AT",
+   "fact": "Patient-13 underwent a laboratory evaluation ordered by Dr. med. Arzt-11 at the Urologische Klinik, Klinikum Bremen.",
+   "episodes": [
+    "35ebfe33-911a-4e49-83f9-4b293d3d3f33"
+   ],
+   "expired_at": null,
+   "valid_at": "2029-05-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2029-05-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "d4661376-7fa6-4072-859d-22418f5ca6b2",
+   "group_id": "Patient-13",
+   "source_node_uuid": "59d130fa-b15c-4454-945d-11a49aed788e",
+   "target_node_uuid": "96b88faf-84a8-4ca7-8e01-26fa6dc7f8e3",
+   "created_at": "2026-11-18T18:45:16.129053",
+   "name": "INDICATES",
+   "fact": "The tumor marker PSA (gesamt) value of <0,1 ng/ml indicates a normal and unremarkable evaluation for C61 Prostatakarzinom (lokal begrenzt – Radikale Prostatektomie (RPE)).",
+   "episodes": [
+    "35ebfe33-911a-4e49-83f9-4b293d3d3f33"
+   ],
+   "expired_at": null,
+   "valid_at": "2029-05-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2029-05-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "d92c31f8-0650-4fdc-b676-dc98d5398caa",
+   "group_id": "Patient-13",
+   "source_node_uuid": "e12c41a0-08d8-4626-bd76-2101abfac58b",
+   "target_node_uuid": "43a363d8-f279-4185-8bb8-7e7ae2eee675",
+   "created_at": "2026-11-18T18:45:36.705294",
+   "name": "MANAGED_AT",
+   "fact": "Patient Patient-13 received care at the Urologische Klinik, Klinikum Bremen on May 21, 2029.",
+   "episodes": [
+    "ddf9905e-10f7-4261-8e03-344696eac6ab"
+   ],
+   "expired_at": null,
+   "valid_at": "2029-05-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2029-05-21T00:00:00",
+   "attributes": {}
+  }
+ ]
+}

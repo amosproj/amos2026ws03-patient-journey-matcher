@@ -202,7 +202,7 @@ This is the graph that the SS26 pipeline builds. We have the code in [`backend/w
 
 - A graph input needs the nodes and edges with their dates, read from Neo4j or sent as JSON. The Cypher export is not enough.
 - The most recent event is then the newest day with a fact on or before `as_of`.
-- Real graphs for tests come from the SS26 graph steps, run on the generated PDFs, see [Generating a graph](#generating-a-graph). For the patients without a graph, the generated `timeline.json` covers the same events.
+- Real graphs for tests come from the SS26 graph steps, run on the generated PDFs, see [Generating a graph](#generating-a-graph). Every generated patient has one, and its `timeline.json` covers the same events.
 
 **Reading a graph.** [`graph.ts`](../matcher/mcp-server/src/graph.ts) reads a graph as JSON with the lists `nodes` and `edges` in Graphiti's field names and turns it into a journey. `match_journey` does this for a request with [`graph`](#graph-input).
 
@@ -216,7 +216,7 @@ This is the graph that the SS26 pipeline builds. We have the code in [`backend/w
 - **`patient_id`** is the name of the `Patient` node.
 - **The journey has to pass the contract** like any other: a graph without a dated fact or with facts on more than 500 days is rejected, and so is an `as_of` before the first event.
 
-The graph of Patient-5 in [`patientdata/Patient-5/graph.json`](../patientdata/Patient-5/graph.json) holds all 35 documents: 34 nodes and 174 edges, which become 23 events. These 23 days are exactly the 23 dates of the events in its `timeline.json`. How well the keyword matcher ranks with a journey made from a graph is not measured yet.
+The graph of Patient-5 in [`patientdata/Patient-5/graph.json`](../patientdata/Patient-5/graph.json) holds all 35 documents: 34 nodes and 174 edges, which become 23 events. These 23 days are exactly the 23 dates of the events in its `timeline.json`. The same holds for the graphs of the other patients, except for one day of Patient-19, see [Generated graphs](../patientdata/patientdata.md#generated-graphs). How well the keyword matcher ranks with a journey made from a graph is not measured yet.
 
 ### Generating a graph
 
@@ -225,8 +225,10 @@ The graph of Patient-5 in [`patientdata/Patient-5/graph.json`](../patientdata/Pa
 - **Same steps as SS26.** For each PDF of the patient, in the order of the event numbers in the file names (`_e01`, `_e02`, …), Gemini reads the PDF ([`extractor.py`](../backend/workers/pipeline/llm/extractor.py)) and Graphiti adds it to the graph ([`builder.py`](../backend/workers/pipeline/graph/builder.py)). The code of both steps is unchanged.
 - **Two differences, so that it runs without a Google Cloud project.** It uses an API key from Google AI Studio instead of Vertex AI, with the embedding model `gemini-embedding-001` instead of `text-embedding-005`. And it uses an embedded Kuzu database under `out/patient-graph/` instead of Neo4j, so no server is needed.
 - **It can stop and go on.** A free key allows only some documents per day. The run then stops, writes the graph of the documents read so far and ends with an error. The next run goes on with the next document: the database knows which documents it holds, so none is added twice. `documents` in `graph.json` lists the PDFs that are in the graph.
+- **A document has 10 minutes.** Graphiti's calls have no time limit, and one that never answers would hold the run forever. After 10 minutes the run stops in the same way and the next run reads the document again.
+- **The model** is `gemini-3.5-flash-lite`, if `VERTEX_LLM_MODEL` does not name another one. SS26 uses `gemini-2.5-flash`, which Google has deprecated: from 1 December 2026 its calls go to `gemini-3.5-flash-lite` anyway.
 - **The file** holds `patient`, `documents`, and the `nodes` and `edges` as Graphiti holds them, without the embeddings. The reader takes it as it is.
-- **Kuzu is deprecated in Graphiti.** graphiti-core 0.31.2 warns that its Kuzu backend will be removed, because Kuzu is no longer maintained. The versions are pinned in `backend/uv.lock`, so the script keeps working. If we need it for longer, it should move to Neo4j, like SS26.
+- **Kuzu is deprecated in Graphiti.** graphiti-core 0.31.2 warns that its Kuzu backend will be removed, because Kuzu is no longer maintained. The versions are pinned in `backend/uv.lock`, so the script keeps working. If we need it for longer, it should move to Neo4j, like SS26. A run that is stopped by force can leave a database that crashes on opening. Then delete the files of the patient in `out/patient-graph/` and build the patient again.
 
 ## Check against AIlixir's integration needs
 
