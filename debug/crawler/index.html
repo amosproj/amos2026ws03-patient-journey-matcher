@@ -435,6 +435,12 @@ td.link:hover { color: var(--accent); text-decoration: underline; }
 .match-main > .tabs { grid-row: 4; }
 .match-main > .content { grid-row: 5; overflow: visible; }
 .match-main .mttab { position: static; }
+/* A planned algorithm: its card stands where the results would, the journey stays. */
+.match-main > .mt-pending { grid-row: 4; padding: 28px 16px 36px; }
+.match-main.pending > :is(.stats, .terms-disclosure, .tabs, .content) { display: none; }
+.mt-pending-card { max-width: 640px; margin: 0 auto; padding: 22px 24px; border: 1px dashed var(--line-strong); border-radius: 12px; display: grid; gap: 10px; }
+.mt-pending-card h3 { margin: 0; display: flex; align-items: center; gap: 10px; font-size: 18px; letter-spacing: -.02em; }
+.mt-pending-card p { margin: 0; line-height: 1.55; }
 /* Keep vertical scrolling in the main column. Wide result matrices can pan sideways. */
 .match-main .rank-lists, .match-main .raw, .match-main .client { overflow: visible; }
 .match-main .table-wrap { overflow-x: auto; }
@@ -929,6 +935,14 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
 <div class="layout" id="match-view" hidden>
   <aside class="side" id="match-controls">
     <div class="side-head">
+      <h2>Algorithm <i class="info" tabindex="0" data-tip="The algorithm argument of match_journey. Keyword is built. Graph and AI (ai_summary) are planned: until their matchers are added, match_journey answers NOT_AVAILABLE for them.">i</i></h2>
+    </div>
+    <div class="seg" id="mt-algorithm" role="group" aria-label="Algorithm">
+      <button type="button" data-value="keyword" class="active">Keyword</button>
+      <button type="button" data-value="graph">Graph</button>
+      <button type="button" data-value="ai_summary">AI</button>
+    </div>
+    <div class="side-head">
       <h2>Journey <i class="info" tabindex="0" data-tip="Puts a journey into the arguments below and keeps their other fields: a synthetic journey of patientdata/, the one of the example in Documentation/build.md, or a timeline.json from disk. Only synthetic journeys belong here: the journey goes to the matcher and back, it is not stored or logged.">i</i></h2>
       <button type="button" class="link-button" id="mt-open" title="Put a timeline.json from disk into the arguments">Open file …</button>
     </div>
@@ -994,6 +1008,7 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
       <section class="mttab" id="mttab-client"><div class="client" id="mt-client"></div></section>
       <aside class="detail" id="mt-detail"></aside>
     </div>
+    <section class="mt-pending" id="mt-pending" aria-live="polite" hidden></section>
   </main>
 </div>
 
@@ -3338,6 +3353,7 @@ function mtParse() {
   }
   $("#mt-json-error").textContent = "";
   mt.args = args;
+  mtRenderAlgorithm();
   const events = Array.isArray(args.journey?.events) ? args.journey.events : [];
   mt.dates = [...new Set(events.map((event) => event?.date).filter((date) => /^\d{4}-\d{2}-\d{2}$/.test(date)))].sort();
   // The focus is the latest event up to as_of; without as_of, the latest of all.
@@ -3373,8 +3389,11 @@ function mtSetAsOf(date) {
 }
 
 // The arguments as they are, plus other ranking constants, which only this screen takes.
+const mtAlgorithm = () => mt.args?.algorithm ?? "keyword";
+
+// The ranking constants are the keyword matcher's: other algorithms go without them.
 function mtRequest() {
-  return Object.keys(mt.tuning).length && !$("#mt-mcp").checked ? { ...mt.args, tuning: mt.tuning } : mt.args;
+  return Object.keys(mt.tuning).length && !$("#mt-mcp").checked && mtAlgorithm() === "keyword" ? { ...mt.args, tuning: mt.tuning } : mt.args;
 }
 
 // What the match does not say itself: how many documents hold each term, and the titles.
@@ -3407,7 +3426,7 @@ async function mtRun(fresh) {
   if (fresh) { mt.cache.clear(); mt.sources.clear(); }
   $("#mt-error").textContent = "";
   // The matcher would answer an out-of-range constant only with a failed search.
-  const invalid = via === "direct" && [...document.querySelectorAll("#mt-tuning input")].find((input) => !input.checkValidity());
+  const invalid = via === "direct" && mtAlgorithm() === "keyword" && [...document.querySelectorAll("#mt-tuning input")].find((input) => !input.checkValidity());
   if (invalid) {
     $("#mt-error").textContent = `${invalid.dataset.name} must be ${invalid.step === "1" ? "a whole number" : "a number"} from ${invalid.min} to ${invalid.max}`;
     mtBusy(false);
@@ -3448,7 +3467,48 @@ function mtRender() {
   mtRenderRankings();
   mtRenderRaw();
   mtRenderClient();
+  mtRenderPending();
 }
+
+// Graph and AI are planned: match_journey answers NOT_AVAILABLE for them until their matchers
+// are added, and then their results show here like the keyword matcher's.
+const MT_PLANNED = {
+  graph: {
+    name: "Graph approach",
+    text: "Compares relations instead of words: the journey and every source become links between medical concepts, such as olaparib –treats→ prostate cancer, with shared MeSH IDs. A source ranks high when it links the patient's concepts the same way.",
+    doc: "Documentation/research/Graph-based-matching.md",
+  },
+  ai_summary: {
+    name: "AI approach",
+    text: "A trained model judges which sources fit the patient's current situation: by semantic similarity, a direct relevance assessment or summaries made beforehand.",
+    doc: "Documentation/research/ai-based-matching.md",
+  },
+};
+
+function mtRenderAlgorithm() {
+  for (const button of document.querySelectorAll("#mt-algorithm button")) button.classList.toggle("active", button.dataset.value === mtAlgorithm());
+}
+
+function mtRenderPending() {
+  const algorithm = mt.request?.algorithm ?? "keyword";
+  const planned = mt.result?.error?.code === "NOT_AVAILABLE" ? MT_PLANNED[algorithm] ?? { name: algorithm, text: null, doc: null } : null;
+  $(".match-main").classList.toggle("pending", Boolean(planned));
+  $("#mt-pending").hidden = !planned;
+  if (!planned) return;
+  $("#mt-pending").replaceChildren(h("div", { class: "mt-pending-card" },
+    h("h3", {}, planned.name, h("span", { class: "pill plain" }, "planned")),
+    h("p", { class: "muted" }, `Not built yet: match_journey answers NOT_AVAILABLE for the algorithm ${algorithm}.`),
+    planned.text ? h("p", {}, planned.text) : null,
+    planned.doc ? h("small", { class: "muted mono" }, planned.doc) : null));
+}
+
+for (const button of document.querySelectorAll("#mt-algorithm button")) button.addEventListener("click", () => {
+  if (!mt.args || mtAlgorithm() === button.dataset.value) return;
+  mt.args = { ...mt.args, algorithm: button.dataset.value };
+  $("#mt-json").value = JSON.stringify(mt.args, null, 2);
+  mtRenderAlgorithm();
+  mtRun(false);
+});
 
 function mtRenderStats() {
   const box = $("#mt-stats");
@@ -3567,7 +3627,7 @@ function mtRenderTerms() {
 function mtRenderTuning() {
   const settings = mtStep("settings");
   const names = settings ? settings.map((setting) => setting.name).join() : mt.settings;
-  $("#mt-tuning-box").hidden = !names;
+  $("#mt-tuning-box").hidden = !names || mtAlgorithm() !== "keyword";
   if (!settings || names === mt.settings) return;
   mt.settings = names;
   $("#mt-tuning").replaceChildren(...settings.map((setting) => h("label", { class: "field" },
