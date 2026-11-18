@@ -708,6 +708,7 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
       <div class="grid2" style="margin-top:12px">
         <label class="field"><span>Max results <i class="info" tabindex="0" data-tip="Results per search, videos per channel or episodes per feed. Only for the seeds, not for the papers in their reference lists.">i</i></span><input type="number" id="max_results" value="3" min="1"></label>
         <label class="field" data-sources="pubmed arxiv"><span>Max depth <i class="info" tabindex="0" data-tip="How many levels of reference lists to follow. 0 = search results only, 1 = plus the papers in their reference lists, 2 = plus those papers' reference lists. Each level multiplies the requests.">i</i></span><input type="number" id="max_depth" value="1" min="0"></label>
+        <label class="field" data-sources="pubmed arxiv"><span>Min citations <i class="info" tabindex="0" data-tip="A cited paper is looked up only once this many of the collected papers cite it. 1 = every cited paper. With 2, the papers only one result cites are left out, which is most of them.">i</i></span><input type="number" id="min_citations" value="1" min="1"></label>
         <label class="field"><span>Max requests <i class="info" tabindex="0" data-tip="Safety cap for testing: the run stops after this many requests. A search, a channel or feed listing, a reference request and a lookup batch count as one each. Empty = no limit.">i</i></span><input type="number" id="max_requests" min="1" placeholder="no limit"></label>
         <label class="field" data-sources="pubmed arxiv zenodo youtube podcast"><span>Since <i class="info" tabindex="0" data-tip="Only records dated on or after this day: PubMed entry date, arXiv first submission, Zenodo last change, YouTube publication, podcast episode date. Applies to the seeds, not to cited papers.">i</i></span><input type="date" id="since"></label>
         <label class="field" data-sources="arxiv zenodo" style="display:none"><span>Query mode <i class="info" tabindex="0" data-tip="and = every word must match, or = any word is enough, raw = the query goes to the source as is, e.g. ti:prostate for arXiv or metadata.title:prostate for Zenodo (Zenodo still keeps only the useful record types). A single raw query has no topic filter.">i</i></span>
@@ -847,7 +848,7 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
         <div class="toolbar"><span class="muted" id="db-runs-shown"></span><span class="spacer"></span><div class="pager" id="db-runs-pager"></div></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Run</th><th>Finished</th><th>Source</th><th>Command</th><th>Took</th><th>Result</th><th class="num">New</th><th class="num">Changed</th><th class="num">Unchanged</th><th class="num">Newly cited</th><th class="num">Expired</th><th class="num">Failures</th></tr></thead>
+            <thead><tr><th>Run</th><th>Finished</th><th>Source</th><th>Topic</th><th>Command</th><th>Took</th><th>Result</th><th class="num">New</th><th class="num">Changed</th><th class="num">Unchanged</th><th class="num">Newly cited</th><th class="num">Expired</th><th class="num">Failures</th></tr></thead>
             <tbody id="db-runs"></tbody>
           </table>
         </div>
@@ -1376,7 +1377,7 @@ function renderStats() {
     const requests = n("finished_requests") + n("failed_requests") + n("unprocessed_requests");
     const searched = (state.result.documents || []).filter((doc) => doc.found_by?.some((entry) => "query" in entry)).length;
     const showDocs = (origin) => () => { $("#origin-filter").value = origin; switchTab("docs"); };
-    // Every cited ID found is looked up, or skipped for one of three reasons.
+    // Every cited ID found is looked up, or skipped for one of four reasons.
     const reference = (label, key, options) => ovShare(label, n(key), references, { unit: "references", ...options });
     const request = (label, key, options) => ovShare(label, n(key), requests, { unit: "requests", ...options });
     box.replaceChildren(...[
@@ -1390,6 +1391,7 @@ function renderStats() {
         reference("dropped (off-topic)", "skipped_off_topic", { sub: true, color: "--dropped", onclick: showDocs("dropped") }),
         reference("Duplicates", "skipped_duplicate", { tip: "Found in this run already" }),
         reference("Already stored", "skipped_known", { tip: "In the database already (Store loads their IDs), so not looked up again" }),
+        n("skipped_rarely_cited") ? reference("Cited too rarely", "skipped_rarely_cited", { tip: "Fewer of the collected papers cite them than Min citations asks for, so they are not looked up" }) : null,
         n("skipped_invalid") ? reference("Invalid", "skipped_invalid", { tip: "A paper citing itself, or an ID the source cannot have" }) : null,
       ])) : null,
       ovSection(["Requests", h("b", {}, fmtCount(requests))], ovList([
@@ -1785,6 +1787,7 @@ function formBody() {
     topics: [...document.querySelectorAll("#topics input:checked")].map((input) => input.value),
     max_results: number("max_results"),
     max_depth: number("max_depth"),
+    min_citations: number("min_citations"),
     max_requests: number("max_requests"),
     since: $("#since").value || null,
     query_mode: $("#query_mode").value,
@@ -1800,6 +1803,7 @@ function updateCommand() {
   const add = (flag, value) => { if (value != null && value !== "") argv.push(flag, String(value)); };
   add("--max-results", body.max_results);
   if (["pubmed", "arxiv"].includes(body.source)) add("--max-depth", body.max_depth);
+  if (["pubmed", "arxiv"].includes(body.source) && body.min_citations !== 1) add("--min-citations", body.min_citations);
   add("--since", body.since);
   if (["arxiv", "zenodo"].includes(body.source)) add("--query-mode", body.query_mode);
   add("--max-requests", body.max_requests);
@@ -1933,7 +1937,7 @@ $("#clear-runs").addEventListener("click", (event) => armOrRun(event.currentTarg
   if (state.view && !viewingRunning) showEmptyView();
   await refreshRuns();
 }));
-for (const id of ["query", "max_results", "max_depth", "max_requests", "since", "query_mode", "store"]) $(`#${id}`).addEventListener("input", updateCommand);
+for (const id of ["query", "max_results", "max_depth", "min_citations", "max_requests", "since", "query_mode", "store"]) $(`#${id}`).addEventListener("input", updateCommand);
 for (const button of document.querySelectorAll("#tabs button")) button.addEventListener("click", () => switchTab(button.dataset.tab));
 $("#filter").addEventListener("input", () => renderDocs());
 $("#origin-filter").addEventListener("change", () => renderDocs());
@@ -2511,12 +2515,16 @@ function renderDbRuns() {
   const runs = db.runs;
   const body = $("#db-runs");
   const number = (value, cls) => h("td", { class: `num${value ? (cls ? ` ${cls}` : "") : " zero"}` }, value);
-  if (runs.error) body.replaceChildren(messageRow(12, runs.error, "small error"));
-  else if (!runs.rows.length) body.replaceChildren(messageRow(12, "No store runs yet: run the crawler with --store, or tick “Store in the database” on the Runs screen."));
+  // A crawl over several topics stores one run per topic, all with the same command.
+  const topic = (run) => run.topics.length === 1 ? h("td", { class: "small" }, run.topics[0])
+    : h("td", { class: "small muted", title: run.topics.join(", ") || null }, run.topics.length ? plural(run.topics.length, "topic") : "–");
+  if (runs.error) body.replaceChildren(messageRow(13, runs.error, "small error"));
+  else if (!runs.rows.length) body.replaceChildren(messageRow(13, "No store runs yet: run the crawler with --store, or tick “Store in the database” on the Runs screen."));
   else body.replaceChildren(...runs.rows.map((run) => h("tr", { class: db.selected?.run === run.id ? "selected" : null, onclick: () => dbOpenRun(run) },
     h("td", { class: "id" }, `#${run.id}`),
     h("td", { class: "when", title: fmtDateTime(run.finished_at) }, `${fmtDay(run.finished_at)} ${fmtClock(run.finished_at)}`),
     h("td", {}, sourcePill(run.source)),
+    topic(run),
     h("td", { class: "cmdcell", title: runCommand(run) }, runCommand(run).replace(/^uv run /, "")),
     h("td", { class: "when" }, fmtSeconds(runSeconds(run))),
     h("td", {}, h("span", { class: `pill ${run.ok ? "ok" : "failed"}`, title: run.run_error || "" }, run.ok ? "ok" : "failed")),
@@ -3174,9 +3182,16 @@ function infoStoredPanel(data) {
   const sources = [...new Set([...Object.keys(SOURCE_LABEL), ...crawls.keys()])];
   const row = (what, note, iso, result = null) => h("tr", {}, h("td", {}, what, note ? h("div", { class: "small muted" }, note) : null),
     h("td", { class: "when", title: iso ? fmtDateTime(iso) : null }, iso ? fmtAgo(iso) : "never"), h("td", {}, result));
+  // A crawl stores one run per topic: the result is that of the newest run of every topic.
+  const result = (run) => {
+    if (!run.topics) return h("span", { class: `pill ${run.ok ? "ok" : "failed"}` }, run.ok ? "ok" : "failed");
+    const failed = run.failed_topics, all = plural(run.topics, "topic");
+    return h("span", { class: `pill ${failed ? "failed" : "ok"}`, title: failed ? `The newest stored run of ${failed} of the ${all} failed or was stopped; the next crawl runs them again` : `The newest stored run of each of the ${all} succeeded` },
+      failed ? `${failed} of ${all} failed` : "ok");
+  };
   const rows = sources.map((source) => {
     const run = crawls.get(source);
-    return row(SOURCE_LABEL[source] || source, null, run?.finished_at, run ? h("span", { class: `pill ${run.ok ? "ok" : "failed"}` }, run.ok ? "ok" : "failed") : null);
+    return row(SOURCE_LABEL[source] || source, null, run?.finished_at, run ? result(run) : null);
   });
   rows.push(row("Keyword index", "the last full text indexed", database.indexed));
   const backups = data.backups && !data.backups.error ? data.backups : null;

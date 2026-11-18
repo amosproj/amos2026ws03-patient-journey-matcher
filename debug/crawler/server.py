@@ -437,6 +437,8 @@ def build_argv(body: dict[str, Any]) -> list[str]:
     add("--max-results", body.get("max_results"))
     if source in ("pubmed", "arxiv"):
         add("--max-depth", body.get("max_depth"))
+        if body.get("min_citations") != 1:
+            add("--min-citations", body.get("min_citations"))
     add("--since", body.get("since"))
     if source in ("arxiv", "zenodo"):
         add("--query-mode", body.get("query_mode"))
@@ -1827,7 +1829,11 @@ def schedule() -> dict[str, Any]:
 
 
 async def database_facts(connection: Any) -> dict[str, Any]:
-    """Size and sessions; the last stored run per source; the last indexed full text."""
+    """Size and sessions; the last stored run per source; the last indexed full text.
+
+    A crawl stores one run per topic, so the last run of a source says little. With it come
+    the topics of the source that have a run, and those whose newest run failed.
+    """
     row = await connection.fetchrow(
         """SELECT pg_database_size(current_database()) AS size,
                   (SELECT count(*) FROM pg_stat_activity
@@ -1840,11 +1846,23 @@ async def database_facts(connection: Any) -> dict[str, Any]:
             "SELECT DISTINCT ON (source) source, finished_at, ok"
             " FROM crawl_runs ORDER BY source, id DESC"
         )
+        topics = {
+            row["source"]: row
+            for row in await connection.fetch(
+                """SELECT source, count(*) AS topics, count(*) FILTER (WHERE NOT ok) AS failed
+                   FROM (SELECT DISTINCT ON (source, topic) source, ok
+                         FROM crawl_runs, unnest(topics) AS topic
+                         ORDER BY source, topic, id DESC) AS newest
+                   GROUP BY source"""
+            )
+        }
         facts["crawls"] = [
             {
                 "source": row["source"],
                 "finished_at": row["finished_at"].isoformat() if row["finished_at"] else None,
                 "ok": row["ok"],
+                "topics": topics[row["source"]]["topics"] if row["source"] in topics else 0,
+                "failed_topics": topics[row["source"]]["failed"] if row["source"] in topics else 0,
             }
             for row in rows
         ]
