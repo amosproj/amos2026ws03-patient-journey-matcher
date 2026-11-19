@@ -233,13 +233,16 @@ async def save_result(
     run: RunInfo,
     *,
     refreshed: Sequence[SourceDocument] = (),
+    expire: bool = True,
 ) -> StoreReport:
     """Store the documents, the citations of stored documents and the run; all or nothing.
 
     Documents are upserted by `id`, `refreshed` ones (stored videos fetched again) like those of
     the run. `found_by` gains the new entries, `changed_at` moves only if the content changed.
     `result.citations` also holds stored documents that were skipped as known; they get the
-    `cited_by` entries the run found for them. Expired rows are deleted.
+    `cited_by` entries the run found for them. Expired rows are deleted, unless `expire` is off:
+    a command over several topics leaves them to its last topic, so that each topic can fetch
+    its expired videos again first.
     """
     rows = [document_row(document) for document in [*result.documents, *refreshed]]
     collected = {document.id for document in result.documents}
@@ -259,7 +262,7 @@ async def save_result(
                 if citations:
                     status = await connection.execute(_CITE, _json(_storable(citations)))
                     cited = _count(status)
-                expired = _count(await connection.execute(_EXPIRE))
+                expired = _count(await connection.execute(_EXPIRE)) if expire else 0
                 inserted = sum(1 for flag in flags if flag["inserted"])
                 changed = sum(1 for flag in flags if flag["changed"] and not flag["inserted"])
                 unchanged = len(flags) - inserted - changed

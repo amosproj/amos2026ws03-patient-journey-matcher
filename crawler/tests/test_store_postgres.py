@@ -155,6 +155,7 @@ def save(
     citations: dict[str, list[str]] | None = None,
     failures: list[RequestFailure] | None = None,
     refreshed: Sequence[SourceDocument] = (),
+    expire: bool = True,
 ) -> StoreReport:
     result = CollectionResult(
         documents=list(documents),
@@ -169,7 +170,7 @@ def save(
         started_at=RETRIEVED,
         finished_at=RETRIEVED + timedelta(minutes=5),
     )
-    return asyncio.run(save_result(url, result, run, refreshed=refreshed))
+    return asyncio.run(save_result(url, result, run, refreshed=refreshed, expire=expire))
 
 
 def set_timestamps(url: str, document_id: str, moment: datetime) -> None:
@@ -376,6 +377,18 @@ def test_refreshed_videos_are_kept_while_the_other_expired_ones_are_deleted(url:
     ]
 
 
+def test_a_save_without_expiry_leaves_expired_videos_to_the_topic_that_fetches_them_again(
+    url: str,
+) -> None:
+    save(url, video("of_a_later_topic", FAR_AHEAD))
+    query(url, "UPDATE documents SET expires_at = $1", LONG_AGO)
+
+    report = save(url, paper("1"), expire=False)
+
+    assert report.expired == 0
+    assert asyncio.run(videos_to_refresh(url, ["UCone"])) == ["of_a_later_topic"]
+
+
 def test_a_failed_save_stores_nothing(url: str) -> None:
     mismatched = paper("2", id="pubmed:3")
 
@@ -534,7 +547,7 @@ class TopicCrawl:
         """Run the command against `url`; `kill`: die once this topic is crawled, unstored."""
 
         async def crawl(
-            seeds: Iterable[ScrapeRequest], *, options: CollectionOptions
+            seeds: Iterable[ScrapeRequest], *, options: CollectionOptions, **_factories: object
         ) -> CollectionResult:
             seeds = list(seeds)
             self.crawled.append(seeds[0].topics[0])

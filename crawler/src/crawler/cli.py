@@ -8,6 +8,7 @@ import time
 from collections.abc import Callable, Sequence
 from contextlib import suppress
 from datetime import UTC, date, datetime
+from functools import cache
 from pathlib import Path
 from typing import NamedTuple, NoReturn
 
@@ -26,7 +27,13 @@ from crawler.models import (
 )
 from crawler.queries import query_words
 from crawler.refresh import refresh_documents
-from crawler.runner import CollectionOptions, CollectionSetupError, run_requests
+from crawler.runner import (
+    CollectionOptions,
+    CollectionSetupError,
+    link_extractor_from_env,
+    run_requests,
+    source_from_env,
+)
 from crawler.seeds import (
     Topic,
     TopicFileError,
@@ -628,6 +635,10 @@ def _crawl(
         sys.stdout.reconfigure(encoding="utf-8")
     known = options.known_ids
     budget = options.max_requests
+    # One scraper and one link extractor per source for all parts: each keeps the pause its
+    # source asks for between two requests, and a new one would not know the last request.
+    sources = cache(source_from_env)
+    link_extractors = cache(link_extractor_from_env)
     crawled = failed = 0
     stopped: str | None = None
     for number, part in enumerate(parts, 1):
@@ -637,7 +648,14 @@ def _crawl(
             update={"known_ids": known, "topic_terms": part.terms, "max_requests": budget}
         )
         started_at = datetime.now(UTC)
-        result = asyncio.run(run_requests(part.seeds, options=part_options))
+        result = asyncio.run(
+            run_requests(
+                part.seeds,
+                options=part_options,
+                source_factory=sources,
+                link_extractor_factory=link_extractors,
+            )
+        )
         finished_at = datetime.now(UTC)
         for document in result.documents:
             print(json.dumps(document.model_dump(mode="json"), ensure_ascii=False))
@@ -654,7 +672,9 @@ def _crawl(
                 finished_at=finished_at,
             )
             refreshed = _refresh(url, part.seeds, result) if source is SourceName.YOUTUBE else []
-            report = _save(url, result, run, refreshed or [])
+            # Expired rows go with the last part: an earlier one would delete the expired
+            # videos of the topics after it, before those fetched them again.
+            report = _save(url, result, run, refreshed or [], expire=number == len(parts))
             if report is None:
                 # The topics that are left could not be stored either.
                 ok, stopped = False, "storing failed"
@@ -682,13 +702,18 @@ def _crawl(
 
 
 def _save(
-    url: str, result: CollectionResult, run: RunInfo, refreshed: Sequence[SourceDocument]
+    url: str,
+    result: CollectionResult,
+    run: RunInfo,
+    refreshed: Sequence[SourceDocument],
+    *,
+    expire: bool,
 ) -> StoreReport | None:
     """`save_result`, tried again while the database is away; None if it stays away."""
     delays = list(STORE_RETRY_DELAYS)
     while True:
         try:
-            return asyncio.run(save_result(url, result, run, refreshed=refreshed))
+            return asyncio.run(save_result(url, result, run, refreshed=refreshed, expire=expire))
         except StoreError as error:
             if not delays:
                 print(f"storing failed: {error}", file=sys.stderr)

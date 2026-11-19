@@ -33,7 +33,7 @@ After the crawl, a YouTube run refreshes the stored videos of its channels that 
 
 1. upserts each document, refreshed videos included, by `id`: columns get the new values, `found_by` gains the new entries, `changed_at` moves only if the content changed;
 2. adds the run's `cited_by` entries to stored documents it did not fetch again;
-3. deletes rows whose `expires_at` has passed (YouTube: 30 days after retrieval);
+3. deletes rows whose `expires_at` has passed (YouTube: 30 days after retrieval); a command over several topics does so only with its last topic, when each has refreshed its videos;
 4. writes the run to `crawl_runs`.
 
 Storing is tried again for two minutes, so a database that restarts costs nothing. If it still fails, nothing of the run is stored, the crawl stops, `storing failed` goes to stderr and the exit code is 1.

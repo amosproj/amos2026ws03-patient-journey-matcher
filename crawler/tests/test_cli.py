@@ -2,7 +2,7 @@ import asyncio
 import io
 import json
 import sys
-from collections.abc import Iterable, Sequence
+from collections.abc import Callable, Iterable, Sequence
 from datetime import UTC, date, datetime
 from pathlib import Path
 from types import SimpleNamespace
@@ -317,7 +317,7 @@ def document() -> SourceDocument:
 
 def fake_run(result: CollectionResult) -> object:
     async def run_requests(
-        _seeds: Iterable[ScrapeRequest], *, options: CollectionOptions
+        _seeds: Iterable[ScrapeRequest], *, options: CollectionOptions, **_factories: object
     ) -> CollectionResult:
         return result
 
@@ -485,7 +485,11 @@ class FakeStore:
         # Of every run, one per topic; `seeds`, `options` and `run` are those of the last one.
         self.parts: list[list[ScrapeRequest]] = []
         self.part_options: list[CollectionOptions] = []
+        self.factories: list[tuple[Callable[[SourceName], object], ...]] = []
+        """Of every run: what gives it the scraper and the link extractor of a source."""
         self.runs: list[RunInfo] = []
+        self.expire: list[bool] = []
+        """Of every stored run: whether its store deletes the expired rows."""
         self.refreshed: list[SourceDocument] | None = None
 
     @property
@@ -533,11 +537,17 @@ class FakeStore:
         return self.done
 
     async def run_requests(
-        self, seeds: Iterable[ScrapeRequest], *, options: CollectionOptions
+        self,
+        seeds: Iterable[ScrapeRequest],
+        *,
+        options: CollectionOptions,
+        source_factory: Callable[[SourceName], object],
+        link_extractor_factory: Callable[[SourceName], object],
     ) -> CollectionResult:
         self.calls.append("run")
         self.parts.append(list(seeds))
         self.part_options.append(options)
+        self.factories.append((source_factory, link_extractor_factory))
         return self.results.pop(0) if self.results else self.result
 
     async def refresh_videos(
@@ -555,6 +565,7 @@ class FakeStore:
         run: RunInfo,
         *,
         refreshed: Sequence[SourceDocument] = (),
+        expire: bool = True,
     ) -> StoreReport:
         self.calls.append("save")
         self.refreshed = list(refreshed)
@@ -563,6 +574,7 @@ class FakeStore:
                 self.save_errors -= 1
             raise StoreError(self.save_error)
         self.runs.append(run)
+        self.expire.append(expire)
         return StoreReport(run_id=7, inserted=1, changed=0, unchanged=0, cited=2, expired=0)
 
 
@@ -618,6 +630,7 @@ def test_main_with_store_checks_first_then_crawls_then_stores(
     assert fake.run.topics == ["demo_topic"]
     assert fake.run.arguments == ["pubmed", "--topic", str(topic), "--store"]
     assert fake.run.started_at <= fake.run.finished_at
+    assert fake.expire == [True]
 
 
 def test_since_auto_starts_two_days_before_the_last_successful_run(
@@ -914,6 +927,48 @@ def test_later_topics_do_not_fetch_what_earlier_ones_stored(
     assert alpha.known_ids == {"pubmed:5"}
     assert beta.known_ids == gamma.known_ids == {"pubmed:5", "pubmed:1"}
     assert [options.min_citations for options in fake.part_options] == [2, 2, 2]
+
+
+def test_the_topics_of_a_store_run_share_one_scraper_which_keeps_the_pace_of_its_source(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    fake = FakeStore(CollectionResult(documents=[]))
+    fake.install(monkeypatch)
+    created: list[str] = []
+
+    def creates(kind: str) -> Callable[[SourceName], object]:
+        def create(_source: SourceName) -> object:
+            created.append(kind)
+            return object()
+
+        return create
+
+    monkeypatch.setattr(cli, "source_from_env", creates("scraper"))
+    monkeypatch.setattr(cli, "link_extractor_from_env", creates("link extractor"))
+
+    assert main(["arxiv", *topic_arguments(tmp_path), "--store"]) == 0
+
+    # arXiv asks for three seconds between two requests. A scraper of its own per topic would
+    # not know the last request of the topic before, and send its first one at once.
+    assert len(fake.factories) == 3
+    scrapers = [sources(SourceName.ARXIV) for sources, _ in fake.factories]
+    link_extractors = [links(SourceName.ARXIV) for _, links in fake.factories]
+    assert scrapers[0] is scrapers[1] is scrapers[2]
+    assert link_extractors[0] is link_extractors[1] is link_extractors[2]
+    assert created == ["scraper", "link extractor"]
+
+
+def test_only_the_last_topic_of_a_store_run_deletes_the_expired_rows(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    fake = FakeStore(CollectionResult(documents=[document()]))
+    fake.install(monkeypatch)
+
+    assert main(["pubmed", *topic_arguments(tmp_path), "--store"]) == 0
+
+    # An earlier topic would delete the expired videos of the topics after it, before those
+    # fetched them again.
+    assert fake.expire == [False, False, True]
 
 
 def failed_search() -> RequestFailure:
