@@ -1,6 +1,6 @@
 # arXiv
 
-Checked 01.11.2026; "tested" = own requests. Shared rules: [README](../../Documentation/design/sources.md).
+API research for #6, checked 2026-11-01; "tested" = own requests. What the crawler implements: [data sources](../../Documentation/design/sources.md#notes-per-source); where this page differs from the code, the code is right.
 
 Open preprint server, over 3 M articles, metadata CC0. Licence per paper: a third of recent medical papers carry only arXiv's own licence, 16 % an NC one. About 8,300 medical papers a year ([categories](#medical-categories)).
 
@@ -15,30 +15,7 @@ Open preprint server, over 3 M articles, metadata CC0. Licence per paper: a thir
 
 Terms: show "Thank you to arXiv for use of its open access interoperability."; no logo or implied endorsement. E-prints may be stored for personal or research use, not served from our servers unless the licence allows it. Commercial use is not covered.
 
-## Connectors
-
-Both use the `arxiv` package (4.0.2 current; #27 pins it).
-
-- **SS26** `backend/scrapers/…/Archive`: stores PDF text; new client per call, so the 3 s delay is lost; `vN` in the row ID, no `updated`, no licence.
-- **crawler** `crawler/src/crawler/sources/arxiv.py`: the fields below, one shared client; licence from OAI-PMH in the same 3 s budget.
-
-## Fields
-
-| Schema field | Atom path | Note |
-|---|---|---|
-| `native_id`, `version` | `<id>` split into bare ID and `vN` | `id` = `arxiv:2610.16047` |
-| `content_type` | constant `preprint` | |
-| `title` | `<title>` | Collapse whitespace; may contain LaTeX |
-| `authors` | `<author><name>`, `<arxiv:affiliation>` | Affiliations rare |
-| `summary` | `<summary>` | |
-| `subjects` | `<category term>`, `<arxiv:primary_category>` | |
-| `published_at` | `<published>` | v1 date |
-| `source_updated_at` | `<updated>` | Date of the returned version |
-| `canonical_url` | `https://arxiv.org/abs/{id}` | |
-| `doi` | `<arxiv:doi>` | Journal DOI if added; DataCite DOI `10.48550/arXiv.{id}` always exists |
-| `licence` | OAI-PMH `GetRecord`, `metadataPrefix=arXiv`, `<license>` | Mapping below |
-| `full_text` | `https://arxiv.org/html/{id}v{n}`, then `/pdf/{id}v{n}` | Build the HTML URL |
-| `extra` | `<arxiv:journal_ref>`, `<arxiv:comment>` | `journal_ref` = published version |
+## Findings
 
 No language field (mostly English).
 
@@ -75,7 +52,7 @@ Topic queries are narrower: `all:"prostate cancer"` 102 a year, `"breast cancer"
 2. Else PDF, read with unpdf ([keyword matching](../../Documentation/design/keyword-matching.md#full-texts)).
 3. Request the stored version. Keep 15 s per request on arxiv.org (`export.arxiv.org` disallows all in `robots.txt`).
 
-MCP passes the file on only where its CC licence allows; arXiv default licence: abstract page link.
+`get_source` returns the links whatever the licence; the client has to follow it, and for arXiv's default licence link the abstract page only.
 
 ## To be aware of
 

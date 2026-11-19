@@ -1,10 +1,13 @@
 # backend
 
-Code copied from the SS26 AIlixir project for issue #13. It is the starting point for the Patient Journey Matcher, not a working service yet. What we keep and why is described in [`../Documentation/reuse/what-to-keep.md`](../research/ss26-reuse.md).
+Code copied from SS26, the AMOS project for AIlixir in the summer semester 2026, for issue #13. It is not part of the product and not checked in CI. [`scripts/patient_graph.py`](../scripts/patient_graph.py) (`make graph`) uses its graph steps to build patient graphs from the synthetic documents. The reuse plan and the notes on the copy: [SS26 reuse](../research/ss26-reuse.md).
+
+- Repository: https://github.com/amosproj/amos2026ss03-ailixir-intelligence, commit `88ea71a`; paths mirror its `Backend/` folder.
+- Licence: MIT, Copyright (c) 2021 The AMOS Projects, the same as this repository ([`NOTICE`](../NOTICE)).
 
 ## Setup
 
-Python 3.12 or newer and [uv](https://docs.astral.sh/uv/). Run from this folder:
+Python 3.12 or newer and [uv](https://docs.astral.sh/uv/). From this folder:
 
 ```sh
 uv sync --locked      # install into backend/.venv
@@ -12,44 +15,18 @@ uv run pytest         # import check for every module
 cp .env.example .env  # only needed to run the services
 ```
 
-`api/`, `workers/` and `shared/` are imported from this folder (`uvicorn api.main:app`). Source collection now lives in the independent [`../crawler/`](../crawler/) project.
+Running the services needs credentials for Firebase and Firestore, GCS, Pub/Sub, Vertex AI, OpenAI, AstraDB and Neo4j; see `.env.example`.
 
-## Origin
+## Where the reused parts went
 
-- Repository: https://github.com/amosproj/amos2026ss03-ailixir-intelligence
-- Commit: `88ea71a`.
-- Licence: MIT, Copyright (c) 2021 The AMOS Projects, the same as this repository. See [`../NOTICE`](../NOTICE).
-- Paths mirror the original `Backend/` folder, so `backend/<path>` here is `Backend/<path>` there.
+| SS26 code | Now |
+|---|---|
+| `scrapers/` for PubMed, arXiv (`Archive`) and YouTube (official API part), `BaseScraper` | Rewritten as [`crawler/src/crawler/sources/`](../crawler/src/crawler/sources/) (#27); PDF downloads, transcript scraping, chunking and embedding dropped |
+| `scrapers/key_words/*.csv`, `scrapers/topics.py` | Seed queries in [`crawler/topics/`](../crawler/topics/), one YAML file per disease area (#23) |
+| `api/chat_pipeline/paper_retriever.py` (`PaperReference`, `PaperRetrievalResult`) | The field names of the MCP results ([MCP interface](../Documentation/user/mcp-interface.md)) |
+| `workers/pipeline/graph/` (Graphiti builder, `medical_schema.py`) | Used here by `make graph`; the types are the reference for the patient graph |
+| `api/`, `workers/` document pipeline, `shared/` (Firestore, GCS, Pub/Sub) | Not used; the document pipeline stays with AIlixir |
 
-## Layout
+## SBOM
 
-| Folder | Content | Section in what-to-keep.md |
-|---|---|---|
-| `api/chat_pipeline/` | Paper retrieval, AstraDB client, Vertex AI ranking client, availability and circuit breaker, patient-graph retriever, Graphiti client | Literature retrieval and reranking; patient-document processing |
-| `api/` | Document endpoints, authentication, request-ID middleware, error envelope | Patient-document processing |
-| `workers/` | Document event handler, document pipeline, multimodal extraction and prompts, medical ontology, graph builder, Cypher exporter, service connections | Patient-document processing; shared data and service connections |
-| `shared/` | Document, extraction, journey-summary, user and error models, Firestore repositories, GCS, Pub/Sub, retryable errors | Shared data and service connections |
-
-## Changes against the original
-
-Everything remaining is byte-for-byte as in `88ea71a`, except:
-
-1. `api/main.py`: the chat and voice routers are not part of the plan, so their two imports and `include_router` calls are removed.
-2. Issue #27 replaced the separate `api/` and `workers/` requirements files with one `pyproject.toml` and `uv.lock`. `google-cloud-pubsub==2.27.1` needed protobuf<6 and could not be installed together with `google-cloud-storage==3.10.1`, so it is a lower bound now.
-3. Issue #27 added `.env.example`, which lists the variables the remaining backend code reads. Variables of code that was not copied (OCR, ElevenLabs, test users, Firebase web key) are omitted.
-4. Issue #27 moved `scrapers/` into the independent [`../crawler/`](../crawler/) uv project and removed the legacy copy and its dependencies from `backend/`.
-
-## Not copied
-
-The chat endpoint and its pipeline (contextualizer, answerer, titler), voice and ElevenLabs, Firebase functions, the mobile app, OCR (`workers/pipeline/ocr/`), the legacy graph prompt, the `LiteraturePaper` model and repository, Terraform, Dockerfiles, CI workflows, and the scraper state files (`scrapers/data/*/index.json`).
-
-## Status
-
-- Installs with `uv sync --locked`, and every module imports without credentials (`uv run pytest`). Running the services needs credentials for Firebase and Firestore, GCS, Pub/Sub, Vertex AI, OpenAI, AstraDB and Neo4j; see `.env.example`. There are no functional tests or CI yet.
-- The adaptation work is listed under "What needs adaptation" in what-to-keep.md. Known issues found while reviewing the code:
-  - The documents bucket is read as `GCS_BUCKET_NAME` by `shared/gcs.py` and as `GCS_DOCUMENTS_BUCKET` by `workers/connections/gcs.py`.
-  - `shared/firestore.py` and `shared/gcs.py` both read `FIREBASE_KEY_RELATIVE_PATH` but default to different files.
-  - `workers/pipeline/graph/builder.py` uses the current time when a document date cannot be parsed.
-  - `workers/pipeline/graph/exporter.py` is optional; what-to-keep.md suggests removing it together with its fields.
-- For the SBOM: the Neo4j server is GPL-3.0.
-- For the SBOM: [`scripts/patient_graph.py`](../scripts/patient_graph.py) (`make graph`) uses four packages of this folder directly, at the versions in `uv.lock`: graphiti-core 0.31.2 (Apache-2.0), google-genai 2.34.0 (Apache-2.0), python-dotenv 1.0.1 (BSD-3-Clause) and kuzu 0.11.3 (MIT), the only new one, in the dependency group `graph`. None of them is copyleft. [`scripts/dependencies.py`](../scripts/dependencies.py) lists only `crawler/` and `matcher/`, so these four have to be added to the bill of materials by hand.
+`make graph` uses four packages of this folder directly, at the versions in `uv.lock`: graphiti-core (Apache-2.0), google-genai (Apache-2.0), python-dotenv (BSD-3-Clause) and kuzu (MIT), the last in the dependency group `graph`. None is copyleft; the Neo4j server that the services would need is GPL-3.0. [`scripts/dependencies.py`](../scripts/dependencies.py) lists only `crawler/` and `matcher/`, so add these four to the bill of materials by hand.

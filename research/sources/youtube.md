@@ -1,6 +1,6 @@
 # YouTube
 
-Checked 01.11.2026 (API pages and Developer Policies dated 15.10.2026). Shared rules: [README](../../Documentation/design/sources.md).
+API research for #6, checked 2026-11-01 (API pages and Developer Policies dated 15.10.2026). What the crawler implements: [data sources](../../Documentation/design/sources.md#notes-per-source); where this page differs from the code, the code is right.
 
 Data API v3: metadata of public videos and channels. No transcripts of others' videos, no video files. API key only, so all data is "Non-Authorized Data".
 
@@ -16,38 +16,16 @@ Data API v3: metadata of public videos and channels. No transcripts of others' v
 
 Default 10,000 units/day plus the 100 `search.list` calls, reset at midnight Pacific. More needs a compliance audit.
 
-## Connectors
-
-- **SS26** `backend/scrapers/…/YouTube`: captions via the internal player API (scraping, III.E.6, III.I.8); stores transcripts and view counts forever. Drop that part.
-- **crawler** `crawler/src/crawler/sources/youtube.py`: official API, the fields below, no statistics. A `--store` run refreshes the stored videos of its channels that expire within 15 days; every store run deletes rows past `expires_at` (#41).
-
-## Fields
+## Findings
 
 Request `videos.list?part=snippet,contentDetails,status&id=…`. Every stored value, IDs included, is refreshed or deleted within 30 days (III.E.4.d); refresh costs 1 unit per 50 videos. Gone videos are deleted with their index rows; treat index rows as API Data that expires with the document.
-
-| Schema field | Path | Note |
-|---|---|---|
-| `native_id` | `id` | `id` = `youtube:<videoId>` |
-| `content_type` | constant `video` | |
-| `title` | `snippet.title` | Shown unmodified |
-| `authors`, `venue` | `snippet.channelTitle` | Shown unmodified |
-| `summary` | `snippet.description` | Main index text; `00:00` timestamps = chapters |
-| `subjects` | `snippet.tags[]` | Often empty |
-| `language` | `snippet.defaultAudioLanguage`, else `defaultLanguage` | Often missing |
-| `published_at` | `snippet.publishedAt` | |
-| `duration_seconds` | `contentDetails.duration` | ISO 8601 |
-| `canonical_url` | `https://www.youtube.com/watch?v={id}` | |
-| `external_ids.channel_id` | `snippet.channelId` | |
-| `licence` | `status.license` | `youtube` → `youtube-standard`; `creativeCommon` = CC BY. Not about our storage rights |
-| `expires_at` | `retrieved_at` + 30 days | |
-| `extra` | `status.privacyStatus` (keep `public`), `status.embeddable`, `status.madeForKids`, `snippet.liveBroadcastContent` (skip `live`, `upcoming`), `snippet.thumbnails.medium.url` | Thumbnail shown with each result |
 
 Don't store `statistics`: unneeded, max 30 days, never in a score (III.E.4.b, III.E.4.h).
 
 ## Indexing
 
 - No transcripts: captions need edit rights; scraping breaks the terms. Index title, description, tags and parsed chapters.
-- Gemini on Vertex AI takes a public YouTube URL as `fileUri` (one per request, about 45 min with audio); nothing kept. Not verified whether summarising third-party videos for our index is allowed.
+- Idea, not implemented: Gemini on Vertex AI takes a public YouTube URL as `fileUri` (one per request, about 45 min with audio); nothing kept. Not verified whether summarising third-party videos for our index is allowed.
 
 ## To be aware of
 

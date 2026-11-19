@@ -45,5 +45,5 @@ model version.
 These are exploratory results on synthetic examples and draft labels. The
 keyword reference is not a reproduction of the current application matcher.
 The [detailed PDF](detailed/ai-matching-report-detailed.pdf) retains the original
-analysis and limitations, plus an exact-model appendix, plus an exact-model appendix, including its gap plot and heatmap; the simple PDF
+analysis and limitations, plus an exact-model appendix and the figures in [`detailed/figures/`](detailed/figures/); the simple PDF
 omits those figures.

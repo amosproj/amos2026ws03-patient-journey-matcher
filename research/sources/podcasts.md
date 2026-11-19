@@ -1,8 +1,8 @@
 # Podcasts (RSS feeds)
 
-Checked 01.11.2026 against the specs and the live feeds. Shared rules: [README](../../Documentation/design/sources.md).
+API research for #6, checked 2026-11-01 against the specs and the live feeds. What the crawler implements: [data sources](../../Documentation/design/sources.md#notes-per-source); where this page differs from the code, the code is right.
 
-RSS 2.0 file per show, one `<item>` per episode. No API, key or quota; one GET per feed. Hand-curated [feed list](#curated-feed-list), no discovery. Namespaces read: RSS core, `itunes:`, `podcast:` (`guid`, `transcript`, `chapters`, `person`, `license`), `content:encoded`, `atom:link rel="self"`.
+RSS 2.0 file per show, one `<item>` per episode. No API, key or quota; one GET per feed. Hand-curated [feed list](#curated-feed-list), no discovery. Relevant namespaces: RSS core, `itunes:`, `podcast:` (`guid`, `transcript`, `chapters`, `person`, `license`), `content:encoded`, `atom:link rel="self"`.
 
 The six feeds checked:
 
@@ -17,43 +17,20 @@ The six feeds checked:
 
 All English, unique `guid` on every item, 304 on conditional GET. None uses `podcast:guid`, `license`, `person` or `chapters`. None grants a licence.
 
-## Connectors
-
-**crawler** `crawler/src/crawler/sources/podcast.py`: the fields below, read with the standard library; feeds in the topic files (`podcasts:`). Conditional GET and redirects need the feed state table and are not done yet.
-
-## Fields
-
-Feed state (crawler table): feed key, current URL, `ETag`, `Last-Modified`, last status.
-
-| Schema field | RSS tag | Note |
-|---|---|---|
-| `native_id` | `{feed key}:{guid}` | `id` = `podcast:{feed key}:{guid}` |
-| `content_type` | constant `podcast_episode` | |
-| `title` | `item/title` | |
-| `authors` | `podcast:person`, item `itunes:author` | Often missing |
-| `venue` | `channel/title` | |
-| `summary` | `content:encoded`, else `description` | Plain text, cut at 1,000 characters |
-| `language` | `channel/language` | |
-| `published_at` | `pubDate` | RFC 822 |
-| `duration_seconds` | `itunes:duration` | `401` or `22:15` |
-| `canonical_url` | `item/link` | Must be http(s) |
-| `external_ids.feed_key` | curated list | |
-| `licence` | `podcast:license`, else `channel/copyright` | `all-rights-reserved` for all six |
-| `full_text` | every `podcast:transcript` (`@url`, `@type`, `@language`, `@rel`), then enclosure (`@url`, `@type`, `@length`) | Several transcript formats possible |
-| `extra` | `podcast:chapters@url`, `itunes:episodeType` (skip trailers), DOIs in show notes | 48 of newest 50 JCO episodes cite a DOI |
+## Findings
 
 - **guid:** keep exactly as sent (case-sensitive), only trim; never parse. Formats are mixed (`Buzzsprout-6186427`, `22990 at https://www.cancer.net`). No guid: `enc:` + SHA-256 of the enclosure URL (weak: ASCO URLs pass a tracking redirect that changes with the host). Neither: skip.
-- **Show notes can be transcripts:** ASCO's run 1,240–3,960 words (median), so the crawler cuts them; the indexer reads full notes from the feed.
-- **HTTP:** store `ETag`/`Last-Modified` as received, send both back (Podbean sends only ETag, ASCO Daily News only Last-Modified). 301, 308 or differing `itunes:new-feed-url`: store new URL, tell a maintainer. 302, 307: keep listed URL. 410: stop and flag.
+- **Show notes can be transcripts:** ASCO's run 1,240–3,960 words (median), so the crawler cuts them to 1,000 characters.
+- **HTTP, proposed and not implemented** (the crawler sends a plain GET): store `ETag`/`Last-Modified` as received, send both back (Podbean sends only ETag, ASCO Daily News only Last-Modified). 301, 308 or differing `itunes:new-feed-url`: store new URL, tell a maintainer. 302, 307: keep listed URL. 410: stop and flag.
 
 ## Indexing
 
-`download()` tries in memory:
+The indexer tries the stored links in feed order, at most three, in memory:
 
-1. `podcast:transcript`: VTT, then SRT, JSON, HTML, text. Strip timecodes, keep speakers. Match types loosely (Lancet declares `application/srt`, serves `application/x-subrip`).
-2. Show notes (`content:encoded`, else `description`): full text for ASCO; others 60–190 words. Feeds are not archives (NEJM keeps 22), so notes are re-readable only while listed. Other ASCO transcripts are on ascopubs.org (terms not checked).
+1. `podcast:transcript`: WebVTT, SRT, JSON, HTML or text. Timecodes are stripped, speakers kept. Types are matched loosely (Lancet declares `application/srt`, serves `application/x-subrip`).
+2. Show notes are not read again. Proposed in #6: they are the full text for ASCO, 60–190 words elsewhere, and feeds are not archives (NEJM keeps 22), so notes are re-readable only while listed. Other ASCO transcripts are on ascopubs.org (terms not checked).
 3. Speech-to-text, off by default: `WHISPER_MODEL=tiny-q5_1 make index APPROACHES=keyword` transcribes the MP3 of episodes without a transcript, offline with Whisper ([`scripts/transcribe.py`](../../scripts/transcribe.py)). Audio and text stay in memory; the [keyword index](../../Documentation/design/keyword-matching.md#full-texts) keeps the keywords only.
-   - In the seed crawl (12.11.2026), 148 of 165 episodes had no transcript: 138 MP3 (58 h), 5 M4A and 5 MP4. M4A and MP4 are not read: the decoder (miniaudio) has no AAC.
+   - In the seed crawl (2026-11-12), 148 of 165 episodes had no transcript: 138 MP3 (58 h), 5 M4A and 5 MP4. M4A and MP4 are not read: the decoder (miniaudio) has no AAC.
    - Start with multilingual `tiny-q5_1` for the lightest download (32 MB); `base-q5_1` (60 MB) is an accuracy option. Both correctly left German speech in German in the local control, allowing the keyword index to reject it. Known non-English metadata is skipped before downloading or transcribing.
    - English-only `.en` models can hallucinate English from non-English speech; avoid them when the spoken language is uncertain. Unknown metadata remains eligible, so metadata filtering alone cannot guarantee the audio language.
    - Storing transcripts, or a cloud service ($0.003–0.006/min at OpenAI; about 715 h back catalogue in the six feeds, 66 h new a year), is not decided.

@@ -1,6 +1,6 @@
 # AI-based Matching Research
 
-Results: [short visual report (PDF)](ai-matching-results/ai-matching-report.pdf) · [detailed report (PDF)](ai-matching-results/detailed/ai-matching-report-detailed.pdf) · [exact models used](ai-matching-results/models-used.md) · [plain-language summary](ai-matching-results/performance-report.md).
+Results: [short visual report (PDF)](ai-matching-results/ai-matching-report.pdf) · [detailed report (PDF)](ai-matching-results/detailed/ai-matching-report-detailed.pdf) with its [figures](ai-matching-results/detailed/figures/) · [exact models used](ai-matching-results/models-used.md) · [plain-language summary](ai-matching-results/performance-report.md). Benchmark code, raw run files and implementation plans are not in this repository.
 
 **Goal:** investigate whether AI improves the relevance and usefulness of the resources returned for a patient journey
 
@@ -140,7 +140,7 @@ The following setup is proposed for the existing architecture:
 - **Indexer:** computes resource embeddings and optional summaries once, or after changes.
 - **PostgreSQL:** stores derived representations with source ID, model version and processing status.
 - **Matcher:** creates the query representation, retrieves candidates and optionally reranks them.
-- **Model access:** a shared interface for an API or internal service, including timeouts, retries and cost measurement. API keys remain in the backend.
+- **Model access:** a shared interface for an API or internal service, including timeouts, retries and cost measurement. API keys stay on the server, never in a client.
 
 -> use pgvector for vector search; a separate database is not necessarily required. See the [pgvector documentation](https://github.com/pgvector/pgvector).
 
@@ -180,7 +180,7 @@ The foundation is the existing [matching evaluation](matching-evaluation.md): fi
 
 ### Fair experimental setup
 
-All variants use the same frozen resource corpus, source IDs, journey evaluation points and `as_of` cutoffs. Configuration, model version, prompts and input preparation are documented for each run.
+All variants use the same frozen resource corpus, source IDs, journey evaluation points and `as_of` cutoffs. Configuration, model version, prompts and input preparation are documented for each run. The first experiment did not use this setup yet: it ran on 120 synthetic resources and 24 queries with draft labels, outside the repository ([results](ai-matching-results/performance-report.md)).
 
 The summary comparison uses the same embedding model. Both variants must have access to the same source material: comparing a full-text summary against an abstract mixes the effect of summarization with the effect of additional information. A comparison using expanded source material can be conducted separately.
 
@@ -204,7 +204,7 @@ New results from all methods are pooled and, where possible, judged without know
 
 For displayed summaries, the same results are assessed with and without a summary so that presentation usefulness is investigated independently of ranking changes. Assessment is based on the underlying source; a plausible explanation alone does not establish correctness.
 
-The first ten journeys can be used for development, and the second ten as a held-out test set. Because the pathways are similar, this is initially a small project-specific comparison, not evidence of broad generalizability. Results are examined per journey as well as through averages so that deterioration in individual situations remains visible.
+The first ten journeys can be used for development, and the second ten as a held-out test set; for the keyword approach the second ten are no longer untouched ([matching evaluation](matching-evaluation.md#evaluation-points)). Because the pathways are similar, this is initially a small project-specific comparison, not evidence of broad generalizability. Results are examined per journey as well as through averages so that deterioration in individual situations remains visible.
 
 
 ## 8. Literature research 

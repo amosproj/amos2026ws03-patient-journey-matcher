@@ -1,6 +1,6 @@
 # PubMed Central (PMC)
 
-Checked 01.11.2026. Shared rules: [README](../../Documentation/design/sources.md).
+API research for #6, checked 2026-11-01. What the crawler implements: [data sources](../../Documentation/design/sources.md#notes-per-source); where this page differs from the code, the code is right.
 
 Full-text route for [PubMed](pubmed.md) rows with a PMCID. No rows of its own; fills `licence`, `full_text` and `external_ids` of the PubMed row. Since 08.2026 one public S3 bucket with about 8 M article versions that allow text mining. FTP packages, `oa_comm`/`oa_noncomm` and the OA web service were removed in the week of 24.08.2026. Commercial and NC licences share the bucket, so check every article.
 
@@ -14,34 +14,22 @@ Full-text route for [PubMed](pubmed.md) rows with a PMCID. No rows of its own; f
 
 Automated retrieval only via S3, OAI-PMH, E-utilities (`db=pmc`) and BioC.
 
-## Connectors
-
-- **SS26:** ignores PMCID and licence; fetches publisher PDFs via the DOI.
-- **crawler** `crawler/src/crawler/sources/pmc.py`: the two requests below for every PubMed record with a PMCID.
-
-## Fields
+## Findings
 
 The PubMed crawler makes two anonymous requests per PMCID:
 
 1. `GET …/?list-type=2&prefix=PMC<n>.&delimiter=/` lists versions; none means not in the bucket.
 2. `GET …/metadata/PMC<n>.<v>.json` (0.5–2 KB).
 
-Several versions: prefer a non-manuscript with an allowed licence, then the highest number. v1 may be missing; higher is not always newer.
-
-| Schema field | Source | Note |
-|---|---|---|
-| `external_ids.pmcid` | PubMed `ArticleId[@IdType="pmc"]` | Not from the reference list |
-| `external_ids.pmc_version` | Listing or JSON `version` | Part of the S3 key |
-| `external_ids.nihms` | JSON `mid` | Manuscripts |
-| `licence` | JSON `license_code` | `CC BY-NC` → `CC-BY-NC` (PMC gives no version); `TDM` → `pmc-tdm`; `null` → empty |
-| `full_text` | `PMC<n>.<v>/PMC<n>.<v>.xml`; MD5 from `?md5=` in JSON `xml_url` | JATS XML |
-| `extra` | JSON `is_manuscript`, `is_retracted`, `is_historical_ocr` | |
+Several versions: the crawler prefers a non-manuscript, then the highest number. v1 may be missing; higher is not always newer.
 
 The JSON has no authors, abstract or dates; those come from PubMed. `TDM` = author manuscript without CC licence, "available for text mining"; the AWS FAQ says these "are available for commercial reuse regardless of license".
 
-## Indexing
+## Indexing proposal
 
-1. Licence not allowed: skip. The keyword index reads every licence ([sources §3](../../Documentation/design/sources.md#3-indexing)).
+Proposed in #6; the keyword indexer reads the JATS XML under any licence and checks no checksum ([keyword matching](../../Documentation/design/keyword-matching.md#full-texts)).
+
+1. Licence not allowed: skip.
 2. `GET https://pmc-oa-opendata.s3.amazonaws.com/<key>`, no credentials. Served as `binary/octet-stream`; parse as UTF-8 JATS XML (60–275 KB).
 3. Re-check `<license>`/`<ali:license_ref>`. Use `.txt` only as keyword fallback, never the PDF.
 4. 404 is normal (not in the bucket yet, or version removed): retry next run.

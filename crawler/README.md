@@ -1,9 +1,10 @@
 # Source crawler
 
-Collects metadata from PubMed, arXiv, Zenodo, YouTube and podcast feeds and follows the
-references of the papers it finds. PubMed papers get their full-text links from PMC, else
-open-access copies from OpenAlex. Writes JSON Lines to stdout; with `--store` it also
-upserts them into PostgreSQL ([storage and retrieval](../Documentation/design/storage.md)).
+Collects metadata from PubMed, arXiv, Zenodo, YouTube and podcast feeds, and can follow the
+references of PubMed and arXiv papers (`--max-depth`; the scheduled runs do not). PubMed papers
+get their full-text links from PMC, else open-access copies from OpenAlex. Writes JSON Lines to
+stdout; with `--store` it also upserts them into PostgreSQL ([storage and
+retrieval](../Documentation/design/storage.md)).
 
 ## Setup
 
@@ -12,6 +13,12 @@ cd crawler
 uv sync --locked
 cp .env.example .env   # fill in the keys you need
 ```
+
+`crawler/.env` holds `NCBI_ENTREZ_EMAIL` (PubMed, recommended), `NCBI_API_KEY` (optional),
+`NCBI_REQUESTS_PER_SECOND`, `SEMANTIC_SCHOLAR_API_KEY` (arXiv references), `OPENALEX_API_KEY`
+(optional), `YOUTUBE_API_KEY` (required for `youtube`) and `DATABASE_URL` (for `--store`);
+[`.env.example`](.env.example) explains each. `make seed` from the repository root stores a
+sample crawl of every source.
 
 ## Run
 
@@ -49,7 +56,8 @@ single arXiv query its words (all of them; any with `--query-mode or`). Single P
 One YAML file per disease (`lung_cancer`) or field (`general_cardiology`: channels and podcasts
 only) in `topics/`; the file name is the ID. Channels and feeds come from institutions only
 (societies, journals, health agencies, hospitals, patient organisations), in English and active
-in the last two years; channels as `/channel/<ID>` URLs.
+in the last two years; channels as `/channel/<ID>` URLs. A topic with `queries` needs `terms`.
+A feed may also set `language` and `trusted_because`.
 
 ```yaml
 id: prostate_cancer
@@ -69,6 +77,8 @@ podcasts:                                           # RSS feeds; key is part of 
 ```sh
 uv run ruff check . && uv run ruff format --check . && uv run mypy src && uv run pytest
 ```
+
+`make test` from the repository root also type-checks `tests/integration_support/crawl.py`.
 
 The store tests are skipped unless `TEST_DATABASE_URL` points to a PostgreSQL database, e.g.
 the local one; each test uses its own schema and drops it afterwards.

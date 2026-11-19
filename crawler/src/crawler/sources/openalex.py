@@ -37,7 +37,7 @@ NO_AUTOMATED_DOWNLOAD = (
     "www.cancertreatmentreviews.com",  # Elsevier journal site, HTTP 403 (11.11.2026)
     "sciencedirect.com",  # HTTP 403 on repeated index runs (14.11.2026)
     # Two download attempts per seed PDF returned 403, with no successes on these hosts
-    # in the same sample (14.11.2026; Documentation/design/sources.md).
+    # in the same sample (14.11.2026; research/sources/README.md).
     "academic.oup.com",
     "ascopubs.org",
     "cris.unibo.it",

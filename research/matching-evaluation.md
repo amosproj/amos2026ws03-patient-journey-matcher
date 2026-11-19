@@ -1,10 +1,10 @@
 # Matching evaluation
 
-How we decide if a matched source is relevant for a patient journey, and how we compare the keyword, graph and AI summary matchers (#11). The judgments are in [`matcher/evaluation/judgments.json`](../matcher/evaluation/judgments.json), the metrics runner is in [`matcher/evaluation/`](../matcher/evaluation/src/).
+How we decide if a matched source is relevant for a patient journey, and how we compare the matching approaches: keyword today, graph and AI later (#11). The judgments are in [`matcher/evaluation/judgments.json`](../matcher/evaluation/judgments.json), the metrics runner is in [`matcher/evaluation/`](../matcher/evaluation/src/).
 
 ## Goal
 
-The results go to the "For you" section of the AIlixir app. They should help the patient understand their situation, not give medical advice (partner meeting, 06.11.). So a good result fits where the patient is now, and a bad result is one that confuses or worries them, like a paper about a stage they don't have.
+The results go to the "For you" section of the AIlixir app. They should help the patient understand their situation, not give medical advice (partner meeting, 2026-11-06). So a good result fits where the patient is now, and a bad result is one that confuses or worries them, like a paper about a stage they don't have.
 
 ## Evaluation points
 
@@ -14,7 +14,7 @@ We don't judge a whole journey, we judge it at one point in time. An evaluation 
 - The **context** is every older event that still matters, see [Recent events and context](#recent-events-and-context).
 - We pick points right after a report that changes something: a diagnosis, a decision, a progression or a follow-up. Never after the patient died, because some synthetic journeys end that way.
 
-The first 10 points use one journey per pathway from the synthetic journeys of #14 (Patient-1 to Patient-10). Patient-11 to Patient-20 have the same pathways and stay free as a second set, so we can check later that a matcher was not tuned to the first 10.
+The first 10 points use one journey per pathway from the synthetic journeys of #14 (Patient-1 to Patient-10). Patient-11 to Patient-20 have the same pathways and stay free as a second set, so we can check later that a matcher was not tuned to the first 10. For the keyword approach they are no longer untouched: its term lists cover all 20 journeys (`terms.test.ts`), and #58 used its own sample and holdout within Patient-1 to Patient-10 ([keyword tuning](keyword-tuning.md)).
 
 | Point | Pathway | Focus at `as_of` |
 |---|---|---|
@@ -50,7 +50,7 @@ Rules that came up while judging:
 
 ## Recent events and context
 
-AIlixir said older events can stay relevant depending on the medical context and trends (partner meeting, 06.11.). An older event counts as context when one of these is true:
+AIlixir said older events can stay relevant depending on the medical context and trends (partner meeting, 2026-11-06). An older event counts as context when one of these is true:
 
 - **It defines the disease.** Gleason score, stage, metastases or a BRCA2 mutation matter for the rest of the journey.
 - **Its effects continue.** After a prostatectomy, continence and erectile function matter for years. Under ADT, bone and heart side effects matter for as long as the therapy runs.
@@ -66,11 +66,11 @@ The runner computes four numbers for every point and their mean over all points.
 | Metric | What it tells us |
 |---|---|
 | `ndcg_10` | Main score. Are the best sources at the top of the first 10? Uses the grades 0 to 3, 1 is perfect |
-| `precision_5` | How many of the first 5 have grade 2 or 3. The "For you" section shows only a few cards |
-| `off_target_10` | How many of the first 10 have grade 0. Should be close to 0, because these confuse patients |
-| `judged_10` | How many of the first 10 have a grade at all. Unjudged sources count as 0, so a low value means the scores are too low and we need to judge more |
+| `precision_5` | Share of the first 5 places with grade 2 or 3, from 0 to 1. The "For you" section shows only a few cards |
+| `off_target_10` | Share of the returned first 10 with an explicit grade 0. Should be close to 0, because these confuse patients |
+| `judged_10` | Share of the returned first 10 that have a grade. Unjudged sources count as 0, so a low value means the scores are too low and we need to judge more |
 
-A point with no result file scores 0, so every matcher is compared on all points.
+A point with no result file or an empty list scores 0 in `ndcg_10` and `precision_5`, so every matcher is compared on all points. For an empty list `judged_10` is 1 and `off_target_10` is 0, so read those two only for points with results.
 
 **Reading nDCG@10** (normalized discounted cumulative gain). Each of the first 10 results earns points for its grade: 7 for a 3, 3 for a 2, 1 for a 1, none for a 0 or no grade. Further down it earns less of them: all at place 1, half at place 3, under a third at place 10. The sum is divided by what the best order of all graded sources of the point would earn. So 1 means the ten best known sources in the best order, and 0 nothing useful in the first 10. Example: if ten sources of grade 3 are known, a list with five of them at places 1 to 5 and grade-1 sources below scores 0.70. The score depends on what has been graded, so compare matchers only on the same judgments.
 
@@ -96,11 +96,9 @@ The test in `matcher/evaluation/src/evaluate.test.ts` checks that `judgments.jso
 
 The first 58 judgments (5 to 7 per point) were graded from the PubMed titles and spot-checked against the abstracts in review. They use real PubMed records that a matcher can also find, with the `source_id` the crawler uses (`pubmed:<PMID>`). If a grade turns out wrong, fix it in `judgments.json` with a short note.
 
-**LLM grades for the keyword approach (#58)** are in a file of their own, [`keyword-llm-judgments.json`](../matcher/evaluation/keyword-llm-judgments.json): 9,028 grades for 129 points, only for sources that the keyword ranking found. They are not part of `judgments.json`; see [keyword matching](../Documentation/design/keyword-matching.md#checking-a-change).
+**LLM grades for the keyword approach (#58)** are in a file of their own, [`keyword-llm-judgments.json`](../matcher/evaluation/keyword-llm-judgments.json): 9,028 grades for 129 points, only for sources that the keyword ranking found. They are not part of `judgments.json`; see [keyword tuning](keyword-tuning.md#checking-a-change).
 
 ## Open questions
 
-1. Andi will send journeys generated with an LLM. Do we switch the points to those, or keep the journeys without LLM?
-2. The real app sends the whole patient graph, not `timeline.json` (#44). The points then need the same cut at `as_of` in the graph format.
-3. Who judges videos and podcasts, and from what: description or transcript?
-4. Are 10 points enough to see a difference between two matchers, or do we need the second 10 as well?
+1. The points use `timeline.json`. A graph-based approach needs the same points cut at `as_of` in the graph format; the `graph` input already takes `as_of`.
+2. Who judges videos and podcasts, and from what: description or transcript?

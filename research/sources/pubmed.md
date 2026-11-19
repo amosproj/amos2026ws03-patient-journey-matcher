@@ -1,6 +1,6 @@
 # PubMed
 
-Checked 01.11.2026 with live API calls (the E-utilities manual was behind a browser check). Shared rules: [README](../../Documentation/design/sources.md).
+API research for #6, checked 2026-11-01 with live API calls (the E-utilities manual was behind a browser check). What the crawler implements: [data sources](../../Documentation/design/sources.md#notes-per-source); where this page differs from the code, the code is right.
 
 41.4 M citations with abstracts, MeSH and publication types. No full text; that comes from [PMC](pmc.md) via the PMCID.
 
@@ -11,38 +11,13 @@ Checked 01.11.2026 with live API calls (the E-utilities manual was behind a brow
 | `https://eutils.ncbi.nlm.nih.gov/entrez/eutils/<esearch\|efetch\|elink>.fcgi` | Optional `api_key`; send `tool`, `email` | 3 req/s, 10 with key, 429 above; 9,999 IDs per query |
 | `https://pubmed.ncbi.nlm.nih.gov/<PMID>/` | none | User link only |
 
-Use `efetch` with `retmode=xml`, batched via the History server (`usehistory=y`). `esummary` lacks abstract and MeSH. Bulk baseline files are not needed.
+Use `efetch` with `retmode=xml` on batches of IDs. `esummary` lacks abstract and MeSH. Bulk baseline files are not needed.
 
-## Connectors
-
-- **SS26** `backend/scrapers/…/PubMed`: stores publisher PDF text (breaks metadata-only); keeps only the first abstract section; fails on `CollectiveName`; reads keywords from the wrong element; filters by `pdat`.
-- **crawler** `crawler/src/crawler/sources/pubmed.py`: the fields below; `--since` by entry date; PMC adds licence and full text, OpenAlex open-access copies of the others.
-
-## Fields
+## Findings
 
 `MC` = `PubmedArticle/MedlineCitation`, `PD` = `PubmedArticle/PubmedData`.
 
-| Schema field | Path | Note |
-|---|---|---|
-| `native_id` | `MC/PMID` | Never reused; `id` = `pubmed:<PMID>` |
-| `version` | `MC/PMID/@Version` | Usually 1 |
-| `content_type` | `journal_article`; `book` for `PubmedBookArticle` | Books and chapters of NCBI Bookshelf (StatPearls, PDQ): `BookDocument` instead of `MC`, venue `Book/BookTitle`, date `ContributionDate`, `bookaccession` → `external_ids.bookshelf_id` |
-| `publication_types` | `MC/Article/PublicationTypeList/PublicationType` | Match on `@UI` (MeSH 2026 renamed some) |
-| `title` | `MC/Article/ArticleTitle` | Strip inline tags |
-| `authors` | `MC/Article/AuthorList/Author`: `LastName` + `ForeName` or `CollectiveName`; `Identifier[@Source="ORCID"]`; `AffiliationInfo` | |
-| `venue` | `MC/Article/Journal/Title` | |
-| `summary` | `MC/Article/Abstract/AbstractText`, all sections with `@Label` | |
-| `language` | `MC/Article/Language` | ISO 639-2, convert |
-| `subjects` | `MC/MeshHeadingList` (`@UI`, `@MajorTopicYN`), `MC/ChemicalList`, `MC/KeywordList` | |
-| `published_at` | `MC/Article/ArticleDate[@DateType="Electronic"]`, else `JournalIssue/PubDate` | Months `Dec` or `12`; `MedlineDate` is free text |
-| `source_updated_at` | `MC/DateRevised` | |
-| `canonical_url` | `https://pubmed.ncbi.nlm.nih.gov/<PMID>/` | |
-| `doi` | `PD/ArticleIdList/ArticleId[@IdType="doi"]` | |
-| `external_ids` | `ArticleId[@IdType="pmc"]` → `pmcid`, `[@IdType="mid"]` → `nihms` | PMCID is the full-text key |
-| `licence`, `full_text` | from [PMC](pmc.md), else open-access copies from [OpenAlex](openalex.md) by DOI | Empty without PMCID and without an open PDF |
-| `extra` | `MC/@Status`, entry date (`PubMedPubDate[@PubStatus="entrez"]`), `pmc-release` date, `Abstract/CopyrightInformation` | |
-
-Reference crawl: `PD/ReferenceList` or `elink` with `linkname=pubmed_pubmed_refs`. Both matched Europe PMC in two samples, so Europe PMC is not needed.
+Reference crawl: `PD/ReferenceList` or `elink` with `linkname=pubmed_pubmed_refs`. Both matched Europe PMC in two samples, so Europe PMC is not needed; the crawler uses `elink`.
 
 ## Indexing
 
@@ -51,7 +26,7 @@ PMCID: full text via PMC. Otherwise an open-access PDF found by [OpenAlex](opena
 ## To be aware of
 
 - New since last run: `datetype=edat` (with `mindate`, `maxdate`) or `mdat`. `pdat` is the journal date.
-- 10 req/s is per key across all processes; Biopython paces per process, so set the shared limit in Crawlee.
+- 10 req/s is per key across all processes; Biopython paces per process, so the crawler has its own limit, `NCBI_REQUESTS_PER_SECOND` (5 with our key).
 - No MeSH yet for `Publisher`/`In-Process` records; never for non-MEDLINE journals.
 - NLM terms: name NLM, keep data current or flag it, no logo or endorsement. Some abstracts are publisher-copyrighted.
 - Send `tool=patient-journey-matcher` and a team `email`. Large jobs at weekends or 21:00–05:00 US Eastern.

@@ -1,8 +1,10 @@
-# What to keep for the next repository
+# SS26 reuse plan
 
-This plan is based on the four selected sections of [myNotes.md](myNotes.md). The goal is an independent **Patient Journey Matcher** that retrieves relevant medical information from a patient's dated clinical history.
+The plan of #13 (October 2026) for reusing the SS26 code, kept as written. Where it differs from the [architecture](../Documentation/design/architecture.md), the architecture is the decision: the matcher uses PostgreSQL with BM25 instead of AstraDB and Vertex AI ranking, and the SS26 document pipeline stays with AIlixir. Where the reused parts went: [`backend/`](../backend/README.md). Notes on the copy itself are at the [end](#notes-on-the-copy).
 
-Keep the reusable responsibilities and selected code below, adapting their boundaries for the new project. This document is a migration plan; it does not copy code or change infrastructure. Paths are relative to `amos2026ss03-ailixir-intelligence/` in this workspace. Implementation details come from the notes' review of commit `88ea71a`; they have not been independently reverified here or tested against live services.
+This plan is based on four selected sections of review notes that are not in this repository. The goal is an independent **Patient Journey Matcher** that retrieves relevant medical information from a patient's dated clinical history.
+
+Keep the reusable responsibilities and selected code below, adapting their boundaries for the new project. This document is a migration plan; it does not copy code or change infrastructure. Paths are relative to the SS26 repository; in this repository the copy is in `backend/`. Implementation details come from the notes' review of commit `88ea71a`; they have not been independently reverified here or tested against live services.
 
 # Patient-document processing
 
@@ -162,3 +164,27 @@ Pydantic, Firebase Admin/Firestore, GCS and Pub/Sub SDKs, Neo4j/Graphiti, Google
 Repository interfaces with in-memory implementations support offline development. A relational database could consolidate metadata and dated events. A shared configuration layer can reduce drift without forcing ingestion and interactive requests to use identical clients.
 
 The proposed first retained flow is **structured synthetic journey → journey-derived query → PubMed corpus retrieval → reranked passages with citations and matched facts**. Validate ranking, provenance, patient isolation, missing/conflicting dates, repeated processing, and unavailable dependencies. Connect document extraction and graph-backed journey construction through the same journey contract when those capabilities are needed. This flow and its evaluation suite are proposed work, not existing matcher functionality.
+
+## Notes on the copy
+
+### Changes against the original
+
+Everything remaining is byte-for-byte as in `88ea71a`, except:
+
+1. `api/main.py`: the chat and voice routers are not part of the plan, so their two imports and `include_router` calls are removed.
+2. Issue #27 replaced the separate `api/` and `workers/` requirements files with one `pyproject.toml` and `uv.lock`. `google-cloud-pubsub==2.27.1` needed protobuf<6 and could not be installed together with `google-cloud-storage==3.10.1`, so it is a lower bound now.
+3. Issue #27 added `.env.example`, which lists the variables the remaining backend code reads. Variables of code that was not copied (OCR, ElevenLabs, test users, Firebase web key) are omitted.
+4. Issue #27 moved `scrapers/` into the independent [`crawler/`](../crawler/) uv project and removed the legacy copy and its dependencies from `backend/`.
+
+### Not copied
+
+The chat endpoint and its pipeline (contextualizer, answerer, titler), voice and ElevenLabs, Firebase functions, the mobile app, OCR (`workers/pipeline/ocr/`), the legacy graph prompt, the `LiteraturePaper` model and repository, Terraform, Dockerfiles, CI workflows, and the scraper state files (`scrapers/data/*/index.json`).
+
+### Status at the copy
+
+- Installs with `uv sync --locked`, and every module imports without credentials (`uv run pytest`). Running the services needs credentials for Firebase and Firestore, GCS, Pub/Sub, Vertex AI, OpenAI, AstraDB and Neo4j; see `.env.example`. There are no functional tests or CI yet.
+- The adaptation work is listed under "What needs adaptation" in this plan. Known issues found while reviewing the code:
+  - The documents bucket is read as `GCS_BUCKET_NAME` by `shared/gcs.py` and as `GCS_DOCUMENTS_BUCKET` by `workers/connections/gcs.py`.
+  - `shared/firestore.py` and `shared/gcs.py` both read `FIREBASE_KEY_RELATIVE_PATH` but default to different files.
+  - `workers/pipeline/graph/builder.py` uses the current time when a document date cannot be parsed.
+  - `workers/pipeline/graph/exporter.py` is optional; this plan suggests removing it together with its fields.

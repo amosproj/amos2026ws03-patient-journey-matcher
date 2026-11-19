@@ -57,19 +57,27 @@ Depending on the pathway, they differ in
 - treatment
 - clinical course
 
---> results in different clinical events and different combinations and numbers of documents
+This results in different clinical events and different combinations and numbers of documents.
 
-### Document types: 
-- referral letters
-- laboratory reports
-- imaging reports
-- pathology reports
-- tumor board reports
-- medical letters
-- palliative reports
-- follow-up reports
+### Files per patient
 
-A `timeline.json` containing structured clinical events and contains following fields:
+Each `Patient-<n>/` folder holds one PDF and one HTML file per document, named `<type>_e<event>` after the event it belongs to, plus `timeline.json`; Patient-5 also has `graph.json`.
+
+| File prefix | Document type |
+|---|---|
+| `ueberweisungsbrief` | Referral letter |
+| `einweisungsbrief` | Admission letter |
+| `entlassungsbrief` | Discharge letter |
+| `arztbrief` | Medical letter |
+| `laborbericht` | Laboratory report |
+| `befundbericht` | Findings report, such as imaging |
+| `pathologiebericht` | Pathology report |
+| `op_bericht` | Operative report |
+| `tumorkonferenzprotokoll` | Tumor board report |
+| `verlaufsbericht` | Follow-up report |
+| `palliativbericht` | Palliative care report |
+
+`timeline.json` holds the structured clinical events with these fields:
 
 | Field | Description |
 |---|---|
@@ -84,7 +92,7 @@ contains event-specific clinical details. The `documents` list identifies
 the document types generated for that event. `repeat_index` identifies
 repeated events where applicable and is otherwise `null`.
 
-A `graph.json` holds the patient graph that the SS26 graph steps build from the PDFs of a patient. It is the input of the graph reader (`matcher/mcp-server/src/graph.ts`) and exists only for the patients that were run so far. `make graph PATIENT=Patient-5` builds it, see [Generating a graph](../Documentation/user/mcp-interface.md#generating-a-graph).
+A `graph.json` holds the patient graph that the SS26 graph steps build from the PDFs of a patient. It is the input of the graph reader (`matcher/mcp-server/src/graph.ts`) and exists only for the patients that were run so far. `make graph PATIENT=Patient-5` builds it ([build](../Documentation/build-deploy/build.md#make-targets), [`scripts/patient_graph.py`](../scripts/patient_graph.py)); how the server reads it: [patient graph](../Documentation/user/mcp-interface.md#patient-graph).
 
 | Field | Description |
 |---|---|
@@ -92,7 +100,7 @@ A `graph.json` holds the patient graph that the SS26 graph steps build from the 
 | `documents` | The PDFs that are in the graph, in the order they were read. The graph is complete when it lists every PDF of the folder. |
 | `nodes`, `edges` | The graph as Graphiti holds it, without the embeddings. |
 
-So far only Patient-5 has a graph. It holds all 35 PDFs and was built with a free API key and the model `gemini-3.5-flash-lite`, not with `gemini-2.5-flash` that SS26 uses, because the free key allows `gemini-2.5-flash` only 20 requests a day.
+Patient-5's graph holds all 35 PDFs. It was built with a free API key and the model `gemini-3.5-flash-lite`, not with `gemini-2.5-flash` that SS26 uses, because the free key allows `gemini-2.5-flash` only 20 requests a day.
 
 ## Decision on the LLM Layer
 

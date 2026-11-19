@@ -1,165 +1,93 @@
-# External sources: metadata, storage and indexing
+# Data sources
 
-Findings for #6, checked 01.11.2026 against live docs and live requests. Follows the [architecture](architecture.md): the crawler stores metadata and links only; the indexer fetches full texts in memory and never stores them. Summary: [`pipeline-overview.pdf`](../../research/snapshots/pipeline-overview.pdf).
+What the crawler collects and from where. The crawler stores metadata and links only; the indexer reads full texts in memory and never stores them ([architecture](architecture.md)). The stored columns: [storage](storage.md#documents). API research and measured coverage per source: [research](../../research/sources/README.md).
 
-![Source pipeline](../../research/snapshots/pipeline.svg)
+## Overview
 
-## 1 Sources at a glance
-
-| Source | Role | Page | Offers | Full source for the indexer | Existing connector |
-|---|---|---|---|---|---|
-| PubMed | primary | [`pubmed.md`](../../research/sources/pubmed.md) | 41.4 M citations, abstracts, MeSH | Via PMC if there is a PMCID, else via OpenAlex | SS26, #27 |
-| PMC | primary | [`pmc.md`](../../research/sources/pmc.md) | About 8 M full-text article versions on S3 | JATS XML | crawler |
-| OpenAlex | primary | [`openalex.md`](../../research/sources/openalex.md) | Open-access copies of papers by DOI, for PubMed rows without PMC | PDF on publisher or repository sites | crawler |
-| arXiv | secondary | [`arxiv.md`](../../research/sources/arxiv.md) | Preprints, about 8,300 a year in medical categories | HTML, else PDF | SS26, #27 |
-| Zenodo | secondary | [`zenodo.md`](../../research/sources/zenodo.md) | Any research output, no review | Files: PDF, DOCX, PPTX, MP4 | crawler |
-| YouTube | complementary | [`youtube.md`](../../research/sources/youtube.md) | Metadata of curated channels | None: description and chapters only | SS26, #27 |
-| Podcasts | complementary | [`podcasts.md`](../../research/sources/podcasts.md) | Curated RSS feeds | Transcript file (rare), else show notes; the MP3 with speech-to-text | crawler |
-
-Primary: peer-reviewed core. Secondary: preprints and grey literature. Complementary: curated formats for patients.
-
-### Coverage of the seed crawl (#57)
-
-The crawls of [`scripts/seed.py`](../../scripts/seed.py) (`make seed`) without `--store`, from `main` before #57 and with #57, both on 11.11.2026. YouTube is left out on both sides (no API key); it has no full texts, so with it the shares are lower.
-
-| Source | Documents | Full-text link before | with #57 | Metadata language with #57: English / other / unknown |
-|---|---|---|---|---|
-| PubMed | 586 / 588 | 195 (33 %) | 275 (47 %) | 579 / 0 / 9 |
-| arXiv | 53 | 53 (100 %) | 53 (100 %) | 53 / 0 / 0 |
-| Zenodo | 492 | 479 (97 %) | 479 (97 %) | 457 / 28 / 7 |
-| Podcasts | 170 | 170 (100 %) | 170 (100 %) | 170 / 0 / 0 |
-| All | 1,301 / 1,303 | 897 (69 %) | 977 (75 %) | 1,259 / 28 / 16 |
-
-- The 80 new PubMed links are [OpenAlex](../../research/sources/openalex.md) PDFs; the 195 from PMC stay.
-- Before #57 no metadata language was detected. Zenodo has no language field on 162 of its 492 records; 28 records have metadata detected as non-English.
-- Podcast links are mostly audio: 148 of 165 episodes (12.11.2026) have no transcript, and the indexer reads their MP3 only with [speech-to-text](../../research/sources/podcasts.md#indexing).
-- A link is not yet a readable text. How many of these texts the indexers can download and read is still to be measured (the keyword indexer's `keyword.full_texts.status`, or the downloader on the same crawl).
-
-### Measured readable coverage (14.11.2026)
-
-The same seed requests were run locally without YouTube, followed by keyword indexing with transcription **off**. The crawl stored 1,288 documents. One PubMed query returned HTTP 400 and the MD Anderson podcast feed failed certificate validation; the counts below describe the collected dataset, not a completely successful seed crawl.
-
-The first extraction pass found 960 records with links (74.5%), but only 725 produced readable text (56.3%). Excluding OpenAlex additions from the same dataset gives 893 links (69.3%) and 696 readable texts (54.0%): OpenAlex added **29 actually readable papers**. This comparison uses the same current dataset and language policy, rather than a separate run of historical `main`.
-
-| Source | Stored | Downloaded and read | Indexed with usable English keywords |
-|---|---:|---:|---:|
-| PubMed | 577 | 222 (38.5%) | 221 |
-| arXiv | 53 | 53 (100%) | 53 |
-| Zenodo | 493 | 434 (88.0%) | 396 |
-| Podcasts | 165 | 16 (9.7%) | 16 |
-| **Total** | **1,288** | **725 (56.3%)** | **686 (53.3%)** |
-
-`downloaded_and_read` includes texts later skipped as non-English or without keywords; `indexed` counts texts usable by the English keyword index. Known non-English metadata is skipped before downloading. Podcasts are mostly audio, so their readable share is low with transcription off. Two real audio-only episodes were separately transcribed and indexed with `small.en`; the full audio back catalogue was not measured.
-
-The first pass had 35 failed downloads: 33 HTTP 403 responses across 22 hosts, confirmed by a second attempt, and two server errors. Host behavior can vary by URL and time; these observations do not prove that every PDF on a host is inaccessible. Removing failed locators alone does not increase readable coverage.
-
-To measure another stored crawl, run `make index APPROACHES=keyword`, then `cd crawler && uv run python ../scripts/coverage.py` against the same `DATABASE_URL`. The read-only JSON report separates links, downloaded/read texts, indexed texts, pending records, and individual failures. `*_without_openalex` columns provide the same-dataset comparison. Pending records mean extraction is incomplete. `crawler refresh --source pubmed` can update stored enrichment before reindexing. Short [local validation notes](../pr-64-validation.md) list the added features, checks, and limitations.
-
-## 2 Metadata schema
-
-Table `documents`, one row per source record. PMC has no rows; it fills the PubMed row. Field paths per source: source pages. Independent of the #27 draft model.
-
-| Field | Type | Req. | Meaning |
+| Source | What | Key in `crawler/.env` | Full text the indexer reads |
 |---|---|---|---|
-| `id` | text | yes | `<source>:<native_id>`, primary key, stable across versions; the MCP `source_id` |
-| `source` | text | yes | `pubmed`, `arxiv`, `zenodo`, `youtube`, `podcast` |
-| `native_id` | text | yes | ID in the source, no version suffix |
-| `version` | text | | Version the row describes |
-| `content_type` | text | yes | `journal_article`, `preprint`, `conference_paper`, `poster`, `presentation`, `report`, `book`, `video`, `podcast_episode` |
-| `publication_types` | text[] | | Source labels, e.g. PubMed `Review` |
-| `title` | text | yes | Plain text |
-| `authors` | jsonb | yes | `[{name, orcid, affiliation}]`; channel or host for media |
-| `venue` | text | | Journal, channel or show |
-| `summary` | text | | Abstract or description; show notes cut to 1,000 characters |
-| `language` | text | | BCP 47 |
-| `subjects` | jsonb | | `[{scheme, id, label, major}]`, e.g. MeSH |
-| `published_at` | date | yes | First public date |
-| `published_precision` | text | yes | `year`, `month` or `day` |
-| `source_updated_at` | timestamptz | | Last change reported by the source |
-| `duration_seconds` | integer | | Videos and episodes |
-| `canonical_url` | text | yes | Page shown to users |
-| `doi` | text | | Lower case, no `https://doi.org/` |
-| `external_ids` | jsonb | | e.g. `pmcid`, `pmc_version`, `nihms`, `openalex`, `concept_doi`, `channel_id`, `feed_key` |
-| `licence` | text | | SPDX ID, PMC's CC code without version (`CC-BY-NC`), or own code (`arxiv-nonexclusive-1.0`, `pmc-tdm`, `youtube-standard`, `all-rights-reserved`); empty = unknown |
-| `full_text` | jsonb | | Locators in fetch order: `[{kind, url, media_type, size, checksum}]` |
-| `found_by` | jsonb | yes | `[{topic, query}]` or `[{cited_by: <id>}]` |
-| `retrieved_at` | timestamptz | yes | Last successful fetch |
-| `expires_at` | timestamptz | | YouTube only: `retrieved_at` + 30 days |
-| `extra` | jsonb | | Source-specific fields, see source pages; `metadata_language`: the detected language of title and summary, missing if unsure ([storage](storage.md#languages)) |
+| PubMed | Citations and abstracts with MeSH terms | `NCBI_ENTREZ_EMAIL` (recommended), `NCBI_API_KEY` (optional) | JATS XML from the PMC bucket if it has the article, else an open-access PDF found by OpenAlex |
+| PMC | Full-text links for PubMed records; no rows of its own | none | JATS XML from the PMC bucket |
+| OpenAlex | Open-access PDF links for PubMed records without PMC; no rows of its own | `OPENALEX_API_KEY` (optional) | PDF on the publisher or repository site |
+| arXiv | Preprints | none; `SEMANTIC_SCHOLAR_API_KEY` for references | HTML page, else the PDF |
+| Zenodo | Research output of seven resource types, without peer review | none | The preview file first: PDF, XML, HTML or text |
+| YouTube | Metadata of curated channels | `YOUTUBE_API_KEY` (required) | none |
+| Podcasts | Episodes of curated RSS feeds | none | Transcript, else the audio with speech-to-text |
 
-Implemented in [`db/init/02-documents.sql`](../../db/init/02-documents.sql) (#41), with `created_at` and `changed_at` added and `published_at`/`published_precision` optional: [storage and retrieval](storage.md).
+How the full texts are read: [keyword matching](keyword-matching.md#full-texts). The queries, channels and feeds are in the [topic files](../../crawler/README.md#topic-files).
 
-## 3 Indexing
+## Notes per source
 
-The indexer of each approach checks `licence` against its own allow-list for the use, tries the `full_text` locators in order and keeps the text in memory. Not allowed: title, summary and subjects from the row only.
+**PubMed**
+- `NCBI_REQUESTS_PER_SECOND` sets the pace ([request budgets](#request-budgets)). The limit is per key, so machines that crawl with the same key at once share it.
+- At most 9,999 IDs per query; `--since` filters by the entry date.
+- Books and chapters are stored as `content_type: book` with `external_ids.bookshelf_id`.
+- References (`--max-depth 1`) come from NCBI ELink.
 
-Why at use time, not in the crawler:
+**PMC**
+- The PubMed crawler adds the JATS XML link from the PMC bucket (S3) to records with a PMCID: a non-manuscript version first, else the highest version.
+- Licence codes: `CC0` becomes `CC0-1.0`, `CC BY-NC` becomes `CC-BY-NC`, `TDM` becomes `pmc-tdm`, none stays empty.
+- The PMC website forbids automated downloads, so only the bucket is used.
 
-- The licence covers the full text, not the metadata (arXiv and Zenodo metadata is CC0, PubMed under NLM terms). Every record stays findable and linkable.
-- Most records have no licence when crawled: PubMed without a PMCID, all podcasts.
-- Each licence has three permissions, and open or future decisions (commercial use) change them. A new allow-list means re-indexing, not re-crawling. The crawler filters only for relevance.
+**OpenAlex**
+- For PubMed records without a PMC link, the crawler asks OpenAlex for open-access copies by DOI: 50 DOIs per request, at most 3 PDF links per record.
+- Hosts that refuse automated downloads are on a blocklist (`NO_AUTOMATED_DOWNLOAD` in [`openalex.py`](../../crawler/src/crawler/sources/openalex.py)).
+- Errors only warn; the record is stored without the link.
 
-![Licence check](../../research/snapshots/licence-flow.svg)
+**arXiv**
+- `--since` filters by the submission date, so new versions of older papers are missed.
+- References come from Semantic Scholar.
 
-Allow-list proposal for the current non-commercial university project (not legal advice):
+**Zenodo**
+- The crawler waits 2 s between requests; 25 results per page, at most 10,000 per query.
+- Zenodo combines search words with OR by default, so the crawler quotes the words and joins them with AND.
+- `native_id` is the concept ID, `version` the record ID.
+- Files only for open records with files enabled, the preview file first; embargo date and communities go to `extra`.
 
-| Licence | Keyword, graph, AI index | AI summary shown | Client passes the original on | If used commercially later |
-|---|---|---|---|---|
-| CC0, CC BY, public domain | yes | yes, with credit | yes, with credit | same |
-| CC BY-SA, CC BY-ND | yes | ask | SA: same licence; ND: unchanged | same |
-| NC licences | yes | as without NC | as without NC | no |
-| PMC `TDM`, arXiv default | yes (text mining, research use) | ask | no, link only | ask |
-| All rights reserved, unknown | ask | no | no, link only | ask |
+**YouTube**
+- Metadata only: no transcripts, no view counts. `search.list` is not used.
+- Stored videos expire after 30 days. Every `--store` run refreshes the videos of its channels that expire within 15 days and deletes expired rows.
+- Non-public, live and upcoming videos are skipped. Licence: `youtube-standard` or `CC-BY-3.0`.
 
-The table assumed later commercial use and is probably outdated: each approach now sets its own licence rules, e.g. [keyword matching](keyword-matching.md#full-texts).
+**Podcasts**
+- One plain request per feed and run; `--since` filters episodes by their publication date. Feed list: [podcasts research](../../research/sources/podcasts.md#curated-feed-list).
+- An episode without a `guid` gets `enc:` plus the SHA-256 of its audio URL as ID.
+- Show notes are cut to 1,000 characters, because some contain whole transcripts.
+- Licence: the feed's `podcast:license`, else `all-rights-reserved` if it has a copyright notice.
+- Full-text links: transcripts first, then the audio file; trailers are skipped. Speech-to-text runs only with `WHISPER_MODEL` set, and M4A or MP4 audio is not read.
 
-Licences differ per record: PMC mixes CC BY and NC in one bucket; 8 % of a Zenodo and 16 % of an arXiv sample are NC; a third of medical arXiv papers carry only arXiv's licence; no podcast feed grants one.
+## Licences
 
-## 4 MCP server
+- `licence` holds an SPDX ID or an own code ([storage](storage.md#documents)); empty means unknown.
+- The licence covers the full text, not the metadata: arXiv and Zenodo metadata is CC0, PubMed metadata is under NLM terms. Every record stays findable and linkable, whatever its licence.
+- Licences differ per record, also within one data source: PMC mixes CC BY and NC licences in one bucket.
+- The indexer checks no licence today: the keyword approach reads full texts under any licence and keeps keywords only ([keyword matching](keyword-matching.md#full-texts)). Each approach sets its own rules. The project is non-profit, so sources are used as far as their licences allow non-commercial use ([choices](architecture.md#choices)); an allow-list proposal is in [research](../../research/sources/README.md#licence-allow-list-proposal).
 
-Per the proposal on `feature/7-mcp-interface` (#7). Reads `documents` and the indexes, writes nothing.
+## Request budgets
 
-- `match_journey`: index rows carry `document_id`, so each hit resolves to its row.
-- `get_source(source_id)`: `source_id` = `documents.id`. Returns the `full_text` locators as `downloads` and downloads nothing itself (#54): [MCP interface](../user/mcp-interface.md#get_source). Deleted row (e.g. YouTube after 30 days): `SOURCE_NOT_FOUND`.
-- Field mapping: `id` → `source_id`; `canonical_url` → `url`; `published_at` + `published_precision` → `published_date` (`2026`, `2026-09`, `2026-09-13`); `authors[].name` → `authors`; `extra.thumbnail` → `image_url`; `source`, `title`, `content_type`, `summary`, `licence` unchanged.
-
-## 5 Storage, limits and retention
-
-- **Stored:** the `documents` row and index rows only. Never full texts, PDFs, audio, video or transcripts. ASCO show notes contain transcripts, so the crawler cuts them.
-- **Index rows** carry `document_id`, `version` and `document_changed_at`; deleted with the document, rebuilt when the row changes ([storage](storage.md)).
-- **Crawler state** (not in `documents`): curated lists (topics, channels, [feeds](../../research/sources/podcasts.md#curated-feed-list)); per feed URL, `ETag`, `Last-Modified`, last status; per channel the uploads playlist ID.
-- **Retention:** YouTube data, IDs included, refreshed or deleted within 30 days (III.E.4.d); gone videos deleted with their index rows; no view counts, never in a score (III.E.4.h). PubMed kept current or flagged as possibly outdated. No limit elsewhere. Each store run deletes rows past `expires_at` ([storage](storage.md)).
-- **New since last run:** PubMed `datetype=edat`; arXiv `submittedDate` (`lastUpdatedDate` silently acts as `submittedDate`); Zenodo `updated:[… TO *]`; YouTube uploads playlist to `videoPublishedAt`; podcasts conditional GET.
-- **Caps per query:** PubMed 9,999, Zenodo 10,000, arXiv 30,000; split by date.
-- **Identification:** User-Agent with app, version, repo URL, team contact. NCBI also `tool` and `email`. Zenodo may block generic agents.
-- **Attribution:** name NLM; arXiv line "Thank you to arXiv for use of its open access interoperability."; credit CC BY; label YouTube items with unchanged title, thumbnail, channel; no NLM, PMC or arXiv logos.
-
-Request budgets, shared per key or host by crawler and indexer:
+Shared per key or host by the crawler and the indexer.
 
 | Budget | Limit | Used by |
 |---|---|---|
-| NCBI E-utilities | 5 req/s with our key (3 without), 429 above; `NCBI_REQUESTS_PER_SECOND` | PubMed crawler, reference crawl, indexer, MCP |
-| arXiv API + OAI-PMH | 1 req per 3 s, one connection | arXiv crawler incl. one licence lookup per paper |
-| arxiv.org pages | `Crawl-delay: 15` | Indexer |
-| Zenodo | 30 searches/min (also with token); 133 record/file req/min | Crawler, indexer |
-| YouTube | 10,000 units/day + 100 `search.list`/day | Crawler, refresh job (< 100 units/day) |
-| Semantic Scholar | 1 req/s with key | arXiv reference crawl |
-| OpenAlex | $0.10/day per IP without key, $1/day with a free key; crawler: 1 req/s, 50 DOIs each | PubMed crawler |
-| PMC S3, podcast hosts | none published | Indexer; one conditional GET per feed and day |
+| NCBI E-utilities | 5 requests a second with our key, 3 without | PubMed crawler and its references |
+| arXiv API and OAI-PMH | 1 request every 3 s | arXiv crawler, one licence lookup per paper included |
+| arxiv.org pages | `Crawl-delay: 15` in its robots.txt | Indexer |
+| Zenodo | 30 searches a minute; the indexer fetches one file a second | Crawler, indexer |
+| YouTube Data API | 10,000 units a day | Crawler |
+| Semantic Scholar | 1 request a second with a key | arXiv references |
+| OpenAlex | Small daily budget per IP address without a key; the crawler sends one request a second | PubMed crawler, `crawler refresh` |
+| PMC bucket | None published; 0.1 s between requests | Crawler, indexer |
+| Podcast hosts and other hosts | None published; 3 s between requests | Crawler, indexer |
 
-## 6 Traceability
+## Storage and retention
 
-- `id`, `native_id`, `version`, `canonical_url`, `doi`, `external_ids` identify the source; `found_by`, `retrieved_at` say how and when it came in.
-- IDs are stable across versions (arXiv without `vN`, Zenodo concept ID).
-- Duplicates are linked, not merged: grouped at query time by DOI, then PMCID or PMID, then title hash. Zenodo copies match only via `related_identifiers` or title hash.
-- YouTube is never merged with other data; each item is labelled as YouTube.
+- **Stored:** the `documents` row and the index rows only. Never full texts, PDFs, audio, video or transcripts.
+- **Crawler state:** the curated topics, channels and feeds in `crawler/topics/`, and the run log `crawl_runs`.
+- **YouTube:** data, IDs included, is refreshed or deleted within 30 days; view counts are not stored and never used in a score.
+- **Identification:** the requests that the crawler and the indexer build themselves send a User-Agent with the app name, version and repository URL. NCBI requests send `tool` and `email` instead; the arXiv search and YouTube use client libraries with their own User-Agent.
+- **Attribution when results are shown:** name NLM for PubMed; credit arXiv with "Thank you to arXiv for use of its open access interoperability."; credit the authors of CC BY works; show YouTube items with their unchanged title, thumbnail and channel; no NLM, PMC or arXiv logos.
 
-## 7 Changes needed in the existing documents
+## Identity and duplicates
 
-Not made in this issue:
-
-- **Architecture §4 Indexing:** "public source text" → "text whose licence is on the allow-list".
-- **Architecture §4, crawler evaluation:** PMC S3 is the full-text path for PubMed (OA web service, FTP packages and licence folders retired 08.2026).
-- **Architecture §3:** `arxiv` 4.0.2, `feedparser` 6.0.14; feedparser misses `podcast:*` tags.
-- **Architecture §5:** YouTube 30-day rule covers IDs and playlist IDs; add labelling and the popularity-score ban.
-- **Crawler evaluation:** YouTube search has its own 100 calls/day (since 01.06.2026); PubMed `elink` gives cited PMIDs, so Europe PMC may be unnecessary; Zenodo's 30/min also applies with a token; arXiv OAI-PMH is at `oaipmh.arxiv.org` (03.2025); podcasts' 20 req/min is our own limit.
+- `id` is stable across versions; `found_by` and `retrieved_at` record how and when a record came in.
+- Records from different data sources are not merged or grouped yet; `doi` has a database index for that. YouTube items are never merged with other data.

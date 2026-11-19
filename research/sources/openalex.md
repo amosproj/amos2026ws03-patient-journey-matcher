@@ -1,8 +1,8 @@
 # OpenAlex
 
-Checked 11.11.2026. Shared rules: [README](../../Documentation/design/sources.md).
+API research for #6, checked 2026-11-11. What the crawler implements: [data sources](../../Documentation/design/sources.md#notes-per-source); where this page differs from the code, the code is right.
 
-Full-text route for [PubMed](pubmed.md) rows that [PMC](pmc.md) does not hold (#57). No rows of its own; fills `full_text`, `licence` (if PMC gave none) and `external_ids.openalex` of the PubMed row. OpenAlex lists, per DOI, where a paper can be read: publisher sites, repositories and preprint servers, each with a licence. In the seed crawl (`make seed`, 11.11.2026) the PubMed rows with a full-text link went from 195 of 586 (33 %, PMC) to 275 of 588 (47 %); [coverage](../../Documentation/design/sources.md#coverage-of-the-seed-crawl-57). In an earlier 50-paper sample, 3 of 4 new PDFs downloaded; the fourth site answered with an HTML page.
+Full-text route for [PubMed](pubmed.md) rows that [PMC](pmc.md) does not hold (#57). No rows of its own; fills `full_text`, `licence` (if PMC gave none) and `external_ids.openalex` of the PubMed row. OpenAlex lists, per DOI, where a paper can be read: publisher sites, repositories and preprint servers, each with a licence. In the seed crawl (`make seed`, 11.11.2026) the PubMed rows with a full-text link went from 195 of 586 (33 %, PMC) to 275 of 588 (47 %); [coverage](README.md#seed-crawl-2026-11-11-57). In an earlier 50-paper sample, 3 of 4 new PDFs downloaded; the fourth site answered with an HTML page.
 
 ## Access
 
@@ -12,17 +12,7 @@ Full-text route for [PubMed](pubmed.md) rows that [PMC](pmc.md) does not hold (#
 
 The crawler asks for 50 DOIs per request and waits one second between requests, its own choice. `OPENALEX_API_KEY` in `crawler/.env` is optional; the key goes in the query string, and `redact_secrets` hides it in error messages.
 
-## Connectors
-
-- **crawler** `crawler/src/crawler/sources/openalex.py`, called from `sources/pubmed.py` after PMC: one batch request for the records of a PubMed request that have a DOI but no full text.
-
-## Fields
-
-| Schema field | Source | Note |
-|---|---|---|
-| `full_text` | `best_oa_location`, then `locations[]`: `pdf_url` of locations with `is_oa` | `kind: pdf`, `media_type: application/pdf`; duplicates dropped, at most three |
-| `licence` | `license` of the first kept location | `cc-by-nc` → `CC-BY-NC` (no version, like PMC); `cc0` → `CC0-1.0`; `publisher-specific-oa`, `other-oa` and none → empty |
-| `external_ids.openalex` | `id` | e.g. `W4309…` |
+## Findings
 
 Left out:
 

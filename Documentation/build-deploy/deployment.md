@@ -18,7 +18,7 @@ The matcher runs on one VM in our project of the [FAU Compute Cloud](https://cc.
 | Crawlers and index | Timers `crawler-<source>` and `matcher-index`, see [scheduled crawls](#scheduled-crawls) |
 | Backups | `/var/backups/matcher`, see [backups and cleanup](#backups-and-cleanup) |
 
-Our quota is 20 vCPUs, 50 GB RAM and 1000 GB volume storage. The flavour is the largest that fits the RAM quota. Together with the `vaultwarden` VM, 3 vCPUs, 17 GB RAM and 290 GB volume storage are left for other VMs.
+Our quota is 20 vCPUs, 50 GB RAM and 1000 GB volume storage; the flavour is the largest that fits the RAM quota.
 
 ## Get access
 
@@ -57,7 +57,7 @@ The MCP server has no authentication yet, so it listens on `127.0.0.1` of the VM
 ssh -L 3000:127.0.0.1:3000 debian@172.17.72.205
 ```
 
-Then `http://127.0.0.1:3000/mcp` on your machine is the server on the VM, and the MCP Inspector commands from [build and run](build.md#run-the-matcher-locally) work unchanged.
+Then `http://127.0.0.1:3000/mcp` on your machine is the server on the VM, and the MCP Inspector commands from [try it](../user/mcp-interface.md#try-it) work unchanged.
 
 On the VM:
 
@@ -71,20 +71,20 @@ On the VM:
 
 ## Scheduled crawls
 
-Every night a systemd timer starts one crawler container per source (`crawler-<source>` in [`compose.yaml`](../../compose.yaml)), and in the morning `make index` adds the new documents to the indexes. Each run continues from the source's last successful run (`--since auto`, see [crawler](../../crawler/README.md#run)). A topic without one, as on a new VM or with a new topic file, is crawled without a date. `--max-results` caps every query, channel or feed in every run, so it also sets the size of this first crawl. Any successful run counts, even a small one such as that of `make seed`, and a query, channel or feed added to a topic later starts from the topic's last run. To fill in such a topic, crawl it once without a date and with the results per run below (see the tasks).
+Every night a systemd timer starts one crawler container per data source (`crawler-<source>` in [`compose.yaml`](../../compose.yaml)), and in the morning `make index` adds the new documents to the indexes. Each run continues from the source's last successful run (`--since auto`, see [crawler](../../crawler/README.md#run)); a topic without one, as on a new VM or with a new topic file, is crawled without a date, capped by `--max-results`. Any successful run counts, even a small one such as that of `make seed`, and a query, channel or feed added to a topic later starts from the topic's last run. To fill in such a topic, crawl it once without a date (see the tasks).
 
 | Source | Starts (UTC) | Results per run | Bound by |
 |---|---|---|---|
-| PubMed | 03:00 | 50 per query | NCBI: 3 requests/s, 5 with our key, large jobs between 21:00 and 05:00 US Eastern. Under an hour, the first crawl a few hours. |
-| arXiv | 00:00 | 3 per query | 1 request every 3 s: at least 3 hours for the 3,615 queries, the first crawl about 12 hours. |
-| Zenodo | 00:10 | 25 per query (one page) | 30 searches a minute: about 2 hours. |
-| YouTube | 00:30 | 50 per channel | 10,000 quota units a day, a run needs about 1,400. Stored videos expire after 30 days unless a run refreshes them, so it must run at least every 14 days. |
-| Podcasts | 00:20 | 100 per feed | One request per feed and day, 277 feeds: about 15 minutes. |
-| Index | 06:00 | New and changed documents | arXiv allows one download every 15 s: the first index after the first crawl takes 1–2 days. |
+| PubMed | 03:00 | 50 per query | NCBI: 3 requests/s, 5 with our key; large jobs between 21:00 and 05:00 US Eastern |
+| arXiv | 00:00 | 3 per query | 1 request every 3 s, so the run takes hours |
+| Zenodo | 00:10 | 25 per query (one page) | 30 searches a minute |
+| YouTube | 00:30 | 50 per channel | 10,000 quota units a day. Stored videos expire after 30 days unless a run refreshes them, so it must run at least every 14 days |
+| Podcasts | 00:20 | 100 per feed | One request per feed and day |
+| Index | 06:00 | New and changed documents | arXiv allows one download every 15 s, so the first index after the first crawl takes days |
 
-The scheduled runs do not follow references (`--max-depth 0`): on a first crawl they would fetch millions of cited papers.
+The PubMed and arXiv runs do not follow references (`--max-depth 0`): on a first crawl they would fetch millions of cited papers. The other sources have no references to follow.
 
-**API keys** go into `/opt/patient-journey-matcher/crawler/.env`, which the setup creates from [`crawler/.env.example`](../../crawler/.env.example). YouTube needs `YOUTUBE_API_KEY`; PubMed should have `NCBI_ENTREZ_EMAIL` and `NCBI_API_KEY`. Without a YouTube key, turn its timer off: `sudo systemctl disable --now crawler-youtube.timer`.
+**API keys** go into `/opt/patient-journey-matcher/crawler/.env`, which the setup creates from [`crawler/.env.example`](../../crawler/.env.example). YouTube needs `YOUTUBE_API_KEY`; PubMed should have `NCBI_ENTREZ_EMAIL` and `NCBI_API_KEY`. Without a YouTube key, turn its timer off: `sudo systemctl disable --now crawler-youtube.timer`; an update of the VM turns it on again.
 
 | Task | Command |
 |---|---|
@@ -117,12 +117,12 @@ docker exec -i amos-postgres sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES
 1. In the dashboard, open **Compute → Instances → Launch Instance**.
 2. **Details:** a name. **Source:** image `Debian 13`, create a new volume. **Flavour:** one without a root disk, such as `SCS-4V-8`. **Networks:** `FAU-Intern`. **Key Pair:** your key.
 3. **Configuration:** paste the content of `deploy/vm-setup.sh` into **Customisation Script**.
-4. Launch. The setup takes about 4 minutes. Follow it in the **Log** tab of the instance; it ends with the line `matcher-setup: done`.
+4. Launch. The setup takes a few minutes. Follow it in the **Log** tab of the instance; it ends with the line `matcher-setup: done`.
 
 On a VM that already exists, run the update command from [Use the server](#use-the-server). It pulls before it runs the script, so the newest version of the script runs. It is safe to run again.
 
 ## Limitations
 
-- **No access from outside the FAU network.** The VM has no public address. AIlixir's app cannot call the server yet; this needs authentication first ([MCP interface](../user/mcp-interface.md#open-questions), question 4).
+- **No access from outside the FAU network.** The VM has no public address. AIlixir's app cannot call the server yet; it will with the planned authentication layer ([choices](../design/architecture.md#choices)).
 - **The database is empty until the first night.** Then every source crawls all topics for the first time ([scheduled crawls](#scheduled-crawls)).
 - **Secrets stay on the VM.** The database password is in `/opt/patient-journey-matcher/.env` and the API keys are in `crawler/.env`, both readable only by `debian`.

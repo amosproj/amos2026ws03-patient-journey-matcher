@@ -1,16 +1,6 @@
-# Resource storage and retrieval
+# Storage and retrieval
 
-The crawler stores what it collects in PostgreSQL (#41); the indexer and the MCP server read it from there. Local setup: [database.md](../build-deploy/database.md).
-
-```mermaid
-flowchart LR
-    crawler["Crawler (collection)"] -- "upsert with --store" --> documents[(documents)]
-    crawler -- "one row per run" --> runs[(crawl_runs)]
-    documents -- "new or changed rows" --> indexer["Indexer (indexing)"]
-    indexer --> indexes[("index tables")]
-    indexes -- "hits by document_id" --> mcp["MCP server (matching)"]
-    documents -- "metadata and links" --> mcp
-```
+The crawler stores what it collects in PostgreSQL; the indexer and the MCP server read it from there ([runtime view](architecture.md#1-runtime-components)). Local setup: [database](../build-deploy/database.md).
 
 | Table | Written by | Read by |
 |---|---|---|
@@ -34,15 +24,34 @@ uv run crawler pubmed --topic prostate_cancer --store
 
 If storing fails, nothing of the run is stored, `storing failed` goes to stderr and the exit code is 1.
 
-## Schema
+## Documents
 
-[`db/init/02-documents.sql`](../../db/init/02-documents.sql) and [`03-crawl-runs.sql`](../../db/init/03-crawl-runs.sql). `documents` follows [sources §2](sources.md#2-metadata-schema), except:
+[`db/init/02-documents.sql`](../../db/init/02-documents.sql) defines `documents`, one row per record; [`03-crawl-runs.sql`](../../db/init/03-crawl-runs.sql) defines the run log. PMC and OpenAlex have no rows of their own; they add full-text links to PubMed rows ([data sources](sources.md)).
 
-- `created_at`, and `changed_at`: last change of any column but `found_by`, `retrieved_at` and `expires_at`.
-- `published_at` and `published_precision` may be empty; some records have no valid date.
-- Lists and objects are `[]` or `{}`, never null.
+| Column | Meaning |
+|---|---|
+| `id` | `<source>:<native_id>`, stable across versions; the MCP `source_id` |
+| `source` | `pubmed`, `arxiv`, `zenodo`, `youtube`, `podcast` |
+| `native_id`, `version` | ID in the source without a version suffix (arXiv without `vN`, Zenodo concept ID), and the version the row describes |
+| `content_type` | `journal_article`, `preprint`, `conference_paper`, `poster`, `presentation`, `report`, `book`, `video`, `podcast_episode` |
+| `publication_types` | Labels of the source, e.g. PubMed `Review` |
+| `title`, `summary` | Plain text; `summary` is the abstract or description, podcast show notes cut to 1,000 characters |
+| `authors` | `[{name, orcid, affiliation}]`; channel or host for media |
+| `venue` | Journal, channel or show |
+| `language` | The source's value (BCP 47); see [languages](#languages) |
+| `subjects` | `[{scheme, id, label, major}]`, e.g. MeSH |
+| `published_at`, `published_precision` | First public date and `year`, `month` or `day`; both empty if the record has no valid date |
+| `source_updated_at`, `duration_seconds` | Last change reported by the source; length of videos and episodes |
+| `canonical_url`, `doi` | Page shown to users; DOI in lower case without `https://doi.org/` |
+| `external_ids` | e.g. `pmcid`, `pmc_version`, `nihms`, `bookshelf_id`, `openalex`, `concept_doi`, `channel_id`, `feed_key` |
+| `licence` | SPDX ID, PMC's CC code without version (`CC-BY-NC`), or an own code (`arxiv-nonexclusive-1.0`, `pmc-tdm`, `youtube-standard`, `all-rights-reserved`); empty means unknown |
+| `full_text` | Links to the full text in fetch order: `[{kind, url, media_type, size, checksum, language}]`, `kind` one of `jats`, `html`, `pdf`, `file`, `transcript`, `audio` |
+| `found_by` | `[{topic, query}]` or `[{cited_by: <id>}]` |
+| `retrieved_at`, `expires_at` | Last successful fetch; YouTube only: `retrieved_at` + 30 days |
+| `extra` | Source-specific fields, and `metadata_language`, the detected language of title and summary ([languages](#languages)) |
+| `created_at`, `changed_at` | First stored; last change of any column except `found_by`, `retrieved_at` and `expires_at` |
 
-From the crawler's `SourceDocument`: `source_id` → `native_id`, `journal` → `venue`, `abstract` (else `description`) → `summary`, `url` → `canonical_url`, `published_on` → `published_at`, `refresh_after` → `expires_at`, `channel_id` → `external_ids`.
+Lists and objects are `[]` or `{}`, never null. The crawler's JSON Lines use other names for some fields: `source_id` → `native_id`, `journal` → `venue`, `abstract` (else `description`) → `summary`, `url` → `canonical_url`, `published_on` → `published_at`, `refresh_after` → `expires_at`, `channel_id` → `external_ids`.
 
 ## Languages
 
@@ -51,7 +60,6 @@ The crawler detects the language of each document's title and summary offline wi
 - Missing `metadata_language` means unknown, not "not English": short titles such as `PSA` are too short to tell, and stored cited papers keep their old row until a run fetches them again. An indexer that skips non-English metadata should treat unknown as matchable.
 - Ordinary runs do not fetch stored cited papers again. Backfill their language markers and [OpenAlex](../../research/sources/openalex.md) links with `cd crawler && uv run crawler refresh`; no database reset is needed.
 - Non-English documents are stored like the others, so they stay findable and their citations stay complete.
-- The first store run after this change counts every document it fetches again as changed, once, since `extra` is content: the indexers read their full texts again.
 
 ### Refresh stored enrichment
 
@@ -66,7 +74,7 @@ uv run crawler refresh --source pubmed --limit 50  # bounded trial
 
 The command uses `DATABASE_URL` from the environment or `crawler/.env`, processes batches of 50 (`--batch-size` can lower this), and reports changed/unchanged records, concurrent changes skipped, and failed OpenAlex batches. A failed lookup or concurrent update gives exit code 1; rerunning is safe. `--limit` always scans from the beginning, so omit it for a complete backfill.
 
-Only enrichment fields and `changed_at` change. Provenance, citations, `retrieved_at`, expiry, and crawl resume dates stay intact. Concurrent content changes are left for another run. Run `make index APPROACHES=keyword` afterwards to update the index. Indexers skip marked non-English metadata; absent/unknown metadata language remains eligible, independently of the source's `language` field.
+Only enrichment fields and `changed_at` change. Provenance, citations, `retrieved_at`, expiry, and crawl resume dates stay intact. Concurrent content changes are left for another run. Run `make index APPROACHES=keyword` afterwards to update the index.
 
 ## Reading
 
@@ -77,23 +85,16 @@ import { createDocumentStore, createPool } from "@matcher/db";
 
 const store = createDocumentStore(createPool()); // DATABASE_URL, as for the crawler
 const hits = await store.getDocuments(ids); // in the order of ids, e.g. ranked index hits
-const next = await store.documentsToIndex("keyword_index", 500);
+const next = await store.documentsToIndex("keyword.documents", 500);
 ```
 
-`toSourceReference` in [`mcp-server/src/sources.ts`](../../matcher/mcp-server/src/sources.ts) turns a document into the fields of a tool result ([sources §4](sources.md#4-mcp-server)).
+`toSourceReference` in [`mcp-server/src/sources.ts`](../../matcher/mcp-server/src/sources.ts) turns a document into the fields of a tool result ([MCP interface](../user/mcp-interface.md#match_journey-output)).
 
 Index tables reference their document, so deleting it removes them, and keep the `changed_at` they indexed (as read, in milliseconds). `documentsToIndex` returns the documents without a row or with a different `changed_at`, and `countToIndex` counts them; polling `changed_at > last run` instead would miss the rows of a store run that commits late.
 
-```sql
-CREATE TABLE keyword_index (
-    document_id text PRIMARY KEY REFERENCES documents (id) ON DELETE CASCADE,
-    version text,
-    document_changed_at timestamptz NOT NULL
-    -- index data
-);
-```
+The columns every index table needs: [adding an approach](../../matcher/algorithms/README.md).
 
-Duplicates are grouped by `doi` at query time; the last run per source is `SELECT DISTINCT ON (source) * FROM crawl_runs ORDER BY source, finished_at DESC`.
+The last run per data source: `SELECT DISTINCT ON (source) * FROM crawl_runs ORDER BY source, finished_at DESC`.
 
 ## Limits
 
