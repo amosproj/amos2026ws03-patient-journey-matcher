@@ -29,7 +29,8 @@ const maxWorkers = Math.max(1, Math.floor(availableParallelism() / threads));
 setPriority(constants.priority.PRIORITY_LOW);
 
 const pool = createPool();
-// A restart of the database breaks idle connections; the pool opens new ones.
+// A restart of the database breaks idle connections. The pool drops them; the job ends
+// through the connection of its lock, below.
 pool.on("error", (error) => console.error(`database: ${error.message}`));
 if (workers !== undefined) {
   await setWorkers(pool, Number(workers));
@@ -63,6 +64,8 @@ for (const signal of ["SIGINT", "SIGTERM"] as const) {
   process.on(signal, () => stop.abort());
 }
 let broken = false;
+// The lock went with its connection, as on a restart of the database, and a second job could
+// start: this one ends. The files in work stay waiting, and the next start reads them again.
 lock.on("error", (error) => {
   console.error(
     `The connection that holds the job's lock broke: ${error.message}`,

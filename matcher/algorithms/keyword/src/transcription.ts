@@ -79,8 +79,6 @@ export interface TranscriptionOptions {
   idleMs?: number;
   /** Milliseconds without new audio after speech-to-text failed `FAILURES` times in a row. */
   pauseMs?: number;
-  /** Milliseconds before a row that could not be written is tried again, times the attempt. */
-  retryMs?: number;
 }
 
 /** A document whose audio waits, with the version of it that its index row was built from. */
@@ -94,8 +92,6 @@ const IDLE_MS = 60_000;
 /** Speech-to-text that fails this often in a row is taken to be broken, not the files. */
 const FAILURES = 5;
 const PAUSE_MS = 600_000;
-const WRITE_ATTEMPTS = 5;
-const RETRY_MS = 5_000;
 const RECENT = 10;
 /** Files the speed is measured over. */
 const SPEED_FILES = 30;
@@ -151,7 +147,6 @@ export async function transcribeAudio(
     pollMs = POLL_MS,
     idleMs = IDLE_MS,
     pauseMs = PAUSE_MS,
-    retryMs = RETRY_MS,
   }: TranscriptionOptions,
 ): Promise<void> {
   await createSchema(db);
@@ -240,36 +235,28 @@ export async function transcribeAudio(
 
   /**
    * Stores what was read, unless the indexer wrote the row meanwhile: the document changed, or
-   * its metadata turned out not to be English. Tried again, so that a database restart does
-   * not cost a transcription.
+   * its metadata turned out not to be English.
    */
   async function write(document: Waiting, row: FullTextRow): Promise<boolean> {
-    for (let attempt = 1; ; attempt++) {
-      try {
-        const { rowCount } = await db.query(
-          `UPDATE keyword.full_texts
-           SET status = $3, detail = $4, url = $5, media_type = $6, words = $7, terms = $8,
-               fetched_at = now()
-           WHERE document_id = $1 AND document_changed_at = $2
-             AND status = 'skipped' AND detail = $9`,
-          [
-            document.id,
-            document.document_changed_at,
-            row.status,
-            row.detail,
-            row.url,
-            row.mediaType,
-            row.words,
-            row.terms,
-            NO_SPEECH_TO_TEXT,
-          ],
-        );
-        return rowCount === 1;
-      } catch (error) {
-        if (attempt === WRITE_ATTEMPTS || signal.aborted) throw error;
-        await sleep(retryMs * attempt);
-      }
-    }
+    const { rowCount } = await db.query(
+      `UPDATE keyword.full_texts
+       SET status = $3, detail = $4, url = $5, media_type = $6, words = $7, terms = $8,
+           fetched_at = now()
+       WHERE document_id = $1 AND document_changed_at = $2
+         AND status = 'skipped' AND detail = $9`,
+      [
+        document.id,
+        document.document_changed_at,
+        row.status,
+        row.detail,
+        row.url,
+        row.mediaType,
+        row.words,
+        row.terms,
+        NO_SPEECH_TO_TEXT,
+      ],
+    );
+    return rowCount === 1;
   }
 
   /** Reads one document like the indexer would with speech-to-text, and stores the result. */
@@ -374,7 +361,8 @@ export async function transcribeAudio(
       wanted = setting;
       answered = true;
     } catch (error) {
-      // A restart of the database ends no transcription.
+      // A report that fails ends no transcription here; the job itself ends when the
+      // connection of its lock breaks (transcriber/src/main.ts).
       if (answered) log(`no report, the database said: ${message(error)}`);
       answered = false;
     }

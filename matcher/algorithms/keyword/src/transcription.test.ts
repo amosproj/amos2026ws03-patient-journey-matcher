@@ -116,7 +116,6 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", { timeout: 30_000 }, () => {
       log: (line) => lines.push(line),
       pollMs: 5,
       idleMs: 20,
-      retryMs: 1,
       ...options,
     });
     const end = async () => {
