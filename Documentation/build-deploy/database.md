@@ -62,7 +62,7 @@ Use `127.0.0.1`, not `localhost`: the port is published on IPv4 only. URL-encode
 ## Data and initialization
 
 - Data is stored in the Docker volume `pgdata` and survives `stop`, `down` and restarts. Only `down -v` deletes it.
-- SQL files in `db/init/` run once on the first start with an empty volume. They enable the `vector` extension and create the tables `documents` and `crawl_runs` ([storage and retrieval](../design/storage.md)).
+- SQL files in `db/init/` run once on the first start with an empty volume. They enable the `vector` extension and create the tables `documents`, `crawl_runs`, `transcripts` and `transcription` ([storage and retrieval](../design/storage.md)).
 - `make db` starts the database and applies `db/init/` again, so an existing volume gets new tables without a reset. Without make (works in Bash and PowerShell):
 
   ```bash

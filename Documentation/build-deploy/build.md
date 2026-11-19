@@ -23,7 +23,7 @@ Run the commands from the repository root. Each `make` target runs the `uv`, `pn
 | `make db` | Starts the [database](database.md) and applies `db/init/`; needs the root `.env` |
 | `make seed` | Runs `make db`, then stores a sample crawl of every source ([`scripts/seed.py`](../../scripts/seed.py)) |
 | `make index` | Builds, then updates the indexes of all approaches, today the [keyword index](../design/keyword-matching.md) |
-| `WHISPER_MODEL=tiny-q5_1 make transcribe` | Builds, then runs the [transcription job](../design/keyword-matching.md#speech-to-text) until you stop it: speech-to-text for podcast audio that has no transcript, for the keyword index. It reads no file until you set how many at once: [options](#options) or the debug UI |
+| `WHISPER_MODEL=tiny-q5_1 make transcribe` | Builds, then runs the [transcription job](../design/keyword-matching.md#speech-to-text) until you stop it: speech-to-text for podcast audio that has no transcript, for the indexes. It reads no file until you set how many at once: [options](#options) or the debug UI |
 | `make start` | Builds, then starts the MCP server on `http://127.0.0.1:3000/mcp`; needs the root `.env` |
 | `make debug` | Starts the [debug UI](../../debug/crawler/README.md) for the crawler, the database, the index and the matcher on `http://127.0.0.1:8765` |
 | `make graph PATIENT=Patient-5` | Builds the [patient graph](../user/mcp-interface.md#patient-graph) of one synthetic patient and writes `patientdata/Patient-5/graph.json` with the [patient graph tool](../../tools/patient-graph/README.md); needs `GEMINI_API_KEY` |
@@ -95,10 +95,10 @@ It writes the direct dependencies of `crawler/` and `matcher/` with version, lic
 
 - **Index before you query.** Without `make index`, `match_journey` answers `degraded: true` with no results.
 - **The first `make index` is slow, mostly because of arXiv.** arxiv.org asks for 15 s between requests ([request budgets](../design/sources.md#request-budgets)), and a paper without an HTML version needs a second download, the PDF. The indexer reads 500 documents at a time from all hosts in parallel and prints its progress every minute. Ctrl+C is safe: the next run continues with the documents not read yet and retries failed downloads. Later runs read only new and changed documents.
-- **A changed indexer reads only new and changed documents.** To rebuild the keyword index from scratch, drop it and run `make index`. This also drops what `make transcribe` read from audio:
+- **A changed indexer reads only new and changed documents.** To rebuild the keyword index from scratch, drop it and run `make index`. As no index keeps a transcript, `make transcribe` then reads the podcast audio again:
 
   ```sh
-  docker compose exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "DROP SCHEMA keyword CASCADE"'
+  docker compose exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "DROP SCHEMA keyword CASCADE" -c "DELETE FROM transcripts"'
   ```
 - **The seed is a small sample.** Journeys on diseases it barely covers find little. How the ranking can go wrong: [keyword matching](../design/keyword-matching.md#known-limitations).
 - **Local use only.** The server listens on `127.0.0.1` and has no authentication.

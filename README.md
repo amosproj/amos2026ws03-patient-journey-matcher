@@ -45,7 +45,7 @@ make index             # installs the dependencies and builds the index of each 
 make start             # MCP server on http://127.0.0.1:3000/mcp
 ```
 
-Optional: `WHISPER_MODEL=tiny-q5_1 make transcribe WORKERS=2` reads podcast audio into the keyword index, two files at a time, until you stop it.
+Optional: `WHISPER_MODEL=tiny-q5_1 make transcribe WORKERS=2` transcribes podcast audio without a transcript, two files at a time, until you stop it; the next `make index` reads the text.
 
 ### Explore the pipeline
 

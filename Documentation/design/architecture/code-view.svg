@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg viewBox="0 0 1072 928" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="code-view-title code-view-desc" id="code-view-root">
         <title id="code-view-title">Code components of the Patient Journey Matcher</title>
-        <desc id="code-view-desc">UML package diagram. Crawler (Python): cli uses runner, store and sources; runner uses sources and links; links uses sources; store uses the SQL schema in db/init. Matcher (TypeScript) in three layers. Programs: mcp-server, indexer and transcriber depend on approaches; evaluation uses the saved results of mcp-server; the programs layer depends on the libraries layer. Matching: approaches (createApproaches, selectApproaches) uses the interface Approach of core and instantiates the approaches keyword, graph and ai_summary in algorithms, which implement the interface Approach of core; the matching layer depends on the libraries layer. Libraries: core (interfaces Approach, Indexer and Matcher, data types JourneyState and Hit, reciprocalRankFusion), db (DocumentStore, createPool, indexChangedDocuments; uses the SQL schema in db/init) and download (Downloader, extractText, createTranscriber).</desc>
+        <desc id="code-view-desc">UML package diagram. Crawler (Python): cli uses runner, store and sources; runner uses sources and links; links uses sources; store uses the SQL schema in db/init. Matcher (TypeScript) in three layers. Programs: mcp-server, indexer depend on approaches, transcriber only on the libraries; evaluation uses the saved results of mcp-server; the programs layer depends on the libraries layer. Matching: approaches (createApproaches, selectApproaches) uses the interface Approach of core and instantiates the approaches keyword, graph and ai_summary in algorithms, which implement the interface Approach of core; the matching layer depends on the libraries layer. Libraries: core (interfaces Approach, Indexer and Matcher, data types JourneyState and Hit, reciprocalRankFusion), db (DocumentStore, createPool, indexChangedDocuments; uses the SQL schema in db/init) and download (Downloader, extractText, createTranscriber).</desc>
 <defs>
       <style>#code-view-root { --color-paper:   #fafafa;
       --color-ink:     #1f2328;
@@ -55,7 +55,6 @@
 <text x="180.0" y="469" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">«use»</text>
 <path d="M 232,424 H 456 Q 464,424 464,432 V 476" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#code-view-open)"/>
 <path d="M 232,588 H 284 Q 292,588 292,580 V 500 Q 292,492 300,492 H 352" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#code-view-open)"/>
-<path d="M 232,668 H 296 Q 304,668 304,660 V 516 Q 304,508 312,508 H 352" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#code-view-open)"/>
 <path d="M 480,499 H 560" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#code-view-open)"/>
 <rect x="488" y="479" width="64" height="12" fill="#fafafa"/>
 <text x="520.0" y="488" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">«instantiate»</text>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg viewBox="0 0 1200 772" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="runtime-view-title runtime-view-desc" id="runtime-view-root">
         <title id="runtime-view-title">Runtime components of the Patient Journey Matcher</title>
-        <desc id="runtime-view-desc">UML component diagram: the subsystem Patient Journey Matcher contains the crawler, the transcription job, the indexer, PostgreSQL and the MCP server; each box says in braces how and when it runs. The indexer holds one indexer per approach (keyword, graph, ai_summary) and the MCP server one matcher per approach, besides its MCP tools match_journey and get_source. PostgreSQL holds the schemas public (documents, crawl_runs), keyword (documents, full_texts, transcription) and an index each for graph and ai_summary. The crawler requires the search APIs of the data sources, the transcription job their audio files, the indexer their file downloads, the graph indexer the annotations of PubTator3, and both ai_summary parts the model API of an AI model service. Crawler, transcription job, indexer and MCP server use PostgreSQL; the MCP server provides the MCP tools that an MCP client requires.</desc>
+        <desc id="runtime-view-desc">UML component diagram: the subsystem Patient Journey Matcher contains the crawler, the transcription job, the indexer, PostgreSQL and the MCP server; each box says in braces how and when it runs. The indexer holds one indexer per approach (keyword, graph, ai_summary) and the MCP server one matcher per approach, besides its MCP tools match_journey and get_source. PostgreSQL holds the schemas public (documents, crawl_runs, transcripts, transcription), keyword (documents, full_texts) and an index each for graph and ai_summary. The crawler requires the search APIs of the data sources, the transcription job their audio files, the indexer their file downloads, the graph indexer the annotations of PubTator3, and both ai_summary parts the model API of an AI model service. Crawler, transcription job, indexer and MCP server use PostgreSQL; the MCP server provides the MCP tools that an MCP client requires.</desc>
 <defs>
       <style>#runtime-view-root { --color-paper:   #fafafa;
       --color-ink:     #1f2328;
@@ -34,10 +34,10 @@
 <path d="M 456,232 H 504" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#runtime-view-open)"/>
 <rect x="464" y="212" width="32" height="12" fill="#fafafa"/>
 <text x="480.0" y="221" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">«use»</text>
-<path d="M 456,393 H 552 Q 560,393 560,385 V 262" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#runtime-view-open)"/>
+<path d="M 456,393 H 552 Q 560,393 560,385 V 276" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#runtime-view-open)"/>
 <rect x="476" y="373" width="32" height="12" fill="#fafafa"/>
 <text x="492.0" y="382" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">«use»</text>
-<path d="M 760,369 H 664 Q 656,369 656,361 V 262" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#runtime-view-open)"/>
+<path d="M 760,369 H 664 Q 656,369 656,361 V 276" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#runtime-view-open)"/>
 <rect x="692" y="349" width="32" height="12" fill="#fafafa"/>
 <text x="708.0" y="358" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">«use»</text>
 <line x1="252" y1="144" x2="272" y2="144" stroke="#1f2328" stroke-width="1"/>
@@ -146,7 +146,7 @@
 <rect x="420" y="462" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
 <text x="356.0" y="465" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">ai_summary indexer</text>
 <text x="356.0" y="479" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">summary and embedding</text>
-<rect x="504" y="112" width="208" height="150" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="504" y="112" width="208" height="164" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
 <rect x="692" y="118" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
 <rect x="688" y="121" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
 <rect x="688" y="127" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
@@ -156,15 +156,17 @@
 <line x1="504" y1="174" x2="712" y2="174" stroke="#1f2328" stroke-width="0.8"/>
 <text x="608.0" y="188" fill="#656d76" font-size="7.5" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle" letter-spacing="0.12em">SCHEMAS</text>
 <text x="516" y="201" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">public</text>
-<text x="580" y="201" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">documents, crawl_runs</text>
-<text x="516" y="214" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">keyword</text>
-<text x="580" y="214" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">documents, full_texts,</text>
+<text x="580" y="201" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">documents, crawl_runs,</text>
+<text x="516" y="214" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start"></text>
+<text x="580" y="214" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">transcripts,</text>
 <text x="516" y="227" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start"></text>
 <text x="580" y="227" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">transcription</text>
-<text x="516" y="240" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">graph</text>
-<text x="580" y="240" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">index</text>
-<text x="516" y="253" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">ai_summary</text>
+<text x="516" y="240" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">keyword</text>
+<text x="580" y="240" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">documents, full_texts</text>
+<text x="516" y="253" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">graph</text>
 <text x="580" y="253" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">index</text>
+<text x="516" y="266" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">ai_summary</text>
+<text x="580" y="266" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">index</text>
 <rect x="760" y="240" width="176" height="258" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
 <rect x="916" y="246" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
 <rect x="912" y="249" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>

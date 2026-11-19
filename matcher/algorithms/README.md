@@ -15,7 +15,7 @@ The keyword approach as the example:
 | `src/schema.ts`      | Its tables, in a schema named after the approach                                                         |
 | `src/<name>.test.ts` | Its database tests                                                                                       |
 
-Other files hold what only this approach needs, e.g. keyword's word lists in `data/` and the script that builds one in `scripts/`. Its speech-to-text job in `src/transcription.ts` is a second export, for [`matcher/transcriber`](../transcriber/src/main.ts) only.
+Other files hold what only this approach needs, e.g. keyword's word lists in `data/` and the script that builds one in `scripts/`.
 
 ## Contracts
 
@@ -55,4 +55,4 @@ The options of `match` also hold `trace` and `tuning`, for the [debug UI](../../
 2. Add it to `createApproaches` in [`approaches/src/registry.ts`](../approaches/src/registry.ts) and as `"@matcher/<name>": "workspace:*"` to the dependencies in [`approaches/package.json`](../approaches/package.json); add new dependencies, such as an LLM client, to `Dependencies`.
 3. Run `pnpm install`, then document the approach next to [keyword matching](../../Documentation/design/keyword-matching.md).
 
-The MCP server and the indexer job need no change.
+The MCP server and the indexer job need no change. Podcast audio reaches an indexer as its stored transcript, which is dropped once every index has read it: to give a new approach the audio of earlier episodes, empty the table `transcripts`, and `make transcribe` reads it again.

@@ -6,6 +6,8 @@ The crawler stores what it collects in PostgreSQL; the indexer and the MCP serve
 |---|---|---|
 | `documents` | crawler | indexer, MCP server |
 | `crawl_runs` | crawler | crawler (`--since auto`, `--resume`), people |
+| `transcripts` | transcription job; the indexer drops the text once every index has read it | indexer (as a full text), transcription job |
+| `transcription` | transcription job (its report), debug UI (how many files at once) | transcription job, debug UI |
 | index tables, e.g. `keyword.documents` and `keyword.full_texts` ([keyword matching](keyword-matching.md)) | indexer, transcription job | MCP server |
 
 ## Storing
@@ -94,7 +96,7 @@ const next = await store.documentsToIndex("keyword.documents", 500);
 
 `toSourceReference` in [`mcp-server/src/sources.ts`](../../matcher/mcp-server/src/sources.ts) turns a document into the fields of a tool result ([MCP interface](../user/mcp-interface.md#match_journey-output)).
 
-Index tables reference their document, so deleting it removes them, and keep the `changed_at` they indexed (as read, in milliseconds). `documentsToIndex` returns the documents without a row or with a different `changed_at`, and `countToIndex` counts them; polling `changed_at > last run` instead would miss the rows of a store run that commits late.
+Index tables reference their document, so deleting it removes them, and keep the `changed_at` they indexed (as read, in milliseconds; the time a transcript of the document was stored, if later). `documentsToIndex` returns the documents without a row or with a different `changed_at`, and `countToIndex` counts them; polling `changed_at > last run` instead would miss the rows of a store run that commits late.
 
 The columns every index table needs: [adding an approach](../../matcher/algorithms/README.md).
 

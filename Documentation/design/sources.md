@@ -81,7 +81,7 @@ Shared per key or host by the crawler and the indexer.
 
 ## Storage and retention
 
-- **Stored:** the `documents` row and the index rows only. Never full texts, PDFs, audio, video or transcripts.
+- **Stored:** the `documents` row and the index rows; the transcript of a podcast episode only until every index has read it. Never full texts, PDFs, audio or video.
 - **Crawler state:** the curated topics, channels and feeds in `crawler/topics/`, and the run log `crawl_runs`.
 - **YouTube:** data, IDs included, is refreshed or deleted within 30 days; view counts are not stored and never used in a score.
 - **Identification:** the requests that the crawler and the indexer build themselves send a User-Agent with the app name, version and repository URL. NCBI requests send `tool` and `email` instead; the arXiv search and YouTube use client libraries with their own User-Agent.

@@ -11,7 +11,7 @@ How the ranking was tuned and measured: [keyword tuning](../../research/keyword-
 - `keyword.documents`: title, abstract or description, and subject labels (MeSH for PubMed);
 - `keyword.full_texts`: the [keywords](#keywords) of the downloaded [full text](#full-texts), for English texts.
 
-Besides it, only the [transcription job](#speech-to-text) writes the schema: the keywords of the audio it reads, and its own row in `keyword.transcription`. Deleting a document deletes its index rows.
+Deleting a document deletes its index rows.
 
 **Query.** The latest event up to `as_of` is the focus, older events are context ([MCP interface](../user/mcp-interface.md#match_journey-input)). From each event the matcher takes the label, the text parameters except the participants of a tumor board, and the names of `true` flags (`bone_mets` → bone metastases). [`german-terms.json`](../../matcher/algorithms/keyword/data/german-terms.json) makes English search terms of them:
 
@@ -69,11 +69,11 @@ Both metadata and full-text indexing skip documents whose `extra.metadata_langua
 
 Check a run on the Index screen of the [debug UI](../../debug/crawler/README.md), or with `SELECT status, detail, count(*) FROM keyword.full_texts GROUP BY 1, 2 ORDER BY 3 DESC`.
 
-**Licences.** This approach reads full texts under any licence, also "all rights reserved": the project is non-profit and keeps keywords only, also of the audio it transcribes. Other approaches decide for themselves ([licences](sources.md#licences)).
+**Licences.** This approach reads full texts under any licence, also "all rights reserved": the project is non-profit and keeps keywords only; the transcript of an audio file is kept only until every index has read it. Other approaches decide for themselves ([licences](sources.md#licences)).
 
 ### Speech-to-text
 
-The indexer does not read podcast audio; it skips an episode without a transcript as `audio, and speech-to-text is off`. The transcription job ([`matcher/transcriber`](../../matcher/transcriber/src/main.ts), `make transcribe`) reads these episodes instead, newest first, until it is stopped; `make index` and the crawls never wait for it. It downloads each audio file into memory, transcribes it offline with Whisper ([`scripts/transcribe.py`](../../scripts/transcribe.py), model from `WHISPER_MODEL`) and writes the keywords to `keyword.full_texts`, like a downloaded text. How many files it reads at once is set on the Index screen of the [debug UI](../../debug/crawler/README.md), also while it runs (none at first), or with `make transcribe WORKERS=2`; `keyword.transcription` holds that number and the job's last report. M4A and MP4 audio is not read. Model choice: [Whisper models](../../research/sources/podcasts.md#whisper-models); on the VM the job runs as a service ([transcription](../build-deploy/deployment.md#transcription)).
+The indexer reads podcast audio as its transcript. An episode without a transcript file waits as `audio, and speech-to-text is off` until the transcription job ([`matcher/transcriber`](../../matcher/transcriber/src/main.ts), `make transcribe`) has read its audio: newest first, if the episode's metadata is English or of unknown language, until it is stopped; `make index` and the crawls never wait for it. The job downloads each audio file into memory, transcribes it offline with Whisper ([`scripts/transcribe.py`](../../scripts/transcribe.py), model from `WHISPER_MODEL`) and stores the text in the table `transcripts`. The next `make index` reads it like a downloaded text; once every index has read it, the text is dropped, and the keywords stay as long as the episode keeps its audio file. How many files it reads at once is set on the Index screen of the [debug UI](../../debug/crawler/README.md), also while it runs (none at first), or with `make transcribe WORKERS=2`; the table `transcription` holds that number and the job's last report. M4A and MP4 audio is not read. Model choice: [Whisper models](../../research/sources/podcasts.md#whisper-models); on the VM the job runs as a service ([transcription](../build-deploy/deployment.md#transcription)).
 
 ## Keywords
 
@@ -115,7 +115,7 @@ Full texts keep their medical words, even those named once; numbers and basic wo
 **Downloader and extractor** ([`@matcher/download`](../../matcher/download/src/))
 
 - **Most papers have no full text.** A PubMed paper needs a PMCID or an open-access PDF whose host allows the download ([measured coverage](../../research/sources/README.md)).
-- **No video; audio only with speech-to-text.** YouTube gives captions only to a video's owner. Podcast audio is read only by `make transcribe` ([speech-to-text](#speech-to-text)); until it has read an episode without a transcript, that episode has metadata only.
+- **No video; audio only with speech-to-text.** YouTube gives captions only to a video's owner. Podcast audio is read only by `make transcribe` ([speech-to-text](#speech-to-text)); until it has read an episode without a transcript and the next `make index` ran, that episode has metadata only.
 - **Text files only:** PDF, XML, HTML, plain text and transcripts. Not read: Word and PowerPoint files, images, archives, podcast show notes and scanned PDFs (no OCR).
 - **One file per document:** the first of up to three that gives text, at most 50 MB.
 - **English only.** Other texts keep their metadata only, and the references cut needs an English heading.
