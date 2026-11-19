@@ -12,7 +12,7 @@ Run these commands from the repository root. You need the tools listed under [Pr
 | `make db` | Starts the [database](database.md) and applies `db/init/`; needs the root `.env` |
 | `make seed` | Runs `make db`, then fills the database with a sample crawl of every source, in about 6 minutes ([`scripts/seed.py`](../scripts/seed.py)) |
 | `make index` | Builds, then updates the indexes of all approaches, e.g. the [keyword index](keyword-matching.md) |
-| `WHISPER_MODEL=tiny-q5_1 make transcribe` | Builds, then reads podcast audio that has no transcript with [speech-to-text](sources/podcasts.md#indexing), for the keyword index, until you stop it. The Index screen of the [debug UI](../debug/crawler/README.md) sets how many files it reads at once: none at first |
+| `WHISPER_MODEL=tiny-q5_1 make transcribe` | Builds, then runs the [transcription job](sources/podcasts.md#indexing) until you stop it: speech-to-text for podcast audio that has no transcript, for the keyword index |
 | `make graph PATIENT=Patient-5` | Builds the [patient graph](mcp-interface.md#patient-graph) of one generated patient and writes it to `patientdata/Patient-5/graph.json` ([`scripts/patient_graph.py`](../scripts/patient_graph.py)); the only command that needs a credential, `GEMINI_API_KEY` |
 
 Make only calls the `uv` and `pnpm` commands from the [README](../README.md#development-setup), so you can still run them directly.
