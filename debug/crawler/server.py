@@ -4,7 +4,8 @@ Start it from the repository root with `make debug` (see debug/crawler/README.md
 crawler's uv environment and only uses the crawler's public Python API (`run_requests`
 with its factory and sleep hooks, `crawler.store` for `--store`), asyncpg and the standard
 library, so the crawler needs nothing extra for it. The database view only reads, except when
-the user empties tables and types the database name to confirm.
+the user empties tables and types the database name to confirm, and when the Index screen sets
+how many audio files the transcription job reads at once.
 
 The matcher is TypeScript, so its logic stays there: the Index screen starts the indexer job
 (`matcher/indexer`) as a child process and reads its tables, and the Matcher screen asks
@@ -1399,6 +1400,111 @@ async def journey_terms(connection: Any) -> dict[str, Any]:
     return result
 
 
+# ── Transcription job: its setting, and what it reports (keyword.transcription) ──
+
+NO_SPEECH_TO_TEXT = "audio, and speech-to-text is off"
+"""Why the indexer skipped a document whose audio the job reads (@matcher/download)."""
+# The rows that wait for the job: `WAITING` in matcher/algorithms/keyword/src/transcription.ts.
+# Keep the two in step; the job itself does not use this copy.
+WAITING_AUDIO = f"""
+FROM keyword.full_texts AS f JOIN documents AS d ON d.id = f.document_id
+WHERE f.status = 'skipped' AND f.detail = '{NO_SPEECH_TO_TEXT}'
+  AND f.document_changed_at = date_trunc('milliseconds', d.changed_at) AND {NOT_EXPIRED}
+  AND (jsonb_typeof(d.extra -> 'metadata_language') = 'string'
+       AND d.extra ->> 'metadata_language' <> ''
+       AND d.extra ->> 'metadata_language' !~* '^en(-|$)') IS NOT TRUE
+"""
+JOB_REPORTS = 10
+"""Seconds after its last report that the job counts as running; it reports every 2 s."""
+TRANSCRIBE_UNIT = "matcher-transcribe.service"
+UNIT_STATE: dict[str, Any] = {"at": 0.0, "state": None}
+UNIT_LOCK = threading.Lock()
+
+
+def transcribe_unit() -> str | None:
+    """The state of the job's systemd unit, as on the VM; None where there is none."""
+    with UNIT_LOCK:
+        if time.monotonic() - UNIT_STATE["at"] >= INFO_TTL or not UNIT_STATE["at"]:
+            unit = systemd_units([TRANSCRIBE_UNIT]).get(TRANSCRIBE_UNIT)
+            UNIT_STATE.update(at=time.monotonic(), state=unit and unit.get("ActiveState"))
+        return UNIT_STATE["state"]  # type: ignore[no-any-return]
+
+
+def default_max_workers() -> int:
+    """The most files a job on this machine reads at once, until a job reports its own.
+
+    The rule of matcher/transcriber/src/main.ts: four threads per file.
+    """
+    cpus = os.cpu_count() or 1
+    return max(1, cpus // min(4, cpus))
+
+
+async def transcription_overview(connection: Any) -> dict[str, Any]:
+    """The setting, what the job reported last, and how much audio waits or is read."""
+    overview: dict[str, Any] = {
+        "exists": False,
+        "workers": 0,
+        "running": False,
+        "state": None,
+        "reported_at": None,
+        "max_workers": default_max_workers(),
+        "cpus": os.cpu_count(),
+        "unit": transcribe_unit(),
+        "waiting_detail": NO_SPEECH_TO_TEXT,
+        "waiting": None,
+        "read": [],
+    }
+    if not await has_keyword_index(connection):
+        return overview
+    [overview["waiting"]] = await fetch_json(
+        connection,
+        f"""SELECT count(*) AS documents, coalesce(sum(d.duration_seconds), 0) AS seconds,
+                   count(*) FILTER (WHERE d.duration_seconds IS NULL) AS unknown
+            {WAITING_AUDIO}""",
+    )
+    # What became of the audio read so far, whichever run read it.
+    overview["read"] = await fetch_json(
+        connection,
+        """SELECT f.status, count(*) AS documents, coalesce(sum(d.duration_seconds), 0) AS seconds
+           FROM keyword.full_texts AS f JOIN documents AS d ON d.id = f.document_id
+           WHERE f.media_type ILIKE 'audio/%' GROUP BY 1 ORDER BY 1""",
+    )
+    if not await connection.fetchval("SELECT to_regclass('keyword.transcription') IS NOT NULL"):
+        return overview
+    overview["exists"] = True
+    rows = await fetch_json(
+        connection,
+        f"""SELECT workers, state, reported_at,
+                   coalesce(reported_at > now() - interval '{JOB_REPORTS} seconds', false)
+                       AS running
+            FROM keyword.transcription""",
+    )
+    if rows:
+        overview.update(rows[0])
+        reported = (overview["state"] or {}).get("max_workers")
+        overview["max_workers"] = reported or overview["max_workers"]
+    return overview
+
+
+async def set_transcription_workers(connection: Any, workers: Any) -> dict[str, Any]:
+    """Sets how many audio files the job reads at once; the running job follows within seconds."""
+    overview = await transcription_overview(connection)
+    if not overview["exists"]:
+        raise ValueError(
+            "This database has no keyword.transcription table yet: run make index or"
+            " make transcribe once"
+        )
+    most = overview["max_workers"]
+    if isinstance(workers, bool) or not isinstance(workers, int) or not 0 <= workers <= most:
+        raise ValueError(f"workers must be a whole number from 0 to {most}")
+    await connection.execute(
+        "INSERT INTO keyword.transcription (workers) VALUES ($1)"
+        " ON CONFLICT (only_row) DO UPDATE SET workers = EXCLUDED.workers",
+        workers,
+    )
+    return await transcription_overview(connection)
+
+
 def string_list(body: dict[str, Any], key: str, limit: int) -> list[str]:
     values = body.get(key)
     if not isinstance(values, list) or not all(isinstance(value, str) for value in values):
@@ -1803,7 +1909,7 @@ def schedule() -> dict[str, Any]:
     units = systemd_units(
         [f"{job['id']}.timer" for job in jobs]
         + [job["unit"] for job in jobs]
-        + ["matcher-mcp.service"]
+        + ["matcher-mcp.service", TRANSCRIBE_UNIT]
     )
     now = datetime.now(UTC)
     for job in jobs:
@@ -1820,11 +1926,12 @@ def schedule() -> dict[str, Any]:
             job["result"] = service.get("Result")
             # a oneshot service is "activating" while it runs
             job["running"] = service.get("ActiveState") in ("active", "activating", "reloading")
-    mcp = units.get("matcher-mcp.service")
+    mcp, transcribe = units.get("matcher-mcp.service"), units.get(TRANSCRIBE_UNIT)
     return {
         "live": any(job["live"] for job in jobs),
         "jobs": jobs,
         "mcp_service": None if mcp is None else mcp.get("ActiveState"),
+        "transcribe_service": None if transcribe is None else transcribe.get("ActiveState"),
     }
 
 
@@ -1871,6 +1978,15 @@ async def database_facts(connection: Any) -> dict[str, Any]:
             "SELECT max(fetched_at) FROM keyword.full_texts WHERE status = 'indexed'"
         )
         facts["indexed"] = last.isoformat() if last else None
+    facts["transcription"] = None
+    with contextlib.suppress(asyncpg.PostgresError):
+        job = await connection.fetchrow(
+            f"""SELECT workers AS wanted, coalesce((state ->> 'workers')::int, 0) AS workers,
+                       coalesce(reported_at > now() - interval '{JOB_REPORTS} seconds', false)
+                           AS running
+                FROM keyword.transcription"""
+        )
+        facts["transcription"] = dict(job) if job else None
     return facts
 
 
@@ -2138,6 +2254,8 @@ class Handler(BaseHTTPRequestHandler):
             self.send_db(lambda connection: index_vocabulary(connection, params))
         elif path == "/api/index/journey-terms":
             self.send_db(journey_terms)
+        elif path == "/api/index/transcription":
+            self.send_db(transcription_overview)
         else:
             self.send_json({"error": "not found"}, 404)
 
@@ -2224,7 +2342,13 @@ class Handler(BaseHTTPRequestHandler):
             self.send_result(lambda: start_indexer().summary())
         elif path == "/api/index/cancel":
             self.send_result(stop_indexer)
-        elif path in ("/api/index/terms", "/api/db/titles", "/api/match", "/api/match/source"):
+        elif path in (
+            "/api/index/terms",
+            "/api/index/transcription",
+            "/api/db/titles",
+            "/api/match",
+            "/api/match/source",
+        ):
             try:
                 body = self.read_json()
             except json.JSONDecodeError:
@@ -2232,6 +2356,11 @@ class Handler(BaseHTTPRequestHandler):
                 return
             if path == "/api/match":
                 self.send_result(lambda: match(body))
+            elif path == "/api/index/transcription":
+                self.send_db(
+                    lambda connection: set_transcription_workers(connection, body.get("workers")),
+                    write=True,
+                )
             elif path == "/api/match/source":
                 self.send_result(lambda: source(body))
             elif path == "/api/db/titles":

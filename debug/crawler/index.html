@@ -121,6 +121,9 @@ body.controls-hidden .layout > .side { display: none; }
 .seg button { border: 0; border-radius: 6px; background: transparent; padding: 5px 4px; cursor: pointer; color: var(--muted); }
 .seg button:hover { color: var(--text); }
 .seg button.active { background: var(--raised); color: var(--text); box-shadow: 0 0 0 1px var(--line), var(--shadow); }
+.seg button:disabled { opacity: .45; cursor: default; }
+/* One button per count: a machine with many cores gets several rows. */
+#tx-workers { grid-auto-flow: row; grid-template-columns: repeat(auto-fit, minmax(40px, 1fr)); }
 input[type=text], input[type=number], input[type=date], select {
   width: 100%; padding: 6px 8px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--panel);
 }
@@ -304,6 +307,7 @@ td.found { min-width: 190px; }
 .db-conn b::before { content: "●"; margin-right: 6px; color: var(--good); }
 .db-conn.down b::before { color: var(--critical); }
 .db-conn.warn b::before { color: var(--pending); }
+.db-conn.off b::before { color: var(--dropped); }
 .db-conn small { color: var(--muted); word-break: break-word; }
 .db-conn .hint { color: var(--warn); font-size: 12px; }
 .db-tables { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 2px; }
@@ -887,6 +891,16 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
     <code class="cmd" title="The same run in the terminal">make index</code>
     <div class="error" id="ix-error"></div>
     <div class="side-head">
+      <h2>Transcription <i class="info" tabindex="0" data-tip="Speech-to-text for audio that has no transcript, mostly podcast episodes. The indexer skips them (audio, and speech-to-text is off); the transcription job reads them, newest first, and stores their keywords. The job runs on its own: as a service on the VM, with make transcribe elsewhere. Here you set how many files it reads at once, also while it runs: it follows within seconds. With fewer or Off, the files in work are read to their end and no new one starts. On the VM the job only gets processor time that nothing else wants.">i</i></h2>
+    </div>
+    <div class="db-conn" id="tx-state"><b>Loading …</b></div>
+    <div class="field">
+      <span>Audio files read at once</span>
+      <div class="seg" id="tx-workers" role="group" aria-label="Audio files read at once"></div>
+    </div>
+    <small class="muted" id="tx-note" style="margin-top:-8px"></small>
+    <div class="error" id="tx-error"></div>
+    <div class="side-head">
       <h2>Next run downloads <i class="info" tabindex="0" data-tip="The full texts the next run reads, by the host of the file it tries first, and how long that host takes at its pace: arxiv.org one request every 15 s, zenodo.org 1 s, the PMC bucket 0.1 s, others 3 s. A rough estimate: hosts are read in parallel, and second files and retries add to it.">i</i></h2>
     </div>
     <ul class="db-tables" id="ix-hosts"></ul>
@@ -896,12 +910,14 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
     <div class="stats" id="ix-stats"></div>
     <nav class="tabs" id="ix-tabs">
       <button data-ixtab="coverage" class="active">Coverage</button>
+      <button data-ixtab="transcription" title="The job that reads audio without a transcript, and its workers">Transcription <span class="badge" id="tx-count">0</span></button>
       <button data-ixtab="log">Indexer log</button>
       <button data-ixtab="vocabulary">Vocabulary</button>
       <button data-ixtab="terms">Journey terms</button>
     </nav>
     <div class="content">
       <section class="ixtab active" id="ixtab-coverage"><div class="panels" id="ix-coverage"></div></section>
+      <section class="ixtab" id="ixtab-transcription"><div class="panels" id="tx-panels"></div></section>
       <section class="ixtab" id="ixtab-log">
         <div class="log-tools"><label><input type="checkbox" id="ix-follow" checked> Follow</label><span id="ix-run"></span></div>
         <div class="log" id="ix-log"><div class="empty">No indexer run since this server started. Use Start indexing in the controls.</div></div>
@@ -2677,7 +2693,7 @@ function showScreen(screen) {
   }
   for (const [name, view] of Object.entries(SCREENS)) $(view).hidden = name !== screen;
   if (screen === "db") { dbSwitchTab(db.tab, false); dbRefresh(); }
-  else if (screen === "index") { ixSwitchTab(ix.tab); ixRefresh(); }
+  else if (screen === "index") { ixSwitchTab(ix.tab); ixRefresh(); txRefresh(); }
   else if (screen === "match") mtShow();
   else if (screen === "info") infoShow();
   else switchTab(state.tab);
@@ -2855,7 +2871,8 @@ function reasonsPanel() {
   const reasons = ix.overview.reasons.filter((reason) => reason.status !== "indexed");
   const body = reasons.length
     ? barList(reasons.map((reason) => ({
-      name: h("span", {}, fullTextPill(reason.status), ` ${reason.detail || "no reason given"}`),
+      name: h("span", {}, fullTextPill(reason.status), ` ${reason.detail || "no reason given"}`,
+        reason.detail === tx.data?.waiting_detail ? h("small", { class: "muted" }, " · the transcription job reads these") : null),
       value: reason.documents,
       title: `${reason.detail || reason.status}: show these documents`,
       onclick: () => dbShowDocuments({ "db-fulltext": reason.status }, reason.detail),
@@ -2892,7 +2909,7 @@ function formatsPanel() {
 function renderIxCoverage() {
   if (!ix.overview) return;
   // The view refreshes every 5 s: build it again only when something changed.
-  const snapshot = JSON.stringify([ix.by, ix.overview.exists, ix.overview.coverage, ix.overview.reasons, ix.overview.words, ix.overview.formats]);
+  const snapshot = JSON.stringify([ix.by, ix.overview.exists, ix.overview.coverage, ix.overview.reasons, ix.overview.words, ix.overview.formats, tx.data?.waiting_detail]);
   if (snapshot === ix.rendered) return;
   ix.rendered = snapshot;
   const parts = [coveragePanel()];
@@ -3009,6 +3026,169 @@ async function ixLoadTerms() {
   }
 }
 
+// ── Transcription: the job that reads audio without a transcript, and its workers ──
+// The job runs on its own: a systemd unit on the VM, make transcribe elsewhere. This page sets
+// how many files it reads at once and shows what it reports (keyword.transcription).
+const tx = { data: null, error: null, loading: false, controls: "" };
+const fmtLength = (seconds) => seconds == null ? "–" : seconds < 3600 ? `${Math.max(1, Math.round(seconds / 60))} min`
+  : `${Math.floor(seconds / 3600)} h ${Math.round((seconds % 3600) / 60)} min`;
+// Much audio in whole hours, little to the minute.
+const fmtAudio = (seconds) => seconds >= 36000 ? `${fmtCount(Math.round(seconds / 3600))} h` : seconds ? fmtLength(seconds) : "0";
+
+// What the job does now; a job that stopped reporting does nothing.
+function txNow() {
+  const data = tx.data, job = data?.running ? data.state : null;
+  return { job, running: Boolean(job), wanted: Math.min(data?.workers ?? 0, data?.max_workers ?? 0), active: job?.workers ?? 0, reading: job?.reading ?? [] };
+}
+
+async function txRefresh() {
+  if (tx.loading) return;
+  tx.loading = true;
+  try {
+    tx.data = await api("/api/index/transcription");
+    tx.error = null;
+  } catch (error) {
+    tx.data = null;
+    tx.error = error.message;
+  } finally {
+    tx.loading = false;
+  }
+  renderTx();
+}
+
+async function txSetWorkers(count) {
+  $("#tx-error").textContent = "";
+  try {
+    tx.data = await api("/api/index/transcription", { method: "POST", body: JSON.stringify({ workers: count }) });
+    tx.error = null;
+    renderTx();
+    // The job follows within seconds: look again sooner than the next refresh.
+    setTimeout(txRefresh, 1200);
+  } catch (error) {
+    $("#tx-error").textContent = error.message;
+  }
+}
+
+const txStartCommand = () => tx.data?.unit ? "sudo systemctl start matcher-transcribe" : "WHISPER_MODEL=tiny-q5_1 make transcribe";
+
+// Why no file is in work, or null while files are read.
+function txIdleReason() {
+  const data = tx.data, { job, running, wanted, active } = txNow();
+  if (!data.exists) return "The job has no table in this database yet: run make index or make transcribe once.";
+  if (!running) return `No transcription job reports${wanted ? `, though ${plural(wanted, "file")} at once ${wanted === 1 ? "is" : "are"} set` : ""}. Start it: ${txStartCommand()}`;
+  if (job.error) return job.error;
+  if (job.preparing) return "Setting up speech-to-text: the first run installs its packages and downloads the model.";
+  if (active) return null;
+  if (!wanted) return "The job runs and waits: set a number of files in the controls.";
+  return data.waiting?.documents ? "The job starts within seconds." : "No audio waits: every file is read.";
+}
+
+function renderTxSide() {
+  const box = $("#tx-state"), data = tx.data;
+  if (!data) {
+    box.className = `db-conn${tx.error ? " down" : ""}`;
+    box.replaceChildren(h("b", {}, tx.error ? "Not loaded" : "Loading …"), tx.error ? h("small", {}, tx.error) : null);
+    $("#tx-workers").replaceChildren();
+    $("#tx-note").textContent = "";
+    tx.controls = "";
+    return;
+  }
+  const { job, running, wanted, active, reading } = txNow();
+  const reason = txIdleReason();
+  const stopped = !running && wanted > 0;
+  box.className = `db-conn${stopped ? " down" : active ? "" : wanted && running ? " warn" : " off"}`;
+  box.replaceChildren(...[
+    h("b", {}, !data.exists ? "Not set up" : stopped ? "Not running" : active ? `Reading ${plural(active, "file")} at once` : wanted ? "Nothing in work" : "Off"),
+    active > wanted ? h("small", {}, `${wanted} set: ${plural(active - wanted, "worker")} ${active - wanted === 1 ? "ends" : "end"} after ${active - wanted === 1 ? "its" : "their"} file.`) : null,
+    active && active < wanted && !job.error ? h("small", {}, `${wanted} set: ${(data.waiting?.documents ?? 0) > reading.length ? "more start within seconds." : "no more audio waits."}`) : null,
+    reason ? h(job?.error ? "span" : "small", { class: job?.error ? "hint" : null }, reason) : null,
+    data.unit ? h("small", {}, `systemd unit: ${data.unit}`) : null,
+  ].filter(Boolean));
+  // The buttons are built again only when they change: a click must not hit a button that goes.
+  const controls = JSON.stringify([data.exists, data.max_workers, wanted]);
+  if (controls !== tx.controls) {
+    tx.controls = controls;
+    $("#tx-workers").replaceChildren(...Array.from({ length: data.max_workers + 1 }, (_, count) => h("button", {
+      type: "button", class: count === wanted ? "active" : null, disabled: !data.exists, "aria-pressed": String(count === wanted),
+      title: count ? `Read ${plural(count, "file")} at once` : "Read no new file; the files in work are read to their end",
+      onclick: () => txSetWorkers(count),
+    }, count ? String(count) : "Off")));
+  }
+  const state = data.state, cores = data.cpus;
+  $("#tx-note").textContent = !state ? "Each file takes up to 4 threads."
+    : `${wanted ? `${wanted} × ${state.threads} threads: ${wanted * state.threads} of ${cores} cores` : `${state.threads} threads per file, ${data.max_workers} files fill the ${cores} cores`} · model ${state.model}`;
+}
+
+function renderTxPanels() {
+  const data = tx.data, box = $("#tx-panels");
+  if (!data) { box.replaceChildren(tx.error ? h("div", { class: "notice", style: "margin:0" }, tx.error) : h("div", { class: "muted" }, "Loading …")); return; }
+  const { job, running, wanted, active, reading } = txNow();
+  const reason = txIdleReason();
+  const workers = h("div", { class: "panel" },
+    h("h3", {}, "Workers", h("small", {}, !running ? "no job reports" : active === wanted ? `${active} of ${data.max_workers} possible on this machine`
+      : active < wanted ? `${active} running, ${wanted} set` : `${active} running, ${wanted} set: ${plural(active - wanted, "worker")} ${active - wanted === 1 ? "ends" : "end"} after ${active - wanted === 1 ? "its" : "their"} file`)),
+    reading.length ? h("table", {},
+      h("thead", {}, h("tr", {}, h("th", {}, "Audio"), h("th", { class: "num" }, "Length"), h("th", {}, "Step"), h("th", {}, "For"))),
+      h("tbody", {}, ...reading.map((item) => h("tr", {},
+        h("td", {}, item.title, h("div", { class: "small muted" }, [item.venue, item.id].filter(Boolean).join(" · "))),
+        h("td", { class: "num" }, fmtLength(item.duration_seconds)),
+        h("td", {}, h("span", { class: "pill plain" }, item.step)),
+        h("td", { class: "when" }, fmtSpan(Date.now() - new Date(item.since)))))))
+      : h("div", { class: "panel-body muted" }, reason || "Taking the next files."));
+
+  // Files without a known length count as the average one. The files in work still wait in
+  // the database: here they count as taken.
+  const waiting = data.waiting || { documents: 0, seconds: 0, unknown: 0 };
+  const known = waiting.documents - waiting.unknown;
+  const average = known ? waiting.seconds / known : 0;
+  const files = Math.max(0, waiting.documents - reading.length);
+  const left = Math.max(0, average * waiting.documents - reading.reduce((sum, item) => sum + (item.duration_seconds ?? average), 0));
+  const speed = data.state?.speed, pace = wanted || active || 1;
+  const read = Object.fromEntries((data.read || []).map((row) => [row.status, row.documents]));
+  const total = (read.indexed || 0) + (read.skipped || 0) + (read.failed || 0);
+  const audio = h("div", { class: "panel" },
+    h("h3", {}, "Audio without a transcript", h("small", {}, "the files this job reads, newest first; skipped by the indexer as “audio, and speech-to-text is off”")),
+    h("div", { class: "stats overview", style: "border:0" },
+      ovSection("Waiting", h("b", { class: "ov-total" }, fmtCount(files)), ovList([
+        ovFigure(fmtAudio(left), "of audio", { cls: left ? "" : "zero", title: waiting.unknown ? `${plural(waiting.unknown, "file")} without a known length ${waiting.unknown === 1 ? "counts" : "count"} as the average` : null }),
+      ], true), files ? h("button", { type: "button", class: "link-button", style: "margin-top:6px", onclick: () => dbShowDocuments({ "db-fulltext": "skipped" }, data.waiting_detail) }, "Show these documents") : null),
+      ovSection("Read from audio so far", ovList([
+        ovShare("Indexed", read.indexed, total, { unit: "files", color: "--good", tip: "Its keywords are in the index" }),
+        ovShare("Skipped", read.skipped, total, { unit: "files", color: "--dropped", tip: "Not English, no speech, or larger than 150 MB" }),
+        ovShare("Failed", read.failed, total, { unit: "files", color: "--critical", tip: "The download or speech-to-text failed; the next index run gives it back to this job" }),
+      ])),
+      ovSection("Pace", ovList([
+        ovFigure(speed ? `${speed.toFixed(1)} ×` : "–", "real time per worker", { cls: speed ? "" : "zero", title: "Seconds of audio one worker reads in a second, download included, over the 30 files read last" }),
+        ovFigure(speed && left ? fmtSpan((left / (speed * pace)) * 1000) : "–", `left with ${plural(pace, "worker")}`, { cls: speed && left ? "" : "zero", title: "The waiting audio at this pace; a rough estimate" }),
+      ], true))));
+
+  const pill = { indexed: "ok", skipped: "plain", failed: "failed", changed: "none" };
+  const recent = data.state?.recent || [];
+  const last = recent.length ? h("div", { class: "panel" },
+    h("h3", {}, "Read last", h("small", {}, running ? "by the running job" : "by the job that ran last")),
+    h("table", {},
+      h("thead", {}, h("tr", {}, h("th", {}, "Finished"), h("th", {}, "Audio"), h("th", {}, "Result"), h("th", { class: "num" }, "Length"), h("th", { class: "num" }, "Took"))),
+      h("tbody", {}, ...recent.map((item) => h("tr", {},
+        h("td", { class: "when", title: fmtDateTime(item.at) }, fmtAgo(item.at)),
+        h("td", {}, item.title, h("div", { class: "small muted mono" }, item.id)),
+        h("td", {}, h("span", { class: `pill ${pill[item.status] || "plain"}`, title: item.status === "changed" ? "The indexer wrote the row meanwhile: the document changed. What was read is dropped" : null }, item.status),
+          item.detail ? h("div", { class: "small muted" }, item.detail) : null),
+        h("td", { class: "num" }, fmtLength(item.duration_seconds)),
+        h("td", { class: "num" }, fmtSpan(item.seconds * 1000))))))) : null;
+  box.replaceChildren(...[workers, audio, last].filter(Boolean));
+}
+
+function renderTx() {
+  renderTxSide();
+  renderTxPanels();
+  const { active, wanted, running } = txNow();
+  const badge = $("#tx-count");
+  badge.textContent = active;
+  badge.classList.toggle("bad", !running && wanted > 0);
+  // The reasons of the coverage name the rows this job reads, once they are known.
+  renderIxCoverage();
+}
+
 function ixSwitchTab(tab) {
   ix.tab = tab;
   history.replaceState(null, "", tab === "coverage" ? "#index" : `#index-${tab}`);
@@ -3020,13 +3200,15 @@ function ixSwitchTab(tab) {
 }
 
 for (const button of document.querySelectorAll("#ix-tabs button")) button.addEventListener("click", () => ixSwitchTab(button.dataset.ixtab));
-$("#ix-refresh").addEventListener("click", () => { ix.termsLoaded = false; if (ix.tab === "vocabulary") ixLoadWords(); if (ix.tab === "terms") ixLoadTerms(); ixRefresh(); });
+$("#ix-refresh").addEventListener("click", () => { ix.termsLoaded = false; if (ix.tab === "vocabulary") ixLoadWords(); if (ix.tab === "terms") ixLoadTerms(); ixRefresh(); txRefresh(); });
 $("#ix-start").addEventListener("click", () => ixCommand("/api/index/run"));
 $("#ix-stop").addEventListener("click", () => ixCommand("/api/index/cancel"));
 let ixTyping = 0;
 $("#ix-word").addEventListener("input", () => { clearTimeout(ixTyping); ixTyping = setTimeout(ixLoadWords, 300); });
 $("#ix-words-limit").addEventListener("change", ixLoadWords);
 setInterval(() => { if (state.screen === "index" && $("#ix-auto").checked && document.visibilityState === "visible") ixRefresh(); }, 5000);
+// The job follows a new number within seconds: its state is asked for more often than the index.
+setInterval(() => { if (state.screen === "index" && $("#ix-auto").checked && document.visibilityState === "visible") txRefresh(); }, 2500);
 
 // ── Info screen: the machine, the timers, what runs, the topic files ──────────
 const info = { data: null, error: null, tab: "schedule", loading: false, topic: null, topics: new Map(), docCounts: null, countsAsked: false };
@@ -3141,11 +3323,22 @@ function renderInfoStats() {
     ovSection(h("span", { title: "Runs started from this page, the timers of this machine, the MCP server and the database. A crawl or make index started in a terminal shows only as a process, under Running." }, "Running now"), ovList([
       ovFigure(runs.crawl ? "running" : "none", "crawler run", { cls: runs.crawl ? "on" : "zero", title: runs.crawl?.command ?? null, onclick: runs.crawl ? () => infoShowRun(runs.crawl.id) : null }),
       ovFigure(runs.index ? "running" : "none", "indexer", { cls: runs.index ? "on" : "zero", onclick: runs.index ? () => showScreen("index") : null }),
+      infoTranscription(data.database?.transcription),
       plan?.live ? ovFigure(timers.length ? fmtCount(timers.length) : "none", timers.length === 1 ? "timer job" : "timer jobs", { cls: timers.length ? "on" : "zero", title: timers.map((job) => job.label).join(", ") || null }) : null,
       ovFigure(data.mcp.running ? "up" : "down", "MCP server", { cls: data.mcp.running ? "on" : plan?.live ? "bad" : "zero", title: data.mcp.url }),
       ovFigure(data.database?.up ? "up" : "down", "database", { cls: data.database?.up ? "on" : "bad", title: data.database?.up ? data.database.target : data.database?.error ?? null }),
     ], true)),
   );
+}
+
+// The transcription job: a service of its own, set on the Index screen.
+function infoTranscription(job) {
+  const reading = job?.running && job.workers > 0, stopped = Boolean(job && !job.running && job.wanted > 0);
+  return ovFigure(reading ? plural(job.workers, "file") : stopped ? "down" : job?.running ? "off" : "none", "transcription", {
+    cls: reading ? "on" : stopped ? "bad" : "zero",
+    title: !job ? "No transcription job has run on this database" : `${plural(job.wanted, "file")} at once set on the Index screen; ${job.running ? `the job reads ${job.workers}` : "no job reports"}`,
+    onclick: () => { ix.tab = "transcription"; showScreen("index"); },
+  });
 }
 
 function infoResult(job) {
@@ -3223,6 +3416,8 @@ function renderInfoRunning() {
       : [h("span", { class: "muted" }, "No timer job runs right now.")])),
     panel("Services", null,
       line("MCP server", `${data.mcp.url} · ${data.mcp.running ? "up" : "down"}${data.schedule?.mcp_service ? ` · systemd ${data.schedule.mcp_service}` : ""}`),
+      line("Transcription job", `${database?.transcription?.running ? `reads ${plural(database.transcription.workers, "file")} at once, ${database.transcription.wanted} set` : "not running"}${data.schedule?.transcribe_service ? ` · systemd ${data.schedule.transcribe_service}` : ""}`,
+        show(() => { ix.tab = "transcription"; showScreen("index"); })),
       line("Database", database?.up ? `${database.target} · ${fmtSize(database.size)} · ${plural(database.connections, "session")}` : database?.error || "down")),
     panel("Docker containers", null, ...(Array.isArray(containers) ? (containers.length
       ? [h("table", {}, h("thead", {}, h("tr", {}, h("th", {}, "Container"), h("th", {}, "Status"))), h("tbody", {}, ...containers.map((item) => h("tr", {}, h("td", { class: "mono" }, item.name), h("td", { class: "small" }, item.status)))))]
@@ -3973,7 +4168,7 @@ async function init() {
     if (["runs", "schema"].includes(hash.slice(3))) db.tab = hash.slice(3);
     showScreen("db");
   } else if (hash === "index" || hash.startsWith("index-")) {
-    if (["log", "vocabulary", "terms"].includes(hash.slice(6))) ix.tab = hash.slice(6);
+    if (["transcription", "log", "vocabulary", "terms"].includes(hash.slice(6))) ix.tab = hash.slice(6);
     showScreen("index");
   } else if (hash === "match" || hash.startsWith("match-")) {
     if (["rankings", "answer", "client"].includes(hash.slice(6))) mt.tab = hash.slice(6);
