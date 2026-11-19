@@ -8,6 +8,7 @@ How to use the software.
 
 - [MCP interface](user/mcp-interface.md): connect, try it, the tools `match_journey` and `get_source`, errors
 - [Synthetic patients](../patientdata/patientdata.md): journeys and graphs to send for testing
+- [Patient graph tool](../tools/patient-graph/README.md): build the patient graph of a synthetic patient, the second input form of `match_journey`
 - [Debug UI](../debug/crawler/README.md): browse the database, the index and the matcher
 
 ## Design documentation

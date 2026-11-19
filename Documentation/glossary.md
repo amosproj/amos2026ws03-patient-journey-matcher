@@ -13,4 +13,4 @@
 | Approach | One way of matching, with its own index: keyword today; graph-based and AI-based are researched. The MCP parameter for it is called `algorithm`. |
 | Index | What an approach derives from the documents, such as BM25 term statistics; never the full text itself. |
 | MCP | Model Context Protocol: the protocol in which clients call the tools of the server. |
-| SS26 | The AMOS project for AIlixir in the summer semester 2026. Its code is in `backend/`. |
+| SS26 | The AMOS project for AIlixir in the summer semester 2026. Its graph steps are kept in [`tools/patient-graph/`](../tools/patient-graph/README.md). |

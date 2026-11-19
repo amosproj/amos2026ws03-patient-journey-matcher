@@ -1,10 +1,22 @@
 # SS26 reuse plan
 
-The plan of #13 (October 2026) for reusing the SS26 code, kept as written. Where it differs from the [architecture](../Documentation/design/architecture.md), the architecture is the decision: the matcher uses PostgreSQL with BM25 instead of AstraDB and Vertex AI ranking, and the SS26 document pipeline stays with AIlixir. Where the reused parts went: [`backend/`](../backend/README.md). Notes on the copy itself are at the [end](#notes-on-the-copy).
+The plan of #13 (October 2026) for reusing the SS26 code, kept as written. Where it differs from the [architecture](../Documentation/design/architecture.md), the architecture is the decision: the matcher uses PostgreSQL with BM25 instead of AstraDB and Vertex AI ranking, and the SS26 document pipeline stays with AIlixir. Where the reused parts went: [below](#where-the-reused-parts-went). Notes on the copy itself are at the [end](#notes-on-the-copy).
+
+## Where the reused parts went
+
+`backend/` held the copy of `88ea71a` until 2026-11-19. Only the graph steps are still used: they moved to [`tools/patient-graph/`](../tools/patient-graph/README.md), and the rest was removed.
+
+| SS26 code | Now |
+|---|---|
+| `scrapers/` for PubMed, arXiv (`Archive`) and YouTube (official API part), `BaseScraper` | Rewritten as [`crawler/src/crawler/sources/`](../crawler/src/crawler/sources/) (#27); PDF downloads, transcript scraping, chunking and embedding dropped |
+| `scrapers/key_words/*.csv`, `scrapers/topics.py` | Seed queries in [`crawler/topics/`](../crawler/topics/), one YAML file per disease area (#23) |
+| `api/chat_pipeline/paper_retriever.py` (`PaperReference`, `PaperRetrievalResult`) | The field names of the MCP results ([MCP interface](../Documentation/user/mcp-interface.md)) |
+| `workers/pipeline/graph/` (Graphiti builder, `medical_schema.py`), `workers/pipeline/llm/` (extractor), the Gemini clients | [`tools/patient-graph/`](../tools/patient-graph/README.md) (`make graph`); the types are the reference for the patient graph |
+| `api/`, the `workers/` document pipeline, `shared/` (Firestore, GCS, Pub/Sub) | Removed; the document pipeline stays with AIlixir |
 
 This plan is based on four selected sections of review notes that are not in this repository. The goal is an independent **Patient Journey Matcher** that retrieves relevant medical information from a patient's dated clinical history.
 
-Keep the reusable responsibilities and selected code below, adapting their boundaries for the new project. This document is a migration plan; it does not copy code or change infrastructure. Paths are relative to the SS26 repository; in this repository the copy is in `backend/`. Implementation details come from the notes' review of commit `88ea71a`; they have not been independently reverified here or tested against live services.
+Keep the reusable responsibilities and selected code below, adapting their boundaries for the new project. This document is a migration plan; it does not copy code or change infrastructure. Paths are relative to the SS26 repository; in this repository the copy was in `backend/`. Implementation details come from the notes' review of commit `88ea71a`; they have not been independently reverified here or tested against live services.
 
 # Patient-document processing
 

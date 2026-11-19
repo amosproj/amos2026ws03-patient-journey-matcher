@@ -58,7 +58,7 @@ Single checks: `uv run pytest`, `uv run mypy src` and `uv run ruff check .` in `
 
 ## Documentation
 
-- **User:** [MCP interface](Documentation/user/mcp-interface.md), [synthetic patients](patientdata/patientdata.md), [debug UI](debug/crawler/README.md)
+- **User:** [MCP interface](Documentation/user/mcp-interface.md), [synthetic patients](patientdata/patientdata.md), [patient graph tool](tools/patient-graph/README.md), [debug UI](debug/crawler/README.md)
 - **Design:** [software architecture](Documentation/design/architecture.md), [data sources](Documentation/design/sources.md), [storage](Documentation/design/storage.md), [keyword matching](Documentation/design/keyword-matching.md)
 - **Build and deploy:** [build, run and test](Documentation/build-deploy/build.md), [local database](Documentation/build-deploy/database.md), [deployment](Documentation/build-deploy/deployment.md)
 - **Research:** [the team's investigations](research/README.md)
@@ -74,9 +74,9 @@ Index of all pages and the [glossary](Documentation/glossary.md): [Documentation
 | `db/` | PostgreSQL image and schema |
 | `deploy/` | Setup and backup scripts of the VM ([deployment](Documentation/build-deploy/deployment.md)) |
 | `debug/crawler/` | [Debug UI](debug/crawler/README.md) for the crawler, the database, the index and the matcher |
-| `scripts/` | Sample crawl, coverage report, patient graphs, speech-to-text, SBOM |
+| `scripts/` | Sample crawl, coverage report, speech-to-text, SBOM |
 | `patientdata/` | [Synthetic patients](patientdata/patientdata.md) for development and tests |
-| `backend/` | Code copied from the SS26 project, used only by `make graph` ([README](backend/README.md)) |
+| `tools/patient-graph/` | Helper tool that builds patient graphs, the second matching input, from the synthetic patients; code from SS26 ([README](tools/patient-graph/README.md)) |
 | `Documentation/` | User, design, and build and deploy documentation |
 | `research/` | The team's investigations ([index](research/README.md)) |
 | `Deliverables/` | Sprint deliverables, frozen |

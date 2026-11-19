@@ -61,6 +61,6 @@ test-integration: build
 
 # Builds the graph of one generated patient with the SS26 graph steps and writes it to
 # patientdata/<patient>/graph.json, e.g. `make graph PATIENT=Patient-5`; needs GEMINI_API_KEY,
-# see scripts/patient_graph.py.
+# see tools/patient-graph/README.md.
 graph:
-	cd backend && uv run --locked --group graph python ../scripts/patient_graph.py $(PATIENT)
+	cd tools/patient-graph && uv run --locked python patient_graph.py $(PATIENT)

@@ -48,7 +48,7 @@ Only what the code uses today. Versions are pinned in `crawler/uv.lock` and `mat
 | | GitHub Actions | Checks on every pull request | service terms |
 | **Development tools** | MCP Inspector | Manual calls to the MCP server | MIT / Apache-2.0 |
 | | Debug UI (`debug/crawler/`) | Browse the database, the index and the matcher | MIT (this repository) |
-| | graphiti-core, Kuzu, Gemini (in `backend/`) | `make graph`: patient graphs from the synthetic documents | Apache-2.0, MIT, service terms |
+| | graphiti-core, Kuzu, Gemini (in `tools/patient-graph/`) | `make graph`: patient graphs from the synthetic documents | Apache-2.0, MIT, service terms |
 
 ## 4 Explanation of the diagrams and choices
 
@@ -74,7 +74,7 @@ Any MCP client can call the two tools. Today these are the MCP Inspector, the in
 - In the crawler, `cli` starts a run, `runner` drives it with one scraper per data source from `sources`, `links` follows the references of PubMed and arXiv papers, and `store` writes the results.
 - Matching approaches are plug-ins. Each package in `algorithms/` implements the `Indexer` and `Matcher` contracts of `core`; the programs know the approaches only through the list in `approaches`, so a new approach is one package and one list entry ([adding an approach](../../matcher/algorithms/README.md)). The list holds the [keyword approach](keyword-matching.md); graph and `ai_summary` will be added the same way, under the names the `algorithm` parameter already accepts. Their design follows the research on [graph-based](../../research/graph-based-matching.md) and [AI-based](../../research/ai-based-matching.md) matching.
 - `evaluation` imports no other package: it reads saved `match_journey` results and scores them against relevance judgments ([matching evaluation](../../research/matching-evaluation.md)).
-- `backend/` is code copied from SS26, the AMOS project for AIlixir in the summer semester 2026. It is not part of the product and not drawn; `make graph` uses it to build patient graphs.
+- [`tools/patient-graph/`](../../tools/patient-graph/README.md) builds patient graphs, the second input form, from the synthetic patients with the graph steps copied from SS26, the AMOS project for AIlixir in the summer semester 2026 (`make graph`). It is a helper tool, not part of the product, and not drawn.
 
 ### Choices
 

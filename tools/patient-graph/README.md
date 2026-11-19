@@ -1,0 +1,22 @@
+# Patient graph tool
+
+Helper tool that builds the patient graph of one synthetic patient, the second input form of `match_journey` next to the journey ([patient graph](../../Documentation/user/mcp-interface.md#patient-graph)). It is not part of the product and not checked in CI.
+
+```sh
+cp tools/patient-graph/.env.example tools/patient-graph/.env   # set GEMINI_API_KEY
+make graph PATIENT=Patient-5                                    # writes patientdata/Patient-5/graph.json
+```
+
+[`patient_graph.py`](patient_graph.py) runs the two graph steps of the SS26 pipeline on the PDFs of the patient, in the order of their event numbers: Gemini reads a PDF ([`workers/pipeline/llm/`](workers/pipeline/llm/)) and Graphiti adds it to the graph ([`workers/pipeline/graph/`](workers/pipeline/graph/)). Two things differ from SS26, so that it runs without a Google Cloud project: an API key from Google AI Studio instead of Vertex AI, and an embedded Kuzu database under `out/patient-graph/` instead of Neo4j. A free key allows only some documents per day; the run then stops, and the next run goes on with the next document. Model and pacing: [options](../../Documentation/build-deploy/build.md#options).
+
+## Origin
+
+`workers/` is copied from SS26, the AMOS project for AIlixir in the summer semester 2026: https://github.com/amosproj/amos2026ss03-ailixir-intelligence, commit `88ea71a`, paths as in its `Backend/workers/`. The files are unchanged; only those this tool imports are kept. [`medical_schema.py`](workers/pipeline/graph/medical_schema.py) defines the node and edge types of the patient graph. The rest of the SS26 code (API, document pipeline, Firestore, GCS, Pub/Sub, retrieval) is not kept; where its reused parts went: [SS26 reuse](../../research/ss26-reuse.md#where-the-reused-parts-went).
+
+Licence: MIT, Copyright (c) 2021 The AMOS Projects, the same as this repository ([`NOTICE`](../../NOTICE)).
+
+## Development
+
+Python 3.12 or newer and [uv](https://docs.astral.sh/uv/); `make graph` installs the locked dependencies. In this folder, `uv run pytest` checks that every copied module imports. Commit `uv.lock` with every dependency change.
+
+Its four direct dependencies: graphiti-core (Apache-2.0), google-genai (Apache-2.0), python-dotenv (BSD-3-Clause) and kuzu (MIT); none is copyleft. [`scripts/dependencies.py`](../../scripts/dependencies.py) lists only `crawler/` and `matcher/`, so add these four to the bill of materials by hand.

@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-BACKEND_ROOT = Path(__file__).resolve().parent.parent
+ROOT = Path(__file__).resolve().parent.parent
 
 
 def _modules(base: Path, package: str) -> list[str]:
@@ -18,11 +18,7 @@ def _modules(base: Path, package: str) -> list[str]:
     return names
 
 
-MODULES = [
-    *_modules(BACKEND_ROOT, "api"),
-    *_modules(BACKEND_ROOT, "workers"),
-    *_modules(BACKEND_ROOT, "shared"),
-]
+MODULES = _modules(ROOT, "workers")
 
 
 @pytest.mark.parametrize("module", MODULES)

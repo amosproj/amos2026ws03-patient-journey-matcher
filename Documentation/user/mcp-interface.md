@@ -204,7 +204,7 @@ The server does not store or log the journey. It also does not log the message o
 
 ## Patient graph
 
-The patient graph is what the SS26 pipeline builds from a patient's documents with Graphiti: one `Patient` node, nodes for findings such as diagnoses, procedures and lab tests, and edges that hold one fact each with the times `valid_at` and `invalid_at`. The node and edge types are defined in [`medical_schema.py`](../../backend/workers/pipeline/graph/medical_schema.py). The SS26 file export (`graph.cypher`) drops these times, so it cannot be the input; send the nodes and edges as JSON, as in a generated `graph.json` (`make graph`, see [build](../build-deploy/build.md#make-targets)).
+The patient graph is what the SS26 pipeline builds from a patient's documents with Graphiti: one `Patient` node, nodes for findings such as diagnoses, procedures and lab tests, and edges that hold one fact each with the times `valid_at` and `invalid_at`. The node and edge types are defined in [`medical_schema.py`](../../tools/patient-graph/workers/pipeline/graph/medical_schema.py); the [patient graph tool](../../tools/patient-graph/README.md) builds such a graph from the PDFs of a synthetic patient (`make graph`). The SS26 file export (`graph.cypher`) drops these times, so it cannot be the input; send the nodes and edges as JSON, as in a generated `graph.json` (`make graph`, see [build](../build-deploy/build.md#make-targets)).
 
 ### Reading a graph
 

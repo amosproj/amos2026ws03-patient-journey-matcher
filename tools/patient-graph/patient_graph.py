@@ -9,7 +9,7 @@ order of their event numbers (_e01, _e02, ...): Gemini reads a PDF
 without a Google Cloud project: an API key from Google AI Studio instead of Vertex AI,
 and an embedded Kuzu database under out/patient-graph/ instead of Neo4j.
 
-Needs GEMINI_API_KEY in the environment or in backend/.env. VERTEX_LLM_MODEL picks the
+Needs GEMINI_API_KEY in the environment or in tools/patient-graph/.env. VERTEX_LLM_MODEL picks the
 model and GEMINI_PACER_MIN_INTERVAL_S the pause between two calls of Graphiti's LLM,
 like in the pipeline.
 
@@ -25,14 +25,15 @@ import re
 import sys
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
-# The SS26 code imports itself as `workers...`, from backend/.
-sys.path.insert(0, str(ROOT / "backend"))
+HERE = Path(__file__).resolve().parent
+ROOT = HERE.parents[1]
+# The SS26 code imports itself as `workers...`, from this folder.
+sys.path.insert(0, str(HERE))
 
 from dotenv import load_dotenv  # noqa: E402
 
 # Before the SS26 imports: some of them read their settings while they are imported.
-load_dotenv(ROOT / "backend/.env")
+load_dotenv(HERE / ".env")
 
 from google import genai  # noqa: E402
 from graphiti_core import Graphiti  # noqa: E402
@@ -132,7 +133,7 @@ async def build(patient: str) -> None:
         sys.exit(f"No PDFs in patientdata/{patient}.")
     key = os.environ.get("GEMINI_API_KEY")
     if not key:
-        sys.exit("Set GEMINI_API_KEY in the environment or in backend/.env.")
+        sys.exit("Set GEMINI_API_KEY in the environment or in tools/patient-graph/.env.")
     # The extractor asks gemini_client for its client, which would log in to Vertex AI.
     # The API version v1 rejects the system instructions that the extractor sends.
     client = genai.Client(api_key=key, http_options={"api_version": "v1beta"})

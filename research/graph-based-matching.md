@@ -6,7 +6,7 @@
 
 ## 1. Input: Patient Journey Graph
 
-Based on [medical_schema.py](../backend/workers/pipeline/graph/medical_schema.py) and the graph builder.
+Based on [medical_schema.py](../tools/patient-graph/workers/pipeline/graph/medical_schema.py) and the graph builder.
 
 - **Node types:** `Patient`, `Diagnosis`, `Medication`, `LabTest`, `Procedure`, `Provider`, `PathologyResult`, `TumorMarker`, `TreatmentPlan`, `ImagingResult`, `Symptom`, `Allergy`, `VitalSigns`, `Referral`, `Appointment`.
 - **Edge types:** `HAS_DIAGNOSIS`, `UNDERWENT`, `PRESCRIBED`, `HAD_LAB_TEST`, `HAS_TUMOR_MARKER`, `HAS_PATHOLOGY`, `HAS_IMAGING`, `HAS_SYMPTOM`, `HAS_ALLERGY`, `HAS_VITAL_SIGNS`, `WAS_REFERRED`, `HAS_APPOINTMENT`, `MANAGED_AT`, `HAS_TREATMENT_PLAN`, `TREATED_BY`, `CONFIRMED_BY`, `INDICATES`, `SYMPTOM_OF`, `PERFORMED_BY`, `REFERRED_TO`, `RELATES_TO`.

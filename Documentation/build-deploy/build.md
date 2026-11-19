@@ -26,7 +26,7 @@ Run the commands from the repository root. Each `make` target runs the `uv`, `pn
 | `WHISPER_MODEL=tiny-q5_1 make transcribe` | Builds, then runs the [transcription job](../design/keyword-matching.md#speech-to-text) until you stop it: speech-to-text for podcast audio that has no transcript, for the keyword index |
 | `make start` | Builds, then starts the MCP server on `http://127.0.0.1:3000/mcp`; needs the root `.env` |
 | `make debug` | Starts the [debug UI](../../debug/crawler/README.md) for the crawler, the database, the index and the matcher on `http://127.0.0.1:8765` |
-| `make graph PATIENT=Patient-5` | Builds the [patient graph](../user/mcp-interface.md#patient-graph) of one synthetic patient and writes `patientdata/Patient-5/graph.json` ([`scripts/patient_graph.py`](../../scripts/patient_graph.py)); needs `GEMINI_API_KEY` |
+| `make graph PATIENT=Patient-5` | Builds the [patient graph](../user/mcp-interface.md#patient-graph) of one synthetic patient and writes `patientdata/Patient-5/graph.json` with the [patient graph tool](../../tools/patient-graph/README.md); needs `GEMINI_API_KEY` |
 
 ## Run the matcher locally
 
@@ -49,7 +49,7 @@ Then call it from a second terminal with the MCP Inspector: [MCP interface, try 
 | `make debug PORT=9000` | Starts the debug UI on another port |
 | `DATABASE_URL=… make index`, `TEST_DATABASE_URL=… make test` | Uses another database; a variable that is set wins over `.env` |
 | `YOUTUBE_API_KEY` in `crawler/.env` | `make seed` also crawls YouTube; without it, YouTube is skipped |
-| `GEMINI_API_KEY` in `backend/.env` or the environment | Needed by `make graph`. A free Google AI Studio key allows only a few documents per day: the run stops with an error, and the next run continues with the next document |
+| `GEMINI_API_KEY` in `tools/patient-graph/.env` or the environment | Needed by `make graph` ([patient graph tool](../../tools/patient-graph/README.md)) |
 | `VERTEX_LLM_MODEL=… GEMINI_PACER_MIN_INTERVAL_S=5 make graph PATIENT=Patient-5` | Uses another model than `gemini-2.5-flash` and waits 5 s between Graphiti's LLM calls, which make up most requests; reading the PDFs and the embeddings are not paced. The graph steps use Kuzu, which prints a deprecation warning |
 | `WHISPER_MODEL=base-q5_1 make transcribe WORKERS=2` | Transcribes with another [Whisper model](../../research/sources/podcasts.md#whisper-models) than the smallest recommended one (`tiny-q5_1`), and sets the number of files read at once without the debug UI |
 | `cd crawler && uv run crawler refresh` | Backfills metadata languages and OpenAlex links of stored documents without crawling again; run `make index` afterwards ([refresh](../design/storage.md#refresh-stored-enrichment)) |
@@ -58,7 +58,7 @@ Then call it from a second terminal with the MCP Inspector: [MCP interface, try 
 
 ## Development
 
-The Python crawler and the TypeScript matcher are separate projects with their own lockfiles. Commit `crawler/uv.lock` and `matcher/pnpm-lock.yaml` with every dependency change (and `backend/uv.lock` for `backend/`).
+The Python crawler and the TypeScript matcher are separate projects with their own lockfiles. Commit `crawler/uv.lock` and `matcher/pnpm-lock.yaml` with every dependency change (and `tools/patient-graph/uv.lock` for the [patient graph tool](../../tools/patient-graph/README.md)).
 
 **Crawler (`crawler/`, Python 3.12, uv).** `uv sync --locked` installs the locked dependencies into `crawler/.venv`. Checks: `uv run pytest`, `uv run mypy src`, `uv run ruff check .`, `uv run ruff format .`. Add a dependency with `uv add <package>`, a dev tool with `uv add --dev <package>`. API keys and flags: [crawler](../../crawler/README.md).
 
@@ -76,7 +76,7 @@ Not covered: the live data sources, the quality of the ranking, reading a valid 
 
 [`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) runs on every pull request, on every push to `main`, and on demand. The `crawler` job runs the crawler checks above, with a PostgreSQL service container for the store tests. The `matcher` job starts the database from `compose.yaml`, installs the crawler for the end-to-end tests, and runs the matcher checks above. Each job stops at the first failure.
 
-- `backend/` is not checked; it has only an import test (`uv run pytest` in `backend/`).
+- `tools/patient-graph/` is not checked; it has only an import test (`uv run pytest` in that folder).
 - The crawler tests use fakes shaped like the API responses and never call the live APIs.
 - There is no vulnerability or licence scan.
 - A failed check blocks merging only once a repository admin makes `crawler` and `matcher` required status checks for `main`.
@@ -89,7 +89,7 @@ After installing both projects:
 uv run --project crawler python scripts/dependencies.py
 ```
 
-It writes all direct dependencies with version, licence and scope to `out/dependencies.tsv`. The `Context` and `Comment` columns stay empty; fill them in afterwards.
+It writes the direct dependencies of `crawler/` and `matcher/` with version, licence and scope to `out/dependencies.tsv`; those of the [patient graph tool](../../tools/patient-graph/README.md#development) are added by hand. The `Context` and `Comment` columns stay empty; fill them in afterwards.
 
 ## Limitations
 
