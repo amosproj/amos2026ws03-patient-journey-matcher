@@ -16,6 +16,7 @@ The matcher runs on one VM in our project of the [FAU Compute Cloud](https://cc.
 | MCP server | Service `matcher-mcp`, `http://127.0.0.1:3000/mcp` on the VM |
 | Database | Docker container `amos-postgres`, `127.0.0.1:5432` on the VM |
 | Crawlers and index | Timers `crawler-<source>` and `matcher-index`, see [scheduled crawls](#scheduled-crawls) |
+| Speech-to-text | Service `matcher-transcribe`, see [transcription](#transcription) |
 | Backups | `/var/backups/matcher`, see [backups and cleanup](#backups-and-cleanup) |
 
 Our quota is 20 vCPUs, 50 GB RAM and 1000 GB volume storage. The flavour is the largest that fits the RAM quota. Together with the `vaultwarden` VM, 3 vCPUs, 17 GB RAM and 290 GB volume storage are left for other VMs.
@@ -107,6 +108,18 @@ sudo systemctl start --no-block crawler@pubmed-references
 
 Both store topic by topic. On `systemctl stop` a crawl finishes the request it is working on and stores what it has of its topic, if that takes under two minutes; a lookup of 100 arXiv papers takes five. After a stop, a crash or a reboot, start the crawl again: it skips the topics that are stored (`--resume`) and goes on with the one it was working on and with those that had a failed request. Afterwards the index has to read the new documents.
 
+## Transcription
+
+The service `matcher-transcribe` runs `make transcribe` all the time: [speech-to-text](sources/podcasts.md#indexing) for podcast audio without a transcript, for the keyword index. It reads as many files at once as the Index screen of the [debug UI](../debug/crawler/README.md) sets, also while it runs, and none until someone sets a number there. That screen also shows what waits, the pace and how long the rest takes. On 19.11.2026, 17,194 episodes with 7,707 hours of audio waited.
+
+The unit keeps the job from slowing anything else down: it gets only processor time that no other service or container wants (`CPUWeight=idle`) and at most half of the memory. Its model is the `WHISPER_MODEL` line of the unit in [`deploy/vm-setup.sh`](../deploy/vm-setup.sh) ([models](sources/podcasts.md#whisper-models)). An update of the VM restarts the job, which then reads the files in work again.
+
+| Task | Command |
+|---|---|
+| State and log | `systemctl status matcher-transcribe`, `journalctl -u matcher-transcribe -f` |
+| Set the number without the debug UI | `cd /opt/patient-journey-matcher && make transcribe WORKERS=2`; the service follows |
+| Stop at once | `sudo systemctl stop matcher-transcribe`; the files in work are read again after the next start |
+
 ## Backups and cleanup
 
 **Backups.** Every night at 23:00 UTC, [`deploy/backup-db.sh`](../deploy/backup-db.sh) dumps the database to `/var/backups/matcher/matcher-<date>.dump` and keeps the newest 7. The dumps are on the same volume as the database: they help against a broken database or `docker compose down -v`, not against losing the VM. To restore one, stop the timers that write to the database, then:
@@ -124,7 +137,7 @@ docker exec -i amos-postgres sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES
 
 ## Set up a new VM
 
-[`deploy/vm-setup.sh`](../deploy/vm-setup.sh) does the whole setup: it installs Docker, Node.js 24, pnpm 12 and uv, clones this repository, writes a `.env` with a random database password, starts the database, runs the tests, starts the MCP server as a service and installs the timers for the crawls, the index, the backups and the cleanup.
+[`deploy/vm-setup.sh`](../deploy/vm-setup.sh) does the whole setup: it installs Docker, Node.js 24, pnpm 12 and uv, clones this repository, writes a `.env` with a random database password, starts the database, runs the tests, starts the MCP server and the [transcription job](#transcription) as services and installs the timers for the crawls, the index, the backups and the cleanup.
 
 1. In the dashboard, open **Compute → Instances → Launch Instance**.
 2. **Details:** a name. **Source:** image `Debian 13`, create a new volume. **Flavour:** one without a root disk, such as `SCS-4V-8`. **Networks:** `FAU-Intern`. **Key Pair:** your key.
