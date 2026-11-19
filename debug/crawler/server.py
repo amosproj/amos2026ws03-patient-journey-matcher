@@ -323,7 +323,8 @@ def prepare(source: str, options: Any) -> tuple[str, Any]:
 
 
 def store(run: Run, loop: asyncio.AbstractEventLoop, seeds: list[Any], result: Any) -> None:
-    """Like `crawler --store` after a crawl; cancelled runs are not stored."""
+    """Like `crawler --store` after a crawl, but several topics as one run, where the command
+    line makes one of each; cancelled runs are not stored."""
     assert run.store_url is not None
     run.emit("store_started")
     info = RunInfo(

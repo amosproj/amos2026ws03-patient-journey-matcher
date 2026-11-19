@@ -719,7 +719,7 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
           <select id="query_mode"><option>and</option><option>or</option><option>raw</option></select>
         </label>
       </div>
-      <label class="check" style="margin-top:12px"><input type="checkbox" id="store"> Store in the database <i class="info" tabindex="0" data-tip="Same as --store: checks the database before the run and skips cited papers that are already stored; when the run is done, upserts its documents and logs it in crawl_runs. Needs DATABASE_URL in crawler/.env and the schema (make db). Stopped or failed runs are not stored.">i</i></label>
+      <label class="check" style="margin-top:12px"><input type="checkbox" id="store"> Store in the database <i class="info" tabindex="0" data-tip="Like --store: checks the database before the run and skips cited papers that are already stored; when the run is done, upserts its documents and logs it in crawl_runs. Several topics are one run here, so a cited paper is kept with a term of any of them; the command line crawls and stores them one by one. Needs DATABASE_URL in crawler/.env and the schema (make db). Stopped or failed runs are not stored.">i</i></label>
       <div class="error" id="form-error" style="margin-top:8px"></div>
       <div class="buttons" style="margin-top:8px">
         <button type="submit" class="primary" id="start">Start</button>
