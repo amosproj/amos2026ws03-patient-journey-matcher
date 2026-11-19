@@ -1,7 +1,12 @@
 import { extractText, formatOf } from "./extract.ts";
 import type { Transcribe } from "./transcribe.ts";
 
-export { createTranscriber } from "./transcribe.ts";
+export {
+  createTranscriber,
+  silence,
+  type Transcribe,
+  type TranscribeLimits,
+} from "./transcribe.ts";
 
 /** Where a full text can be fetched: an entry of `documents.full_text`, written by the crawler. */
 export interface Locator {
@@ -28,9 +33,11 @@ export interface FullText {
 
 /** Reads the full text of a document from its locators. */
 export interface Downloader {
-  fullText(locators: readonly Locator[]): Promise<FullText>;
-  /** Whether audio is read, by speech-to-text. */
-  transcribes?: boolean;
+  /** `transcribe`: speech-to-text for audio files; without it, audio is not read. */
+  fullText(
+    locators: readonly Locator[],
+    transcribe?: Transcribe,
+  ): Promise<FullText>;
 }
 
 export interface DownloaderOptions {
@@ -40,13 +47,16 @@ export interface DownloaderOptions {
   intervalMs?: (host: string) => number;
   maxBytes?: number;
   timeoutMs?: number;
-  /** Speech-to-text for audio files; without it, audio is not read. */
-  transcribe?: Transcribe;
   maxAudioBytes?: number;
 }
 
-/** Why a document with audio was skipped: a run with speech-to-text reads it. */
+/** Why a document with audio was skipped: a call with speech-to-text reads it. */
 export const NO_SPEECH_TO_TEXT = "audio, and speech-to-text is off";
+
+/** The locators whose audio speech-to-text can read. */
+export function audioLocators<L extends Locator>(locators: readonly L[]): L[] {
+  return locators.filter((locator) => formatOf(locator) === "audio");
+}
 
 const USER_AGENT =
   "patient-journey-matcher/0.1 (+https://github.com/amosproj/amos2026ws03-patient-journey-matcher)";
@@ -84,11 +94,9 @@ export function createDownloader({
   intervalMs = (host) => INTERVAL_MS[host] ?? DEFAULT_INTERVAL_MS,
   maxBytes = MAX_BYTES,
   timeoutMs = TIMEOUT_MS,
-  transcribe,
   maxAudioBytes = MAX_AUDIO_BYTES,
 }: DownloaderOptions = {}): Downloader {
   const nextStart = new Map<string, number>();
-  let audioTurn: Promise<unknown> = Promise.resolve();
 
   /** Waits for the host's turn. The slot is taken before waiting, so parallel calls queue up. */
   async function turn(host: string): Promise<void> {
@@ -183,15 +191,11 @@ export function createDownloader({
     }
   }
 
-  /** One audio file at a time, its download included: speech-to-text takes all cores. */
-  function inTurn<T>(task: () => Promise<T>): Promise<T> {
-    const done = audioTurn.then(task);
-    audioTurn = done.catch(() => {});
-    return done;
-  }
-
   /** The text of the first readable locator that has one. */
-  async function fullText(locators: readonly Locator[]): Promise<FullText> {
+  async function fullText(
+    locators: readonly Locator[],
+    transcribe?: Transcribe,
+  ): Promise<FullText> {
     const readers = locators.flatMap((locator): Reader[] => {
       const format = formatOf(locator);
       if (format === undefined) return [];
@@ -212,9 +216,7 @@ export function createDownloader({
           : "no full text";
     }
     for (const reader of readers.slice(0, MAX_LOCATORS)) {
-      const { result: tried, last } = await (reader.audio
-        ? inTurn(() => read(reader))
-        : read(reader));
+      const { result: tried, last } = await read(reader);
       result = tried;
       if (last) return result;
     }
@@ -223,7 +225,7 @@ export function createDownloader({
       : result;
   }
 
-  return { fullText, transcribes: transcribe !== undefined };
+  return { fullText };
 }
 
 /** The body, or undefined once it grows over `maxBytes`. */

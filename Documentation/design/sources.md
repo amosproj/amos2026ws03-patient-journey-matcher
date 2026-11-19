@@ -54,7 +54,7 @@ How the full texts are read: [keyword matching](keyword-matching.md#full-texts).
 - An episode without a `guid` gets `enc:` plus the SHA-256 of its audio URL as ID.
 - Show notes are cut to 1,000 characters, because some contain whole transcripts.
 - Licence: the feed's `podcast:license`, else `all-rights-reserved` if it has a copyright notice.
-- Full-text links: transcripts first, then the audio file; trailers are skipped. Speech-to-text runs only with `WHISPER_MODEL` set, and M4A or MP4 audio is not read.
+- Full-text links: transcripts first, then the audio file; trailers are skipped. Audio without a transcript is read by the [transcription job](keyword-matching.md#speech-to-text); M4A and MP4 audio is not read.
 
 ## Licences
 

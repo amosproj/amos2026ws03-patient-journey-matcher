@@ -41,7 +41,7 @@ Only what the code uses today. Versions are pinned in `crawler/uv.lock` and `mat
 | | zod | Tool schemas, journey validation | MIT |
 | | pg (node-postgres) | Database access | MIT |
 | | htmlparser2, unpdf (pdf.js) | Text of XML, HTML and PDF full texts | MIT; pdf.js Apache-2.0 |
-| | pywhispercpp, miniaudio (optional) | Offline speech-to-text for podcast audio, only with `WHISPER_MODEL` set | MIT |
+| | pywhispercpp, miniaudio | Offline speech-to-text for podcast audio in the transcription job (`make transcribe`) | MIT |
 | **Build and test** | Docker Compose | PostgreSQL and one crawler container per data source | Apache-2.0 |
 | | pytest, mypy, Ruff · Vitest, Biome | Tests, type checks, lint and format | MIT; Biome MIT or Apache-2.0 |
 | | Make | One command per task: build, test, run ([make targets](../build-deploy/build.md)) | GPL-3.0; a build tool, not part of the product |

@@ -1,15 +1,16 @@
 # Matcher
 
-The TypeScript side: MCP server, indexer job and matching approaches, as one pnpm workspace. Packages and how they depend on each other: [code components](../Documentation/design/architecture.md#2-code-components); commands: [build](../Documentation/build-deploy/build.md#development); adding an approach: [matching approaches](algorithms/README.md).
+The TypeScript side: MCP server, indexer job, transcription job and matching approaches, as one pnpm workspace. Packages and how they depend on each other: [code components](../Documentation/design/architecture.md#2-code-components); commands: [build](../Documentation/build-deploy/build.md#development); adding an approach: [matching approaches](algorithms/README.md).
 
 ## Dependencies
 
 ```text
 mcp-server, indexer  →  approaches  →  algorithms/*  →  core, db, download
+transcriber          →  algorithms/keyword, db, download
 evaluation           (no matcher package)
 ```
 
-Programs reach the approaches only through `approaches` and the contracts in `core`; they also use `db` and `download` directly. Approaches import neither each other nor the programs; `core`, `db` and `download` import no other matcher package. A package can only import what its `package.json` lists.
+Programs reach the approaches only through `approaches` and the contracts in `core`; they also use `db` and `download` directly. The transcriber is the keyword approach's own job and imports it directly. Approaches import neither each other nor the programs; `core`, `db` and `download` import no other matcher package. A package can only import what its `package.json` lists.
 
 ## Rules
 

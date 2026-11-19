@@ -1,7 +1,8 @@
 import type { Queryable } from "@matcher/db";
 
 // The keyword index (pg_textsearch): one row per document for its metadata, one for its full
-// text. Only the keyword indexer writes it; it creates the schema, as no other component uses it.
+// text. Only the keyword indexer and its transcription job write it; they create the schema, as
+// no other component uses it.
 const SCHEMA = `
   CREATE EXTENSION IF NOT EXISTS pg_textsearch;
   CREATE SCHEMA IF NOT EXISTS keyword;
@@ -28,6 +29,14 @@ const SCHEMA = `
   );
   CREATE INDEX IF NOT EXISTS full_texts_terms_idx ON keyword.full_texts
     USING bm25 (terms) WITH (text_config = 'english') WHERE status = 'indexed';
+  -- The transcription job, in one row: how many audio files it is to read at once (0: none; the
+  -- debug UI sets it), and what the running job reported last (transcription.ts).
+  CREATE TABLE IF NOT EXISTS keyword.transcription (
+    only_row boolean PRIMARY KEY DEFAULT true CHECK (only_row),
+    workers integer NOT NULL DEFAULT 0 CHECK (workers >= 0),
+    state jsonb,
+    reported_at timestamptz
+  );
 `;
 
 /** Creates what is missing of the keyword index; safe to run again. */

@@ -3,9 +3,11 @@ import os
 import re
 import time
 import xml.etree.ElementTree as ET
-from collections.abc import Callable, Mapping, Sequence
+from collections.abc import Callable, Iterator, Mapping, Sequence
+from contextlib import contextmanager
 from datetime import UTC, datetime
 from typing import Any
+from urllib.error import HTTPError
 
 from Bio import Entrez
 from pydantic import JsonValue
@@ -48,6 +50,28 @@ _MONTHS = {
         ("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"), 1
     )
 }
+
+
+class NcbiUnavailable(OSError):
+    """NCBI could not answer a request right now; as an `OSError`, the runner tries it again.
+
+    On the VM, 5 to 7 of 3,644 search requests failed each night, never the same ones
+    (18.11.2026): with an error element in the answer (`Search Backend failed: …`, a
+    `RuntimeError` in Biopython) or with HTTP 400. Both pass.
+    """
+
+
+@contextmanager
+def ncbi_request() -> Iterator[None]:
+    """Around an E-utilities call and the reading of its answer: see `NcbiUnavailable`."""
+    try:
+        yield
+    except RuntimeError as error:
+        raise NcbiUnavailable(str(error)) from error
+    except HTTPError as error:
+        if error.code != 400:
+            raise
+        raise NcbiUnavailable(str(error)) from error
 
 
 def is_pmid(value: str) -> bool:
@@ -253,11 +277,12 @@ class PubMedScraper(BaseScraper):
             search_arguments["sort"] = "relevance"
 
         self._throttle.wait(self._rate)
-        search_handle = self._entrez.esearch(**search_arguments)
-        try:
-            return [str(value) for value in self._entrez.read(search_handle)["IdList"]]
-        finally:
-            search_handle.close()
+        with ncbi_request():
+            search_handle = self._entrez.esearch(**search_arguments)
+            try:
+                return [str(value) for value in self._entrez.read(search_handle)["IdList"]]
+            finally:
+                search_handle.close()
 
     def _fetch(self, identifiers: Sequence[str]) -> list[SourceDocument]:
         """Articles and books (Biopython lists them apart), in the order of the IDs."""
@@ -265,11 +290,12 @@ class PubMedScraper(BaseScraper):
         for offset in range(0, len(identifiers), EFETCH_BATCH_SIZE):
             batch = identifiers[offset : offset + EFETCH_BATCH_SIZE]
             self._throttle.wait(self._rate)
-            fetch_handle = self._entrez.efetch(db="pubmed", id=",".join(batch), retmode="xml")
-            try:
-                response = self._entrez.read(fetch_handle)
-            finally:
-                fetch_handle.close()
+            with ncbi_request():
+                fetch_handle = self._entrez.efetch(db="pubmed", id=",".join(batch), retmode="xml")
+                try:
+                    response = self._entrez.read(fetch_handle)
+                finally:
+                    fetch_handle.close()
             parsed = [
                 *(self.parse_article(article) for article in response.get("PubmedArticle", [])),
                 *(self.parse_book(book) for book in response.get("PubmedBookArticle", [])),

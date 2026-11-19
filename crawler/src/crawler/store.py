@@ -33,6 +33,7 @@ __all__ = [
     "prepare_store",
     "resume_date",
     "save_result",
+    "stored_topics",
     "videos_to_refresh",
 ]
 
@@ -194,6 +195,17 @@ async def last_successful_runs(
     return {str(row["topic"]): row["started_at"] for row in rows}
 
 
+async def stored_topics(url: str, source: SourceName, arguments: Sequence[str]) -> frozenset[str]:
+    """The topics that a successful run of `source` with exactly these arguments has stored,
+    whenever that was: what `--resume` skips."""
+    async with _connect(url) as connection:
+        try:
+            rows = await connection.fetch(_STORED_TOPICS, source.value, list(arguments))
+        except _DATABASE_ERRORS as error:
+            raise StoreError(f"cannot read from the database: {_describe(error)}") from error
+    return frozenset(str(row["topic"]) for row in rows)
+
+
 async def videos_to_refresh(url: str, channel_ids: Sequence[str]) -> list[str]:
     """Video IDs of the stored videos of the channels that expire within `REFRESH_WITHIN`,
     expired ones included."""
@@ -221,13 +233,16 @@ async def save_result(
     run: RunInfo,
     *,
     refreshed: Sequence[SourceDocument] = (),
+    expire: bool = True,
 ) -> StoreReport:
     """Store the documents, the citations of stored documents and the run; all or nothing.
 
     Documents are upserted by `id`, `refreshed` ones (stored videos fetched again) like those of
     the run. `found_by` gains the new entries, `changed_at` moves only if the content changed.
     `result.citations` also holds stored documents that were skipped as known; they get the
-    `cited_by` entries the run found for them. Expired rows are deleted.
+    `cited_by` entries the run found for them. Expired rows are deleted, unless `expire` is off:
+    a command over several topics leaves them to its last topic, so that each topic can fetch
+    its expired videos again first.
     """
     rows = [document_row(document) for document in [*result.documents, *refreshed]]
     collected = {document.id for document in result.documents}
@@ -247,7 +262,7 @@ async def save_result(
                 if citations:
                     status = await connection.execute(_CITE, _json(_storable(citations)))
                     cited = _count(status)
-                expired = _count(await connection.execute(_EXPIRE))
+                expired = _count(await connection.execute(_EXPIRE)) if expire else 0
                 inserted = sum(1 for flag in flags if flag["inserted"])
                 changed = sum(1 for flag in flags if flag["changed"] and not flag["inserted"])
                 unchanged = len(flags) - inserted - changed
@@ -261,7 +276,7 @@ async def save_result(
                     result.ok,
                     stats,
                     failures,
-                    _storable(result.run_error),
+                    _storable(result.run_error) or ("interrupted" if result.interrupted else None),
                     inserted,
                     changed,
                     unchanged,
@@ -343,6 +358,12 @@ SELECT topic, max(started_at) AS started_at
 FROM crawl_runs, unnest(topics) AS topic
 WHERE source = $1 AND ok AND topic = ANY($2::text[])
 GROUP BY topic
+"""
+
+_STORED_TOPICS = """
+SELECT DISTINCT topic
+FROM crawl_runs, unnest(topics) AS topic
+WHERE source = $1 AND ok AND arguments = $2::text[]
 """
 
 _LOG_RUN = """

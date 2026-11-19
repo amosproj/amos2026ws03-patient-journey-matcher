@@ -23,6 +23,7 @@ Run the commands from the repository root. Each `make` target runs the `uv`, `pn
 | `make db` | Starts the [database](database.md) and applies `db/init/`; needs the root `.env` |
 | `make seed` | Runs `make db`, then stores a sample crawl of every source ([`scripts/seed.py`](../../scripts/seed.py)) |
 | `make index` | Builds, then updates the indexes of all approaches, today the [keyword index](../design/keyword-matching.md) |
+| `WHISPER_MODEL=tiny-q5_1 make transcribe` | Builds, then runs the [transcription job](../design/keyword-matching.md#speech-to-text) until you stop it: speech-to-text for podcast audio that has no transcript, for the keyword index |
 | `make start` | Builds, then starts the MCP server on `http://127.0.0.1:3000/mcp`; needs the root `.env` |
 | `make debug` | Starts the [debug UI](../../debug/crawler/README.md) for the crawler, the database, the index and the matcher on `http://127.0.0.1:8765` |
 | `make graph PATIENT=Patient-5` | Builds the [patient graph](../user/mcp-interface.md#patient-graph) of one synthetic patient and writes `patientdata/Patient-5/graph.json` ([`scripts/patient_graph.py`](../../scripts/patient_graph.py)); needs `GEMINI_API_KEY` |
@@ -50,7 +51,7 @@ Then call it from a second terminal with the MCP Inspector: [MCP interface, try 
 | `YOUTUBE_API_KEY` in `crawler/.env` | `make seed` also crawls YouTube; without it, YouTube is skipped |
 | `GEMINI_API_KEY` in `backend/.env` or the environment | Needed by `make graph`. A free Google AI Studio key allows only a few documents per day: the run stops with an error, and the next run continues with the next document |
 | `VERTEX_LLM_MODEL=… GEMINI_PACER_MIN_INTERVAL_S=5 make graph PATIENT=Patient-5` | Uses another model than `gemini-2.5-flash` and waits 5 s between Graphiti's LLM calls, which make up most requests; reading the PDFs and the embeddings are not paced. The graph steps use Kuzu, which prints a deprecation warning |
-| `WHISPER_MODEL=tiny-q5_1 make index APPROACHES=keyword` | Also transcribes podcast episodes without a transcript, offline, with the smallest recommended multilingual model; `base-q5_1` is more accurate ([model comparison](../../research/sources/podcasts.md#whisper-models)) |
+| `WHISPER_MODEL=base-q5_1 make transcribe WORKERS=2` | Transcribes with another [Whisper model](../../research/sources/podcasts.md#whisper-models) than the smallest recommended one (`tiny-q5_1`), and sets the number of files read at once without the debug UI |
 | `cd crawler && uv run crawler refresh` | Backfills metadata languages and OpenAlex links of stored documents without crawling again; run `make index` afterwards ([refresh](../design/storage.md#refresh-stored-enrichment)) |
 | `cd crawler && uv run python ../scripts/coverage.py` | After indexing: reports full-text links, read and indexed texts, pending rows and failures |
 | `cd crawler && uv run crawler pubmed --topic prostate_cancer --max-results 200 --store` | Adds more documents; needs `DATABASE_URL` in `crawler/.env` ([connecting](database.md#connecting)). Run `make index` afterwards. Other sources and flags: [crawler](../../crawler/README.md) |
@@ -94,7 +95,7 @@ It writes all direct dependencies with version, licence and scope to `out/depend
 
 - **Index before you query.** Without `make index`, `match_journey` answers `degraded: true` with no results.
 - **The first `make index` is slow, mostly because of arXiv.** arxiv.org asks for 15 s between requests ([request budgets](../design/sources.md#request-budgets)), and a paper without an HTML version needs a second download, the PDF. The indexer reads 500 documents at a time from all hosts in parallel and prints its progress every minute. Ctrl+C is safe: the next run continues with the documents not read yet and retries failed downloads. Later runs read only new and changed documents.
-- **A changed indexer reads only new and changed documents.** To rebuild the keyword index from scratch, drop it and run `make index`:
+- **A changed indexer reads only new and changed documents.** To rebuild the keyword index from scratch, drop it and run `make index`. This also drops what `make transcribe` read from audio:
 
   ```sh
   docker compose exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "DROP SCHEMA keyword CASCADE"'

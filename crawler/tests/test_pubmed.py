@@ -1,3 +1,4 @@
+import asyncio
 import io
 import xml.etree.ElementTree as ET
 from collections.abc import Sequence
@@ -17,10 +18,12 @@ from crawler.models import (
     SourceName,
     Subject,
 )
+from crawler.runner import CollectionOptions, run_requests
 from crawler.sources.openalex import OpenAccessCopy
 from crawler.sources.pubmed import (
     MAX_SEARCH_RESULTS,
     NcbiThrottle,
+    NcbiUnavailable,
     PubMedScraper,
     is_pmid,
     ncbi_requests_per_second,
@@ -252,6 +255,80 @@ def test_search_fetches_the_found_ids() -> None:
     assert [call for call, _ in entrez.calls] == ["esearch", "efetch"]
     assert [document.id for document in documents] == ["pubmed:1", "pubmed:2"]
     assert all(document.found_by == [] for document in documents)
+
+
+class BrokenNcbi(FakeEntrez):
+    """NCBI while a backend is down: one call answers HTTP 400, or with an error in its answer.
+
+    `call` fails the first time; `recovers`: after that it works.
+    """
+
+    def __init__(self, call: str, error: Exception, *, recovers: bool = False) -> None:
+        super().__init__(["1"])
+        self.call = call
+        self.errors = [error] if recovers else [error] * 10
+        self.tries = 0
+
+    def _fail(self, call: str, *, reading: bool) -> None:
+        self.tries += call == self.call and not reading
+        if call == self.call and self.errors and reading != isinstance(self.errors[0], HTTPError):
+            raise self.errors.pop(0)
+
+    def esearch(self, **arguments: Any) -> FakeHandle:
+        self._fail("esearch", reading=False)
+        return super().esearch(**arguments)
+
+    def efetch(self, **arguments: Any) -> FakeHandle:
+        self._fail("efetch", reading=False)
+        return super().efetch(**arguments)
+
+    def read(self, handle: FakeHandle) -> Any:
+        # Biopython raises for an error element when it reads the answer.
+        self._fail("esearch" if "IdList" in handle.payload else "efetch", reading=True)
+        return super().read(handle)
+
+
+NCBI_BACKEND_DOWN = [
+    (call, error)
+    for call in ("esearch", "efetch")
+    for error in (
+        RuntimeError("Search Backend failed: Pubmed 2.0 search API: HTTP request returned 502"),
+        HTTPError("https://eutils.ncbi.nlm.nih.gov", 400, "Bad Request", Message(), None),
+    )
+]
+
+
+@pytest.mark.parametrize(("call", "error"), NCBI_BACKEND_DOWN)
+def test_a_request_ncbi_cannot_answer_right_now_says_so(call: str, error: Exception) -> None:
+    scraper = PubMedScraper(entrez=BrokenNcbi(call, error))
+
+    with pytest.raises(NcbiUnavailable, match=r"Search Backend failed|HTTP Error 400"):
+        scraper.scrape(ScrapeRequest(source=SourceName.PUBMED, query="glioblastoma"))
+
+
+@pytest.mark.parametrize(("call", "error"), NCBI_BACKEND_DOWN)
+def test_a_request_ncbi_could_not_answer_is_tried_again(call: str, error: Exception) -> None:
+    entrez = BrokenNcbi(call, error, recovers=True)
+
+    result = asyncio.run(
+        run_requests(
+            [ScrapeRequest(source=SourceName.PUBMED, query="glioblastoma")],
+            options=CollectionOptions(max_depth=0, retry_base_delay=0),
+            source_factory=lambda _source: PubMedScraper(entrez=entrez),
+        )
+    )
+
+    assert result.ok
+    assert [document.id for document in result.documents] == ["pubmed:1"]
+    assert entrez.tries == 2
+
+
+def test_other_http_errors_of_ncbi_stay_as_they_are() -> None:
+    forbidden = HTTPError("https://eutils.ncbi.nlm.nih.gov", 403, "Forbidden", Message(), None)
+    scraper = PubMedScraper(entrez=BrokenNcbi("esearch", forbidden))
+
+    with pytest.raises(HTTPError):
+        scraper.scrape(ScrapeRequest(source=SourceName.PUBMED, query="glioblastoma"))
 
 
 def test_lookup_skips_the_search_and_fetches_in_batches_of_200() -> None:

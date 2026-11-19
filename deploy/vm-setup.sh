@@ -80,6 +80,36 @@ systemctl daemon-reload
 systemctl enable matcher-mcp.service
 systemctl restart matcher-mcp.service
 
+step "transcription job as a service"
+# Speech-to-text for podcast audio without a transcript. It runs all the time and reads as many
+# files at once as the debug UI sets: none until someone sets a number there. CPUWeight=idle:
+# it gets processor time only while no other service or container wants it. A process over
+# the memory limit is ended alone; the job tries its file again later.
+cat > /etc/systemd/system/matcher-transcribe.service <<UNIT
+[Unit]
+Description=Patient Journey Matcher speech-to-text for podcast audio
+After=docker.service
+Wants=docker.service
+
+[Service]
+User=$APP_USER
+WorkingDirectory=$APP_DIR
+Environment=WHISPER_MODEL=small.en
+ExecStart=/usr/bin/make transcribe
+Restart=on-failure
+RestartSec=30
+CPUWeight=idle
+IOSchedulingClass=idle
+MemoryMax=50%
+OOMPolicy=continue
+
+[Install]
+WantedBy=multi-user.target
+UNIT
+systemctl daemon-reload
+systemctl enable matcher-transcribe.service
+systemctl restart matcher-transcribe.service
+
 step "timers: crawls, index, backup, cleanup"
 # timer NAME CALENDAR UNIT DESCRIPTION, added to timers. Persistent: runs missed while the VM was off start at boot.
 timer() {
@@ -99,6 +129,10 @@ UNIT
 }
 
 # One run of crawler-<source> from compose.yaml; stdout only repeats the stored documents.
+# Stopping the unit ends the docker client, not the container. So the container has a fixed
+# name: a start removes one that was left behind, and a stop sends it Ctrl+C, on which the
+# crawler finishes the request at work and stores what it has (killed after 120 s). 130 is
+# the exit code of a stopped client and of a stopped crawler: no failure.
 cat > /etc/systemd/system/crawler@.service <<UNIT
 [Unit]
 Description=Crawl %i (Documentation/build-deploy/deployment.md)
@@ -109,7 +143,11 @@ Wants=docker.service
 Type=oneshot
 User=$APP_USER
 WorkingDirectory=$APP_DIR
-ExecStart=/usr/bin/docker compose run --rm --build -T crawler-%i
+ExecStartPre=-/bin/sh -c '/usr/bin/docker rm -f crawler-%i >/dev/null 2>&1'
+ExecStart=/usr/bin/docker compose run --rm --build -T --name crawler-%i crawler-%i
+ExecStopPost=-/bin/sh -c '/usr/bin/docker stop -s INT -t 120 crawler-%i >/dev/null 2>&1'
+TimeoutStopSec=150
+SuccessExitStatus=130
 StandardOutput=null
 UNIT
 # Daily in UTC, a few minutes apart; PubMed in NCBI's off-peak hours (21:00-05:00 US Eastern).
