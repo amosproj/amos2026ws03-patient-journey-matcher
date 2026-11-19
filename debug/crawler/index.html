@@ -194,6 +194,7 @@ main { display: grid; grid-template-rows: auto auto 1fr; min-width: 0; min-heigh
 .ov-row { display: grid; grid-column: 1 / -1; grid-template-columns: subgrid; align-items: center; margin: 0 -6px; padding: 2px 6px; border-radius: 5px; font-size: 12.5px; }
 .figures .ov-row { align-items: baseline; }
 .ov-row b { font-size: 15px; font-variant-numeric: tabular-nums; text-align: right; }
+.ov-list.words b { text-align: left; }
 .ov-row.zero { color: var(--muted); }
 .ov-row.sub > span:first-child { padding-left: 14px; }
 .ov-row.bad b { color: var(--error); }
@@ -1379,7 +1380,8 @@ function ovFigure(value, label, { cls = "", title = null, onclick = null } = {})
   return h("div", { class: `ov-row ${cls}${onclick ? " link" : ""}`, title, onclick }, h("b", {}, value), h("span", {}, label));
 }
 function ovSection(title, ...children) { return h("section", { class: "ov" }, h("h3", {}, title), ...children); }
-function ovList(rows, figures = false) { return h("div", { class: `ov-list${figures ? " figures" : ""}` }, ...rows); }
+// figures: true for counts, which align right so their digits line up; "words" for words and times, which align left
+function ovList(rows, figures = false) { return h("div", { class: `ov-list${figures ? " figures" : ""}${figures === "words" ? " words" : ""}` }, ...rows); }
 
 function renderStats() {
   const box = $("#stats");
@@ -3317,7 +3319,7 @@ function renderInfoStats() {
   box.replaceChildren(
     ovSection("This machine", ovList(machine.filter(Boolean))),
     ovSection(plan?.live ? "Up next" : "Up next on the VM",
-      plan ? ovList(upcoming.map((job) => ovFigure(fmtUntil(job.next), job.label, { title: `${fmtCalendar(job.calendar)}; ${fmtDateTime(job.next)} your time` })), true)
+      plan ? ovList(upcoming.map((job) => ovFigure(fmtUntil(job.next), job.label, { title: `${fmtCalendar(job.calendar)}; ${fmtDateTime(job.next)} your time` })), "words")
         : h("div", { class: "notice", style: "margin:0" }, data.schedule?.error || "–"),
       plan && !plan.live ? h("small", { class: "ov-note" }, "This machine runs no timers") : null),
     ovSection(h("span", { title: "Runs started from this page, the timers of this machine, the MCP server and the database. A crawl or make index started in a terminal shows only as a process, under Running." }, "Running now"), ovList([
@@ -3327,7 +3329,7 @@ function renderInfoStats() {
       plan?.live ? ovFigure(timers.length ? fmtCount(timers.length) : "none", timers.length === 1 ? "timer job" : "timer jobs", { cls: timers.length ? "on" : "zero", title: timers.map((job) => job.label).join(", ") || null }) : null,
       ovFigure(data.mcp.running ? "up" : "down", "MCP server", { cls: data.mcp.running ? "on" : plan?.live ? "bad" : "zero", title: data.mcp.url }),
       ovFigure(data.database?.up ? "up" : "down", "database", { cls: data.database?.up ? "on" : "bad", title: data.database?.up ? data.database.target : data.database?.error ?? null }),
-    ], true)),
+    ], "words")),
   );
 }
 
