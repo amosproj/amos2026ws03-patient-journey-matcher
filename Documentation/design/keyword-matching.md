@@ -2,7 +2,7 @@
 
 The keyword baseline: `match_journey` with `algorithm: keyword` ranks the stored documents by [BM25](https://en.wikipedia.org/wiki/Okapi_BM25) on the words they share with the patient journey, in their metadata and full texts. It is one of the interchangeable approaches ([adding an approach](../../matcher/algorithms/README.md)). Code: [`matcher/algorithms/keyword/`](../../matcher/algorithms/keyword/src/), downloads: [`matcher/download/`](../../matcher/download/src/). How to run it: [build and run](../build-deploy/build.md#run-the-matcher-locally).
 
-How the ranking was tuned and measured: [keyword tuning](../../research/keyword-tuning.md).
+How the ranking was tuned and measured: [keyword tuning](../../research/keyword-tuning.md). The Matcher screen of the [debug UI](../../debug/crawler/README.md) shows every step below for a synthetic journey, and its Index screen what the index holds per source.
 
 ## How it works
 

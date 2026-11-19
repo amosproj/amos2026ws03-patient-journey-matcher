@@ -9,7 +9,7 @@ The Patient Journey Matcher is an MCP server for the AIlixir app. A client sends
 - **Indexer (TypeScript):** downloads each full text again, keeps it in memory and builds the index of each matching approach. Today this is [keyword matching](Documentation/design/keyword-matching.md); a graph-based and an AI-based approach follow.
 - **MCP server (TypeScript):** matches the journey against the index and returns the best sources with links to the originals.
 
-How it fits together: [software architecture](Documentation/design/architecture.md).
+How it fits together: [software architecture](Documentation/design/architecture.md). To watch it work with real data, use the [debug UI](#explore-the-pipeline).
 
 ## Tech stack
 
@@ -46,6 +46,10 @@ make start             # MCP server on http://127.0.0.1:3000/mcp
 ```
 
 Optional: `WHISPER_MODEL=tiny-q5_1 make transcribe WORKERS=2` reads podcast audio into the keyword index, two files at a time, until you stop it.
+
+### Explore the pipeline
+
+`make debug` starts the [debug UI](debug/crawler/README.md) on http://127.0.0.1:8765. It is the best way to see how the matcher works inside: one screen per step of the pipeline, from crawler runs and the stored documents to the index and the steps of a match (how each event became search terms, the rank of each hit in both indexes, the rank fusion), plus the machine and its timers.
 
 Then call it with the MCP Inspector: [try it](Documentation/user/mcp-interface.md#try-it). The API keys of the data sources go into `crawler/.env` and are optional; without `YOUTUBE_API_KEY`, the sample crawl skips YouTube ([crawler](crawler/README.md)).
 

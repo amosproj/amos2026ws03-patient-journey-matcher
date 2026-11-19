@@ -1,6 +1,6 @@
 # Debug UI
 
-Local web UI with one screen per step of the pipeline:
+Local web UI with one screen per step of the pipeline, the best way to explore what the crawler, the indexer, the transcription job and the MCP server do inside:
 
 | Screen | Shows |
 |---|---|
@@ -17,4 +17,4 @@ make debug PORT=9000   # on another port
 
 API keys and `DATABASE_URL` come from `crawler/.env`. Finished crawler runs are kept in `debug/crawler/runs/` (gitignored).
 
-The Index and Matcher screens run the matcher's own programs, so they need `make build`. The Matcher screen takes the arguments of `match_journey` as one JSON object, the same as "Edit as JSON" in the [MCP Inspector](../../Documentation/build-deploy/build.md#run-the-matcher-locally); its journey list puts one of `patientdata/*/timeline.json`, the example of `build.md` or a file into them. It passes them on to the matcher and stores none. With "Through the MCP server" it sends them to the server of `make start` instead (on `MCP_PORT`, if set).
+The Index and Matcher screens run the matcher's own programs, so they need `make build`. The Matcher screen takes the arguments of `match_journey` as one JSON object, the same as "Edit as JSON" in the [MCP Inspector](../../Documentation/build-deploy/build.md#run-the-matcher-locally); its journey list puts one of `patientdata/*/timeline.json`, the example of the [MCP interface](../../Documentation/user/mcp-interface.md#try-it) or a file into them. It passes them on to the matcher and stores none. With "Through the MCP server" it sends them to the server of `make start` instead (on `MCP_PORT`, if set).

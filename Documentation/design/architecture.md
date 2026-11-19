@@ -60,6 +60,8 @@ Only what the code uses today. Versions are pinned in `crawler/uv.lock` and `mat
 4. **Match.** A client calls `match_journey` with a journey or a patient graph and chooses the approach with `algorithm` (default `keyword`). The server validates the input, takes the latest event as the focus and older events as context, and the matcher of the chosen approach ranks the sources in its index. The graph matcher will compare the patient's relations with the papers' triples; the `ai_summary` matcher will embed the journey, take the nearest sources and can let a language model rerank them.
 5. **Fetch.** `get_source` returns the links to a source's files at its origin; the client downloads them itself.
 
+To follow these steps with real data, use the [debug UI](../../debug/crawler/README.md) (`make debug`): one screen per step, from crawler runs and stored documents to the index, the transcription job and each step of a match.
+
 | Component | Runs as | When |
 |---|---|---|
 | PostgreSQL | Docker container | always |

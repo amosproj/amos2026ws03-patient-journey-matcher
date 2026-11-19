@@ -37,7 +37,7 @@ make index             # keyword index; the first run is slow, see Limitations
 make start             # MCP server, keep it running
 ```
 
-Then call it from a second terminal with the MCP Inspector: [MCP interface, try it](../user/mcp-interface.md#try-it).
+Then call it from a second terminal with the MCP Inspector: [MCP interface, try it](../user/mcp-interface.md#try-it). To see each step of the pipeline with this data, start the [debug UI](../../debug/crawler/README.md) with `make debug`.
 
 ## Options
 

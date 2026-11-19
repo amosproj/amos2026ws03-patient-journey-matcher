@@ -1,15 +1,15 @@
 # Documentation
 
-Build, user and technical documentation of the Patient Journey Matcher. New here: read the [software architecture](design/architecture.md) first. Terms: [glossary](glossary.md). The team's investigations, with methods and measurements: [research](../research/README.md).
+Build, user and technical documentation of the Patient Journey Matcher. New here: read the [software architecture](design/architecture.md) first, then explore the pipeline in the [debug UI](../debug/crawler/README.md) (`make debug`). Terms: [glossary](glossary.md). The team's investigations, with methods and measurements: [research](../research/README.md).
 
 ## User documentation
 
 How to use the software.
 
 - [MCP interface](user/mcp-interface.md): connect, try it, the tools `match_journey` and `get_source`, errors
+- [Debug UI](../debug/crawler/README.md): the best way to explore the pipeline, one screen per step: crawler runs, stored documents, the index, the transcription job and each step of a match
 - [Synthetic patients](../patientdata/patientdata.md): journeys and graphs to send for testing
 - [Patient graph tool](../tools/patient-graph/README.md): build the patient graph of a synthetic patient, the second input form of `match_journey`
-- [Debug UI](../debug/crawler/README.md): browse the database, the index and the matcher
 
 ## Design documentation
 
