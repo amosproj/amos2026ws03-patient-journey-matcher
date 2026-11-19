@@ -1,6 +1,6 @@
 # Resource storage and retrieval
 
-The crawler stores what it collects in PostgreSQL (#41); the indexer and the MCP server read it from there. Local setup: [database.md](database.md).
+The crawler stores what it collects in PostgreSQL (#41); the indexer and the MCP server read it from there. Local setup: [database.md](../build-deploy/database.md).
 
 ```mermaid
 flowchart LR
@@ -25,7 +25,7 @@ cd crawler
 uv run crawler pubmed --topic prostate_cancer --store
 ```
 
-`--store` needs `DATABASE_URL` (see [`crawler/.env.example`](../crawler/.env.example)) and the schema (`make db`); the crawler checks both before the crawl and exits with 2 if one is missing. Cited papers that are already stored are not fetched again. The JSON Lines on stdout stay the same. After the crawl, a YouTube run refreshes the stored videos of its channels that expire within 15 days. Then one transaction:
+`--store` needs `DATABASE_URL` (see [`crawler/.env.example`](../../crawler/.env.example)) and the schema (`make db`); the crawler checks both before the crawl and exits with 2 if one is missing. Cited papers that are already stored are not fetched again. The JSON Lines on stdout stay the same. After the crawl, a YouTube run refreshes the stored videos of its channels that expire within 15 days. Then one transaction:
 
 1. upserts each document, refreshed videos included, by `id`: columns get the new values, `found_by` gains the new entries, `changed_at` moves only if the content changed;
 2. adds the run's `cited_by` entries to stored documents it did not fetch again;
@@ -36,7 +36,7 @@ If storing fails, nothing of the run is stored, `storing failed` goes to stderr 
 
 ## Schema
 
-[`db/init/02-documents.sql`](../db/init/02-documents.sql) and [`03-crawl-runs.sql`](../db/init/03-crawl-runs.sql). `documents` follows [sources §2](sources/README.md#2-metadata-schema), except:
+[`db/init/02-documents.sql`](../../db/init/02-documents.sql) and [`03-crawl-runs.sql`](../../db/init/03-crawl-runs.sql). `documents` follows [sources §2](sources.md#2-metadata-schema), except:
 
 - `created_at`, and `changed_at`: last change of any column but `found_by`, `retrieved_at` and `expires_at`.
 - `published_at` and `published_precision` may be empty; some records have no valid date.
@@ -46,10 +46,10 @@ From the crawler's `SourceDocument`: `source_id` → `native_id`, `journal` → 
 
 ## Languages
 
-The crawler detects the language of each document's title and summary offline with [py3langid](https://github.com/adbar/py3langid) ([`crawler/src/crawler/language.py`](../crawler/src/crawler/language.py)) and stores it as `extra.metadata_language` (BCP 47, e.g. `en`). A source's `language` can name something else: PubMed gives the article's language, and a German article often has an English abstract. So `language` keeps the source's value.
+The crawler detects the language of each document's title and summary offline with [py3langid](https://github.com/adbar/py3langid) ([`crawler/src/crawler/language.py`](../../crawler/src/crawler/language.py)) and stores it as `extra.metadata_language` (BCP 47, e.g. `en`). A source's `language` can name something else: PubMed gives the article's language, and a German article often has an English abstract. So `language` keeps the source's value.
 
 - Missing `metadata_language` means unknown, not "not English": short titles such as `PSA` are too short to tell, and stored cited papers keep their old row until a run fetches them again. An indexer that skips non-English metadata should treat unknown as matchable.
-- Ordinary runs do not fetch stored cited papers again. Backfill their language markers and [OpenAlex](sources/openalex.md) links with `cd crawler && uv run crawler refresh`; no database reset is needed.
+- Ordinary runs do not fetch stored cited papers again. Backfill their language markers and [OpenAlex](../../research/sources/openalex.md) links with `cd crawler && uv run crawler refresh`; no database reset is needed.
 - Non-English documents are stored like the others, so they stay findable and their citations stay complete.
 - The first store run after this change counts every document it fetches again as changed, once, since `extra` is content: the indexers read their full texts again.
 
@@ -70,7 +70,7 @@ Only enrichment fields and `changed_at` change. Provenance, citations, `retrieve
 
 ## Reading
 
-The schema is the only contract between the crawler (Python) and the matcher (TypeScript). The matcher reads through [`@matcher/db`](../matcher/db/src/documents.ts), which treats rows past `expires_at` as gone:
+The schema is the only contract between the crawler (Python) and the matcher (TypeScript). The matcher reads through [`@matcher/db`](../../matcher/db/src/documents.ts), which treats rows past `expires_at` as gone:
 
 ```ts
 import { createDocumentStore, createPool } from "@matcher/db";
@@ -80,7 +80,7 @@ const hits = await store.getDocuments(ids); // in the order of ids, e.g. ranked 
 const next = await store.documentsToIndex("keyword_index", 500);
 ```
 
-`toSourceReference` in [`mcp-server/src/sources.ts`](../matcher/mcp-server/src/sources.ts) turns a document into the fields of a tool result ([sources §4](sources/README.md#4-mcp-server)).
+`toSourceReference` in [`mcp-server/src/sources.ts`](../../matcher/mcp-server/src/sources.ts) turns a document into the fields of a tool result ([sources §4](sources.md#4-mcp-server)).
 
 Index tables reference their document, so deleting it removes them, and keep the `changed_at` they indexed (as read, in milliseconds). `documentsToIndex` returns the documents without a row or with a different `changed_at`, and `countToIndex` counts them; polling `changed_at > last run` instead would miss the rows of a store run that commits late.
 

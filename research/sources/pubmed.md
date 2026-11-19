@@ -1,6 +1,6 @@
 # PubMed
 
-Checked 01.11.2026 with live API calls (the E-utilities manual was behind a browser check). Shared rules: [README](README.md).
+Checked 01.11.2026 with live API calls (the E-utilities manual was behind a browser check). Shared rules: [README](../../Documentation/design/sources.md).
 
 41.4 M citations with abstracts, MeSH and publication types. No full text; that comes from [PMC](pmc.md) via the PMCID.
 

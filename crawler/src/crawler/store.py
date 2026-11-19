@@ -1,7 +1,7 @@
 """Store collected documents in PostgreSQL (#41).
 
-The tables are defined in `db/init/`; `Documentation/storage.md` describes how rows are written
-and read. The crawler is the only writer of `documents` and `crawl_runs`.
+The tables are defined in `db/init/`; `Documentation/design/storage.md` describes how rows are
+written and read. The crawler is the only writer of `documents` and `crawl_runs`.
 """
 
 import json
@@ -168,7 +168,7 @@ async def prepare_store(url: str, source: SourceName, *, load_ids: bool) -> froz
             if missing:
                 raise StoreError(
                     f"the database has no {' or '.join(missing)} table; apply db/init/ "
-                    "with `make db` (see Documentation/database.md)"
+                    "with `make db` (see Documentation/build-deploy/database.md)"
                 )
             if not load_ids:
                 return frozenset()

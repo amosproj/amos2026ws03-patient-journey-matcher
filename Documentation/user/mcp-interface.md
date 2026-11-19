@@ -1,12 +1,12 @@
 # MCP interface
 
-Version 0.1, a proposal for #7. It is not yet confirmed by AIlixir, see [Open questions](#open-questions). The schemas in [`matcher/mcp-server/src/contract.ts`](../matcher/mcp-server/src/contract.ts) are the source of truth for field names and limits. `match_journey` works with the `keyword` algorithm ([keyword matching](keyword-matching.md)); the other algorithms answer with the error code `NOT_AVAILABLE`.
+Version 0.1, a proposal for #7. It is not yet confirmed by AIlixir, see [Open questions](#open-questions). The schemas in [`matcher/mcp-server/src/contract.ts`](../../matcher/mcp-server/src/contract.ts) are the source of truth for field names and limits. `match_journey` works with the `keyword` algorithm ([keyword matching](../design/keyword-matching.md)); the other algorithms answer with the error code `NOT_AVAILABLE`.
 
 All fields use `snake_case`, like the journey generator and the SS26 retrieval code.
 
 ## Connection
 
-The server speaks MCP over Streamable HTTP at `POST /mcp`. It listens on `127.0.0.1` only, because it has no authentication yet. It keeps no sessions. Start and try it: [build and run](build.md#run-the-matcher-locally).
+The server speaks MCP over Streamable HTTP at `POST /mcp`. It listens on `127.0.0.1` only, because it has no authentication yet. It keeps no sessions. Start and try it: [build and run](../build-deploy/build.md#run-the-matcher-locally).
 
 | Environment variable | Default | Meaning |
 |---|---|---|
@@ -84,7 +84,7 @@ Each result holds the source reference and optional relevance information:
 | `source_id` | string | yes | Stable ID, for example `pubmed:42745507`. Input of `get_source` |
 | `title` | string | yes | |
 | `source` | string | yes | Where the entry comes from, for example `pubmed`, `arxiv`, `zenodo`, `youtube` |
-| `content_type` | `journal_article`, `preprint`, `conference_paper`, `poster`, `presentation`, `report`, `book`, `video`, `podcast_episode` | yes | As stored, see [sources §2](sources/README.md#2-metadata-schema) |
+| `content_type` | `journal_article`, `preprint`, `conference_paper`, `poster`, `presentation`, `report`, `book`, `video`, `podcast_episode` | yes | As stored, see [sources §2](../design/sources.md#2-metadata-schema) |
 | `url` | URL | yes | Link to the original |
 | `summary` | string | no | Abstract or description of the source, for the card in the app. Cut after 5,000 characters. Missing only if the source has none |
 | `image_url` | URL | no | Picture for the card. So far only YouTube videos have one, their thumbnail |
@@ -182,7 +182,7 @@ Result of the data request in #44 (Slack, 09.11.2026):
 
 ## Patient graph
 
-This is the graph that the SS26 pipeline builds. We have the code in [`backend/workers/pipeline/graph/`](../backend/workers/pipeline/graph/), and [`medical_schema.py`](../backend/workers/pipeline/graph/medical_schema.py) is the source of truth for the types.
+This is the graph that the SS26 pipeline builds. We have the code in [`backend/workers/pipeline/graph/`](../../backend/workers/pipeline/graph/), and [`medical_schema.py`](../../backend/workers/pipeline/graph/medical_schema.py) is the source of truth for the types.
 
 **How it is built.** Each uploaded PDF is turned into a short clinical text by an LLM (Gemini). Graphiti reads this text and stores it as one episode in Neo4j. Every patient has an own graph, separated by `group_id`. The date of the document is the time of the episode, not the time of the upload.
 
@@ -196,7 +196,7 @@ This is the graph that the SS26 pipeline builds. We have the code in [`backend/w
 
 **Edges.** 21 types. From the patient: `HAS_DIAGNOSIS`, `UNDERWENT`, `PRESCRIBED`, `HAD_LAB_TEST`, `HAS_TUMOR_MARKER`, `HAS_PATHOLOGY`, `HAS_IMAGING`, `HAS_SYMPTOM`, `HAS_ALLERGY`, `HAS_VITAL_SIGNS`, `WAS_REFERRED`, `HAS_APPOINTMENT`, `MANAGED_AT`, `HAS_TREATMENT_PLAN`. Between findings: `TREATED_BY`, `CONFIRMED_BY`, `INDICATES`, `PERFORMED_BY`, `REFERRED_TO`, `SYMPTOM_OF`, and `RELATES_TO` as fallback. Each edge holds a `fact`, which is one sentence, and the times `valid_at` and `invalid_at`. When a newer document replaces a fact, for example a new PSA value, Graphiti sets `invalid_at` on the old edge.
 
-**Dates.** The graph in Neo4j keeps the dates: the episode has the document date, the edges have `valid_at` and `invalid_at`, and the nodes have the date fields above. The file export of SS26 does not keep them. [`exporter.py`](../backend/workers/pipeline/graph/exporter.py) writes a `graph.cypher` file that only holds a query to show the graph, and it removes `valid_at` and `invalid_at` from the data it reads. So this file cannot be the input of the matcher.
+**Dates.** The graph in Neo4j keeps the dates: the episode has the document date, the edges have `valid_at` and `invalid_at`, and the nodes have the date fields above. The file export of SS26 does not keep them. [`exporter.py`](../../backend/workers/pipeline/graph/exporter.py) writes a `graph.cypher` file that only holds a query to show the graph, and it removes `valid_at` and `invalid_at` from the data it reads. So this file cannot be the input of the matcher.
 
 **What this means for `match_journey`.**
 
@@ -204,7 +204,7 @@ This is the graph that the SS26 pipeline builds. We have the code in [`backend/w
 - The most recent event is then the newest day with a fact on or before `as_of`.
 - Real graphs for tests come from the SS26 graph steps, run on the generated PDFs, see [Generating a graph](#generating-a-graph). For the patients without a graph, the generated `timeline.json` covers the same events.
 
-**Reading a graph.** [`graph.ts`](../matcher/mcp-server/src/graph.ts) reads a graph as JSON with the lists `nodes` and `edges` in Graphiti's field names and turns it into a journey. `match_journey` does this for a request with [`graph`](#graph-input).
+**Reading a graph.** [`graph.ts`](../../matcher/mcp-server/src/graph.ts) reads a graph as JSON with the lists `nodes` and `edges` in Graphiti's field names and turns it into a journey. `match_journey` does this for a request with [`graph`](#graph-input).
 
 - **Checked on reading:** every node has `uuid`, `name` and `labels`. Every edge has `uuid` and the IDs of its two nodes, and both nodes are in the graph. No two nodes and no two edges share a `uuid`. There is exactly one `Patient` node. `valid_at` is an ISO date or date-time, `null` or left out; an empty string is rejected. A graph that fails a check is rejected with the place of the error.
 - **Not checked:** the fields that the reader does not use, such as `name`, `fact` and `invalid_at` of an edge. They are dropped. Graphiti takes the two times of a fact from the LLM and does not check their order, so one odd fact would otherwise reject the whole graph of a patient on every call.
@@ -216,13 +216,13 @@ This is the graph that the SS26 pipeline builds. We have the code in [`backend/w
 - **`patient_id`** is the name of the `Patient` node.
 - **The journey has to pass the contract** like any other: a graph without a dated fact or with facts on more than 500 days is rejected, and so is an `as_of` before the first event.
 
-The graph of Patient-5 in [`patientdata/Patient-5/graph.json`](../patientdata/Patient-5/graph.json) holds all 35 documents: 34 nodes and 174 edges, which become 23 events. These 23 days are exactly the 23 dates of the events in its `timeline.json`. How well the keyword matcher ranks with a journey made from a graph is not measured yet.
+The graph of Patient-5 in [`patientdata/Patient-5/graph.json`](../../patientdata/Patient-5/graph.json) holds all 35 documents: 34 nodes and 174 edges, which become 23 events. These 23 days are exactly the 23 dates of the events in its `timeline.json`. How well the keyword matcher ranks with a journey made from a graph is not measured yet.
 
 ### Generating a graph
 
-`make graph PATIENT=Patient-5` builds the graph of one generated patient and writes it to `patientdata/Patient-5/graph.json` ([`scripts/patient_graph.py`](../scripts/patient_graph.py)). It needs `GEMINI_API_KEY`, see [build options](build.md#options).
+`make graph PATIENT=Patient-5` builds the graph of one generated patient and writes it to `patientdata/Patient-5/graph.json` ([`scripts/patient_graph.py`](../../scripts/patient_graph.py)). It needs `GEMINI_API_KEY`, see [build options](../build-deploy/build.md#options).
 
-- **Same steps as SS26.** For each PDF of the patient, in the order of the event numbers in the file names (`_e01`, `_e02`, …), Gemini reads the PDF ([`extractor.py`](../backend/workers/pipeline/llm/extractor.py)) and Graphiti adds it to the graph ([`builder.py`](../backend/workers/pipeline/graph/builder.py)). The code of both steps is unchanged.
+- **Same steps as SS26.** For each PDF of the patient, in the order of the event numbers in the file names (`_e01`, `_e02`, …), Gemini reads the PDF ([`extractor.py`](../../backend/workers/pipeline/llm/extractor.py)) and Graphiti adds it to the graph ([`builder.py`](../../backend/workers/pipeline/graph/builder.py)). The code of both steps is unchanged.
 - **Two differences, so that it runs without a Google Cloud project.** It uses an API key from Google AI Studio instead of Vertex AI, with the embedding model `gemini-embedding-001` instead of `text-embedding-005`. And it uses an embedded Kuzu database under `out/patient-graph/` instead of Neo4j, so no server is needed.
 - **It can stop and go on.** A free key allows only some documents per day. The run then stops, writes the graph of the documents read so far and ends with an error. The next run goes on with the next document: the database knows which documents it holds, so none is added twice. `documents` in `graph.json` lists the PDFs that are in the graph.
 - **The file** holds `patient`, `documents`, and the `nodes` and `edges` as Graphiti holds them, without the embeddings. The reader takes it as it is.

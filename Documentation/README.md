@@ -1,19 +1,19 @@
 Build, user, and technical documentation
 
-[Software architecture description](architecture/README.md)
+[Software architecture description](design/architecture/README.md)
 
-[MCP interface](mcp-interface.md)
+[MCP interface](user/mcp-interface.md)
 
-[Matching evaluation](matching-evaluation.md)
+[Matching evaluation](../research/matching-evaluation.md)
 
-[Build, run and test](build.md)
+[Build, run and test](build-deploy/build.md)
 
-[End-to-end tests](e2e-tests.md)
+[End-to-end tests](build-deploy/e2e-tests.md)
 
-[External sources: metadata, storage and indexing](sources/README.md)
+[External sources: metadata, storage and indexing](design/sources.md)
 
-[Resource storage and retrieval](storage.md)
+[Resource storage and retrieval](design/storage.md)
 
-[Keyword matching](keyword-matching.md)
+[Keyword matching](design/keyword-matching.md)
 
-[AI matching research](research/ai-based-matching.md) · [Simple AI matching report (PDF)](research/ai-matching-results/ai-matching-report.pdf) · [Detailed report (PDF)](research/ai-matching-results/detailed/ai-matching-report-detailed.pdf) · [Models used](research/ai-matching-results/models-used.md) · [Report summary](research/ai-matching-results/performance-report.md)
+[AI matching research](../research/ai-based-matching.md) · [Simple AI matching report (PDF)](../research/ai-matching-results/ai-matching-report.pdf) · [Detailed report (PDF)](../research/ai-matching-results/detailed/ai-matching-report-detailed.pdf) · [Models used](../research/ai-matching-results/models-used.md) · [Report summary](../research/ai-matching-results/performance-report.md)

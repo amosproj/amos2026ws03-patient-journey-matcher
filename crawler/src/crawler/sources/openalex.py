@@ -26,7 +26,7 @@ BATCH_SIZE = 50
 """DOIs per request; OpenAlex allows 100 values in one filter."""
 MIN_INTERVAL_SECONDS = 1.0
 """Our own pause between requests; OpenAlex limits clients by a daily budget (see
-Documentation/sources/openalex.md)."""
+research/sources/openalex.md)."""
 MAX_LOCATORS = 3
 """The indexers try at most three locators."""
 _FIELDS = "id,doi,best_oa_location,locations"
@@ -37,7 +37,7 @@ NO_AUTOMATED_DOWNLOAD = (
     "www.cancertreatmentreviews.com",  # Elsevier journal site, HTTP 403 (11.11.2026)
     "sciencedirect.com",  # HTTP 403 on repeated index runs (14.11.2026)
     # Two download attempts per seed PDF returned 403, with no successes on these hosts
-    # in the same sample (14.11.2026; Documentation/sources/README.md).
+    # in the same sample (14.11.2026; Documentation/design/sources.md).
     "academic.oup.com",
     "ascopubs.org",
     "cris.unibo.it",

@@ -165,7 +165,7 @@ Cost = input tokens / 1 million × input price
 
 ## 7. Comparison of approaches
 
-The foundation is the existing [matching evaluation](../matching-evaluation.md): fixed journey evaluation points, relevance grades and a metrics runner.
+The foundation is the existing [matching evaluation](matching-evaluation.md): fixed journey evaluation points, relevance grades and a metrics runner.
 
 ### Comparison variants
 

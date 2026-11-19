@@ -11,7 +11,7 @@
     uv run --script scripts/transcribe.py small.en < episode.mp3
 
 The indexer calls it for podcast episodes without a transcript when WHISPER_MODEL is set
-(Documentation/sources/podcasts.md). The audio and the text stay in memory. The model is a
+(research/sources/podcasts.md). The audio and the text stay in memory. The model is a
 name from whisper.cpp such as `base.en` or `small.en`, or a model file; the first run
 downloads a named model to the user's data directory. Reads MP3, FLAC, WAV and Ogg Vorbis;
 exit code 2 for anything else.

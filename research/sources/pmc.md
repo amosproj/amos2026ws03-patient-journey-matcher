@@ -1,6 +1,6 @@
 # PubMed Central (PMC)
 
-Checked 01.11.2026. Shared rules: [README](README.md).
+Checked 01.11.2026. Shared rules: [README](../../Documentation/design/sources.md).
 
 Full-text route for [PubMed](pubmed.md) rows with a PMCID. No rows of its own; fills `licence`, `full_text` and `external_ids` of the PubMed row. Since 08.2026 one public S3 bucket with about 8 M article versions that allow text mining. FTP packages, `oa_comm`/`oa_noncomm` and the OA web service were removed in the week of 24.08.2026. Commercial and NC licences share the bucket, so check every article.
 
@@ -41,7 +41,7 @@ The JSON has no authors, abstract or dates; those come from PubMed. `TDM` = auth
 
 ## Indexing
 
-1. Licence not allowed: skip. The keyword index reads every licence ([sources §3](README.md#3-indexing)).
+1. Licence not allowed: skip. The keyword index reads every licence ([sources §3](../../Documentation/design/sources.md#3-indexing)).
 2. `GET https://pmc-oa-opendata.s3.amazonaws.com/<key>`, no credentials. Served as `binary/octet-stream`; parse as UTF-8 JATS XML (60–275 KB).
 3. Re-check `<license>`/`<ali:license_ref>`. Use `.txt` only as keyword fallback, never the PDF.
 4. 404 is normal (not in the bucket yet, or version removed): retry next run.

@@ -1,7 +1,7 @@
 import type { QueryResult, QueryResultRow } from "pg";
 
-// Mirrors db/init/02-documents.sql. Column meanings: Documentation/sources/README.md §2,
-// read rules: Documentation/storage.md.
+// Mirrors db/init/02-documents.sql. Column meanings: Documentation/design/sources.md §2,
+// read rules: Documentation/design/storage.md.
 
 export type SourceName = "pubmed" | "arxiv" | "zenodo" | "youtube" | "podcast";
 
@@ -225,7 +225,7 @@ export function publishedDate(
 
 /**
  * The text of a document's row: title, abstract or description, and subject labels (MeSH for
- * PubMed). What an index reads when it has no full text (Documentation/sources/README.md §3).
+ * PubMed). What an index reads when it has no full text (Documentation/design/sources.md §3).
  */
 export function metadataText(
   document: Pick<DocumentRow, "title" | "summary" | "subjects">,

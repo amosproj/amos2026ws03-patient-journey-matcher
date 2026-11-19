@@ -71,7 +71,7 @@ On the VM:
 
 ## Scheduled crawls
 
-Every night a systemd timer starts one crawler container per source (`crawler-<source>` in [`compose.yaml`](../compose.yaml)), and in the morning `make index` adds the new documents to the indexes. Each run continues from the source's last successful run (`--since auto`, see [crawler](../crawler/README.md#run)). A topic without one, as on a new VM or with a new topic file, is crawled without a date. `--max-results` caps every query, channel or feed in every run, so it also sets the size of this first crawl. Any successful run counts, even a small one such as that of `make seed`, and a query, channel or feed added to a topic later starts from the topic's last run. To fill in such a topic, crawl it once without a date and with the results per run below (see the tasks).
+Every night a systemd timer starts one crawler container per source (`crawler-<source>` in [`compose.yaml`](../../compose.yaml)), and in the morning `make index` adds the new documents to the indexes. Each run continues from the source's last successful run (`--since auto`, see [crawler](../../crawler/README.md#run)). A topic without one, as on a new VM or with a new topic file, is crawled without a date. `--max-results` caps every query, channel or feed in every run, so it also sets the size of this first crawl. Any successful run counts, even a small one such as that of `make seed`, and a query, channel or feed added to a topic later starts from the topic's last run. To fill in such a topic, crawl it once without a date and with the results per run below (see the tasks).
 
 | Source | Starts (UTC) | Results per run | Bound by |
 |---|---|---|---|
@@ -84,7 +84,7 @@ Every night a systemd timer starts one crawler container per source (`crawler-<s
 
 The scheduled runs do not follow references (`--max-depth 0`): on a first crawl they would fetch millions of cited papers.
 
-**API keys** go into `/opt/patient-journey-matcher/crawler/.env`, which the setup creates from [`crawler/.env.example`](../crawler/.env.example). YouTube needs `YOUTUBE_API_KEY`; PubMed should have `NCBI_ENTREZ_EMAIL` and `NCBI_API_KEY`. Without a YouTube key, turn its timer off: `sudo systemctl disable --now crawler-youtube.timer`.
+**API keys** go into `/opt/patient-journey-matcher/crawler/.env`, which the setup creates from [`crawler/.env.example`](../../crawler/.env.example). YouTube needs `YOUTUBE_API_KEY`; PubMed should have `NCBI_ENTREZ_EMAIL` and `NCBI_API_KEY`. Without a YouTube key, turn its timer off: `sudo systemctl disable --now crawler-youtube.timer`.
 
 | Task | Command |
 |---|---|
@@ -97,7 +97,7 @@ The scheduled runs do not follow references (`--max-depth 0`): on a first crawl 
 
 ## Backups and cleanup
 
-**Backups.** Every night at 23:00 UTC, [`deploy/backup-db.sh`](../deploy/backup-db.sh) dumps the database to `/var/backups/matcher/matcher-<date>.dump` and keeps the newest 7. The dumps are on the same volume as the database: they help against a broken database or `docker compose down -v`, not against losing the VM. To restore one, stop the timers that write to the database, then:
+**Backups.** Every night at 23:00 UTC, [`deploy/backup-db.sh`](../../deploy/backup-db.sh) dumps the database to `/var/backups/matcher/matcher-<date>.dump` and keeps the newest 7. The dumps are on the same volume as the database: they help against a broken database or `docker compose down -v`, not against losing the VM. To restore one, stop the timers that write to the database, then:
 
 ```sh
 docker exec -i amos-postgres sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES_DB" --clean --if-exists' \
@@ -112,7 +112,7 @@ docker exec -i amos-postgres sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES
 
 ## Set up a new VM
 
-[`deploy/vm-setup.sh`](../deploy/vm-setup.sh) does the whole setup: it installs Docker, Node.js 24, pnpm 12 and uv, clones this repository, writes a `.env` with a random database password, starts the database, runs the tests, starts the MCP server as a service and installs the timers for the crawls, the index, the backups and the cleanup.
+[`deploy/vm-setup.sh`](../../deploy/vm-setup.sh) does the whole setup: it installs Docker, Node.js 24, pnpm 12 and uv, clones this repository, writes a `.env` with a random database password, starts the database, runs the tests, starts the MCP server as a service and installs the timers for the crawls, the index, the backups and the cleanup.
 
 1. In the dashboard, open **Compute → Instances → Launch Instance**.
 2. **Details:** a name. **Source:** image `Debian 13`, create a new volume. **Flavour:** one without a root disk, such as `SCS-4V-8`. **Networks:** `FAU-Intern`. **Key Pair:** your key.
@@ -123,6 +123,6 @@ On a VM that already exists, run the update command from [Use the server](#use-t
 
 ## Limitations
 
-- **No access from outside the FAU network.** The VM has no public address. AIlixir's app cannot call the server yet; this needs authentication first ([MCP interface](mcp-interface.md#open-questions), question 4).
+- **No access from outside the FAU network.** The VM has no public address. AIlixir's app cannot call the server yet; this needs authentication first ([MCP interface](../user/mcp-interface.md#open-questions), question 4).
 - **The database is empty until the first night.** Then every source crawls all topics for the first time ([scheduled crawls](#scheduled-crawls)).
 - **Secrets stay on the VM.** The database password is in `/opt/patient-journey-matcher/.env` and the API keys are in `crawler/.env`, both readable only by `debian`.

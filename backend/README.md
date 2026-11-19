@@ -1,6 +1,6 @@
 # backend
 
-Code copied from the SS26 AIlixir project for issue #13. It is the starting point for the Patient Journey Matcher, not a working service yet. What we keep and why is described in [`../Documentation/reuse/what-to-keep.md`](../Documentation/reuse/what-to-keep.md).
+Code copied from the SS26 AIlixir project for issue #13. It is the starting point for the Patient Journey Matcher, not a working service yet. What we keep and why is described in [`../Documentation/reuse/what-to-keep.md`](../research/ss26-reuse.md).
 
 ## Setup
 

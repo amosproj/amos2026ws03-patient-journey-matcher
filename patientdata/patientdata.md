@@ -84,7 +84,7 @@ contains event-specific clinical details. The `documents` list identifies
 the document types generated for that event. `repeat_index` identifies
 repeated events where applicable and is otherwise `null`.
 
-A `graph.json` holds the patient graph that the SS26 graph steps build from the PDFs of a patient. It is the input of the graph reader (`matcher/mcp-server/src/graph.ts`) and exists only for the patients that were run so far. `make graph PATIENT=Patient-5` builds it, see [Generating a graph](../Documentation/mcp-interface.md#generating-a-graph).
+A `graph.json` holds the patient graph that the SS26 graph steps build from the PDFs of a patient. It is the input of the graph reader (`matcher/mcp-server/src/graph.ts`) and exists only for the patients that were run so far. `make graph PATIENT=Patient-5` builds it, see [Generating a graph](../Documentation/user/mcp-interface.md#generating-a-graph).
 
 | Field | Description |
 |---|---|

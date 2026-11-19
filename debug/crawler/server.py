@@ -1406,7 +1406,7 @@ DEMO_JOURNEY = {
         },
     ],
 }
-"""The journey of the example arguments in Documentation/build.md."""
+"""The journey of the example arguments in Documentation/build-deploy/build.md."""
 MATCH_TIMEOUT = 60
 LOCAL = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 """Opens URLs of this machine without a proxy."""

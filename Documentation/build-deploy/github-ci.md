@@ -1,8 +1,8 @@
 # GitHub CI
 
-[`.github/workflows/ci.yml`](../.github/workflows/ci.yml) runs on every pull request, on every push to `main`, and on demand from the Actions tab.
+[`.github/workflows/ci.yml`](../../.github/workflows/ci.yml) runs on every pull request, on every push to `main`, and on demand from the Actions tab.
 
-Each job runs its commands in order and stops at the first failure. They are the same commands as in the [README](../README.md#development-setup), so you can run them locally before you push.
+Each job runs its commands in order and stops at the first failure. They are the same commands as in the [README](../../README.md#development-setup), so you can run them locally before you push.
 
 ## `crawler` job (Python, in `crawler/`)
 
@@ -18,7 +18,7 @@ Each job runs its commands in order and stops at the first failure. They are the
 
 | Command | Why |
 |---|---|
-| `docker compose up -d --wait` | Builds and starts the database from [`compose.yaml`](../compose.yaml) (PostgreSQL 18 with pgvector and pg_textsearch), as for local development. A service container cannot preload pg_textsearch. |
+| `docker compose up -d --wait` | Builds and starts the database from [`compose.yaml`](../../compose.yaml) (PostgreSQL 18 with pgvector and pg_textsearch), as for local development. A service container cannot preload pg_textsearch. |
 | `uv sync --locked` (in `crawler/`) | Installs the crawler, which the end-to-end tests run. |
 | `uv run mypy tests/integration_support/crawl.py` (in `crawler/`) | Type-checks the script through which those tests run the crawler. |
 | `pnpm install --frozen-lockfile` | Installs the exact versions from `pnpm-lock.yaml`. Fails if the lockfile does not match the `package.json` files. |

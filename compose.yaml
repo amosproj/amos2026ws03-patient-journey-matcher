@@ -1,5 +1,5 @@
 # One crawler container per source, all from crawler/Dockerfile. The command is the scheduled run
-# (Documentation/deployment.md#scheduled-crawls), e.g. `docker compose run --rm crawler-pubmed`.
+# (Documentation/build-deploy/deployment.md#scheduled-crawls), e.g. `docker compose run --rm crawler-pubmed`.
 # The profile keeps them out of `docker compose up`, so `make db` starts the database only.
 x-crawler: &crawler
   build: crawler

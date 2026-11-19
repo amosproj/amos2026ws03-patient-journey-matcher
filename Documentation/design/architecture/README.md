@@ -2,7 +2,7 @@
 
 The Patient Journey Matcher is an MCP server for the AIlixir app. A client sends a patient journey, a dated list of events such as diagnoses and operations, and gets back papers, preprints, videos and podcast episodes that fit the most recent point in that journey.
 
-This page shows the planned design for the mid-project release on 25.11.2026. We will compare it with the real system at the end of the project. The sprint 2 submission of the same content is [`Deliverables/sprint-02/software-architecture.pdf`](../../Deliverables/sprint-02/software-architecture.pdf).
+This page shows the planned design for the mid-project release on 25.11.2026. We will compare it with the real system at the end of the project. The sprint 2 submission of the same content is [`Deliverables/sprint-02/software-architecture.pdf`](../../../Deliverables/sprint-02/software-architecture.pdf).
 
 Contents:
 
@@ -49,7 +49,7 @@ Legend: orange = Python module, blue = TypeScript package, darker blue = algorit
 
 The first-level technologies we build on, grouped by layer. Versions are the current releases on 27.10.2026. The lockfiles pin exact versions, and the bill of materials in the planning document (#16) is the binding list. Course rule: no copyleft licences in the product.
 
-Basis: **Partner** = project description or AIlixir · **#5** = [crawler evaluation](../../Deliverables/sprint-02/crawler-evaluation.md) · **#13** = [reuse plan](../reuse/what-to-keep.md) · **In use** = already used in the code · **Proposal** = this document, to be confirmed in review.
+Basis: **Partner** = project description or AIlixir · **#5** = [crawler evaluation](../../../Deliverables/sprint-02/crawler-evaluation.md) · **#13** = [reuse plan](../../../research/ss26-reuse.md) · **In use** = already used in the code · **Proposal** = this document, to be confirmed in review.
 
 | Technology | Version | Used for | Licence | Basis |
 |---|---|---|---|---|
@@ -75,7 +75,7 @@ Basis: **Partner** = project description or AIlixir · **#5** = [crawler evaluat
 | pg (node-postgres) | 8.23 | Database access | MIT | In use |
 | htmlparser2 | 12.0 | Text of XML and HTML full texts | MIT | #8, In use |
 | unpdf | 2.1 | Text of PDF full texts (Mozilla's pdf.js inside) | MIT, pdf.js Apache-2.0 | #8, In use |
-| pywhispercpp (whisper.cpp) · miniaudio | 1.5 · 1.73 | Optional: offline speech-to-text for podcast audio, a Python script the indexer calls ([podcasts](../sources/podcasts.md#indexing)) | MIT, Whisper models MIT | #57 |
+| pywhispercpp (whisper.cpp) · miniaudio | 1.5 · 1.73 | Optional: offline speech-to-text for podcast audio, a Python script the indexer calls ([podcasts](../../../research/sources/podcasts.md#indexing)) | MIT, Whisper models MIT | #57 |
 | **AI services (hosted, keys from AIlixir)** | | | | |
 | Gemini via Vertex AI (`@google/genai`) | SDK 2.31 | Source summaries at index time | Apache-2.0 (SDK) | #13 |
 | OpenAI embeddings (`openai`) | SDK 7.45 | Vectors for the AI summary index | Apache-2.0 (SDK) | #13 |
@@ -102,14 +102,14 @@ Basis: **Partner** = project description or AIlixir · **#5** = [crawler evaluat
 
 ### Runtime view
 
-1. **Crawling.** Every night a systemd timer starts one crawler container per source with the queries from all topic files ([scheduled crawls](../deployment.md#scheduled-crawls)). The crawler searches the source API, can follow a paper's references one level deep (not yet in the scheduled runs), and upserts the metadata into `documents` (`--store`, see [storage and retrieval](../storage.md)). It stores metadata and links only, never full texts.
+1. **Crawling.** Every night a systemd timer starts one crawler container per source with the queries from all topic files ([scheduled crawls](../../build-deploy/deployment.md#scheduled-crawls)). The crawler searches the source API, can follow a paper's references one level deep (not yet in the scheduled runs), and upserts the metadata into `documents` (`--store`, see [storage and retrieval](../storage.md)). It stores metadata and links only, never full texts.
 2. **Indexing.** Every morning after the crawls, the indexer reads the new or changed documents, fetches each text with `download()`, keeps it in memory, and writes three separate indexes: keyword, graph and AI summary. Only the AI summary builder calls an LLM, and only with public source text.
 3. **Query.** A client calls an MCP tool with the journey. The journey reader validates it and builds one journey state: the latest event is the focus, and older events are context. How much older events count is still to be tested (#11). All three matchers get the same state, so their results can be compared fairly.
 4. **Answer.** The result assembler merges and ranks the hits and adds the metadata and links from `documents`. When the client asks for one source, the server returns the links to its files, and the client downloads them itself.
 
 ### Code view
 
-The layers follow the lecture: platform at the bottom, third-party frameworks on top of it, our application code on top of those. The crawler (Python) and the matcher (TypeScript) share no code. Their only contracts are the database schema in `db/` and the journey JSON Schema in `schemas/`, so both sides can be built and tested on their own. Each algorithm is a plug-in, an `Approach` from `core` with an `Indexer` and a `Matcher`. The MCP server and the indexer job know the approaches only through the list in `approaches`, so a fourth approach changes neither ([adding an approach](../../matcher/algorithms/README.md)). `backend/` holds the remaining SS26 code copied in #13. It is not built; migrated components are deleted from it.
+The layers follow the lecture: platform at the bottom, third-party frameworks on top of it, our application code on top of those. The crawler (Python) and the matcher (TypeScript) share no code. Their only contracts are the database schema in `db/` and the journey JSON Schema in `schemas/`, so both sides can be built and tested on their own. Each algorithm is a plug-in, an `Approach` from `core` with an `Indexer` and a `Matcher`. The MCP server and the indexer job know the approaches only through the list in `approaches`, so a fourth approach changes neither ([adding an approach](../../../matcher/algorithms/README.md)). `backend/` holds the remaining SS26 code copied in #13. It is not built; migrated components are deleted from it.
 
 ### Choices and reasons
 
@@ -128,7 +128,7 @@ To settle with AIlixir and in the team:
 
 - The journey format the real app sends, and the final MCP tool names and fields (#1, #7).
 - MCP transport and authentication between the AIlixir backend and our server.
-- Vector store: our local pgvector, or AIlixir's AstraDB with Vertex AI Ranking from the SS26 code. The [reuse plan](../reuse/what-to-keep.md) (#13) keeps them, the [crawler evaluation](../../Deliverables/sprint-02/crawler-evaluation.md) (#5) drops the AstraDB embedding.
+- Vector store: our local pgvector, or AIlixir's AstraDB with Vertex AI Ranking from the SS26 code. The [reuse plan](../../../research/ss26-reuse.md) (#13) keeps them, the [crawler evaluation](../../../Deliverables/sprint-02/crawler-evaluation.md) (#5) drops the AstraDB embedding.
 - LLM provider, EU hosting and who pays; whether summaries and abstracts may be shown to patients.
 - Scope of YouTube (stored data must be refreshed or deleted after 30 days) and reference depth beyond one level.
 - Production and test system for releases.

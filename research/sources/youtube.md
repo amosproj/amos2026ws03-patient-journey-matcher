@@ -1,6 +1,6 @@
 # YouTube
 
-Checked 01.11.2026 (API pages and Developer Policies dated 15.10.2026). Shared rules: [README](README.md).
+Checked 01.11.2026 (API pages and Developer Policies dated 15.10.2026). Shared rules: [README](../../Documentation/design/sources.md).
 
 Data API v3: metadata of public videos and channels. No transcripts of others' videos, no video files. API key only, so all data is "Non-Authorized Data".
 

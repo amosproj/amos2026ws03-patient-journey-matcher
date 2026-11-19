@@ -1,6 +1,6 @@
 # Podcasts (RSS feeds)
 
-Checked 01.11.2026 against the specs and the live feeds. Shared rules: [README](README.md).
+Checked 01.11.2026 against the specs and the live feeds. Shared rules: [README](../../Documentation/design/sources.md).
 
 RSS 2.0 file per show, one `<item>` per episode. No API, key or quota; one GET per feed. Hand-curated [feed list](#curated-feed-list), no discovery. Namespaces read: RSS core, `itunes:`, `podcast:` (`guid`, `transcript`, `chapters`, `person`, `license`), `content:encoded`, `atom:link rel="self"`.
 
@@ -52,7 +52,7 @@ Feed state (crawler table): feed key, current URL, `ETag`, `Last-Modified`, last
 
 1. `podcast:transcript`: VTT, then SRT, JSON, HTML, text. Strip timecodes, keep speakers. Match types loosely (Lancet declares `application/srt`, serves `application/x-subrip`).
 2. Show notes (`content:encoded`, else `description`): full text for ASCO; others 60–190 words. Feeds are not archives (NEJM keeps 22), so notes are re-readable only while listed. Other ASCO transcripts are on ascopubs.org (terms not checked).
-3. Speech-to-text, off by default: `WHISPER_MODEL=tiny-q5_1 make index APPROACHES=keyword` transcribes the MP3 of episodes without a transcript, offline with Whisper ([`scripts/transcribe.py`](../../scripts/transcribe.py)). Audio and text stay in memory; the [keyword index](../keyword-matching.md#full-texts) keeps the keywords only.
+3. Speech-to-text, off by default: `WHISPER_MODEL=tiny-q5_1 make index APPROACHES=keyword` transcribes the MP3 of episodes without a transcript, offline with Whisper ([`scripts/transcribe.py`](../../scripts/transcribe.py)). Audio and text stay in memory; the [keyword index](../../Documentation/design/keyword-matching.md#full-texts) keeps the keywords only.
    - In the seed crawl (12.11.2026), 148 of 165 episodes had no transcript: 138 MP3 (58 h), 5 M4A and 5 MP4. M4A and MP4 are not read: the decoder (miniaudio) has no AAC.
    - Start with multilingual `tiny-q5_1` for the lightest download (32 MB); `base-q5_1` (60 MB) is an accuracy option. Both correctly left German speech in German in the local control, allowing the keyword index to reject it. Known non-English metadata is skipped before downloading or transcribing.
    - English-only `.en` models can hallucinate English from non-English speech; avoid them when the spoken language is uncertain. Unknown metadata remains eligible, so metadata filtering alone cannot guarantee the audio language.

@@ -1,5 +1,5 @@
--- Source metadata, one row per source record (#41). Columns: Documentation/sources/README.md §2,
--- storage and read rules: Documentation/storage.md. The crawler is the only writer; the indexer and
+-- Source metadata, one row per source record (#41). Columns: Documentation/design/sources.md §2,
+-- storage and read rules: Documentation/design/storage.md. The crawler is the only writer; the indexer and
 -- the MCP server only read. Safe to run again: existing tables are left as they are.
 CREATE TABLE IF NOT EXISTS documents (
     id                  text PRIMARY KEY,

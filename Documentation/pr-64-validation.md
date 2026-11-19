@@ -27,4 +27,4 @@ Whisper implementation and model selection are unchanged. Smaller multilingual m
 - `small.en` misheard olaparib and hallucinated English from German. Multilingual controls preserved German, allowing rejection by the English keyword check. Medical-name accuracy remains limited.
 - Full audio-catalogue testing, M4A/MP4 support, and delayed download retries remain outside these changes.
 
-Per-source coverage and reproduction commands: [sources](sources/README.md#measured-readable-coverage-14112026). Optional model comparisons: [podcasts](sources/podcasts.md#whisper-models).
+Per-source coverage and reproduction commands: [sources](design/sources.md#measured-readable-coverage-14112026). Optional model comparisons: [podcasts](../research/sources/podcasts.md#whisper-models).

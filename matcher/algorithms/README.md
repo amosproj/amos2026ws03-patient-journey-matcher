@@ -43,16 +43,16 @@ The options of `match` also hold `trace` and `tuning`, for the [debug UI](../../
 ## Rules
 
 - An approach writes only its own schema and creates it itself (`CREATE … IF NOT EXISTS`, safe to run again).
-- Indexes hold derived data only, never a full text ([sources §5](../../Documentation/sources/README.md#5-storage-limits-and-retention)).
-- Each approach sets and documents its own licence rules ([sources §3](../../Documentation/sources/README.md#3-indexing)).
+- Indexes hold derived data only, never a full text ([sources §5](../../Documentation/design/sources.md#5-storage-limits-and-retention)).
+- Each approach sets and documents its own licence rules ([sources §3](../../Documentation/design/sources.md#3-indexing)).
 - Index rows reference their document, so a deleted document (YouTube after 30 days) leaves every index.
 - A matcher only reads and returns document IDs; the server adds the metadata and links.
-- A journey is health data: never stored or logged. Sending it to an outside service, e.g. for embeddings, needs a team decision ([open points](../../Documentation/architecture/README.md#5-open-points)).
+- A journey is health data: never stored or logged. Sending it to an outside service, e.g. for embeddings, needs a team decision ([open points](../../Documentation/design/architecture/README.md#5-open-points)).
 
 ## Add an approach
 
 1. Create the package with the layout above; implement `Indexer` and `Matcher`. Its name must be one of the `algorithm` values in [`contract.ts`](../mcp-server/src/contract.ts) (`keyword`, `graph`, `ai_summary`).
 2. Add it to `createApproaches` in [`approaches/src/registry.ts`](../approaches/src/registry.ts); add new dependencies, such as an LLM client, to `Dependencies`.
-3. Run `pnpm install`, then document the approach next to [keyword matching](../../Documentation/keyword-matching.md).
+3. Run `pnpm install`, then document the approach next to [keyword matching](../../Documentation/design/keyword-matching.md).
 
 The MCP server and the indexer job need no change.

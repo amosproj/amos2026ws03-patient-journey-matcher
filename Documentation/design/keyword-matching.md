@@ -1,19 +1,19 @@
 # Keyword matching
 
-The keyword baseline (#8): `match_journey` with `algorithm: keyword` ranks the stored documents by [BM25](https://en.wikipedia.org/wiki/Okapi_BM25) on the words they share with the patient journey, in their metadata and full texts. It is one of the interchangeable approaches ([adding an approach](../matcher/algorithms/README.md)). Code: [`matcher/algorithms/keyword/`](../matcher/algorithms/keyword/src/), downloads: [`matcher/download/`](../matcher/download/src/). How to run it: [build and run](build.md#run-the-matcher-locally).
+The keyword baseline (#8): `match_journey` with `algorithm: keyword` ranks the stored documents by [BM25](https://en.wikipedia.org/wiki/Okapi_BM25) on the words they share with the patient journey, in their metadata and full texts. It is one of the interchangeable approaches ([adding an approach](../../matcher/algorithms/README.md)). Code: [`matcher/algorithms/keyword/`](../../matcher/algorithms/keyword/src/), downloads: [`matcher/download/`](../../matcher/download/src/). How to run it: [build and run](../build-deploy/build.md#run-the-matcher-locally).
 
 This page describes [how it works](#how-it-works), [how we improved it by measurement](#how-we-improved-it), the [results](#results) and what it [cannot do](#known-limitations).
 
 ## How it works
 
-**Indexing.** `make index` ([`matcher/indexer/`](../matcher/indexer/src/main.ts)) reads the new and changed documents ([storage](storage.md#reading)) and writes two tables in the schema `keyword`, each with a BM25 index of [pg_textsearch](https://github.com/timescale/pg_textsearch) (PostgreSQL License; English stemming and stop words):
+**Indexing.** `make index` ([`matcher/indexer/`](../../matcher/indexer/src/main.ts)) reads the new and changed documents ([storage](storage.md#reading)) and writes two tables in the schema `keyword`, each with a BM25 index of [pg_textsearch](https://github.com/timescale/pg_textsearch) (PostgreSQL License; English stemming and stop words):
 
 - `keyword.documents`: title, abstract or description, and subject labels (MeSH for PubMed);
 - `keyword.full_texts`: the [keywords](#keywords) of the downloaded [full text](#full-texts), for English texts.
 
 Nothing else writes the schema. Deleting a document deletes its index rows.
 
-**Query.** The latest event up to `as_of` is the focus, older events are context ([MCP interface](mcp-interface.md#match_journey-input)). From each event the matcher takes the label, the text parameters except the participants of a tumor board, and the names of `true` flags (`bone_mets` → bone metastases). [`german-terms.json`](../matcher/algorithms/keyword/data/german-terms.json) makes English search terms of them:
+**Query.** The latest event up to `as_of` is the focus, older events are context ([MCP interface](../user/mcp-interface.md#match_journey-input)). From each event the matcher takes the label, the text parameters except the participants of a tumor board, and the names of `true` flags (`bone_mets` → bone metastases). [`german-terms.json`](../../matcher/algorithms/keyword/data/german-terms.json) makes English search terms of them:
 
 | List | Holds | Example |
 |---|---|---|
@@ -38,22 +38,22 @@ A document that is first in both indexes scores 2/61, one that is 30th in both 2
 - Without a full text (two thirds of the documents: most papers, videos, most podcast episodes), the metadata rank is used for the full-text part too, so such a document does not rank below those that have one.
 - `score` in the answer is relative to the best hit (1). `matched_terms` lists the query terms found in a document; one without a medical term is not returned.
 
-**New journey data.** A word outside the lists is searched as it is, so a German one finds nothing. The Matcher screen of the [debug UI](../debug/crawler/README.md) shows what became of each word of a journey. [`terms.test.ts`](../matcher/algorithms/keyword/src/terms.test.ts) lists the words of the synthetic journeys (#14) that pass unchanged and fails for a new one: translate or skip it, or add an English word to the test.
+**New journey data.** A word outside the lists is searched as it is, so a German one finds nothing. The Matcher screen of the [debug UI](../../debug/crawler/README.md) shows what became of each word of a journey. [`terms.test.ts`](../../matcher/algorithms/keyword/src/terms.test.ts) lists the words of the synthetic journeys (#14) that pass unchanged and fails for a new one: translate or skip it, or add an English word to the test.
 
 ## Full texts
 
-[`@matcher/download`](../matcher/download/src/downloader.ts) tries up to three `full_text` locators in their stored order ([sources §2](sources/README.md#2-metadata-schema)) and reads the first that gives text, in memory only.
+[`@matcher/download`](../../matcher/download/src/downloader.ts) tries up to three `full_text` locators in their stored order ([sources §2](sources.md#2-metadata-schema)) and reads the first that gives text, in memory only.
 
 | Source | File read | Read as |
 |---|---|---|
 | PubMed with a PMCID | JATS XML from the PMC bucket | `<body>`, without front matter and references |
-| PubMed without a PMCID | Open-access PDF that [OpenAlex](sources/openalex.md) knows, if its host allows the download | PDF text |
+| PubMed without a PMCID | Open-access PDF that [OpenAlex](../../research/sources/openalex.md) knows, if its host allows the download | PDF text |
 | arXiv | HTML page, else the PDF (PDF-only uploads have no HTML) | HTML without page parts, formulas and references; PDF text |
 | Zenodo | The preview file first: PDF, XML, HTML or text | As above; Word files, images, archives and unknown types are skipped |
-| Podcasts | Transcript: WebVTT, SRT, JSON or text; else the MP3, with [speech-to-text](sources/podcasts.md#indexing) | Speakers and spoken text, without timings; what Whisper hears |
+| Podcasts | Transcript: WebVTT, SRT, JSON or text; else the MP3, with [speech-to-text](../../research/sources/podcasts.md#indexing) | Speakers and spoken text, without timings; what Whisper hears |
 | YouTube | none | — |
 
-PDFs are read with [unpdf](https://github.com/unjs/unpdf) (MIT, Mozilla's pdf.js), XML and HTML with [htmlparser2](https://github.com/fb55/htmlparser2) (MIT). Text after a "References" or "Bibliography" heading in the second half is dropped, so cited titles do not match. Downloads keep the [request budgets](sources/README.md#5-storage-limits-and-retention) per host: arxiv.org 15 s (its `robots.txt`), Zenodo 1 s, the PMC bucket 0.1 s, others 3 s; different hosts in parallel. A server error or 429 is retried twice, after `Retry-After` if sent; files over 50 MB are skipped, audio over 150 MB.
+PDFs are read with [unpdf](https://github.com/unjs/unpdf) (MIT, Mozilla's pdf.js), XML and HTML with [htmlparser2](https://github.com/fb55/htmlparser2) (MIT). Text after a "References" or "Bibliography" heading in the second half is dropped, so cited titles do not match. Downloads keep the [request budgets](sources.md#5-storage-limits-and-retention) per host: arxiv.org 15 s (its `robots.txt`), Zenodo 1 s, the PMC bucket 0.1 s, others 3 s; different hosts in parallel. A server error or 429 is retried twice, after `Retry-After` if sent; files over 50 MB are skipped, audio over 150 MB.
 
 Both metadata and full-text indexing skip documents whose `extra.metadata_language` is known and non-English. Unknown stays eligible; `language` is not used because it may describe the article rather than its English abstract. Already indexed non-English content is cleared on the next index run, including indexes created before this filtering was added. Skipped documents still have an index bookkeeping row, avoiding repeated downloads.
 
@@ -69,15 +69,15 @@ Audio skips written by the old indexer (`no readable format: audio/mpeg`, etc.) 
 | `lexemes` | The distinct English stems of `terms`, for `matched_terms` |
 | `words`, `url`, `media_type`, `fetched_at`, `document_changed_at` | Number of keywords (at most 50,000), the file read, when, and the document version it was built from |
 
-Check a run on the Index screen of the [debug UI](../debug/crawler/README.md), or with `SELECT status, detail, count(*) FROM keyword.full_texts GROUP BY 1, 2 ORDER BY 3 DESC`.
+Check a run on the Index screen of the [debug UI](../../debug/crawler/README.md), or with `SELECT status, detail, count(*) FROM keyword.full_texts GROUP BY 1, 2 ORDER BY 3 DESC`.
 
-**Licences.** This approach reads full texts under any licence, also "all rights reserved": the project is non-profit and keeps keywords only, also of the audio it transcribes. Other approaches decide for themselves ([sources §3](sources/README.md#3-indexing)).
+**Licences.** This approach reads full texts under any licence, also "all rights reserved": the project is non-profit and keeps keywords only, also of the audio it transcribes. Other approaches decide for themselves ([sources §3](sources.md#3-indexing)).
 
 ## Keywords
 
 Full texts keep their medical words, even those named once; numbers and basic words go. Basic words are the 5,000 most frequent English words of [wordfreq](https://github.com/rspeer/wordfreq), except single-word MeSH terms in branches A–H, M and N (surgery, patients), words of longer MeSH terms outside the top 1,000 (failure, survival), two- and three-letter words outside the top 2,000 (PSA, DRE), and the words of the journey terms with a plural "s". On 50 texts this keeps 42 % of the words; of 80 medical test words it drops only "doctor".
 
-[`basic-words.ts`](../matcher/algorithms/keyword/scripts/basic-words.ts) builds [`basic-words.json`](../matcher/algorithms/keyword/data/basic-words.json) from wordfreq and the MeSH descriptors (`desc2026.gz` from [NLM](https://nlmpubs.nlm.nih.gov/projects/mesh/MESH_FILES/xmlmesh/)). For a new MeSH year: `node matcher/algorithms/keyword/scripts/basic-words.ts desc2026.gz`. A new list applies to changed documents; for all, [rebuild the index](build.md#limitations).
+[`basic-words.ts`](../../matcher/algorithms/keyword/scripts/basic-words.ts) builds [`basic-words.json`](../../matcher/algorithms/keyword/data/basic-words.json) from wordfreq and the MeSH descriptors (`desc2026.gz` from [NLM](https://nlmpubs.nlm.nih.gov/projects/mesh/MESH_FILES/xmlmesh/)). For a new MeSH year: `node matcher/algorithms/keyword/scripts/basic-words.ts desc2026.gz`. A new list applies to changed documents; for all, [rebuild the index](../build-deploy/build.md#limitations).
 
 **English only.** A text counts as English if at least 12 % of its words are among the 100 most frequent English words (English texts: about 30 %, others: under 10 %). Other texts keep only their metadata (`not English`).
 
@@ -95,9 +95,9 @@ Full texts keep their medical words, even those named once; numbers and basic wo
 
 About 150 variants went through this loop. The script that runs them is not in the repository; it reproduces the matcher (identical lists on all points) and changes one thing per option. The grades are in the repository ([checking a change](#checking-a-change)).
 
-**Test set.** 129 points from 10 synthetic journeys, one per pathway ([evaluation points](matching-evaluation.md#evaluation-points)): every event as the focus, as `match_journey` cuts the journey. Of a run of identical check-ups only the first and the last count, and none after the patient died. Five journeys (67 points) are the sample on which a change is chosen, the other five (62 points) the holdout on which it must hold.
+**Test set.** 129 points from 10 synthetic journeys, one per pathway ([evaluation points](../../research/matching-evaluation.md#evaluation-points)): every event as the focus, as `match_journey` cuts the journey. Of a run of identical check-ups only the first and the last count, and none after the patient died. Five journeys (67 points) are the sample on which a change is chosen, the other five (62 points) the holdout on which it must hold.
 
-**Relevance grades.** A source gets a grade for a point: 3 fits the focus, 2 fits the context, 1 is the right disease but generic or another setting, 0 is the wrong disease or a setting that does not apply ([scale and rules](matching-evaluation.md#what-makes-a-match-relevant)). An LLM graded every source that a variant put in a first 10, from the journey up to the focus and the source's title, abstract and subjects: 9,028 grades. Two LLM judges agree with each other and with the 58 judgments of #11 within one grade (weighted kappa 0.89). That shows consistency, not truth: no clinician has checked the grades.
+**Relevance grades.** A source gets a grade for a point: 3 fits the focus, 2 fits the context, 1 is the right disease but generic or another setting, 0 is the wrong disease or a setting that does not apply ([scale and rules](../../research/matching-evaluation.md#what-makes-a-match-relevant)). An LLM graded every source that a variant put in a first 10, from the journey up to the focus and the source's title, abstract and subjects: 9,028 grades. Two LLM judges agree with each other and with the 58 judgments of #11 within one grade (weighted kappa 0.89). That shows consistency, not truth: no clinician has checked the grades.
 
 **Measurements.**
 
@@ -115,7 +115,7 @@ About 150 variants went through this loop. The script that runs them is not in t
 \mathrm{DCG@10} = \sum_{i=1}^{10} \frac{2^{g_i} - 1}{\log_2(i + 1)}, \qquad \mathrm{nDCG@10} = \frac{\mathrm{DCG@10}}{\mathrm{DCG@10}\ \text{of the best order}}
 ```
 
-It runs from 0 to 1, and 1 means the ten best known sources in the best order. If ten sources of grade 3 are known, a list with five of them on top and grade-1 sources below scores 0.70. More: our [metrics](matching-evaluation.md#metrics), [Wikipedia](https://en.wikipedia.org/wiki/Discounted_cumulative_gain), and Järvelin and Kekäläinen, "Cumulated gain-based evaluation of IR techniques" (2002), which introduced it.
+It runs from 0 to 1, and 1 means the ten best known sources in the best order. If ten sources of grade 3 are known, a list with five of them on top and grade-1 sources below scores 0.70. More: our [metrics](../../research/matching-evaluation.md#metrics), [Wikipedia](https://en.wikipedia.org/wiki/Discounted_cumulative_gain), and Järvelin and Kekäläinen, "Cumulated gain-based evaluation of IR techniques" (2002), which introduced it.
 
 **Chance.** A difference between two rankings is the mean of the differences per point, with a 95 % interval from 4,000 bootstrap resamples of the points. If the interval includes 0, the difference may be chance. With 129 points, differences below about 0.01 cannot be told from chance.
 
@@ -176,9 +176,9 @@ The first three brought most of the gain (about +0.16 when first measured), the 
 
 ## Checking a change
 
-Save the answers of `match_journey` for the points of the [matching evaluation](matching-evaluation.md#compare-matchers) before and after a change, on the same documents, and compare the metrics and the ranks of the judged sources. A source without a grade counts as 0: a list can get better while its nDCG falls, so read the lists too.
+Save the answers of `match_journey` for the points of the [matching evaluation](../../research/matching-evaluation.md#compare-matchers) before and after a change, on the same documents, and compare the metrics and the ranks of the judged sources. A source without a grade counts as 0: a list can get better while its nDCG falls, so read the lists too.
 
-To compare ranking variants, grade every source that one of them puts in its first 10 for a point, so that no compared source counts as 0. #58 did this with an LLM; its 9,028 grades for the 129 points are in [`keyword-llm-judgments.json`](../matcher/evaluation/keyword-llm-judgments.json), with `set` telling the journeys to choose a change on (`sample`) from those to confirm it on (`holdout`):
+To compare ranking variants, grade every source that one of them puts in its first 10 for a point, so that no compared source counts as 0. #58 did this with an LLM; its 9,028 grades for the 129 points are in [`keyword-llm-judgments.json`](../../matcher/evaluation/keyword-llm-judgments.json), with `set` telling the journeys to choose a change on (`sample`) from those to confirm it on (`holdout`):
 
 ```sh
 cd matcher
@@ -214,10 +214,10 @@ The file covers what the keyword ranking found. Another approach's first 10 will
 - **Keyword filter.** It drops a few medical words ("doctor", "rising" for "rise") and keeps rare non-medical ones (names, typos).
 - **Scores** compare within one list only, not between journeys or algorithms.
 
-**Downloader and extractor** ([`@matcher/download`](../matcher/download/src/))
+**Downloader and extractor** ([`@matcher/download`](../../matcher/download/src/))
 
 - **Most papers have no full text.** A PubMed paper needs a PMCID or an open-access PDF whose host allows the download: 34 % of the stored documents have a full text.
-- **No video; audio only with speech-to-text.** YouTube gives captions only to a video's owner. Podcast audio is read only with `WHISPER_MODEL` set ([podcasts](sources/podcasts.md#indexing)); without it, episodes without a transcript have metadata only.
+- **No video; audio only with speech-to-text.** YouTube gives captions only to a video's owner. Podcast audio is read only with `WHISPER_MODEL` set ([podcasts](../../research/sources/podcasts.md#indexing)); without it, episodes without a transcript have metadata only.
 - **Text files only:** PDF, XML, HTML, plain text and transcripts. Not read: Word and PowerPoint files, images, archives, podcast show notes and scanned PDFs (no OCR).
 - **One file per document:** the first of up to three that gives text, at most 50 MB.
 - **English only.** Other texts keep their metadata only, and the references cut needs an English heading.

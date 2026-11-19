@@ -3,7 +3,7 @@
 Collects metadata from PubMed, arXiv, Zenodo, YouTube and podcast feeds and follows the
 references of the papers it finds. PubMed papers get their full-text links from PMC, else
 open-access copies from OpenAlex. Writes JSON Lines to stdout; with `--store` it also
-upserts them into PostgreSQL ([storage and retrieval](../Documentation/storage.md)).
+upserts them into PostgreSQL ([storage and retrieval](../Documentation/design/storage.md)).
 
 ## Setup
 
@@ -23,7 +23,7 @@ uv run crawler pubmed --all-topics --since auto --store   # continue from the la
 docker compose run --rm crawler-pubmed   # the scheduled run, from the repository root
 ```
 
-The scheduled runs and their options: [deployment](../Documentation/deployment.md#scheduled-crawls).
+The scheduled runs and their options: [deployment](../Documentation/build-deploy/deployment.md#scheduled-crawls).
 
 Sources: `pubmed`, `arxiv`, `zenodo`, `youtube`, `podcast`. `uv run crawler <source> --help`
 lists the options. Each output line is a `SourceDocument` (`src/crawler/models.py`).
@@ -34,11 +34,11 @@ topic without one runs without a date. A run with a failed request, or stopped b
 
 Each document gets `extra.metadata_language`, the language of its title and abstract or
 description, detected offline; it is missing where the text is too short to tell
-([languages](../Documentation/storage.md#languages)).
+([languages](../Documentation/design/storage.md#languages)).
 
 `uv run crawler refresh` backfills metadata languages and OpenAlex links on stored records,
 including cited papers, without recrawling or resetting the database. Use `--source pubmed`
-or `--limit 50` for a smaller run, then reindex ([refresh](../Documentation/storage.md#refresh-stored-enrichment)).
+or `--limit 50` for a smaller run, then reindex ([refresh](../Documentation/design/storage.md#refresh-stored-enrichment)).
 
 Cited papers are kept only if they match the topic filter: the topic's `terms`, or for a
 single arXiv query its words (all of them; any with `--query-mode or`). Single PubMed and

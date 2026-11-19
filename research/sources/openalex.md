@@ -1,8 +1,8 @@
 # OpenAlex
 
-Checked 11.11.2026. Shared rules: [README](README.md).
+Checked 11.11.2026. Shared rules: [README](../../Documentation/design/sources.md).
 
-Full-text route for [PubMed](pubmed.md) rows that [PMC](pmc.md) does not hold (#57). No rows of its own; fills `full_text`, `licence` (if PMC gave none) and `external_ids.openalex` of the PubMed row. OpenAlex lists, per DOI, where a paper can be read: publisher sites, repositories and preprint servers, each with a licence. In the seed crawl (`make seed`, 11.11.2026) the PubMed rows with a full-text link went from 195 of 586 (33 %, PMC) to 275 of 588 (47 %); [coverage](README.md#coverage-of-the-seed-crawl-57). In an earlier 50-paper sample, 3 of 4 new PDFs downloaded; the fourth site answered with an HTML page.
+Full-text route for [PubMed](pubmed.md) rows that [PMC](pmc.md) does not hold (#57). No rows of its own; fills `full_text`, `licence` (if PMC gave none) and `external_ids.openalex` of the PubMed row. OpenAlex lists, per DOI, where a paper can be read: publisher sites, repositories and preprint servers, each with a licence. In the seed crawl (`make seed`, 11.11.2026) the PubMed rows with a full-text link went from 195 of 586 (33 %, PMC) to 275 of 588 (47 %); [coverage](../../Documentation/design/sources.md#coverage-of-the-seed-crawl-57). In an earlier 50-paper sample, 3 of 4 new PDFs downloaded; the fourth site answered with an HTML page.
 
 ## Access
 
@@ -32,7 +32,7 @@ Left out:
 
 ## Indexing
 
-1. The indexers try the locators in their order ([keyword matching](../keyword-matching.md#full-texts)); they are read as PDFs, with the default budget of 3 s per host.
+1. The indexers try the locators in their order ([keyword matching](../../Documentation/design/keyword-matching.md#full-texts)); they are read as PDFs, with the default budget of 3 s per host.
 2. Other publisher sites may refuse automated downloads too, or answer with an HTML page; such documents keep their metadata only. Measure the readable share with the Index screen of the [debug UI](../../debug/crawler/README.md), and add hosts that always fail to `NO_AUTOMATED_DOWNLOAD`.
 
 ## To be aware of

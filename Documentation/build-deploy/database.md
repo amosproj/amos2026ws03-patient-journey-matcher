@@ -7,7 +7,7 @@ The local database runs in Docker via Docker Compose. It uses PostgreSQL 18 with
 - Docker Desktop (Windows/macOS) or Docker Engine with the Compose plugin
 - Check the installation with `docker compose version`
 - On Windows, Docker Desktop needs WSL2
-- No Docker login is needed. `make db` builds the image from `db/Dockerfile`: the pgvector image (PostgreSQL 18 on Debian 13) plus pg_textsearch for the [keyword index](keyword-matching.md).
+- No Docker login is needed. `make db` builds the image from `db/Dockerfile`: the pgvector image (PostgreSQL 18 on Debian 13) plus pg_textsearch for the [keyword index](../design/keyword-matching.md).
 
 ### Configuration
 
@@ -62,7 +62,7 @@ Use `127.0.0.1`, not `localhost`: the port is published on IPv4 only. URL-encode
 ### Data and initialization
 
 - Data is stored in the Docker volume `pgdata` and survives `stop`, `down` and restarts. Only `down -v` deletes it.
-- SQL files in `db/init/` run once on the first start with an empty volume. They enable the `vector` extension and create the tables `documents` and `crawl_runs` ([storage and retrieval](storage.md)).
+- SQL files in `db/init/` run once on the first start with an empty volume. They enable the `vector` extension and create the tables `documents` and `crawl_runs` ([storage and retrieval](../design/storage.md)).
 - `make db` starts the database and applies `db/init/` again, so an existing volume gets new tables without a reset. Without make (works in Bash and PowerShell):
 
   ```bash

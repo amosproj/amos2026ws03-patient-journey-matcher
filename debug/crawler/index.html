@@ -744,13 +744,13 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
 <div class="layout" id="match-view" hidden>
   <aside class="side">
     <div class="side-head">
-      <h2>Journey <i class="info" tabindex="0" data-tip="Puts a journey into the arguments below and keeps their other fields: a synthetic journey of patientdata/, the one of the example in Documentation/build.md, or a timeline.json from disk. Only synthetic journeys belong here: the journey goes to the matcher and back, it is not stored or logged.">i</i></h2>
+      <h2>Journey <i class="info" tabindex="0" data-tip="Puts a journey into the arguments below and keeps their other fields: a synthetic journey of patientdata/, the one of the example in Documentation/build-deploy/build.md, or a timeline.json from disk. Only synthetic journeys belong here: the journey goes to the matcher and back, it is not stored or logged.">i</i></h2>
       <button type="button" class="link-button" id="mt-open" title="Put a timeline.json from disk into the arguments">Open file …</button>
     </div>
     <select id="mt-journey"></select>
     <input type="file" id="mt-file" accept=".json,application/json" hidden>
     <div class="side-head">
-      <h2>Arguments of match_journey <i class="info" tabindex="0" data-tip="One JSON object, sent as it is: the same as “Edit as JSON” in the Tools tab of the MCP Inspector, or --tool-args-json of its CLI. journey: the timeline.json fits as it is. algorithm: keyword (graph and ai_summary answer NOT_AVAILABLE). limit: 1 to 50, default 10. content_types: default all. The as-of slider writes journey.as_of. All fields: Documentation/mcp-interface.md.">i</i></h2>
+      <h2>Arguments of match_journey <i class="info" tabindex="0" data-tip="One JSON object, sent as it is: the same as “Edit as JSON” in the Tools tab of the MCP Inspector, or --tool-args-json of its CLI. journey: the timeline.json fits as it is. algorithm: keyword (graph and ai_summary answer NOT_AVAILABLE). limit: 1 to 50, default 10. content_types: default all. The as-of slider writes journey.as_of. All fields: Documentation/user/mcp-interface.md.">i</i></h2>
     </div>
     <textarea id="mt-json" spellcheck="false" autocomplete="off" placeholder='{"journey": {"patient_id": "…", "events": [{"id": "e1", "type": "…", "label": "…", "date": "2026-01-31"}]}, "algorithm": "keyword", "limit": 10}'></textarea>
     <div class="error" id="mt-json-error"></div>
@@ -3118,7 +3118,7 @@ function mtRenderRaw() {
 
 // ── Example client: the answer as an app could show it ────────────────────────
 // It reads only what the tools answer, no step of the match and no database row, so it shows
-// what a client can build from the contract (Documentation/mcp-interface.md).
+// what a client can build from the contract (Documentation/user/mcp-interface.md).
 const CLIENT_FILES = 8;
 
 function mtRenderClient() {

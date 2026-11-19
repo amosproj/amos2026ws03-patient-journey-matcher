@@ -1,6 +1,6 @@
 # arXiv
 
-Checked 01.11.2026; "tested" = own requests. Shared rules: [README](README.md).
+Checked 01.11.2026; "tested" = own requests. Shared rules: [README](../../Documentation/design/sources.md).
 
 Open preprint server, over 3 M articles, metadata CC0. Licence per paper: a third of recent medical papers carry only arXiv's own licence, 16 % an NC one. About 8,300 medical papers a year ([categories](#medical-categories)).
 
@@ -72,7 +72,7 @@ Topic queries are narrower: `all:"prostate cancer"` 102 a year, `"breast cancer"
 ## Indexing
 
 1. HTML first (LaTeXML). 99 % of LaTeX submissions have it since 08.2026; PDF-only uploads 404 (2 of 5 medical samples).
-2. Else PDF, read with unpdf ([keyword matching](../keyword-matching.md#full-texts)).
+2. Else PDF, read with unpdf ([keyword matching](../../Documentation/design/keyword-matching.md#full-texts)).
 3. Request the stored version. Keep 15 s per request on arxiv.org (`export.arxiv.org` disallows all in `robots.txt`).
 
 MCP passes the file on only where its CC licence allows; arXiv default licence: abstract page link.
