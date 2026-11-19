@@ -25,6 +25,7 @@ The Python crawler and the TypeScript matcher are separate projects with their o
 | `matcher/download/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Downloads full texts and reads their text ([keyword matching](Documentation/keyword-matching.md#full-texts)) |
 | `matcher/algorithms/keyword/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | [Keyword matching](Documentation/keyword-matching.md): BM25 index and matcher; [adding an approach](matcher/algorithms/README.md) |
 | `matcher/indexer/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Index builder (`make index`) |
+| `matcher/transcriber/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | Speech-to-text job for podcast audio (`make transcribe`) |
 | `matcher/mcp-server/` | TypeScript, Node.js 24 | [pnpm](https://pnpm.io/) workspace | MCP server; builds the journey state (focus and context) |
 
 Matcher dependencies and code rules: [`matcher/README.md`](matcher/README.md).

@@ -1,7 +1,11 @@
+from email.message import Message
 from typing import Any
+from urllib.error import HTTPError
+
+import pytest
 
 from crawler.links.pubmed import REFERENCES_LINK, PubMedLinkExtractor
-from crawler.sources.pubmed import NcbiThrottle
+from crawler.sources.pubmed import NcbiThrottle, NcbiUnavailable
 
 
 class FakeHandle:
@@ -63,6 +67,36 @@ def test_elink_gets_a_list_so_every_pmid_keeps_its_own_references() -> None:
         "key",
         1,
     )
+
+
+class BrokenElink(FakeEntrez):
+    """ELink while NCBI is down: HTTP 400, or an error element in the answer."""
+
+    def __init__(self, error: Exception) -> None:
+        super().__init__([])
+        self.error = error
+
+    def elink(self, **arguments: Any) -> FakeHandle:
+        if isinstance(self.error, HTTPError):
+            raise self.error
+        return super().elink(**arguments)
+
+    def read(self, handle: FakeHandle) -> Any:
+        raise self.error  # as Biopython does for an error element
+
+
+@pytest.mark.parametrize(
+    "error",
+    [
+        RuntimeError("Couldn't resolve #exLinkSrv2, the address table is empty."),
+        HTTPError("https://eutils.ncbi.nlm.nih.gov", 400, "Bad Request", Message(), None),
+    ],
+)
+def test_references_ncbi_cannot_list_right_now_are_worth_a_retry(error: Exception) -> None:
+    extractor = PubMedLinkExtractor(entrez=BrokenElink(error))
+
+    with pytest.raises(NcbiUnavailable):
+        extractor.cited_ids(["1"])
 
 
 def test_no_ids_means_no_request() -> None:

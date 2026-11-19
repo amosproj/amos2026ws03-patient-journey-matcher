@@ -15,8 +15,8 @@ flowchart LR
 | Table | Written by | Read by |
 |---|---|---|
 | `documents` | crawler | indexer, MCP server |
-| `crawl_runs` | crawler | crawler (`--since auto`), people |
-| index tables, e.g. `keyword.documents` and `keyword.full_texts` ([keyword matching](keyword-matching.md)) | indexer | MCP server |
+| `crawl_runs` | crawler | crawler (`--since auto`, `--resume`), people |
+| index tables, e.g. `keyword.documents` and `keyword.full_texts` ([keyword matching](keyword-matching.md)) | indexer, transcription job | MCP server |
 
 ## Storing
 
@@ -25,14 +25,18 @@ cd crawler
 uv run crawler pubmed --topic prostate_cancer --store
 ```
 
-`--store` needs `DATABASE_URL` (see [`crawler/.env.example`](../crawler/.env.example)) and the schema (`make db`); the crawler checks both before the crawl and exits with 2 if one is missing. Cited papers that are already stored are not fetched again. The JSON Lines on stdout stay the same. After the crawl, a YouTube run refreshes the stored videos of its channels that expire within 15 days. Then one transaction:
+`--store` needs `DATABASE_URL` (see [`crawler/.env.example`](../crawler/.env.example)) and the schema (`make db`); the crawler checks both before the crawl and exits with 2 if one is missing. Cited papers that are already stored are not fetched again. The JSON Lines on stdout stay the same.
+
+A command over several topics crawls and stores them one after another, each as a run of its own with its own row in `crawl_runs`; a query that topics share runs for each of them. So a crawl that is stopped or crashes loses only the topic it was working on, and `--resume` continues with it.
+
+After the crawl, a YouTube run refreshes the stored videos of its channels that expire within 15 days. Then one transaction:
 
 1. upserts each document, refreshed videos included, by `id`: columns get the new values, `found_by` gains the new entries, `changed_at` moves only if the content changed;
 2. adds the run's `cited_by` entries to stored documents it did not fetch again;
-3. deletes rows whose `expires_at` has passed (YouTube: 30 days after retrieval);
+3. deletes rows whose `expires_at` has passed (YouTube: 30 days after retrieval); a command over several topics does so only with its last topic, when each has refreshed its videos;
 4. writes the run to `crawl_runs`.
 
-If storing fails, nothing of the run is stored, `storing failed` goes to stderr and the exit code is 1.
+Storing is tried again for two minutes, so a database that restarts costs nothing. If it still fails, nothing of the run is stored, the crawl stops, `storing failed` goes to stderr and the exit code is 1.
 
 ## Schema
 

@@ -1,0 +1,14 @@
+{
+  "name": "@matcher/transcriber",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/main.ts"
+  },
+  "dependencies": {
+    "@matcher/db": "workspace:*",
+    "@matcher/download": "workspace:*",
+    "@matcher/keyword": "workspace:*"
+  }
+}

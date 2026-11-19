@@ -1,5 +1,6 @@
--- One row per crawler run with --store (#41): what ran, how it went and what it stored. Written
--- in the same transaction as the documents of the run, so a failed store leaves no row.
+-- One row per crawler run with --store, one per topic if the command covers several (#41): what
+-- ran, how it went and what it stored. Written in the same transaction as the documents of the
+-- run, so a failed store leaves no row.
 CREATE TABLE IF NOT EXISTS crawl_runs (
     id          bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     source      text NOT NULL,

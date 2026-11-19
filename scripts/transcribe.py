@@ -10,11 +10,12 @@
 
     uv run --script scripts/transcribe.py small.en < episode.mp3
 
-The indexer calls it for podcast episodes without a transcript when WHISPER_MODEL is set
+The transcription job (`make transcribe`) calls it for podcast episodes without a transcript
 (Documentation/sources/podcasts.md). The audio and the text stay in memory. The model is a
 name from whisper.cpp such as `base.en` or `small.en`, or a model file; the first run
-downloads a named model to the user's data directory. Reads MP3, FLAC, WAV and Ogg Vorbis;
-exit code 2 for anything else.
+downloads a named model to the user's data directory. A second argument sets the number of
+threads, else Whisper takes 4. Reads MP3, FLAC, WAV and Ogg Vorbis; exit code 2 for anything
+else.
 """
 
 import os
@@ -30,8 +31,9 @@ SAMPLE_RATE = 16_000
 
 
 def main() -> int:
-    if len(sys.argv) != 2:
-        print("usage: transcribe.py <model> < audio", file=sys.stderr)
+    threads = sys.argv[2:]
+    if len(sys.argv) not in (2, 3) or not all(count.isdigit() and int(count) for count in threads):
+        print("usage: transcribe.py <model> [threads] < audio", file=sys.stderr)
         return 1
     name = sys.argv[1]
     if name not in AVAILABLE_MODELS and not os.path.isfile(name):
@@ -57,6 +59,7 @@ def main() -> int:
         print_progress=False,
         print_realtime=False,
         redirect_whispercpp_logs_to=None,
+        **({"n_threads": int(threads[0])} if threads else {}),
     )
     for segment in model.transcribe(samples):
         print(segment.text.strip())

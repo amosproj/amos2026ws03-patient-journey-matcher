@@ -3,7 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "exports": "./src/approach.ts",
+  "exports": {
+    ".": "./src/approach.ts",
+    "./transcription": "./src/transcription.ts"
+  },
   "dependencies": {
     "@matcher/core": "workspace:*",
     "@matcher/db": "workspace:*",

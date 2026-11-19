@@ -1,5 +1,8 @@
 import asyncio
+import json
 import logging
+import subprocess
+import sys
 import threading
 import time
 from collections.abc import Sequence
@@ -383,6 +386,23 @@ def test_known_documents_are_not_fetched_but_keep_their_citation() -> None:
     assert result.stats.skipped_known == 1
 
 
+def test_min_citations_looks_up_only_the_papers_several_results_cite() -> None:
+    scraper = FakeScraper(searches={"q": ["1", "2", "3"]}, records={"5": paper("5")})
+    extractor = FakeExtractor({"1": ["5", "6"], "2": ["5"], "3": ["7"]})
+
+    result = collect([search("q")], scraper, extractor, min_citations=2)
+
+    assert scraper.lookups == [["5"]]
+    documents = {document.id: document for document in result.documents}
+    assert set(documents) == {"pubmed:1", "pubmed:2", "pubmed:3", "pubmed:5"}
+    assert documents["pubmed:5"].found_by == [
+        CitationProvenance(cited_by="pubmed:1"),
+        CitationProvenance(cited_by="pubmed:2"),
+    ]
+    assert result.stats.skipped_rarely_cited == 2
+    assert result.ok
+
+
 def test_depth_zero_collects_the_seeds_only() -> None:
     scraper = FakeScraper(searches={"q": ["1"]})
     created: list[SourceName] = []
@@ -448,6 +468,76 @@ def test_max_requests_reports_what_was_left_in_the_queue() -> None:
     assert len(scraper.calls) == 1
     assert result.stats.unprocessed_requests == 2
     assert not result.ok
+    assert not result.interrupted
+
+
+CTRL_C_DURING_THE_SECOND_SEARCH = """
+import asyncio, json, os, signal, time
+
+from crawler.models import ScrapeRequest, SourceDocument, SourceName
+from crawler.runner import CollectionOptions, run_requests
+from crawler.sources.base import BaseScraper
+
+
+class Scraper(BaseScraper):
+    source = SourceName.PUBMED
+
+    def scrape(self, request):
+        if request.query == "second":
+            os.kill(os.getpid(), signal.SIGINT)
+            time.sleep(0.3)  # still at work when the crawl is told to stop
+        return [
+            SourceDocument(
+                id=f"pubmed:{request.query}",
+                source=SourceName.PUBMED,
+                content_type="journal_article",
+                source_id=request.query,
+                title="Outcomes in prostate cancer",
+                url="https://example.test/",
+            )
+        ]
+
+
+seeds = [ScrapeRequest(source="pubmed", query=query) for query in ("first", "second", "third")]
+result = asyncio.run(
+    run_requests(
+        seeds,
+        options=CollectionOptions(max_depth=0),
+        source_factory=lambda _source: Scraper(),
+        link_extractor_factory=lambda _source: None,
+    )
+)
+print(
+    json.dumps(
+        {
+            "documents": [document.id for document in result.documents],
+            "interrupted": result.interrupted,
+            "not_processed": result.stats.unprocessed_requests,
+            "ok": result.ok,
+        }
+    )
+)
+"""
+
+
+@pytest.mark.skipif(sys.platform == "win32", reason="sends SIGINT to a process")
+def test_ctrl_c_finishes_the_request_at_work_and_leaves_the_rest() -> None:
+    # In a process of its own: without Crawlee's handler, the signal would end the tests.
+    process = subprocess.run(
+        [sys.executable, "-c", CTRL_C_DURING_THE_SECOND_SEARCH],
+        capture_output=True,
+        text=True,
+        timeout=60,
+        check=False,
+    )
+
+    assert process.returncode == 0, process.stderr
+    assert json.loads(process.stdout) == {
+        "documents": ["pubmed:first", "pubmed:second"],
+        "interrupted": True,
+        "not_processed": 1,
+        "ok": False,
+    }
 
 
 def test_missing_credentials_fail_before_the_crawl() -> None:

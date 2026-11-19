@@ -51,6 +51,18 @@ services:
   crawler-podcast:
     <<: *crawler
     command: [podcast, --all-topics, --since, auto, --store, --max-results, "100"]
+  # Not scheduled: PubMed again with the papers that two search results of a topic cite, which
+  # takes more than a day (Documentation/deployment.md#crawl-the-cited-papers). --resume:
+  # started again, it goes on.
+  crawler-pubmed-references:
+    <<: *crawler
+    command: [pubmed, --all-topics, --resume, --store, --max-results, "50", --max-depth, "1",
+              --min-citations, "2"]
+  # The same for arXiv, but with every cited arXiv paper: a topic has few results there, and
+  # what two of them cite are methods such as ResNet, which the topic filter drops anyway.
+  crawler-arxiv-references:
+    <<: *crawler
+    command: [arxiv, --all-topics, --resume, --store, --max-results, "3", --max-depth, "1"]
 
 volumes:
   pgdata:

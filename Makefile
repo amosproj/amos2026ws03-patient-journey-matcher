@@ -1,15 +1,15 @@
-.PHONY: build test start debug db seed index graph
+.PHONY: build test start debug db seed index transcribe graph
 
 PORT ?= 8765
 
 # With the root .env, `make test` runs the database tests against the database from `make db`
-# instead of skipping them, and `make seed`, `make index` and `make start` use that database; a
-# TEST_DATABASE_URL or DATABASE_URL that is already set wins.
+# instead of skipping them, and `make seed`, `make index`, `make transcribe` and `make start` use
+# that database; a TEST_DATABASE_URL or DATABASE_URL that is already set wins.
 ifneq ($(wildcard .env),)
 include .env
 LOCAL_DATABASE_URL := postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@127.0.0.1:$(or $(POSTGRES_PORT),5432)/$(POSTGRES_DB)
 export TEST_DATABASE_URL ?= $(LOCAL_DATABASE_URL)
-seed index start: export DATABASE_URL ?= $(LOCAL_DATABASE_URL)
+seed index transcribe start: export DATABASE_URL ?= $(LOCAL_DATABASE_URL)
 endif
 
 build:
@@ -48,6 +48,12 @@ seed: db
 # crawl. All approaches, or the ones named, e.g. `make index APPROACHES=keyword`.
 index: build
 	cd matcher && pnpm --filter @matcher/indexer start $(APPROACHES)
+
+# Reads the audio that has no transcript with speech-to-text, for the keyword index, until it is
+# stopped: `WHISPER_MODEL=tiny-q5_1 make transcribe`. How many files it reads at once is set in
+# the debug UI, also while it runs, or here: `make transcribe WORKERS=2`.
+transcribe: build
+	cd matcher && pnpm --filter @matcher/transcriber start $(WORKERS)
 
 .PHONY: test-integration
 test-integration: build

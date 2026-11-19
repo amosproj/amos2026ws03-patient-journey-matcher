@@ -91,7 +91,8 @@ class Frontier:
     - Each document is collected once; its `found_by` entries are merged.
     - Each paper's references are requested once (`expanded`).
     - Each cited paper is looked up once (`claimed`), unless it was already collected in
-      this run or is in `known_ids` (documents stored by an earlier run).
+      this run or is in `known_ids` (documents stored by an earlier run), and only once
+      `min_citations` collected papers cite it.
     - Cited papers must pass the topic filter. Seed results always count.
     - References are followed until `max_depth` (seeds have depth 0).
     - A seed with `since` that returns `max_results` documents is noted: sources list the
@@ -104,12 +105,14 @@ class Frontier:
         max_depth: int,
         topic_filter: TopicFilter,
         known_ids: AbstractSet[str] = frozenset(),
+        min_citations: int = 1,
         lookup_batch_size: Mapping[SourceName, int] | None = None,
         references_batch_size: Mapping[SourceName, int] | None = None,
     ) -> None:
         self._max_depth = max_depth
         self._topic_filter = topic_filter
         self._known_ids = known_ids
+        self._min_citations = min_citations
         self._lookup_batch_size = dict(lookup_batch_size or {})
         self._references_batch_size = dict(references_batch_size or {})
         self._documents: dict[str, SourceDocument] = {}
@@ -161,7 +164,8 @@ class Frontier:
     def add_references(
         self, source: SourceName, cited: Mapping[str, Sequence[str]]
     ) -> list[list[str]]:
-        """Record which paper cites which, and claim the cited papers not seen yet.
+        """Record which paper cites which, and claim the cited papers not seen yet that
+        `min_citations` collected papers cite.
 
         Returns batches of native IDs to look up.
         """
@@ -181,14 +185,23 @@ class Frontier:
                     self.stats.skipped_known += 1
                 elif cited_id in self._documents or cited_id in self._claimed:
                     self.stats.skipped_duplicate += 1
+                elif len(citing_ids) < self._min_citations:
+                    self.stats.skipped_rarely_cited += 1
                 else:
+                    # Its earlier references now count as duplicates of this one.
+                    self.stats.skipped_rarely_cited -= self._min_citations - 1
+                    self.stats.skipped_duplicate += self._min_citations - 1
                     self._claimed.add(cited_id)
                     new_ids.append(native_id)
         self.stats.lookups_queued += len(new_ids)
         return _batches(new_ids, self._lookup_batch_size.get(source, REFERENCES_BATCH_SIZE))
 
     def result(
-        self, failures: Sequence[RequestFailure], *, run_error: str | None = None
+        self,
+        failures: Sequence[RequestFailure],
+        *,
+        run_error: str | None = None,
+        interrupted: bool = False,
     ) -> CollectionResult:
         documents = []
         for document in self._documents.values():
@@ -213,6 +226,7 @@ class Frontier:
             citations=citations,
             max_results_reached=list(self._max_results_reached),
             run_error=run_error,
+            interrupted=interrupted,
         )
 
     @staticmethod
