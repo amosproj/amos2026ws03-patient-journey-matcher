@@ -55,7 +55,7 @@ npx @modelcontextprotocol/inspector --cli http://127.0.0.1:3000/mcp --transport 
 | `match_journey` | Returns the sources most relevant to the most recent event of a patient journey. Takes either a `journey` or a `graph`, not both |
 | `get_source` | Returns the links to the files of one matched source at its origin. The client downloads them itself |
 
-To compare approaches once more than one is available, a client calls `match_journey` once per `algorithm` with the same journey.
+A client that wants the results of one approach sets `algorithm`. Without it, the server is to choose the best results itself once graph and `ai_summary` exist; today it uses `keyword`.
 
 ### `match_journey` input
 
@@ -63,7 +63,7 @@ To compare approaches once more than one is available, a client calls `match_jou
 |---|---|---|---|
 | `journey` | object | one of the two | The patient as a list of events, see below |
 | `graph` | object | one of the two | The patient as the patient graph, see [graph input](#graph-input) |
-| `algorithm` | `keyword`, `graph`, `ai_summary` | no | Default `keyword` |
+| `algorithm` | `keyword`, `graph`, `ai_summary` | no | One approach; without it the server chooses, today `keyword` |
 | `limit` | integer, 1 to 50 | no | Default 10 |
 | `content_types` | list of `content_type` values, at least one, see [output](#match_journey-output) | no | Default: all types |
 
