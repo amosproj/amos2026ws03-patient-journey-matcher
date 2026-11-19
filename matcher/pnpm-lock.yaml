@@ -288,9 +288,6 @@ importers:
       '@matcher/download':
         specifier: workspace:*
         version: link:../download
-      '@matcher/keyword':
-        specifier: workspace:*
-        version: link:../algorithms/keyword
 
 packages:
 

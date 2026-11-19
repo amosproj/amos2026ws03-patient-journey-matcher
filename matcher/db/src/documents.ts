@@ -93,7 +93,8 @@ export interface DocumentStore {
   /**
    * Documents that an index has not seen or that changed since, oldest change first.
    * `indexTable` has one row per indexed document: `document_id` and the
-   * `document_changed_at` it indexed.
+   * `document_changed_at` it indexed. Their `changed_at` is the version to store: also the
+   * time a transcript of the document was stored, if later.
    */
   documentsToIndex(indexTable: string, limit?: number): Promise<DocumentRow[]>;
   /** How many documents `documentsToIndex` would return without a limit. */
@@ -130,12 +131,24 @@ const COLUMNS = [
   "changed_at",
 ] as const satisfies readonly (keyof DocumentRow)[];
 
-// As text: pg would turn a `date` into a JavaScript Date at local midnight.
-const SELECT_DOCUMENT = COLUMNS.map((column) =>
-  column === "published_at"
-    ? "d.published_at::text AS published_at"
-    : `d.${column}`,
-).join(", ");
+/** The columns of a document `d`, with `changed` as its `changed_at`. */
+function selectDocument(changed = "d.changed_at"): string {
+  return COLUMNS.map((column) =>
+    // As text: pg would turn a `date` into a JavaScript Date at local midnight.
+    column === "published_at"
+      ? "d.published_at::text AS published_at"
+      : column === "changed_at"
+        ? `${changed} AS changed_at`
+        : `d.${column}`,
+  ).join(", ");
+}
+
+const SELECT_DOCUMENT = selectDocument();
+
+// The version of a document `d` for its indexes: its last change, or the time the transcription
+// job stored its transcript, if later, so that every index reads the transcript.
+const VERSION = `greatest(d.changed_at, (SELECT t.read_at FROM transcripts AS t
+  WHERE t.document_id = d.id AND t.status <> 'failed'))`;
 
 // The next store run deletes rows past `expires_at`; until then they must not be used.
 const NOT_EXPIRED = "(d.expires_at IS NULL OR d.expires_at > now())";
@@ -179,7 +192,7 @@ export function createDocumentStore(db: Queryable): DocumentStore {
         );
       }
       const { rows } = await db.query<DocumentRow>(
-        `SELECT ${SELECT_DOCUMENT} ${toIndex(indexTable)} ORDER BY d.changed_at, d.id LIMIT $1`,
+        `SELECT ${selectDocument(VERSION)} ${toIndex(indexTable)} ORDER BY d.changed_at, d.id LIMIT $1`,
         [limit ?? null],
       );
       return rows;
@@ -204,7 +217,7 @@ function toIndex(indexTable: string): string {
   return `FROM documents AS d
           LEFT JOIN ${tableName(indexTable)} AS i ON i.document_id = d.id
           WHERE (i.document_id IS NULL
-                 OR i.document_changed_at IS DISTINCT FROM date_trunc('milliseconds', d.changed_at))
+                 OR i.document_changed_at IS DISTINCT FROM date_trunc('milliseconds', ${VERSION}))
             AND ${NOT_EXPIRED}`;
 }
 

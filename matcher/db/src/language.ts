@@ -1,4 +1,4 @@
-import type { DocumentRow } from "@matcher/db";
+import type { DocumentRow } from "./documents.ts";
 
 /** Unknown metadata remains matchable; the source language can describe a different text. */
 export function englishMetadata(document: Pick<DocumentRow, "extra">): boolean {
@@ -10,7 +10,7 @@ export function englishMetadata(document: Pick<DocumentRow, "extra">): boolean {
   );
 }
 
-/** Same policy for already stored index rows, including rows built before language filtering. */
+/** The same rule in SQL, for a document `d`: true if its metadata is known not to be English. */
 export const NON_ENGLISH_METADATA = `jsonb_typeof(d.extra->'metadata_language') = 'string'
   AND d.extra->>'metadata_language' <> ''
   AND d.extra->>'metadata_language' !~* '^en(-|$)'`;
