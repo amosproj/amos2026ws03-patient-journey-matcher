@@ -16,7 +16,7 @@ flowchart LR
 |---|---|---|
 | `documents` | crawler | indexer, MCP server |
 | `crawl_runs` | crawler | crawler (`--since auto`, `--resume`), people |
-| index tables, e.g. `keyword.documents` and `keyword.full_texts` ([keyword matching](keyword-matching.md)) | indexer | MCP server |
+| index tables, e.g. `keyword.documents` and `keyword.full_texts` ([keyword matching](keyword-matching.md)) | indexer, transcription job | MCP server |
 
 ## Storing
 

@@ -9,13 +9,13 @@ The keyword approach as the example:
 | File                 | Content                                                                                                  |
 | -------------------- | -------------------------------------------------------------------------------------------------------- |
 | `package.json`       | `@matcher/<name>`                                                                                        |
-| `src/approach.ts`    | `create<Name>Approach(dependencies)`: the `Approach` with its name, indexer and matcher; the only export |
+| `src/approach.ts`    | `create<Name>Approach(dependencies)`: the `Approach` with its name, indexer and matcher; the main export |
 | `src/indexer.ts`     | The `Indexer`: brings the approach's index up to date                                                    |
 | `src/matcher.ts`     | The `Matcher`: ranks the indexed documents for a journey                                                 |
 | `src/schema.ts`      | Its tables, in a schema named after the approach                                                         |
 | `src/<name>.test.ts` | Its database tests                                                                                       |
 
-Other files hold what only this approach needs, e.g. keyword's word lists in `data/` and the script that builds one in `scripts/`.
+Other files hold what only this approach needs, e.g. keyword's word lists in `data/` and the script that builds one in `scripts/`. Its speech-to-text job in `src/transcription.ts` is a second export, for [`matcher/transcriber`](../transcriber/src/main.ts) only.
 
 ## Contracts
 

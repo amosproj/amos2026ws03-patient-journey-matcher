@@ -6,4 +6,5 @@ packages:
   - evaluation
   - indexer
   - mcp-server
+  - transcriber
   - algorithms/*

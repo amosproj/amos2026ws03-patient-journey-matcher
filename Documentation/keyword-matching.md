@@ -11,7 +11,7 @@ This page describes [how it works](#how-it-works), [how we improved it by measur
 - `keyword.documents`: title, abstract or description, and subject labels (MeSH for PubMed);
 - `keyword.full_texts`: the [keywords](#keywords) of the downloaded [full text](#full-texts), for English texts.
 
-Nothing else writes the schema. Deleting a document deletes its index rows.
+Besides it, only the [transcription job](sources/podcasts.md#indexing) writes the schema: the keywords of the audio it reads, and its own row in `keyword.transcription`. Deleting a document deletes its index rows.
 
 **Query.** The latest event up to `as_of` is the focus, older events are context ([MCP interface](mcp-interface.md#match_journey-input)). From each event the matcher takes the label, the text parameters except the participants of a tumor board, and the names of `true` flags (`bone_mets` → bone metastases). [`german-terms.json`](../matcher/algorithms/keyword/data/german-terms.json) makes English search terms of them:
 
@@ -50,21 +50,19 @@ A document that is first in both indexes scores 2/61, one that is 30th in both 2
 | PubMed without a PMCID | Open-access PDF that [OpenAlex](sources/openalex.md) knows, if its host allows the download | PDF text |
 | arXiv | HTML page, else the PDF (PDF-only uploads have no HTML) | HTML without page parts, formulas and references; PDF text |
 | Zenodo | The preview file first: PDF, XML, HTML or text | As above; Word files, images, archives and unknown types are skipped |
-| Podcasts | Transcript: WebVTT, SRT, JSON or text; else the MP3, with [speech-to-text](sources/podcasts.md#indexing) | Speakers and spoken text, without timings; what Whisper hears |
+| Podcasts | Transcript: WebVTT, SRT, JSON or text; else the MP3, read by the [transcription job](sources/podcasts.md#indexing) | Speakers and spoken text, without timings; what Whisper hears |
 | YouTube | none | — |
 
 PDFs are read with [unpdf](https://github.com/unjs/unpdf) (MIT, Mozilla's pdf.js), XML and HTML with [htmlparser2](https://github.com/fb55/htmlparser2) (MIT). Text after a "References" or "Bibliography" heading in the second half is dropped, so cited titles do not match. Downloads keep the [request budgets](sources/README.md#5-storage-limits-and-retention) per host: arxiv.org 15 s (its `robots.txt`), Zenodo 1 s, the PMC bucket 0.1 s, others 3 s; different hosts in parallel. A server error or 429 is retried twice, after `Retry-After` if sent; files over 50 MB are skipped, audio over 150 MB.
 
 Both metadata and full-text indexing skip documents whose `extra.metadata_language` is known and non-English. Unknown stays eligible; `language` is not used because it may describe the article rather than its English abstract. Already indexed non-English content is cleared on the next index run, including indexes created before this filtering was added. Skipped documents still have an index bookkeeping row, avoiding repeated downloads.
 
-Audio skips written by the old indexer (`no readable format: audio/mpeg`, etc.) are retried when speech-to-text is enabled too.
-
 `keyword.full_texts` has one row per document, also without a text:
 
 | Column | Content |
 |---|---|
-| `status` | `indexed`; `skipped` (nothing readable, not English or no keywords; tried again when the document changes, audio also once speech-to-text is on); `failed` (tried again in the next `make index`) |
-| `detail` | Why skipped or failed, e.g. `HTTP 404`, `no readable format: audio/x-m4a`, `audio, and speech-to-text is off`, `no text` (a scanned PDF), `not English` |
+| `status` | `indexed`; `skipped` (nothing readable, not English or no keywords; tried again when the document changes); `failed` (tried again in the next `make index`) |
+| `detail` | Why skipped or failed, e.g. `HTTP 404`, `no readable format: audio/x-m4a`, `no text` (a scanned PDF), `not English`; `audio, and speech-to-text is off` waits for the transcription job |
 | `terms` | The keywords in alphabetical order, each as often as it occurs: what BM25 ranks. The text cannot be read back from it |
 | `lexemes` | The distinct English stems of `terms`, for `matched_terms` |
 | `words`, `url`, `media_type`, `fetched_at`, `document_changed_at` | Number of keywords (at most 50,000), the file read, when, and the document version it was built from |
@@ -217,7 +215,7 @@ The file covers what the keyword ranking found. Another approach's first 10 will
 **Downloader and extractor** ([`@matcher/download`](../matcher/download/src/))
 
 - **Most papers have no full text.** A PubMed paper needs a PMCID or an open-access PDF whose host allows the download: 34 % of the stored documents have a full text.
-- **No video; audio only with speech-to-text.** YouTube gives captions only to a video's owner. Podcast audio is read only with `WHISPER_MODEL` set ([podcasts](sources/podcasts.md#indexing)); without it, episodes without a transcript have metadata only.
+- **No video; audio only with speech-to-text.** YouTube gives captions only to a video's owner. Podcast audio is read only by `make transcribe` ([podcasts](sources/podcasts.md#indexing)); until it has read an episode without a transcript, that episode has metadata only.
 - **Text files only:** PDF, XML, HTML, plain text and transcripts. Not read: Word and PowerPoint files, images, archives, podcast show notes and scanned PDFs (no OCR).
 - **One file per document:** the first of up to three that gives text, at most 50 MB.
 - **English only.** Other texts keep their metadata only, and the references cut needs an English heading.

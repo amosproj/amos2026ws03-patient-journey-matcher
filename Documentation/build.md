@@ -12,6 +12,7 @@ Run these commands from the repository root. You need the tools listed under [Pr
 | `make db` | Starts the [database](database.md) and applies `db/init/`; needs the root `.env` |
 | `make seed` | Runs `make db`, then fills the database with a sample crawl of every source, in about 6 minutes ([`scripts/seed.py`](../scripts/seed.py)) |
 | `make index` | Builds, then updates the indexes of all approaches, e.g. the [keyword index](keyword-matching.md) |
+| `WHISPER_MODEL=tiny-q5_1 make transcribe` | Builds, then reads podcast audio that has no transcript with [speech-to-text](sources/podcasts.md#indexing), for the keyword index, until you stop it. The Index screen of the [debug UI](../debug/crawler/README.md) sets how many files it reads at once: none at first |
 | `make graph PATIENT=Patient-5` | Builds the [patient graph](mcp-interface.md#patient-graph) of one generated patient and writes it to `patientdata/Patient-5/graph.json` ([`scripts/patient_graph.py`](../scripts/patient_graph.py)); the only command that needs a credential, `GEMINI_API_KEY` |
 
 Make only calls the `uv` and `pnpm` commands from the [README](../README.md#development-setup), so you can still run them directly.
@@ -74,7 +75,7 @@ npx @modelcontextprotocol/inspector --cli http://127.0.0.1:3000/mcp --transport 
 | `YOUTUBE_API_KEY` in `crawler/.env` | `make seed` also crawls YouTube; without it, YouTube is skipped |
 | `GEMINI_API_KEY` in `backend/.env` or the environment | Needed by `make graph`. A free key from Google AI Studio works, but allows only some documents per day: the run stops with an error, and the next run goes on with the next document |
 | `VERTEX_LLM_MODEL=… GEMINI_PACER_MIN_INTERVAL_S=5 make graph PATIENT=Patient-5` | Uses another model than `gemini-2.5-flash` and waits 5 s between two calls of Graphiti's LLM, which make up most of the requests. Reading the PDF and the embeddings are not paced |
-| `WHISPER_MODEL=tiny-q5_1 make index APPROACHES=keyword` | Also transcribes podcast episodes without a transcript, offline; smallest recommended multilingual model (32 MB). `base-q5_1` (60 MB) is an accuracy option; [podcasts](sources/podcasts.md#indexing) |
+| `WHISPER_MODEL=base-q5_1 make transcribe WORKERS=2` | Transcribes with another [Whisper model](sources/podcasts.md#whisper-models) than the smallest recommended one (`tiny-q5_1`, 32 MB), and sets the number of files read at once without the debug UI |
 | `cd crawler && uv run crawler refresh` | Backfills stored metadata languages and OpenAlex locators, without source recrawling or a database reset; reindex afterwards ([refresh](storage.md#refresh-stored-enrichment)) |
 | `cd crawler && uv run python ../scripts/coverage.py` | Reports full-text links, successfully read texts, indexed texts, pending rows and failures from `DATABASE_URL`, after indexing |
 | `cd crawler && uv run crawler pubmed --topic prostate_cancer --max-results 200 --store` | Adds more documents; needs `DATABASE_URL` in `crawler/.env` ([connecting](database.md#connecting)). Run `make index` afterwards. Other sources and flags: [crawler](../crawler/README.md) |
@@ -83,7 +84,7 @@ npx @modelcontextprotocol/inspector --cli http://127.0.0.1:3000/mcp --transport 
 
 - **Index before you query.** Without `make index`, `match_journey` answers `degraded: true` with no results.
 - **The first `make index` takes about 30 minutes, mostly because of arXiv's rate limit.** arxiv.org asks for 15 s between requests (`Crawl-delay: 15` in its robots.txt, see [request budgets](sources/README.md#5-storage-limits-and-retention)), and a paper without an HTML version needs a second download, the PDF. Zenodo allows one file a second. The indexer reads 500 documents at a time, all hosts in parallel, and starts the next 500 when the slowest download is done, so batches of Zenodo records and of arXiv papers add up. It prints its progress every minute. You can stop it with Ctrl+C: the next run continues with the documents not read yet, and tries failed downloads again. Later runs read only new and changed documents.
-- **A changed indexer only reads new and changed documents.** To rebuild the keyword index from scratch, drop it, then run `make index`:
+- **A changed indexer only reads new and changed documents.** To rebuild the keyword index from scratch, drop it, then run `make index`. This also drops what `make transcribe` read from audio:
 
   ```sh
   docker compose exec -T postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "DROP SCHEMA keyword CASCADE"'
