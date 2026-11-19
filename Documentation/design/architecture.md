@@ -6,7 +6,7 @@ Contents: [1 Runtime components](#1-runtime-components) · [2 Code components](#
 
 ## 1 Runtime components
 
-What runs and who uses whom, read from left to right. The crawler copies metadata from the data sources into PostgreSQL. Each matching approach has two parts: an indexer, which the indexer job runs after the crawls to build the approach's index, and a matcher, which the MCP server runs when a client calls `match_journey`. The keyword approach is built. The graph and `ai_summary` approaches are decided and drawn as the research plans them: the graph indexer takes entity and relation annotations of PubMed papers from PubTator3, and both `ai_summary` parts call an AI model service. Notation: UML component diagram; the steps are explained in [section 4](#runtime-view).
+What runs and who uses whom, read from left to right. The crawler copies metadata from the data sources into PostgreSQL, and the transcription job turns podcast audio without a transcript into text for the indexes. Each matching approach has two parts: an indexer, which the indexer job runs after the crawls to build the approach's index, and a matcher, which the MCP server runs when a client calls `match_journey`. The keyword approach is built. The graph and `ai_summary` approaches are decided and drawn as the research plans them: the graph indexer takes entity and relation annotations of PubMed papers from PubTator3, and both `ai_summary` parts call an AI model service. Notation: UML component diagram; the steps are explained in [section 4](#runtime-view).
 
 ![Runtime components](architecture/runtime-view.svg)
 
@@ -54,15 +54,17 @@ Only what the code uses today. Versions are pinned in `crawler/uv.lock` and `mat
 
 ### Runtime view
 
-1. **Crawl.** Every night one crawler job per source (PubMed, arXiv, Zenodo, YouTube, podcasts) runs the queries of the [topic files](../../crawler/README.md#topic-files) against that source's API and upserts metadata and links into `documents`; each run is logged in `crawl_runs`. PubMed records get their full-text links from PMC and OpenAlex. Full texts are never stored.
+1. **Crawl.** Every night one crawler job per data source (PubMed, arXiv, Zenodo, YouTube, podcasts) runs the queries of the [topic files](../../crawler/README.md#topic-files) against its API and upserts metadata and links into `documents`; each topic is stored as a run of its own in `crawl_runs`, so a stopped crawl loses only its current topic. PubMed records get their full-text links from PMC and OpenAlex. Full texts are never stored. Two crawls started by hand add the papers that the search results cite ([cited papers](../build-deploy/deployment.md#crawl-the-cited-papers)).
 2. **Index.** After the crawls, the indexer job reads new or changed documents, downloads their full texts into memory, and runs the indexer of each approach, which writes its own index in PostgreSQL. The texts are discarded afterwards. The keyword indexer builds a BM25 index of the words; the graph indexer will store the entity–relation–entity triples that PubTator3 found in each paper; the `ai_summary` indexer will store a short summary and an embedding of each source.
-3. **Match.** A client calls `match_journey` with a journey or a patient graph and chooses the approach with `algorithm` (default `keyword`). The server validates the input, takes the latest event as the focus and older events as context, and the matcher of the chosen approach ranks the sources in its index. The graph matcher will compare the patient's relations with the papers' triples; the `ai_summary` matcher will embed the journey, take the nearest sources and can let a language model rerank them.
-4. **Fetch.** `get_source` returns the links to a source's files at its origin; the client downloads them itself.
+3. **Transcribe.** The transcription job runs all the time, on idle processor time. It downloads the audio of podcast episodes without a transcript, turns it into text offline with Whisper and hands it to the keyword index, which stores its keywords; the other approaches are to get it too. `make index` and the crawls never wait for it ([speech-to-text](keyword-matching.md#speech-to-text)).
+4. **Match.** A client calls `match_journey` with a journey or a patient graph and chooses the approach with `algorithm` (default `keyword`). The server validates the input, takes the latest event as the focus and older events as context, and the matcher of the chosen approach ranks the sources in its index. The graph matcher will compare the patient's relations with the papers' triples; the `ai_summary` matcher will embed the journey, take the nearest sources and can let a language model rerank them.
+5. **Fetch.** `get_source` returns the links to a source's files at its origin; the client downloads them itself.
 
 | Component | Runs as | When |
 |---|---|---|
 | PostgreSQL | Docker container | always |
-| Crawler | one Docker container per data source | nightly |
+| Crawler | one Docker container per data source | nightly; the references crawls when started |
+| Transcription job | `make transcribe` on the host | always, on idle processor time |
 | Indexer | `make index` on the host | after the crawls |
 | MCP server | `make start` on the host, Streamable HTTP at `http://127.0.0.1:3000/mcp` | always |
 
@@ -73,6 +75,7 @@ Any MCP client can call the two tools. Today these are the MCP Inspector, the in
 - The crawler (Python) and the matcher (TypeScript) share no code. Their contract is the database schema in `db/init/`: the crawler's `store` writes the tables, `db` reads them. Each approach creates the schema of its index itself.
 - In the crawler, `cli` starts a run, `runner` drives it with one scraper per data source from `sources`, `links` follows the references of PubMed and arXiv papers, and `store` writes the results.
 - Matching approaches are plug-ins. Each package in `algorithms/` implements the `Indexer` and `Matcher` contracts of `core`; the programs know the approaches only through the list in `approaches`, so a new approach is one package and one list entry ([adding an approach](../../matcher/algorithms/README.md)). The list holds the [keyword approach](keyword-matching.md); graph and `ai_summary` will be added the same way, under the names the `algorithm` parameter already accepts. Their design follows the research on [graph-based](../../research/graph-based-matching.md) and [AI-based](../../research/ai-based-matching.md) matching.
+- The transcriber is drawn like the indexer, serving every approach through `approaches`. Today only keyword has a transcription step, and the transcriber imports it directly.
 - `evaluation` imports no other package: it reads saved `match_journey` results and scores them against relevance judgments ([matching evaluation](../../research/matching-evaluation.md)).
 - [`tools/patient-graph/`](../../tools/patient-graph/README.md) builds patient graphs, the second input form, from the synthetic patients with the graph steps copied from SS26, the AMOS project for AIlixir in the summer semester 2026 (`make graph`). It is a helper tool, not part of the product, and not drawn.
 

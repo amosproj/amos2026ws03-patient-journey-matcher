@@ -59,18 +59,18 @@
     <h1>Runtime components</h1>
 
     <div class="diagram-container">
-      <svg viewBox="0 0 1136 732" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="runtime-view-title runtime-view-desc">
+      <svg viewBox="0 0 1136 812" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="runtime-view-title runtime-view-desc">
         <title id="runtime-view-title">Runtime components of the Patient Journey Matcher</title>
-        <desc id="runtime-view-desc">UML component diagram: the subsystem Patient Journey Matcher contains the crawler, the indexer, PostgreSQL and the MCP server. The indexer holds one indexer per approach (keyword, graph, ai_summary) and the MCP server one matcher per approach. The crawler requires the search APIs of the data sources, the indexer their file downloads and the annotations of PubTator3, both ai_summary parts the model API of an AI model service. Crawler, indexer and MCP server use PostgreSQL; the MCP server provides the MCP tools that an MCP client requires.</desc>
+        <desc id="runtime-view-desc">UML component diagram: the subsystem Patient Journey Matcher contains the crawler, the transcription job, the indexer, PostgreSQL and the MCP server. The indexer holds one indexer per approach (keyword, graph, ai_summary) and the MCP server one matcher per approach. The crawler requires the search APIs of the data sources, the transcription job their audio files, the indexer their file downloads and the annotations of PubTator3, both ai_summary parts the model API of an AI model service. Crawler, transcription job, indexer and MCP server use PostgreSQL; the MCP server provides the MCP tools that an MCP client requires.</desc>
 <defs>
   <marker id="open" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1,1 L 9,5 L 1,9" fill="none" stroke="#57606a" stroke-width="1.2"/></marker>
   <marker id="open-solid" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1,1 L 9,5 L 1,9" fill="none" stroke="#57606a" stroke-width="1.2"/></marker>
 </defs>
 <rect width="100%" height="100%" fill="#fafafa"/>
-<rect x="16" y="16" width="1104" height="636" fill="none" stroke="#1f2328" stroke-width="1"/>
+<rect x="16" y="16" width="1104" height="716" fill="none" stroke="#1f2328" stroke-width="1"/>
 <path d="M 16,16 H 184 V 30 L 174,40 H 16 Z" fill="#fafafa" stroke="#1f2328" stroke-width="1"/>
 <text x="24" y="32" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="start">cmp Runtime components</text>
-<rect x="248" y="64" width="648" height="428" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="248" y="64" width="648" height="508" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
 <rect x="876" y="70" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
 <rect x="872" y="73" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
 <rect x="872" y="79" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
@@ -79,18 +79,22 @@
 <path d="M 448,152 H 504" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#open)"/>
 <rect x="460" y="132" width="32" height="12" fill="#fafafa"/>
 <text x="476.0" y="141" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">«use»</text>
-<path d="M 448,256 H 532 Q 540,256 540,248 V 208" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#open)"/>
-<rect x="474" y="236" width="32" height="12" fill="#fafafa"/>
-<text x="490.0" y="245" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">«use»</text>
-<path d="M 696,236 H 612 Q 604,236 604,228 V 208" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#open)"/>
-<rect x="638" y="216" width="32" height="12" fill="#fafafa"/>
-<text x="654.0" y="225" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">«use»</text>
+<path d="M 448,240 H 524 Q 532,240 532,232 V 208" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#open)"/>
+<rect x="468" y="220" width="32" height="12" fill="#fafafa"/>
+<text x="484.0" y="229" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">«use»</text>
+<path d="M 448,336 H 548 Q 556,336 556,328 V 208" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#open)"/>
+<rect x="468" y="316" width="32" height="12" fill="#fafafa"/>
+<text x="484.0" y="325" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">«use»</text>
+<path d="M 696,316 H 612 Q 604,316 604,308 V 208" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#open)"/>
+<rect x="636" y="296" width="32" height="12" fill="#fafafa"/>
+<text x="652.0" y="305" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">«use»</text>
 <line x1="252" y1="152" x2="272" y2="152" stroke="#1f2328" stroke-width="1"/>
 <line x1="252" y1="256" x2="272" y2="256" stroke="#1f2328" stroke-width="1"/>
-<line x1="252" y1="374" x2="284" y2="374" stroke="#1f2328" stroke-width="1"/>
-<line x1="872" y1="292" x2="892" y2="292" stroke="#1d5f8a" stroke-width="1.2"/>
-<path d="M 360,436 V 460 Q 360,468 368,468 H 524 Q 532,468 532,476 V 488" fill="none" stroke="#1f2328" stroke-width="1"/>
-<path d="M 784,436 V 460 Q 784,468 776,468 H 620 Q 612,468 612,476 V 488" fill="none" stroke="#1f2328" stroke-width="1"/>
+<line x1="252" y1="336" x2="272" y2="336" stroke="#1f2328" stroke-width="1"/>
+<line x1="252" y1="454" x2="284" y2="454" stroke="#1f2328" stroke-width="1"/>
+<line x1="872" y1="372" x2="892" y2="372" stroke="#1d5f8a" stroke-width="1.2"/>
+<path d="M 360,516 V 540 Q 360,548 368,548 H 524 Q 532,548 532,556 V 568" fill="none" stroke="#1f2328" stroke-width="1"/>
+<path d="M 784,516 V 540 Q 784,548 776,548 H 620 Q 612,548 612,556 V 568" fill="none" stroke="#1f2328" stroke-width="1"/>
 <line x1="168" y1="152" x2="188" y2="152" stroke="#1f2328" stroke-width="1"/>
 <circle cx="194" cy="152" r="6" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
 <path d="M 194,142 A 10,10 0 0,1 194,162" fill="none" stroke="#1f2328" stroke-width="1"/>
@@ -101,31 +105,37 @@
 <circle cx="194" cy="256" r="6" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
 <path d="M 194,246 A 10,10 0 0,1 194,266" fill="none" stroke="#1f2328" stroke-width="1"/>
 <line x1="204" y1="256" x2="244" y2="256" stroke="#1f2328" stroke-width="1"/>
-<rect x="170.0" y="230" width="72" height="12" fill="#fafafa"/>
-<text x="206.0" y="239" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">file downloads</text>
-<line x1="168" y1="374" x2="188" y2="374" stroke="#1f2328" stroke-width="1"/>
-<circle cx="194" cy="374" r="6" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<path d="M 194,364 A 10,10 0 0,1 194,384" fill="none" stroke="#1f2328" stroke-width="1"/>
-<line x1="204" y1="374" x2="244" y2="374" stroke="#1f2328" stroke-width="1"/>
-<rect x="176.0" y="348" width="60" height="12" fill="#fafafa"/>
-<text x="206.0" y="357" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">annotations</text>
-<line x1="900" y1="292" x2="920" y2="292" stroke="#1d5f8a" stroke-width="1.2"/>
-<circle cx="926" cy="292" r="6" fill="#ffffff" stroke="#1d5f8a" stroke-width="1.2"/>
-<path d="M 926,282 A 10,10 0 0,1 926,302" fill="none" stroke="#1d5f8a" stroke-width="1.2"/>
-<line x1="936" y1="292" x2="960" y2="292" stroke="#1d5f8a" stroke-width="1.2"/>
-<rect x="906.0" y="266" width="48" height="12" fill="#fafafa"/>
-<text x="930.0" y="275" fill="#1d5f8a" font-size="8.5" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">MCP tools</text>
-<line x1="532" y1="496" x2="532" y2="510" stroke="#1f2328" stroke-width="1"/>
-<path d="M 522,520 A 10,10 0 0,1 542,520" fill="none" stroke="#1f2328" stroke-width="1"/>
-<circle cx="532" cy="520" r="6" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<line x1="532" y1="526" x2="532" y2="540" stroke="#1f2328" stroke-width="1"/>
-<line x1="612" y1="496" x2="612" y2="510" stroke="#1f2328" stroke-width="1"/>
-<path d="M 602,520 A 10,10 0 0,1 622,520" fill="none" stroke="#1f2328" stroke-width="1"/>
-<circle cx="612" cy="520" r="6" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<line x1="612" y1="526" x2="612" y2="540" stroke="#1f2328" stroke-width="1"/>
-<rect x="548" y="514" width="48" height="12" fill="#fafafa"/>
-<text x="572" y="523" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">model API</text>
-<rect x="40" y="112" width="128" height="168" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="178.0" y="230" width="56" height="12" fill="#fafafa"/>
+<text x="206.0" y="239" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">audio files</text>
+<line x1="168" y1="336" x2="188" y2="336" stroke="#1f2328" stroke-width="1"/>
+<circle cx="194" cy="336" r="6" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<path d="M 194,326 A 10,10 0 0,1 194,346" fill="none" stroke="#1f2328" stroke-width="1"/>
+<line x1="204" y1="336" x2="244" y2="336" stroke="#1f2328" stroke-width="1"/>
+<rect x="170.0" y="310" width="72" height="12" fill="#fafafa"/>
+<text x="206.0" y="319" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">file downloads</text>
+<line x1="168" y1="454" x2="188" y2="454" stroke="#1f2328" stroke-width="1"/>
+<circle cx="194" cy="454" r="6" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<path d="M 194,444 A 10,10 0 0,1 194,464" fill="none" stroke="#1f2328" stroke-width="1"/>
+<line x1="204" y1="454" x2="244" y2="454" stroke="#1f2328" stroke-width="1"/>
+<rect x="176.0" y="428" width="60" height="12" fill="#fafafa"/>
+<text x="206.0" y="437" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">annotations</text>
+<line x1="900" y1="372" x2="920" y2="372" stroke="#1d5f8a" stroke-width="1.2"/>
+<circle cx="926" cy="372" r="6" fill="#ffffff" stroke="#1d5f8a" stroke-width="1.2"/>
+<path d="M 926,362 A 10,10 0 0,1 926,382" fill="none" stroke="#1d5f8a" stroke-width="1.2"/>
+<line x1="936" y1="372" x2="960" y2="372" stroke="#1d5f8a" stroke-width="1.2"/>
+<rect x="906.0" y="346" width="48" height="12" fill="#fafafa"/>
+<text x="930.0" y="355" fill="#1d5f8a" font-size="8.5" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">MCP tools</text>
+<line x1="532" y1="576" x2="532" y2="590" stroke="#1f2328" stroke-width="1"/>
+<path d="M 522,600 A 10,10 0 0,1 542,600" fill="none" stroke="#1f2328" stroke-width="1"/>
+<circle cx="532" cy="600" r="6" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<line x1="532" y1="606" x2="532" y2="620" stroke="#1f2328" stroke-width="1"/>
+<line x1="612" y1="576" x2="612" y2="590" stroke="#1f2328" stroke-width="1"/>
+<path d="M 602,600 A 10,10 0 0,1 622,600" fill="none" stroke="#1f2328" stroke-width="1"/>
+<circle cx="612" cy="600" r="6" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<line x1="612" y1="606" x2="612" y2="620" stroke="#1f2328" stroke-width="1"/>
+<rect x="548" y="594" width="48" height="12" fill="#fafafa"/>
+<text x="572" y="603" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">model API</text>
+<rect x="40" y="112" width="128" height="248" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
 <rect x="148" y="118" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
 <rect x="144" y="121" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
 <rect x="144" y="127" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
@@ -138,14 +148,14 @@
 <text x="104.0" y="224" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Zenodo</text>
 <text x="104.0" y="238" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">YouTube</text>
 <text x="104.0" y="252" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">podcast feeds</text>
-<rect x="40" y="330" width="128" height="88" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<rect x="148" y="336" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="144" y="339" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="144" y="345" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<text x="104.0" y="360" fill="#1f2328" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">PubTator3</text>
-<line x1="40" y1="370" x2="168" y2="370" stroke="#1f2328" stroke-width="0.8"/>
-<text x="104.0" y="386" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">NCBI service</text>
-<text x="104.0" y="400" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">paper annotations</text>
+<rect x="40" y="410" width="128" height="88" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="148" y="416" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="144" y="419" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="144" y="425" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<text x="104.0" y="440" fill="#1f2328" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">PubTator3</text>
+<line x1="40" y1="450" x2="168" y2="450" stroke="#1f2328" stroke-width="0.8"/>
+<text x="104.0" y="466" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">NCBI service</text>
+<text x="104.0" y="480" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">paper annotations</text>
 <rect x="272" y="112" width="176" height="80" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
 <rect x="428" y="118" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
 <rect x="424" y="121" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
@@ -154,31 +164,39 @@
 <line x1="272" y1="152" x2="448" y2="152" stroke="#1f2328" stroke-width="0.8"/>
 <text x="360.0" y="168" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Python, nightly</text>
 <text x="360.0" y="182" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">one job per source</text>
-<rect x="272" y="240" width="176" height="212" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<rect x="428" y="246" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="424" y="249" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="424" y="255" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<text x="360.0" y="270" fill="#1f2328" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Indexer</text>
-<line x1="272" y1="280" x2="448" y2="280" stroke="#1f2328" stroke-width="0.8"/>
-<text x="360.0" y="296" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">TypeScript, after the crawls</text>
-<rect x="284" y="312" width="152" height="36" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<rect x="416" y="315" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="412" y="318" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="412" y="324" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<text x="350.0" y="327" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">keyword indexer</text>
-<text x="350.0" y="341" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">words → BM25 index</text>
-<rect x="284" y="356" width="152" height="36" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<rect x="416" y="359" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="412" y="362" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="412" y="368" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<text x="350.0" y="371" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">graph indexer</text>
-<text x="350.0" y="385" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">entities and relations</text>
-<rect x="284" y="400" width="152" height="36" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<rect x="416" y="403" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="412" y="406" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="412" y="412" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<text x="350.0" y="415" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">ai_summary indexer</text>
-<text x="350.0" y="429" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">summary and embedding</text>
+<rect x="272" y="216" width="176" height="80" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="428" y="222" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="424" y="225" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="424" y="231" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<text x="360.0" y="246" fill="#1f2328" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Transcription job</text>
+<line x1="272" y1="256" x2="448" y2="256" stroke="#1f2328" stroke-width="0.8"/>
+<text x="360.0" y="272" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">TypeScript, always on</text>
+<text x="360.0" y="286" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Whisper, podcast audio</text>
+<rect x="272" y="320" width="176" height="212" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="428" y="326" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="424" y="329" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="424" y="335" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<text x="360.0" y="350" fill="#1f2328" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Indexer</text>
+<line x1="272" y1="360" x2="448" y2="360" stroke="#1f2328" stroke-width="0.8"/>
+<text x="360.0" y="376" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">TypeScript, after the crawls</text>
+<rect x="284" y="392" width="152" height="36" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="416" y="395" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="412" y="398" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="412" y="404" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<text x="350.0" y="407" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">keyword indexer</text>
+<text x="350.0" y="421" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">words → BM25 index</text>
+<rect x="284" y="436" width="152" height="36" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="416" y="439" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="412" y="442" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="412" y="448" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<text x="350.0" y="451" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">graph indexer</text>
+<text x="350.0" y="465" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">entities and relations</text>
+<rect x="284" y="480" width="152" height="36" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="416" y="483" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="412" y="486" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="412" y="492" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<text x="350.0" y="495" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">ai_summary indexer</text>
+<text x="350.0" y="509" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">summary and embedding</text>
 <rect x="504" y="112" width="136" height="96" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
 <rect x="620" y="118" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
 <rect x="616" y="121" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
@@ -188,78 +206,79 @@
 <text x="572.0" y="168" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">documents</text>
 <text x="572.0" y="182" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">crawl_runs</text>
 <text x="572.0" y="196" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">one index per approach</text>
-<rect x="696" y="212" width="176" height="240" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<rect x="852" y="218" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="848" y="221" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="848" y="227" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<text x="784.0" y="242" fill="#1f2328" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">MCP server</text>
-<line x1="696" y1="252" x2="872" y2="252" stroke="#1f2328" stroke-width="0.8"/>
-<text x="784.0" y="268" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">TypeScript, always on</text>
-<text x="784.0" y="282" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">match_journey(journey | graph)</text>
-<text x="784.0" y="296" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">get_source(source_id)</text>
-<rect x="708" y="312" width="152" height="36" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<rect x="840" y="315" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="836" y="318" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="836" y="324" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<text x="774.0" y="327" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">keyword matcher</text>
-<text x="774.0" y="341" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">BM25 ranking</text>
-<rect x="708" y="356" width="152" height="36" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<rect x="840" y="359" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="836" y="362" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="836" y="368" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<text x="774.0" y="371" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">graph matcher</text>
-<text x="774.0" y="385" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">compares relations</text>
-<rect x="708" y="400" width="152" height="36" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<rect x="840" y="403" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="836" y="406" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="836" y="412" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<text x="774.0" y="415" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">ai_summary matcher</text>
-<text x="774.0" y="429" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">vector search, reranking</text>
-<rect x="960" y="232" width="136" height="120" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<rect x="1076" y="238" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="1072" y="241" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="1072" y="247" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<text x="1028.0" y="262" fill="#1f2328" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">MCP client</text>
-<line x1="960" y1="272" x2="1096" y2="272" stroke="#1f2328" stroke-width="0.8"/>
-<text x="1028.0" y="288" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">AIlixir backend</text>
-<text x="1028.0" y="302" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">MCP Inspector</text>
-<text x="1028.0" y="316" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">debug UI</text>
-<text x="1028.0" y="330" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">integration tests</text>
-<rect x="488" y="540" width="168" height="88" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<rect x="636" y="546" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="632" y="549" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="632" y="555" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<text x="572.0" y="570" fill="#1f2328" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">AI model service</text>
-<line x1="488" y1="580" x2="656" y2="580" stroke="#1f2328" stroke-width="0.8"/>
-<text x="572.0" y="596" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">language model</text>
-<text x="572.0" y="610" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">embedding model</text>
+<rect x="696" y="292" width="176" height="240" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="852" y="298" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="848" y="301" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="848" y="307" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<text x="784.0" y="322" fill="#1f2328" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">MCP server</text>
+<line x1="696" y1="332" x2="872" y2="332" stroke="#1f2328" stroke-width="0.8"/>
+<text x="784.0" y="348" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">TypeScript, always on</text>
+<text x="784.0" y="362" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">match_journey(journey | graph)</text>
+<text x="784.0" y="376" fill="#57606a" font-size="9" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">get_source(source_id)</text>
+<rect x="708" y="392" width="152" height="36" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="840" y="395" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="836" y="398" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="836" y="404" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<text x="774.0" y="407" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">keyword matcher</text>
+<text x="774.0" y="421" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">BM25 ranking</text>
+<rect x="708" y="436" width="152" height="36" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="840" y="439" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="836" y="442" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="836" y="448" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<text x="774.0" y="451" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">graph matcher</text>
+<text x="774.0" y="465" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">compares relations</text>
+<rect x="708" y="480" width="152" height="36" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="840" y="483" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="836" y="486" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="836" y="492" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<text x="774.0" y="495" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">ai_summary matcher</text>
+<text x="774.0" y="509" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">vector search, reranking</text>
+<rect x="960" y="312" width="136" height="120" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="1076" y="318" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="1072" y="321" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="1072" y="327" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<text x="1028.0" y="342" fill="#1f2328" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">MCP client</text>
+<line x1="960" y1="352" x2="1096" y2="352" stroke="#1f2328" stroke-width="0.8"/>
+<text x="1028.0" y="368" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">AIlixir backend</text>
+<text x="1028.0" y="382" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">MCP Inspector</text>
+<text x="1028.0" y="396" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">debug UI</text>
+<text x="1028.0" y="410" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">integration tests</text>
+<rect x="488" y="620" width="168" height="88" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="636" y="626" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="632" y="629" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="632" y="635" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<text x="572.0" y="650" fill="#1f2328" font-size="12" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">AI model service</text>
+<line x1="488" y1="660" x2="656" y2="660" stroke="#1f2328" stroke-width="0.8"/>
+<text x="572.0" y="676" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">language model</text>
+<text x="572.0" y="690" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">embedding model</text>
 <rect x="244" y="148" width="8" height="8" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
 <rect x="244" y="252" width="8" height="8" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<rect x="244" y="370" width="8" height="8" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<rect x="268" y="370" width="8" height="8" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<rect x="356" y="448" width="8" height="8" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<rect x="780" y="448" width="8" height="8" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<rect x="528" y="488" width="8" height="8" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<rect x="608" y="488" width="8" height="8" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<rect x="892" y="288" width="8" height="8" fill="#ffffff" stroke="#1d5f8a" stroke-width="1.2"/>
-<line x1="40" y1="676" x2="1096" y2="676" stroke="rgba(31,35,40,0.10)" stroke-width="0.8"/>
-<text x="40" y="692" fill="#57606a" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.18em">LEGEND</text>
-<rect x="40" y="700" width="16" height="12" fill="#ffffff" stroke="#1f2328" stroke-width="1"/><rect x="42" y="700" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="38" y="703" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<rect x="38" y="709" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
-<text x="64" y="712" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Component</text>
-<rect x="152" y="702" width="8" height="8" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<text x="172" y="712" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Port</text>
-<line x1="216" y1="706" x2="226" y2="706" stroke="#1f2328" stroke-width="1"/><circle cx="231" cy="706" r="5" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<text x="240" y="712" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Provided interface</text>
-<path d="M 358,698 A 8,8 0 0,1 358,714" fill="none" stroke="#1f2328" stroke-width="1"/><line x1="366" y1="706" x2="372" y2="706" stroke="#1f2328" stroke-width="1"/>
-<text x="376" y="712" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Required interface</text>
-<line x1="488" y1="706" x2="506" y2="706" stroke="#1f2328" stroke-width="1"/>
-<text x="512" y="712" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Connector</text>
-<path d="M 580,706 H 598" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#open)"/>
-<text x="604" y="712" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Dependency</text>
-<circle cx="689" cy="706" r="5" fill="#ffffff" stroke="#1d5f8a" stroke-width="1.2"/>
-<text x="704" y="712" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">MCP interface</text>
+<rect x="244" y="332" width="8" height="8" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="244" y="450" width="8" height="8" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="268" y="450" width="8" height="8" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="356" y="528" width="8" height="8" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="780" y="528" width="8" height="8" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="528" y="568" width="8" height="8" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="608" y="568" width="8" height="8" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="892" y="368" width="8" height="8" fill="#ffffff" stroke="#1d5f8a" stroke-width="1.2"/>
+<line x1="40" y1="756" x2="1096" y2="756" stroke="rgba(31,35,40,0.10)" stroke-width="0.8"/>
+<text x="40" y="772" fill="#57606a" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.18em">LEGEND</text>
+<rect x="40" y="780" width="16" height="12" fill="#ffffff" stroke="#1f2328" stroke-width="1"/><rect x="42" y="780" width="12" height="16" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="38" y="783" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<rect x="38" y="789" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
+<text x="64" y="792" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Component</text>
+<rect x="152" y="782" width="8" height="8" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<text x="172" y="792" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Port</text>
+<line x1="216" y1="786" x2="226" y2="786" stroke="#1f2328" stroke-width="1"/><circle cx="231" cy="786" r="5" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<text x="240" y="792" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Provided interface</text>
+<path d="M 358,778 A 8,8 0 0,1 358,794" fill="none" stroke="#1f2328" stroke-width="1"/><line x1="366" y1="786" x2="372" y2="786" stroke="#1f2328" stroke-width="1"/>
+<text x="376" y="792" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Required interface</text>
+<line x1="488" y1="786" x2="506" y2="786" stroke="#1f2328" stroke-width="1"/>
+<text x="512" y="792" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Connector</text>
+<path d="M 580,786 H 598" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#open)"/>
+<text x="604" y="792" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Dependency</text>
+<circle cx="689" cy="786" r="5" fill="#ffffff" stroke="#1d5f8a" stroke-width="1.2"/>
+<text x="704" y="792" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">MCP interface</text>
       </svg>
     </div>
   </div>

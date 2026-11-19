@@ -45,6 +45,8 @@ make index             # installs the dependencies and builds the index of each 
 make start             # MCP server on http://127.0.0.1:3000/mcp
 ```
 
+Optional: `WHISPER_MODEL=tiny-q5_1 make transcribe WORKERS=2` reads podcast audio into the keyword index, two files at a time, until you stop it.
+
 Then call it with the MCP Inspector: [try it](Documentation/user/mcp-interface.md#try-it). The API keys of the data sources go into `crawler/.env` and are optional; without `YOUTUBE_API_KEY`, the sample crawl skips YouTube ([crawler](crawler/README.md)).
 
 ### Development
@@ -70,7 +72,7 @@ Index of all pages and the [glossary](Documentation/glossary.md): [Documentation
 | Folder | Content |
 |---|---|
 | `crawler/` | Python crawler ([README](crawler/README.md)) |
-| `matcher/` | TypeScript pnpm workspace: MCP server, indexer, approaches and shared packages ([README](matcher/README.md)) |
+| `matcher/` | TypeScript pnpm workspace: MCP server, indexer, transcription job, approaches and shared packages ([README](matcher/README.md)) |
 | `db/` | PostgreSQL image and schema |
 | `deploy/` | Setup and backup scripts of the VM ([deployment](Documentation/build-deploy/deployment.md)) |
 | `debug/crawler/` | [Debug UI](debug/crawler/README.md) for the crawler, the database, the index and the matcher |

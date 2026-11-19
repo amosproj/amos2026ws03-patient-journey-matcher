@@ -10,7 +10,7 @@ transcriber          →  algorithms/keyword, db, download
 evaluation           (no matcher package)
 ```
 
-Programs reach the approaches only through `approaches` and the contracts in `core`; they also use `db` and `download` directly. The transcriber is the keyword approach's own job and imports it directly. Approaches import neither each other nor the programs; `core`, `db` and `download` import no other matcher package. A package can only import what its `package.json` lists.
+Programs reach the approaches only through `approaches` and the contracts in `core`; they also use `db` and `download` directly. The transcriber imports the keyword approach directly, as only keyword has a transcription step so far; like the indexer, it is to serve every approach through `approaches`. Approaches import neither each other nor the programs; `core`, `db` and `download` import no other matcher package. A package can only import what its `package.json` lists.
 
 ## Rules
 
