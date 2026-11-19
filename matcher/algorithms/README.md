@@ -47,7 +47,7 @@ The options of `match` also hold `trace` and `tuning`, for the [debug UI](../../
 - Each approach sets and documents its own licence rules ([sources §3](../../Documentation/design/sources.md#3-indexing)).
 - Index rows reference their document, so a deleted document (YouTube after 30 days) leaves every index.
 - A matcher only reads and returns document IDs; the server adds the metadata and links.
-- A journey is health data: never stored or logged. Sending it to an outside service, e.g. for embeddings, needs a team decision ([open points](../../Documentation/design/architecture/README.md#5-open-points)).
+- A journey is health data: never stored or logged. Sending it to an outside service, e.g. for embeddings, needs a team decision.
 
 ## Add an approach
 

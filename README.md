@@ -9,7 +9,7 @@ The Patient Journey Matcher is an MCP server for the AIlixir app. A client sends
 - **Indexer (TypeScript):** downloads each text again, keeps it in memory and builds the index of each matching approach: [keyword matching](Documentation/design/keyword-matching.md) on word statistics, a graph of medical entities and relations (in progress) and AI summaries (in progress).
 - **MCP server (TypeScript):** matches the journey against the indexes and returns the best sources with links to the originals.
 
-Details: [software architecture](Documentation/design/architecture/software-architecture.html).
+Details: [software architecture](Documentation/design/architecture.md).
 
 ## Development setup
 

@@ -56,7 +56,7 @@ Feed state (crawler table): feed key, current URL, `ETag`, `Last-Modified`, last
    - In the seed crawl (12.11.2026), 148 of 165 episodes had no transcript: 138 MP3 (58 h), 5 M4A and 5 MP4. M4A and MP4 are not read: the decoder (miniaudio) has no AAC.
    - Start with multilingual `tiny-q5_1` for the lightest download (32 MB); `base-q5_1` (60 MB) is an accuracy option. Both correctly left German speech in German in the local control, allowing the keyword index to reject it. Known non-English metadata is skipped before downloading or transcribing.
    - English-only `.en` models can hallucinate English from non-English speech; avoid them when the spoken language is uncertain. Unknown metadata remains eligible, so metadata filtering alone cannot guarantee the audio language.
-   - Storing transcripts, or a cloud service ($0.003–0.006/min at OpenAI; about 715 h back catalogue in the six feeds, 66 h new a year), is an [open question](open-questions.md).
+   - Storing transcripts, or a cloud service ($0.003–0.006/min at OpenAI; about 715 h back catalogue in the six feeds, 66 h new a year), is not decided.
 
 ## Whisper models
 

@@ -1,6 +1,6 @@
 Build, user, and technical documentation
 
-[Software architecture description](design/architecture/README.md)
+[Software architecture description](design/architecture.md)
 
 [MCP interface](user/mcp-interface.md)
 

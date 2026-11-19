@@ -1,6 +1,6 @@
 # External sources: metadata, storage and indexing
 
-Findings for #6, checked 01.11.2026 against live docs and live requests. Follows the [architecture](architecture/README.md): the crawler stores metadata and links only; the indexer fetches full texts in memory and never stores them. Summary: [`pipeline-overview.pdf`](../../research/snapshots/pipeline-overview.pdf). Open questions: [`open-questions.md`](../../research/sources/open-questions.md).
+Findings for #6, checked 01.11.2026 against live docs and live requests. Follows the [architecture](architecture.md): the crawler stores metadata and links only; the indexer fetches full texts in memory and never stores them. Summary: [`pipeline-overview.pdf`](../../research/snapshots/pipeline-overview.pdf).
 
 ![Source pipeline](../../research/snapshots/pipeline.svg)
 
