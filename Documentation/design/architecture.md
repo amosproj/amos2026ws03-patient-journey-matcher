@@ -96,4 +96,4 @@ Any MCP client can call the two tools. Today these are the MCP Inspector, the in
 
 ### Editing the diagrams
 
-Sources: [`runtime-view.html`](architecture/runtime-view.html) and [`code-view.html`](architecture/code-view.html), drawn in UML 2.5 notation with the diagram-design skill; export each to the `.svg` next to it with `export_svg.py --system-fonts`. Update this page in the pull request that changes the architecture.
+The diagrams are the SVG files [`runtime-view.svg`](architecture/runtime-view.svg) and [`code-view.svg`](architecture/code-view.svg) in UML 2.5 notation; change them in any text or SVG editor, in greyscale with blue only for the MCP interface. The `.html` files next to them are previews; the docs show the SVG. Update this page in the pull request that changes the architecture.
