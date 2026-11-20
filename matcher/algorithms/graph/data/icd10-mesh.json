@@ -1,0 +1,9 @@
+{
+  "_comment": "Tier 1 of the entity mapping: ICD-10 codes to MeSH. Looked up as written, then by the three-character category (C61.0 -> C61). C61 is the only code in the generated patients.",
+  "codes": {
+    "C61": "mesh:D011471",
+    "C77": "mesh:D008207",
+    "C78.7": "mesh:D008113",
+    "C79.5": "mesh:D001859"
+  }
+}

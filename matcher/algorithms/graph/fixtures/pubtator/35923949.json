@@ -1,0 +1,199 @@
+{
+  "id": "35923949",
+  "pmid": 35923949,
+  "passages": [
+    {
+      "infons": {
+        "type": "title"
+      },
+      "annotations": [
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C431566",
+            "name": "acetyl-2-naphthylalanyl-3-chlorophenylalanyl-1-oxohexadecyl-seryl-4-aminophenylalanyl(hydroorotyl)-4-aminophenylalanyl(carbamoyl)-leucyl-ILys-prolyl-alaninamide"
+          },
+          "text": "Degarelix"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D011471",
+            "name": "Prostatic Neoplasms"
+          },
+          "text": "prostate cancer"
+        }
+      ]
+    },
+    {
+      "infons": {
+        "type": "abstract"
+      },
+      "annotations": [
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C431566",
+            "name": "acetyl-2-naphthylalanyl-3-chlorophenylalanyl-1-oxohexadecyl-seryl-4-aminophenylalanyl(hydroorotyl)-4-aminophenylalanyl(carbamoyl)-leucyl-ILys-prolyl-alaninamide"
+          },
+          "text": "degarelix acetate"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C431566",
+            "name": "acetyl-2-naphthylalanyl-3-chlorophenylalanyl-1-oxohexadecyl-seryl-4-aminophenylalanyl(hydroorotyl)-4-aminophenylalanyl(carbamoyl)-leucyl-ILys-prolyl-alaninamide"
+          },
+          "text": "degarelix"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D011471",
+            "name": "Prostatic Neoplasms"
+          },
+          "text": "prostate cancer"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D011471",
+            "name": "Prostatic Neoplasms"
+          },
+          "text": "Pca"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C431566",
+            "name": "acetyl-2-naphthylalanyl-3-chlorophenylalanyl-1-oxohexadecyl-seryl-4-aminophenylalanyl(hydroorotyl)-4-aminophenylalanyl(carbamoyl)-leucyl-ILys-prolyl-alaninamide"
+          },
+          "text": "degarelix"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D011471",
+            "name": "Prostatic Neoplasms"
+          },
+          "text": "Pca"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C431566",
+            "name": "acetyl-2-naphthylalanyl-3-chlorophenylalanyl-1-oxohexadecyl-seryl-4-aminophenylalanyl(hydroorotyl)-4-aminophenylalanyl(carbamoyl)-leucyl-ILys-prolyl-alaninamide"
+          },
+          "text": "degarelix"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D011471",
+            "name": "Prostatic Neoplasms"
+          },
+          "text": "prostate cancer"
+        },
+        {
+          "infons": {
+            "type": "Species",
+            "identifier": "9606",
+            "name": "9606"
+          },
+          "text": "patients"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C431566",
+            "name": "acetyl-2-naphthylalanyl-3-chlorophenylalanyl-1-oxohexadecyl-seryl-4-aminophenylalanyl(hydroorotyl)-4-aminophenylalanyl(carbamoyl)-leucyl-ILys-prolyl-alaninamide"
+          },
+          "text": "degarelix"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C431566",
+            "name": "acetyl-2-naphthylalanyl-3-chlorophenylalanyl-1-oxohexadecyl-seryl-4-aminophenylalanyl(hydroorotyl)-4-aminophenylalanyl(carbamoyl)-leucyl-ILys-prolyl-alaninamide"
+          },
+          "text": "degarelix"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D011471",
+            "name": "Prostatic Neoplasms"
+          },
+          "text": "Pca"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C431566",
+            "name": "acetyl-2-naphthylalanyl-3-chlorophenylalanyl-1-oxohexadecyl-seryl-4-aminophenylalanyl(hydroorotyl)-4-aminophenylalanyl(carbamoyl)-leucyl-ILys-prolyl-alaninamide"
+          },
+          "text": "degarelix"
+        },
+        {
+          "infons": {
+            "type": "Gene",
+            "identifier": "9520",
+            "name": "NPEPPS"
+          },
+          "text": "PSA"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:D000077143",
+            "name": "Docetaxel"
+          },
+          "text": "docetaxel"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C431566",
+            "name": "acetyl-2-naphthylalanyl-3-chlorophenylalanyl-1-oxohexadecyl-seryl-4-aminophenylalanyl(hydroorotyl)-4-aminophenylalanyl(carbamoyl)-leucyl-ILys-prolyl-alaninamide"
+          },
+          "text": "degarelix"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C431566",
+            "name": "acetyl-2-naphthylalanyl-3-chlorophenylalanyl-1-oxohexadecyl-seryl-4-aminophenylalanyl(hydroorotyl)-4-aminophenylalanyl(carbamoyl)-leucyl-ILys-prolyl-alaninamide"
+          },
+          "text": "degarelix"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D011471",
+            "name": "Prostatic Neoplasms"
+          },
+          "text": "prostate cancer"
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "id": "R1",
+      "infons": {
+        "type": "Negative_Correlation",
+        "score": "0.9976",
+        "role1": {
+          "type": "Chemical",
+          "identifier": "MESH:C431566",
+          "name": "acetyl-2-naphthylalanyl-3-chlorophenylalanyl-1-oxohexadecyl-seryl-4-aminophenylalanyl(hydroorotyl)-4-aminophenylalanyl(carbamoyl)-leucyl-ILys-prolyl-alaninamide"
+        },
+        "role2": {
+          "type": "Disease",
+          "identifier": "MESH:D011471",
+          "name": "Prostatic Neoplasms"
+        }
+      }
+    }
+  ]
+}

@@ -1,0 +1,100 @@
+{
+  "_comment": "Status cues (Documentation/graph-normalization.md §4.5). A `pre` cue stands at most `window` words before the entity name, a `post` cue at most `postWindow` words after it (`X was ruled out`), both in the same clause. Where two cues overlap, the longer wins: `cannot be ruled out` beats `ruled out`. `pseudo` cues only block shorter ones (`no change` is not a negation). Matched after normalizeName, so umlauts are written without dots.",
+  "window": 5,
+  "postWindow": 3,
+  "clauseBreaks": [
+    "but",
+    "however",
+    "although",
+    "though",
+    "except",
+    "aber",
+    "jedoch",
+    "allerdings",
+    "wobei"
+  ],
+  "attributes": { "active": "asserted" },
+  "cues": [
+    { "text": "suspected", "status": "suspected", "position": "pre" },
+    {
+      "text": "suspected diagnosis of",
+      "status": "suspected",
+      "position": "pre"
+    },
+    { "text": "suspicion of", "status": "suspected", "position": "pre" },
+    { "text": "possible", "status": "suspected", "position": "pre" },
+    { "text": "probable", "status": "suspected", "position": "pre" },
+    { "text": "likely", "status": "suspected", "position": "pre" },
+    { "text": "presumed", "status": "suspected", "position": "pre" },
+    { "text": "verdacht auf", "status": "suspected", "position": "pre" },
+    { "text": "verdacht", "status": "suspected", "position": "pre" },
+    { "text": "fraglich", "status": "suspected", "position": "pre" },
+    { "text": "fragliche", "status": "suspected", "position": "pre" },
+    { "text": "fraglicher", "status": "suspected", "position": "pre" },
+    { "text": "wahrscheinlich", "status": "suspected", "position": "pre" },
+    {
+      "text": "cannot be ruled out",
+      "status": "suspected",
+      "position": "post"
+    },
+    {
+      "text": "can not be ruled out",
+      "status": "suspected",
+      "position": "post"
+    },
+    { "text": "cannot be excluded", "status": "suspected", "position": "post" },
+    { "text": "not excluded", "status": "suspected", "position": "post" },
+    {
+      "text": "nicht auszuschliessen",
+      "status": "suspected",
+      "position": "post"
+    },
+    {
+      "text": "nicht ausgeschlossen",
+      "status": "suspected",
+      "position": "post"
+    },
+    { "text": "no", "status": "negated", "position": "pre" },
+    { "text": "no evidence of", "status": "negated", "position": "pre" },
+    { "text": "no signs of", "status": "negated", "position": "pre" },
+    { "text": "without", "status": "negated", "position": "pre" },
+    { "text": "without evidence of", "status": "negated", "position": "pre" },
+    { "text": "negative for", "status": "negated", "position": "pre" },
+    { "text": "absence of", "status": "negated", "position": "pre" },
+    { "text": "free of", "status": "negated", "position": "pre" },
+    { "text": "kein", "status": "negated", "position": "pre" },
+    { "text": "keine", "status": "negated", "position": "pre" },
+    { "text": "keinen", "status": "negated", "position": "pre" },
+    { "text": "kein hinweis auf", "status": "negated", "position": "pre" },
+    { "text": "kein anhalt fur", "status": "negated", "position": "pre" },
+    { "text": "kein nachweis von", "status": "negated", "position": "pre" },
+    { "text": "ohne", "status": "negated", "position": "pre" },
+    { "text": "ruled out", "status": "negated", "position": "post" },
+    { "text": "excluded", "status": "negated", "position": "post" },
+    { "text": "ausgeschlossen", "status": "negated", "position": "post" },
+    { "text": "confirmed", "status": "asserted", "position": "pre" },
+    {
+      "text": "histologically proven",
+      "status": "asserted",
+      "position": "pre"
+    },
+    { "text": "diagnosed with", "status": "asserted", "position": "pre" },
+    { "text": "gesichertes", "status": "asserted", "position": "pre" },
+    { "text": "confirmed", "status": "asserted", "position": "post" },
+    {
+      "text": "histologically confirmed",
+      "status": "asserted",
+      "position": "post"
+    },
+    { "text": "gesichert", "status": "asserted", "position": "post" },
+    { "text": "bestatigt", "status": "asserted", "position": "post" },
+    {
+      "text": "histologisch nachgewiesen",
+      "status": "asserted",
+      "position": "post"
+    },
+    { "text": "no change", "status": "pseudo", "position": "pre" },
+    { "text": "no increase", "status": "pseudo", "position": "pre" },
+    { "text": "keine veranderung", "status": "pseudo", "position": "pre" }
+  ]
+}

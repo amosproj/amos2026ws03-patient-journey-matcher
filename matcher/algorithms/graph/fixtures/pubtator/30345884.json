@@ -1,0 +1,454 @@
+{
+  "id": "30345884",
+  "pmid": 30345884,
+  "passages": [
+    {
+      "infons": {
+        "type": "title"
+      },
+      "annotations": [
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C531550",
+            "name": "olaparib"
+          },
+          "text": "Olaparib"
+        },
+        {
+          "infons": {
+            "type": "Species",
+            "identifier": "9606",
+            "name": "9606"
+          },
+          "text": "Patients"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D010051",
+            "name": "Ovarian Neoplasms"
+          },
+          "text": "Ovarian Cancer"
+        }
+      ]
+    },
+    {
+      "infons": {
+        "type": "abstract"
+      },
+      "annotations": [
+        {
+          "infons": {
+            "type": "Species",
+            "identifier": "9606",
+            "name": "9606"
+          },
+          "text": "women"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D010051",
+            "name": "Ovarian Neoplasms"
+          },
+          "text": "ovarian cancer"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:D010984",
+            "name": "Platinum"
+          },
+          "text": "platinum"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C531550",
+            "name": "olaparib"
+          },
+          "text": "olaparib"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C531550",
+            "name": "olaparib"
+          },
+          "text": "olaparib"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C531550",
+            "name": "olaparib"
+          },
+          "text": "olaparib"
+        },
+        {
+          "infons": {
+            "type": "Species",
+            "identifier": "9606",
+            "name": "9606"
+          },
+          "text": "patients"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D005831",
+            "name": "Genital Diseases Female"
+          },
+          "text": "International Federation of Gynecology and Obstetrics"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D010051",
+            "name": "Ovarian Neoplasms"
+          },
+          "text": "serous or endometrioid ovarian cancer"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D010534",
+            "name": "Peritoneal Neoplasms"
+          },
+          "text": "peritoneal cancer"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D005185",
+            "name": "Fallopian Tube Neoplasms"
+          },
+          "text": "fallopian-tube cancer"
+        },
+        {
+          "infons": {
+            "type": "Gene",
+            "identifier": "672",
+            "name": "BRCA1"
+          },
+          "text": "BRCA1"
+        },
+        {
+          "infons": {
+            "type": "Gene",
+            "identifier": "675",
+            "name": "BRCA2"
+          },
+          "text": "BRCA2"
+        },
+        {
+          "infons": {
+            "type": "Gene",
+            "identifier": "672;675",
+            "name": "BRCA1"
+          },
+          "text": "BRCA1/2"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:D010984",
+            "name": "Platinum"
+          },
+          "text": "platinum"
+        },
+        {
+          "infons": {
+            "type": "Species",
+            "identifier": "9606",
+            "name": "9606"
+          },
+          "text": "patients"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C531550",
+            "name": "olaparib"
+          },
+          "text": "olaparib"
+        },
+        {
+          "infons": {
+            "type": "Species",
+            "identifier": "9606",
+            "name": "9606"
+          },
+          "text": "patients"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C531550",
+            "name": "olaparib"
+          },
+          "text": "olaparib"
+        },
+        {
+          "infons": {
+            "type": "Species",
+            "identifier": "9606",
+            "name": "9606"
+          },
+          "text": "patients"
+        },
+        {
+          "infons": {
+            "type": "Gene",
+            "identifier": "672;675",
+            "name": "BRCA1"
+          },
+          "text": "BRCA1/2"
+        },
+        {
+          "infons": {
+            "type": "Species",
+            "identifier": "9606",
+            "name": "9606"
+          },
+          "text": "patients"
+        },
+        {
+          "infons": {
+            "type": "Gene",
+            "identifier": "672;675",
+            "name": "BRCA1"
+          },
+          "text": "BRCA1/2"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D003643",
+            "name": "Death"
+          },
+          "text": "death"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C531550",
+            "name": "olaparib"
+          },
+          "text": "olaparib"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D003643",
+            "name": "Death"
+          },
+          "text": "death"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D003643",
+            "name": "Death"
+          },
+          "text": "death"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C531550",
+            "name": "olaparib"
+          },
+          "text": "olaparib"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C531550",
+            "name": "olaparib"
+          },
+          "text": "olaparib"
+        },
+        {
+          "infons": {
+            "type": "Species",
+            "identifier": "9606",
+            "name": "9606"
+          },
+          "text": "women"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D010051",
+            "name": "Ovarian Neoplasms"
+          },
+          "text": "ovarian cancer"
+        },
+        {
+          "infons": {
+            "type": "Gene",
+            "identifier": "672;675",
+            "name": "BRCA1"
+          },
+          "text": "BRCA1/2"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D003643",
+            "name": "Death"
+          },
+          "text": "death"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C531550",
+            "name": "olaparib"
+          },
+          "text": "olaparib"
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "id": "R1",
+      "infons": {
+        "type": "Negative_Correlation",
+        "score": "0.9939",
+        "role1": {
+          "type": "Chemical",
+          "identifier": "MESH:C531550",
+          "name": "olaparib"
+        },
+        "role2": {
+          "type": "Disease",
+          "identifier": "MESH:D005185",
+          "name": "Fallopian Tube Neoplasms"
+        }
+      }
+    },
+    {
+      "id": "R2",
+      "infons": {
+        "type": "Negative_Correlation",
+        "score": "0.9977",
+        "role1": {
+          "type": "Chemical",
+          "identifier": "MESH:C531550",
+          "name": "olaparib"
+        },
+        "role2": {
+          "type": "Disease",
+          "identifier": "MESH:D003643",
+          "name": "Death"
+        }
+      }
+    },
+    {
+      "id": "R3",
+      "infons": {
+        "type": "Association",
+        "score": "0.9814",
+        "role1": {
+          "type": "Disease",
+          "identifier": "MESH:D005185",
+          "name": "Fallopian Tube Neoplasms"
+        },
+        "role2": {
+          "type": "Gene",
+          "identifier": "672",
+          "name": "BRCA1"
+        }
+      }
+    },
+    {
+      "id": "R4",
+      "infons": {
+        "type": "Association",
+        "score": "0.9907",
+        "role1": {
+          "type": "Disease",
+          "identifier": "MESH:D010051",
+          "name": "Ovarian Neoplasms"
+        },
+        "role2": {
+          "type": "Gene",
+          "identifier": "672",
+          "name": "BRCA1"
+        }
+      }
+    },
+    {
+      "id": "R5",
+      "infons": {
+        "type": "Negative_Correlation",
+        "score": "0.998",
+        "role1": {
+          "type": "Chemical",
+          "identifier": "MESH:C531550",
+          "name": "olaparib"
+        },
+        "role2": {
+          "type": "Disease",
+          "identifier": "MESH:D010051",
+          "name": "Ovarian Neoplasms"
+        }
+      }
+    },
+    {
+      "id": "R6",
+      "infons": {
+        "type": "Association",
+        "score": "0.8907",
+        "role1": {
+          "type": "Disease",
+          "identifier": "MESH:D005185",
+          "name": "Fallopian Tube Neoplasms"
+        },
+        "role2": {
+          "type": "Gene",
+          "identifier": "675",
+          "name": "BRCA2"
+        }
+      }
+    },
+    {
+      "id": "R7",
+      "infons": {
+        "type": "Negative_Correlation",
+        "score": "0.9763",
+        "role1": {
+          "type": "Chemical",
+          "identifier": "MESH:D010984",
+          "name": "Platinum"
+        },
+        "role2": {
+          "type": "Disease",
+          "identifier": "MESH:D010051",
+          "name": "Ovarian Neoplasms"
+        }
+      }
+    },
+    {
+      "id": "R8",
+      "infons": {
+        "type": "Association",
+        "score": "0.9861",
+        "role1": {
+          "type": "Disease",
+          "identifier": "MESH:D010051",
+          "name": "Ovarian Neoplasms"
+        },
+        "role2": {
+          "type": "Gene",
+          "identifier": "675",
+          "name": "BRCA2"
+        }
+      }
+    }
+  ]
+}

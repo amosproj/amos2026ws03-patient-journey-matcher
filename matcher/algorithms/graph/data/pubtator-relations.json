@@ -1,0 +1,40 @@
+{
+  "_comment": "PubTator3 relations to the shared representation (Documentation/graph-normalization.md §2). The first row that matches the type and the PubTator3 types of both roles wins; a missing `subject` or `object` matches any type. `flip` swaps the roles. Types without a row become `related`.",
+  "droppedTypes": ["Species", "CellLine"],
+  "rows": [
+    {
+      "type": "Negative_Correlation",
+      "subject": "Chemical",
+      "object": "Disease",
+      "predicate": "treats"
+    },
+    {
+      "type": "Negative_Correlation",
+      "subject": "Disease",
+      "object": "Chemical",
+      "predicate": "treats",
+      "flip": true
+    },
+    {
+      "type": "Positive_Correlation",
+      "subject": "Chemical",
+      "object": "Disease",
+      "predicate": "causes"
+    },
+    {
+      "type": "Positive_Correlation",
+      "subject": "Disease",
+      "object": "Chemical",
+      "predicate": "causes",
+      "flip": true
+    },
+    { "type": "Negative_Correlation", "predicate": "negative_correlation" },
+    { "type": "Positive_Correlation", "predicate": "positive_correlation" },
+    { "type": "Association", "predicate": "associated_with" },
+    { "type": "Cotreatment", "predicate": "cotreated_with" },
+    { "type": "Comparison", "predicate": "compared_with" },
+    { "type": "Bind", "predicate": "interacts_with" },
+    { "type": "Drug_Interaction", "predicate": "interacts_with" },
+    { "type": "Conversion", "predicate": "interacts_with" }
+  ]
+}

@@ -1,0 +1,562 @@
+{
+  "id": "32343890",
+  "pmid": 32343890,
+  "passages": [
+    {
+      "infons": {
+        "type": "title"
+      },
+      "annotations": [
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C531550",
+            "name": "olaparib"
+          },
+          "text": "Olaparib"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D011471",
+            "name": "Prostatic Neoplasms"
+          },
+          "text": "Prostate Cancer"
+        }
+      ]
+    },
+    {
+      "infons": {
+        "type": "abstract"
+      },
+      "annotations": [
+        {
+          "infons": {
+            "type": "Gene",
+            "identifier": "142",
+            "name": "PARP1"
+          },
+          "text": "poly(adenosine diphosphate-ribose) polymerase"
+        },
+        {
+          "infons": {
+            "type": "Gene",
+            "identifier": "142",
+            "name": "PARP1"
+          },
+          "text": "PARP"
+        },
+        {
+          "infons": {
+            "type": "Species",
+            "identifier": "9606",
+            "name": "9606"
+          },
+          "text": "patients"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D011471",
+            "name": "Prostatic Neoplasms"
+          },
+          "text": "prostate and other cancers"
+        },
+        {
+          "infons": {
+            "type": "Gene",
+            "identifier": "142",
+            "name": "PARP1"
+          },
+          "text": "PARP"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C531550",
+            "name": "olaparib"
+          },
+          "text": "olaparib"
+        },
+        {
+          "infons": {
+            "type": "Species",
+            "identifier": "9606",
+            "name": "9606"
+          },
+          "text": "men"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D011471",
+            "name": "Prostatic Neoplasms"
+          },
+          "text": "prostate cancer"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C540278",
+            "name": "enzalutamide"
+          },
+          "text": "enzalutamide"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C089740",
+            "name": "abiraterone"
+          },
+          "text": "abiraterone"
+        },
+        {
+          "infons": {
+            "type": "Species",
+            "identifier": "9606",
+            "name": "9606"
+          },
+          "text": "men"
+        },
+        {
+          "infons": {
+            "type": "Species",
+            "identifier": "9606",
+            "name": "9606"
+          },
+          "text": "patients"
+        },
+        {
+          "infons": {
+            "type": "Gene",
+            "identifier": "672",
+            "name": "BRCA1"
+          },
+          "text": "BRCA1"
+        },
+        {
+          "infons": {
+            "type": "Gene",
+            "identifier": "675",
+            "name": "BRCA2"
+          },
+          "text": "BRCA2"
+        },
+        {
+          "infons": {
+            "type": "Gene",
+            "identifier": "472",
+            "name": "ATM"
+          },
+          "text": "ATM"
+        },
+        {
+          "infons": {
+            "type": "Species",
+            "identifier": "9606",
+            "name": "9606"
+          },
+          "text": "patients"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D009369",
+            "name": "Neoplasms"
+          },
+          "text": "tumor"
+        },
+        {
+          "infons": {
+            "type": "Species",
+            "identifier": "9606",
+            "name": "9606"
+          },
+          "text": "Patients"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C531550",
+            "name": "olaparib"
+          },
+          "text": "olaparib"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C540278",
+            "name": "enzalutamide"
+          },
+          "text": "enzalutamide"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C089740",
+            "name": "abiraterone"
+          },
+          "text": "abiraterone"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C531550",
+            "name": "olaparib"
+          },
+          "text": "olaparib"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D003643",
+            "name": "Death"
+          },
+          "text": "death"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D010146",
+            "name": "Pain"
+          },
+          "text": "pain"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C531550",
+            "name": "olaparib"
+          },
+          "text": "olaparib"
+        },
+        {
+          "infons": {
+            "type": "Species",
+            "identifier": "9606",
+            "name": "9606"
+          },
+          "text": "patients"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C531550",
+            "name": "olaparib"
+          },
+          "text": "olaparib"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C531550",
+            "name": "olaparib"
+          },
+          "text": "olaparib"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D000740",
+            "name": "Anemia"
+          },
+          "text": "Anemia"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D009325",
+            "name": "Nausea"
+          },
+          "text": "nausea"
+        },
+        {
+          "infons": {
+            "type": "Species",
+            "identifier": "9606",
+            "name": "9606"
+          },
+          "text": "patients"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C531550",
+            "name": "olaparib"
+          },
+          "text": "olaparib"
+        },
+        {
+          "infons": {
+            "type": "Species",
+            "identifier": "9606",
+            "name": "9606"
+          },
+          "text": "men"
+        },
+        {
+          "infons": {
+            "type": "Disease",
+            "identifier": "MESH:D011471",
+            "name": "Prostatic Neoplasms"
+          },
+          "text": "prostate cancer"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C540278",
+            "name": "enzalutamide"
+          },
+          "text": "enzalutamide"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C089740",
+            "name": "abiraterone"
+          },
+          "text": "abiraterone"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C531550",
+            "name": "olaparib"
+          },
+          "text": "olaparib"
+        },
+        {
+          "infons": {
+            "type": "Species",
+            "identifier": "9606",
+            "name": "9606"
+          },
+          "text": "patient"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C540278",
+            "name": "enzalutamide"
+          },
+          "text": "enzalutamide"
+        },
+        {
+          "infons": {
+            "type": "Chemical",
+            "identifier": "MESH:C089740",
+            "name": "abiraterone"
+          },
+          "text": "abiraterone"
+        }
+      ]
+    }
+  ],
+  "relations": [
+    {
+      "id": "R1",
+      "infons": {
+        "type": "Negative_Correlation",
+        "score": "0.9978",
+        "role1": {
+          "type": "Chemical",
+          "identifier": "MESH:C531550",
+          "name": "olaparib"
+        },
+        "role2": {
+          "type": "Disease",
+          "identifier": "MESH:D011471",
+          "name": "Prostatic Neoplasms"
+        }
+      }
+    },
+    {
+      "id": "R2",
+      "infons": {
+        "type": "Negative_Correlation",
+        "score": "0.9975",
+        "role1": {
+          "type": "Chemical",
+          "identifier": "MESH:C531550",
+          "name": "olaparib"
+        },
+        "role2": {
+          "type": "Disease",
+          "identifier": "MESH:D003643",
+          "name": "Death"
+        }
+      }
+    },
+    {
+      "id": "R3",
+      "infons": {
+        "type": "Negative_Correlation",
+        "score": "0.9957",
+        "role1": {
+          "type": "Chemical",
+          "identifier": "MESH:C089740",
+          "name": "abiraterone"
+        },
+        "role2": {
+          "type": "Disease",
+          "identifier": "MESH:D011471",
+          "name": "Prostatic Neoplasms"
+        }
+      }
+    },
+    {
+      "id": "R4",
+      "infons": {
+        "type": "Negative_Correlation",
+        "score": "0.9991",
+        "role1": {
+          "type": "Chemical",
+          "identifier": "MESH:C531550",
+          "name": "olaparib"
+        },
+        "role2": {
+          "type": "Gene",
+          "identifier": "142",
+          "name": "PARP1"
+        }
+      }
+    },
+    {
+      "id": "R5",
+      "infons": {
+        "type": "Cotreatment",
+        "score": "0.4297",
+        "role1": {
+          "type": "Chemical",
+          "identifier": "MESH:C089740",
+          "name": "abiraterone"
+        },
+        "role2": {
+          "type": "Chemical",
+          "identifier": "MESH:C531550",
+          "name": "olaparib"
+        }
+      }
+    },
+    {
+      "id": "R6",
+      "infons": {
+        "type": "Positive_Correlation",
+        "score": "0.9936",
+        "role1": {
+          "type": "Chemical",
+          "identifier": "MESH:C531550",
+          "name": "olaparib"
+        },
+        "role2": {
+          "type": "Disease",
+          "identifier": "MESH:D000740",
+          "name": "Anemia"
+        }
+      }
+    },
+    {
+      "id": "R7",
+      "infons": {
+        "type": "Positive_Correlation",
+        "score": "0.9791",
+        "role1": {
+          "type": "Chemical",
+          "identifier": "MESH:C531550",
+          "name": "olaparib"
+        },
+        "role2": {
+          "type": "Disease",
+          "identifier": "MESH:D010146",
+          "name": "Pain"
+        }
+      }
+    },
+    {
+      "id": "R8",
+      "infons": {
+        "type": "Negative_Correlation",
+        "score": "0.9895",
+        "role1": {
+          "type": "Chemical",
+          "identifier": "MESH:C540278",
+          "name": "enzalutamide"
+        },
+        "role2": {
+          "type": "Disease",
+          "identifier": "MESH:D011471",
+          "name": "Prostatic Neoplasms"
+        }
+      }
+    },
+    {
+      "id": "R9",
+      "infons": {
+        "type": "Positive_Correlation",
+        "score": "0.9964",
+        "role1": {
+          "type": "Chemical",
+          "identifier": "MESH:C531550",
+          "name": "olaparib"
+        },
+        "role2": {
+          "type": "Disease",
+          "identifier": "MESH:D009325",
+          "name": "Nausea"
+        }
+      }
+    },
+    {
+      "id": "R10",
+      "infons": {
+        "type": "Comparison",
+        "score": "0.5634",
+        "role1": {
+          "type": "Chemical",
+          "identifier": "MESH:C089740",
+          "name": "abiraterone"
+        },
+        "role2": {
+          "type": "Chemical",
+          "identifier": "MESH:C540278",
+          "name": "enzalutamide"
+        }
+      }
+    },
+    {
+      "id": "R11",
+      "infons": {
+        "type": "Comparison",
+        "score": "0.3812",
+        "role1": {
+          "type": "Chemical",
+          "identifier": "MESH:C531550",
+          "name": "olaparib"
+        },
+        "role2": {
+          "type": "Chemical",
+          "identifier": "MESH:C540278",
+          "name": "enzalutamide"
+        }
+      }
+    },
+    {
+      "id": "R12",
+      "infons": {
+        "type": "Association",
+        "score": "0.9971",
+        "role1": {
+          "type": "Disease",
+          "identifier": "MESH:D011471",
+          "name": "Prostatic Neoplasms"
+        },
+        "role2": {
+          "type": "Gene",
+          "identifier": "142",
+          "name": "PARP1"
+        }
+      }
+    }
+  ]
+}
