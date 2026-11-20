@@ -1,6 +1,8 @@
 import {
   createDocumentStore,
+  englishMetadata,
   indexChangedDocuments,
+  NON_ENGLISH_METADATA,
   type Queryable,
 } from "@matcher/db";
 import {
@@ -11,7 +13,6 @@ import {
 } from "@matcher/download";
 // Common non-medical English words, most frequent first.
 import basicWords from "../data/basic-words.json" with { type: "json" };
-import { englishMetadata, NON_ENGLISH_METADATA } from "./language.ts";
 import { createSchema } from "./schema.ts";
 import { ENGLISH_WORDS } from "./terms.ts";
 
@@ -58,7 +59,7 @@ export async function indexFullTexts(
     AND ${NON_ENGLISH_METADATA}`);
   // A failed download (a server error, or PMC's 404 before an article is in its bucket) is tried
   // again in every run; a skipped one only when the document changes. Audio without a transcript
-  // is skipped too: the transcription job reads it (transcription.ts).
+  // is skipped too, until the transcription job stored one: the downloader gives it like a text.
   await db.query("DELETE FROM keyword.full_texts WHERE status = 'failed'");
   const toRead = () =>
     createDocumentStore(db).countToIndex("keyword.full_texts");
@@ -85,7 +86,7 @@ export async function indexFullTexts(
               detail: "non-English metadata",
             };
         if (result.detail === NO_SPEECH_TO_TEXT) {
-          // What the transcription job read of this audio holds, whatever else changed.
+          // What was read of this audio holds while the file stays, also once its transcript is dropped.
           const { rows } = await db.query<{ status: FullTextStatus }>(
             `UPDATE keyword.full_texts SET document_changed_at = $2
              WHERE document_id = $1 AND status <> 'failed' AND url = ANY($3::text[])

@@ -8,7 +8,6 @@
   },
   "dependencies": {
     "@matcher/db": "workspace:*",
-    "@matcher/download": "workspace:*",
-    "@matcher/keyword": "workspace:*"
+    "@matcher/download": "workspace:*"
   }
 }

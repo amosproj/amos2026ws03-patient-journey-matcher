@@ -22,7 +22,7 @@ export interface Locator {
  */
 export interface FullText {
   status: "ok" | "skipped" | "failed";
-  /** The text if `ok`, else empty. Kept in memory only, never stored. */
+  /** The text if `ok`, else empty. Kept in memory; only a transcript is stored, until every index read it. */
   text: string;
   /** The locator the text comes from, or the last one tried. */
   url?: string;
@@ -48,9 +48,11 @@ export interface DownloaderOptions {
   maxBytes?: number;
   timeoutMs?: number;
   maxAudioBytes?: number;
+  /** The transcript stored for an audio file, read instead of it when no `transcribe` is given. */
+  transcript?: (url: string) => Promise<FullText | undefined>;
 }
 
-/** Why a document with audio was skipped: a call with speech-to-text reads it. */
+/** Why a document with audio was skipped: no transcript of it is stored yet. */
 export const NO_SPEECH_TO_TEXT = "audio, and speech-to-text is off";
 
 /** The locators whose audio speech-to-text can read. */
@@ -95,6 +97,7 @@ export function createDownloader({
   maxBytes = MAX_BYTES,
   timeoutMs = TIMEOUT_MS,
   maxAudioBytes = MAX_AUDIO_BYTES,
+  transcript,
 }: DownloaderOptions = {}): Downloader {
   const nextStart = new Map<string, number>();
 
@@ -220,9 +223,13 @@ export function createDownloader({
       result = tried;
       if (last) return result;
     }
-    return unreadAudio && result.status === "skipped"
-      ? { ...result, detail: NO_SPEECH_TO_TEXT }
-      : result;
+    if (!unreadAudio || result.status !== "skipped") return result;
+    for (const locator of audioLocators(locators)) {
+      const stored = await transcript?.(locator.url);
+      if (stored)
+        return { ...stored, mediaType: locator.media_type ?? undefined };
+    }
+    return { ...result, detail: NO_SPEECH_TO_TEXT };
   }
 
   return { fullText };

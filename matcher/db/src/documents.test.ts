@@ -10,6 +10,7 @@ import {
   type Queryable,
 } from "./documents.ts";
 import { testDatabaseUrl } from "./testing.ts";
+import { dropTranscriptTexts, storedTranscripts } from "./transcripts.ts";
 
 const databaseUrl = testDatabaseUrl();
 
@@ -288,6 +289,79 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     );
 
     await expect(store.documentsToIndex("keyword_index")).resolves.toEqual([]);
+  });
+
+  test("lists a document again once a transcript of it is stored, and not when its text is dropped", async () => {
+    await pool.query(`
+      CREATE TABLE keyword_index (
+        document_id text PRIMARY KEY REFERENCES documents (id) ON DELETE CASCADE,
+        document_changed_at timestamptz NOT NULL
+      )`);
+    await insert("podcast:1", { content_type: "podcast_episode" });
+    const store = createDocumentStore(pool);
+    /** What an index does: stores the `changed_at` it read. */
+    const index = async () => {
+      for (const document of await store.documentsToIndex("keyword_index")) {
+        await pool.query(
+          `INSERT INTO keyword_index VALUES ($1, $2) ON CONFLICT (document_id)
+           DO UPDATE SET document_changed_at = EXCLUDED.document_changed_at`,
+          [document.id, document.changed_at],
+        );
+      }
+    };
+    await index();
+    // Read later than the document changed: a failed read counts for nothing.
+    await pool.query(
+      `INSERT INTO transcripts (document_id, url, status, detail, model, read_at)
+       VALUES ('podcast:1', 'https://a.org/1.mp3', 'failed', 'HTTP 503', 'tiny', now() + interval '1 minute')`,
+    );
+    expect(await store.countToIndex("keyword_index")).toBe(0);
+
+    await pool.query(
+      "UPDATE transcripts SET status = 'ok', text = 'Olaparib.'",
+    );
+    expect(
+      (await store.documentsToIndex("keyword_index")).map(({ id }) => id),
+    ).toEqual(["podcast:1"]);
+    await index();
+    expect(await store.countToIndex("keyword_index")).toBe(0);
+
+    expect(
+      await dropTranscriptTexts(pool, new Date(Date.now() + 3_600_000)),
+    ).toBe(1);
+    expect(await store.countToIndex("keyword_index")).toBe(0);
+  });
+
+  test("gives a stored transcript while its text is kept, and why an audio file has none", async () => {
+    await insert("podcast:1", { content_type: "podcast_episode" });
+    await insert("podcast:2", { content_type: "podcast_episode" });
+    await pool.query(
+      `INSERT INTO transcripts (document_id, url, status, detail, text, model) VALUES
+         ('podcast:1', 'https://a.org/1.mp3', 'ok', NULL, 'Olaparib.', 'tiny'),
+         ('podcast:2', 'https://a.org/2.mp3', 'skipped', 'no text', NULL, 'tiny')`,
+    );
+    const transcript = storedTranscripts(pool);
+
+    expect(await transcript("https://a.org/1.mp3")).toEqual({
+      status: "ok",
+      text: "Olaparib.",
+      url: "https://a.org/1.mp3",
+    });
+    expect(await transcript("https://a.org/2.mp3")).toMatchObject({
+      status: "skipped",
+      detail: "no text",
+    });
+    expect(await transcript("https://a.org/3.mp3")).toBeUndefined();
+
+    // Every index has read it: the text goes, the row stays.
+    expect(
+      await dropTranscriptTexts(pool, new Date(Date.now() + 3_600_000)),
+    ).toBe(1);
+    expect(await transcript("https://a.org/1.mp3")).toBeUndefined();
+    const { rows } = await pool.query(
+      "SELECT count(*)::int AS count FROM transcripts",
+    );
+    expect(rows).toEqual([{ count: 2 }]);
   });
 
   test("reads through a client of the pool, e.g. in a transaction", async () => {
