@@ -10,8 +10,9 @@ how many audio files the transcription job reads at once.
 The matcher is TypeScript, so its logic stays there: the Index screen starts the indexer job
 (`matcher/indexer`) as a child process and reads its tables, and the Matcher screen asks
 `node src/main.ts explain` in `matcher/mcp-server` for the answer of `match_journey` with the
-steps of the match, and `node src/main.ts get_source` for the files of one source. Journeys are
-passed on, never stored or logged.
+steps of the match, and `node src/main.ts get_source` for the files of one source. The Graph
+screen shows a patient graph or PubTator3 annotations normalized by `scripts/normalize.ts` of
+`matcher/algorithms/graph`. Journeys are passed on, never stored or logged.
 """
 
 import argparse
@@ -1605,6 +1606,82 @@ def run_matcher(command: str, request: dict[str, Any]) -> dict[str, Any]:
         raise RuntimeError(message) from error
 
 
+# ── Graph screen: the normalization of patient graphs and PubTator3 annotations (#80) ────
+
+GRAPH_DIR = MATCHER_DIR / "algorithms" / "graph"
+PUBTATOR_FIXTURES = GRAPH_DIR / "fixtures" / "pubtator"
+GRAPH_TIMEOUT = 30
+
+
+def graph_meta() -> dict[str, Any]:
+    """The graphs the screen can show: patient graphs of `make graph` and PubTator3 fixtures."""
+
+    def number(path: Path) -> tuple[int, str]:
+        digits = re.search(r"\d+", path.parent.name)
+        return int(digits.group()) if digits else 0, path.parent.name
+
+    patients = sorted(JOURNEYS_DIR.glob("*/graph.json"), key=number)
+    return {
+        "patients": [path.parent.name for path in patients],
+        "papers": sorted(path.stem for path in PUBTATOR_FIXTURES.glob("*.json")),
+        "missing": matcher_missing(),
+    }
+
+
+def graph_file(kind: str, name: str) -> Path:
+    if not JOURNEY_ID.fullmatch(name):
+        raise ValueError(f"Not a graph name: {name}")
+    if kind == "patient":
+        path = JOURNEYS_DIR / name / "graph.json"
+    elif kind == "paper":
+        path = PUBTATOR_FIXTURES / f"{name}.json"
+    else:
+        raise ValueError(f"Not a graph kind: {kind}")
+    if not path.exists():
+        raise LookupError(f"No {kind} graph {name}")
+    return path
+
+
+def graph_normalize(kind: str, name: str, min_score: str) -> dict[str, Any]:
+    """The NormalizedGraph of one file, by the graph package's own `normalize --json`, and how
+    many nodes and edges or annotations and relations the file has before it."""
+    path = graph_file(kind, name)
+    try:
+        score = float(min_score or 0)
+    except ValueError as error:
+        raise ValueError(f"min_score is not a number: {min_score}") from error
+    missing = matcher_missing()
+    if missing:
+        raise ValueError(missing)
+    try:
+        done = subprocess.run(
+            ["node", "scripts/normalize.ts", str(path), "--json", "--min-score", str(score)],
+            cwd=GRAPH_DIR,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            timeout=GRAPH_TIMEOUT,
+        )
+    except subprocess.TimeoutExpired as error:
+        raise RuntimeError(f"The normalization did not finish within {GRAPH_TIMEOUT} s") from error
+    try:
+        graphs: list[dict[str, Any]] = json.loads(done.stdout)
+    except json.JSONDecodeError as error:
+        lines = done.stderr.strip().splitlines()
+        message = next((line for line in lines if re.match(r"\w*Error\b", line)), "")
+        message = message or f"The normalization failed (exit code {done.returncode})"
+        raise RuntimeError(message) from error
+    raw = json.loads(path.read_text(encoding="utf-8"))
+    if kind == "patient":
+        before = {"nodes": len(raw.get("nodes", [])), "edges": len(raw.get("edges", []))}
+    else:
+        before = {
+            "annotations": sum(len(p.get("annotations", [])) for p in raw.get("passages", [])),
+            "relations": len(raw.get("relations", [])),
+        }
+    return {"kind": kind, "name": name, "before": before, "graph": graphs[0]}
+
+
 def call_mcp(tool: str, arguments: dict[str, Any]) -> dict[str, Any]:
     """A tool of the running MCP server (`make start`), as a client gets it."""
     call = {
@@ -2303,6 +2380,12 @@ class Handler(BaseHTTPRequestHandler):
             self.route_db(path, parse_qs(url.query))
         elif path == "/api/index" or path.startswith("/api/index/"):
             self.route_index(path, parse_qs(url.query))
+        elif path == "/api/graph/meta":
+            self.send_json(graph_meta())
+        elif path == "/api/graph/normalize":
+            params = parse_qs(url.query)
+            kind, name, score = (first(params, key) for key in ("kind", "name", "min_score"))
+            self.send_result(lambda: graph_normalize(kind, name, score))
         elif path == "/api/match/meta":
             self.send_json(match_meta())
         elif path == "/api/info":

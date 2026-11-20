@@ -26,6 +26,9 @@
   --good: #1a9a55; --pending: #e8a200; --critical: #d33b3b;
   --shadow: 0 1px 2px rgb(16 18 24 / .05); --shadow-pop: 0 12px 32px rgb(16 18 24 / .14), 0 2px 6px rgb(16 18 24 / .06);
   --gutter: clamp(12px, 2vw, 32px);
+  /* Graph screen: one colour per entity type of the normalized graph. */
+  --t-disease: #b8326f; --t-chemical: #2556cf; --t-gene: #1a8a4c; --t-variant: #0c7f86;
+  --t-procedure: #d0601f; --t-finding: #7556e0; --t-device: #85663a; --t-patient: #16181d;
 }
 /* Set on <html> by the script above and the theme toggle. */
 :root[data-theme="dark"] {
@@ -37,6 +40,8 @@
   --meta: #4a86f0; --full: #d9692f; --dropped: #575d69;
   --good: #2fa968; --pending: #e6ad2e; --critical: #e05252;
   --shadow: 0 1px 2px rgb(0 0 0 / .4); --shadow-pop: 0 16px 40px rgb(0 0 0 / .55);
+  --t-disease: #e2689f; --t-chemical: #5f92f2; --t-gene: #3fbb74; --t-variant: #2fb3ba;
+  --t-procedure: #e58447; --t-finding: #9d86f2; --t-device: #b8976a; --t-patient: #e9eaed;
 }
 html { scrollbar-color: var(--line-strong) transparent; }
 * { box-sizing: border-box; }
@@ -660,6 +665,40 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
   .environment summary { padding-inline: 6px; }
   .controls-toggle { font-size: 0; gap: 0; padding: 9px; }
 }
+/* Graph screen (#80): the normalized patient graph or PubTator3 annotations of a paper. */
+.grtab { position: absolute; inset: 0; display: none; }
+.grtab.active { display: flex; flex-direction: column; }
+#gr-svg { flex: 1; width: 100%; height: 100%; display: block; }
+.gr-node { cursor: pointer; }
+.gr-node circle { stroke-width: 2; fill: var(--node); stroke: var(--node); }
+.gr-node.unresolved circle { fill: var(--panel); stroke-dasharray: 4 3; }
+.gr-node.selected circle { stroke: var(--accent); stroke-width: 4; stroke-dasharray: none; }
+.gr-node text { font-size: 12px; fill: var(--text); text-anchor: middle; paint-order: stroke; stroke: var(--panel); stroke-width: 4px; stroke-linejoin: round; }
+.gr-node .gr-id { font: 10px ui-monospace, SFMono-Regular, Menlo, monospace; fill: var(--muted); }
+.gr-edge { fill: none; stroke-width: 1.6; pointer-events: none; }
+.gr-hit { fill: none; stroke: transparent; stroke-width: 12; cursor: pointer; }
+.gr-hit:hover + .gr-edge, .gr-edge.selected { stroke-width: 3; }
+.s-asserted { --status: var(--text); }
+.s-suspected { --status: var(--pending); }
+.s-negated { --status: var(--critical); }
+.s-planned { --status: var(--meta); }
+.s-unknown { --status: var(--dropped); }
+.gr-edge { stroke: var(--status); }
+.gr-edge.s-suspected { stroke-dasharray: 6 4; }
+.gr-edge.s-planned { stroke-dasharray: 2 3; }
+.gr-arrow { fill: var(--status); }
+.gr-edge-label { font-size: 10.5px; fill: var(--muted); text-anchor: middle; paint-order: stroke; stroke: var(--panel); stroke-width: 4px; stroke-linejoin: round; pointer-events: none; }
+.gr-legend { display: flex; flex-direction: column; gap: 5px; font-size: 12.5px; }
+.gr-legend span { display: flex; align-items: center; gap: 8px; }
+.gr-legend svg { flex: none; }
+.gr-note { font-size: 12px; margin: 0; }
+.pill.gr-pill { --pill: var(--status, var(--dropped)); }
+.gr-stmts { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.gr-stmts li { border-top: 1px solid var(--line); padding-top: 8px; }
+.gr-stmts .head { display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline; }
+.gr-stmts q { display: block; color: var(--muted); font-size: 12.5px; margin-top: 3px; quotes: "“" "”"; }
+.detail h4 { margin: 16px 0 0; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+
 @media (prefers-reduced-motion: reduce) { *, *::after, *::before { animation: none !important; } }
 </style>
 </head>
@@ -675,6 +714,7 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
     <button type="button" data-screen="db">Database</button>
     <button type="button" data-screen="index">Index</button>
     <button type="button" data-screen="match">Matcher</button>
+    <button type="button" data-screen="graph">Graph</button>
     <button type="button" data-screen="info">Info</button>
   </nav>
   <details class="environment"><summary>Environment</summary><div class="chips" id="env"></div></details>
@@ -1027,6 +1067,40 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
       <aside class="detail" id="mt-detail"></aside>
     </div>
     <section class="mt-pending" id="mt-pending" aria-live="polite" hidden></section>
+  </main>
+</div>
+
+<div class="layout" id="graph-view" hidden>
+  <aside class="side" id="graph-controls">
+    <div class="side-head"><h2>Normalized graph</h2></div>
+    <label class="field"><span>Graph</span><select id="gr-source" aria-label="Graph to show"></select></label>
+    <label class="field" id="gr-score-field" hidden><span>PubTator3 minimum score</span>
+      <input type="number" id="gr-score" min="0" max="1" step="0.05" value="0"></label>
+    <label class="check"><input type="checkbox" id="gr-unresolved" checked> Entities without an ID</label>
+    <label class="check" id="gr-facts-field"><input type="checkbox" id="gr-facts" checked> Patient facts</label>
+    <label class="check"><input type="checkbox" id="gr-labels" checked> Edge labels</label>
+    <div class="side-head"><h2>Entity type</h2></div>
+    <div class="gr-legend" id="gr-type-legend"></div>
+    <div class="side-head"><h2>Status</h2></div>
+    <div class="gr-legend" id="gr-status-legend"></div>
+    <p class="muted gr-note">What <span class="mono">matcher/algorithms/graph</span> makes of the file (<a href="https://github.com/amosproj/amos2026ws03-patient-journey-matcher/blob/main/Documentation/graph-normalization.md" target="_blank" rel="noopener">graph normalization</a>). A hollow node has no shared ID: it is kept by its name but never meets a paper. Edges with the same ends, predicate and status are drawn once, with their count.</p>
+  </aside>
+
+  <main aria-label="Graph normalization">
+    <div class="stats" id="gr-stats"></div>
+    <nav class="tabs" id="gr-tabs">
+      <button data-grtab="graph" class="active">Graph</button>
+      <button data-grtab="entities">Entities <span class="badge" id="gr-n-entities">0</span></button>
+      <button data-grtab="statements">Statements <span class="badge" id="gr-n-statements">0</span></button>
+      <button data-grtab="skipped">Left out <span class="badge" id="gr-n-skipped">0</span></button>
+    </nav>
+    <div class="content">
+      <section class="grtab active" id="grtab-graph"><svg id="gr-svg" role="img" aria-label="Normalized graph"></svg></section>
+      <section class="grtab" id="grtab-entities"><div class="table-wrap"><table id="gr-entities"></table></div></section>
+      <section class="grtab" id="grtab-statements"><div class="table-wrap"><table id="gr-statements"></table></div></section>
+      <section class="grtab" id="grtab-skipped"><div class="table-wrap"><table id="gr-skipped"></table></div></section>
+      <aside class="detail" id="gr-detail"></aside>
+    </div>
   </main>
 </div>
 
@@ -1963,7 +2037,7 @@ $("#show-starts").addEventListener("change", (event) => {
   for (const line of document.querySelectorAll('#log [data-type="request_start"]')) line.style.display = event.target.checked ? "" : "none";
 });
 window.addEventListener("resize", () => { if (state.tab === "graph") resizeCanvas(); });
-document.addEventListener("keydown", (event) => { if (event.key === "Escape") { if (state.screen === "runs") closeDetail(); else dbCloseDetail(); } });
+document.addEventListener("keydown", (event) => { if (event.key === "Escape") { if (state.screen === "runs") closeDetail(); else if (state.screen === "graph") grCloseDetail(); else dbCloseDetail(); } });
 setInterval(() => { if (state.liveStart && !state.result) renderStats(); }, 500);
 
 // Info icons: one fixed tooltip, so the side panel's scroll area cannot clip it.
@@ -2643,7 +2717,7 @@ function dbSwitchTab(tab, load = true) {
   if (load && dbReady()) dbLoadTab();
 }
 
-const SCREENS = { runs: "#runs-view", db: "#db-view", index: "#index-view", match: "#match-view", info: "#info-view" };
+const SCREENS = { runs: "#runs-view", db: "#db-view", index: "#index-view", match: "#match-view", graph: "#graph-view", info: "#info-view" };
 
 const narrowScreen = window.matchMedia("(max-width: 760px)");
 const controlsToggle = $("#controls-toggle");
@@ -2697,6 +2771,7 @@ function showScreen(screen) {
   if (screen === "db") { dbSwitchTab(db.tab, false); dbRefresh(); }
   else if (screen === "index") { ixSwitchTab(ix.tab); ixRefresh(); txRefresh(); }
   else if (screen === "match") mtShow();
+  else if (screen === "graph") grShow();
   else if (screen === "info") infoShow();
   else switchTab(state.tab);
 }
@@ -4156,6 +4231,334 @@ $("#mt-tuning-reset").addEventListener("click", () => {
   mtRun(true);
 });
 
+// ── Graph screen: the normalized patient graph or PubTator3 annotations of a paper (#80) ──
+const gr = { meta: null, source: null, data: null, tab: "graph", selected: null, loading: 0 };
+const GR_TYPES = ["disease", "chemical", "gene", "variant", "procedure", "finding", "device"];
+const GR_STATUSES = ["asserted", "suspected", "negated", "planned", "unknown"];
+// No direction, so no arrowhead (SYMMETRIC in matcher/algorithms/graph/src/types.ts).
+const GR_SYMMETRIC = new Set(["associated_with", "cotreated_with", "compared_with", "interacts_with"]);
+const SVG_NS = "http://www.w3.org/2000/svg";
+
+function sv(tag, attrs, ...children) {
+  const node = document.createElementNS(SVG_NS, tag);
+  for (const [key, value] of Object.entries(attrs || {})) {
+    if (value == null || value === false) continue;
+    if (key.startsWith("on")) node.addEventListener(key.slice(2), value);
+    else node.setAttribute(key, value);
+  }
+  for (const child of children.flat()) {
+    if (child == null || child === false) continue;
+    node.append(child instanceof Node ? child : document.createTextNode(String(child)));
+  }
+  return node;
+}
+
+const grPatient = () => gr.data?.kind === "patient";
+const grEntity = (key) => gr.data?.graph.entities.find((entity) => entity.key === key);
+const grName = (key) => (key === "patient" ? "Patient" : grEntity(key)?.name ?? key);
+const grStatusPill = (status) => h("span", { class: `pill gr-pill s-${status}` }, status);
+const grTypePill = (type) => h("span", { class: "pill gr-pill", style: `--status: var(--t-${type})` }, type);
+
+/** Facts and relations as one list of statements, the facts starting at the patient. */
+function grStatements() {
+  const graph = gr.data.graph;
+  return [
+    ...graph.facts.map((fact) => ({ ...fact, from: "patient", to: fact.entity, predicate: fact.kind, fact: true })),
+    ...graph.relations.map((relation) => ({ ...relation, from: relation.subject, to: relation.object, fact: false })),
+  ];
+}
+
+async function grShow() {
+  grSwitchTab(gr.tab);
+  if (!gr.meta) {
+    try {
+      gr.meta = await api("/api/graph/meta");
+    } catch (error) {
+      grError(error.message);
+      return;
+    }
+    $("#gr-source").replaceChildren(
+      h("optgroup", { label: "Patient graphs (make graph)" }, gr.meta.patients.map((name) => h("option", { value: `patient:${name}` }, name))),
+      h("optgroup", { label: "PubTator3 papers (test fixtures)" }, gr.meta.papers.map((name) => h("option", { value: `paper:${name}` }, `PMID ${name}`))),
+    );
+    gr.source = $("#gr-source").value;
+    grLegends();
+  }
+  if (gr.meta.missing) grError(gr.meta.missing);
+  else if (!gr.data) grLoad();
+}
+
+function grError(message) {
+  $("#gr-stats").replaceChildren(h("div", { class: "card bad" }, h("b", {}, "Cannot show the graph"), h("span", {}, message)));
+  $("#gr-svg").replaceChildren();
+}
+
+async function grLoad() {
+  if (!gr.source) return;
+  const [kind, name] = gr.source.split(":");
+  $("#gr-score-field").hidden = kind !== "paper";
+  $("#gr-facts-field").hidden = kind !== "patient";
+  const query = new URLSearchParams({ kind, name, min_score: kind === "paper" ? $("#gr-score").value : "0" });
+  const ticket = ++gr.loading;
+  $("#gr-stats").replaceChildren(h("div", { class: "card muted" }, h("b", {}, "…"), h("span", {}, `Normalizing ${name}`)));
+  try {
+    const data = await api(`/api/graph/normalize?${query}`);
+    if (ticket !== gr.loading) return;
+    gr.data = data;
+  } catch (error) {
+    if (ticket === gr.loading) grError(error.message);
+    return;
+  }
+  grCloseDetail();
+  grRender();
+}
+
+function grSwitchTab(tab) {
+  gr.tab = tab;
+  history.replaceState(null, "", tab === "graph" ? "#graph" : `#graph-${tab}`);
+  for (const button of document.querySelectorAll("#gr-tabs button")) button.classList.toggle("active", button.dataset.grtab === tab);
+  for (const section of document.querySelectorAll(".grtab")) section.classList.toggle("active", section.id === `grtab-${tab}`);
+}
+
+function grLegends() {
+  const dot = (style, dashed) => sv("svg", { width: 14, height: 14, "aria-hidden": "true" }, sv("circle", { cx: 7, cy: 7, r: 5.5, style, "stroke-width": 2, "stroke-dasharray": dashed ? "3 2" : null }));
+  $("#gr-type-legend").replaceChildren(
+    ...GR_TYPES.map((type) => h("span", {}, dot(`fill: var(--t-${type}); stroke: var(--t-${type})`), type)),
+    h("span", {}, dot("fill: var(--panel); stroke: var(--muted)", true), "no ID (kept by name)"),
+  );
+  $("#gr-status-legend").replaceChildren(
+    ...GR_STATUSES.map((status) =>
+      h("span", {}, sv("svg", { width: 26, height: 10, "aria-hidden": "true" }, sv("line", { x1: 1, y1: 5, x2: 25, y2: 5, class: `gr-edge s-${status}` })), status),
+    ),
+  );
+}
+
+function grRender() {
+  const { graph, before, kind } = gr.data;
+  const withId = graph.entities.filter((entity) => entity.id !== null).length;
+  const card = (value, label) => h("div", { class: "card" }, h("b", {}, value), h("span", {}, label));
+  $("#gr-stats").replaceChildren(...[
+    kind === "patient"
+      ? card(`${before.nodes} / ${before.edges}`, "nodes / edges in graph.json")
+      : card(`${before.annotations} / ${before.relations}`, "annotations / relations in the export"),
+    card(`${withId} / ${graph.entities.length}`, "entities with a shared ID"),
+    kind === "patient" ? card(graph.facts.length, "patient facts") : null,
+    card(graph.relations.length, "relations"),
+    card(graph.skipped.length, "left out"),
+  ].filter(Boolean));
+  $("#gr-n-entities").textContent = graph.entities.length;
+  $("#gr-n-statements").textContent = graph.facts.length + graph.relations.length;
+  $("#gr-n-skipped").textContent = graph.skipped.length;
+  grDraw();
+  grTables();
+}
+
+/** Entities on an ellipse, grouped by type; the patient in the middle. */
+function grDraw() {
+  const W = 1100, H = 760, cx = W / 2, cy = H / 2;
+  const showUnresolved = $("#gr-unresolved").checked;
+  const showFacts = $("#gr-facts").checked && grPatient();
+  const entities = gr.data.graph.entities
+    .filter((entity) => showUnresolved || entity.id !== null)
+    .sort((a, b) => GR_TYPES.indexOf(a.type) - GR_TYPES.indexOf(b.type) || a.name.localeCompare(b.name));
+  const position = new Map();
+  entities.forEach((entity, index) => {
+    const angle = (index / entities.length) * 2 * Math.PI - Math.PI / 2;
+    position.set(entity.key, { x: cx + 430 * Math.cos(angle), y: cy + 300 * Math.sin(angle) });
+  });
+  if (showFacts) position.set("patient", { x: cx, y: cy });
+
+  // One edge per ends, predicate and status, with how many statements it stands for.
+  const edges = new Map();
+  for (const statement of grStatements()) {
+    if (statement.fact && !showFacts) continue;
+    if (!position.has(statement.from) || !position.has(statement.to)) continue;
+    const key = `${statement.from}|${statement.predicate}|${statement.to}|${statement.status}`;
+    const edge = edges.get(key) ?? { key, from: statement.from, to: statement.to, predicate: statement.predicate, status: statement.status, statements: [] };
+    edge.statements.push(statement);
+    edges.set(key, edge);
+  }
+  // Edges between the same two nodes are bent apart.
+  const pairs = new Map();
+  for (const edge of edges.values()) {
+    const pair = [edge.from, edge.to].sort().join("|");
+    pairs.set(pair, [...(pairs.get(pair) ?? []), edge]);
+  }
+
+  const R = 15;
+  const markers = GR_STATUSES.map((status) =>
+    sv("marker", { id: `gr-arrow-${status}`, viewBox: "0 0 10 10", refX: 9, refY: 5, markerWidth: 7, markerHeight: 7, orient: "auto-start-reverse", class: `s-${status}` },
+      sv("path", { d: "M0,0 L10,5 L0,10 z", class: "gr-arrow" })),
+  );
+  const edgeNodes = [];
+  for (const group of pairs.values()) {
+    group.forEach((edge, index) => {
+      const a = position.get(edge.from), b = position.get(edge.to);
+      const dx = b.x - a.x, dy = b.y - a.y, length = Math.hypot(dx, dy) || 1;
+      // The same normal for both directions, so A→B and B→A bend to different sides.
+      const sign = edge.from < edge.to ? 1 : -1;
+      const nx = (-dy / length) * sign, ny = (dx / length) * sign;
+      const offset = (index - (group.length - 1) / 2) * 46;
+      const c = { x: (a.x + b.x) / 2 + nx * offset, y: (a.y + b.y) / 2 + ny * offset };
+      const towards = (from, to, by) => {
+        const lx = to.x - from.x, ly = to.y - from.y, l = Math.hypot(lx, ly) || 1;
+        return { x: from.x + (lx / l) * by, y: from.y + (ly / l) * by };
+      };
+      const start = towards(a, c, R + 2), end = towards(b, c, R + 4);
+      const d = `M${start.x},${start.y} Q${c.x},${c.y} ${end.x},${end.y}`;
+      const middle = { x: 0.25 * start.x + 0.5 * c.x + 0.25 * end.x, y: 0.25 * start.y + 0.5 * c.y + 0.25 * end.y };
+      const count = edge.statements.length;
+      const title = `${grName(edge.from)} ${edge.predicate} ${grName(edge.to)} · ${edge.status} · ${plural(count, "statement")}`;
+      edgeNodes.push(
+        sv("g", {},
+          sv("path", { d, class: "gr-hit", onclick: () => grSelectEdge(edge) }, sv("title", {}, title)),
+          sv("path", { d, class: `gr-edge s-${edge.status}${gr.selected === edge.key ? " selected" : ""}`, "marker-end": GR_SYMMETRIC.has(edge.predicate) ? null : `url(#gr-arrow-${edge.status})` }),
+          $("#gr-labels").checked ? sv("text", { x: middle.x, y: middle.y + 3.5, class: "gr-edge-label" }, count > 1 ? `${edge.predicate} ×${count}` : edge.predicate) : null,
+        ),
+      );
+    });
+  }
+
+  const nodeOf = (key, entity) => {
+    const { x, y } = position.get(key);
+    const type = entity ? entity.type : "patient";
+    const colour = `var(--t-${type})`;
+    const name = entity ? entity.name : "Patient";
+    const short = name.length > 28 ? `${name.slice(0, 27)}…` : name;
+    const above = key !== "patient" && y < cy - 1;
+    const classes = ["gr-node", entity && entity.id === null ? "unresolved" : "", gr.selected === key ? "selected" : ""].join(" ");
+    return sv("g", { class: classes, onclick: () => grSelectNode(key) },
+      sv("title", {}, entity ? `${entity.names.join(" / ")}\n${entity.id ?? "no ID"} · ${type}` : "The patient: start of every patient fact"),
+      sv("circle", { cx: x, cy: y, r: key === "patient" ? R + 5 : R, style: `--node: ${colour}` }),
+      // Labels of the upper half go above the node, where its edges do not arrive.
+      sv("text", { x, y: above ? y - R - 20 : y + R + 15 }, short),
+      sv("text", { x, y: above ? y - R - 7 : y + R + 28, class: "gr-id" }, entity ? entity.id ?? "no ID" : ""),
+    );
+  };
+  const nodes = [...(showFacts ? [nodeOf("patient", null)] : []), ...entities.map((entity) => nodeOf(entity.key, entity))];
+  const svg = $("#gr-svg");
+  svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
+  svg.replaceChildren(sv("defs", {}, markers), ...edgeNodes, ...nodes);
+  if (!entities.length) svg.append(sv("text", { x: cx, y: cy, "text-anchor": "middle", class: "gr-edge-label" }, "No entities to show"));
+}
+
+function grStatementItem(statement) {
+  const when = statement.validAt ? `${statement.validAt}${statement.invalidAt ? ` → ${statement.invalidAt}` : ""}` : null;
+  return h("li", {},
+    h("div", { class: "head" },
+      grStatusPill(statement.status),
+      h("b", {}, `${grName(statement.from)} ${statement.predicate} ${grName(statement.to)}`),
+      when ? h("span", { class: "muted mono" }, when) : null,
+      statement.score != null ? h("span", { class: "muted mono" }, `score ${statement.score}`) : null,
+    ),
+    h("div", { class: "muted", style: "font-size:12px" },
+      `${statement.origin.type}`,
+      statement.cue ? ` · cue “${statement.cue}”` : "",
+      ` · ${statement.origin.ref}`),
+    statement.text ? h("q", {}, statement.text) : null,
+  );
+}
+
+function grDetail(...children) {
+  const panel = $("#gr-detail");
+  panel.replaceChildren(h("button", { type: "button", class: "close", "aria-label": "Close", onclick: grCloseDetail }, "×"), ...children);
+  panel.classList.add("open");
+}
+
+function grSelectNode(key) {
+  gr.selected = key;
+  const statements = grStatements().filter((statement) => statement.from === key || statement.to === key);
+  statements.sort((a, b) => (a.validAt ?? "").localeCompare(b.validAt ?? ""));
+  if (key === "patient") {
+    grDetail(h("h3", {}, "Patient"), h("p", { class: "muted" }, "Not an entity: patient facts start here and are not matched with paper triples one to one."), h("h4", {}, plural(statements.length, "patient fact")), h("ul", { class: "gr-stmts" }, statements.map(grStatementItem)));
+  } else {
+    const entity = grEntity(key);
+    const row = (label, value) => [h("dt", {}, label), h("dd", {}, value)];
+    grDetail(
+      h("h3", {}, entity.name),
+      h("dl", {},
+        row("ID", entity.id ? h("span", { class: "mono" }, entity.id) : h("span", { class: "muted" }, "none: never matched across graphs")),
+        row("Resolved by", entity.resolvedBy ?? "–"),
+        row("Type", grTypePill(entity.type)),
+        row("Labels", entity.labels.join(", ")),
+        row("Written as", h("div", { class: "links" }, entity.names.map((name) => h("span", {}, name)))),
+        row("Sources", plural(entity.sources.length, gr.data.kind === "patient" ? "node" : "paper")),
+      ),
+      h("h4", {}, plural(statements.length, "statement")),
+      h("ul", { class: "gr-stmts" }, statements.map(grStatementItem)),
+    );
+  }
+  grDraw();
+}
+
+function grSelectEdge(edge) {
+  gr.selected = edge.key;
+  const statements = [...edge.statements].sort((a, b) => (a.validAt ?? "").localeCompare(b.validAt ?? ""));
+  grDetail(
+    h("h3", {}, `${grName(edge.from)} ${edge.predicate} ${grName(edge.to)}`),
+    h("p", {}, grStatusPill(edge.status), " ", plural(statements.length, "statement")),
+    h("ul", { class: "gr-stmts" }, statements.map(grStatementItem)),
+  );
+  grDraw();
+}
+
+function grCloseDetail() {
+  $("#gr-detail").classList.remove("open");
+  if (gr.selected !== null) {
+    gr.selected = null;
+    if (gr.data) grDraw();
+  }
+}
+
+function grTable(table, headings, rows) {
+  table.replaceChildren(
+    h("thead", {}, h("tr", {}, headings.map((heading) => h("th", {}, heading)))),
+    h("tbody", {}, rows.length ? rows : h("tr", {}, h("td", { colspan: headings.length, class: "empty" }, "Nothing"))),
+  );
+}
+
+function grTables() {
+  const { graph } = gr.data;
+  const entities = [...graph.entities].sort((a, b) => (a.id === null) - (b.id === null) || GR_TYPES.indexOf(a.type) - GR_TYPES.indexOf(b.type));
+  grTable($("#gr-entities"), ["ID", "Resolved by", "Type", "Name", "Written as", "Labels", "Sources"],
+    entities.map((entity) =>
+      h("tr", { onclick: () => { grSwitchTab("graph"); grSelectNode(entity.key); } },
+        h("td", { class: "id" }, entity.id ?? h("span", { class: "muted" }, "no ID")),
+        h("td", { class: "small" }, entity.resolvedBy ?? "–"),
+        h("td", {}, grTypePill(entity.type)),
+        h("td", {}, entity.name),
+        h("td", { class: "small" }, entity.names.join(" / ")),
+        h("td", { class: "small" }, entity.labels.join(", ")),
+        h("td", { class: "num" }, entity.sources.length),
+      ),
+    ),
+  );
+  const statements = grStatements().sort((a, b) => (a.validAt ?? "").localeCompare(b.validAt ?? "") || a.predicate.localeCompare(b.predicate));
+  grTable($("#gr-statements"), ["Day", "Subject", "Predicate", "Object", "Status", "Cue", "Source type", "Sentence or score"],
+    statements.map((statement) =>
+      h("tr", {},
+        h("td", { class: "when" }, statement.validAt ?? "–"),
+        h("td", {}, grName(statement.from)),
+        h("td", { class: "mono" }, statement.predicate),
+        h("td", {}, grName(statement.to)),
+        h("td", {}, grStatusPill(statement.status)),
+        h("td", { class: "small" }, statement.cue ?? ""),
+        h("td", { class: "small mono" }, statement.origin.type),
+        h("td", { class: "small" }, statement.text ?? (statement.score != null ? `score ${statement.score}` : "")),
+      ),
+    ),
+  );
+  grTable($("#gr-skipped"), ["Reference", "Type", "Reason"],
+    graph.skipped.map((item) => h("tr", {}, h("td", { class: "id" }, item.ref), h("td", { class: "mono" }, item.type), h("td", {}, item.reason))),
+  );
+}
+
+$("#gr-source").addEventListener("change", (event) => { gr.source = event.target.value; gr.data = null; grLoad(); });
+let grTyping = 0;
+$("#gr-score").addEventListener("input", () => { clearTimeout(grTyping); grTyping = setTimeout(grLoad, 300); });
+for (const id of ["#gr-unresolved", "#gr-facts", "#gr-labels"]) $(id).addEventListener("change", () => { if (gr.data) grDraw(); });
+for (const button of document.querySelectorAll("#gr-tabs button")) button.addEventListener("click", () => grSwitchTab(button.dataset.grtab));
+
 async function init() {
   state.meta = await api("/api/meta");
   renderEnv();
@@ -4175,6 +4578,9 @@ async function init() {
   } else if (hash === "match" || hash.startsWith("match-")) {
     if (["rankings", "answer", "client"].includes(hash.slice(6))) mt.tab = hash.slice(6);
     showScreen("match");
+  } else if (hash === "graph" || hash.startsWith("graph-")) {
+    if (["entities", "statements", "skipped"].includes(hash.slice(6))) gr.tab = hash.slice(6);
+    showScreen("graph");
   } else if (hash === "info" || hash.startsWith("info-")) {
     if (["running", "topics"].includes(hash.slice(5))) info.tab = hash.slice(5);
     showScreen("info");
