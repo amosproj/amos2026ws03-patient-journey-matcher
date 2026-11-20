@@ -1,0 +1,4845 @@
+{
+ "patient": "Patient-10",
+ "documents": [
+  "ueberweisungsbrief_e01.pdf",
+  "laborbericht_e02.pdf",
+  "pathologiebericht_e03.pdf",
+  "befundbericht_e04.pdf",
+  "befundbericht_e05.pdf",
+  "tumorkonferenzprotokoll_e06.pdf",
+  "arztbrief_e07.pdf",
+  "laborbericht_e08.pdf",
+  "verlaufsbericht_e08.pdf",
+  "laborbericht_e09.pdf",
+  "verlaufsbericht_e09.pdf",
+  "laborbericht_e10.pdf",
+  "verlaufsbericht_e10.pdf",
+  "laborbericht_e11.pdf",
+  "verlaufsbericht_e11.pdf",
+  "arztbrief_e12.pdf",
+  "laborbericht_e12.pdf",
+  "tumorkonferenzprotokoll_e13.pdf",
+  "einweisungsbrief_e14.pdf",
+  "arztbrief_e15.pdf",
+  "laborbericht_e15.pdf",
+  "verlaufsbericht_e15.pdf",
+  "arztbrief_e16.pdf",
+  "laborbericht_e16.pdf",
+  "verlaufsbericht_e16.pdf",
+  "arztbrief_e17.pdf",
+  "laborbericht_e17.pdf",
+  "verlaufsbericht_e17.pdf",
+  "arztbrief_e18.pdf",
+  "laborbericht_e18.pdf",
+  "verlaufsbericht_e18.pdf",
+  "arztbrief_e19.pdf",
+  "laborbericht_e19.pdf",
+  "verlaufsbericht_e19.pdf",
+  "arztbrief_e20.pdf",
+  "laborbericht_e20.pdf",
+  "verlaufsbericht_e20.pdf",
+  "entlassungsbrief_e21.pdf",
+  "palliativbericht_e22.pdf",
+  "palliativbericht_e23.pdf"
+ ],
+ "nodes": [
+  {
+   "uuid": "e0819230-c726-43d3-9985-1dc9d9788a05",
+   "name": "ADT plus a PARP inhibitor",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "TreatmentPlan"
+   ],
+   "created_at": "2026-11-18T18:03:42.783418",
+   "summary": "Patient-10 was recommended a treatment plan of ADT plus a PARP inhibitor (specifically ADT + Olaparib) for metastatic hormone-sensitive prostate cancer and the BRCA2-mutation.",
+   "attributes": {
+    "therapy_type": "ADT plus a PARP inhibitor",
+    "planned_start": null,
+    "recommendation": "ADT plus a PARP inhibitor (specifically ADT + Olaparib based on the PROpel study)",
+    "decision_date": "2027-01-13"
+   }
+  },
+  {
+   "uuid": "bf74c318-c1bc-4e6f-aa46-7b02f15aa519",
+   "name": "ALT",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "LabTest"
+   ],
+   "created_at": "2026-11-18T18:02:13.810192",
+   "summary": "Patient-10 had an ALT lab test result within normal range.",
+   "attributes": {
+    "test_value": null,
+    "unit": null,
+    "reference_range": null,
+    "test_date": null,
+    "result_status": "unauffällig"
+   }
+  },
+  {
+   "uuid": "1858f41a-ccdc-4965-8c37-947582c00010",
+   "name": "AP",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "LabTest"
+   ],
+   "created_at": "2026-11-18T18:02:13.810176",
+   "summary": "Patient-10 had an AP lab test result of 85.0 U/L which is normal.",
+   "attributes": {
+    "test_value": "85.0",
+    "unit": "U/L",
+    "reference_range": "40 – 130 U/L",
+    "test_date": null,
+    "result_status": "normal"
+   }
+  },
+  {
+   "uuid": "f4b5f8c5-4731-43b4-97b5-d2298fe85c14",
+   "name": "AST",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "LabTest"
+   ],
+   "created_at": "2026-11-18T18:02:13.810201",
+   "summary": "Patient-10 had an AST lab test result within normal range.",
+   "attributes": {
+    "test_value": null,
+    "unit": null,
+    "reference_range": null,
+    "test_date": null,
+    "result_status": "normal"
+   }
+  },
+  {
+   "uuid": "492e5169-0984-42dd-85b1-8a2490d8263b",
+   "name": "BRCA2",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "TumorMarker"
+   ],
+   "created_at": "2026-11-18T18:08:17.262121",
+   "summary": "Patient-10 has a targeted therapy involving BRCA2.\nPatient-10 has a BRCA2 mutation.\nAdvanced C61 Prostatakarzinom is being treated with targeted therapy involving BRCA2.\nC61 Prostatakarzinom is treated with targeted therapy involving BRCA2 and PARP-inhibitor.\nPatient-10's treatment for C61 Prostatakarzinom involves BRCA2 targeted therapy.\nPatient-10 is undergoing targeted therapy involving BRCA2 and a PARP-Inhibitor.",
+   "attributes": {
+    "marker_value": null,
+    "unit": null,
+    "reference_range": null,
+    "test_date": null
+   }
+  },
+  {
+   "uuid": "f11dbba2-5d0d-4535-8430-0a9c4b090a4a",
+   "name": "BRCA2 and PARP-Inhibitor",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Medication"
+   ],
+   "created_at": "2026-11-18T18:05:51.548376",
+   "summary": "Patient-10 is undergoing targeted therapy with a BRCA2 mutation and PARP-Inhibitor.\nPatient Patient-10 is treated with targeted therapy consisting of BRCA2 and a PARP-Inhibitor.\nPatient-10 is undergoing targeted therapy with BRCA2 + PARP-Inhibitor on September 16, 2028.",
+   "attributes": {
+    "dosage": null,
+    "route": null,
+    "frequency": null,
+    "start_date": null,
+    "end_date": null
+   }
+  },
+  {
+   "uuid": "3eaacb03-4523-4fd3-b187-da7fdeb706b7",
+   "name": "BRCA2-Mutation",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Diagnosis"
+   ],
+   "created_at": "2026-11-18T18:02:42.777146",
+   "summary": "Patient-10 was found to have a BRCA2-Mutation identified through molecular pathology testing.\nPatient-10 was found to have a pathogenic germline BRCA2-Mutation.\nPatient-10 has a BRCA2 mutation associated with the clinical diagnosis of C61 Prostatakarzinom.\nPatient-10 has a BRCA2 mutation associated with targeted therapy.\nPatient-10 has a known BRCA2 mutation for targeted therapy with a PARP-Inhibitor.\nPatient Patient-10 has a targeted therapy plan involving BRCA2 for C61 Prostatakarzinom.\nPatient-10 is receiving targeted therapy associated with a BRCA2 mutation.\nPatient-10 has a confirmed BRCA2-mutation.\nPatient-10 has a pathogenic BRCA2 genetic mutation.\nPatient-10 has a BRCA2-mutation associated with advanced C61 Prostatakarzinom.\nPatient Patient-10 has a BRCA2-Mutation.\nPatient-10 has genetic findings of a BRCA2-Mutation associated with the diagnosis.\nPatient-10 has a genetic BRCA2-Mutation.\nPatient-10 has targeted therapy with BRCA2 mutation and PARP-inhibitor.",
+   "attributes": {
+    "icd_code": null,
+    "stage": null,
+    "date_confirmed": null,
+    "status": null
+   }
+  },
+  {
+   "uuid": "95bac935-c883-4db2-8916-a7edf2f45d00",
+   "name": "Bedarfsmedikation",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Medication"
+   ],
+   "created_at": "2026-11-18T18:18:02.203283",
+   "summary": "Patient-10 is prescribed Bedarfsmedikation as part of pain management according to WHO-Step 3.",
+   "attributes": {
+    "dosage": null,
+    "route": null,
+    "frequency": null,
+    "start_date": null,
+    "end_date": null
+   }
+  },
+  {
+   "uuid": "5d33dfbd-e6ad-4c3f-8972-f63dafe946af",
+   "name": "Best Supportive Care",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "TreatmentPlan"
+   ],
+   "created_at": "2026-11-18T18:18:02.203296",
+   "summary": "Patient-10 receives a general focus on symptom control and quality of life under Best Supportive Care.",
+   "attributes": {
+    "therapy_type": "Best Supportive Care",
+    "planned_start": null,
+    "recommendation": "close connection to specialized outpatient palliative care (Spezialisierte Ambulante Palliativversorgung, SAPV)",
+    "decision_date": null
+   }
+  },
+  {
+   "uuid": "25872e95-6b2d-4bb6-ae2c-8e760766176b",
+   "name": "Cabazitaxel",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Medication"
+   ],
+   "created_at": "2026-11-18T18:08:42.174570",
+   "summary": "The tumor board consensus decision recommended Cabazitaxel as a second-line treatment for Patient-10.\nPatient-10 has a planned inpatient admission for Cabazitaxel-Chemotherapie.\nCabazitaxel-Chemotherapie is planned to treat advanced C61 Prostatakarzinom.\nPatient-10 was prescribed Cabazitaxel 25 mg/m² q3w as second-line therapy.\nPatient-10 presented for second-line cabazitaxel therapy on August 26, 2028.\nPatient-10 has a treatment plan confirming the continuation of Cabazitaxel 25 mg/m² q3w in the second line.\nC61 Prostatakarzinom (mCRPC BRCA2 unter Cabazitaxel, fortgeschritten, zielgerichtete Therapie mit BRCA2 + PARP-Inhibitor) is treated with Cabazitaxel.",
+   "attributes": {
+    "dosage": "25 mg/m²",
+    "route": null,
+    "frequency": "q3w",
+    "start_date": "2028-07-15",
+    "end_date": null
+   }
+  },
+  {
+   "uuid": "fc8d7bff-9a28-4f48-a5be-b0446cb2c90c",
+   "name": "Department of Oncology and Hematology",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Provider"
+   ],
+   "created_at": "2026-11-18T18:04:39.655046",
+   "summary": "Dr. med. Arzt-2 is from the Department of Oncology and Hematology at Klinikum Berlin.\nThe Central Laboratory at Klinikum Berlin – Klinik-1 is associated with the Department of Oncology and Hematology.\nPatient-10 was seen at the Klinik für Onkologie und Hämatologie of Klinikum Berlin for routine follow-up regarding prostate carcinoma.\nDr. med. Arzt-2 evaluated Patient-10 at the Klinik für Onkologie und Hämatologie.\nPatient-10 was evaluated at the Klinik für Onkologie und Hämatologie.\nDr. med. Arzt-2 practices at the Klinik für Onkologie und Hämatologie.\nThe Klinik für Onkologie und Hämatologie is located at Klinikum Berlin.\nPatient-10 was evaluated by Dr. med. Arzt-2 at the Clinic for Oncology and Hematology, Klinikum Berlin on October 28, 2028.\nPatient-10 presented for a routine follow-up control at the Klinik für Onkologie und Hämatologie at Klinikum Berlin.\nPatient-10 was discharged following an inpatient stay at Klinikum Berlin, Klinik für Onkologie und Hämatologie.",
+   "attributes": {
+    "specialty": "Oncology and Hematology",
+    "institution": "Klinikum Berlin",
+    "department": "Klinik für Onkologie und Hämatologie"
+   }
+  },
+  {
+   "uuid": "8e962926-a55f-4139-a32f-f90a5f879baf",
+   "name": "Dr. med. Arzt-1",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Provider"
+   ],
+   "created_at": "2026-11-18T18:01:47.909654",
+   "summary": "Referring provider Dr. med. Arzt-1 from the Urologische Klinik issued an Überweisungsbrief for patient Patient-10.\nPatient-10 had a labor report ordered by sender Dr. med. Arzt-1 of the Urologische Klinik.\nPatient-10 was referred by Dr. med. Arzt-1 for clarification and staging regarding a diagnosis of C61 Prostatakarzinom.\nPatient-10 was referred by Arzt-1 to the interdisciplinary tumor board.\nPatient-10 presented to referring physician Dr. med. Arzt-1 and the oncology department for routine follow-up.\nDr. med. Arzt-2 addressed the routine follow-up evaluation to colleague Arzt-1.\nPatient-10 was seen by referring doctor Dr. med. Arzt-1 during the routine follow-up examination.\nPatient-10 was recommended for outpatient care handover to referring physician Dr. med. Arzt-1.\nThe clinic requested the takeover of ongoing outpatient care for patient Patient-10 by the referring doctor Dr. med. Arzt-1.\nPatient-10 was seen following a referral from treating physician Dr. med. Arzt-1 on September 16, 2028.\nDr. med. Arzt-1 is the referring physician for Patient-10.\nPatient-10 was evaluated by Dr. med. Arzt-1 during a palliative care consultation.\nDr. med. Arzt-1 evaluated patient Patient-10 at the Urologische Klinik of Klinikum Berlin on January 21, 2029.",
+   "attributes": {
+    "specialty": "Urologie",
+    "institution": "Klinikum Berlin",
+    "department": "Urologische Klinik"
+   }
+  },
+  {
+   "uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "name": "Dr. med. Arzt-2",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Provider"
+   ],
+   "created_at": "2026-11-18T18:03:42.783311",
+   "summary": "Dr. med. Arzt-2 practices at the Klinik für Onkologie und Hämatologie of Klinikum Berlin – Klinik-1, located at Beethovenstraße 65, 13597 Berlin. Dr. med. Arzt-2 evaluated Patient-10 on October 20, 2027, noting an elevated total PSA of 4.7 ng/ml under targeted therapy with a PARP-inhibitor and BRCA2 mutation. On January 31, 2028, Dr. med. Arzt-2 evaluated Patient-10's rising PSA level of 6.4 ng/ml and subsequent clinical/biochemischer progression. On June 21, 2028, Dr. med. Arzt-2 evaluated Patient-10 presenting with clinical progression, bone symptoms, fatigue, weight loss, ECOG 3, and a PSA of 23.2 ng/ml, recommending frequent PSA monitoring and handing over outpatient care to Dr. med. Arzt-1. Dr. med. Arzt-2 chaired an interdisciplinary tumor conference on June 30, 2028, recommending Cabazitaxel as a second-line treatment for mCRPC. On July 13, 2028, Dr. med. Arzt-2 ordered laboratory testing for Patient-10. Dr. med.",
+   "attributes": {
+    "specialty": "Onkologie und Hämatologie",
+    "institution": "Klinikum Berlin",
+    "department": "Klinik für Onkologie und Hämatologie"
+   }
+  },
+  {
+   "uuid": "25d9d3d2-e299-405a-8d1d-7dd1e1e6bcbe",
+   "name": "Dr. med. Arzt-3",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Provider"
+   ],
+   "created_at": "2026-11-18T18:03:00.258139",
+   "summary": "Dr. med. Arzt-3 works at the Institut für Diagnostische Radiologie, Klinikum Berlin – Klinik-2 (Schillerstraße 32, 13093 Berlin). On December 5, 2026, Dr. med. Arzt-3 issued a computed tomography (CT) radiology report for patient Patient-10 (born February 15, 1951, fall number URO-2026-0010) following a referral from Dr. med. Arzt-1 for clinical staging of C61 Prostatakarzinom, which revealed lymph node involvement, bone metastases, and liver metastases.",
+   "attributes": {
+    "specialty": null,
+    "institution": "Klinikum Berlin",
+    "department": "Institut für Diagnostische Radiologie"
+   }
+  },
+  {
+   "uuid": "40c62290-2530-4f88-ba03-54c88d9eab1d",
+   "name": "Dr. med. Arzt-4",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Provider"
+   ],
+   "created_at": "2026-11-18T18:03:25.993126",
+   "summary": "Dr. med. Arzt-4 issued a pathology report at the Institut für Pathologie, Klinikum Berlin – Klinik-2.",
+   "attributes": {
+    "specialty": null,
+    "institution": "Klinikum Berlin",
+    "department": "Institut für Pathologie"
+   }
+  },
+  {
+   "uuid": "e25fae26-4fa8-4d13-8119-7ca3730c5ad2",
+   "name": "ECOG performance status of 4",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "VitalSigns"
+   ],
+   "created_at": "2026-11-18T18:18:02.203255",
+   "summary": "Patient-10 presents with an ECOG performance status of 4.",
+   "attributes": {
+    "measurement_date": null,
+    "blood_pressure": null,
+    "heart_rate": null,
+    "weight": null,
+    "height": null,
+    "temperature": null,
+    "oxygen_saturation": null
+   }
+  },
+  {
+   "uuid": "c189d139-edc1-4cb6-b5c8-4e59dea124e6",
+   "name": "ECOG status 3",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "VitalSigns"
+   ],
+   "created_at": "2026-11-18T18:08:42.174552",
+   "summary": "Patient-10 has a deteriorated general condition at ECOG status 3.\nPatient-10 presented with an ECOG performance status of 3 on August 26, 2028.",
+   "attributes": {
+    "measurement_date": null,
+    "blood_pressure": null,
+    "heart_rate": null,
+    "weight": null,
+    "height": null,
+    "temperature": null,
+    "oxygen_saturation": null
+   }
+  },
+  {
+   "uuid": "ef3251e6-6a84-459b-8b8d-c8ef4aca68b5",
+   "name": "ECOG status of 2",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "VitalSigns"
+   ],
+   "created_at": "2026-11-18T18:05:07.351449",
+   "summary": "Patient-10 exhibits a good general condition with an ECOG status of 2.",
+   "attributes": {
+    "measurement_date": null,
+    "blood_pressure": null,
+    "heart_rate": null,
+    "weight": null,
+    "height": null,
+    "temperature": null,
+    "oxygen_saturation": null
+   }
+  },
+  {
+   "uuid": "33498dfe-6d73-4cc8-9758-dde5b4874ec9",
+   "name": "ECOG-Performance-Status",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "VitalSigns"
+   ],
+   "created_at": "2026-11-18T18:09:06.039632",
+   "summary": "Patient-10 has an ECOG performance status of 3.\nPatient Patient-10 presented with a stable overall condition and an ECOG performance status of 3.\nPatient-10 presented with an ECOG performance status of 3 on September 16, 2028.\nPatient-10 demonstrated a stable overall presentation with a good general condition documented at an ECOG performance status of 3.\nPatient-10 had an ECOG-Status of 4 recorded on January 21, 2029.",
+   "attributes": {
+    "measurement_date": null,
+    "blood_pressure": null,
+    "heart_rate": null,
+    "weight": null,
+    "height": null,
+    "temperature": null,
+    "oxygen_saturation": null
+   }
+  },
+  {
+   "uuid": "ff8b598b-4b4c-4443-b7a2-ecc074e7eb6d",
+   "name": "Hb",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "LabTest"
+   ],
+   "created_at": "2026-11-18T18:02:13.810184",
+   "summary": "Patient-10 had an Hb lab test result of 14.1 g/dl which is normal.",
+   "attributes": {
+    "test_value": "14.1",
+    "unit": "g/dl",
+    "reference_range": "13.5 – 17.5 g/dl",
+    "test_date": null,
+    "result_status": "normal"
+   }
+  },
+  {
+   "uuid": "80dfb686-494e-4a46-a32c-a500e08a113f",
+   "name": "Institut f%fc r Pathologie, Klinikum Berlin %u2013 Klinik-2",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Provider"
+   ],
+   "created_at": "2026-11-18T18:03:25.993159",
+   "summary": "Dr. med. Arzt-4 issued a pathology report at the Institut für Pathologie, Klinikum Berlin – Klinik-2.",
+   "attributes": {
+    "specialty": "Pathologie",
+    "institution": "Klinikum Berlin",
+    "department": "Institut für Pathologie"
+   }
+  },
+  {
+   "uuid": "14c74595-8e6e-424f-a788-c35fe5086acc",
+   "name": "Institut für Diagnostische Radiologie, Klinikum Berlin – Klinik-2",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Provider"
+   ],
+   "created_at": "2026-11-18T18:03:00.258153",
+   "summary": "The computed tomography (CT) radiology report was issued by Dr. med. Arzt-3 at the Institut für Diagnostische Radiologie, Klinikum Berlin – Klinik-2 on December 5, 2026.\nPatient Patient-10 received a computed tomography report issued by the Institut für Diagnostische Radiologie, Klinikum Berlin – Klinik-2 on December 5, 2026.",
+   "attributes": {
+    "specialty": "Radiologie",
+    "institution": "Klinikum Berlin",
+    "department": "Institut für Diagnostische Radiologie"
+   }
+  },
+  {
+   "uuid": "3686e6c1-3cdc-4dd8-946b-d21a466b0874",
+   "name": "Klinikum Berlin",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Provider"
+   ],
+   "created_at": "2026-11-18T18:01:47.909714",
+   "summary": "Patient-10 was directed to the Urologische Klinik at Klinikum Berlin for specialist consultation and further urological workup.\nPatient-10 was evaluated at Klinikum Berlin for a routine follow-up examination regarding advanced prostate carcinoma.\nDr. med. Arzt-2 issued a laboratory report from Klinikum Berlin.\nPatient-10 was evaluated at the Klinik für Onkologie und Hämatologie of Klinikum Berlin on September 16, 2028.\nThe Klinik für Onkologie und Hämatologie is located at Klinikum Berlin.\nPatient-10 presented for routine follow-up at Klinikum Berlin, Klinik für Onkologie und Hämatologie on October 7, 2028.\nDr. med. Arzt-2 evaluated Patient-10 at Klinikum Berlin, Klinik für Onkologie und Hämatologie.\nPatient-10 presented for a routine follow-up control at Klinikum Berlin under the care of treating provider Dr. med. Arzt-2.",
+   "attributes": {
+    "specialty": "Onkologie und Hämatologie",
+    "institution": "Klinikum Berlin",
+    "department": "Klinik für Onkologie und Hämatologie"
+   }
+  },
+  {
+   "uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "name": "Klinikum Berlin – Klinik-1",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Provider"
+   ],
+   "created_at": "2026-11-18T18:03:42.783335",
+   "summary": "Patient-10 was managed at Klinikum Berlin – Klinik-1 (Klinik für Onkologie und Hämatologie) where an interdisciplinary tumor board protocol was issued on January 13, 2027.\nPatient Patient-10 was evaluated by Dr. med. Arzt-2 at the Klinik für Onkologie und Hämatologie of Klinikum Berlin on January 23, 2027.\nThe Central Laboratory at Klinikum Berlin – Klinik-1 is associated with the Department of Oncology and Hematology.\nPatient-10 received a laboratory report issued by the Central Laboratory at Klinikum Berlin – Klinik-1.\nDr. med. Arzt-2 authored a medical follow-up report from the Klinik für Onkologie und Hämatologie at Klinikum Berlin – Klinik-1.\nDr. med. Arzt-2 ordered and performed laboratory testing at Klinikum Berlin – Klinik-1.\nPatient-10 was evaluated at the Klinik für Onkologie und Hämatologie of Klinikum Berlin – Klinik-1 on July 22, 2027.\nDr. med. Arzt-2 evaluated Patient-10 at the Klinik für Onkologie und Hämatologie, Klinikum Berlin – Klinik-1 on October 20, 2027.\nDr. med. Arzt-2 issued a laboratory report at the Klinik für Onkologie und Hämatologie, Klinikum Berlin – Klinik-1.\nPatient-10 presented at Klinikum Berlin – Klinik-1, Klinik für Onkologie und Hämatologie for evaluation and care.\nPatient-10 underwent laboratory evaluation at Klinikum Berlin – Klinik-1, Klinik f&uuml;r Onkologie und H&auml;matologie.\nPatient-10 underwent laboratory evaluation at Klinikum Berlin, Klinik für Onkologie und Hämatologie.",
+   "attributes": {
+    "specialty": "Onkologie und Hämatologie",
+    "institution": "Klinikum Berlin",
+    "department": "Klinik für Onkologie und Hämatologie"
+   }
+  },
+  {
+   "uuid": "4a5d67eb-5d59-470d-807f-a454cfc6c058",
+   "name": "Knochenmetastasen",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "ImagingResult"
+   ],
+   "created_at": "2026-11-18T18:03:00.258198",
+   "summary": "Patient Patient-10's computed tomography scan showed suspicious lesions in the bones indicating bone metastases.",
+   "attributes": {
+    "modality": "CT",
+    "body_region": null,
+    "finding": "Suspicious lesions in the bones indicating bone metastases",
+    "impression": "Staging examination for prostate carcinoma matching the aforementioned findings",
+    "imaging_date": "December 5, 2026"
+   }
+  },
+  {
+   "uuid": "18b504f6-1f3c-467c-aa3c-d93105b92f17",
+   "name": "LDH",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "LabTest"
+   ],
+   "created_at": "2026-11-18T18:02:13.810167",
+   "summary": "Patient-10 had an LDH lab test result of 195.0 U/L which is normal.",
+   "attributes": {
+    "test_value": "195.0",
+    "unit": "U/L",
+    "reference_range": "135 – 250 U/L",
+    "test_date": null,
+    "result_status": "normal"
+   }
+  },
+  {
+   "uuid": "55940258-d985-42fa-b26e-a616efc1b208",
+   "name": "Lebermetastasen",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "ImagingResult"
+   ],
+   "created_at": "2026-11-18T18:03:00.258206",
+   "summary": "Patient Patient-10's computed tomography scan showed suspicious lesions in the liver indicating liver metastases.",
+   "attributes": {
+    "modality": "computed tomography (CT)",
+    "body_region": "liver",
+    "finding": "suspicious lesions in the liver indicating liver metastases",
+    "impression": "staging examination for prostate carcinoma matching the aforementioned findings",
+    "imaging_date": "December 5, 2026"
+   }
+  },
+  {
+   "uuid": "163a51c6-da54-4f4e-b2b3-437eda2f6c7a",
+   "name": "Leuprorelin",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Medication"
+   ],
+   "created_at": "2026-11-18T18:04:10.495119",
+   "summary": "Patient Patient-10 is prescribed ADT using Leuprorelin as part of their treatment plan.",
+   "attributes": {
+    "dosage": null,
+    "route": null,
+    "frequency": null,
+    "start_date": null,
+    "end_date": null
+   }
+  },
+  {
+   "uuid": "2254c80a-d3b9-4499-b3d1-3c4ac20ace21",
+   "name": "Lymphknotenbefall",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "ImagingResult"
+   ],
+   "created_at": "2026-11-18T18:03:00.258190",
+   "summary": "Patient Patient-10's computed tomography scan showed evidence of lymph node involvement (Lymphknotenbefall).",
+   "attributes": {
+    "modality": "CT",
+    "body_region": null,
+    "finding": "Lymphknotenbefall",
+    "impression": "staging examination for prostate carcinoma matching the aforementioned findings",
+    "imaging_date": "2026-12-05"
+   }
+  },
+  {
+   "uuid": "37b61603-aeef-4fab-a5e6-dcd5fc285013",
+   "name": "Olaparib",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Medication"
+   ],
+   "created_at": "2026-11-18T18:03:42.783434",
+   "summary": "Patient-10 is recommended Olaparib as part of the treatment plan for metastatic hormone-sensitive prostate cancer based on the PROpel study.\nPatient Patient-10 is prescribed Olaparib at a dosage of 300 mg taken twice daily as a PARP-Inhibitor.",
+   "attributes": {
+    "dosage": "300 mg",
+    "route": null,
+    "frequency": "twice daily",
+    "start_date": null,
+    "end_date": null
+   }
+  },
+  {
+   "uuid": "95ac1745-f8cb-4b10-b1ff-9c44cbc1bf14",
+   "name": "PARP-inhibitor",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Medication"
+   ],
+   "created_at": "2026-11-18T18:04:39.655099",
+   "summary": "Patient-10 is undergoing targeted therapy comprising a PARP-inhibitor.\nPatient-10 is undergoing targeted therapy consisting of a BRCA2 and PARP-Inhibitor.\nPatient-10 is treated with a PARP-inhibitor as part of targeted therapy for C61 Prostatakarzinom.\nPatient-10 is undergoing targeted therapy with a PARP-inhibitor as part of the advanced C61 Prostatakarzinom management on October 20, 2027.\nPatient-10 is receiving targeted therapy with a PARP-inhibitor.\nC61 Prostatakarzinom is being treated with a targeted therapy involving a BRCA2 mutation and a PARP-Inhibitor.\nAdvanced C61 Prostatakarzinom is being treated with targeted therapy involving a PARP-Inhibitor.\nC61 Prostatakarzinom is treated with targeted therapy involving BRCA2 and PARP-inhibitor.\nC61 Prostatakarzinom (mCRPC BRCA2 unter Cabazitaxel, fortgeschritten, zielgerichtete Therapie mit BRCA2 + PARP-Inhibitor) involves targeted therapy with a PARP-Inhibitor.\nC61 Prostatakarzinom involves targeted therapy with BRCA2 and a PARP-inhibitor.",
+   "attributes": {
+    "dosage": "300 mg",
+    "route": null,
+    "frequency": "twice daily",
+    "start_date": null,
+    "end_date": null
+   }
+  },
+  {
+   "uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "name": "PSA",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "TumorMarker"
+   ],
+   "created_at": "2026-11-18T18:01:47.909734",
+   "summary": "Patient-10 has a total PSA value of 6.2 ng/ml on July 22, 2027, evaluated as elevated against a reference range of 0.00 to 4.00 ng/ml. On October 20, 2027, the total PSA level was 4.7 ng/ml with a decreasing and stable trend. On January 31, 2028, the total PSA value rose to 6.4 ng/ml, indicating clinical and biochemical progression of C61 Prostatakarzinom. On June 21, 2028, the total PSA value was 23.2 ng/ml, evaluated as elevated. On June 30, 2028, the total PSA level was 25.1 ng/ml in a patient with mCRPC. On July 13, 2028, the current PSA value reached 28.3 ng/ml. On July 15, 2028, the current PSA-Wert tumor marker was 28.8 ng/ml with a reference range of 0.00 to 4.00 ng/ml. The PSA (gesamt) laboratory result of 28,8 ng/ml is associated with the diagnosis of C61 Prostatakarzinom (Fortgeschritten – Zielgerichtete Therapie (BRCA2 + PARP-Inhibitor)). Patient Patient-10 had a lab test showing a PSA-Wert of 34,9 ng/ml. Patient-10 has a total PSA tumor marker level of 34.9 ng/ml.",
+   "attributes": {
+    "marker_value": "74.9",
+    "unit": "ng/ml",
+    "reference_range": "0.00 – 4.00 ng/ml",
+    "test_date": "October 28, 2028"
+   }
+  },
+  {
+   "uuid": "dfa31062-75c5-4eea-ab19-3d90c0d01a88",
+   "name": "PSA lab test",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "LabTest"
+   ],
+   "created_at": "2026-11-18T18:01:47.909789",
+   "summary": "Patient-10 has a documented PSA lab test value of 87,7 ng/ml.",
+   "attributes": {
+    "test_value": "87,7",
+    "unit": "ng/ml",
+    "reference_range": null,
+    "test_date": null,
+    "result_status": "strongly elevated"
+   }
+  },
+  {
+   "uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "name": "Patient-10",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Patient"
+   ],
+   "created_at": "2026-11-18T18:01:47.909571",
+   "summary": "Patient-10, born on February 15, 1951, under case number URO-2026-0010, has advanced C61 Prostatakarzinom characterized by Gleason 4+5=9 (ISUP 5), cT4 cN1 cM1c staging, and a BRCA2-mutation, undergoing targeted therapy with a PARP-inhibitor and second-line Cabazitaxel 25 mg/m² q3w. Care is provided by Dr. med. Arzt-2 at the Klinik für Onkologie und Hämatologie of Klinikum Berlin (Klinik-1, Beethovenstraße 65, 13597 Berlin), in coordination with referring physician Dr. med. Arzt-1. Clinically, Patient-10 presents with bone pain (knochenschmerzen), fatigue, and weight loss (gewichtsverlust), maintaining an ECOG performance status of 3 until declining to 4 by December 22, 2028. Tumor marker evaluations show a rising PSA-Wert, measuring 28.8 ng/ml on July 15, 2028, 34.9 ng/ml on August 5, 2028, 42.2 ng/ml on August 26, 2028, 51.1 ng/ml on September 16, 2028, 61.9 ng/ml on October 7, 2028, and reaching 74.9 ng/ml on October 28, 2028, indicating clinical and biochemical progression.\nDr. med. Arzt-1 evaluated patient Patient-10 at the Urologische Klinik of Klinikum Berlin on January 21, 2029.\nPatient-10 was evaluated at the Urologische Klinik of Klinikum Berlin on January 21, 2029.\nPatient-10 is undergoing targeted therapy involving BRCA2 and a PARP-Inhibitor.\nPatient-10 presented with a symptom load of knochenschmerzen.\nPatient-10 presented with fatigue as part of their symptom load.\nPatient-10 presented with gewichtsverlust as part of their symptom load.\nPatient-10 had an ECOG-Status of 4 recorded on January 21, 2029.\nPatient-10 died on January 21, 2029, due to progressives metastasiertes kastrationsresistentes Prostatakarzinom.",
+   "attributes": {
+    "patient_id": "Patient-10",
+    "date_of_birth": "February 15, 1951",
+    "gender": null
+   }
+  },
+  {
+   "uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "name": "Prostatakarzinom",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Diagnosis"
+   ],
+   "created_at": "2026-11-18T18:02:42.777137",
+   "summary": "Patient-10 has a confirmed diagnosis of Prostatakarzinom (Adenokarzinom der Prostata, ICD-10/ICD-O C61) based on a pathology report of 12 prostate core biopsies showing a Gleason-Score of 4+5=9 (ISUP 5). The computed tomography (CT) imaging procedure for clinical staging of C61 Prostatakarzinom revealed evidence of lymph node involvement, bone metastases, and liver metastases. Patient-10 presents with a diagnosis of C61 Prostatakarzinom, staged as cT4 cN1 cM1c with a Gleason score of 4+5=9 (ISUP 5), in an advanced stage with targeted therapy comprising a BRCA2 mutation and a PARP-inhibitor, showing clinical and biochemical progression with an elevated total PSA value reaching 61.9 ng/ml by October 7, 2028.\nAdvanced C61 Prostatakarzinom is being treated with targeted therapy involving BRCA2.\nAdvanced C61 Prostatakarzinom is being treated with targeted therapy involving a PARP-Inhibitor.\nC61 Prostatakarzinom is treated with targeted therapy involving BRCA2 and PARP-inhibitor.\nC61 Prostatakarzinom is treated with targeted therapy involving BRCA2 and PARP-inhibitor.\nA significantly elevated PSA (gesamt) tumor marker value of 74.9 ng/ml indicates C61 Prostatakarzinom progression.\nPatient-10 has a documented diagnosis of C61 Prostatakarzinom (mCRPC BRCA2 unter Cabazitaxel, fortgeschritten, zielgerichtete Therapie mit BRCA2 + PARP-Inhibitor).\nC61 Prostatakarzinom (mCRPC BRCA2 unter Cabazitaxel, fortgeschritten, zielgerichtete Therapie mit BRCA2 + PARP-Inhibitor) is treated with Cabazitaxel.\nC61 Prostatakarzinom (mCRPC BRCA2 unter Cabazitaxel, fortgeschritten, zielgerichtete Therapie mit BRCA2 + PARP-Inhibitor) involves targeted therapy with a PARP-Inhibitor.\nPatient-10 has a diagnosis of C61 Prostatakarzinom, characterized as an advanced stage with metastasizing disease and exhausted curative approaches.\nC61 Prostatakarzinom involves targeted therapy with BRCA2 and a PARP-inhibitor.",
+   "attributes": {
+    "icd_code": "C61",
+    "stage": "cT4 cN1 cM1c",
+    "date_confirmed": "2026-11-21",
+    "status": "active"
+   }
+  },
+  {
+   "uuid": "59c481f3-8a7c-4017-b219-92f2c9014bd2",
+   "name": "Spezialisierte Ambulante Palliativversorgung, SAPV",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Provider"
+   ],
+   "created_at": "2026-11-18T18:18:02.203310",
+   "summary": "Future treatment and care recommendations advise a close connection for Patient-10 to Spezialisierte Ambulante Palliativversorgung, SAPV.",
+   "attributes": {
+    "specialty": null,
+    "institution": null,
+    "department": null
+   }
+  },
+  {
+   "uuid": "73211fa4-75df-443d-a2c7-c5dce2800894",
+   "name": "Urologische Klinik",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Provider"
+   ],
+   "created_at": "2026-11-18T18:01:47.909689",
+   "summary": "Referring provider Dr. med. Arzt-1 from the Urologische Klinik issued an Überweisungsbrief for patient Patient-10.\nPatient-10 was directed to the Urologische Klinik at Klinikum Berlin for specialist consultation and further urological workup.\nPatient-10 was presented for a palliative care consultation at Klinikum Berlin, Klinik-1, Urologische Klinik.\nPatient-10 was evaluated at the Urologische Klinik of Klinikum Berlin on January 21, 2029.",
+   "attributes": {
+    "specialty": "Urologie",
+    "institution": "Klinikum Berlin",
+    "department": "Urologische Klinik"
+   }
+  },
+  {
+   "uuid": "fa57ed75-b8f4-401d-b923-ff60dbe0972b",
+   "name": "Vd. a. Prostatakarzinom (C61) – Urologische Abklärung",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Diagnosis"
+   ],
+   "created_at": "2026-11-18T18:01:47.909854",
+   "summary": "Patient-10 has the listed diagnosis Vd. a. Prostatakarzinom (C61) – Urologische Abklärung.\nPatient-10 has a clinical diagnosis associated with the evaluation of Vd. a. Prostatakarzinom (C61).\nA total PSA value of 87.7 ng/ml was evaluated in association with Vd. a. Prostatakarzinom.",
+   "attributes": {
+    "icd_code": "C61",
+    "stage": null,
+    "date_confirmed": null,
+    "status": "suspected"
+   }
+  },
+  {
+   "uuid": "6e3ec032-fa4a-4a12-94eb-0ba105b87eed",
+   "name": "WHO-Step 3",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "TreatmentPlan"
+   ],
+   "created_at": "2026-11-18T18:18:02.203268",
+   "summary": "Patient-10 receives palliative pain management via an adjustment of analgesia according to WHO-Step 3 with prescribed Bedarfsmedikation.",
+   "attributes": {
+    "therapy_type": null,
+    "planned_start": null,
+    "recommendation": "Best Supportive Care",
+    "decision_date": null
+   }
+  },
+  {
+   "uuid": "d2f32729-4ace-429a-928f-68c9ea9ee68e",
+   "name": "Zentrallabor at Klinikum Berlin – Klinik-1",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Provider"
+   ],
+   "created_at": "2026-11-18T18:16:35.346751",
+   "summary": "The laboratory report for PSA (gesamt) was electronically validated and released by Zentrallabor at Klinikum Berlin – Klinik-1.",
+   "attributes": {
+    "specialty": null,
+    "institution": "Klinikum Berlin",
+    "department": "Zentrallabor"
+   }
+  },
+  {
+   "uuid": "0ccf26d0-a1a8-4119-a6b6-3fddb76a210d",
+   "name": "Zentrallabor at Klinikum Berlin – Klinik-1, Urologische Klinik",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Provider"
+   ],
+   "created_at": "2026-11-18T18:02:13.810121",
+   "summary": "Patient-10 had a labor report issued by the Zentrallabor at Klinikum Berlin – Klinik-1, Urologische Klinik.\nPatient Patient-10 had a laboratory report issued by the Zentrallabor at Klinikum Berlin – Klinik-1.\nLaboratory testing at the Zentrallabor of Klinikum Berlin – Klinik-1 was performed under the oversight of Dr. med. Arzt-2 from the Klinik f%fc r Onkologie und H%e4matologie.\nPatient-10 had laboratory testing performed at the Zentrallabor of Klinikum Berlin – Klinik-1.",
+   "attributes": {
+    "specialty": "Urologische",
+    "institution": "Klinikum Berlin",
+    "department": "Zentrallabor"
+   }
+  },
+  {
+   "uuid": "43f6858e-c31c-4475-9632-645b21d4048b",
+   "name": "bone pain",
+   "group_id": "Patient-10",
+   "labels": [
+    "Symptom",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:01:47.909754",
+   "summary": "Patient-10 presents with bone pain prompting the referral.\nPatient-10 reports ongoing bone pain.\nPatient-10 presented with clinical complaints including bone pain.",
+   "attributes": {
+    "severity": null,
+    "onset_date": null,
+    "duration": null,
+    "status": "active"
+   }
+  },
+  {
+   "uuid": "79d8918e-293f-418f-8113-b595cbedc58f",
+   "name": "computed tomography (CT)",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "ImagingResult"
+   ],
+   "created_at": "2026-11-18T18:03:00.258181",
+   "summary": "Patient Patient-10 underwent a computed tomography (CT) radiology report issued on December 5, 2026.\nThe computed tomography (CT) radiology report was issued by Dr. med. Arzt-3 at the Institut für Diagnostische Radiologie, Klinikum Berlin – Klinik-2 on December 5, 2026.\nThe computed tomography (CT) imaging procedure for clinical staging of C61 Prostatakarzinom revealed evidence of lymph node involvement, bone metastases, and liver metastases.",
+   "attributes": {
+    "modality": "computed tomography (CT)",
+    "body_region": null,
+    "impression": "staging examination for prostate carcinoma matching the aforementioned findings",
+    "imaging_date": "December 5, 2026"
+   }
+  },
+  {
+   "uuid": "f986fd67-4d89-41be-a6e7-f0551a04c599",
+   "name": "fatigue",
+   "group_id": "Patient-10",
+   "labels": [
+    "Symptom",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:01:47.909822",
+   "summary": "Bisherige Befunde documented symptoms including fatigue for Patient-10.\nPatient-10 complained of fatigue on August 26, 2028.\nPatient-10 presented with symptoms of fatigue.\nPatient-10 reports ongoing fatigue.\nPatient-10 reports a symptom load consisting of knochenschmerzen, fatigue, and gewichtsverlust.\nPatient-10 presented with fatigue as part of their symptom load.",
+   "attributes": {
+    "severity": null,
+    "onset_date": null,
+    "duration": null,
+    "status": null
+   }
+  },
+  {
+   "uuid": "d11b987a-74d9-4fa7-a691-712da8cf762d",
+   "name": "gewichtsverlust",
+   "group_id": "Patient-10",
+   "labels": [
+    "Symptom",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:01:47.909838",
+   "summary": "Bisherige Befunde documented symptoms including gewichtsverlust for Patient-10.\nPatient-10 reported experiencing gewichtsverlust.\nPatient-10 complained of gewichtsverlust on August 26, 2028.\nPatient-10 reports a symptom load consisting of knochenschmerzen, fatigue, and gewichtsverlust.\nPatient-10 presented with gewichtsverlust as part of their symptom load.",
+   "attributes": {
+    "severity": null,
+    "onset_date": null,
+    "duration": null,
+    "status": null
+   }
+  },
+  {
+   "uuid": "08e08a2a-745e-489c-8cf5-f7924b62b5c5",
+   "name": "knochenschmerzen",
+   "group_id": "Patient-10",
+   "labels": [
+    "Symptom",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:01:47.909805",
+   "summary": "Bisherige Befunde documented symptoms including knochenschmerzen for Patient-10.\nPatient Patient-10 reported experiencing Knochenschmerzen (bone pain).\nPatient-10 presented with bone symptoms (knochenschmerzen) under the PARP-inhibitor.\nPatient-10 complained of knochenschmerzen on August 26, 2028.\nPatient-10 reports a symptom load consisting of knochenschmerzen, fatigue, and gewichtsverlust.\nPatient-10 presented with a symptom load of knochenschmerzen.",
+   "attributes": {
+    "severity": null,
+    "onset_date": null,
+    "duration": null,
+    "status": null
+   }
+  },
+  {
+   "uuid": "8188f262-27af-42f9-927d-4538ef14cd09",
+   "name": "progressives metastasiertes kastrationsresistentes Prostatakarzinom",
+   "group_id": "Patient-10",
+   "labels": [
+    "Entity",
+    "Diagnosis"
+   ],
+   "created_at": "2026-11-18T18:18:41.466460",
+   "summary": "Patient-10 died on January 21, 2029, due to progressives metastasiertes kastrationsresistentes Prostatakarzinom.",
+   "attributes": {
+    "icd_code": "C61",
+    "stage": "cT4 cN1 cM1c",
+    "date_confirmed": null,
+    "status": "active"
+   }
+  },
+  {
+   "uuid": "51383455-e65c-4620-93a6-af628a599341",
+   "name": "weight loss",
+   "group_id": "Patient-10",
+   "labels": [
+    "Symptom",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:01:47.909772",
+   "summary": "Patient-10 presents with weight loss prompting the referral.\nPatient-10 reports ongoing weight loss.",
+   "attributes": {
+    "severity": null,
+    "onset_date": null,
+    "duration": null,
+    "status": null
+   }
+  }
+ ],
+ "edges": [
+  {
+   "uuid": "120935a1-0d6c-44da-b1f2-d8103046a645",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "f986fd67-4d89-41be-a6e7-f0551a04c599",
+   "created_at": "2026-11-18T18:01:54.263414",
+   "name": "HAS_SYMPTOM",
+   "fact": "Bisherige Befunde documented symptoms including fatigue for Patient-10.",
+   "episodes": [
+    "0fde8f00-23b9-4978-b1b7-5e9ce977f8c8",
+    "845f477b-cb6c-44ec-a7cd-6cb789b3e482",
+    "ac6a38e9-58a5-495e-9678-b182b72f6eed",
+    "378832d9-59f1-4893-9f05-2e54bec52002"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "39dd28e7-bbae-4905-b5e5-151c15f43a2b",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "3686e6c1-3cdc-4dd8-946b-d21a466b0874",
+   "created_at": "2026-11-18T18:01:54.263115",
+   "name": "RELATES_TO",
+   "fact": "Patient-10 was directed to the Urologische Klinik at Klinikum Berlin for specialist consultation and further urological workup.",
+   "episodes": [
+    "0fde8f00-23b9-4978-b1b7-5e9ce977f8c8"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "417fcbaa-10a7-43dc-89e1-71b8cc93b611",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "73211fa4-75df-443d-a2c7-c5dce2800894",
+   "created_at": "2026-11-18T18:01:54.263179",
+   "name": "RELATES_TO",
+   "fact": "Patient-10 was directed to the Urologische Klinik at Klinikum Berlin for specialist consultation and further urological workup.",
+   "episodes": [
+    "0fde8f00-23b9-4978-b1b7-5e9ce977f8c8"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "418ceba1-681e-4ebf-bc26-2bcabaf0b326",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "fa57ed75-b8f4-401d-b923-ff60dbe0972b",
+   "created_at": "2026-11-18T18:01:54.263517",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 has the listed diagnosis Vd. a. Prostatakarzinom (C61) – Urologische Abklärung.",
+   "episodes": [
+    "0fde8f00-23b9-4978-b1b7-5e9ce977f8c8"
+   ],
+   "expired_at": "2026-11-18T18:06:18.533633",
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": "2027-01-13T00:00:00",
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "537ea774-cb87-4a44-80e0-bec838693534",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "51383455-e65c-4620-93a6-af628a599341",
+   "created_at": "2026-11-18T18:01:54.263259",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-10 presents with weight loss prompting the referral.",
+   "episodes": [
+    "0fde8f00-23b9-4978-b1b7-5e9ce977f8c8",
+    "845f477b-cb6c-44ec-a7cd-6cb789b3e482",
+    "cdff59fe-30ab-4cd6-8acb-d4fdddcb8f07"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "5d55db6f-af71-4896-8cd2-ef0927d0a50b",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:01:54.263292",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 has a strongly elevated PSA level.",
+   "episodes": [
+    "0fde8f00-23b9-4978-b1b7-5e9ce977f8c8"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "879dca86-8db5-4dcf-b7bb-f2dc33ea2460",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "08e08a2a-745e-489c-8cf5-f7924b62b5c5",
+   "created_at": "2026-11-18T18:01:54.263375",
+   "name": "HAS_SYMPTOM",
+   "fact": "Bisherige Befunde documented symptoms including knochenschmerzen for Patient-10.",
+   "episodes": [
+    "0fde8f00-23b9-4978-b1b7-5e9ce977f8c8"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "904eb310-2397-4158-b9bf-b38e065aadf5",
+   "group_id": "Patient-10",
+   "source_node_uuid": "8e962926-a55f-4139-a32f-f90a5f879baf",
+   "target_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "created_at": "2026-11-18T18:01:54.262930",
+   "name": "RELATES_TO",
+   "fact": "Referring provider Dr. med. Arzt-1 from the Urologische Klinik issued an Überweisungsbrief for patient Patient-10.",
+   "episodes": [
+    "0fde8f00-23b9-4978-b1b7-5e9ce977f8c8"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "9748c947-2332-41a8-a7eb-2eccb24d5677",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d11b987a-74d9-4fa7-a691-712da8cf762d",
+   "created_at": "2026-11-18T18:01:54.263456",
+   "name": "HAS_SYMPTOM",
+   "fact": "Bisherige Befunde documented symptoms including gewichtsverlust for Patient-10.",
+   "episodes": [
+    "0fde8f00-23b9-4978-b1b7-5e9ce977f8c8",
+    "9c12a87f-0033-48b6-912c-8be75e34a610",
+    "ac6a38e9-58a5-495e-9678-b182b72f6eed"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "9d005804-3c4e-4572-ac76-03caee390ad4",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "43f6858e-c31c-4475-9632-645b21d4048b",
+   "created_at": "2026-11-18T18:01:54.263219",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-10 presents with bone pain prompting the referral.",
+   "episodes": [
+    "0fde8f00-23b9-4978-b1b7-5e9ce977f8c8"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "df4eac6f-70dc-4126-badb-d89efff68620",
+   "group_id": "Patient-10",
+   "source_node_uuid": "73211fa4-75df-443d-a2c7-c5dce2800894",
+   "target_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "created_at": "2026-11-18T18:01:54.263042",
+   "name": "RELATES_TO",
+   "fact": "Referring provider Dr. med. Arzt-1 from the Urologische Klinik issued an Überweisungsbrief for patient Patient-10.",
+   "episodes": [
+    "0fde8f00-23b9-4978-b1b7-5e9ce977f8c8"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "e7a4d6ba-d213-4833-9887-6632a26e9da8",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "dfa31062-75c5-4eea-ab19-3d90c0d01a88",
+   "created_at": "2026-11-18T18:01:54.263332",
+   "name": "HAD_LAB_TEST",
+   "fact": "Patient-10 has a documented PSA lab test value of 87,7 ng/ml.",
+   "episodes": [
+    "0fde8f00-23b9-4978-b1b7-5e9ce977f8c8"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "03c923ac-960f-45fd-b13b-9e4370e8059b",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:02:20.228250",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 had a total PSA value of 87.7 ng/ml evaluated as elevated.",
+   "episodes": [
+    "b385158c-05e7-45db-bfdc-497936bb73f5"
+   ],
+   "expired_at": "2026-11-18T18:04:52.884105",
+   "valid_at": "2026-11-08T00:00:00",
+   "invalid_at": "2027-04-23T00:00:00",
+   "reference_time": "2026-11-08T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "3171b4d3-04d0-4fb3-81c4-9aa3243c4cac",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ff8b598b-4b4c-4443-b7a2-ecc074e7eb6d",
+   "created_at": "2026-11-18T18:02:20.228712",
+   "name": "HAD_LAB_TEST",
+   "fact": "Patient-10 had an Hb lab test result of 14.1 g/dl which is normal.",
+   "episodes": [
+    "b385158c-05e7-45db-bfdc-497936bb73f5"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-08T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-08T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "3eb80b1c-addf-468d-bd4c-200d640f916d",
+   "group_id": "Patient-10",
+   "source_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "target_node_uuid": "fa57ed75-b8f4-401d-b923-ff60dbe0972b",
+   "created_at": "2026-11-18T18:02:20.228390",
+   "name": "INDICATES",
+   "fact": "A total PSA value of 87.7 ng/ml was evaluated in association with Vd. a. Prostatakarzinom.",
+   "episodes": [
+    "b385158c-05e7-45db-bfdc-497936bb73f5"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-08T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-08T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "468d55bf-1142-4ff5-a55c-654998b7b6a2",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "bf74c318-c1bc-4e6f-aa46-7b02f15aa519",
+   "created_at": "2026-11-18T18:02:20.228804",
+   "name": "HAD_LAB_TEST",
+   "fact": "Patient-10 had an ALT lab test result within normal range.",
+   "episodes": [
+    "b385158c-05e7-45db-bfdc-497936bb73f5"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-08T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-08T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "4aa7e5b8-d2d9-4a2a-bcd5-1a7490276a31",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "f4b5f8c5-4731-43b4-97b5-d2298fe85c14",
+   "created_at": "2026-11-18T18:02:20.228914",
+   "name": "HAD_LAB_TEST",
+   "fact": "Patient-10 had an AST lab test result within normal range.",
+   "episodes": [
+    "b385158c-05e7-45db-bfdc-497936bb73f5"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-08T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-08T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a9c8178b-25ae-4372-93c8-f33fcbe84df3",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "fa57ed75-b8f4-401d-b923-ff60dbe0972b",
+   "created_at": "2026-11-18T18:02:20.228125",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 has a clinical diagnosis associated with the evaluation of Vd. a. Prostatakarzinom (C61).",
+   "episodes": [
+    "b385158c-05e7-45db-bfdc-497936bb73f5"
+   ],
+   "expired_at": "2026-11-18T18:06:18.533646",
+   "valid_at": "2026-11-08T00:00:00",
+   "invalid_at": "2027-01-13T00:00:00",
+   "reference_time": "2026-11-08T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ad910a22-849c-4042-b8f6-82f523d8f1e3",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "1858f41a-ccdc-4965-8c37-947582c00010",
+   "created_at": "2026-11-18T18:02:20.228606",
+   "name": "HAD_LAB_TEST",
+   "fact": "Patient-10 had an AP lab test result of 85.0 U/L which is normal.",
+   "episodes": [
+    "b385158c-05e7-45db-bfdc-497936bb73f5"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-08T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-08T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "dd41c03c-5c79-4d4d-bbe4-7d1cf93f9f54",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "18b504f6-1f3c-467c-aa3c-d93105b92f17",
+   "created_at": "2026-11-18T18:02:20.228499",
+   "name": "HAD_LAB_TEST",
+   "fact": "Patient-10 had an LDH lab test result of 195.0 U/L which is normal.",
+   "episodes": [
+    "b385158c-05e7-45db-bfdc-497936bb73f5"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-08T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-08T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "e93982f1-6dc6-4c2f-9da9-d1c5695bbad1",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "8e962926-a55f-4139-a32f-f90a5f879baf",
+   "created_at": "2026-11-18T18:02:20.227956",
+   "name": "RELATES_TO",
+   "fact": "Patient-10 had a labor report ordered by sender Dr. med. Arzt-1 of the Urologische Klinik.",
+   "episodes": [
+    "b385158c-05e7-45db-bfdc-497936bb73f5"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-08T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-08T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "f478b986-1abc-4ec5-9399-4597d3f2eb18",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "0ccf26d0-a1a8-4119-a6b6-3fddb76a210d",
+   "created_at": "2026-11-18T18:02:20.227710",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 had a labor report issued by the Zentrallabor at Klinikum Berlin – Klinik-1, Urologische Klinik.",
+   "episodes": [
+    "b385158c-05e7-45db-bfdc-497936bb73f5"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-08T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-08T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "02f29ece-d3f5-47a5-9376-5139a29eaff3",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:02:47.331432",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 has a preoperative PSA level of 87.7 ng/ml.",
+   "episodes": [
+    "7e5d638d-aa95-4215-8382-5529875f4745"
+   ],
+   "expired_at": "2026-11-18T18:04:24.821537",
+   "valid_at": "2026-11-21T00:00:00",
+   "invalid_at": "2027-01-23T00:00:00",
+   "reference_time": "2026-11-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "57d6f11e-9a87-4c2e-9109-c203075597e6",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "3eaacb03-4523-4fd3-b187-da7fdeb706b7",
+   "created_at": "2026-11-18T18:02:47.331303",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 was found to have a BRCA2-Mutation identified through molecular pathology testing.",
+   "episodes": [
+    "7e5d638d-aa95-4215-8382-5529875f4745"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c7831add-0660-4c05-9ed4-86ae84a688a1",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:02:47.331087",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 has a confirmed diagnosis of Prostatakarzinom (Adenokarzinom der Prostata, ICD-10/ICD-O C61) based on a pathology report of 12 prostate core biopsies showing a Gleason-Score of 4+5=9 (ISUP 5).",
+   "episodes": [
+    "7e5d638d-aa95-4215-8382-5529875f4745"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "1cac767c-9f7a-4d3d-9e79-b0848c7ad9d1",
+   "group_id": "Patient-10",
+   "source_node_uuid": "79d8918e-293f-418f-8113-b595cbedc58f",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:03:05.745640",
+   "name": "INDICATES",
+   "fact": "The computed tomography (CT) imaging procedure for clinical staging of C61 Prostatakarzinom revealed evidence of lymph node involvement, bone metastases, and liver metastases.",
+   "episodes": [
+    "64ee03b3-cc00-4d27-b9b3-dc34e1ccf673"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-05T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-05T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "2fe38ae4-d866-4ab6-a52f-7de16cbd59ae",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "55940258-d985-42fa-b26e-a616efc1b208",
+   "created_at": "2026-11-18T18:03:05.746082",
+   "name": "HAS_IMAGING",
+   "fact": "Patient Patient-10's computed tomography scan showed suspicious lesions in the liver indicating liver metastases.",
+   "episodes": [
+    "64ee03b3-cc00-4d27-b9b3-dc34e1ccf673"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-05T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-05T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "410edc60-5f9e-474c-af52-85ce87078950",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "79d8918e-293f-418f-8113-b595cbedc58f",
+   "created_at": "2026-11-18T18:03:05.745085",
+   "name": "HAS_IMAGING",
+   "fact": "Patient Patient-10 underwent a computed tomography (CT) radiology report issued on December 5, 2026.",
+   "episodes": [
+    "64ee03b3-cc00-4d27-b9b3-dc34e1ccf673"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-05T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-05T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "51171560-3b30-4371-9405-cb8ae10fca28",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "14c74595-8e6e-424f-a788-c35fe5086acc",
+   "created_at": "2026-11-18T18:03:05.746297",
+   "name": "MANAGED_AT",
+   "fact": "Patient Patient-10 received a computed tomography report issued by the Institut für Diagnostische Radiologie, Klinikum Berlin – Klinik-2 on December 5, 2026.",
+   "episodes": [
+    "64ee03b3-cc00-4d27-b9b3-dc34e1ccf673"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-05T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-05T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "5890caf6-2e17-4ced-aa60-644a0eced1f9",
+   "group_id": "Patient-10",
+   "source_node_uuid": "79d8918e-293f-418f-8113-b595cbedc58f",
+   "target_node_uuid": "14c74595-8e6e-424f-a788-c35fe5086acc",
+   "created_at": "2026-11-18T18:03:05.745421",
+   "name": "PERFORMED_BY",
+   "fact": "The computed tomography (CT) radiology report was issued by Dr. med. Arzt-3 at the Institut für Diagnostische Radiologie, Klinikum Berlin – Klinik-2 on December 5, 2026.",
+   "episodes": [
+    "64ee03b3-cc00-4d27-b9b3-dc34e1ccf673"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-05T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-05T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "8f3e3395-8e9f-44cc-a562-672a9f7fb9f8",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "4a5d67eb-5d59-470d-807f-a454cfc6c058",
+   "created_at": "2026-11-18T18:03:05.745942",
+   "name": "HAS_IMAGING",
+   "fact": "Patient Patient-10's computed tomography scan showed suspicious lesions in the bones indicating bone metastases.",
+   "episodes": [
+    "64ee03b3-cc00-4d27-b9b3-dc34e1ccf673"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-05T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-05T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "cce2db3d-6b9e-45b5-b57b-4a80b76f27c3",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "2254c80a-d3b9-4499-b3d1-3c4ac20ace21",
+   "created_at": "2026-11-18T18:03:05.745788",
+   "name": "HAS_IMAGING",
+   "fact": "Patient Patient-10's computed tomography scan showed evidence of lymph node involvement (Lymphknotenbefall).",
+   "episodes": [
+    "64ee03b3-cc00-4d27-b9b3-dc34e1ccf673"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-05T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-05T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "237a8bcb-aa50-47f4-9bfb-d1bed10f9a59",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "3eaacb03-4523-4fd3-b187-da7fdeb706b7",
+   "created_at": "2026-11-18T18:03:29.804272",
+   "name": "RELATES_TO",
+   "fact": "Patient-10 was found to have a pathogenic germline BRCA2-Mutation.",
+   "episodes": [
+    "208d073f-e80f-4055-a716-09d7d9647b58",
+    "53b9604d-5ff0-4b49-b8a5-b4f80ae51067",
+    "9c12a87f-0033-48b6-912c-8be75e34a610"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-02T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-02T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "52e3df85-690a-443d-9877-26290c304b15",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:03:29.804248",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 has a diagnosis of C61 Prostatakarzinom.",
+   "episodes": [
+    "208d073f-e80f-4055-a716-09d7d9647b58",
+    "8a93b5f3-8f52-40b2-9a72-b5aebda5230d"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-02T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-02T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "e6f9eba0-695e-444b-8698-5657e89c8884",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "8e962926-a55f-4139-a32f-f90a5f879baf",
+   "created_at": "2026-11-18T18:03:29.804219",
+   "name": "RELATES_TO",
+   "fact": "Patient-10 was referred by Dr. med. Arzt-1 for clarification and staging regarding a diagnosis of C61 Prostatakarzinom.",
+   "episodes": [
+    "208d073f-e80f-4055-a716-09d7d9647b58"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-02T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-02T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "e89a2a76-e042-4f9a-9e4e-ac813ffe0150",
+   "group_id": "Patient-10",
+   "source_node_uuid": "40c62290-2530-4f88-ba03-54c88d9eab1d",
+   "target_node_uuid": "80dfb686-494e-4a46-a32c-a500e08a113f",
+   "created_at": "2026-11-18T18:03:29.804152",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-4 issued a pathology report at the Institut für Pathologie, Klinikum Berlin – Klinik-2.",
+   "episodes": [
+    "208d073f-e80f-4055-a716-09d7d9647b58"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-02T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-02T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "37720652-f77a-4ccd-a62e-6f6985699bef",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "created_at": "2026-11-18T18:03:48.947857",
+   "name": "RELATES_TO",
+   "fact": "Patient-10 was evaluated in an interdisciplinary tumor board protocol issued by Dr. med. Arzt-2 on January 13, 2027.",
+   "episodes": [
+    "53b9604d-5ff0-4b49-b8a5-b4f80ae51067"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-13T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-13T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "3cc29baa-65d3-4cbd-8d2b-bc6f021092cb",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "created_at": "2026-11-18T18:03:48.948221",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 was managed at Klinikum Berlin – Klinik-1 (Klinik für Onkologie und Hämatologie) where an interdisciplinary tumor board protocol was issued on January 13, 2027.",
+   "episodes": [
+    "53b9604d-5ff0-4b49-b8a5-b4f80ae51067"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-13T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-13T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "4dc1798b-65ee-45d5-bfa0-c24d58684afa",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:03:48.948549",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 presents with a diagnosis of C61 Prostatakarzinom, staged as cT4 cN1 cM1c with a Gleason score of 4+5=9 (ISUP 5).",
+   "episodes": [
+    "53b9604d-5ff0-4b49-b8a5-b4f80ae51067",
+    "9c23b3cd-ff9b-47a6-a0fa-aeab823255d5"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-13T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-13T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "62d0ca7c-d9c9-4cd5-bd1f-5a7dd13279a2",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:03:48.948674",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 has a current PSA level of 87.7 ng/ml as recorded on January 13, 2027.",
+   "episodes": [
+    "53b9604d-5ff0-4b49-b8a5-b4f80ae51067"
+   ],
+   "expired_at": "2026-11-18T18:04:24.821570",
+   "valid_at": "2027-01-13T00:00:00",
+   "invalid_at": "2027-01-23T00:00:00",
+   "reference_time": "2027-01-13T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "9e006cc8-f3d7-41d8-85a1-aa4ae5e01d92",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "e0819230-c726-43d3-9985-1dc9d9788a05",
+   "created_at": "2026-11-18T18:03:48.948977",
+   "name": "HAS_TREATMENT_PLAN",
+   "fact": "Patient-10 was recommended a treatment plan of ADT plus a PARP inhibitor (specifically ADT + Olaparib) for metastatic hormone-sensitive prostate cancer and the BRCA2-mutation.",
+   "episodes": [
+    "53b9604d-5ff0-4b49-b8a5-b4f80ae51067"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-13T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-13T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a5750bcb-f30f-4935-a51e-d4c7878c1b51",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "8e962926-a55f-4139-a32f-f90a5f879baf",
+   "created_at": "2026-11-18T18:03:48.948375",
+   "name": "RELATES_TO",
+   "fact": "Patient-10 was referred by Arzt-1 to the interdisciplinary tumor board.",
+   "episodes": [
+    "53b9604d-5ff0-4b49-b8a5-b4f80ae51067"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-13T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-13T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ef52688a-138c-4dbf-b827-3c95a8774b0b",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "37b61603-aeef-4fab-a5e6-dcd5fc285013",
+   "created_at": "2026-11-18T18:03:48.949135",
+   "name": "PRESCRIBED",
+   "fact": "Patient-10 is recommended Olaparib as part of the treatment plan for metastatic hormone-sensitive prostate cancer based on the PROpel study.",
+   "episodes": [
+    "53b9604d-5ff0-4b49-b8a5-b4f80ae51067"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-13T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-13T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "02b2442e-691b-4c79-abe4-7dea4e42838a",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "163a51c6-da54-4f4e-b2b3-437eda2f6c7a",
+   "created_at": "2026-11-18T18:04:16.981209",
+   "name": "PRESCRIBED",
+   "fact": "Patient Patient-10 is prescribed ADT using Leuprorelin as part of their treatment plan.",
+   "episodes": [
+    "9c12a87f-0033-48b6-912c-8be75e34a610"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-23T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-23T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "1989aba8-acf2-45fd-a423-2ecad215ed6f",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "37b61603-aeef-4fab-a5e6-dcd5fc285013",
+   "created_at": "2026-11-18T18:04:16.981244",
+   "name": "PRESCRIBED",
+   "fact": "Patient Patient-10 is prescribed Olaparib at a dosage of 300 mg taken twice daily as a PARP-Inhibitor.",
+   "episodes": [
+    "9c12a87f-0033-48b6-912c-8be75e34a610"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-23T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-23T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "1f95ccc7-1796-46e9-aff4-7c2008532927",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "created_at": "2026-11-18T18:04:16.980910",
+   "name": "RELATES_TO",
+   "fact": "Patient Patient-10 was evaluated and managed by Dr. med. Arzt-2 at the Klinik für Onkologie und Hämatologie of Klinikum Berlin on January 23, 2027.",
+   "episodes": [
+    "9c12a87f-0033-48b6-912c-8be75e34a610"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-23T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-23T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "373d6cf5-48ea-4c46-8471-1bf6fac3ce33",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "created_at": "2026-11-18T18:04:16.980993",
+   "name": "MANAGED_AT",
+   "fact": "Patient Patient-10 was evaluated by Dr. med. Arzt-2 at the Klinik für Onkologie und Hämatologie of Klinikum Berlin on January 23, 2027.",
+   "episodes": [
+    "9c12a87f-0033-48b6-912c-8be75e34a610"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-23T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-23T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "5bf3204b-898b-4e97-8249-27d98d35a0b9",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:04:16.981177",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient Patient-10 has a current total PSA-Wert of 72.6 ng/ml.",
+   "episodes": [
+    "9c12a87f-0033-48b6-912c-8be75e34a610"
+   ],
+   "expired_at": "2026-11-18T18:04:52.884123",
+   "valid_at": "2027-01-23T00:00:00",
+   "invalid_at": "2027-04-23T00:00:00",
+   "reference_time": "2027-01-23T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c2f4da19-e25f-42c7-b7c9-52ac46ccf77c",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "08e08a2a-745e-489c-8cf5-f7924b62b5c5",
+   "created_at": "2026-11-18T18:04:16.981121",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient Patient-10 reported experiencing Knochenschmerzen (bone pain).",
+   "episodes": [
+    "9c12a87f-0033-48b6-912c-8be75e34a610",
+    "c1420c5b-1363-42bc-83aa-93e36a17bb78",
+    "378832d9-59f1-4893-9f05-2e54bec52002"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-23T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-23T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c9937f00-3b42-4035-a2ef-3bf03dfb127a",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:04:16.981060",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient Patient-10 was evaluated for advanced prostate cancer diagnosed as C61 Prostatakarzinom – Fortgeschritten (Gleason 4+5=9, ISUP 5, cT4 cN1 cM1c).",
+   "episodes": [
+    "9c12a87f-0033-48b6-912c-8be75e34a610",
+    "9135eaa3-8842-4ae0-b7ab-0b8b20abc3fb"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-23T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-23T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "176c1a2f-b771-40d3-a862-76895a49db19",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:04:45.775593",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 has a total PSA level of 15.7 ng/ml, which is elevated compared to the reference range of 0.00 – 4.00 ng/ml.",
+   "episodes": [
+    "8d0f8686-c002-4fd7-bc24-efbf54195183",
+    "9135eaa3-8842-4ae0-b7ab-0b8b20abc3fb"
+   ],
+   "expired_at": "2026-11-18T18:06:42.043134",
+   "valid_at": "2027-04-23T00:00:00",
+   "invalid_at": "2027-10-20T00:00:00",
+   "reference_time": "2027-04-23T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "493d804d-8f25-4424-a649-875c0df2c02a",
+   "group_id": "Patient-10",
+   "source_node_uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "target_node_uuid": "fc8d7bff-9a28-4f48-a5be-b0446cb2c90c",
+   "created_at": "2026-11-18T18:04:45.774598",
+   "name": "RELATES_TO",
+   "fact": "The Central Laboratory at Klinikum Berlin – Klinik-1 is associated with the Department of Oncology and Hematology.",
+   "episodes": [
+    "8d0f8686-c002-4fd7-bc24-efbf54195183"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-23T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-23T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "56d0edd2-3a11-416e-9b24-aa12c78e23fa",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "95ac1745-f8cb-4b10-b1ff-9c44cbc1bf14",
+   "created_at": "2026-11-18T18:04:45.775430",
+   "name": "PRESCRIBED",
+   "fact": "Patient-10 is undergoing targeted therapy comprising a PARP-inhibitor.",
+   "episodes": [
+    "8d0f8686-c002-4fd7-bc24-efbf54195183",
+    "5a9336c6-9e1a-44b1-a0ef-ab0a8403b96c",
+    "2483bb25-62b4-429e-ab96-acdf6211e0ba",
+    "8a93b5f3-8f52-40b2-9a72-b5aebda5230d",
+    "c1420c5b-1363-42bc-83aa-93e36a17bb78",
+    "b4617777-eaf6-4388-a515-ed046caf2f11"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-23T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-23T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "64ef0f96-3687-4880-a670-fad1bf148082",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:04:45.775195",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 has a clinical diagnosis of C61 Prostatakarzinom, in an advanced stage with targeted therapy comprising a BRCA2 mutation and a PARP-inhibitor.",
+   "episodes": [
+    "8d0f8686-c002-4fd7-bc24-efbf54195183",
+    "f4f3b68c-9f6d-444f-a642-32336d68d696"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-23T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-23T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "6d244130-b967-44e8-8499-bfe9e3798b69",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "8e962926-a55f-4139-a32f-f90a5f879baf",
+   "created_at": "2026-11-18T18:05:12.890433",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 presented to referring physician Dr. med. Arzt-1 and the oncology department for routine follow-up.",
+   "episodes": [
+    "9135eaa3-8842-4ae0-b7ab-0b8b20abc3fb",
+    "b9b3b9c7-a7e8-40ed-b5d6-dd29414b7fd7"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-23T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-23T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "6e1f3de7-87a9-4b9c-a6d5-465583ffa8ff",
+   "group_id": "Patient-10",
+   "source_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "target_node_uuid": "fc8d7bff-9a28-4f48-a5be-b0446cb2c90c",
+   "created_at": "2026-11-18T18:04:45.774345",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-2 is from the Department of Oncology and Hematology at Klinikum Berlin.",
+   "episodes": [
+    "8d0f8686-c002-4fd7-bc24-efbf54195183"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-23T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-23T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "7f0a2495-5fc9-4bc2-81ef-fdef9776cd69",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "created_at": "2026-11-18T18:04:45.774772",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 received a laboratory report issued by the Central Laboratory at Klinikum Berlin – Klinik-1.",
+   "episodes": [
+    "8d0f8686-c002-4fd7-bc24-efbf54195183"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-23T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-23T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "8774cd57-66d1-49fe-8f89-f85d3af7abba",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ef3251e6-6a84-459b-8b8d-c8ef4aca68b5",
+   "created_at": "2026-11-18T18:05:12.890486",
+   "name": "HAS_VITAL_SIGNS",
+   "fact": "Patient-10 exhibits a good general condition with an ECOG status of 2.",
+   "episodes": [
+    "9135eaa3-8842-4ae0-b7ab-0b8b20abc3fb",
+    "5a9336c6-9e1a-44b1-a0ef-ab0a8403b96c"
+   ],
+   "expired_at": "2026-11-18T18:08:53.619268",
+   "valid_at": "2027-04-23T00:00:00",
+   "invalid_at": "2028-06-30T00:00:00",
+   "reference_time": "2027-04-23T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "8da66894-3556-421c-90db-f8c5bff0bab9",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "3eaacb03-4523-4fd3-b187-da7fdeb706b7",
+   "created_at": "2026-11-18T18:04:45.775330",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 has a BRCA2 mutation associated with the clinical diagnosis of C61 Prostatakarzinom.",
+   "episodes": [
+    "8d0f8686-c002-4fd7-bc24-efbf54195183"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-23T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-23T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "8f512d7f-cfc2-4279-bf59-5b2f4e81c3e8",
+   "group_id": "Patient-10",
+   "source_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "target_node_uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "created_at": "2026-11-18T18:05:12.890339",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-2 authored a medical follow-up report from the Klinik für Onkologie und Hämatologie at Klinikum Berlin – Klinik-1.",
+   "episodes": [
+    "9135eaa3-8842-4ae0-b7ab-0b8b20abc3fb"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-23T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-23T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "b30cff26-0b2d-408a-bf21-25710180f88a",
+   "group_id": "Patient-10",
+   "source_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:04:45.775715",
+   "name": "INDICATES",
+   "fact": "A total PSA level of 15.7 ng/ml indicates and monitors the advanced stage of C61 Prostatakarzinom.",
+   "episodes": [
+    "8d0f8686-c002-4fd7-bc24-efbf54195183"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-23T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-23T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "e13aae76-e370-4c75-b477-774eee5540f7",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "created_at": "2026-11-18T18:04:45.774979",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 had a laboratory report ordered by Dr. med. Arzt-2 from the Department of Oncology and Hematology.",
+   "episodes": [
+    "8d0f8686-c002-4fd7-bc24-efbf54195183"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-23T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-23T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ec8f25a2-0620-4b25-b815-bc440f85c5c0",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "95ac1745-f8cb-4b10-b1ff-9c44cbc1bf14",
+   "created_at": "2026-11-18T18:05:12.890462",
+   "name": "PRESCRIBED",
+   "fact": "Patient-10 is undergoing targeted therapy consisting of a BRCA2 and PARP-Inhibitor.",
+   "episodes": [
+    "9135eaa3-8842-4ae0-b7ab-0b8b20abc3fb"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-23T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-23T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "289c69f1-7467-4b61-807e-ebd7b3a90407",
+   "group_id": "Patient-10",
+   "source_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:05:35.224363",
+   "name": "INDICATES",
+   "fact": "A total PSA value of 6.2 ng/ml indicates C61 Prostatakarzinom.",
+   "episodes": [
+    "f4f3b68c-9f6d-444f-a642-32336d68d696"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-07-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-07-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "2fe25af4-9596-458e-acb2-9758610eb83f",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "f11dbba2-5d0d-4535-8430-0a9c4b090a4a",
+   "created_at": "2026-11-18T18:05:55.774262",
+   "name": "PRESCRIBED",
+   "fact": "Patient-10 is undergoing targeted therapy with a BRCA2 mutation and PARP-Inhibitor.",
+   "episodes": [
+    "a54a3d8f-b7b7-4e7f-b814-949c17a0ffe8",
+    "b9b3b9c7-a7e8-40ed-b5d6-dd29414b7fd7"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-07-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-07-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "36b0af35-7086-45db-8508-ad6aba7ffd51",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "created_at": "2026-11-18T18:05:55.772852",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 was evaluated by Dr. med. Arzt-2 in a routine follow-up on July 22, 2027.",
+   "episodes": [
+    "a54a3d8f-b7b7-4e7f-b814-949c17a0ffe8"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-07-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-07-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "415faed2-85bf-492d-9910-5881d4d69dd7",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "95ac1745-f8cb-4b10-b1ff-9c44cbc1bf14",
+   "created_at": "2026-11-18T18:05:35.224518",
+   "name": "PRESCRIBED",
+   "fact": "Patient-10 is treated with a PARP-inhibitor as part of targeted therapy for C61 Prostatakarzinom.",
+   "episodes": [
+    "f4f3b68c-9f6d-444f-a642-32336d68d696",
+    "bd658d2b-a0c7-4289-852b-73bf477becb3"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-07-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-07-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "56a8a08c-b633-408b-b604-90faf079a9fc",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "3eaacb03-4523-4fd3-b187-da7fdeb706b7",
+   "created_at": "2026-11-18T18:05:35.224636",
+   "name": "RELATES_TO",
+   "fact": "Patient-10 has a BRCA2 mutation associated with targeted therapy.",
+   "episodes": [
+    "f4f3b68c-9f6d-444f-a642-32336d68d696"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-07-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-07-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "65cd2bb1-4936-4df0-a723-738f67806807",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:05:55.774337",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 has an actual PSA value of 6.2 ng/ml with a declining and stable trend.",
+   "episodes": [
+    "a54a3d8f-b7b7-4e7f-b814-949c17a0ffe8"
+   ],
+   "expired_at": "2026-11-18T18:06:42.043138",
+   "valid_at": "2027-07-22T00:00:00",
+   "invalid_at": "2027-10-20T00:00:00",
+   "reference_time": "2027-07-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "94aca8dc-1a8d-47c3-b99f-065ae6e5d732",
+   "group_id": "Patient-10",
+   "source_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "target_node_uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "created_at": "2026-11-18T18:05:35.223720",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-2 ordered and performed laboratory testing at Klinikum Berlin – Klinik-1.",
+   "episodes": [
+    "f4f3b68c-9f6d-444f-a642-32336d68d696"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-07-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-07-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "952da491-619b-437d-b3ba-ff11cef5ca6c",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:05:55.774185",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 has a diagnosis of advanced C61 Prostatakarzinom.",
+   "episodes": [
+    "a54a3d8f-b7b7-4e7f-b814-949c17a0ffe8",
+    "5a9336c6-9e1a-44b1-a0ef-ab0a8403b96c",
+    "845f477b-cb6c-44ec-a7cd-6cb789b3e482",
+    "fbbbec17-fef7-4095-951f-c104d7109bfa",
+    "86da1ec8-dc14-4202-93dd-ce68010ffedd",
+    "0ee3341c-4f71-4c96-9f7e-0c9fd0873b11"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-07-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-07-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "d7588cc5-383e-4d6c-a9a7-1f46bc8214d4",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:05:35.224218",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 had a total PSA tumor marker level of 6.2 ng/ml, which is elevated.",
+   "episodes": [
+    "f4f3b68c-9f6d-444f-a642-32336d68d696"
+   ],
+   "expired_at": "2026-11-18T18:06:42.043140",
+   "valid_at": "2027-07-22T00:00:00",
+   "invalid_at": "2027-10-20T00:00:00",
+   "reference_time": "2027-07-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "f3c59d65-7a66-457b-8bd5-61d818cdd72e",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "created_at": "2026-11-18T18:05:55.774082",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 was evaluated at the Klinik für Onkologie und Hämatologie of Klinikum Berlin – Klinik-1 on July 22, 2027.",
+   "episodes": [
+    "a54a3d8f-b7b7-4e7f-b814-949c17a0ffe8"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-07-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-07-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "1a9189c5-3c1d-4bb3-83d8-2946afad7d47",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "created_at": "2026-11-18T18:06:35.820898",
+   "name": "RELATES_TO",
+   "fact": "Patient-10 was evaluated by provider Dr. med. Arzt-2.",
+   "episodes": [
+    "5a9336c6-9e1a-44b1-a0ef-ab0a8403b96c"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-10-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-10-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "27fd42ed-4cb1-416e-8fb3-1a1b38266b19",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "95ac1745-f8cb-4b10-b1ff-9c44cbc1bf14",
+   "created_at": "2026-11-18T18:06:14.521440",
+   "name": "PRESCRIBED",
+   "fact": "Patient-10 is undergoing targeted therapy with a PARP-inhibitor as part of the advanced C61 Prostatakarzinom management on October 20, 2027.",
+   "episodes": [
+    "d1684efc-8e3a-489b-9264-c768a733c169"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-10-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-10-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "2a9acc50-0120-4730-9042-75dd0fa4e652",
+   "group_id": "Patient-10",
+   "source_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:06:14.521533",
+   "name": "INDICATES",
+   "fact": "An elevated total prostate-specific antigen value of 4.7 ng/ml was recorded for the clinical diagnosis of C61 Prostatakarzinom on October 20, 2027.",
+   "episodes": [
+    "d1684efc-8e3a-489b-9264-c768a733c169"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-10-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-10-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "486c5bb0-a67e-448f-9791-4b0378bf4f85",
+   "group_id": "Patient-10",
+   "source_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "target_node_uuid": "8e962926-a55f-4139-a32f-f90a5f879baf",
+   "created_at": "2026-11-18T18:06:35.820954",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-2 addressed the routine follow-up evaluation to colleague Arzt-1.",
+   "episodes": [
+    "5a9336c6-9e1a-44b1-a0ef-ab0a8403b96c"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-10-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-10-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "4fd1539b-c1b0-415f-8f8c-bdd288572356",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "created_at": "2026-11-18T18:06:35.820812",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 presented for a routine follow-up examination at the Klinik für Onkologie und Hämatologie, Klinikum Berlin – Klinik-1.",
+   "episodes": [
+    "5a9336c6-9e1a-44b1-a0ef-ab0a8403b96c"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-10-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-10-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "6a481ddc-8cac-4641-917f-6a48b0a8ff14",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:06:14.521494",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 has a total prostate-specific antigen (PSA gesamt) laboratory result of 4.7 ng/ml, which is elevated against a reference range of 0.00 – 4.00 ng/ml on October 20, 2027.",
+   "episodes": [
+    "d1684efc-8e3a-489b-9264-c768a733c169"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-10-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-10-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "88f7f474-9c36-4dd8-8a4c-40622b5aa158",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "3eaacb03-4523-4fd3-b187-da7fdeb706b7",
+   "created_at": "2026-11-18T18:06:35.821074",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 has a known BRCA2 mutation for targeted therapy with a PARP-Inhibitor.",
+   "episodes": [
+    "5a9336c6-9e1a-44b1-a0ef-ab0a8403b96c"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-10-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-10-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "931c43da-6dd9-494e-82d2-f39a177a4262",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:06:14.521398",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 has a clinical diagnosis of C61 Prostatakarzinom (advanced, targeted therapy with BRCA2 and PARP-inhibitor) noted in the report on October 20, 2027.",
+   "episodes": [
+    "d1684efc-8e3a-489b-9264-c768a733c169"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-10-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-10-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "9f58f86a-3b49-4f3d-ae83-429b6fb07539",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:06:35.821158",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 had a current PSA-Wert tumor marker of 4.7 ng/ml showing a decreasing and stable trend.",
+   "episodes": [
+    "5a9336c6-9e1a-44b1-a0ef-ab0a8403b96c"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-10-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-10-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ef877dde-0f79-48de-a5f2-a78313ea27f1",
+   "group_id": "Patient-10",
+   "source_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "target_node_uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "created_at": "2026-11-18T18:06:14.521309",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-2 evaluated Patient-10 at the Klinik für Onkologie und Hämatologie, Klinikum Berlin – Klinik-1 on October 20, 2027.",
+   "episodes": [
+    "d1684efc-8e3a-489b-9264-c768a733c169"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-10-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-10-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "2c8aaa96-3989-41ae-a80d-d1f8966afc80",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "created_at": "2026-11-18T18:07:01.247076",
+   "name": "MANAGED_AT",
+   "fact": "Patient Patient-10's specimen was ordered and evaluated by Dr. med. Arzt-2 from the Klinik für Onkologie und Hämatologie.",
+   "episodes": [
+    "bd658d2b-a0c7-4289-852b-73bf477becb3"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-31T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-31T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "406e1c74-998b-41c4-a1f3-0caef4dbb497",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:07:24.015714",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 has a rising current PSA value of 6.4 ng/ml (PSA-Verlauf: Ansteigend).",
+   "episodes": [
+    "2483bb25-62b4-429e-ab96-acdf6211e0ba"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-31T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-31T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "4dfc9db0-2a5a-4036-a278-c04c6cd8d6f1",
+   "group_id": "Patient-10",
+   "source_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:07:24.015841",
+   "name": "INDICATES",
+   "fact": "A rising PSA value of 6.4 ng/ml indicates clinical/biochemical progression of advanced prostate carcinoma.",
+   "episodes": [
+    "2483bb25-62b4-429e-ab96-acdf6211e0ba"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-31T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-31T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "683c0fe7-9429-4abf-b55a-4b335f46443f",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "8e962926-a55f-4139-a32f-f90a5f879baf",
+   "created_at": "2026-11-18T18:07:24.015385",
+   "name": "RELATES_TO",
+   "fact": "Patient-10 was seen by referring doctor Dr. med. Arzt-1 during the routine follow-up examination.",
+   "episodes": [
+    "2483bb25-62b4-429e-ab96-acdf6211e0ba"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-31T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-31T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "68e7aa45-a3e3-4429-b9a5-e6586475f312",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:07:01.246897",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient Patient-10 has a total PSA laboratory result of 6.4 ng/ml, interpreted as elevated.",
+   "episodes": [
+    "bd658d2b-a0c7-4289-852b-73bf477becb3"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-31T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-31T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "6d2e0d2c-ab2b-4582-a8ca-b6c12a7598ec",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "3686e6c1-3cdc-4dd8-946b-d21a466b0874",
+   "created_at": "2026-11-18T18:07:24.015091",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 was evaluated at Klinikum Berlin for a routine follow-up examination regarding advanced prostate carcinoma.",
+   "episodes": [
+    "2483bb25-62b4-429e-ab96-acdf6211e0ba"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-31T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-31T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "8ea7e257-442c-476a-8e29-99ca7b43e298",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "3eaacb03-4523-4fd3-b187-da7fdeb706b7",
+   "created_at": "2026-11-18T18:07:24.015498",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 is receiving targeted therapy associated with a BRCA2 mutation.",
+   "episodes": [
+    "2483bb25-62b4-429e-ab96-acdf6211e0ba"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-31T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-31T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "94dd7ffd-5479-46e1-b2f9-14f8041a21cd",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "0ccf26d0-a1a8-4119-a6b6-3fddb76a210d",
+   "created_at": "2026-11-18T18:07:01.247140",
+   "name": "MANAGED_AT",
+   "fact": "Patient Patient-10 had a laboratory report issued by the Zentrallabor at Klinikum Berlin – Klinik-1.",
+   "episodes": [
+    "bd658d2b-a0c7-4289-852b-73bf477becb3"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-31T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-31T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "957dab8f-fce9-4458-95c9-377fe28796bf",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "3eaacb03-4523-4fd3-b187-da7fdeb706b7",
+   "created_at": "2026-11-18T18:07:01.247019",
+   "name": "RELATES_TO",
+   "fact": "Patient Patient-10 has a targeted therapy plan involving BRCA2 for C61 Prostatakarzinom.",
+   "episodes": [
+    "bd658d2b-a0c7-4289-852b-73bf477becb3"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-31T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-31T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a0b40f08-20b2-4028-b433-bd84f6db074e",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "created_at": "2026-11-18T18:07:24.014634",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 presented to Dr. med. Arzt-2 at the Klinik für Onkologie und Hämatologie of Klinikum Berlin for a routine follow-up examination regarding advanced prostate carcinoma.",
+   "episodes": [
+    "2483bb25-62b4-429e-ab96-acdf6211e0ba"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-31T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-31T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "af11d11e-26c0-44f8-ae8e-fdcbcaba88cd",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "fc8d7bff-9a28-4f48-a5be-b0446cb2c90c",
+   "created_at": "2026-11-18T18:07:24.014912",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 was seen at the Klinik für Onkologie und Hämatologie of Klinikum Berlin for routine follow-up regarding prostate carcinoma.",
+   "episodes": [
+    "2483bb25-62b4-429e-ab96-acdf6211e0ba"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-31T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-31T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "d3a90f15-d260-4949-8700-54f769070d5d",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:07:01.246795",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient Patient-10 has a clinical diagnosis of advanced C61 Prostatakarzinom with targeted therapy involving BRCA2 and a PARP-inhibitor.",
+   "episodes": [
+    "bd658d2b-a0c7-4289-852b-73bf477becb3",
+    "48fac2e4-e93e-4b71-b749-8be35219aa59",
+    "b4617777-eaf6-4388-a515-ed046caf2f11"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-31T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-31T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ef1243d4-6e7a-4de5-97ab-22ff9dc559f7",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:07:24.015251",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 has a diagnosis of advanced prostate carcinoma (diagnosis C61 Prostatakarzinom) with clinical/biochemical progression.",
+   "episodes": [
+    "2483bb25-62b4-429e-ab96-acdf6211e0ba"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-31T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-31T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "06714a2c-88af-4b36-b252-e83c2742ebf2",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "08e08a2a-745e-489c-8cf5-f7924b62b5c5",
+   "created_at": "2026-11-18T18:07:53.987984",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-10 presented with bone symptoms (knochenschmerzen) under the PARP-inhibitor.",
+   "episodes": [
+    "845f477b-cb6c-44ec-a7cd-6cb789b3e482",
+    "ac6a38e9-58a5-495e-9678-b182b72f6eed",
+    "b2bc991e-e398-4d52-95a2-561e29ce4bc4"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "18a2bedb-36e1-4bbd-96f5-67bc75906a27",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "492e5169-0984-42dd-85b1-8a2490d8263b",
+   "created_at": "2026-11-18T18:08:22.741538",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 has a targeted therapy involving BRCA2.",
+   "episodes": [
+    "8a93b5f3-8f52-40b2-9a72-b5aebda5230d"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "23237397-a03c-4244-a355-2ec78ffa5700",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "8e962926-a55f-4139-a32f-f90a5f879baf",
+   "created_at": "2026-11-18T18:07:53.988522",
+   "name": "RELATES_TO",
+   "fact": "Patient-10 was recommended for outpatient care handover to referring physician Dr. med. Arzt-1.",
+   "episodes": [
+    "845f477b-cb6c-44ec-a7cd-6cb789b3e482"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "29f4cd11-ec46-429e-86d9-2a3eeae47b47",
+   "group_id": "Patient-10",
+   "source_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "target_node_uuid": "fc8d7bff-9a28-4f48-a5be-b0446cb2c90c",
+   "created_at": "2026-11-18T18:08:22.740942",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-2 evaluated Patient-10 at the Klinik für Onkologie und Hämatologie.",
+   "episodes": [
+    "8a93b5f3-8f52-40b2-9a72-b5aebda5230d"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a1e1c2b0-740d-4f8b-ac45-754cf1fa3a55",
+   "group_id": "Patient-10",
+   "source_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:08:22.741913",
+   "name": "INDICATES",
+   "fact": "An elevated total PSA lab value of 23.2 ng/ml relates to the diagnosis of C61 Prostatakarzinom.",
+   "episodes": [
+    "8a93b5f3-8f52-40b2-9a72-b5aebda5230d"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a98f95d7-f7a1-4827-bba5-e43ba1f4ef3f",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "created_at": "2026-11-18T18:07:53.988401",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 was evaluated by Dr. med. Arzt-2 at the Klinik für Onkologie und Hämatologie of Klinikum Berlin.",
+   "episodes": [
+    "845f477b-cb6c-44ec-a7cd-6cb789b3e482"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "bb5f3888-fcc0-468f-bfef-44a4ed42df68",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:07:53.988268",
+   "name": "RELATES_TO",
+   "fact": "Patient-10 had a total PSA lab test yielding a value of 23.2 ng/ml.",
+   "episodes": [
+    "845f477b-cb6c-44ec-a7cd-6cb789b3e482",
+    "8a93b5f3-8f52-40b2-9a72-b5aebda5230d"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c3fa1c22-1163-474a-b05a-53ff1e36f704",
+   "group_id": "Patient-10",
+   "source_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "target_node_uuid": "3686e6c1-3cdc-4dd8-946b-d21a466b0874",
+   "created_at": "2026-11-18T18:08:22.741146",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-2 issued a laboratory report from Klinikum Berlin.",
+   "episodes": [
+    "8a93b5f3-8f52-40b2-9a72-b5aebda5230d"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c8d30150-a422-4056-b542-d56f76512afc",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "fc8d7bff-9a28-4f48-a5be-b0446cb2c90c",
+   "created_at": "2026-11-18T18:08:22.741290",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 was evaluated at the Klinik für Onkologie und Hämatologie.",
+   "episodes": [
+    "8a93b5f3-8f52-40b2-9a72-b5aebda5230d",
+    "ac6a38e9-58a5-495e-9678-b182b72f6eed"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ee88e19b-6a08-46ee-959d-c2c7b0d55d5c",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "3eaacb03-4523-4fd3-b187-da7fdeb706b7",
+   "created_at": "2026-11-18T18:07:53.987702",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 has a confirmed BRCA2-mutation.",
+   "episodes": [
+    "845f477b-cb6c-44ec-a7cd-6cb789b3e482"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "fc88ed5e-1a98-42f6-96a8-e408e2ff78cf",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "95ac1745-f8cb-4b10-b1ff-9c44cbc1bf14",
+   "created_at": "2026-11-18T18:07:53.987834",
+   "name": "PRESCRIBED",
+   "fact": "Patient-10 is receiving targeted therapy with a PARP-inhibitor.",
+   "episodes": [
+    "845f477b-cb6c-44ec-a7cd-6cb789b3e482",
+    "86da1ec8-dc14-4202-93dd-ce68010ffedd",
+    "e7d2f78c-bd5a-4064-ad60-85b31eeda623"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "45bb3221-bb19-4143-bdf8-994332623eb0",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:08:48.073427",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 has a current total PSA level of 25.1 ng/ml.",
+   "episodes": [
+    "9c23b3cd-ff9b-47a6-a0fa-aeab823255d5"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-30T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-30T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "53705cf8-6d7e-4369-b3af-3ecc5e84407b",
+   "group_id": "Patient-10",
+   "source_node_uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "target_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "created_at": "2026-11-18T18:08:48.072914",
+   "name": "RELATES_TO",
+   "fact": "Patient Patient-10 was evaluated at Klinikum Berlin – Klinik-1 during an interdisciplinary tumor conference.",
+   "episodes": [
+    "9c23b3cd-ff9b-47a6-a0fa-aeab823255d5"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-30T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-30T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "6fb69ba0-d38f-4b69-8020-3518740eb228",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "c189d139-edc1-4cb6-b5c8-4e59dea124e6",
+   "created_at": "2026-11-18T18:08:48.073324",
+   "name": "HAS_VITAL_SIGNS",
+   "fact": "Patient-10 has a deteriorated general condition at ECOG status 3.",
+   "episodes": [
+    "9c23b3cd-ff9b-47a6-a0fa-aeab823255d5"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-30T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-30T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "8cc8b448-fd88-4403-8154-326f5a15884a",
+   "group_id": "Patient-10",
+   "source_node_uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "target_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "created_at": "2026-11-18T18:08:48.072636",
+   "name": "RELATES_TO",
+   "fact": "An interdisciplinary tumor conference at Klinikum Berlin – Klinik-1 was chaired by Dr. med. Arzt-2.",
+   "episodes": [
+    "9c23b3cd-ff9b-47a6-a0fa-aeab823255d5"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-30T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-30T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c1ba9bfe-718d-4859-aad7-74754adf707d",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "25872e95-6b2d-4bb6-ae2c-8e760766176b",
+   "created_at": "2026-11-18T18:08:48.073555",
+   "name": "RELATES_TO",
+   "fact": "The tumor board consensus decision recommended Cabazitaxel as a second-line treatment for Patient-10.",
+   "episodes": [
+    "9c23b3cd-ff9b-47a6-a0fa-aeab823255d5"
+   ],
+   "expired_at": "2026-11-18T18:09:24.099726",
+   "valid_at": "2028-06-30T00:00:00",
+   "invalid_at": "2028-07-13T00:00:00",
+   "reference_time": "2028-06-30T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "d65425c9-7dc9-4152-8044-7e39a78d9265",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "3eaacb03-4523-4fd3-b187-da7fdeb706b7",
+   "created_at": "2026-11-18T18:08:48.073209",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 has a pathogenic BRCA2 genetic mutation.",
+   "episodes": [
+    "9c23b3cd-ff9b-47a6-a0fa-aeab823255d5"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-30T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-30T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "0ea92986-19ee-480e-8a7e-b5d0f86b0e2e",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "25872e95-6b2d-4bb6-ae2c-8e760766176b",
+   "created_at": "2026-11-18T18:09:13.626246",
+   "name": "PRESCRIBED",
+   "fact": "Patient-10 has a planned inpatient admission for Cabazitaxel-Chemotherapie.",
+   "episodes": [
+    "ac6a38e9-58a5-495e-9678-b182b72f6eed"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-07-13T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-07-13T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "2d0d6e36-6663-4f69-ab97-8a1d700a60d4",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "created_at": "2026-11-18T18:09:13.626140",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 is managed at Klinikum Berlin – Klinik-1.",
+   "episodes": [
+    "ac6a38e9-58a5-495e-9678-b182b72f6eed",
+    "fbbbec17-fef7-4095-951f-c104d7109bfa"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-07-13T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-07-13T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "421dadf6-0b99-4b49-aa8e-803510e59cc6",
+   "group_id": "Patient-10",
+   "source_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:09:13.626375",
+   "name": "INDICATES",
+   "fact": "The current PSA value of 28.3 ng/ml indicates progression of C61 Prostatakarzinom.",
+   "episodes": [
+    "ac6a38e9-58a5-495e-9678-b182b72f6eed"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-07-13T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-07-13T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "4353bec2-eb9b-4e60-8fb0-fe728959218f",
+   "group_id": "Patient-10",
+   "source_node_uuid": "25872e95-6b2d-4bb6-ae2c-8e760766176b",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:09:13.626396",
+   "name": "TREATED_BY",
+   "fact": "Cabazitaxel-Chemotherapie is planned to treat advanced C61 Prostatakarzinom.",
+   "episodes": [
+    "ac6a38e9-58a5-495e-9678-b182b72f6eed"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-07-13T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-07-13T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c26d50eb-934f-4560-a968-2914e5892289",
+   "group_id": "Patient-10",
+   "source_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "target_node_uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "created_at": "2026-11-18T18:09:13.626106",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-2 is affiliated with Klinikum Berlin – Klinik-1.",
+   "episodes": [
+    "ac6a38e9-58a5-495e-9678-b182b72f6eed"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-07-13T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-07-13T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "d39196d6-4672-422e-b071-996960cf4a5d",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:09:13.626268",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 has a current PSA tumor marker value of 28.3 ng/ml.",
+   "episodes": [
+    "ac6a38e9-58a5-495e-9678-b182b72f6eed"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-07-13T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-07-13T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "d5f6866e-fb6e-46d8-bc6c-17c2cef4e2d8",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "33498dfe-6d73-4cc8-9758-dde5b4874ec9",
+   "created_at": "2026-11-18T18:09:13.626288",
+   "name": "HAS_VITAL_SIGNS",
+   "fact": "Patient-10 has an ECOG performance status of 3.",
+   "episodes": [
+    "ac6a38e9-58a5-495e-9678-b182b72f6eed",
+    "71be6842-5f78-4f39-a366-c4d947d45ed4",
+    "0ee3341c-4f71-4c96-9f7e-0c9fd0873b11"
+   ],
+   "expired_at": "2026-11-18T18:18:20.871070",
+   "valid_at": "2028-07-13T00:00:00",
+   "invalid_at": "2028-12-22T00:00:00",
+   "reference_time": "2028-07-13T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "e00dded0-5aec-4321-91b5-5d2422b84114",
+   "group_id": "Patient-10",
+   "source_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "target_node_uuid": "fc8d7bff-9a28-4f48-a5be-b0446cb2c90c",
+   "created_at": "2026-11-18T18:09:13.626008",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-2 practices at the Klinik für Onkologie und Hämatologie.",
+   "episodes": [
+    "ac6a38e9-58a5-495e-9678-b182b72f6eed",
+    "71be6842-5f78-4f39-a366-c4d947d45ed4"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-07-13T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-07-13T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "f275709d-3ec6-4f6e-8600-bf7bc0047e8a",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:09:13.626221",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 has a diagnosis of advanced C61 Prostatakarzinom under targeted therapy with BRCA2 and PARP-Inhibitor.",
+   "episodes": [
+    "ac6a38e9-58a5-495e-9678-b182b72f6eed",
+    "1b097d24-502a-4f1a-adfe-4e4ed6a32ba6"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-07-13T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-07-13T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "25a6b03b-516b-46a1-a781-ff1fab6890d1",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d11b987a-74d9-4fa7-a691-712da8cf762d",
+   "created_at": "2026-11-18T18:09:49.817758",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-10 reported experiencing gewichtsverlust.",
+   "episodes": [
+    "c1420c5b-1363-42bc-83aa-93e36a17bb78",
+    "378832d9-59f1-4893-9f05-2e54bec52002",
+    "b2bc991e-e398-4d52-95a2-561e29ce4bc4"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-07-15T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-07-15T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "2c41b136-f8e6-40ee-ae30-d45e331d7aaa",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "25872e95-6b2d-4bb6-ae2c-8e760766176b",
+   "created_at": "2026-11-18T18:09:49.817647",
+   "name": "PRESCRIBED",
+   "fact": "Patient-10 was prescribed Cabazitaxel 25 mg/m² q3w as second-line therapy.",
+   "episodes": [
+    "c1420c5b-1363-42bc-83aa-93e36a17bb78",
+    "378832d9-59f1-4893-9f05-2e54bec52002",
+    "71be6842-5f78-4f39-a366-c4d947d45ed4"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-07-15T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-07-15T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "2d2599ab-287f-4a2f-94eb-1dde610b8d05",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:09:49.817425",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 has advanced C61 Prostatakarzinom characterized by Gleason 4+5=9, ISUP 5, cT4 cN1 cM1c, and a BRCA2-mutation.",
+   "episodes": [
+    "c1420c5b-1363-42bc-83aa-93e36a17bb78",
+    "c9ad90b4-7144-448a-9bb5-6694d809e789"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-07-15T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-07-15T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "44146411-b9c8-4c80-bab0-b77f8e51eec4",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:10:17.334088",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 was diagnosed with C61 Prostatakarzinom (Fortgeschritten – Zielgerichtete Therapie (BRCA2 + PARP-Inhibitor)).",
+   "episodes": [
+    "4c411cdd-6a7c-473a-893c-3be8dbf7a70b",
+    "b2bc991e-e398-4d52-95a2-561e29ce4bc4",
+    "1907770e-e30f-447a-b72b-0fc78953a94a"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-07-15T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-07-15T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "626051a8-d27e-476e-93e3-1785db6379b0",
+   "group_id": "Patient-10",
+   "source_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:10:17.334594",
+   "name": "INDICATES",
+   "fact": "The PSA (gesamt) laboratory result of 28,8 ng/ml is associated with the diagnosis of C61 Prostatakarzinom (Fortgeschritten – Zielgerichtete Therapie (BRCA2 + PARP-Inhibitor)).",
+   "episodes": [
+    "4c411cdd-6a7c-473a-893c-3be8dbf7a70b"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-07-15T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-07-15T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "95eead63-44e9-45c9-b137-de7c8953c27c",
+   "group_id": "Patient-10",
+   "source_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "target_node_uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "created_at": "2026-11-18T18:10:35.376346",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-2 is a provider at the Klinik für Onkologie und Hämatologie at Klinikum Berlin – Klinik-1.",
+   "episodes": [
+    "fbbbec17-fef7-4095-951f-c104d7109bfa"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-07-15T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-07-15T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a555530c-de4f-4340-9a1e-cb6411450a13",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "created_at": "2026-11-18T18:09:49.817278",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 was seen at the Klinik für Onkologie und Hämatologie at Klinikum Berlin by Dr. med. Arzt-2 on July 15, 2028.",
+   "episodes": [
+    "c1420c5b-1363-42bc-83aa-93e36a17bb78"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-07-15T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-07-15T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a69e25b2-ad72-4bec-98c2-7d9371d9087b",
+   "group_id": "Patient-10",
+   "source_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "target_node_uuid": "95ac1745-f8cb-4b10-b1ff-9c44cbc1bf14",
+   "created_at": "2026-11-18T18:10:35.375835",
+   "name": "TREATED_BY",
+   "fact": "C61 Prostatakarzinom is being treated with a targeted therapy involving a BRCA2 mutation and a PARP-Inhibitor.",
+   "episodes": [
+    "fbbbec17-fef7-4095-951f-c104d7109bfa"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-07-15T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-07-15T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c40a8fae-4b2e-47a3-842d-492766bbc58d",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "3eaacb03-4523-4fd3-b187-da7fdeb706b7",
+   "created_at": "2026-11-18T18:09:49.817510",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 has a BRCA2-mutation associated with advanced C61 Prostatakarzinom.",
+   "episodes": [
+    "c1420c5b-1363-42bc-83aa-93e36a17bb78"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-07-15T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-07-15T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "d76f23e9-3caf-4703-b7d2-a181758d0881",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:09:49.817825",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 had a current tumor marker assessment showing a PSA-Wert of 28.8 ng/ml.",
+   "episodes": [
+    "c1420c5b-1363-42bc-83aa-93e36a17bb78",
+    "4c411cdd-6a7c-473a-893c-3be8dbf7a70b",
+    "fbbbec17-fef7-4095-951f-c104d7109bfa"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-07-15T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-07-15T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "df56a40f-3e14-4c4f-8b1c-bf40692e6295",
+   "group_id": "Patient-10",
+   "source_node_uuid": "0ccf26d0-a1a8-4119-a6b6-3fddb76a210d",
+   "target_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "created_at": "2026-11-18T18:10:17.334840",
+   "name": "RELATES_TO",
+   "fact": "Laboratory testing at the Zentrallabor of Klinikum Berlin – Klinik-1 was performed under the oversight of Dr. med. Arzt-2 from the Klinik f%fc r Onkologie und H%e4matologie.",
+   "episodes": [
+    "4c411cdd-6a7c-473a-893c-3be8dbf7a70b"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-07-15T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-07-15T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "1b0fadf9-9221-49d3-a1b7-48a19c456ad5",
+   "group_id": "Patient-10",
+   "source_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "target_node_uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "created_at": "2026-11-18T18:11:29.605532",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-2 practices at the Klinik für Onkologie und Hämatologie.",
+   "episodes": [
+    "86da1ec8-dc14-4202-93dd-ce68010ffedd",
+    "48fac2e4-e93e-4b71-b749-8be35219aa59",
+    "b9b3b9c7-a7e8-40ed-b5d6-dd29414b7fd7",
+    "bf4096a1-a85f-40ca-861e-c0ef719239df"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-05T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-05T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "1cb35aee-4c9e-4538-86a8-5f2e38d1eefd",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "f11dbba2-5d0d-4535-8430-0a9c4b090a4a",
+   "created_at": "2026-11-18T18:10:58.518043",
+   "name": "PRESCRIBED",
+   "fact": "Patient Patient-10 is treated with targeted therapy consisting of BRCA2 and a PARP-Inhibitor.",
+   "episodes": [
+    "378832d9-59f1-4893-9f05-2e54bec52002",
+    "48fac2e4-e93e-4b71-b749-8be35219aa59"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-05T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-05T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "22133df8-64d3-45b8-a04e-0e9256855110",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "created_at": "2026-11-18T18:11:50.892313",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 is managed and evaluated at the Klinik für Onkologie und Hämatologie at Klinikum Berlin.",
+   "episodes": [
+    "48fac2e4-e93e-4b71-b749-8be35219aa59"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-05T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-05T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "3457e45a-5d64-43be-9cfa-d6f65b282ad4",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:11:29.605447",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 has a total PSA tumor marker level of 34.9 ng/ml.",
+   "episodes": [
+    "86da1ec8-dc14-4202-93dd-ce68010ffedd",
+    "48fac2e4-e93e-4b71-b749-8be35219aa59"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-05T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-05T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "6a436d25-ac95-42bd-8b5c-ce6547755fb2",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "8e962926-a55f-4139-a32f-f90a5f879baf",
+   "created_at": "2026-11-18T18:10:58.518186",
+   "name": "RELATES_TO",
+   "fact": "The clinic requested the takeover of ongoing outpatient care for patient Patient-10 by the referring doctor Dr. med. Arzt-1.",
+   "episodes": [
+    "378832d9-59f1-4893-9f05-2e54bec52002",
+    "c9ad90b4-7144-448a-9bb5-6694d809e789",
+    "71be6842-5f78-4f39-a366-c4d947d45ed4"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-05T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-05T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "73f3e37a-ae77-4934-b24d-a6f7cd30ce79",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "0ccf26d0-a1a8-4119-a6b6-3fddb76a210d",
+   "created_at": "2026-11-18T18:11:29.605484",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 had laboratory testing performed at the Zentrallabor of Klinikum Berlin – Klinik-1.",
+   "episodes": [
+    "86da1ec8-dc14-4202-93dd-ce68010ffedd"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-05T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-05T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "79ffc39c-d6ab-48cf-a1f7-c556229fd0d1",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:10:58.518130",
+   "name": "RELATES_TO",
+   "fact": "Patient Patient-10 had a lab test showing a PSA-Wert of 34,9 ng/ml.",
+   "episodes": [
+    "378832d9-59f1-4893-9f05-2e54bec52002"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-05T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-05T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "8362cc46-6fb9-489d-9cd6-69396bfa24ce",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:10:58.517988",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient Patient-10 has a primary diagnosis of advanced C61 Prostatakarzinom, characterized as Gleason 4+5=9 (ISUP 5) and cT4 cN1 cM1c.",
+   "episodes": [
+    "378832d9-59f1-4893-9f05-2e54bec52002",
+    "cdff59fe-30ab-4cd6-8acb-d4fdddcb8f07"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-05T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-05T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "8966ac0f-da6c-4f25-88c6-bfa8507da856",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "3eaacb03-4523-4fd3-b187-da7fdeb706b7",
+   "created_at": "2026-11-18T18:10:58.518014",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient Patient-10 has a BRCA2-Mutation.",
+   "episodes": [
+    "378832d9-59f1-4893-9f05-2e54bec52002"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-05T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-05T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "934a1214-6b0b-492c-b83f-e520bae54efd",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "created_at": "2026-11-18T18:10:58.517902",
+   "name": "MANAGED_AT",
+   "fact": "Patient Patient-10 presented to provider Dr. med. Arzt-2 at the clinic Klinik für Onkologie und Hämatologie of Klinikum Berlin – Klinik-1 on August 5, 2028.",
+   "episodes": [
+    "378832d9-59f1-4893-9f05-2e54bec52002"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-05T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-05T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "e1fd1f1f-f2fe-4087-9405-3257b91dcc97",
+   "group_id": "Patient-10",
+   "source_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "target_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "created_at": "2026-11-18T18:11:29.605506",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-2 ordered laboratory testing for Patient-10.",
+   "episodes": [
+    "86da1ec8-dc14-4202-93dd-ce68010ffedd",
+    "c50aa3ab-663e-4b99-831a-9572e4eb74fb"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-05T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-05T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "e864660b-9e32-4337-a9d6-baa0175b2096",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "492e5169-0984-42dd-85b1-8a2490d8263b",
+   "created_at": "2026-11-18T18:11:29.605394",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 has a BRCA2 mutation.",
+   "episodes": [
+    "86da1ec8-dc14-4202-93dd-ce68010ffedd"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-05T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-05T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "010537fc-329c-4af5-b5bd-014a5f4ff54b",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "25872e95-6b2d-4bb6-ae2c-8e760766176b",
+   "created_at": "2026-11-18T18:12:13.900603",
+   "name": "PRESCRIBED",
+   "fact": "Patient-10 presented for second-line cabazitaxel therapy on August 26, 2028.",
+   "episodes": [
+    "c9ad90b4-7144-448a-9bb5-6694d809e789"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-26T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "0e9a8fb7-f674-4464-98b2-b34fb54e14e8",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "created_at": "2026-11-18T18:12:13.900530",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 received care at the Klinik für Onkologie und Hämatologie at Klinikum Berlin – Klinik-1 on August 26, 2028.",
+   "episodes": [
+    "c9ad90b4-7144-448a-9bb5-6694d809e789"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-26T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "1b48395d-0af1-444c-bd9d-020cc9b27e04",
+   "group_id": "Patient-10",
+   "source_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "target_node_uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "created_at": "2026-11-18T18:12:49.094647",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-2 issued a laboratory report at the Klinik für Onkologie und Hämatologie, Klinikum Berlin – Klinik-1.",
+   "episodes": [
+    "1b097d24-502a-4f1a-adfe-4e4ed6a32ba6"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-26T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "370aa82a-41a2-44c2-9bd4-1c9e7eba4233",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "08e08a2a-745e-489c-8cf5-f7924b62b5c5",
+   "created_at": "2026-11-18T18:12:13.900650",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-10 complained of knochenschmerzen on August 26, 2028.",
+   "episodes": [
+    "c9ad90b4-7144-448a-9bb5-6694d809e789"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-26T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "461bfda9-1831-4f93-bb66-5bd43b3adb0f",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d11b987a-74d9-4fa7-a691-712da8cf762d",
+   "created_at": "2026-11-18T18:12:13.900691",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-10 complained of gewichtsverlust on August 26, 2028.",
+   "episodes": [
+    "c9ad90b4-7144-448a-9bb5-6694d809e789"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-26T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "7e7491b2-35c4-4c53-a19b-3c290ef63762",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:12:49.094803",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 has a total PSA laboratory result showing an elevated value of 42.2 ng/ml.",
+   "episodes": [
+    "1b097d24-502a-4f1a-adfe-4e4ed6a32ba6",
+    "b9b3b9c7-a7e8-40ed-b5d6-dd29414b7fd7"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-26T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "801092fa-9760-4f4c-b8a2-5f84370ce7a3",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "33498dfe-6d73-4cc8-9758-dde5b4874ec9",
+   "created_at": "2026-11-18T18:13:08.903415",
+   "name": "HAS_VITAL_SIGNS",
+   "fact": "Patient Patient-10 presented with a stable overall condition and an ECOG performance status of 3.",
+   "episodes": [
+    "b9b3b9c7-a7e8-40ed-b5d6-dd29414b7fd7"
+   ],
+   "expired_at": "2026-11-18T18:18:57.404367",
+   "valid_at": "2028-08-26T00:00:00",
+   "invalid_at": "2029-01-21T00:00:00",
+   "reference_time": "2028-08-26T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "919ffcb6-1dda-4df5-ac49-fbd6d000b7a5",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:13:08.903044",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient Patient-10 has a diagnosis of C61 Prostatakarzinom (advanced metastatic castration-resistant prostate carcinoma).",
+   "episodes": [
+    "b9b3b9c7-a7e8-40ed-b5d6-dd29414b7fd7"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-26T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ac3d507a-ef3f-459e-993d-41c25ef064ed",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "created_at": "2026-11-18T18:12:13.900455",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 was evaluated and treated by Dr. med. Arzt-2 at the Klinik für Onkologie und Hämatologie at Klinikum Berlin – Klinik-1 on August 26, 2028.",
+   "episodes": [
+    "c9ad90b4-7144-448a-9bb5-6694d809e789"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-26T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "bf01e6cd-aa3a-4cf9-b56d-09a104e2dfd9",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "c189d139-edc1-4cb6-b5c8-4e59dea124e6",
+   "created_at": "2026-11-18T18:12:13.900715",
+   "name": "HAS_VITAL_SIGNS",
+   "fact": "Patient-10 presented with an ECOG performance status of 3 on August 26, 2028.",
+   "episodes": [
+    "c9ad90b4-7144-448a-9bb5-6694d809e789"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-26T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c9dc344a-4718-4c2e-bd70-980c90bc0bcd",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "25872e95-6b2d-4bb6-ae2c-8e760766176b",
+   "created_at": "2026-11-18T18:12:13.900746",
+   "name": "PRESCRIBED",
+   "fact": "Patient-10 has a treatment plan confirming the continuation of Cabazitaxel 25 mg/m² q3w in the second line.",
+   "episodes": [
+    "c9ad90b4-7144-448a-9bb5-6694d809e789",
+    "b2bc991e-e398-4d52-95a2-561e29ce4bc4",
+    "cdff59fe-30ab-4cd6-8acb-d4fdddcb8f07"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-26T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "e2211efb-7010-4797-95ff-83e8203b8573",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "created_at": "2026-11-18T18:13:08.903923",
+   "name": "MANAGED_AT",
+   "fact": "Patient Patient-10 was evaluated by Dr. med. Arzt-2 from the Klinik für Onkologie und Hämatologie at Klinikum Berlin – Klinik-1.",
+   "episodes": [
+    "b9b3b9c7-a7e8-40ed-b5d6-dd29414b7fd7"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-26T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ea84db61-0a3d-4e53-9480-ce5a8b232a7f",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "f986fd67-4d89-41be-a6e7-f0551a04c599",
+   "created_at": "2026-11-18T18:12:13.900670",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-10 complained of fatigue on August 26, 2028.",
+   "episodes": [
+    "c9ad90b4-7144-448a-9bb5-6694d809e789"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-26T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ef4f8647-b44f-4e05-b23e-343c547bb3a9",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:12:13.900628",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 had a recorded PSA-Wert of 42.2 ng/ml on August 26, 2028.",
+   "episodes": [
+    "c9ad90b4-7144-448a-9bb5-6694d809e789"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-26T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "f5e99b9f-67e9-48c5-8222-2f7e58d876dd",
+   "group_id": "Patient-10",
+   "source_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:12:49.094960",
+   "name": "INDICATES",
+   "fact": "An elevated total PSA level of 42.2 ng/ml is associated with C61 Prostatakarzinom.",
+   "episodes": [
+    "1b097d24-502a-4f1a-adfe-4e4ed6a32ba6"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-08-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-08-26T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "258e874e-118d-4d79-b155-78d6eda93479",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "3eaacb03-4523-4fd3-b187-da7fdeb706b7",
+   "created_at": "2026-11-18T18:13:40.522522",
+   "name": "RELATES_TO",
+   "fact": "Patient-10 has genetic findings of a BRCA2-Mutation associated with the diagnosis.",
+   "episodes": [
+    "b2bc991e-e398-4d52-95a2-561e29ce4bc4"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "2b941afc-5ec6-4e02-a091-6f5680c49f12",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "f986fd67-4d89-41be-a6e7-f0551a04c599",
+   "created_at": "2026-11-18T18:13:40.522649",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-10 presented with symptoms of fatigue.",
+   "episodes": [
+    "b2bc991e-e398-4d52-95a2-561e29ce4bc4",
+    "cdff59fe-30ab-4cd6-8acb-d4fdddcb8f07"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "2e269369-f3eb-453a-af50-2b7814db47f5",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "33498dfe-6d73-4cc8-9758-dde5b4874ec9",
+   "created_at": "2026-11-18T18:14:29.638754",
+   "name": "HAS_VITAL_SIGNS",
+   "fact": "Patient-10 presented with an ECOG performance status of 3 on September 16, 2028.",
+   "episodes": [
+    "5f671bc6-586c-49e8-9234-5013a6fcabf3"
+   ],
+   "expired_at": "2026-11-18T18:18:57.404370",
+   "valid_at": "2028-09-16T00:00:00",
+   "invalid_at": "2029-01-21T00:00:00",
+   "reference_time": "2028-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "3514827a-ca4e-4172-9fd0-181656147b6f",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "8e962926-a55f-4139-a32f-f90a5f879baf",
+   "created_at": "2026-11-18T18:14:29.638663",
+   "name": "RELATES_TO",
+   "fact": "Patient-10 was seen following a referral from treating physician Dr. med. Arzt-1 on September 16, 2028.",
+   "episodes": [
+    "5f671bc6-586c-49e8-9234-5013a6fcabf3"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "6ac6c0c9-a73f-4e53-a5ac-e6e392944339",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "created_at": "2026-11-18T18:14:07.077746",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 underwent laboratory evaluation at Klinikum Berlin – Klinik-1, Klinik f&uuml;r Onkologie und H&auml;matologie.",
+   "episodes": [
+    "1907770e-e30f-447a-b72b-0fc78953a94a"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "7a631a9e-2638-406e-bad8-8fd0b1e79f61",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "created_at": "2026-11-18T18:14:07.077785",
+   "name": "RELATES_TO",
+   "fact": "Patient-10 received care under the provider Dr. med. Arzt-2.",
+   "episodes": [
+    "1907770e-e30f-447a-b72b-0fc78953a94a"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "96134d0a-fbda-43f4-9ab8-1c038e9199f7",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "3686e6c1-3cdc-4dd8-946b-d21a466b0874",
+   "created_at": "2026-11-18T18:14:29.638625",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 was evaluated at the Klinik für Onkologie und Hämatologie of Klinikum Berlin on September 16, 2028.",
+   "episodes": [
+    "5f671bc6-586c-49e8-9234-5013a6fcabf3"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c3a85840-c746-4d32-9a87-1d2f1106ebe9",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:14:07.077595",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 has a total PSA laboratory value of 51.1 ng/ml, which is significantly elevated.",
+   "episodes": [
+    "1907770e-e30f-447a-b72b-0fc78953a94a"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c6b7a20d-df95-47c8-910b-3a9721419647",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "created_at": "2026-11-18T18:14:29.638545",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 underwent a routine follow-up evaluation by Dr. med. Arzt-2 at the Klinik für Onkologie und Hämatologie of Klinikum Berlin on September 16, 2028.",
+   "episodes": [
+    "5f671bc6-586c-49e8-9234-5013a6fcabf3"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "d18e6020-c5b8-49f4-b0bb-d6295c0bd6d2",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:14:29.638787",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 had a significantly elevated current PSA-Wert of 51.1 ng/ml with an actively rising trend on September 16, 2028.",
+   "episodes": [
+    "5f671bc6-586c-49e8-9234-5013a6fcabf3"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "d3166b5c-d395-4e1a-a487-5474680c8484",
+   "group_id": "Patient-10",
+   "source_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:14:07.077677",
+   "name": "INDICATES",
+   "fact": "The total PSA laboratory result of 51.1 ng/ml indicates C61 Prostatakarzinom (Fortgeschritten – Zielgerichtete Therapie (BRCA2 + PARP-Inhibitor)).",
+   "episodes": [
+    "1907770e-e30f-447a-b72b-0fc78953a94a"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "db0c0211-7384-40ca-a37d-23e50762cb08",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "f11dbba2-5d0d-4535-8430-0a9c4b090a4a",
+   "created_at": "2026-11-18T18:14:29.638727",
+   "name": "PRESCRIBED",
+   "fact": "Patient-10 is undergoing targeted therapy with BRCA2 + PARP-Inhibitor on September 16, 2028.",
+   "episodes": [
+    "5f671bc6-586c-49e8-9234-5013a6fcabf3"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "df53f7ed-3831-4d69-a4a7-7d525c9a3c26",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:14:29.638697",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 has a known diagnosis of C61 Prostatakarzinom at the advanced stage on September 16, 2028.",
+   "episodes": [
+    "5f671bc6-586c-49e8-9234-5013a6fcabf3"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "f63cfc53-2520-4c24-ae4d-93ffafd197b4",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "created_at": "2026-11-18T18:13:40.522277",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 presented at Klinikum Berlin – Klinik-1, Klinik für Onkologie und Hämatologie for evaluation and care.",
+   "episodes": [
+    "b2bc991e-e398-4d52-95a2-561e29ce4bc4"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "f6d21fe6-3e9f-4daf-b464-cdeee65dc288",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:13:40.522778",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 had a laboratory evaluation revealing a PSA-Wert of 51,1 ng/ml.",
+   "episodes": [
+    "b2bc991e-e398-4d52-95a2-561e29ce4bc4"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "05bfcea7-1a55-4ece-b45d-18d4070c3311",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "51383455-e65c-4620-93a6-af628a599341",
+   "created_at": "2026-11-18T18:14:54.927577",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-10 reports ongoing weight loss.",
+   "episodes": [
+    "71be6842-5f78-4f39-a366-c4d947d45ed4"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-07T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-07T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "1a4fb76c-e216-45ac-960f-bd9f37107646",
+   "group_id": "Patient-10",
+   "source_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "target_node_uuid": "95ac1745-f8cb-4b10-b1ff-9c44cbc1bf14",
+   "created_at": "2026-11-18T18:15:46.497664",
+   "name": "TREATED_BY",
+   "fact": "Advanced C61 Prostatakarzinom is being treated with targeted therapy involving a PARP-Inhibitor.",
+   "episodes": [
+    "0ee3341c-4f71-4c96-9f7e-0c9fd0873b11"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-07T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-07T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "23a144a4-55bd-424d-b025-cc2911fc99e5",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:15:25.104694",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 has a clinical diagnosis of C61 Prostatakarzinom (advanced stage with targeted therapy using BRCA2 and PARP-Inhibitor).",
+   "episodes": [
+    "bf4096a1-a85f-40ca-861e-c0ef719239df",
+    "c50aa3ab-663e-4b99-831a-9572e4eb74fb"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-07T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-07T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "2ca81a24-af4c-41b0-9e4a-b33c064615a2",
+   "group_id": "Patient-10",
+   "source_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "target_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "created_at": "2026-11-18T18:15:46.497322",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-2 evaluated Patient-10 during the routine follow-up on October 7, 2028.",
+   "episodes": [
+    "0ee3341c-4f71-4c96-9f7e-0c9fd0873b11"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-07T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-07T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "39efc2bf-7017-457b-8176-fbd57af1c7ba",
+   "group_id": "Patient-10",
+   "source_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "target_node_uuid": "492e5169-0984-42dd-85b1-8a2490d8263b",
+   "created_at": "2026-11-18T18:15:46.497573",
+   "name": "RELATES_TO",
+   "fact": "Advanced C61 Prostatakarzinom is being treated with targeted therapy involving BRCA2.",
+   "episodes": [
+    "0ee3341c-4f71-4c96-9f7e-0c9fd0873b11"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-07T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-07T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "55309a27-5f0e-4aa5-abd4-3d55b5390539",
+   "group_id": "Patient-10",
+   "source_node_uuid": "8e962926-a55f-4139-a32f-f90a5f879baf",
+   "target_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "created_at": "2026-11-18T18:15:46.497405",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-1 is the referring physician for Patient-10.",
+   "episodes": [
+    "0ee3341c-4f71-4c96-9f7e-0c9fd0873b11"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-07T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-07T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "6c1b8c88-c145-4a11-ae54-c7b2ed04db0a",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:14:54.927764",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 has a total PSA value of 61.9 ng/ml.",
+   "episodes": [
+    "71be6842-5f78-4f39-a366-c4d947d45ed4",
+    "bf4096a1-a85f-40ca-861e-c0ef719239df",
+    "0ee3341c-4f71-4c96-9f7e-0c9fd0873b11"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-07T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-07T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "73a3da58-856d-44ab-9250-efea485bbce7",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "3686e6c1-3cdc-4dd8-946b-d21a466b0874",
+   "created_at": "2026-11-18T18:15:46.497087",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 presented for routine follow-up at Klinikum Berlin, Klinik für Onkologie und Hämatologie on October 7, 2028.",
+   "episodes": [
+    "0ee3341c-4f71-4c96-9f7e-0c9fd0873b11"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-07T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-07T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "785c1c2b-3c50-488f-8854-ca1a518433a2",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "43f6858e-c31c-4475-9632-645b21d4048b",
+   "created_at": "2026-11-18T18:14:54.927403",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-10 reports ongoing bone pain.",
+   "episodes": [
+    "71be6842-5f78-4f39-a366-c4d947d45ed4"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-07T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-07T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "7cfb54b0-8134-416c-9469-95877b26f32b",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "f986fd67-4d89-41be-a6e7-f0551a04c599",
+   "created_at": "2026-11-18T18:14:54.927493",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-10 reports ongoing fatigue.",
+   "episodes": [
+    "71be6842-5f78-4f39-a366-c4d947d45ed4"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-07T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-07T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "90150aca-573b-4d99-9b35-6172e52fddda",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:14:54.927095",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 presents with advanced prostate cancer.",
+   "episodes": [
+    "71be6842-5f78-4f39-a366-c4d947d45ed4"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-07T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-07T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a0d086de-5e82-4259-83ea-f7a18fc14247",
+   "group_id": "Patient-10",
+   "source_node_uuid": "fc8d7bff-9a28-4f48-a5be-b0446cb2c90c",
+   "target_node_uuid": "3686e6c1-3cdc-4dd8-946b-d21a466b0874",
+   "created_at": "2026-11-18T18:14:54.928222",
+   "name": "RELATES_TO",
+   "fact": "The Klinik für Onkologie und Hämatologie is located at Klinikum Berlin.",
+   "episodes": [
+    "71be6842-5f78-4f39-a366-c4d947d45ed4"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-07T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-07T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "b1dc355a-4843-4e97-9df6-acee475e2caf",
+   "group_id": "Patient-10",
+   "source_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:15:25.105080",
+   "name": "INDICATES",
+   "fact": "The total PSA laboratory value of 61.9 ng/ml indicates ongoing biochemical progression for C61 Prostatakarzinom.",
+   "episodes": [
+    "bf4096a1-a85f-40ca-861e-c0ef719239df",
+    "0ee3341c-4f71-4c96-9f7e-0c9fd0873b11"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-07T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-07T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "b83c4402-0897-4c17-9010-5ca67dbb99f0",
+   "group_id": "Patient-10",
+   "source_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "target_node_uuid": "3686e6c1-3cdc-4dd8-946b-d21a466b0874",
+   "created_at": "2026-11-18T18:15:46.497224",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-2 evaluated Patient-10 at Klinikum Berlin, Klinik für Onkologie und Hämatologie.",
+   "episodes": [
+    "0ee3341c-4f71-4c96-9f7e-0c9fd0873b11"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-07T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-07T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "df5e25ab-f918-4c28-a063-6dd3d591208a",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "3eaacb03-4523-4fd3-b187-da7fdeb706b7",
+   "created_at": "2026-11-18T18:14:54.927290",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 has a genetic BRCA2-Mutation.",
+   "episodes": [
+    "71be6842-5f78-4f39-a366-c4d947d45ed4"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-07T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-07T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "0a8ac87e-9259-4ea7-ac92-f11b985f2e9a",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "492e5169-0984-42dd-85b1-8a2490d8263b",
+   "created_at": "2026-11-18T18:17:09.418034",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10's treatment for C61 Prostatakarzinom involves BRCA2 targeted therapy.",
+   "episodes": [
+    "b4617777-eaf6-4388-a515-ed046caf2f11"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "0c7c4cbe-a8a9-4d32-8411-489c2b3a000a",
+   "group_id": "Patient-10",
+   "source_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "target_node_uuid": "95ac1745-f8cb-4b10-b1ff-9c44cbc1bf14",
+   "created_at": "2026-11-18T18:16:41.257871",
+   "name": "TREATED_BY",
+   "fact": "C61 Prostatakarzinom is treated with targeted therapy involving BRCA2 and PARP-inhibitor.",
+   "episodes": [
+    "c50aa3ab-663e-4b99-831a-9572e4eb74fb"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "0e1b3d19-7d15-4163-893f-d811320278df",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "43f6858e-c31c-4475-9632-645b21d4048b",
+   "created_at": "2026-11-18T18:16:14.756175",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-10 presented with clinical complaints including bone pain.",
+   "episodes": [
+    "cdff59fe-30ab-4cd6-8acb-d4fdddcb8f07"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "262584e8-38f8-4c92-814d-c61fd74f87bc",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "created_at": "2026-11-18T18:17:09.417920",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 was evaluated by treating provider Dr. med. Arzt-2 during a routine follow-up control.",
+   "episodes": [
+    "b4617777-eaf6-4388-a515-ed046caf2f11"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "4c3aafaf-3d35-4931-84fb-2d4994edde34",
+   "group_id": "Patient-10",
+   "source_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "target_node_uuid": "492e5169-0984-42dd-85b1-8a2490d8263b",
+   "created_at": "2026-11-18T18:16:41.257806",
+   "name": "RELATES_TO",
+   "fact": "C61 Prostatakarzinom is treated with targeted therapy involving BRCA2 and PARP-inhibitor.",
+   "episodes": [
+    "c50aa3ab-663e-4b99-831a-9572e4eb74fb",
+    "80f59898-eca4-4f87-9530-c02b73825c5c"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "64a25f6f-b7d3-4d89-938e-196efe4a5bdc",
+   "group_id": "Patient-10",
+   "source_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:16:41.258021",
+   "name": "INDICATES",
+   "fact": "A significantly elevated PSA (gesamt) tumor marker value of 74.9 ng/ml indicates C61 Prostatakarzinom progression.",
+   "episodes": [
+    "c50aa3ab-663e-4b99-831a-9572e4eb74fb"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "860b7d63-a349-47d0-993a-3e60ead7d016",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d1546491-0199-4c3d-8d37-6572d778a300",
+   "created_at": "2026-11-18T18:16:41.257527",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 underwent laboratory evaluation at Klinikum Berlin, Klinik für Onkologie und Hämatologie.",
+   "episodes": [
+    "c50aa3ab-663e-4b99-831a-9572e4eb74fb"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "8eeeab3b-2718-4c61-acc5-117cac25763c",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:16:14.756247",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 had a total PSA laboratory evaluation revealing a value of 74.9 ng/ml.",
+   "episodes": [
+    "cdff59fe-30ab-4cd6-8acb-d4fdddcb8f07",
+    "c50aa3ab-663e-4b99-831a-9572e4eb74fb",
+    "b4617777-eaf6-4388-a515-ed046caf2f11"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "99df9c2f-97ca-4d08-a4cd-6c7944f73dc3",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "fc8d7bff-9a28-4f48-a5be-b0446cb2c90c",
+   "created_at": "2026-11-18T18:17:09.417752",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 presented for a routine follow-up control at the Klinik für Onkologie und Hämatologie at Klinikum Berlin.",
+   "episodes": [
+    "b4617777-eaf6-4388-a515-ed046caf2f11"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "bcd889ad-9320-4ed4-97ed-ac1b0b2305e0",
+   "group_id": "Patient-10",
+   "source_node_uuid": "d2f32729-4ace-429a-928f-68c9ea9ee68e",
+   "target_node_uuid": "ea09bd9e-ad30-4ad9-9397-7fa33d8dfe64",
+   "created_at": "2026-11-18T18:16:41.258124",
+   "name": "RELATES_TO",
+   "fact": "The laboratory report for PSA (gesamt) was electronically validated and released by Zentrallabor at Klinikum Berlin – Klinik-1.",
+   "episodes": [
+    "c50aa3ab-663e-4b99-831a-9572e4eb74fb"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c124ef10-c5fa-4c9c-9dc8-41930d6c5a21",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "fc8d7bff-9a28-4f48-a5be-b0446cb2c90c",
+   "created_at": "2026-11-18T18:16:14.756056",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 was evaluated by Dr. med. Arzt-2 at the Clinic for Oncology and Hematology, Klinikum Berlin on October 28, 2028.",
+   "episodes": [
+    "cdff59fe-30ab-4cd6-8acb-d4fdddcb8f07"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c678d198-7a36-4269-82d3-d0fe718d7c36",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "33498dfe-6d73-4cc8-9758-dde5b4874ec9",
+   "created_at": "2026-11-18T18:17:09.418136",
+   "name": "HAS_VITAL_SIGNS",
+   "fact": "Patient-10 demonstrated a stable overall presentation with a good general condition documented at an ECOG performance status of 3.",
+   "episodes": [
+    "b4617777-eaf6-4388-a515-ed046caf2f11"
+   ],
+   "expired_at": "2026-11-18T18:18:57.404372",
+   "valid_at": "2028-10-28T00:00:00",
+   "invalid_at": "2029-01-21T00:00:00",
+   "reference_time": "2028-10-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "d76dd281-98e8-43ee-9a83-d0db9b77033f",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "3686e6c1-3cdc-4dd8-946b-d21a466b0874",
+   "created_at": "2026-11-18T18:17:09.417851",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 presented for a routine follow-up control at Klinikum Berlin under the care of treating provider Dr. med. Arzt-2.",
+   "episodes": [
+    "b4617777-eaf6-4388-a515-ed046caf2f11"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "f86dc126-6c36-4597-8a76-c0556088069a",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "3eaacb03-4523-4fd3-b187-da7fdeb706b7",
+   "created_at": "2026-11-18T18:16:14.756149",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 has targeted therapy with BRCA2 mutation and PARP-inhibitor.",
+   "episodes": [
+    "cdff59fe-30ab-4cd6-8acb-d4fdddcb8f07"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "0634c9bc-a4e5-43d2-bbbe-2a6c79f586c6",
+   "group_id": "Patient-10",
+   "source_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "target_node_uuid": "25872e95-6b2d-4bb6-ae2c-8e760766176b",
+   "created_at": "2026-11-18T18:17:45.659530",
+   "name": "TREATED_BY",
+   "fact": "C61 Prostatakarzinom (mCRPC BRCA2 unter Cabazitaxel, fortgeschritten, zielgerichtete Therapie mit BRCA2 + PARP-Inhibitor) is treated with Cabazitaxel.",
+   "episodes": [
+    "fd7e50ca-3b07-4c76-b3d8-aae63cec9a67"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "433d6167-c02b-46b7-8c65-8049dd9bcc86",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "fc8d7bff-9a28-4f48-a5be-b0446cb2c90c",
+   "created_at": "2026-11-18T18:17:45.659204",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 was discharged following an inpatient stay at Klinikum Berlin, Klinik für Onkologie und Hämatologie.",
+   "episodes": [
+    "fd7e50ca-3b07-4c76-b3d8-aae63cec9a67"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "9136d529-0208-4d63-a580-4cd61c4de8bc",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:17:45.659437",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 has a documented diagnosis of C61 Prostatakarzinom (mCRPC BRCA2 unter Cabazitaxel, fortgeschritten, zielgerichtete Therapie mit BRCA2 + PARP-Inhibitor).",
+   "episodes": [
+    "fd7e50ca-3b07-4c76-b3d8-aae63cec9a67"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "941434c6-7e42-4786-a8a0-c61411a64675",
+   "group_id": "Patient-10",
+   "source_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "target_node_uuid": "95ac1745-f8cb-4b10-b1ff-9c44cbc1bf14",
+   "created_at": "2026-11-18T18:17:45.659628",
+   "name": "TREATED_BY",
+   "fact": "C61 Prostatakarzinom (mCRPC BRCA2 unter Cabazitaxel, fortgeschritten, zielgerichtete Therapie mit BRCA2 + PARP-Inhibitor) involves targeted therapy with a PARP-Inhibitor.",
+   "episodes": [
+    "fd7e50ca-3b07-4c76-b3d8-aae63cec9a67"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ead28900-a3b6-4019-bf35-d5edc26e4cc5",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d11e14a0-1aa2-4653-a262-df65a13234ce",
+   "created_at": "2026-11-18T18:17:45.659330",
+   "name": "RELATES_TO",
+   "fact": "Patient-10 was under the care of Dr. med. Arzt-2 during the inpatient stay at Klinikum Berlin, Klinik für Onkologie und Hämatologie.",
+   "episodes": [
+    "fd7e50ca-3b07-4c76-b3d8-aae63cec9a67"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-10-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-10-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "066ff6d3-a67e-4096-8bb3-d012590a5b05",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "95bac935-c883-4db2-8916-a7edf2f45d00",
+   "created_at": "2026-11-18T18:18:10.474128",
+   "name": "PRESCRIBED",
+   "fact": "Patient-10 is prescribed Bedarfsmedikation as part of pain management according to WHO-Step 3.",
+   "episodes": [
+    "80f59898-eca4-4f87-9530-c02b73825c5c"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-12-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-12-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "25e6ef04-2409-4c7e-b596-037e0930123d",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "73211fa4-75df-443d-a2c7-c5dce2800894",
+   "created_at": "2026-11-18T18:18:10.472500",
+   "name": "MANAGED_AT",
+   "fact": "Patient-10 was presented for a palliative care consultation at Klinikum Berlin, Klinik-1, Urologische Klinik.",
+   "episodes": [
+    "80f59898-eca4-4f87-9530-c02b73825c5c"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-12-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-12-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "2f078cfc-7dcc-4567-b789-ada571b42562",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "e25fae26-4fa8-4d13-8119-7ca3730c5ad2",
+   "created_at": "2026-11-18T18:18:10.473797",
+   "name": "HAS_VITAL_SIGNS",
+   "fact": "Patient-10 presents with an ECOG performance status of 4.",
+   "episodes": [
+    "80f59898-eca4-4f87-9530-c02b73825c5c"
+   ],
+   "expired_at": "2026-11-18T18:18:57.404374",
+   "valid_at": "2028-12-22T00:00:00",
+   "invalid_at": "2029-01-21T00:00:00",
+   "reference_time": "2028-12-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "4a572efc-4f71-43e6-a8da-903c27e907bf",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "created_at": "2026-11-18T18:18:10.472985",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 has a diagnosis of C61 Prostatakarzinom, characterized as an advanced stage with metastasizing disease and exhausted curative approaches.",
+   "episodes": [
+    "80f59898-eca4-4f87-9530-c02b73825c5c",
+    "e7d2f78c-bd5a-4064-ad60-85b31eeda623"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-12-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-12-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "5d1156bd-aca9-4761-8ff5-8b8ecc07523c",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "f986fd67-4d89-41be-a6e7-f0551a04c599",
+   "created_at": "2026-11-18T18:18:10.473552",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-10 reports a symptom load consisting of knochenschmerzen, fatigue, and gewichtsverlust.",
+   "episodes": [
+    "80f59898-eca4-4f87-9530-c02b73825c5c"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-12-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-12-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "7be88968-41aa-42f5-8a18-9b908fc0fc56",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "08e08a2a-745e-489c-8cf5-f7924b62b5c5",
+   "created_at": "2026-11-18T18:18:10.473416",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-10 reports a symptom load consisting of knochenschmerzen, fatigue, and gewichtsverlust.",
+   "episodes": [
+    "80f59898-eca4-4f87-9530-c02b73825c5c"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-12-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-12-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "9c86051d-ae99-4145-8c88-c92134899e93",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "8e962926-a55f-4139-a32f-f90a5f879baf",
+   "created_at": "2026-11-18T18:18:10.472745",
+   "name": "RELATES_TO",
+   "fact": "Patient-10 was evaluated by Dr. med. Arzt-1 during a palliative care consultation.",
+   "episodes": [
+    "80f59898-eca4-4f87-9530-c02b73825c5c"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-12-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-12-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "aee6d7c7-c9d5-426b-bcb9-378061411375",
+   "group_id": "Patient-10",
+   "source_node_uuid": "e7662168-1bde-4287-a9fa-a38ddde3dee8",
+   "target_node_uuid": "95ac1745-f8cb-4b10-b1ff-9c44cbc1bf14",
+   "created_at": "2026-11-18T18:18:10.473275",
+   "name": "TREATED_BY",
+   "fact": "C61 Prostatakarzinom involves targeted therapy with BRCA2 and a PARP-inhibitor.",
+   "episodes": [
+    "80f59898-eca4-4f87-9530-c02b73825c5c"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-12-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-12-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "af2f3cb1-d6db-4d1b-9fee-6df2b4cf9f2d",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "59c481f3-8a7c-4017-b219-92f2c9014bd2",
+   "created_at": "2026-11-18T18:18:10.474451",
+   "name": "RELATES_TO",
+   "fact": "Future treatment and care recommendations advise a close connection for Patient-10 to Spezialisierte Ambulante Palliativversorgung, SAPV.",
+   "episodes": [
+    "80f59898-eca4-4f87-9530-c02b73825c5c"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-12-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-12-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "bf8496e0-6844-4647-9068-dce27a20115c",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "5d33dfbd-e6ad-4c3f-8972-f63dafe946af",
+   "created_at": "2026-11-18T18:18:10.474275",
+   "name": "HAS_TREATMENT_PLAN",
+   "fact": "Patient-10 receives a general focus on symptom control and quality of life under Best Supportive Care.",
+   "episodes": [
+    "80f59898-eca4-4f87-9530-c02b73825c5c",
+    "e7d2f78c-bd5a-4064-ad60-85b31eeda623"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-12-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-12-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c892c2c3-593e-4bb9-b226-7fafa165ca92",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "6e3ec032-fa4a-4a12-94eb-0ba105b87eed",
+   "created_at": "2026-11-18T18:18:10.473984",
+   "name": "HAS_TREATMENT_PLAN",
+   "fact": "Patient-10 receives palliative pain management via an adjustment of analgesia according to WHO-Step 3 with prescribed Bedarfsmedikation.",
+   "episodes": [
+    "80f59898-eca4-4f87-9530-c02b73825c5c"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-12-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-12-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "f5cc2e70-5d2f-447b-90bc-25fb02523fdc",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d11b987a-74d9-4fa7-a691-712da8cf762d",
+   "created_at": "2026-11-18T18:18:10.473684",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-10 reports a symptom load consisting of knochenschmerzen, fatigue, and gewichtsverlust.",
+   "episodes": [
+    "80f59898-eca4-4f87-9530-c02b73825c5c"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-12-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-12-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "3c4df4e6-b977-4c56-9670-321d98c8ac39",
+   "group_id": "Patient-10",
+   "source_node_uuid": "73211fa4-75df-443d-a2c7-c5dce2800894",
+   "target_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "created_at": "2026-11-18T18:18:48.674268",
+   "name": "RELATES_TO",
+   "fact": "Patient-10 was evaluated at the Urologische Klinik of Klinikum Berlin on January 21, 2029.",
+   "episodes": [
+    "e7d2f78c-bd5a-4064-ad60-85b31eeda623"
+   ],
+   "expired_at": null,
+   "valid_at": "2029-01-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2029-01-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "53d0472f-3e7c-44b8-a4d4-752fa9b288d5",
+   "group_id": "Patient-10",
+   "source_node_uuid": "8e962926-a55f-4139-a32f-f90a5f879baf",
+   "target_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "created_at": "2026-11-18T18:18:48.674049",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-1 evaluated patient Patient-10 at the Urologische Klinik of Klinikum Berlin on January 21, 2029.",
+   "episodes": [
+    "e7d2f78c-bd5a-4064-ad60-85b31eeda623"
+   ],
+   "expired_at": null,
+   "valid_at": "2029-01-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2029-01-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "6e273335-881a-42b7-89b7-24666a916b87",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "8188f262-27af-42f9-927d-4538ef14cd09",
+   "created_at": "2026-11-18T18:18:48.675418",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-10 died on January 21, 2029, due to progressives metastasiertes kastrationsresistentes Prostatakarzinom.",
+   "episodes": [
+    "e7d2f78c-bd5a-4064-ad60-85b31eeda623"
+   ],
+   "expired_at": null,
+   "valid_at": "2029-01-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2029-01-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "8717937d-2e6c-4e57-a082-5acc85ea81b8",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "08e08a2a-745e-489c-8cf5-f7924b62b5c5",
+   "created_at": "2026-11-18T18:18:48.674799",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-10 presented with a symptom load of knochenschmerzen.",
+   "episodes": [
+    "e7d2f78c-bd5a-4064-ad60-85b31eeda623"
+   ],
+   "expired_at": null,
+   "valid_at": "2029-01-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2029-01-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "87fa0629-6ba7-4be3-b1be-0388032b6e40",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "492e5169-0984-42dd-85b1-8a2490d8263b",
+   "created_at": "2026-11-18T18:18:48.674590",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-10 is undergoing targeted therapy involving BRCA2 and a PARP-Inhibitor.",
+   "episodes": [
+    "e7d2f78c-bd5a-4064-ad60-85b31eeda623"
+   ],
+   "expired_at": null,
+   "valid_at": "2029-01-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2029-01-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "8814ae2e-449d-4fc2-9784-80d363dcdce8",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "33498dfe-6d73-4cc8-9758-dde5b4874ec9",
+   "created_at": "2026-11-18T18:18:48.675141",
+   "name": "RELATES_TO",
+   "fact": "Patient-10 had an ECOG-Status of 4 recorded on January 21, 2029.",
+   "episodes": [
+    "e7d2f78c-bd5a-4064-ad60-85b31eeda623"
+   ],
+   "expired_at": null,
+   "valid_at": "2029-01-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2029-01-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "9318c070-59e1-4212-ae3b-3e931071ce4a",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "f986fd67-4d89-41be-a6e7-f0551a04c599",
+   "created_at": "2026-11-18T18:18:48.674922",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-10 presented with fatigue as part of their symptom load.",
+   "episodes": [
+    "e7d2f78c-bd5a-4064-ad60-85b31eeda623"
+   ],
+   "expired_at": null,
+   "valid_at": "2029-01-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2029-01-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ddd4d227-f542-4fc5-bf08-9bb162d9cdbe",
+   "group_id": "Patient-10",
+   "source_node_uuid": "a8ea2968-c089-45f3-af13-bfe3cc0d2661",
+   "target_node_uuid": "d11b987a-74d9-4fa7-a691-712da8cf762d",
+   "created_at": "2026-11-18T18:18:48.675042",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-10 presented with gewichtsverlust as part of their symptom load.",
+   "episodes": [
+    "e7d2f78c-bd5a-4064-ad60-85b31eeda623"
+   ],
+   "expired_at": null,
+   "valid_at": "2029-01-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2029-01-21T00:00:00",
+   "attributes": {}
+  }
+ ]
+}
