@@ -61,7 +61,7 @@ This results in different clinical events and different combinations and numbers
 
 ### Files per patient
 
-Each `Patient-<n>/` folder holds one PDF and one HTML file per document, named `<type>_e<event>` after the event it belongs to, plus `timeline.json`; Patient-5 also has `graph.json`.
+Each `Patient-<n>/` folder holds one PDF and one HTML file per document, named `<type>_e<event>` after the event it belongs to, plus `timeline.json` and `graph.json`.
 
 | File prefix | Document type |
 |---|---|
