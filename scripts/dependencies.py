@@ -32,10 +32,9 @@ def python_dependencies():
 
 def npm_dependencies():
     matcher = ROOT / "matcher"
-    for package_dir in [
-        matcher,
-        *sorted(p.parent for p in matcher.glob("*/package.json")),
-    ]:
+    # the workspace packages, as in pnpm-workspace.yaml
+    manifests = [*matcher.glob("*/package.json"), *matcher.glob("algorithms/*/package.json")]
+    for package_dir in [matcher, *sorted(p.parent for p in manifests)]:
         manifest = json.loads((package_dir / "package.json").read_text())
         for field, scope in [("dependencies", "runtime"), ("devDependencies", "dev")]:
             for name in manifest.get(field, {}):

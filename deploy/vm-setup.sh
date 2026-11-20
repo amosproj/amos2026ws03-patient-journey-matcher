@@ -4,7 +4,7 @@
 #
 # Sets up the Patient Journey Matcher on a fresh Debian 13 VM. Paste it as the customization
 # script when you launch the VM, or run it there with sudo. It is safe to run again.
-# See Documentation/deployment.md.
+# See Documentation/build-deploy/deployment.md.
 set -euo pipefail
 
 APP_USER=debian
@@ -49,7 +49,7 @@ if [ ! -f "$APP_DIR/.env" ]; then
     | as_app tee "$APP_DIR/.env" >/dev/null
   chmod 600 "$APP_DIR/.env"
 fi
-# API keys of the crawlers, filled in by hand (Documentation/deployment.md#scheduled-crawls)
+# API keys of the crawlers, filled in by hand (Documentation/build-deploy/deployment.md#scheduled-crawls)
 [ -f "$APP_DIR/crawler/.env" ] || as_app install -m 600 "$APP_DIR/crawler/.env.example" "$APP_DIR/crawler/.env"
 
 step "database, build and tests"
@@ -135,7 +135,7 @@ UNIT
 # the exit code of a stopped client and of a stopped crawler: no failure.
 cat > /etc/systemd/system/crawler@.service <<UNIT
 [Unit]
-Description=Crawl %i (Documentation/deployment.md)
+Description=Crawl %i (Documentation/build-deploy/deployment.md)
 After=docker.service
 Wants=docker.service
 
@@ -214,4 +214,4 @@ curl -s -X POST http://127.0.0.1:3000/mcp \
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/list"}' | head -c 600 || true
 echo
 systemctl list-timers "${timers[@]}" --no-pager || true
-step "done, the server runs; the crawlers start tonight (Documentation/deployment.md#scheduled-crawls)"
+step "done, the server runs; the crawlers start tonight (Documentation/build-deploy/deployment.md#scheduled-crawls)"

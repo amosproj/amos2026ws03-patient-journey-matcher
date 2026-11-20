@@ -20,7 +20,7 @@ const edgeSchema = z.object({
   valid_at: daySchema.nullish(),
 });
 
-// The patient graph of the SS26 pipeline, see "Patient graph" in Documentation/mcp-interface.md.
+// The patient graph of the SS26 pipeline, see "Patient graph" in Documentation/user/mcp-interface.md.
 // Field names are Graphiti's, so its nodes and edges can be read as they are. Only the fields
 // that the journey is made from are checked. All others are dropped, such as `fact` and
 // `invalid_at` of an edge: Graphiti takes them from the LLM, and an odd value in a field that

@@ -11,7 +11,7 @@ import { createDownloader } from "@matcher/download";
 const pool = createPool();
 try {
   const names = process.argv.slice(2);
-  // Every index reads the transcripts stored before this run (Documentation/storage.md).
+  // Every index reads the transcripts stored before this run (Documentation/design/storage.md).
   const { rows } = await pool.query<{ now: Date }>("SELECT now()");
   const downloader = createDownloader({ transcript: storedTranscripts(pool) });
   const approaches = selectApproaches(

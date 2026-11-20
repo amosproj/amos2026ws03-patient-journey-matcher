@@ -1,19 +1,32 @@
-Build, user, and technical documentation
+# Documentation
 
-[Software architecture description](architecture/README.md)
+Build, user and technical documentation of the Patient Journey Matcher. 
 
-[MCP interface](mcp-interface.md)
+New here: read the [software architecture](design/architecture.md) first, then explore the pipeline in the [debug UI](../debug/crawler/README.md) (`make debug`). 
+- Terms: [glossary](glossary.md). 
+- The team's investigations, with methods and measurements: [research](../research/README.md).
 
-[Matching evaluation](matching-evaluation.md)
+## User documentation
 
-[Build, run and test](build.md)
+How to use the software.
 
-[End-to-end tests](e2e-tests.md)
+- [MCP interface](user/mcp-interface.md): connect, try it, the tools `match_journey` and `get_source`, errors
+- [Debug UI](../debug/crawler/README.md): the best way to explore the pipeline, one screen per step: crawler runs, stored documents, the index, the transcription job and each step of a match
+- [Synthetic patients](../patientdata/patientdata.md): journeys and graphs to send for testing
+- [Patient graph tool](../tools/patient-graph/README.md): build the patient graph of a synthetic patient, the second input form of `match_journey`
 
-[External sources: metadata, storage and indexing](sources/README.md)
+## Design documentation
 
-[Resource storage and retrieval](storage.md)
+The architecture and the code.
 
-[Keyword matching](keyword-matching.md)
+- [Software architecture](design/architecture.md): runtime and code components, technology stack, choices
+- [Data sources](design/sources.md): what is crawled, keys, request budgets, licences
+- [Storage and retrieval](design/storage.md): tables, columns, who writes and who reads them
+- [Keyword matching](design/keyword-matching.md): how the keyword approach ranks sources, and its limits
+- Next to the code: [crawler](../crawler/README.md), [matcher packages](../matcher/README.md), [adding an approach](../matcher/algorithms/README.md)
 
-[AI matching research](research/ai-based-matching.md) · [Simple AI matching report (PDF)](research/ai-matching-results/ai-matching-report.pdf) · [Detailed report (PDF)](research/ai-matching-results/detailed/ai-matching-report-detailed.pdf) · [Models used](research/ai-matching-results/models-used.md) · [Report summary](research/ai-matching-results/performance-report.md)
+## Build and deploy documentation
+
+- [Build, run and test](build-deploy/build.md): prerequisites, make targets, tests, CI
+- [Local database](build-deploy/database.md)
+- [Deployment](build-deploy/deployment.md): the VM, scheduled crawls, backups
