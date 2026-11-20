@@ -1,21 +1,14 @@
-// The transcription job: speech-to-text for audio that has no transcript. The indexer leaves
-// such a document with the row "audio, and speech-to-text is off"; this job reads the audio of
-// those rows, newest first and several at once, and stores the keywords as the indexer would.
-// It holds no row lock and no transaction while it reads, so nothing waits for it.
+// The transcription job: speech-to-text for documents whose only full text is audio. It reads
+// their audio, newest first and several at once, and stores what it read in `transcripts`, where
+// every index reads it like a downloaded full text. It holds no row lock and no transaction while
+// it reads, so nothing waits for it.
 import { setTimeout as wait } from "node:timers/promises";
-import type { DocumentRow, Queryable } from "@matcher/db";
 import {
-  type Downloader,
-  NO_SPEECH_TO_TEXT,
-  type Transcribe,
-} from "@matcher/download";
-import {
-  type FullTextRow,
-  type FullTextStatus,
-  fullTextRow,
-} from "./full-texts.ts";
-import { NON_ENGLISH_METADATA } from "./language.ts";
-import { createSchema } from "./schema.ts";
+  type DocumentRow,
+  NON_ENGLISH_METADATA,
+  type Queryable,
+} from "@matcher/db";
+import type { Downloader, FullText, Transcribe } from "@matcher/download";
 
 /** What each worker reads, for the report. */
 interface Reading {
@@ -28,7 +21,7 @@ interface Reading {
   step: "downloading" | "transcribing";
 }
 
-/** What the job writes to `keyword.transcription.state` for the debug UI. */
+/** What the job writes to `transcription.state` for the debug UI. */
 export interface TranscriptionState {
   model: string;
   /** Threads of one transcription. */
@@ -39,13 +32,13 @@ export interface TranscriptionState {
   /** Workers running; above the setting while some end after their audio. */
   workers: number;
   reading: Reading[];
-  /** Audio read since the start, by what became of it; `changed`: the indexer wrote the row meanwhile. */
-  read: Record<FullTextStatus | "changed", number>;
+  /** Audio read since the start, by what became of it. */
+  read: Record<FullText["status"], number>;
   /** The audio read last, newest first. */
   recent: {
     id: string;
     title: string;
-    status: FullTextStatus | "changed";
+    status: FullText["status"];
     detail: string | null;
     /** Seconds the worker took. */
     seconds: number;
@@ -81,12 +74,6 @@ export interface TranscriptionOptions {
   pauseMs?: number;
 }
 
-/** A document whose audio waits, with the version of it that its index row was built from. */
-type Waiting = Pick<
-  DocumentRow,
-  "id" | "title" | "venue" | "duration_seconds" | "full_text"
-> & { document_changed_at: Date };
-
 const POLL_MS = 2_000;
 const IDLE_MS = 60_000;
 /** Speech-to-text that fails this often in a row is taken to be broken, not the files. */
@@ -100,12 +87,22 @@ const SPEED_FILES = 30;
 const MIN_TIMEOUT_MS = 3_600_000;
 const UNKNOWN_SECONDS = 7_200;
 
-// The rows the indexer left for this job, of the document version that is stored now: a changed
-// document is the indexer's first. `$1` is NO_SPEECH_TO_TEXT.
-const WAITING = `f.status = 'skipped' AND f.detail = $1
-  AND f.document_changed_at = date_trunc('milliseconds', d.changed_at)
+/** A document whose audio waits. */
+type Waiting = Pick<
+  DocumentRow,
+  "id" | "title" | "venue" | "duration_seconds" | "full_text"
+>;
+
+// Documents whose only full text is audio, as the crawler marks the files of a podcast episode,
+// with English metadata or of unknown language, and whose audio was read never, from another
+// file, or a day ago or more and failed.
+const WAITING = `d.full_text @> '[{"kind": "audio"}]'
+  AND NOT d.full_text @> '[{"kind": "transcript"}]'
   AND (d.expires_at IS NULL OR d.expires_at > now())
-  AND (${NON_ENGLISH_METADATA}) IS NOT TRUE`;
+  AND (${NON_ENGLISH_METADATA}) IS NOT TRUE
+  AND (t.document_id IS NULL
+       OR NOT d.full_text @> jsonb_build_array(jsonb_build_object('url', t.url))
+       OR (t.status = 'failed' AND t.read_at < now() - interval '1 day'))`;
 
 /**
  * Sets how many audio files the job reads at once; 0 stops it after the audio in work. The
@@ -120,18 +117,17 @@ export async function setWorkers(
       `workers must be a whole number from 0, not ${workers}`,
     );
   }
-  await createSchema(db);
   await db.query(
-    `INSERT INTO keyword.transcription (workers) VALUES ($1)
+    `INSERT INTO transcription (workers) VALUES ($1)
      ON CONFLICT (only_row) DO UPDATE SET workers = EXCLUDED.workers`,
     [workers],
   );
 }
 
 /**
- * Reads waiting audio with as many workers as `keyword.transcription.workers` says, and follows
- * that setting while it runs: a worker more starts within `pollMs`, a worker too many ends
- * after its audio. Runs until `signal` aborts; reports what it does to the same row.
+ * Reads waiting audio with as many workers as `transcription.workers` says, and follows that
+ * setting while it runs: a worker more starts within `pollMs`, a worker too many ends after its
+ * audio. Runs until `signal` aborts; reports what it does to the same row.
  */
 export async function transcribeAudio(
   db: Queryable,
@@ -149,7 +145,6 @@ export async function transcribeAudio(
     pauseMs = PAUSE_MS,
   }: TranscriptionOptions,
 ): Promise<void> {
-  await createSchema(db);
   const state: TranscriptionState = {
     model,
     threads,
@@ -157,16 +152,16 @@ export async function transcribeAudio(
     started_at: new Date().toISOString(),
     workers: 0,
     reading: [],
-    read: { indexed: 0, skipped: 0, failed: 0, changed: 0 },
+    read: { ok: 0, skipped: 0, failed: 0 },
     recent: [],
     speed: null,
     preparing: false,
     error: null,
   };
   const reading = new Set<Reading>();
-  // Given to a worker in this run and not written since: not given out again, so that a row
-  // that cannot be written is not read over and over.
-  const unwritten = new Map<string, Date>();
+  // Given to a worker in this run and not stored since: not given out again, so that a
+  // transcript that cannot be stored is not read over and over.
+  const given = new Set<string>();
   const speeds: { audio: number; took: number }[] = [];
   let wanted = 0;
   let workers = 0;
@@ -193,12 +188,12 @@ export async function transcribeAudio(
     // row, as after the table was emptied, the state is written again.
     if (running && json === reported) {
       const { rows } = await db.query<{ workers: number }>(
-        "UPDATE keyword.transcription SET reported_at = now() RETURNING workers",
+        "UPDATE transcription SET reported_at = now() RETURNING workers",
       );
       if (rows[0]) return Math.min(rows[0].workers, maxWorkers);
     }
     const { rows } = await db.query<{ workers: number }>(
-      `INSERT INTO keyword.transcription (state, reported_at)
+      `INSERT INTO transcription (state, reported_at)
        VALUES ($1, CASE WHEN $2 THEN now() END)
        ON CONFLICT (only_row) DO UPDATE
        SET state = EXCLUDED.state, reported_at = EXCLUDED.reported_at
@@ -214,52 +209,43 @@ export async function transcribeAudio(
     const taken = turn.then(async () => {
       if (signal.aborted || Date.now() < restUntil) return undefined;
       const { rows } = await db.query<Waiting>(
-        `SELECT d.id, d.title, d.venue, d.duration_seconds, d.full_text, f.document_changed_at
-         FROM keyword.full_texts AS f JOIN documents AS d ON d.id = f.document_id
-         WHERE ${WAITING}
-           AND NOT EXISTS (
-             SELECT FROM unnest($2::text[], $3::timestamptz[]) AS given (id, changed_at)
-             WHERE given.id = f.document_id AND given.changed_at = f.document_changed_at)
+        `SELECT d.id, d.title, d.venue, d.duration_seconds, d.full_text
+         FROM documents AS d LEFT JOIN transcripts AS t ON t.document_id = d.id
+         WHERE ${WAITING} AND d.id <> ALL($1::text[])
          ORDER BY d.published_at DESC NULLS LAST, d.id
          LIMIT 1`,
-        [NO_SPEECH_TO_TEXT, [...unwritten.keys()], [...unwritten.values()]],
+        [[...given]],
       );
       const [document] = rows;
       if (document === undefined) restUntil = Date.now() + idleMs;
-      else unwritten.set(document.id, document.document_changed_at);
+      else given.add(document.id);
       return document;
     });
     turn = taken.catch(() => {});
     return taken;
   }
 
-  /**
-   * Stores what was read, unless the indexer wrote the row meanwhile: the document changed, or
-   * its metadata turned out not to be English.
-   */
-  async function write(document: Waiting, row: FullTextRow): Promise<boolean> {
-    const { rowCount } = await db.query(
-      `UPDATE keyword.full_texts
-       SET status = $3, detail = $4, url = $5, media_type = $6, words = $7, terms = $8,
-           fetched_at = now()
-       WHERE document_id = $1 AND document_changed_at = $2
-         AND status = 'skipped' AND detail = $9`,
+  /** Stores what was read; the file it came from, so that another one is read again. */
+  async function store(document: Waiting, result: FullText): Promise<void> {
+    const audio = document.full_text.find((file) => file.kind === "audio");
+    await db.query(
+      `INSERT INTO transcripts (document_id, url, status, detail, text, model)
+       VALUES ($1, $2, $3, $4, $5, $6)
+       ON CONFLICT (document_id) DO UPDATE
+       SET url = EXCLUDED.url, status = EXCLUDED.status, detail = EXCLUDED.detail,
+           text = EXCLUDED.text, model = EXCLUDED.model, read_at = now()`,
       [
         document.id,
-        document.document_changed_at,
-        row.status,
-        row.detail,
-        row.url,
-        row.mediaType,
-        row.words,
-        row.terms,
-        NO_SPEECH_TO_TEXT,
+        result.url ?? audio?.url,
+        result.status,
+        result.detail ?? null,
+        result.status === "ok" ? result.text : null,
+        model,
       ],
     );
-    return rowCount === 1;
   }
 
-  /** Reads one document like the indexer would with speech-to-text, and stores the result. */
+  /** Reads the audio of one document and stores what it heard. */
   async function read(document: Waiting): Promise<void> {
     const started = Date.now();
     const entry: Reading = {
@@ -285,14 +271,13 @@ export async function transcribeAudio(
         return text;
       })
       .finally(() => reading.delete(entry));
-    // Given up, not failed: the row stays as it is, and the next run reads the audio.
+    // Given up, not failed: the document still waits, and the next run reads its audio.
     if (signal.aborted) return;
-    const row = fullTextRow(result);
-    let status: FullTextStatus | "changed" = row.status;
-    let detail = row.detail;
+    let status = result.status;
+    let detail = result.detail ?? null;
     try {
-      if (await write(document, row)) unwritten.delete(document.id);
-      else status = "changed";
+      await store(document, result);
+      given.delete(document.id);
     } catch (error) {
       if (signal.aborted) return;
       status = "failed";
@@ -362,7 +347,7 @@ export async function transcribeAudio(
       answered = true;
     } catch (error) {
       // A report that fails ends no transcription here; the job itself ends when the
-      // connection of its lock breaks (transcriber/src/main.ts).
+      // connection of its lock breaks (main.ts).
       if (answered) log(`no report, the database said: ${message(error)}`);
       answered = false;
     }

@@ -222,17 +222,29 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     ]);
   });
 
-  test("keeps what the transcription job read when a document changes, but not its audio", async () => {
+  test("reads the stored transcript of audio, and keeps it when a document changes, but not its audio", async () => {
     await insert("podcast:1", "Olaparib, the episode", {
       full_text: ["https://example.org/1.mp3"],
       media_type: "audio/mpeg",
     });
     await indexFullTexts(pool, audioOnly);
-    // What the transcription job writes.
+    // The downloader gives the transcript the transcription job stored, like a downloaded text.
+    const transcribed = {
+      fullText: vi.fn(
+        async (): Promise<FullText> => ({
+          status: "ok",
+          text: "Olaparib and the PSA.",
+          url: "https://example.org/1.mp3",
+          mediaType: "audio/mpeg",
+        }),
+      ),
+    };
     await pool.query(
-      `UPDATE keyword.full_texts SET status = 'indexed', detail = NULL, words = 2,
-         url = 'https://example.org/1.mp3', media_type = 'audio/mpeg', terms = 'olaparib psa'`,
+      "UPDATE keyword.full_texts SET document_changed_at = document_changed_at - interval '1 second'",
     );
+    expect(await indexFullTexts(pool, transcribed)).toMatchObject({
+      indexed: 1,
+    });
     const none = { indexed: 0, skipped: 0, failed: 0 };
     const stored = async () =>
       (await pool.query("SELECT status, terms FROM keyword.full_texts")).rows;

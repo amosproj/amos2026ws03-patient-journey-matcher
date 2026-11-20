@@ -154,6 +154,35 @@ test("skips audio without speech-to-text, so that a call with it reads the audio
   expect(fetch).toHaveBeenCalledOnce();
 });
 
+test("reads a stored transcript instead of audio it cannot read", async () => {
+  const fetch = fakeFetch({});
+  const transcript = vi.fn(async (url: string) =>
+    url === "https://a.org/1.mp3"
+      ? {
+          status: "ok" as const,
+          text: "Olaparib.",
+          url,
+        }
+      : undefined,
+  );
+  const downloader = createDownloader({ fetch, transcript, ...instant });
+  const audio = (url: string) => locator(url, "audio/mpeg", "audio");
+
+  await expect(
+    downloader.fullText([audio("https://a.org/1.mp3")]),
+  ).resolves.toEqual({
+    status: "ok",
+    text: "Olaparib.",
+    url: "https://a.org/1.mp3",
+    mediaType: "audio/mpeg",
+  });
+  // None stored yet: the audio waits for one.
+  await expect(
+    downloader.fullText([audio("https://a.org/2.mp3")]),
+  ).resolves.toMatchObject({ status: "skipped", detail: NO_SPEECH_TO_TEXT });
+  expect(fetch).not.toHaveBeenCalled();
+});
+
 test("transcribes the audio when no transcript gives a text", async () => {
   const fetch = fakeFetch({
     "https://a.org/t.vtt": [new Response("", { status: 404 })],
