@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import type { Matcher } from "@matcher/core";
 import type { DocumentStore } from "@matcher/db";
 import { expect, test, vi } from "vitest";
@@ -263,14 +263,42 @@ test("match_journey rejects a graph with facts on more than 500 days, like a jou
   expect(request(501).success).toBe(false);
 });
 
-test("reads the generated graph of Patient-5, which ends on the day its timeline ends", () => {
-  const folder = new URL("../../../patientdata/Patient-5/", import.meta.url);
-  const file = (name: string) =>
-    JSON.parse(readFileSync(new URL(name, folder), "utf8"));
-  const timeline = file("timeline.json");
+const patientdata = new URL("../../../patientdata/", import.meta.url);
+const patients = readdirSync(patientdata).filter((name) =>
+  name.startsWith("Patient-"),
+);
 
-  const journey = graphJourney(read(file("graph.json")));
+// Days of a timeline for which the graph has no medical fact. The laboratory report of
+// Patient-19 of that day only added that the patient was at the laboratory: its PSA value
+// was already in the graph, from the referral letter three days before.
+const daysWithoutFact: Record<string, string[]> = {
+  "Patient-19": ["2026-11-09"],
+};
 
-  expect(journey.patient_id).toBe(timeline.patient_id);
-  expect(journey.events.at(-1)?.date).toBe(timeline.events.at(-1).date);
+test("has the 20 generated patients", () => {
+  expect(patients).toHaveLength(20);
 });
+
+test.each(patients)(
+  "reads the generated graph of %s, which holds every PDF and the days of its timeline",
+  (patient) => {
+    const folder = new URL(`${patient}/`, patientdata);
+    const file = (name: string) =>
+      JSON.parse(readFileSync(new URL(name, folder), "utf8"));
+    const pdfs = readdirSync(folder).filter((name) => name.endsWith(".pdf"));
+    const generated = file("graph.json");
+    const timeline = file("timeline.json");
+    const days = new Set<string>(
+      timeline.events.map((event: { date: string }) => event.date),
+    );
+    for (const day of daysWithoutFact[patient] ?? []) {
+      days.delete(day);
+    }
+
+    const journey = graphJourney(read(generated));
+
+    expect(journey.patient_id).toBe(timeline.patient_id);
+    expect(generated.documents.toSorted()).toEqual(pdfs.toSorted());
+    expect(journey.events.map((event) => event.date)).toEqual([...days].sort());
+  },
+);

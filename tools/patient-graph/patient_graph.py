@@ -11,11 +11,13 @@ and an embedded Kuzu database under out/patient-graph/ instead of Neo4j.
 
 Needs GEMINI_API_KEY in the environment or in tools/patient-graph/.env. VERTEX_LLM_MODEL picks the
 model and GEMINI_PACER_MIN_INTERVAL_S the pause between two calls of Graphiti's LLM,
-like in the pipeline.
+like in the pipeline. Without VERTEX_LLM_MODEL it uses the model that built the graphs
+in patientdata/.
 
 A free key allows only some documents per day. The run then stops, writes the graph of
 the documents read so far and exits with an error; running it again goes on with the
 next document. The database knows which documents it holds, so none is added twice.
+A document that takes longer than DOCUMENT_TIMEOUT_S stops the run in the same way.
 """
 
 import asyncio
@@ -34,6 +36,9 @@ from dotenv import load_dotenv  # noqa: E402
 
 # Before the SS26 imports: some of them read their settings while they are imported.
 load_dotenv(HERE / ".env")
+# The model that built the graphs in patientdata/. SS26 uses gemini-2.5-flash, which
+# Google has deprecated: from 1 December 2026 its calls go to this model anyway.
+os.environ.setdefault("VERTEX_LLM_MODEL", "gemini-3.5-flash-lite")
 
 from google import genai  # noqa: E402
 from graphiti_core import Graphiti  # noqa: E402
@@ -64,6 +69,9 @@ STATE = ROOT / "out/patient-graph"
 EMBEDDING_MODEL = "gemini-embedding-001"
 # Only needed while the graph is built, and large.
 EMBEDDINGS = {"name_embedding", "fact_embedding"}
+# A document takes 20 to 120 s. Graphiti's calls have no time limit of their own: in the
+# run of Patient-20 one of them never answered and the run stood still for 40 minutes.
+DOCUMENT_TIMEOUT_S = 600
 
 
 def event_number(pdf: Path) -> tuple[int, str]:
@@ -73,7 +81,7 @@ def event_number(pdf: Path) -> tuple[int, str]:
 
 
 async def open_graph(database: Path, key: str, client: genai.Client) -> Graphiti:
-    model = os.environ.get("VERTEX_LLM_MODEL", "gemini-2.5-flash")
+    model = os.environ["VERTEX_LLM_MODEL"]
     config = LLMConfig(api_key=key, model=model, small_model=model)
     is_new = not database.exists()
     driver = KuzuDriver(db=str(database))
@@ -149,21 +157,22 @@ async def build(patient: str) -> None:
         if pdf.stem in done:
             continue
         try:
-            extraction = await analyze_document(
-                pdf.read_bytes(), pdf.name, previous_summary=summary
-            )
-            # Before the graph step: if a call fails, the graph does not have the document
-            # yet and the next run reads it again from the start.
-            new_summary = await update_journey_summary(summary, extraction, pdf.name)
-            await ingest(
-                graphiti,
-                uid=patient,
-                doc_id=pdf.stem,
-                doc_name=pdf.name,
-                extraction=extraction,
-            )
+            async with asyncio.timeout(DOCUMENT_TIMEOUT_S):
+                extraction = await analyze_document(
+                    pdf.read_bytes(), pdf.name, previous_summary=summary
+                )
+                # Before the graph step: if a call fails, the graph does not have the
+                # document yet and the next run reads it again from the start.
+                new_summary = await update_journey_summary(summary, extraction, pdf.name)
+                await ingest(
+                    graphiti,
+                    uid=patient,
+                    doc_id=pdf.stem,
+                    doc_name=pdf.name,
+                    extraction=extraction,
+                )
         except Exception as error:
-            # Mostly the rate limit of the key.
+            # Mostly the rate limit of the key, or a call that never answered.
             print(f"Stopped at {pdf.name}: {type(error).__name__}: {str(error)[:300]}")
             break
         done.add(pdf.stem)

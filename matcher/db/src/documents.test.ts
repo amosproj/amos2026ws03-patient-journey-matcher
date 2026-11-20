@@ -353,6 +353,9 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     });
     expect(await transcript("https://a.org/3.mp3")).toBeUndefined();
 
+    // Stored after the run began, so not read by every index yet: kept.
+    const runStart = new Date(Date.now() - 60_000);
+    expect(await dropTranscriptTexts(pool, runStart)).toBe(0);
     // Every index has read it: the text goes, the row stays.
     expect(
       await dropTranscriptTexts(pool, new Date(Date.now() + 3_600_000)),
