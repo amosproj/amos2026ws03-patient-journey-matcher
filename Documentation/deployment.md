@@ -16,6 +16,7 @@ The matcher runs on one VM in our project of the [FAU Compute Cloud](https://cc.
 | MCP server | Service `matcher-mcp`, `http://127.0.0.1:3000/mcp` on the VM |
 | Database | Docker container `amos-postgres`, `127.0.0.1:5432` on the VM |
 | Crawlers and index | Timers `crawler-<source>` and `matcher-index`, see [scheduled crawls](#scheduled-crawls) |
+| Speech-to-text | Service `matcher-transcribe`, see [transcription](#transcription) |
 | Backups | `/var/backups/matcher`, see [backups and cleanup](#backups-and-cleanup) |
 
 Our quota is 20 vCPUs, 50 GB RAM and 1000 GB volume storage. The flavour is the largest that fits the RAM quota. Together with the `vaultwarden` VM, 3 vCPUs, 17 GB RAM and 290 GB volume storage are left for other VMs.
@@ -71,11 +72,11 @@ On the VM:
 
 ## Scheduled crawls
 
-Every night a systemd timer starts one crawler container per source (`crawler-<source>` in [`compose.yaml`](../compose.yaml)), and in the morning `make index` adds the new documents to the indexes. Each run continues from the source's last successful run (`--since auto`, see [crawler](../crawler/README.md#run)). A topic without one, as on a new VM or with a new topic file, is crawled without a date. `--max-results` caps every query, channel or feed in every run, so it also sets the size of this first crawl. Any successful run counts, even a small one such as that of `make seed`, and a query, channel or feed added to a topic later starts from the topic's last run. To fill in such a topic, crawl it once without a date and with the results per run below (see the tasks).
+Every night a systemd timer starts one crawler container per source (`crawler-<source>` in [`compose.yaml`](../compose.yaml)), and in the morning `make index` adds the new documents to the indexes. Each run goes through the topics one after another, stores each when it is done and continues from that topic's last successful run (`--since auto`, see [crawler](../crawler/README.md#run)). A topic without one, as on a new VM or with a new topic file, is crawled without a date. `--max-results` caps every query, channel or feed in every run, so it also sets the size of this first crawl. Any successful run counts, even a small one such as that of `make seed`, and a query, channel or feed added to a topic later starts from the topic's last run. To fill in such a topic, crawl it once without a date and with the results per run below (see the tasks).
 
 | Source | Starts (UTC) | Results per run | Bound by |
 |---|---|---|---|
-| PubMed | 03:00 | 50 per query | NCBI: 3 requests/s, 5 with our key, large jobs between 21:00 and 05:00 US Eastern. Under an hour, the first crawl a few hours. |
+| PubMed | 03:00 | 50 per query | NCBI: 3 requests/s, 5 with our key, large jobs between 21:00 and 05:00 US Eastern. Under an hour, the first crawl about 16 hours. |
 | arXiv | 00:00 | 3 per query | 1 request every 3 s: at least 3 hours for the 3,615 queries, the first crawl about 12 hours. |
 | Zenodo | 00:10 | 25 per query (one page) | 30 searches a minute: about 2 hours. |
 | YouTube | 00:30 | 50 per channel | 10,000 quota units a day, a run needs about 1,400. Stored videos expire after 30 days unless a run refreshes them, so it must run at least every 14 days. |
@@ -92,8 +93,32 @@ The scheduled runs do not follow references (`--max-depth 0`): on a first crawl 
 | Log of a run | `journalctl -u crawler@pubmed`, `journalctl -u matcher-index` |
 | Crawl a source now | `sudo systemctl start --no-block crawler@pubmed` |
 | Fill in a topic | `cd /opt/patient-journey-matcher && docker compose run --rm --build crawler-pubmed pubmed --topic prostate_cancer --store --max-results 50 --max-depth 0` |
-| Stored runs | `docker exec amos-postgres psql -U amos -d patient_journey_matcher -c 'SELECT source, started_at, ok, inserted FROM crawl_runs ORDER BY id DESC LIMIT 10'` |
+| Stored runs | `docker exec amos-postgres psql -U amos -d patient_journey_matcher -c 'SELECT source, topics, started_at, ok, inserted FROM crawl_runs ORDER BY id DESC LIMIT 10'` |
 | Failed runs | `systemctl --failed` |
+
+### Crawl the cited papers
+
+`crawler-pubmed-references` in [`compose.yaml`](../compose.yaml) runs every PubMed search again and fetches the papers that at least two search results of a topic cite (`--min-citations 2`); those with a term of that topic are stored. It takes more than a day and is not scheduled:
+
+```sh
+sudo systemctl start --no-block crawler@pubmed-references
+```
+
+`crawler-arxiv-references` does the same for arXiv (`crawler@arxiv-references`, more than a day), with every cited arXiv paper that has a term of the topic. Its reference lists come from Semantic Scholar, which refuses many requests without `SEMANTIC_SCHOLAR_API_KEY` in `crawler/.env`. arXiv allows one request every three seconds in all, so the nightly arXiv crawl must not run next to it: `sudo systemctl stop crawler-arxiv.timer crawler@arxiv` before, `sudo systemctl start crawler-arxiv.timer` afterwards. An update of the VM starts the timer again.
+
+Both store topic by topic. On `systemctl stop` a crawl finishes the request it is working on and stores what it has of its topic, if that takes under two minutes; a lookup of 100 arXiv papers takes five. After a stop, a crash or a reboot, start the crawl again: it skips the topics that are stored (`--resume`) and goes on with the one it was working on and with those that had a failed request. A crawl that is through skips every topic when it is started again: for a second pass, give it other arguments, such as the day of the first one, `cd /opt/patient-journey-matcher && docker compose run --rm --build crawler-pubmed-references pubmed --all-topics --resume --store --max-results 50 --max-depth 1 --min-citations 2 --since 2026-11-20`. Afterwards the index has to read the new documents.
+
+## Transcription
+
+The service `matcher-transcribe` runs the [transcription job](sources/podcasts.md#indexing) all the time (`make transcribe`); how many files it reads at once is set as described there. On 19.11.2026, 17,194 episodes with 7,707 hours of audio waited.
+
+The unit keeps the job from slowing anything else down: it gets only processor time that no other service or container wants (`CPUWeight=idle`) and at most half of the memory. Its model is the `WHISPER_MODEL` line of the unit in [`deploy/vm-setup.sh`](../deploy/vm-setup.sh) ([models](sources/podcasts.md#whisper-models)). An update of the VM or a restart of the database restarts the job, which then reads the files in work again.
+
+| Task | Command |
+|---|---|
+| State and log | `systemctl status matcher-transcribe`, `journalctl -u matcher-transcribe -f` |
+| Set the number without the debug UI | `cd /opt/patient-journey-matcher && make transcribe WORKERS=2`; the service follows |
+| Stop at once | `sudo systemctl stop matcher-transcribe`; the files in work are read again after the next start |
 
 ## Backups and cleanup
 
@@ -112,14 +137,14 @@ docker exec -i amos-postgres sh -c 'pg_restore -U "$POSTGRES_USER" -d "$POSTGRES
 
 ## Set up a new VM
 
-[`deploy/vm-setup.sh`](../deploy/vm-setup.sh) does the whole setup: it installs Docker, Node.js 24, pnpm 12 and uv, clones this repository, writes a `.env` with a random database password, starts the database, runs the tests, starts the MCP server as a service and installs the timers for the crawls, the index, the backups and the cleanup.
+[`deploy/vm-setup.sh`](../deploy/vm-setup.sh) does the whole setup: it installs Docker, Node.js 24, pnpm 12 and uv, clones this repository, writes a `.env` with a random database password, starts the database, runs the tests, starts the MCP server and the [transcription job](#transcription) as services and installs the timers for the crawls, the index, the backups and the cleanup.
 
 1. In the dashboard, open **Compute → Instances → Launch Instance**.
 2. **Details:** a name. **Source:** image `Debian 13`, create a new volume. **Flavour:** one without a root disk, such as `SCS-4V-8`. **Networks:** `FAU-Intern`. **Key Pair:** your key.
 3. **Configuration:** paste the content of `deploy/vm-setup.sh` into **Customisation Script**.
 4. Launch. The setup takes about 4 minutes. Follow it in the **Log** tab of the instance; it ends with the line `matcher-setup: done`.
 
-On a VM that already exists, run the update command from [Use the server](#use-the-server). It pulls before it runs the script, so the newest version of the script runs. It is safe to run again.
+On a VM that already exists, run the update command from [Use the server](#use-the-server). It pulls before it runs the script, so the newest version of the script runs. It is safe to run again. A crawl that is running goes on with the version it started with; to move it to the new one, restart it (`sudo systemctl restart --no-block crawler@pubmed-references`): it goes on with the topic it was working on.
 
 ## Limitations
 

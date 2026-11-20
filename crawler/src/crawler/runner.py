@@ -75,6 +75,8 @@ class CollectionOptions(BaseModel):
     """Keep a cited paper only if it contains every topic term, not just one."""
     known_ids: frozenset[str] = frozenset()
     """Document IDs stored by earlier runs; cited papers among them are not fetched again."""
+    min_citations: int = Field(default=1, ge=1)
+    """A cited paper is looked up once this many collected papers cite it; 1: every one."""
     max_requests: int | None = Field(default=None, ge=1)
     """Stop after this many queued requests, as a safety cap."""
     max_retries: int = Field(default=3, ge=0)
@@ -258,6 +260,7 @@ async def run_requests(
         max_depth=settings.max_depth,
         topic_filter=TopicFilter(settings.topic_terms, match_all=settings.match_all_terms),
         known_ids=settings.known_ids,
+        min_citations=settings.min_citations,
         lookup_batch_size={
             SourceName.PUBMED: EFETCH_BATCH_SIZE,
             SourceName.ARXIV: ARXIV_LOOKUP_BATCH_SIZE,
@@ -398,4 +401,8 @@ async def run_requests(
         await queue.drop()
 
     frontier.stats.unprocessed_requests = len(queued - settled)
-    return frontier.result(failures, run_error=run_error)
+    # Crawlee leaves requests in the queue at the request cap, after an error and on Ctrl+C:
+    # then it finishes the request at work and returns what it has.
+    at_cap = settings.max_requests is not None and len(settled) >= settings.max_requests
+    interrupted = bool(queued - settled) and run_error is None and not at_cap
+    return frontier.result(failures, run_error=run_error, interrupted=interrupted)

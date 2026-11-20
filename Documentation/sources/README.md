@@ -32,7 +32,7 @@ The crawls of [`scripts/seed.py`](../../scripts/seed.py) (`make seed`) without `
 
 - The 80 new PubMed links are [OpenAlex](openalex.md) PDFs; the 195 from PMC stay.
 - Before #57 no metadata language was detected. Zenodo has no language field on 162 of its 492 records; 28 records have metadata detected as non-English.
-- Podcast links are mostly audio: 148 of 165 episodes (12.11.2026) have no transcript, and the indexer reads their MP3 only with [speech-to-text](podcasts.md#indexing).
+- Podcast links are mostly audio: 148 of 165 episodes (12.11.2026) have no transcript, and their MP3 is read only by the [transcription job](podcasts.md#indexing).
 - A link is not yet a readable text. How many of these texts the indexers can download and read is still to be measured (the keyword indexer's `keyword.full_texts.status`, or the downloader on the same crawl).
 
 ### Measured readable coverage (14.11.2026)

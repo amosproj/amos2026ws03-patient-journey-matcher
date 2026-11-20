@@ -3,14 +3,30 @@ import {
   indexChangedDocuments,
   type Queryable,
 } from "@matcher/db";
-import { type Downloader, NO_SPEECH_TO_TEXT } from "@matcher/download";
+import {
+  audioLocators,
+  type Downloader,
+  type FullText,
+  NO_SPEECH_TO_TEXT,
+} from "@matcher/download";
 // Common non-medical English words, most frequent first.
 import basicWords from "../data/basic-words.json" with { type: "json" };
 import { englishMetadata, NON_ENGLISH_METADATA } from "./language.ts";
 import { createSchema } from "./schema.ts";
 import { ENGLISH_WORDS } from "./terms.ts";
 
-type FullTextStatus = "indexed" | "skipped" | "failed";
+export type FullTextStatus = "indexed" | "skipped" | "failed";
+
+/** What `keyword.full_texts` holds of a read file. */
+export interface FullTextRow {
+  status: FullTextStatus;
+  /** Why skipped or failed. */
+  detail: string | null;
+  url: string | null;
+  mediaType: string | null;
+  words: number;
+  terms: string;
+}
 
 const WORD = /[\p{L}\p{N}]+(?:['’-][\p{L}\p{N}]+)*/gu;
 // Enough for any paper; keeps the lexemes of a long book under Postgres' 1 MB tsvector limit.
@@ -41,15 +57,9 @@ export async function indexFullTexts(
     AND (f.status <> 'skipped' OR f.detail IS DISTINCT FROM 'non-English metadata')
     AND ${NON_ENGLISH_METADATA}`);
   // A failed download (a server error, or PMC's 404 before an article is in its bucket) is tried
-  // again in every run; a skipped one only when the document changes, and audio skipped without
-  // speech-to-text once a run has it.
-  await db.query(
-    `DELETE FROM keyword.full_texts
-     WHERE status = 'failed' OR ($1::boolean AND status = 'skipped' AND
-       (detail = $2 OR (detail LIKE 'no readable format:%'
-         AND detail ~ 'audio/(mpeg|mp3|flac|wav|x-wav)(,|$)')))`,
-    [downloader.transcribes === true, NO_SPEECH_TO_TEXT],
-  );
+  // again in every run; a skipped one only when the document changes. Audio without a transcript
+  // is skipped too: the transcription job reads it (transcription.ts).
+  await db.query("DELETE FROM keyword.full_texts WHERE status = 'failed'");
   const toRead = () =>
     createDocumentStore(db).countToIndex("keyword.full_texts");
   let total = await toRead();
@@ -74,14 +84,25 @@ export async function indexFullTexts(
               text: "",
               detail: "non-English metadata",
             };
-        const found = result.status === "ok" ? keywords(result.text) : [];
-        const words = found ?? [];
-        const status: FullTextStatus =
-          result.status === "failed"
-            ? "failed"
-            : words.length > 0
-              ? "indexed"
-              : "skipped";
+        if (result.detail === NO_SPEECH_TO_TEXT) {
+          // What the transcription job read of this audio holds, whatever else changed.
+          const { rows } = await db.query<{ status: FullTextStatus }>(
+            `UPDATE keyword.full_texts SET document_changed_at = $2
+             WHERE document_id = $1 AND status <> 'failed' AND url = ANY($3::text[])
+             RETURNING status`,
+            [
+              document.id,
+              document.changed_at,
+              audioLocators(document.full_text).map((locator) => locator.url),
+            ],
+          );
+          const [kept] = rows;
+          if (kept !== undefined) {
+            counts[kept.status]++;
+            return;
+          }
+        }
+        const row = fullTextRow(result);
         await db.query(
           `INSERT INTO keyword.full_texts (document_id, document_changed_at, status, detail, url,
                                            media_type, words, terms, fetched_at)
@@ -93,20 +114,15 @@ export async function indexFullTexts(
           [
             document.id,
             document.changed_at,
-            status,
-            result.detail ??
-              (found === undefined
-                ? "not English"
-                : status === "skipped"
-                  ? "no keywords"
-                  : null),
-            result.url ?? null,
-            result.mediaType ?? null,
-            words.length,
-            words.join(" "),
+            row.status,
+            row.detail,
+            row.url,
+            row.mediaType,
+            row.words,
+            row.terms,
           ],
         );
-        counts[status]++;
+        counts[row.status]++;
       }),
     );
   }).finally(() => clearInterval(progress));
@@ -115,6 +131,32 @@ export async function indexFullTexts(
       `${counts.failed} failed (tried again next run)`,
   );
   return counts;
+}
+
+/** The row for what a download gave: the keywords of an English text, else why it has none. */
+export function fullTextRow(result: FullText): FullTextRow {
+  const found = result.status === "ok" ? keywords(result.text) : [];
+  const words = found ?? [];
+  const status =
+    result.status === "failed"
+      ? "failed"
+      : words.length > 0
+        ? "indexed"
+        : "skipped";
+  return {
+    status,
+    detail:
+      result.detail ??
+      (found === undefined
+        ? "not English"
+        : status === "skipped"
+          ? "no keywords"
+          : null),
+    url: result.url ?? null,
+    mediaType: result.mediaType ?? null,
+    words: words.length,
+    terms: words.join(" "),
+  };
 }
 
 /** The keywords of an English text, sorted, each as often as it occurs; undefined for other languages. */

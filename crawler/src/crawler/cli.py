@@ -4,11 +4,13 @@ import io
 import json
 import logging
 import sys
+import time
 from collections.abc import Callable, Sequence
 from contextlib import suppress
 from datetime import UTC, date, datetime
+from functools import cache
 from pathlib import Path
-from typing import NoReturn
+from typing import NamedTuple, NoReturn
 
 from asyncpg import PostgresError
 from pydantic import ValidationError
@@ -25,8 +27,15 @@ from crawler.models import (
 )
 from crawler.queries import query_words
 from crawler.refresh import refresh_documents
-from crawler.runner import CollectionOptions, CollectionSetupError, run_requests
+from crawler.runner import (
+    CollectionOptions,
+    CollectionSetupError,
+    link_extractor_from_env,
+    run_requests,
+    source_from_env,
+)
 from crawler.seeds import (
+    Topic,
     TopicFileError,
     bundled_topics,
     find_podcast,
@@ -47,6 +56,7 @@ from crawler.store import (
     prepare_store,
     resume_date,
     save_result,
+    stored_topics,
     videos_to_refresh,
 )
 
@@ -73,12 +83,29 @@ QUERY_MODE_HELP = (
     "and: every word, or: any word (quotes, backslashes and lone symbols are ignored); "
     "raw: the source's own query syntax"
 )
-STORE_HELP = "also upsert the documents into PostgreSQL (DATABASE_URL) and log the run"
+STORE_HELP = (
+    "also upsert the documents into PostgreSQL (DATABASE_URL) and log the run; several topics "
+    "are crawled and stored one after another, each as a run of its own"
+)
 STORE_REFERENCES_HELP = f"{STORE_HELP}; cited papers stored before are not fetched again"
 STORE_VIDEOS_HELP = (
     f"{STORE_HELP}; stored videos of the channels that expire within {REFRESH_WITHIN.days} days "
     "are fetched again"
 )
+MIN_CITATIONS_HELP = (
+    "look up a cited paper only once this many of the collected papers cite it; with --store, "
+    "papers of the same topic (default 1: every cited paper)"
+)
+RESUME_HELP = (
+    "skip the topics that a successful run with exactly these arguments has stored, whenever "
+    "that was, so a crawl that was stopped continues (needs --store and --topic or "
+    "--all-topics; --since auto continues on its own)"
+)
+STORE_RETRY_DELAYS: tuple[float, ...] = (5, 15, 30, 60)
+"""Seconds before storing is tried again. The database restarts when an update changes it, and
+a crawl that takes days must not lose a topic to that."""
+INTERRUPTED = 130
+"""Exit code after Ctrl+C."""
 
 
 def whole_number(minimum: int, maximum: int | None = None) -> Callable[[str], int]:
@@ -129,7 +156,8 @@ def parser() -> argparse.ArgumentParser:
         description=(
             "Collect source metadata as JSON Lines on stdout. A summary of the run goes to "
             "stderr. Exit code 1 means at least one request failed or was not processed "
-            "(--max-requests) or, with --store, storing or refreshing stored videos failed."
+            "(--max-requests) or, with --store, storing or refreshing stored videos failed; "
+            "130 that the run was stopped with Ctrl+C."
         ),
     )
     subcommands = command.add_subparsers(dest="source", required=True)
@@ -153,6 +181,9 @@ def parser() -> argparse.ArgumentParser:
                 type=whole_number(0),
                 default=1,
                 help="levels of references to follow; 0 collects the search results only",
+            )
+            paper.add_argument(
+                "--min-citations", type=whole_number(1), default=1, help=MIN_CITATIONS_HELP
             )
             paper.add_argument(
                 "--known-ids", type=known_ids_file, metavar="FILE", help=KNOWN_IDS_HELP
@@ -236,6 +267,7 @@ def _add_max_requests_argument(command: argparse.ArgumentParser) -> None:
 
 def _add_store_argument(command: argparse.ArgumentParser, help_text: str) -> None:
     command.add_argument("--store", action="store_true", help=help_text)
+    command.add_argument("--resume", action="store_true", help=RESUME_HELP)
 
 
 def known_ids_file(value: str) -> frozenset[str]:
@@ -283,9 +315,17 @@ def _document_id(line: str) -> str | None:
     return value
 
 
+def topics_from_args(arguments: argparse.Namespace) -> list[Topic]:
+    """The topic files of `--topic` or `--all-topics`; none for one query, channel or feed."""
+    if arguments.all_topics:
+        return bundled_topics()
+    return [load_topic(reference) for reference in arguments.topic or []]
+
+
 def requests_from_args(
-    arguments: argparse.Namespace,
+    arguments: argparse.Namespace, topics: Sequence[Topic] | None = None
 ) -> tuple[list[ScrapeRequest], CollectionOptions]:
+    """The seed requests and options of a command; `topics`: its topic files, if loaded."""
     source = SourceName(arguments.source)
     query_mode: str = getattr(arguments, "query_mode", "and")
     # `auto` is resolved by `main` from the stored runs, once the topics of the seeds are known.
@@ -293,10 +333,8 @@ def requests_from_args(
     since = since_argument if isinstance(since_argument, date) else None
     match_all = False
     if arguments.topic or arguments.all_topics:
-        if arguments.all_topics:
-            topics = bundled_topics()
-        else:
-            topics = [load_topic(reference) for reference in arguments.topic]
+        if topics is None:
+            topics = topics_from_args(arguments)
         seeds = seed_requests(
             topics,
             source,
@@ -342,6 +380,7 @@ def requests_from_args(
         topic_terms=tuple(terms),
         match_all_terms=match_all,
         known_ids=getattr(arguments, "known_ids", None) or frozenset(),
+        min_citations=getattr(arguments, "min_citations", 1),
         max_requests=arguments.max_requests,
     )
     return seeds, options
@@ -350,6 +389,27 @@ def requests_from_args(
 def _topics(seeds: Sequence[ScrapeRequest]) -> list[str]:
     """The topics of the seeds, in seed order and without duplicates."""
     return list(dict.fromkeys(topic for seed in seeds for topic in seed.topics))
+
+
+class _Part(NamedTuple):
+    """What one run crawls: the seeds of a command or, with `--store`, those of one topic."""
+
+    seeds: list[ScrapeRequest]
+    terms: tuple[str, ...]
+    """The topic filter for the cited papers of the run."""
+
+
+def _by_topic(seeds: Sequence[ScrapeRequest], topics: Sequence[Topic]) -> list[_Part]:
+    """One part per topic with seeds, in topic order. A seed that topics share is in each of
+    them, and each part keeps the cited papers with a term of its own topic."""
+    terms = {topic.id: tuple(topic_terms([topic])) for topic in topics}
+    return [
+        _Part(
+            [seed.model_copy(update={"topics": [topic]}) for seed in seeds if topic in seed.topics],
+            terms[topic],
+        )
+        for topic in _topics(seeds)
+    ]
 
 
 def _since_auto_line(seeds: Sequence[ScrapeRequest]) -> str:
@@ -431,7 +491,8 @@ def summary(result: CollectionResult) -> str:
         f"references: {stats.references_found} found, {stats.lookups_queued} queued for lookup, "
         f"{stats.lookups_missing} not returned by the source",
         f"skipped: {stats.skipped_duplicate} duplicate, {stats.skipped_known} known, "
-        f"{stats.skipped_invalid} invalid, {stats.skipped_off_topic} off-topic",
+        f"{stats.skipped_invalid} invalid, {stats.skipped_rarely_cited} cited too rarely, "
+        f"{stats.skipped_off_topic} off-topic",
         f"requests: {stats.finished_requests} finished, {stats.failed_requests} failed, "
         f"{stats.unprocessed_requests} not processed",
     ]
@@ -447,6 +508,8 @@ def summary(result: CollectionResult) -> str:
         )
     if result.run_error:
         lines.append(f"run aborted: {result.run_error}")
+    elif result.interrupted:
+        lines.append(f"interrupted: {stats.unprocessed_requests} request(s) not processed")
     elif stats.unprocessed_requests:
         lines.append(
             f"stopped at --max-requests: {stats.unprocessed_requests} request(s) not processed"
@@ -493,59 +556,171 @@ def main(argv: Sequence[str] | None = None) -> int:
         )
         return int(bool(refresh_report.conflicts or refresh_report.lookup_failures))
     source = SourceName(arguments.source)
-    resume = arguments.since == AUTO
-    if resume and not arguments.store:
+    since_auto = arguments.since == AUTO
+    topic_run = bool(arguments.topic or arguments.all_topics)
+    if since_auto and not arguments.store:
         _usage_error(command, arguments, "--since auto needs --store, whose runs it continues")
-    if resume and not (arguments.topic or arguments.all_topics):
+    if since_auto and not topic_run:
         _usage_error(command, arguments, "--since auto needs --topic or --all-topics")
+    if arguments.resume and not arguments.store:
+        _usage_error(command, arguments, "--resume needs --store, whose runs it continues")
+    if arguments.resume and not topic_run:
+        _usage_error(command, arguments, "--resume needs --topic or --all-topics")
+    if arguments.resume and since_auto:
+        _usage_error(command, arguments, "--since auto continues on its own, without --resume")
+    run_arguments = list(sys.argv[1:] if argv is None else argv)
     url: str | None = None
     try:
-        seeds, options = requests_from_args(arguments)
+        topics = topics_from_args(arguments) if topic_run else []
+        seeds, options = requests_from_args(arguments, topics)
+        parts = [_Part(seeds, options.topic_terms)]
         if arguments.store:
             # Checked before the crawl, so a missing database costs no requests.
             url = database_url()
             stored = asyncio.run(prepare_store(url, source, load_ids=options.max_depth > 0))
             options = options.model_copy(update={"known_ids": options.known_ids | stored})
-            if resume:
+            if topics:
+                parts = _by_topic(seeds, topics)
+            if arguments.resume:
+                done = asyncio.run(stored_topics(url, source, run_arguments))
+                left = [part for part in parts if part.seeds[0].topics[0] not in done]
+                print(
+                    f"resume: {len(parts) - len(left)} of {len(parts)} topic(s) already stored",
+                    file=sys.stderr,
+                )
+                parts = left
+            if since_auto:
                 last_runs = asyncio.run(last_successful_runs(url, source, _topics(seeds)))
-                # Each seed continues from its own topics, so a new topic gets its first run.
-                seeds = [
-                    seed.model_copy(update={"since": resume_date(last_runs, seed.topics)})
-                    for seed in seeds
+                # Each topic continues from its own last run, so a new topic gets its first run.
+                parts = [
+                    part._replace(
+                        seeds=[
+                            seed.model_copy(update={"since": resume_date(last_runs, seed.topics)})
+                            for seed in part.seeds
+                        ]
+                    )
+                    for part in parts
                 ]
-                print(_since_auto_line(seeds), file=sys.stderr)
-        started_at = datetime.now(UTC)
-        result = asyncio.run(run_requests(seeds, options=options))
-        finished_at = datetime.now(UTC)
+                dated = [seed for part in parts for seed in part.seeds]
+                print(_since_auto_line(dated), file=sys.stderr)
+        named = url is not None and len(topics) > 1
+        return _crawl(parts, options, source, url, run_arguments, named=named)
     except (TopicFileError, CollectionSetupError, StoreError) as error:
         _usage_error(command, arguments, str(error))
     except ValidationError as error:
         _usage_error(command, arguments, validation_message(error))
+    except KeyboardInterrupt:
+        # Ctrl+C outside a crawl; during one, the crawl stops and its part is still stored.
+        print("interrupted", file=sys.stderr)
+        return INTERRUPTED
+
+
+def _crawl(
+    parts: Sequence[_Part],
+    options: CollectionOptions,
+    source: SourceName,
+    url: str | None,
+    arguments: list[str],
+    *,
+    named: bool = False,
+) -> int:
+    """Crawl the parts one after another, each printed and (with `url`) stored when it is done.
+
+    With `--store` a part is one topic, so a crawl that is stopped or crashes loses the topic it
+    was working on and nothing else, and later topics do not fetch what earlier ones stored.
+    Returns the exit code.
+    """
     if isinstance(sys.stdout, io.TextIOWrapper):
         # JSON Lines are UTF-8; redirected on Windows, stdout would use the ANSI code page.
         sys.stdout.reconfigure(encoding="utf-8")
-    for document in result.documents:
-        print(json.dumps(document.model_dump(mode="json"), ensure_ascii=False))
-    print(summary(result), file=sys.stderr)
-    if url is not None:
-        # Stored only after the output is printed, so a failed store loses none of the run.
-        run = RunInfo(
-            source=source,
-            topics=_topics(seeds),
-            arguments=list(sys.argv[1:] if argv is None else argv),
-            started_at=started_at,
-            finished_at=finished_at,
+    known = options.known_ids
+    budget = options.max_requests
+    # One scraper and one link extractor per source for all parts: each keeps the pause its
+    # source asks for between two requests, and a new one would not know the last request.
+    sources = cache(source_from_env)
+    link_extractors = cache(link_extractor_from_env)
+    crawled = failed = 0
+    stopped: str | None = None
+    for number, part in enumerate(parts, 1):
+        if named:
+            print(f"topic {number} of {len(parts)}: {part.seeds[0].topics[0]}", file=sys.stderr)
+        part_options = options.model_copy(
+            update={"known_ids": known, "topic_terms": part.terms, "max_requests": budget}
         )
-        refreshed = _refresh(url, seeds, result) if source is SourceName.YOUTUBE else []
+        started_at = datetime.now(UTC)
+        result = asyncio.run(
+            run_requests(
+                part.seeds,
+                options=part_options,
+                source_factory=sources,
+                link_extractor_factory=link_extractors,
+            )
+        )
+        finished_at = datetime.now(UTC)
+        for document in result.documents:
+            print(json.dumps(document.model_dump(mode="json"), ensure_ascii=False))
+        sys.stdout.flush()
+        print(summary(result), file=sys.stderr)
+        ok = result.ok
+        if url is not None:
+            # Stored only after the output is written, so a failed store loses none of the run.
+            run = RunInfo(
+                source=source,
+                topics=_topics(part.seeds),
+                arguments=arguments,
+                started_at=started_at,
+                finished_at=finished_at,
+            )
+            refreshed = _refresh(url, part.seeds, result) if source is SourceName.YOUTUBE else []
+            # Expired rows go with the last part: an earlier one would delete the expired
+            # videos of the topics after it, before those fetched them again.
+            report = _save(url, result, run, refreshed or [], expire=number == len(parts))
+            if report is None:
+                # The topics that are left could not be stored either.
+                ok, stopped = False, "storing failed"
+            else:
+                print(store_summary(report), file=sys.stderr)
+                ok = ok and refreshed is not None
+                if options.max_depth > 0:
+                    known = known | {document.id for document in result.documents}
+        crawled += 1
+        failed += not ok
+        if result.interrupted:
+            stopped = "interrupted"
+        elif budget is not None and not stopped:
+            budget -= result.stats.finished_requests + result.stats.failed_requests
+            if budget <= 0 and number < len(parts):
+                stopped = "--max-requests"
+        if stopped:
+            break
+    if named and parts:
+        line = f"{crawled} of {len(parts)} topic(s) crawled, {crawled - failed} without failures"
+        print(f"{line}; stopped: {stopped}" if stopped else line, file=sys.stderr)
+    if stopped == "interrupted":
+        return INTERRUPTED
+    return 1 if failed or stopped else 0
+
+
+def _save(
+    url: str,
+    result: CollectionResult,
+    run: RunInfo,
+    refreshed: Sequence[SourceDocument],
+    *,
+    expire: bool,
+) -> StoreReport | None:
+    """`save_result`, tried again while the database is away; None if it stays away."""
+    delays = list(STORE_RETRY_DELAYS)
+    while True:
         try:
-            report = asyncio.run(save_result(url, result, run, refreshed=refreshed or []))
+            return asyncio.run(save_result(url, result, run, refreshed=refreshed, expire=expire))
         except StoreError as error:
-            print(f"storing failed: {error}", file=sys.stderr)
-            return 1
-        print(store_summary(report), file=sys.stderr)
-        if refreshed is None:
-            return 1
-    return 0 if result.ok else 1
+            if not delays:
+                print(f"storing failed: {error}", file=sys.stderr)
+                return None
+            delay = delays.pop(0)
+            print(f"storing failed: {error}; trying again in {delay:g} s", file=sys.stderr)
+            time.sleep(delay)
 
 
 if __name__ == "__main__":

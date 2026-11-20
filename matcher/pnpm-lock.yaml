@@ -280,6 +280,18 @@ importers:
         specifier: ^2.4.0
         version: 2.4.0
 
+  transcriber:
+    dependencies:
+      '@matcher/db':
+        specifier: workspace:*
+        version: link:../db
+      '@matcher/download':
+        specifier: workspace:*
+        version: link:../download
+      '@matcher/keyword':
+        specifier: workspace:*
+        version: link:../algorithms/keyword
+
 packages:
 
   '@biomejs/biome@2.6.3':

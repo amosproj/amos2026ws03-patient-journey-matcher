@@ -13,6 +13,7 @@ from crawler.sources.pubmed import (
     configure_entrez,
     is_pmid,
     ncbi_credentials_from_env,
+    ncbi_request,
     ncbi_requests_per_second,
 )
 
@@ -57,13 +58,14 @@ class PubMedLinkExtractor(LinkExtractor):
         configure_entrez(self._entrez, self._email, self._api_key)
         self._throttle.wait(self._rate)
         # A list (not a comma-separated string) makes ELink return one link set per PMID.
-        handle = self._entrez.elink(
-            dbfrom="pubmed", db="pubmed", linkname=REFERENCES_LINK, id=list(cited)
-        )
-        try:
-            link_sets = self._entrez.read(handle)
-        finally:
-            handle.close()
+        with ncbi_request():
+            handle = self._entrez.elink(
+                dbfrom="pubmed", db="pubmed", linkname=REFERENCES_LINK, id=list(cited)
+            )
+            try:
+                link_sets = self._entrez.read(handle)
+            finally:
+                handle.close()
 
         for link_set in link_sets:
             source_ids = link_set.get("IdList", [])

@@ -53,6 +53,8 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
       summary?: string;
       expires_at?: Date;
       full_text?: string[];
+      /** The media type of the `full_text` files. */
+      media_type?: string;
     } = {},
   ) {
     const [source, nativeId] = id.split(":");
@@ -76,7 +78,7 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
           (fields.full_text ?? []).map((url) => ({
             kind: "file",
             url,
-            media_type: "application/xml",
+            media_type: fields.media_type ?? "application/xml",
             size: null,
           })),
         ),
@@ -187,29 +189,77 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     ]);
   });
 
-  test("reads audio that was skipped without speech-to-text once a run has it", async () => {
-    await insert("podcast:1", "Olaparib, the episode", {
-      full_text: ["https://example.org/1.mp3"],
-    });
-    const off = {
-      fullText: async (): Promise<FullText> => ({
+  /** A downloader without speech-to-text, for documents that have audio only. */
+  const audioOnly = {
+    fullText: vi.fn(
+      async (): Promise<FullText> => ({
         status: "skipped",
         text: "",
         detail: NO_SPEECH_TO_TEXT,
       }),
-    };
-    const on = {
-      ...fakeDownloader({
-        "https://example.org/1.mp3": "Olaparib and the PSA.",
-      }),
-      transcribes: true,
-    };
-    const none = { indexed: 0, skipped: 0, failed: 0 };
+    ),
+  };
 
-    expect(await indexFullTexts(pool, off)).toEqual({ ...none, skipped: 1 });
-    expect(await indexFullTexts(pool, off)).toEqual(none);
-    expect(await indexFullTexts(pool, on)).toEqual({ ...none, indexed: 1 });
-    expect(await indexFullTexts(pool, on)).toEqual(none);
+  test("leaves audio without a transcript to the transcription job", async () => {
+    await insert("podcast:1", "Olaparib, the episode", {
+      full_text: ["https://example.org/1.mp3"],
+      media_type: "audio/mpeg",
+    });
+    const none = { indexed: 0, skipped: 0, failed: 0 };
+    audioOnly.fullText.mockClear();
+
+    expect(await indexFullTexts(pool, audioOnly)).toEqual({
+      ...none,
+      skipped: 1,
+    });
+    expect(await indexFullTexts(pool, audioOnly)).toEqual(none);
+    expect(audioOnly.fullText).toHaveBeenCalledOnce();
+    const { rows } = await pool.query(
+      "SELECT status, detail, url FROM keyword.full_texts",
+    );
+    expect(rows).toEqual([
+      { status: "skipped", detail: NO_SPEECH_TO_TEXT, url: null },
+    ]);
+  });
+
+  test("keeps what the transcription job read when a document changes, but not its audio", async () => {
+    await insert("podcast:1", "Olaparib, the episode", {
+      full_text: ["https://example.org/1.mp3"],
+      media_type: "audio/mpeg",
+    });
+    await indexFullTexts(pool, audioOnly);
+    // What the transcription job writes.
+    await pool.query(
+      `UPDATE keyword.full_texts SET status = 'indexed', detail = NULL, words = 2,
+         url = 'https://example.org/1.mp3', media_type = 'audio/mpeg', terms = 'olaparib psa'`,
+    );
+    const none = { indexed: 0, skipped: 0, failed: 0 };
+    const stored = async () =>
+      (await pool.query("SELECT status, terms FROM keyword.full_texts")).rows;
+
+    await pool.query(
+      `UPDATE documents SET summary = 'New show notes',
+         changed_at = changed_at + interval '1 second'`,
+    );
+    expect(await indexFullTexts(pool, audioOnly)).toEqual({
+      ...none,
+      indexed: 1,
+    });
+    expect(await stored()).toEqual([
+      { status: "indexed", terms: "olaparib psa" },
+    ]);
+    expect(await indexFullTexts(pool, audioOnly)).toEqual(none);
+
+    // Another file: the audio is to be read again.
+    await pool.query(
+      `UPDATE documents SET changed_at = changed_at + interval '1 second',
+         full_text = jsonb_set(full_text, '{0,url}', '"https://example.org/2.mp3"')`,
+    );
+    expect(await indexFullTexts(pool, audioOnly)).toEqual({
+      ...none,
+      skipped: 1,
+    });
+    expect(await stored()).toEqual([{ status: "skipped", terms: "" }]);
   });
 
   test("ranks with the full texts too and names the terms found there", async () => {
@@ -239,36 +289,6 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
       ["olaparib", "prostate cancer"],
       ["olaparib"],
     ]);
-  });
-
-  test("recovers legacy audio skips when speech-to-text is enabled", async () => {
-    await insert("podcast:legacy", "Diabetes", {
-      full_text: ["https://example.org/a.mp3"],
-    });
-    await indexFullTexts(pool, {
-      fullText: async () => ({
-        status: "skipped",
-        text: "",
-        detail: "no readable format: audio/mpeg",
-      }),
-    });
-    const downloader = {
-      ...fakeDownloader({
-        "https://example.org/a.mp3": "Olaparib and the PSA.",
-      }),
-      transcribes: true,
-    };
-    expect(await indexFullTexts(pool, downloader)).toEqual({
-      indexed: 1,
-      skipped: 0,
-      failed: 0,
-    });
-    expect(await indexFullTexts(pool, downloader)).toEqual({
-      indexed: 0,
-      skipped: 0,
-      failed: 0,
-    });
-    expect(downloader.fullText).toHaveBeenCalledOnce();
   });
 
   test("skips marked non-English metadata before downloading but keeps unknown and English abstracts", async () => {
