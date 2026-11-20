@@ -6,7 +6,8 @@ Contents: [1 Runtime components](#1-runtime-components) · [2 Code components](#
 
 ## 1 Runtime components
 
-What runs and who uses whom, read from left to right. The crawler copies metadata from the data sources into PostgreSQL, and the transcription job turns podcast audio without a transcript into text for the indexes. Each matching approach has two parts: an indexer, which the indexer job runs after the crawls to build the approach's index, and a matcher, which the MCP server runs when a client calls `match_journey`. The keyword approach is built. The graph and `ai_summary` approaches are decided and drawn as the research plans them: the graph indexer takes entity and relation annotations of PubMed papers from PubTator3, and both `ai_summary` parts call an AI model service. Notation: UML component diagram; `{…}` says how and when a component runs, a labelled compartment what it offers or holds (MCP tools, schemas, models). The steps are explained in [section 4](#runtime-view).
+What runs and who uses whom, read from left to right. The crawler copies metadata from the data sources into PostgreSQL, and the transcription job turns podcast audio without a transcript into text for the indexes. Each matching approach has two parts: an indexer, which the indexer job runs after the crawls to build the approach's index, and a matcher, which the MCP server runs when a client calls `match_journey`. The keyword approach is built. The graph and `ai_summary` approaches are decided and drawn as the research plans them: the graph indexer takes entity and relation annotations of PubMed papers from PubTator3, and both `ai_summary` parts call an AI model service. 
+Notation: UML component diagram; `{…}` says how and when a component runs, a labelled compartment what it offers or holds (MCP tools, schemas, models). The steps are explained in [section 4](#runtime-view).
 
 ![Runtime components](architecture/runtime-view.svg)
 

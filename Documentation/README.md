@@ -1,6 +1,10 @@
 # Documentation
 
-Build, user and technical documentation of the Patient Journey Matcher. New here: read the [software architecture](design/architecture.md) first, then explore the pipeline in the [debug UI](../debug/crawler/README.md) (`make debug`). Terms: [glossary](glossary.md). The team's investigations, with methods and measurements: [research](../research/README.md).
+Build, user and technical documentation of the Patient Journey Matcher. 
+
+New here: read the [software architecture](design/architecture.md) first, then explore the pipeline in the [debug UI](../debug/crawler/README.md) (`make debug`). 
+- Terms: [glossary](glossary.md). 
+- The team's investigations, with methods and measurements: [research](../research/README.md).
 
 ## User documentation
 
