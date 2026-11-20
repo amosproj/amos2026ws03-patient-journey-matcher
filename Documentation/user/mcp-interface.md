@@ -220,4 +220,4 @@ The patient graph is what the SS26 pipeline builds from a patient's documents wi
 - **`patient_id`** is the name of the `Patient` node.
 - **The journey has to pass the contract** like any other: a graph without a dated fact or with facts on more than 500 days is rejected, and so is an `as_of` before the first event.
 
-[`patientdata/Patient-5/graph.json`](../../patientdata/Patient-5/graph.json) is one of the generated graphs to try this with, one per synthetic patient: its 23 event days are the 23 dates of the events in its `timeline.json`.
+Every synthetic patient has a generated graph to try this with, e.g. [`patientdata/Patient-5/graph.json`](../../patientdata/Patient-5/graph.json).
