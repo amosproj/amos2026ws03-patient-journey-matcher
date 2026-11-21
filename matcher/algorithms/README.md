@@ -17,6 +17,8 @@ The keyword approach as the example:
 
 Other files hold what only this approach needs, e.g. keyword's word lists in `data/` and the script that builds one in `scripts/`. Its speech-to-text job in `src/transcription.ts` is a second export, for [`matcher/transcriber`](../transcriber/src/main.ts) only.
 
+The graph approach ([`graph/`](graph/README.md)) holds only its normalization so far: no `approach.ts` and no registry entry until its indexer and matcher exist.
+
 ## Contracts
 
 From [`@matcher/core`](../core/src/contracts.ts):
