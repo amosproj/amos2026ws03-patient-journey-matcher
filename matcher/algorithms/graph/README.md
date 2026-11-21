@@ -19,7 +19,7 @@ Both return a `NormalizedGraph` ([`types.ts`](src/types.ts)):
 | `entities`  | `id` (`mesh:D011471`, `ncbigene:675`, or `null`), `type`, `name`, `names`, `resolvedBy`, the source labels and IDs. `key` is unique in the graph and is what relations and facts point to |
 | `relations` | `subject`, `predicate`, `object` as entity keys, `status`, the fact sentence or the score, `validAt` and `invalidAt`, and the origin                                                      |
 | `facts`     | patient side only: `has_condition`, `receives`, `has_finding` of an entity, with the same fields                                                                                          |
-| `skipped`   | what was left out, with the reason                                                                                                                                                        |
+| `skipped`   | what was left out or could not be read, with the reason; one bad node or edge does not reject the graph                                                                                   |
 
 Only entities with an `id` can match across graphs.
 
