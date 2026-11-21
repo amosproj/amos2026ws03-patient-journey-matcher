@@ -1,4 +1,4 @@
-.PHONY: build test start debug db seed index transcribe graph
+.PHONY: build test start debug sbom db seed index transcribe graph
 
 PORT ?= 8765
 
@@ -32,6 +32,12 @@ start: build
 
 debug:
 	cd crawler && uv run --locked python ../debug/crawler/server.py --port $(PORT)
+
+# Writes the runtime dependencies of all projects and of the database image with their licences
+# to sbom.spdx.json (SPDX 3, for SCA Tool); needs Docker. Run it after every dependency change: CI
+# fails until you do.
+sbom:
+	uv run scripts/sbom.py
 
 # Starts the database and applies db/init/ again; the files are idempotent, so this also
 # brings an existing volume up to date.

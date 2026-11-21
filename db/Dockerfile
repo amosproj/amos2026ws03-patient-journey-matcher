@@ -1,6 +1,8 @@
 # The pgvector image plus pg_textsearch (BM25 ranking, PostgreSQL License) for the keyword index.
-# Debian 13 by name: the package version below exists only for it (pgdg13).
-FROM pgvector/pgvector:pg18-trixie
+# Debian 13 by name: the package version below exists only for it (pgdg13). pgvector by version,
+# like pg_textsearch: raise it with each pgvector release, as older tags are no longer rebuilt with
+# PostgreSQL's minor updates. .github/workflows/ci.yml uses the same tag.
+FROM pgvector/pgvector:0.8.7-pg18-trixie
 # pgdg archive: keeps every version, pgdg drops old ones; HTTPS only, hence ca-certificates
 RUN apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates \
