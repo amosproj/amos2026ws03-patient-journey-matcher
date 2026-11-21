@@ -13,10 +13,20 @@ export type Row = {
   flip?: boolean;
   status?: Status;
   drop?: string;
+  /** Patient side: the status is read about the source node instead of the target. */
+  about?: "source";
+  /** Patient side: an edge whose ends are one entity confirms that entity's conditions. */
+  confirms?: boolean;
 };
 
 export type Mapping =
-  | { kind: "relation"; predicate: Predicate; flip: boolean }
+  | {
+      kind: "relation";
+      predicate: Predicate;
+      flip: boolean;
+      about?: "source";
+      confirms?: boolean;
+    }
   | { kind: "fact"; fact: FactKind; status?: Status }
   | { kind: "drop"; reason: string };
 
@@ -44,6 +54,8 @@ function mapping(row: Row): Mapping {
       kind: "relation",
       predicate: row.predicate,
       flip: row.flip === true,
+      about: row.about,
+      confirms: row.confirms,
     };
   }
   throw new Error(
@@ -62,8 +74,10 @@ export const DROPPED_PUBTATOR_TYPES: ReadonlySet<string> = new Set(
 );
 
 /**
- * A patient edge by its type and the labels of its two nodes. An unknown edge from the patient
- * is dropped: a patient fact needs a row. An unknown edge between two findings is `related`.
+ * A patient edge by its type and the labels of its two nodes. An edge from the patient without
+ * a fact row is dropped: a patient fact needs a row, and a relation never has the patient at an
+ * end (so the catch-all `RELATES_TO` row does not take it). An unknown edge between two
+ * findings is `related`.
  */
 export function mapPatientEdge(
   type: string,
@@ -71,11 +85,17 @@ export function mapPatientEdge(
   object: string,
 ): Mapping {
   const row = findRow(PATIENT_ROWS, type, subject, object);
-  if (row !== undefined) return mapping(row);
-  if (subject === "Patient" || object === "Patient") {
+  const found: Mapping =
+    row === undefined
+      ? { kind: "relation", predicate: "related", flip: false }
+      : mapping(row);
+  if (
+    found.kind === "relation" &&
+    (subject === "Patient" || object === "Patient")
+  ) {
     return { kind: "drop", reason: "no row for this patient edge" };
   }
-  return { kind: "relation", predicate: "related", flip: false };
+  return found;
 }
 
 /** A PubTator3 relation by its type and the types of its two roles; unknown ones are `related`. */

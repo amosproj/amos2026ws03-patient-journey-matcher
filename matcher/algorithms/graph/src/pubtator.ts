@@ -48,16 +48,16 @@ const documentSchema = z.object({
 
 export type PubTatorDocument = z.input<typeof documentSchema>;
 
-const TYPES: Record<string, EntityType | undefined> = {
-  Disease: "disease",
-  Chemical: "chemical",
-  Gene: "gene",
-  Variant: "variant",
-  Mutation: "variant",
-  DNAMutation: "variant",
-  ProteinMutation: "variant",
-  SNP: "variant",
-};
+const TYPES: ReadonlyMap<string, EntityType> = new Map([
+  ["Disease", "disease"],
+  ["Chemical", "chemical"],
+  ["Gene", "gene"],
+  ["Variant", "variant"],
+  ["Mutation", "variant"],
+  ["DNAMutation", "variant"],
+  ["ProteinMutation", "variant"],
+  ["SNP", "variant"],
+]);
 
 const OUTCOMES: ReadonlySet<string> = new Set(outcomes.ids);
 const OUTCOME_PREDICATES: Partial<Record<Predicate, Predicate>> = {
@@ -88,7 +88,9 @@ function conceptIds(
     .map((part) => {
       if (type === "gene") return `ncbigene:${part}`;
       if (type === "variant")
-        return /^rs\d+$/i.test(part) ? `dbsnp:${part}` : `hgvs:${part}`;
+        return /^rs\d+$/i.test(part)
+          ? `dbsnp:${part.toLowerCase()}`
+          : `hgvs:${part}`;
       const mesh = /^mesh:(.+)$/i.exec(part);
       return mesh === null ? part.toLowerCase() : `mesh:${mesh[1]}`;
     });
@@ -112,10 +114,13 @@ export function normalizePubTatorDocument(
     concept: z.output<typeof conceptSchema>,
     mention: string | null | undefined,
   ): string[] {
-    const type = TYPES[concept.type];
+    const type = TYPES.get(concept.type);
     if (type === undefined) return [];
+    // A name with nothing left after normalizing (`(C61)`, `-`) is no name: it would merge
+    // every such entity under one key.
     const names = [mention, concept.name].filter(
-      (name): name is string => typeof name === "string" && name.trim() !== "",
+      (name): name is string =>
+        typeof name === "string" && normalizeName(name) !== "",
     );
     const ids = conceptIds(type, concept.identifier);
     const keys: { key: string; id: string | null }[] =
@@ -144,11 +149,26 @@ export function normalizePubTatorDocument(
     return keys.map(({ key }) => key);
   }
 
+  // Annotations of a type that is not read, counted per type: one `skipped` row each.
+  const leftOut = new Map<string, number>();
   for (const passage of document.passages) {
     for (const annotation of passage.annotations) {
-      if (DROPPED_PUBTATOR_TYPES.has(annotation.infons.type)) continue;
+      const { type } = annotation.infons;
+      if (DROPPED_PUBTATOR_TYPES.has(type) || !TYPES.has(type)) {
+        leftOut.set(type, (leftOut.get(type) ?? 0) + 1);
+        continue;
+      }
       add(annotation.infons, annotation.text);
     }
+  }
+  for (const [type, count] of leftOut) {
+    skipped.push({
+      ref: pmid,
+      type,
+      reason: `${count} ${type} annotation${count === 1 ? "" : "s"} ${
+        DROPPED_PUBTATOR_TYPES.has(type) ? "left out" : "of a type not read"
+      }`,
+    });
   }
 
   const relations = new Map<string, NormalizedRelation>();
@@ -172,8 +192,12 @@ export function normalizePubTatorDocument(
       continue;
     }
     const mapped = mapPubTatorRelation(type, role1.type, role2.type);
+    // Roles with several IDs (`672;675`) pair up each with each, except an ID with itself.
+    let pairs = 0;
     for (const first of firsts) {
       for (const second of seconds) {
+        if (first === second) continue;
+        pairs++;
         let [subject, object] = mapped.flip ? [second, first] : [first, second];
         let predicate = mapped.predicate;
         if (OUTCOMES.has(object))
@@ -193,6 +217,8 @@ export function normalizePubTatorDocument(
         });
       }
     }
+    if (pairs === 0)
+      skipped.push({ ref, type, reason: "both ends are the same entity" });
   }
 
   return {

@@ -239,3 +239,196 @@ test("a patient treats triple equals the paper's, a drug for another disease doe
   expect(read("32343890")).toContain(triple);
   expect(read("30345884")).not.toContain(triple);
 });
+
+// Regressions of the review of #80.
+const node = (
+  uuid: string,
+  name: string,
+  label: string,
+  attributes?: Record<string, unknown>,
+) => ({ uuid, name, labels: ["Entity", label], attributes });
+const edge = (
+  uuid: string,
+  name: string,
+  source: string,
+  target: string,
+  fact?: string,
+  validAt = "2027-01-10T00:00:00Z",
+) => ({
+  uuid,
+  name,
+  source_node_uuid: source,
+  target_node_uuid: target,
+  fact,
+  valid_at: validAt,
+});
+
+test("Patient-5: its pathology result confirms the diagnosis it merged into", () => {
+  expect(patient5.skipped).toContainEqual({
+    ref: "7f82e9fa-0dc2-40c8-bd05-bb6d414c41aa",
+    type: "CONFIRMED_BY",
+    reason: "both ends are the same entity; confirms it from 2026-12-08",
+  });
+});
+
+test("CONFIRMED_BY onto the same entity asserts its later unknown conditions only", () => {
+  const graph = normalizePatientGraph({
+    nodes: [
+      node("p", "Patient-X", "Patient"),
+      node("d", "Prostatakarzinom", "Diagnosis"),
+      node("r", "Adenokarzinom der Prostata", "PathologyResult"),
+    ],
+    edges: [
+      edge(
+        "before",
+        "HAS_DIAGNOSIS",
+        "p",
+        "d",
+        "Prostatakarzinom.",
+        "2027-01-01",
+      ),
+      edge("confirm", "CONFIRMED_BY", "r", "d", undefined, "2027-01-05"),
+      edge(
+        "after",
+        "HAS_DIAGNOSIS",
+        "p",
+        "d",
+        "Prostatakarzinom.",
+        "2027-01-10",
+      ),
+      edge(
+        "cued",
+        "HAS_DIAGNOSIS",
+        "p",
+        "d",
+        "Verdacht auf Prostatakarzinom.",
+        "2027-01-11",
+      ),
+    ],
+  });
+  const status = Object.fromEntries(
+    graph.facts.map((fact) => [fact.origin.ref, [fact.status, fact.cue]]),
+  );
+  expect(status).toEqual({
+    before: ["unknown", undefined],
+    after: ["asserted", "CONFIRMED_BY"],
+    cued: ["suspected", "verdacht auf"],
+  });
+});
+
+test("TREATED_BY reads its status about the disease", () => {
+  const graph = normalizePatientGraph({
+    nodes: [
+      node("d", "Prostatakarzinom", "Diagnosis"),
+      node("m", "Olaparib", "Medication"),
+    ],
+    edges: [
+      edge(
+        "e",
+        "TREATED_BY",
+        "d",
+        "m",
+        "The prostate cancer is not treated with olaparib.",
+      ),
+    ],
+  });
+  expect(graph.relations[0]).toMatchObject({
+    predicate: "treats",
+    status: "negated",
+    cue: "not treated with",
+  });
+});
+
+test("an allergy related to the patient is a condition; other patient edges without a row are reported", () => {
+  const graph = normalizePatientGraph({
+    nodes: [
+      node("p", "Patient-X", "Patient"),
+      node("a", "Penicillin", "Allergy"),
+      node("x", "Something", "Entity"),
+    ],
+    edges: [
+      edge("allergy", "RELATES_TO", "p", "a"),
+      edge("other", "RELATES_TO", "p", "x"),
+    ],
+  });
+  expect(graph.facts.map(({ kind, origin }) => [kind, origin.ref])).toEqual([
+    ["has_condition", "allergy"],
+  ]);
+  expect(graph.skipped).toEqual([
+    {
+      ref: "other",
+      type: "RELATES_TO",
+      reason: "no row for this patient edge",
+    },
+  ]);
+});
+
+test("unresolved nodes merge by name; a name with nothing left merges with nothing", () => {
+  const graph = normalizePatientGraph({
+    nodes: [
+      node("a", "Knochenschmerz links", "Symptom"),
+      node("b", "knochenschmerz  LINKS", "Symptom"),
+      node("c", "(C61)", "Symptom"),
+      node("d", "–", "LabTest"),
+    ],
+    edges: [edge("e", "RELATES_TO", "c", "d")],
+  });
+  expect(graph.entities.map(({ key, sources }) => [key, sources])).toEqual([
+    ["name:knochenschmerz links", ["a", "b"]],
+    ["node:c", ["c"]],
+    ["node:d", ["d"]],
+  ]);
+  expect(graph.relations).toMatchObject([
+    { subject: "node:c", predicate: "related", object: "node:d" },
+  ]);
+});
+
+test("a node or edge that cannot be read is reported, the rest is kept", () => {
+  const graph = normalizePatientGraph({
+    nodes: [
+      node("p", "Patient-X", "Patient"),
+      node("d", "Prostatakarzinom", "Diagnosis"),
+      { uuid: "bad", name: null, labels: ["Symptom"] },
+    ],
+    edges: [
+      edge("e", "HAS_DIAGNOSIS", "p", "d"),
+      { uuid: "broken", name: "HAS_SYMPTOM" },
+    ],
+  });
+  expect(graph.facts).toHaveLength(1);
+  expect(graph.skipped.map(({ ref, type }) => [ref, type])).toEqual([
+    ["bad", "node"],
+    ["broken", "edge"],
+  ]);
+  expect(graph.skipped[0].reason).toMatch(/^not readable: name /);
+  expect(() => normalizePatientGraph({ nodes: [] })).toThrow();
+});
+
+test.each([
+  ["2026-13-45", undefined],
+  ["2026-02-31", undefined],
+  ["February 30, 2026", undefined],
+  ["29. Februar 2028", "2028-02-29"],
+])(
+  "parseDay(%j) = %j: a day that does not exist is none",
+  (value, expected) => {
+    expect(parseDay(value)).toBe(expected);
+  },
+);
+
+test("an unresolved name with a leading code is the same entity without it, and found by it", () => {
+  const graph = normalizePatientGraph({
+    nodes: [
+      node("p", "Patient-X", "Patient"),
+      node("a", "Z99 Seltene Krankheit", "Diagnosis"),
+      node("b", "Seltene Krankheit", "Diagnosis"),
+    ],
+    edges: [
+      edge("e", "HAS_DIAGNOSIS", "p", "a", "Verdacht auf seltene Krankheit."),
+    ],
+  });
+  expect(graph.entities.map(({ key, sources }) => [key, sources])).toEqual([
+    ["name:seltene krankheit", ["a", "b"]],
+  ]);
+  expect(graph.facts[0]).toMatchObject({ status: "suspected" });
+});

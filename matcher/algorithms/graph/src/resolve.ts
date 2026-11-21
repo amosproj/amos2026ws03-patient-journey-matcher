@@ -4,7 +4,7 @@
 // come in as more `Dictionary` entries; the resolver tries them in order.
 import concepts from "../data/concepts.json" with { type: "json" };
 import icd from "../data/icd10-mesh.json" with { type: "json" };
-import { normalizeName } from "./text.ts";
+import { normalizeName, withoutLeadingCode } from "./text.ts";
 import type { EntityType, ResolvedBy } from "./types.ts";
 
 export type Concept = {
@@ -25,7 +25,7 @@ export type Dictionary = {
   lookup(normalizedName: string): Concept | undefined;
 };
 
-const CONCEPTS = new Map<string, Concept>(
+const CONCEPTS: ReadonlyMap<string, Concept> = new Map<string, Concept>(
   concepts.concepts.map((concept) => [concept.id, concept as Concept]),
 );
 
@@ -61,6 +61,9 @@ export const curated: Dictionary = nameDictionary(
   "curated",
 );
 
+const ICD_CODES: ReadonlyMap<string, string> = new Map(
+  Object.entries(icd.codes),
+);
 const ICD_CODE = /^[A-Z]\d{2}(\.\d{1,2})?$/;
 
 /**
@@ -71,12 +74,14 @@ export function resolveIcd(code: unknown): Concept | undefined {
   if (typeof code !== "string") return undefined;
   const value = code.trim().toUpperCase();
   if (!ICD_CODE.test(value)) return undefined;
-  const codes: Record<string, string | undefined> = icd.codes;
-  const id = codes[value] ?? codes[value.slice(0, 3)];
+  const id = ICD_CODES.get(value) ?? ICD_CODES.get(value.slice(0, 3));
   return id === undefined ? undefined : CONCEPTS.get(id);
 }
 
-/** The first tier that knows the entity: its ICD code, then each dictionary with its names. */
+/**
+ * The first tier that knows the entity: its ICD code, then each dictionary with its names, each
+ * as written and then without a leading code (`C61 Prostatakarzinom`).
+ */
 export function resolve(
   entity: { names: readonly string[]; icdCode?: unknown },
   dictionaries: readonly Dictionary[] = [curated],
@@ -85,9 +90,13 @@ export function resolve(
   if (byCode !== undefined) return { concept: byCode, resolvedBy: "icd" };
   for (const dictionary of dictionaries) {
     for (const name of entity.names) {
-      const concept = dictionary.lookup(normalizeName(name));
-      if (concept !== undefined) {
-        return { concept, resolvedBy: dictionary.resolvedBy };
+      const normalized = normalizeName(name);
+      for (const form of [normalized, withoutLeadingCode(normalized)]) {
+        const concept =
+          form === undefined ? undefined : dictionary.lookup(form);
+        if (concept !== undefined) {
+          return { concept, resolvedBy: dictionary.resolvedBy };
+        }
       }
     }
   }

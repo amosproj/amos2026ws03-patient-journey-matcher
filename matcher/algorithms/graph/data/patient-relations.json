@@ -1,22 +1,58 @@
 {
-  "_comment": "Patient graph edges to the shared representation (Documentation/graph-normalization.md §1). The first row that matches the edge type and the labels of both nodes wins; a missing `subject` or `object` matches any label. `fact` makes a patient fact, `predicate` a relation, `drop` leaves the edge out. `flip` swaps the two ends. Edges to a node with a dropped label are left out before this table.",
+  "_comment": "Patient graph edges to the shared representation (Documentation/graph-normalization.md §1). The first row that matches the edge type and the labels of both nodes wins; a missing `subject` or `object` matches any label. `fact` makes a patient fact, `predicate` a relation, `drop` leaves the edge out. `flip` swaps the two ends. The status is read about the target node, or the source with `about: \"source\"` (TREATED_BY: the disease). `confirms` on an edge whose two ends became one entity (a pathology result of the diagnosis) makes that entity's `has_condition` facts from then on `asserted`, if nothing else set them. An edge from the patient without a fact row is left out. Edges to a node with a dropped label are left out before this table.",
   "droppedLabels": ["Provider", "Appointment", "Referral", "VitalSigns"],
   "rows": [
-    { "type": "HAS_DIAGNOSIS", "subject": "Patient", "fact": "has_condition" },
-    { "type": "HAS_SYMPTOM", "subject": "Patient", "fact": "has_condition" },
-    { "type": "HAS_ALLERGY", "subject": "Patient", "fact": "has_condition" },
-    { "type": "PRESCRIBED", "subject": "Patient", "fact": "receives" },
-    { "type": "UNDERWENT", "subject": "Patient", "fact": "receives" },
+    {
+      "type": "HAS_DIAGNOSIS",
+      "subject": "Patient",
+      "fact": "has_condition"
+    },
+    {
+      "type": "HAS_SYMPTOM",
+      "subject": "Patient",
+      "fact": "has_condition"
+    },
+    {
+      "type": "HAS_ALLERGY",
+      "subject": "Patient",
+      "fact": "has_condition"
+    },
+    {
+      "type": "PRESCRIBED",
+      "subject": "Patient",
+      "fact": "receives"
+    },
+    {
+      "type": "UNDERWENT",
+      "subject": "Patient",
+      "fact": "receives"
+    },
     {
       "type": "HAS_TREATMENT_PLAN",
       "subject": "Patient",
       "fact": "receives",
       "status": "planned"
     },
-    { "type": "HAD_LAB_TEST", "subject": "Patient", "fact": "has_finding" },
-    { "type": "HAS_TUMOR_MARKER", "subject": "Patient", "fact": "has_finding" },
-    { "type": "HAS_PATHOLOGY", "subject": "Patient", "fact": "has_finding" },
-    { "type": "HAS_IMAGING", "subject": "Patient", "fact": "has_finding" },
+    {
+      "type": "HAD_LAB_TEST",
+      "subject": "Patient",
+      "fact": "has_finding"
+    },
+    {
+      "type": "HAS_TUMOR_MARKER",
+      "subject": "Patient",
+      "fact": "has_finding"
+    },
+    {
+      "type": "HAS_PATHOLOGY",
+      "subject": "Patient",
+      "fact": "has_finding"
+    },
+    {
+      "type": "HAS_IMAGING",
+      "subject": "Patient",
+      "fact": "has_finding"
+    },
     {
       "type": "RELATES_TO",
       "subject": "Patient",
@@ -27,6 +63,12 @@
       "type": "RELATES_TO",
       "subject": "Patient",
       "object": "Symptom",
+      "fact": "has_condition"
+    },
+    {
+      "type": "RELATES_TO",
+      "subject": "Patient",
+      "object": "Allergy",
       "fact": "has_condition"
     },
     {
@@ -72,16 +114,52 @@
       "object": "ImagingResult",
       "fact": "has_finding"
     },
-    { "type": "TREATED_BY", "predicate": "treats", "flip": true },
-    { "type": "INDICATES", "predicate": "indicates" },
-    { "type": "CONFIRMED_BY", "predicate": "indicates" },
-    { "type": "SYMPTOM_OF", "predicate": "indicates" },
-    { "type": "RELATES_TO", "predicate": "related" },
-    { "type": "MANAGED_AT", "drop": "administrative" },
-    { "type": "HAS_APPOINTMENT", "drop": "administrative" },
-    { "type": "WAS_REFERRED", "drop": "administrative" },
-    { "type": "PERFORMED_BY", "drop": "administrative" },
-    { "type": "REFERRED_TO", "drop": "administrative" },
-    { "type": "HAS_VITAL_SIGNS", "drop": "vital signs" }
+    {
+      "type": "TREATED_BY",
+      "predicate": "treats",
+      "flip": true,
+      "about": "source"
+    },
+    {
+      "type": "INDICATES",
+      "predicate": "indicates"
+    },
+    {
+      "type": "CONFIRMED_BY",
+      "predicate": "indicates",
+      "confirms": true
+    },
+    {
+      "type": "SYMPTOM_OF",
+      "predicate": "indicates"
+    },
+    {
+      "type": "RELATES_TO",
+      "predicate": "related"
+    },
+    {
+      "type": "MANAGED_AT",
+      "drop": "administrative"
+    },
+    {
+      "type": "HAS_APPOINTMENT",
+      "drop": "administrative"
+    },
+    {
+      "type": "WAS_REFERRED",
+      "drop": "administrative"
+    },
+    {
+      "type": "PERFORMED_BY",
+      "drop": "administrative"
+    },
+    {
+      "type": "REFERRED_TO",
+      "drop": "administrative"
+    },
+    {
+      "type": "HAS_VITAL_SIGNS",
+      "drop": "vital signs"
+    }
   ]
 }

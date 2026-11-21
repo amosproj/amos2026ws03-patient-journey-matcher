@@ -45,7 +45,7 @@ test("relations below the score are left out and reported", () => {
   expect(graph.relations.map(({ predicate }) => predicate)).not.toContain(
     "cotreated_with",
   );
-  expect(graph.skipped).toEqual([
+  expect(graph.skipped.filter(({ ref }) => ref.includes(":"))).toEqual([
     {
       ref: "32343890:R5",
       type: "Cotreatment",
@@ -134,4 +134,112 @@ test("an entity without an identifier has no ID and keeps its name", () => {
       sources: ["1"],
     },
   ]);
+});
+
+// Regressions of the review of #80.
+const document = (relations: unknown[], annotations: unknown[] = []) => ({
+  id: "1",
+  passages: [{ annotations }],
+  relations,
+});
+const relation = (
+  id: string,
+  type: string,
+  role1: unknown,
+  role2: unknown,
+  score?: string,
+) => ({ id, infons: { type, score, role1, role2 } });
+const gene = (identifier: string) => ({ type: "Gene", identifier, name: "g" });
+
+test("roles with several IDs pair up each with each, never an ID with itself", () => {
+  const graph = normalizePubTatorDocument(
+    document([
+      relation("R1", "Association", gene("672;675"), gene("672;675"), "0.9"),
+      relation("R2", "Association", gene("672"), gene("672"), "0.9"),
+    ]),
+  );
+  expect(
+    graph.relations.map(({ subject, object }) => `${subject} ${object}`),
+  ).toEqual(["ncbigene:672 ncbigene:675"]);
+  expect(graph.skipped).toEqual([
+    {
+      ref: "1:R2",
+      type: "Association",
+      reason: "both ends are the same entity",
+    },
+  ]);
+});
+
+test("scores: equal to minScore is kept, none at all is kept, duplicates keep the highest", () => {
+  const disease = { type: "Disease", identifier: "MESH:D011471", name: "d" };
+  const graph = normalizePubTatorDocument(
+    document([
+      relation("R1", "Association", gene("1"), disease, "0.5"),
+      relation("R2", "Association", gene("2"), disease),
+      relation("R3", "Association", gene("1"), disease, "0.8"),
+      relation("R4", "Association", gene("3"), disease, "0.49"),
+    ]),
+    { minScore: 0.5 },
+  );
+  // associated_with is symmetric, so the ends are sorted: the MeSH ID comes first.
+  expect(
+    graph.relations.map(({ subject, object, score }) => [
+      subject,
+      object,
+      score,
+    ]),
+  ).toEqual([
+    ["mesh:D011471", "ncbigene:1", 0.8],
+    ["mesh:D011471", "ncbigene:2", undefined],
+  ]);
+  expect(graph.skipped.map(({ ref }) => ref)).toEqual(["1:R4"]);
+});
+
+test("annotations of a type that is not read are counted in skipped", () => {
+  const graph = normalizePubTatorDocument(
+    document(
+      [],
+      [
+        { infons: { type: "Species", identifier: "9606" }, text: "men" },
+        { infons: { type: "Species", identifier: "9606" }, text: "patients" },
+        { infons: { type: "Chromosome", identifier: "17" }, text: "17q" },
+      ],
+    ),
+  );
+  expect(graph.entities).toEqual([]);
+  expect(graph.skipped).toEqual([
+    { ref: "1", type: "Species", reason: "2 Species annotations left out" },
+    {
+      ref: "1",
+      type: "Chromosome",
+      reason: "1 Chromosome annotation of a type not read",
+    },
+  ]);
+});
+
+test("dbSNP IDs are lowercase, so RS123 and rs123 are one", () => {
+  const graph = normalizePubTatorDocument(
+    document(
+      [],
+      [
+        { infons: { type: "SNP", identifier: "RS123" }, text: "a" },
+        { infons: { type: "SNP", identifier: "rs123" }, text: "b" },
+      ],
+    ),
+  );
+  expect(graph.entities.map(({ id }) => id)).toEqual(["dbsnp:rs123"]);
+});
+
+test("an annotation without ID whose name has nothing left is no entity", () => {
+  const graph = normalizePubTatorDocument(
+    document(
+      [],
+      [
+        { infons: { type: "Disease", identifier: "-" }, text: "(C61)" },
+        { infons: { type: "Disease", identifier: "-" }, text: "–" },
+        { infons: { type: "Disease", identifier: "-" }, text: "tumour" },
+      ],
+    ),
+  );
+  expect(graph.entities.map(({ key }) => key)).toEqual(["name:tumour"]);
 });

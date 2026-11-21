@@ -106,3 +106,58 @@ test("node attributes: only known values", () => {
   expect(statusFromAttribute("resolved")).toBeUndefined();
   expect(statusFromAttribute(null)).toBeUndefined();
 });
+
+// Regressions of the review of #80: bare negations reach only the next words, and negated
+// cues ("not ruled out", "not confirmed") are not their positive halves.
+test.each([
+  ["Patient with no prior treatment has prostate cancer.", undefined],
+  ["Patient without symptoms has prostate cancer.", undefined],
+  ["No bone metastases.", "negated"],
+  ["No new bone metastases.", "negated"],
+  ["Ohne Knochenmetastasen.", "negated"],
+  ["Bone metastases were not ruled out.", "suspected"],
+  ["Bone metastases can not be excluded.", "suspected"],
+  ["Knochenmetastasen nicht sicher ausgeschlossen.", "suspected"],
+  ["We cannot rule out bone metastases.", "suspected"],
+  ["Bone metastases were not confirmed.", undefined],
+  ["Knochenmetastasen nicht bestätigt.", undefined],
+  ["Bone metastases were confirmed.", "asserted"],
+  ["Bone metastases were ruled out.", "negated"],
+])("statusFromText(%j) = %j", (text, expected) => {
+  expect(
+    statusFromText(text, ["bone metastases", "Knochenmetastasen"])?.status,
+  ).toBe(expected);
+});
+
+test("a German clause break ends a cue's reach", () => {
+  expect(
+    statusFromText("Kein Fieber, aber Knochenmetastasen", [
+      "Knochenmetastasen",
+    ]),
+  ).toBeUndefined();
+});
+
+test("the default windows: up to 5 words between before, 3 after", () => {
+  const names = ["bone metastases"];
+  expect(
+    statusFromText(
+      "Suspected one two three four five six bone metastases",
+      names,
+    ),
+  ).toBeUndefined();
+  expect(
+    statusFromText("Suspected one two three four five bone metastases", names)
+      ?.status,
+  ).toBe("suspected");
+  expect(
+    statusFromText("Bone metastases one two three ruled out", names)?.status,
+  ).toBe("negated");
+  expect(
+    statusFromText("Bone metastases one two three four ruled out", names),
+  ).toBeUndefined();
+});
+
+test("an attribute value that is an Object method is no status", () => {
+  expect(statusFromAttribute("constructor")).toBeUndefined();
+  expect(statusFromAttribute("toString")).toBeUndefined();
+});

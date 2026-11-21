@@ -39,7 +39,7 @@ test.each([
     "CONFIRMED_BY",
     "PathologyResult",
     "Diagnosis",
-    { kind: "relation", predicate: "indicates", flip: false },
+    { kind: "relation", predicate: "indicates", flip: false, confirms: true },
   ],
   [
     "SYMPTOM_OF",
@@ -51,7 +51,7 @@ test.each([
     "TREATED_BY",
     "Diagnosis",
     "Medication",
-    { kind: "relation", predicate: "treats", flip: true },
+    { kind: "relation", predicate: "treats", flip: true, about: "source" },
   ],
   [
     "MANAGED_AT",

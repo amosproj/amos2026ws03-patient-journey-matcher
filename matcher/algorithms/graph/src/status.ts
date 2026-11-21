@@ -6,21 +6,41 @@ import cues from "../data/status-cues.json" with { type: "json" };
 import { normalizeName, words } from "./text.ts";
 import type { Status } from "./types.ts";
 
+/** What a cue can say; a `pseudo` cue only blocks shorter ones (`no change` is not `no`). */
+export const CUE_STATUSES = [
+  "asserted",
+  "suspected",
+  "negated",
+  "pseudo",
+] as const;
+
 type Cue = {
   words: string[];
   text: string;
-  status: Exclude<Status, "planned" | "unknown"> | "pseudo";
+  status: (typeof CUE_STATUSES)[number];
   position: "pre" | "post";
+  /** Words allowed between cue and name; the file's `window` or `postWindow` when not set. */
+  window: number;
 };
 
-const CUES: Cue[] = cues.cues.map((cue) => ({
+const CUES: readonly Cue[] = cues.cues.map((cue) => ({
   words: words(cue.text),
   text: cue.text,
   status: cue.status as Cue["status"],
   position: cue.position as Cue["position"],
+  window:
+    ("window" in cue ? cue.window : undefined) ??
+    (cue.position === "pre" ? cues.window : cues.postWindow),
 }));
-const CLAUSE_BREAKS = new Set(cues.clauseBreaks);
-const ATTRIBUTES: Record<string, string | undefined> = cues.attributes;
+const CLAUSE_BREAKS: ReadonlySet<string> = new Set(
+  cues.clauseBreaks.map(normalizeName),
+);
+const ATTRIBUTES: ReadonlyMap<string, Status> = new Map(
+  Object.entries(cues.attributes).map(([value, status]) => [
+    normalizeName(value),
+    status as Status,
+  ]),
+);
 
 export type StatusCue = {
   status: Exclude<Status, "planned" | "unknown">;
@@ -68,9 +88,10 @@ function occurrences(
 
 /**
  * The status that the cue nearest to one of `names` gives it, or `undefined`. A `pre` cue
- * counts when it ends at most `window` words before the name, a `post` cue when it starts at
- * most `postWindow` words after it. A name that is not in the text gets no status: a cue is never
- * applied to a whole sentence.
+ * counts when it ends at most its window of words before the name, a `post` cue when it starts
+ * at most its window after it (`window` and `postWindow` of the file, unless the cue sets
+ * one). A name that is not in the text gets no status: a cue is never applied to a whole
+ * sentence.
  */
 export function statusFromText(
   text: string,
@@ -105,9 +126,7 @@ export function statusFromText(
           match.cue.position === "pre"
             ? name.start - match.end
             : match.start - name.end;
-        const window =
-          match.cue.position === "pre" ? cues.window : cues.postWindow;
-        if (distance < 0 || distance > window) continue;
+        if (distance < 0 || distance > match.cue.window) continue;
         const length = match.end - match.start;
         if (
           best === undefined ||
@@ -126,5 +145,5 @@ export function statusFromText(
 /** The status a node attribute such as `Diagnosis.status = "active"` stands for, if any. */
 export function statusFromAttribute(value: unknown): Status | undefined {
   if (typeof value !== "string") return undefined;
-  return ATTRIBUTES[normalizeName(value)] as Status | undefined;
+  return ATTRIBUTES.get(normalizeName(value));
 }

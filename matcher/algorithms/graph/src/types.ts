@@ -2,33 +2,40 @@
 // Documentation/graph-normalization.md §3. Both adapters return a NormalizedGraph, so the graph
 // matcher compares the two sides on the same IDs and predicates.
 
+// Each union below comes from a list, so data.test.ts checks the data files against the same
+// values the code compiles with.
+
 /** What an entity is. `procedure`, `finding` and `device` occur only on the patient side. */
-export type EntityType =
-  | "disease"
-  | "chemical"
-  | "gene"
-  | "variant"
-  | "procedure"
-  | "finding"
-  | "device";
+export const ENTITY_TYPES = [
+  "disease",
+  "chemical",
+  "gene",
+  "variant",
+  "procedure",
+  "finding",
+  "device",
+] as const;
+export type EntityType = (typeof ENTITY_TYPES)[number];
 
 /** How a patient entity got its ID; `null` when it has none. PubTator3 entities: `"pubtator"`. */
 export type ResolvedBy = "icd" | "curated" | "pubtator" | null;
 
 /** Relations between two entities. The symmetric ones have no direction, see `SYMMETRIC`. */
-export type Predicate =
-  | "treats"
-  | "causes"
-  | "improves_outcome"
-  | "worsens_outcome"
-  | "indicates"
-  | "associated_with"
-  | "positive_correlation"
-  | "negative_correlation"
-  | "cotreated_with"
-  | "compared_with"
-  | "interacts_with"
-  | "related";
+export const PREDICATES = [
+  "treats",
+  "causes",
+  "improves_outcome",
+  "worsens_outcome",
+  "indicates",
+  "associated_with",
+  "positive_correlation",
+  "negative_correlation",
+  "cotreated_with",
+  "compared_with",
+  "interacts_with",
+  "related",
+] as const;
+export type Predicate = (typeof PREDICATES)[number];
 
 export const SYMMETRIC: ReadonlySet<Predicate> = new Set([
   "associated_with",
@@ -38,14 +45,17 @@ export const SYMMETRIC: ReadonlySet<Predicate> = new Set([
 ]);
 
 /** What a patient fact says about the patient. Not compared with paper triples one to one. */
-export type FactKind = "has_condition" | "receives" | "has_finding";
+export const FACT_KINDS = ["has_condition", "receives", "has_finding"] as const;
+export type FactKind = (typeof FACT_KINDS)[number];
 
-export type Status =
-  | "asserted"
-  | "suspected"
-  | "negated"
-  | "planned"
-  | "unknown";
+export const STATUSES = [
+  "asserted",
+  "suspected",
+  "negated",
+  "planned",
+  "unknown",
+] as const;
+export type Status = (typeof STATUSES)[number];
 
 export type NormalizedEntity = {
   /** Unique within one graph; the ID, or the normalized name when there is none. Never compared across graphs. */

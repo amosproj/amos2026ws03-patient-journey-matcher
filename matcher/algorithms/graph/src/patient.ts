@@ -1,13 +1,13 @@
 // Patient graph → NormalizedGraph (Documentation/graph-normalization.md §1 and §4). Reads the
 // graph.json of the SS26 pipeline in Graphiti's field names, like the journey reader in
 // mcp-server/src/graph.ts, but keeps what that reader drops: the fact sentences, `invalid_at`
-// and the node attributes. It is also more lenient: an edge it cannot read is skipped and
-// reported, not a reason to reject the graph.
+// and the node attributes. It is also more lenient: a node or edge it cannot read is skipped
+// and reported, not a reason to reject the graph.
 import { z } from "zod";
 import { DROPPED_PATIENT_LABELS, mapPatientEdge } from "./relations.ts";
 import { conceptOf, curated, type Dictionary, resolve } from "./resolve.ts";
 import { statusFromAttribute, statusFromText } from "./status.ts";
-import { normalizeName } from "./text.ts";
+import { normalizeName, withoutLeadingCode } from "./text.ts";
 import {
   type EntityType,
   type NormalizedEntity,
@@ -19,43 +19,70 @@ import {
   SYMMETRIC,
 } from "./types.ts";
 
+// The graph must have both lists; each node and edge is read on its own, see `readEach`.
 const graphSchema = z.object({
-  nodes: z.array(
-    z.object({
-      uuid: z.string().min(1),
-      name: z.string(),
-      labels: z.array(z.string()),
-      attributes: z.record(z.string(), z.unknown()).nullish(),
-    }),
-  ),
-  edges: z.array(
-    z.object({
-      uuid: z.string().min(1),
-      name: z.string(),
-      source_node_uuid: z.string(),
-      target_node_uuid: z.string(),
-      fact: z.string().nullish(),
-      valid_at: z.unknown().optional(),
-      invalid_at: z.unknown().optional(),
-    }),
-  ),
+  nodes: z.array(z.unknown()),
+  edges: z.array(z.unknown()),
 });
 
-type Node = z.output<typeof graphSchema>["nodes"][number];
+const nodeSchema = z.object({
+  uuid: z.string().min(1),
+  name: z.string(),
+  labels: z.array(z.string()),
+  attributes: z.record(z.string(), z.unknown()).nullish(),
+});
+
+const edgeSchema = z.object({
+  uuid: z.string().min(1),
+  name: z.string(),
+  source_node_uuid: z.string(),
+  target_node_uuid: z.string(),
+  fact: z.string().nullish(),
+  valid_at: z.unknown().optional(),
+  invalid_at: z.unknown().optional(),
+});
+
+type Node = z.output<typeof nodeSchema>;
 
 /** The type of a node by its label, when no concept gives one. */
-const LABEL_TYPES: Record<string, EntityType | undefined> = {
-  Diagnosis: "disease",
-  Symptom: "disease",
-  Allergy: "disease",
-  Medication: "chemical",
-  Procedure: "procedure",
-  TreatmentPlan: "procedure",
-  LabTest: "finding",
-  TumorMarker: "finding",
-  PathologyResult: "finding",
-  ImagingResult: "finding",
-};
+const LABEL_TYPES: ReadonlyMap<string, EntityType> = new Map([
+  ["Diagnosis", "disease"],
+  ["Symptom", "disease"],
+  ["Allergy", "disease"],
+  ["Medication", "chemical"],
+  ["Procedure", "procedure"],
+  ["TreatmentPlan", "procedure"],
+  ["LabTest", "finding"],
+  ["TumorMarker", "finding"],
+  ["PathologyResult", "finding"],
+  ["ImagingResult", "finding"],
+]);
+
+/** The items `schema` can read; each other one is reported in `skipped` with the reason. */
+function readEach<T>(
+  items: readonly unknown[],
+  schema: z.ZodType<T>,
+  what: "node" | "edge",
+  skipped: Skipped[],
+): T[] {
+  const read: T[] = [];
+  for (const [index, item] of items.entries()) {
+    const result = schema.safeParse(item);
+    if (result.success) {
+      read.push(result.data);
+      continue;
+    }
+    const uuid = (item as { uuid?: unknown } | null)?.uuid;
+    // A failed parse has at least one issue; the first names the field.
+    const [issue] = result.error.issues;
+    skipped.push({
+      ref: typeof uuid === "string" && uuid !== "" ? uuid : `${what} ${index}`,
+      type: what,
+      reason: `not readable: ${issue.path.join(".") || what} ${issue.message}`,
+    });
+  }
+  return read;
+}
 
 const MONTHS = [
   ["january", "januar"],
@@ -72,8 +99,14 @@ const MONTHS = [
   ["december", "dezember"],
 ];
 
-function day(year: string, month: number, date: string): string {
-  return `${year}-${String(month).padStart(2, "0")}-${date.padStart(2, "0")}`;
+/** `YYYY-MM-DD`, or `undefined` for a day that does not exist (`2026-02-31`). */
+function day(year: string, month: number, date: string): string | undefined {
+  const value = `${year}-${String(month).padStart(2, "0")}-${date.padStart(2, "0")}`;
+  const parsed = new Date(`${value}T00:00:00Z`);
+  return Number.isNaN(parsed.getTime()) ||
+    parsed.toISOString().slice(0, 10) !== value
+    ? undefined
+    : value;
 }
 
 /**
@@ -82,8 +115,8 @@ function day(year: string, month: number, date: string): string {
  */
 export function parseDay(value: unknown): string | undefined {
   if (typeof value !== "string") return undefined;
-  const iso = /^(\d{4}-\d{2}-\d{2})/.exec(value.trim());
-  if (iso !== null) return iso[1];
+  const iso = /^(\d{4})-(\d{2})-(\d{2})/.exec(value.trim());
+  if (iso !== null) return day(iso[1], Number(iso[2]), iso[3]);
   const text = normalizeName(value);
   const monthOf = (name: string) =>
     MONTHS.findIndex((names) => names.includes(name)) + 1;
@@ -123,11 +156,14 @@ export function normalizePatientGraph(
   { dictionaries = [curated] }: { dictionaries?: readonly Dictionary[] } = {},
 ): NormalizedGraph {
   const graph = graphSchema.parse(input);
-  const nodes = new Map(graph.nodes.map((node) => [node.uuid, node]));
+  const skipped: Skipped[] = [];
+  const graphNodes = readEach(graph.nodes, nodeSchema, "node", skipped);
+  const graphEdges = readEach(graph.edges, edgeSchema, "edge", skipped);
+  const nodes = new Map(graphNodes.map((node) => [node.uuid, node]));
   const entities = new Map<string, NormalizedEntity>();
   const keyOf = new Map<string, string>();
 
-  for (const node of graph.nodes) {
+  for (const node of nodes.values()) {
     const label = labelOf(node);
     if (label === "Patient" || DROPPED_PATIENT_LABELS.has(label)) continue;
     const resolution = resolve(
@@ -135,8 +171,15 @@ export function normalizePatientGraph(
       dictionaries,
     );
     const concept = resolution?.concept;
-    // Unresolved nodes merge only by their normalized name, which never leaves this graph.
-    const key = concept?.id ?? `name:${normalizeName(node.name)}`;
+    // Unresolved nodes merge only by their normalized name, without a leading code
+    // (`C61 X` is `X`), which never leaves this graph. A name with nothing left (`(C61)`, `–`)
+    // merges with nothing.
+    const normalized = normalizeName(node.name);
+    const key =
+      concept?.id ??
+      (normalized === ""
+        ? `node:${node.uuid}`
+        : `name:${withoutLeadingCode(normalized) ?? normalized}`);
     keyOf.set(node.uuid, key);
     const known = entities.get(key);
     if (known !== undefined) {
@@ -149,7 +192,7 @@ export function normalizePatientGraph(
       key,
       id: concept?.id ?? null,
       // The concept decides: a catheter labelled Medication is a device, PSA a gene.
-      type: concept?.type ?? LABEL_TYPES[label] ?? "finding",
+      type: concept?.type ?? LABEL_TYPES.get(label) ?? "finding",
       name: concept?.name ?? node.name,
       names: [node.name],
       resolvedBy: resolution?.resolvedBy ?? null,
@@ -158,21 +201,26 @@ export function normalizePatientGraph(
     });
   }
 
-  // The names to find an entity by in a fact sentence: as written, and those of its concept.
+  // The names to find an entity by in a fact sentence: as written, also without a leading
+  // code (`C61 Prostatakarzinom` is found as `Prostatakarzinom`), and those of its concept.
   function namesOf(key: string): string[] {
     const entity = entities.get(key);
     const concept = entity?.id == null ? undefined : conceptOf(entity.id);
+    const names = entity?.names ?? [];
     return [
-      ...(entity?.names ?? []),
+      ...names,
+      ...names.flatMap((name) => withoutLeadingCode(normalizeName(name)) ?? []),
       ...(concept === undefined ? [] : [concept.name, ...concept.names]),
     ];
   }
 
   const relations: NormalizedRelation[] = [];
   const facts: PatientFact[] = [];
-  const skipped: Skipped[] = [];
+  // Entities confirmed by an edge between two of their own nodes: the earliest day, and the
+  // edge type, which becomes the cue.
+  const confirmed = new Map<string, { from: string; cue: string }>();
 
-  for (const edge of graph.edges) {
+  for (const edge of graphEdges) {
     const skip = (reason: string) =>
       skipped.push({ ref: edge.uuid, type: edge.name, reason });
     const source = nodes.get(edge.source_node_uuid);
@@ -198,7 +246,10 @@ export function normalizePatientGraph(
     const validAt = parseDay(edge.valid_at);
     const invalidAt = parseDay(edge.invalid_at);
     // The status is about the target: the diagnosis of HAS_DIAGNOSIS and of INDICATES alike.
-    const about = target;
+    // TREATED_BY points from the diagnosis to the drug, so its row reads it about the source.
+    const aboutSource =
+      mapping.kind === "relation" && mapping.about === "source";
+    const about = aboutSource ? source : target;
     const aboutKey = keyOf.get(about.uuid);
     const cue =
       edge.fact == null || aboutKey === undefined
@@ -241,7 +292,15 @@ export function normalizePatientGraph(
       continue;
     }
     if (first === second) {
-      skip("both ends are the same entity");
+      const confirms = mapping.confirms === true && validAt !== undefined;
+      if (confirms) {
+        const known = confirmed.get(first);
+        if (known === undefined || validAt < known.from)
+          confirmed.set(first, { from: validAt, cue: edge.name });
+      }
+      skip(
+        `both ends are the same entity${confirms ? `; confirms it from ${validAt}` : ""}`,
+      );
       continue;
     }
     let [subject, object] = mapping.flip ? [second, first] : [first, second];
@@ -253,6 +312,21 @@ export function normalizePatientGraph(
       predicate: mapping.predicate,
       object,
     });
+  }
+
+  // A pathology result of the diagnosis itself confirms it: from that day, a condition that
+  // nothing else gave a status is asserted. Cues and attributes are never overridden.
+  for (const fact of facts) {
+    if (fact.kind !== "has_condition" || fact.status !== "unknown") continue;
+    const by = confirmed.get(fact.entity);
+    if (
+      by !== undefined &&
+      fact.validAt !== undefined &&
+      fact.validAt >= by.from
+    ) {
+      fact.status = "asserted";
+      fact.cue = by.cue;
+    }
   }
 
   return { entities: [...entities.values()], relations, facts, skipped };

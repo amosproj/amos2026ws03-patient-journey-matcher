@@ -9,7 +9,11 @@ import {
 import { normalizeName } from "./text.ts";
 
 test.each([
-  ["C61 Prostatakarzinom", "prostatakarzinom"],
+  // A leading code stays; only the resolver tries the name without it.
+  ["C61 Prostatakarzinom", "c61 prostatakarzinom"],
+  ["P53 mutation", "p53 mutation"],
+  ["B12 deficiency", "b12 deficiency"],
+  ["(C61)", ""],
   ["Vd. a. Prostatakarzinom (C61)", "vd a prostatakarzinom"],
   ["PSMA-PET/CT", "psma pet ct"],
   ["Aktive Überwachung", "aktive uberwachung"],
@@ -101,4 +105,14 @@ test("a name of two concepts is an error", () => {
       "curated",
     ),
   ).toThrow(/"same" is a name of mesh:A and of mesh:B/);
+});
+
+test("a leading code is tried away only for the lookup", () => {
+  expect(resolve({ names: ["C61 Prostatakarzinom"] })?.concept.id).toBe(
+    "mesh:D011471",
+  );
+  expect(resolve({ names: ["C61.0 Prostatakarzinom"] })?.concept.id).toBe(
+    "mesh:D011471",
+  );
+  expect(resolve({ names: ["P53 mutation"] })).toBeUndefined();
 });
