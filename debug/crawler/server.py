@@ -22,6 +22,7 @@ import importlib
 import io
 import json
 import logging
+import math
 import os
 import platform
 import re
@@ -1611,6 +1612,8 @@ def run_matcher(command: str, request: dict[str, Any]) -> dict[str, Any]:
 GRAPH_DIR = MATCHER_DIR / "algorithms" / "graph"
 PUBTATOR_FIXTURES = GRAPH_DIR / "fixtures" / "pubtator"
 GRAPH_TIMEOUT = 30
+GRAPH_ENVIRONMENT = ("PATH", "HOME", "LANG", "SYSTEMROOT")
+"""All the normalizer gets of this server's environment: it needs no keys and no database."""
 
 
 def graph_meta() -> dict[str, Any]:
@@ -1650,6 +1653,8 @@ def graph_normalize(kind: str, name: str, min_score: str) -> dict[str, Any]:
         score = float(min_score or 0)
     except ValueError as error:
         raise ValueError(f"min_score is not a number: {min_score}") from error
+    if not math.isfinite(score) or not 0 <= score <= 1:
+        raise ValueError(f"min_score must be between 0 and 1: {min_score}")
     missing = matcher_missing()
     if missing:
         raise ValueError(missing)
@@ -1661,25 +1666,45 @@ def graph_normalize(kind: str, name: str, min_score: str) -> dict[str, Any]:
             text=True,
             encoding="utf-8",
             timeout=GRAPH_TIMEOUT,
+            env={key: os.environ[key] for key in GRAPH_ENVIRONMENT if key in os.environ},
         )
     except subprocess.TimeoutExpired as error:
         raise RuntimeError(f"The normalization did not finish within {GRAPH_TIMEOUT} s") from error
-    try:
-        graphs: list[dict[str, Any]] = json.loads(done.stdout)
-    except json.JSONDecodeError as error:
-        lines = done.stderr.strip().splitlines()
+    graphs: Any = None
+    if done.returncode == 0:
+        with contextlib.suppress(json.JSONDecodeError):
+            graphs = json.loads(done.stdout)
+    if not isinstance(graphs, list):
+        lines = (done.stderr.strip() or done.stdout.strip()).splitlines()
         message = next((line for line in lines if re.match(r"\w*Error\b", line)), "")
         message = message or f"The normalization failed (exit code {done.returncode})"
-        raise RuntimeError(message) from error
-    raw = json.loads(path.read_text(encoding="utf-8"))
+        raise RuntimeError(message)
+    if not graphs:
+        raise LookupError(f"The {kind} file {name} has no document")
+    return {"kind": kind, "name": name, "before": graph_size(kind, path), "graph": graphs[0]}
+
+
+def graph_size(kind: str, path: Path) -> dict[str, int]:
+    """How many nodes and edges, or annotations and relations of the first document, a file
+    has. The normalizer has read it already, so an odd shape only gives zeros here."""
+    try:
+        raw: Any = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        raw = None
+
+    def items(value: Any, key: str) -> list[Any]:
+        found = value.get(key) if isinstance(value, dict) else None
+        return found if isinstance(found, list) else []
+
     if kind == "patient":
-        before = {"nodes": len(raw.get("nodes", [])), "edges": len(raw.get("edges", []))}
-    else:
-        before = {
-            "annotations": sum(len(p.get("annotations", [])) for p in raw.get("passages", [])),
-            "relations": len(raw.get("relations", [])),
-        }
-    return {"kind": kind, "name": name, "before": before, "graph": graphs[0]}
+        return {"nodes": len(items(raw, "nodes")), "edges": len(items(raw, "edges"))}
+    # An export (`{"PubTator3": [...]}`), a list of documents or one document, as the script reads.
+    documents = raw if isinstance(raw, list) else items(raw, "PubTator3") or [raw]
+    first = documents[0] if documents else None
+    return {
+        "annotations": sum(len(items(p, "annotations")) for p in items(first, "passages")),
+        "relations": len(items(first, "relations")),
+    }
 
 
 def call_mcp(tool: str, arguments: dict[str, Any]) -> dict[str, Any]:
