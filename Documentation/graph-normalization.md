@@ -1,6 +1,6 @@
 # Graph normalization: entity and relation types
 
-For #80. Graph matching ([research](research/Graph-based-matching.md)) compares triples from two sources: the patient graph and the PubTator3 annotations of a paper. Before the two can be compared, both have to use the same entity types, IDs and relation types. This page lists what each source holds and how it maps to the shared representation. The code is in [`matcher/algorithms/graph/`](../matcher/algorithms/graph/README.md).
+For #80. Graph matching ([research](research/Graph-based-matching.md)) compares triples from two sources: the patient graph and the PubTator3 annotations of a paper. Before the two can be compared, both have to use the same entity types, IDs and relation types. This page lists what each source holds and how it maps to the shared representation; for a short example of what normalization changes, see [what normalization means](../matcher/algorithms/graph/README.md#what-normalization-means). The code is in [`matcher/algorithms/graph/`](../matcher/algorithms/graph/README.md).
 
 Sources of the inventory:
 
@@ -220,7 +220,7 @@ German cues are kept although Graphiti writes its facts in English: German terms
 
 ### 4.6 How we check the mapping
 
-- **Unit tests** in `matcher/algorithms/graph/src/*.test.ts`: normalization, each tier, each relation-table row, merging, the type taken from the concept, the status cues (the three suspected facts of Patient-5 and made-up negations), both adapters, and two cross-source checks: Patient-5's diagnosis has the same ID as the paper's disease, and a patient `olaparib treats prostate cancer` equals the triple of 32343890 but not of the ovarian cancer paper.
+- **Unit tests** in `matcher/algorithms/graph/src/*.test.ts`: normalization, each tier, each relation-table row, merging, the type taken from the concept, the status cues (the three suspected facts of Patient-5 and made-up negations), both adapters, the data files against each other and against the types (`data.test.ts`), and two cross-source checks: Patient-5's diagnosis has the same ID as the paper's disease, and a patient `olaparib treats prostate cancer` equals the triple of 32343890 but not of the ovarian cancer paper.
 - **Coverage per graph:** `pnpm --dir matcher --filter @matcher/graph normalize <file>` prints each entity with its ID and tier, the facts, the relations and what was left out. For Patient-5: 8 of 14 entities have an ID. Unresolved entities are the gap: the fix is a new curated name, not a looser match.
 - **Hand check** of every tier-3 and tier-4 mapping for Patient-1 to Patient-10, once those exist. Patients 11 to 20 stay held out, as in [matching evaluation](matching-evaluation.md).
 
