@@ -21,12 +21,12 @@ The documented Patient-5 run from #53 processed 35 documents and produced **34 n
 - **Time:** All sample edges have `valid_at`; 32 also have `invalid_at`. Values may occur in fact text on generic edges. Invalidation can reflect a later restatement rather than the end of a lasting medical effect. Define these semantics before filtering by `as_of`; the builder's processing-date fallback for missing document dates remains a risk.
 - **Normalization:** German/English synonyms can form duplicate nodes. Two prostate cancer nodes share ICD C61, while others lack codes or mix diagnosis and therapy. Map names and codes to compatible PubTator3 identifiers (MeSH for the initial disease/drug scope); mappings are not automatically one-to-one.
 - **Selection and quality:** The sample includes 12 Provider nodes, many generic `RELATES_TO` edges and a urinary catheter mislabeled as Medication. Filter administrative context and validate labels. Generic relations must not be interpreted as specific treatment assertions.
-- **Integration:** The reader from #53 (merged, [`graph.ts`](../matcher/mcp-server/src/graph.ts)) flattens graphs into daily events and loses relationship information. Preserve the original nodes, edges, evidence and attributes in the matcher contract (section 4).
+- **Integration:** The original reader from #53 ([`graph.ts`](../matcher/mcp-server/src/graph.ts)) flattened graphs into daily events and lost relationship information. Preserve the original nodes, edges, evidence and attributes in the matcher contract (section 4).
 ## 2. Questions Our Matching Proposal Must Answer
 
 Working example: a patient has diagnosis A treated with medication B. A paper about B for A should be distinguished from a paper about B for C. Mentioning the same concepts does not necessarily establish the same relationship.
 
-The following is a proposed design, not an implemented algorithm. Numerical weights and unresolved extraction details must be validated experimentally.
+This proposal predates the [graph matcher](../Documentation/design/graph-normalization.md). Its ranking weights and research focus heuristic still need evaluation.
 
 | Question | Explanation | Our decision |
 |---|---|---|
@@ -69,7 +69,7 @@ Implement **offline PubTator3 indexing**, followed by **patient-triple matching 
 | Ranking | Within the graph approach | Score each paper from these matching results using section 2. Return document IDs, scores and matched relationships with evidence. Research-focus weighting requires additional text-derived features. |
 | Contract and registry | `matcher/core/src/contracts.ts`, MCP input handling and approach registry | Preserve the graph and query cutoff for the matcher; register the graph approach. The `graph` input of #53 is merged; the matchers still receive only the journey state. |
 
-**Contract change.** The current `JourneyState` exposes focus/context events, not graph triples. Add an optional graph payload retaining node IDs, labels, codes, edge types, endpoints, fact text, timestamps and source references where available. Preserve the query cutoff. Normalize after patient graph updates, but apply temporal selection per query. If only a timeline is supplied, explicitly use concept-only or keyword fallback; do not claim relation matching.
+**Contract change.** Before graph matching, `JourneyState` exposed only focus and context events. Add an optional graph payload retaining node IDs, labels, codes, edge types, endpoints, fact text, timestamps and source references where available. Preserve the query cutoff. Normalize after patient graph updates, but apply temporal selection per query. If only a timeline is supplied, explicitly use concept-only or keyword fallback; do not claim relation matching.
 
 **Coverage and fallback.** Entity annotations without matching relations can support the weaker diagnosis-only score from section 2. Resources without usable annotations cannot contribute PubTator3 matches. Evaluate graph alone first, then optionally merge graph and keyword rankings using `reciprocalRankFusion`, preserving which approach supplied each result.
 

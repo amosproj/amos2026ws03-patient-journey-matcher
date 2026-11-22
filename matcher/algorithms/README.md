@@ -17,7 +17,7 @@ The keyword approach as the example:
 
 Other files hold what only this approach needs, e.g. keyword's word lists in `data/` and the script that builds one in `scripts/`.
 
-The graph approach holds only its [normalization](../../Documentation/design/graph-normalization.md) so far: no `approach.ts` and no registry entry until its indexer and matcher exist.
+The [graph approach](../../Documentation/design/graph-normalization.md) indexes PubTator3 annotations and compares them with the dated relationships in a patient graph.
 
 ## Contracts
 
