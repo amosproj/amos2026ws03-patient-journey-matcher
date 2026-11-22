@@ -54,10 +54,6 @@ const TYPES: ReadonlyMap<string, EntityType> = new Map([
   ["Chemical", "chemical"],
   ["Gene", "gene"],
   ["Variant", "variant"],
-  ["Mutation", "variant"],
-  ["DNAMutation", "variant"],
-  ["ProteinMutation", "variant"],
-  ["SNP", "variant"],
 ]);
 
 const OUTCOMES: ReadonlySet<string> = new Set(outcomes.ids);
@@ -76,25 +72,34 @@ export function pubTatorDocuments(json: unknown): unknown[] {
   return [json];
 }
 
-/** `MESH:D011471` → `mesh:D011471`, `672` → `ncbigene:672`; several IDs are split at `;`. */
+/**
+ * `MESH:D011471` → `mesh:D011471`, `672` → `ncbigene:672`; several IDs are split at `;`. A
+ * variant has one ID in parts (`tmVar:…;HGVS:p.V600E;CorrespondingGene:673;RS#:113488022`),
+ * in another order in a relation: its dbSNP number, else its HGVS name with the gene, else
+ * none, as `C>G` alone names no one variant.
+ */
 function conceptIds(
   type: EntityType,
   identifier: string | number | null | undefined,
 ): string[] {
   if (identifier === null || identifier === undefined) return [];
-  return String(identifier)
+  const parts = String(identifier)
     .split(";")
     .map((part) => part.trim())
-    .filter((part) => part !== "" && part !== "-")
-    .map((part) => {
-      if (type === "gene") return `ncbigene:${part}`;
-      if (type === "variant")
-        return /^rs\d+$/i.test(part)
-          ? `dbsnp:${part.toLowerCase()}`
-          : `hgvs:${part}`;
-      const mesh = /^mesh:(.+)$/i.exec(part);
-      return mesh === null ? part.toLowerCase() : `mesh:${mesh[1]}`;
-    });
+    .filter((part) => part !== "" && part !== "-");
+  if (type === "variant") {
+    const part = (name: string) =>
+      parts.find((one) => one.startsWith(`${name}:`))?.slice(name.length + 1);
+    const [rs, hgvs, gene] = ["RS#", "HGVS", "CorrespondingGene"].map(part);
+    if (rs !== undefined) return [`dbsnp:rs${rs}`];
+    if (hgvs === undefined) return [];
+    return [`hgvs:${gene === undefined ? "" : `${gene}:`}${hgvs}`];
+  }
+  return parts.map((part) => {
+    if (type === "gene") return `ncbigene:${part}`;
+    const mesh = /^mesh:(.+)$/i.exec(part);
+    return mesh === null ? part.toLowerCase() : `mesh:${mesh[1]}`;
+  });
 }
 
 /**
@@ -124,6 +129,8 @@ export function normalizePubTatorDocument(
         typeof name === "string" && normalizeName(name) !== "",
     );
     const ids = conceptIds(type, concept.identifier);
+    // A variant without an ID is not kept by its name: that is a placeholder (`#7157#`).
+    if (type === "variant" && ids.length === 0) return [];
     const keys: { key: string; id: string | null }[] =
       ids.length > 0
         ? ids.map((id) => ({ key: id, id }))
@@ -150,25 +157,28 @@ export function normalizePubTatorDocument(
     return keys.map(({ key }) => key);
   }
 
-  // Annotations of a type that is not read, counted per type: one `skipped` row each.
+  // Annotations of a type that is not read and variants without an ID, counted per type: one
+  // `skipped` row each.
   const leftOut = new Map<string, number>();
   for (const passage of document.passages) {
     for (const annotation of passage.annotations) {
       const { type } = annotation.infons;
-      if (DROPPED_PUBTATOR_TYPES.has(type) || !TYPES.has(type)) {
+      const read = !DROPPED_PUBTATOR_TYPES.has(type) && TYPES.has(type);
+      const keys = read ? add(annotation.infons, annotation.text) : [];
+      if (!read || (type === "Variant" && keys.length === 0))
         leftOut.set(type, (leftOut.get(type) ?? 0) + 1);
-        continue;
-      }
-      add(annotation.infons, annotation.text);
     }
   }
   for (const [type, count] of leftOut) {
+    const why = DROPPED_PUBTATOR_TYPES.has(type)
+      ? "left out"
+      : TYPES.has(type)
+        ? "without a dbSNP number or HGVS name"
+        : "of a type not read";
     skipped.push({
       ref: pmid,
       type,
-      reason: `${count} ${type} annotation${count === 1 ? "" : "s"} ${
-        DROPPED_PUBTATOR_TYPES.has(type) ? "left out" : "of a type not read"
-      }`,
+      reason: `${count} ${type} annotation${count === 1 ? "" : "s"} ${why}`,
     });
   }
 

@@ -2619,6 +2619,8 @@ def main() -> None:
     )
     refresh_env()
     load_summaries()
+    # The page asks for all its files at once; the default queue of 5 resets some of them.
+    ThreadingHTTPServer.request_queue_size = 128
     server = ThreadingHTTPServer((arguments.host, arguments.port), Handler)
     server.daemon_threads = True
     print(f"Debug UI: http://{arguments.host}:{arguments.port}", flush=True)

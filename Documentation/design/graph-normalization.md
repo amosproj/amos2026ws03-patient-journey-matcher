@@ -23,7 +23,7 @@ Both inputs become entities and relations between them; the patient graph also g
 
 **Entity types:** `disease`, `chemical`, `gene`, `variant`, `procedure`, `finding`, `device`. PubTator3 has no procedure, finding or device type, so these match no paper triple; they stay for context and the keyword fallback.
 
-**Entity IDs:** the IDs that PubTator3 uses, `mesh:<ID>` for diseases and chemicals and `ncbigene:<ID>` for genes. A patient entity without a mapping has no ID. It keeps its names but takes no part in triple matching, because a made-up ID could never match a paper.
+**Entity IDs:** the IDs that PubTator3 uses, `mesh:<ID>` for diseases and chemicals and `ncbigene:<ID>` for genes. A variant gets one ID from the parts PubTator3 writes: its dbSNP number (`dbsnp:rs113488022`), else its HGVS name with the gene (`hgvs:673:p.V599E`). A patient entity without a mapping has no ID. It keeps its names but takes no part in triple matching, because a made-up ID could never match a paper.
 
 **Predicates:**
 
@@ -74,7 +74,7 @@ Each input has one table that maps a relation by its type and the types of both 
 
 - **One direction:** `treats` and `causes` always point from the drug or procedure to the disease. `TREATED_BY`, stored from the disease to the drug, is reversed.
 - **Outcomes are not diseases:** with an outcome from [`outcomes.json`](../../matcher/algorithms/graph/data/outcomes.json), `olaparib treats Death` becomes `olaparib improves_outcome Death`, so it never matches a patient's disease.
-- **Left out:** `Provider`, `Appointment`, `Referral` and `VitalSigns` nodes with their edges, the PubTator3 types `Species` and `CellLine`, edges whose two ends became one entity, and PubTator3 relations below a minimum score (0 by default; the value is still to be chosen). Each is listed with the reason. A node or edge that cannot be read is left out too and does not reject the graph.
+- **Left out:** `Provider`, `Appointment`, `Referral` and `VitalSigns` nodes with their edges, the PubTator3 types `Species` and `CellLine`, variants without a dbSNP number or HGVS name (`C>G` alone names no one variant), edges whose two ends became one entity, and PubTator3 relations below a minimum score (0 by default; the value is still to be chosen). Each is listed with the reason. A node or edge that cannot be read is left out too and does not reject the graph.
 - **Duplicates:** relations with the same triple in one paper become one, with the highest score.
 - **Patient facts are not paper triples.** Matching combines them into patterns: `has_condition(A)` and `receives(B)` give the query `B treats A`.
 - **Treatment links only with evidence (not built yet).** For the patient, `B treats A` is derived only from a text that names both and resolves to a diagnosis of the patient: the indication of a procedure, the recommendation of a treatment plan or the fact of an edge. Without such a text, matching uses the pattern above with a lower weight.
@@ -83,7 +83,7 @@ Each input has one table that maps a relation by its type and the types of both 
 
 Status belongs to one statement at its time, not to the concept: in Patient-5, prostate cancer is suspected in November 2026 and confirmed in December. The matcher is to take the latest statement per concept up to `as_of`. For each patient edge, the first of these rules applies ([`status.ts`](../../matcher/algorithms/graph/src/status.ts), cue words in [`status-cues.json`](../../matcher/algorithms/graph/data/status-cues.json)):
 
-1. **A cue word near the entity in the fact sentence, in the same clause:** `suspected`, `Verdacht auf`, `cannot be ruled out` → `suspected`; `no evidence of`, `ruled out`, `ausgeschlossen` → `negated`; `confirmed`, `diagnosed with` → `asserted`. Of two overlapping cues the longer wins. A cue right after a negation says nothing: `could not be ruled out`, `has not been confirmed`. German cues are kept because German terms leak into Graphiti's English facts.
+1. **A cue word near the entity in the fact sentence, in the same clause:** `suspected`, `Verdacht auf`, `cannot be ruled out` → `suspected`; `no evidence of`, `ruled out`, `ausgeschlossen` → `negated`; `confirmed`, `diagnosed with` → `asserted`. Of two overlapping cues the longer wins. A confirmation after the name beats a suspicion before it: `the suspected prostate cancer was confirmed`. A cue right after a negation says nothing: `could not be ruled out`, `has not been confirmed`. German cues are kept because German terms leak into Graphiti's English facts.
 2. **`planned`** for a treatment plan.
 3. **The node attribute `status: active` or `confirmed`** → `asserted`, but only from the node's `date_confirmed` on. Graphiti rewrites a node with every document, so the attribute describes the end of the record, not its first weeks.
 4. **`unknown`.** Never `asserted` by default; the matcher is to treat `unknown` as weaker than `asserted`, not as a negative. One exception: a condition that is still `unknown` becomes `asserted` from the day a pathology result of the same concept confirms it (`CONFIRMED_BY`).

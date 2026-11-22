@@ -132,6 +132,10 @@ test.each([
   // A confirmed suspicion is confirmed, though "suspected" stands nearer.
   ["The biopsy confirmed the suspected bone metastases.", "asserted"],
   ["MRI confirmed the suspicion of bone metastases.", "asserted"],
+  ["The suspected bone metastases were confirmed by biopsy.", "asserted"],
+  ["Suspicion of bone metastases was confirmed.", "asserted"],
+  ["Verdacht auf Knochenmetastasen wurde bestätigt.", "asserted"],
+  ["The suspected bone metastases were not confirmed.", "suspected"],
 ])("statusFromText(%j) = %j", (text, expected) => {
   expect(
     statusFromText(text, ["bone metastases", "Knochenmetastasen"])?.status,

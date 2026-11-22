@@ -130,20 +130,35 @@ export function statusFromText(
     for (const name of phrases.flatMap((phrase) =>
       occurrences(clause, phrase),
     )) {
-      for (const match of effective) {
-        if (match.start < name.end && name.start < match.end) continue;
+      const near = effective.flatMap((match) => {
+        if (match.start < name.end && name.start < match.end) return [];
         const distance =
           match.cue.position === "pre"
             ? name.start - match.end
             : match.start - name.end;
-        if (distance < 0 || distance > match.cue.window) continue;
-        const length = match.end - match.start;
+        return distance < 0 || distance > match.cue.window
+          ? []
+          : [{ distance, length: match.end - match.start, cue: match.cue }];
+      });
+      // "The suspected X was confirmed": a confirmation after the name ends the suspicion
+      // before it, though "suspected" stands nearer.
+      // shortcut: also fires for X in "suspected X and confirmed Y", refine once facts read so
+      const confirmed = near.some(
+        ({ cue }) => cue.status === "asserted" && cue.position === "post",
+      );
+      for (const one of near) {
+        if (
+          confirmed &&
+          one.cue.status === "suspected" &&
+          one.cue.position === "pre"
+        )
+          continue;
         if (
           best === undefined ||
-          distance < best.distance ||
-          (distance === best.distance && length > best.length)
+          one.distance < best.distance ||
+          (one.distance === best.distance && one.length > best.length)
         ) {
-          best = { distance, length, cue: match.cue };
+          best = one;
         }
       }
     }

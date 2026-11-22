@@ -217,17 +217,113 @@ test("annotations of a type that is not read are counted in skipped", () => {
   ]);
 });
 
-test("dbSNP IDs are lowercase, so RS123 and rs123 are one", () => {
+// Variants as PubTator3 writes them, e.g. in PMID 12068308: one ID in parts, in another order
+// in a relation.
+const variant = (identifier: string, name: string) => ({
+  type: "Variant",
+  identifier,
+  name,
+});
+const melanoma = {
+  type: "Disease",
+  identifier: "MESH:D008545",
+  name: "Melanoma",
+};
+
+test("a variant has one ID: its dbSNP number, else its HGVS name with the gene", () => {
   const graph = normalizePubTatorDocument(
     document(
-      [],
       [
-        { infons: { type: "SNP", identifier: "RS123" }, text: "a" },
-        { infons: { type: "SNP", identifier: "rs123" }, text: "b" },
+        relation(
+          "R1",
+          "Association",
+          melanoma,
+          variant(
+            "RS#:113488022;HGVS:p.V600E;CorrespondingGene:673",
+            "p.V600E",
+          ),
+          "0.9",
+        ),
+        relation(
+          "R2",
+          "Association",
+          melanoma,
+          variant("HGVS:p.V599E;CorrespondingGene:673", "p.V599E"),
+          "0.9",
+        ),
+      ],
+      [
+        {
+          infons: variant(
+            "tmVar:p|SUB|V|600|E;HGVS:p.V600E;VariantGroup:0;CorrespondingGene:673;RS#:113488022;CorrespondingSpecies:9606;CA#:123643",
+            "p.V600E",
+          ),
+          text: "V600E",
+        },
+        {
+          infons: variant(
+            "tmVar:p|SUB|V|599|E;HGVS:p.V599E;VariantGroup:0;CorrespondingGene:673;CorrespondingSpecies:9606",
+            "p.V599E",
+          ),
+          text: "V599E",
+        },
       ],
     ),
   );
-  expect(graph.entities.map(({ id }) => id)).toEqual(["dbsnp:rs123"]);
+  expect(graph.entities.map(({ id, type }) => [id, type])).toEqual([
+    ["dbsnp:rs113488022", "variant"],
+    ["hgvs:673:p.V599E", "variant"],
+    ["mesh:D008545", "disease"],
+  ]);
+  expect(
+    graph.relations.map(({ subject, object }) => `${subject} ${object}`),
+  ).toEqual([
+    "dbsnp:rs113488022 mesh:D008545",
+    "hgvs:673:p.V599E mesh:D008545",
+  ]);
+  expect(graph.skipped).toEqual([]);
+});
+
+test("a variant without a dbSNP number or HGVS name is left out", () => {
+  const graph = normalizePubTatorDocument(
+    document(
+      [
+        relation(
+          "R1",
+          "Association",
+          melanoma,
+          variant(
+            "CorrespondingGene:7157;CorrespondingSpecies:9606;VariantGroup:2;tmVar:c|SUB|C||G",
+            "#7157#",
+          ),
+          "0.9",
+        ),
+      ],
+      [
+        {
+          infons: variant(
+            "tmVar:c|SUB|C||G;VariantGroup:2;CorrespondingGene:7157;CorrespondingSpecies:9606",
+            "#7157#",
+          ),
+          text: "C>G",
+        },
+      ],
+    ),
+  );
+  expect(graph.entities.map(({ id }) => id)).toEqual(["mesh:D008545"]);
+  expect(graph.relations).toEqual([]);
+  expect(graph.skipped).toEqual([
+    {
+      ref: "1",
+      type: "Variant",
+      reason: "1 Variant annotation without a dbSNP number or HGVS name",
+    },
+    {
+      ref: "1:R1",
+      type: "Association",
+      reason: "role of type Disease or Variant not read",
+    },
+  ]);
 });
 
 test("an annotation without ID whose name has nothing left is no entity", () => {

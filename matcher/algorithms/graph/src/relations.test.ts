@@ -74,6 +74,14 @@ test.each([
     { kind: "relation", predicate: "treats", flip: false },
   ],
   [
+    "TREATED_BY",
+    "Procedure",
+    "Diagnosis",
+    { kind: "relation", predicate: "treats", flip: false },
+  ],
+  // The graph's LLM also writes HAS_LAB_TEST for HAD_LAB_TEST (Patient-15).
+  ["HAS_LAB_TEST", "Patient", "LabTest", { kind: "fact", fact: "has_finding" }],
+  [
     "MANAGED_AT",
     "Patient",
     "Provider",
