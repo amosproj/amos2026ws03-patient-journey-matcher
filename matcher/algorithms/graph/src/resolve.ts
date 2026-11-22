@@ -1,5 +1,5 @@
-// Entity resolution (Documentation/design/graph-normalization.md §4.1): a patient entity gets the
-// ID that PubTator3 uses for the same concept, or none. Tier 1 is the ICD code, tier 2 the
+// Entity resolution (Documentation/design/graph-normalization.md#entities): a patient entity gets
+// the ID that PubTator3 uses for the same concept, or none. Tier 1 is the ICD code, tier 2 the
 // curated names. Later tiers, such as a dictionary built from stored PubTator3 annotations,
 // come in as more `Dictionary` entries; the resolver tries them in order.
 import concepts from "../data/concepts.json" with { type: "json" };

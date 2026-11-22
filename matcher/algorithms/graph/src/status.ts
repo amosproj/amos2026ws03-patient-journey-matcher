@@ -1,4 +1,4 @@
-// Status of a statement from cue words (Documentation/design/graph-normalization.md §4.5):
+// Status of a statement from cue words (Documentation/design/graph-normalization.md#status):
 // whether a fact sentence confirms, suspects or rules out an entity. Status belongs to one
 // statement at its time, not to the concept: prostate cancer is suspected in November and
 // confirmed in December. Without a cue near the entity the sentence says nothing, and the

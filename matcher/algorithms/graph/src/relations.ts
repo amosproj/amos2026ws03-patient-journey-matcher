@@ -1,4 +1,4 @@
-// The relation tables (Documentation/design/graph-normalization.md §4.3): one per source, as
+// The relation tables (Documentation/design/graph-normalization.md#relations): one per source, as
 // data, so that a new type is a new row. A row matches the source type and the types of both
 // ends.
 import patient from "../data/patient-relations.json" with { type: "json" };
