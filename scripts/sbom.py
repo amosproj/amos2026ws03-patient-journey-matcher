@@ -249,6 +249,10 @@ def spdx3(spdx: dict) -> dict:
     for element in sbom["@graph"]:
         if found := info.get(element.get("spdxId", "").removeprefix("SPDXRef:")):
             element["software_sourceInfo"] = found
+    # SPDX's own individuals (NoAssertionLicense): predefined in the model, a copy here breaks SHACL
+    sbom["@graph"] = [
+        e for e in sbom["@graph"] if not e.get("spdxId", "").startswith("https://spdx.org/rdf/")
+    ]
     elements = {e.get("spdxId") or e.get("@id"): e for e in sbom["@graph"]}
     creation = next(e for e in sbom["@graph"] if e["type"] == "CreationInfo")
     creator = elements[creation["createdBy"][0]]

@@ -40,11 +40,6 @@
     },
     {
       "creationInfo": "_:CreationInfo-1",
-      "spdxId": "https://spdx.org/rdf/3.0.1/terms/ExpandedLicensing/NoAssertionLicense",
-      "type": "expandedlicensing_IndividualLicensingInfo"
-    },
-    {
-      "creationInfo": "_:CreationInfo-1",
       "from": "SPDXRef:Package-npm-postgres-bytea-91d53b6cea36a67d",
       "relationshipType": "hasConcludedLicense",
       "spdxId": "SPDXRef:Relationship-1",
