@@ -49,7 +49,7 @@ RETRIEVED = datetime(2026, 11, 1, 12, 0, tzinfo=UTC)
 # Expiry is compared with the database clock, so tests use dates far from today.
 LONG_AGO = datetime(2000, 1, 1, tzinfo=UTC)
 FAR_AHEAD = datetime(2999, 1, 1, tzinfo=UTC)
-# The index table convention of Documentation/storage.md.
+# The index table convention of Documentation/design/storage.md.
 INDEX_TABLE = """
 CREATE TABLE keyword_index (
     document_id text PRIMARY KEY REFERENCES documents (id) ON DELETE CASCADE,
@@ -635,7 +635,7 @@ def test_duplicates_by_doi_and_the_last_run_of_a_source(url: str) -> None:
     ]
 
 
-# Queries from Documentation/storage.md; the matcher's reads are tested in matcher/db.
+# Queries from Documentation/design/storage.md; the matcher's reads are tested in matcher/db.
 DUPLICATES = """
 SELECT doi, array_agg(id ORDER BY id) AS ids
 FROM documents

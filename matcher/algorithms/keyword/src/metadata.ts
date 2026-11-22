@@ -1,9 +1,10 @@
 import {
+  englishMetadata,
   indexChangedDocuments,
   metadataText,
+  NON_ENGLISH_METADATA,
   type Queryable,
 } from "@matcher/db";
-import { englishMetadata, NON_ENGLISH_METADATA } from "./language.ts";
 import { createSchema } from "./schema.ts";
 
 /** Indexes title, abstract and subjects of the new and changed documents; returns how many. */

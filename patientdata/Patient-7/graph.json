@@ -1,0 +1,4836 @@
+{
+ "patient": "Patient-7",
+ "documents": [
+  "ueberweisungsbrief_e01.pdf",
+  "laborbericht_e02.pdf",
+  "pathologiebericht_e03.pdf",
+  "befundbericht_e04.pdf",
+  "tumorkonferenzprotokoll_e05.pdf",
+  "arztbrief_e06.pdf",
+  "einweisungsbrief_e07.pdf",
+  "entlassungsbrief_e08.pdf",
+  "laborbericht_e09.pdf",
+  "verlaufsbericht_e09.pdf",
+  "laborbericht_e10.pdf",
+  "verlaufsbericht_e10.pdf",
+  "laborbericht_e11.pdf",
+  "verlaufsbericht_e11.pdf",
+  "laborbericht_e12.pdf",
+  "verlaufsbericht_e12.pdf",
+  "laborbericht_e13.pdf",
+  "verlaufsbericht_e13.pdf",
+  "laborbericht_e14.pdf",
+  "verlaufsbericht_e14.pdf",
+  "arztbrief_e15.pdf",
+  "laborbericht_e15.pdf",
+  "tumorkonferenzprotokoll_e16.pdf",
+  "arztbrief_e17.pdf",
+  "laborbericht_e17.pdf",
+  "verlaufsbericht_e17.pdf",
+  "arztbrief_e18.pdf",
+  "laborbericht_e18.pdf",
+  "verlaufsbericht_e18.pdf",
+  "arztbrief_e19.pdf",
+  "laborbericht_e19.pdf",
+  "verlaufsbericht_e19.pdf",
+  "arztbrief_e20.pdf",
+  "laborbericht_e20.pdf",
+  "verlaufsbericht_e20.pdf",
+  "arztbrief_e21.pdf",
+  "laborbericht_e21.pdf",
+  "verlaufsbericht_e21.pdf",
+  "arztbrief_e22.pdf",
+  "laborbericht_e22.pdf",
+  "verlaufsbericht_e22.pdf",
+  "palliativbericht_e23.pdf",
+  "palliativbericht_e24.pdf"
+ ],
+ "nodes": [
+  {
+   "uuid": "b841f87a-a553-40f3-b931-357a183051ca",
+   "name": "Adt Plus Chemotherapy",
+   "group_id": "Patient-7",
+   "labels": [
+    "Entity",
+    "TreatmentPlan"
+   ],
+   "created_at": "2026-11-18T18:03:15.971976",
+   "summary": "Patient-7 has a tumor board consensus recommendation of Adt Plus Chemotherapy.\nC61 Prostatakarzinom is treated with Adt Plus Chemotherapy according to the tumor board consensus recommendation.\nAdt Plus Chemotherapy incorporates Docetaxel according to the STAMPEDE protocol for mHSPC Gleason 9 and PSA > 100.",
+   "attributes": {
+    "therapy_type": null,
+    "planned_start": null,
+    "recommendation": "Adt Plus Chemotherapy",
+    "decision_date": "2026-12-10"
+   }
+  },
+  {
+   "uuid": "61f1b950-936e-451a-8702-ccfe2e3c40f2",
+   "name": "Alkaline phosphatase (AP)",
+   "group_id": "Patient-7",
+   "labels": [
+    "LabTest",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:02:05.381742",
+   "summary": "Patient-7 underwent laboratory testing for Alkaline phosphatase (AP), resulting in 85.0 U/L.",
+   "attributes": {
+    "test_value": "85.0",
+    "unit": "U/L",
+    "reference_range": "40 – 130 U/L",
+    "test_date": "2026-11-08",
+    "result_status": "normal"
+   }
+  },
+  {
+   "uuid": "f876984d-182a-4e5b-b3bb-a3d049576fe9",
+   "name": "Best Supportive Care",
+   "group_id": "Patient-7",
+   "labels": [
+    "Entity",
+    "TreatmentPlan"
+   ],
+   "created_at": "2026-11-18T18:19:17.949435",
+   "summary": "Patient-7's palliative management focused on symptom control and quality of life via Best Supportive Care.",
+   "attributes": {
+    "therapy_type": "Best Supportive Care",
+    "planned_start": null,
+    "recommendation": "Best Supportive Care",
+    "decision_date": null
+   }
+  },
+  {
+   "uuid": "acbae3a9-84d1-4773-8b99-d54186c76fb3",
+   "name": "Docetaxel",
+   "group_id": "Patient-7",
+   "labels": [
+    "Medication",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:03:15.971990",
+   "summary": "Adt Plus Chemotherapy incorporates Docetaxel according to the STAMPEDE protocol for mHSPC Gleason 9 and PSA > 100.\nPatient-7 was prescribed Docetaxel at 75 mg/m² for 6 cycles of chemotherapy.\nPatient-7 has a planned inpatient administration of Docetaxel chemotherapy (Zyklus 1).\nThe diagnosis mCSPC unter ADT + Docetaxel involves treatment with Docetaxel.",
+   "attributes": {
+    "dosage": "75 mg/m&sup2;",
+    "route": null,
+    "frequency": null,
+    "start_date": null,
+    "end_date": null
+   }
+  },
+  {
+   "uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "name": "Dr. med. Arzt-1",
+   "group_id": "Patient-7",
+   "labels": [
+    "Provider",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:01:47.101855",
+   "summary": "Dr. med. Arzt-1 is a provider in the Urologische Klinik at Klinikum Berlin – Klinik-1, located at Beethovenstraße 65, 13597 Berlin. Dr. med. Arzt-1 provides care for Patient-7, managing metastatic prostate cancer (C61 Prostatakarzinom, Gleason 4+5=9, ISUP 5, cT3b cN1 cM1b) treated with chemotherapy and Radium-223 nuclear medicine therapy. Between February 26, 2028, and May 20, 2028, Dr. med. Arzt-1 evaluated Patient-7 during routine follow-up visits, ordered and signed laboratory tests showing a rising total PSA value from 8.5 ng/ml up to 18.3 ng/ml, issued follow-up progress reports documenting clinical and biochemical progress, recommended further diagnostics alongside continued treatment, and requested primary care physicians to assume ongoing outpatient care.\nDr. med. Arzt-1 evaluated Patient-7 at Klinikum Berlin.\nDr. med. Arzt-1 ordered laboratory results from Klinikum Berlin – Klinik-1, Urologische Klinik.\nPatient-7 was evaluated by Dr. med. Arzt-1 for a palliative medicine consultation.\nDr. med. Arzt-1 provided care for Patient-7 at the Urological Clinic.",
+   "attributes": {
+    "specialty": "Urologie",
+    "institution": "Klinikum Berlin",
+    "department": "Urologische Klinik"
+   }
+  },
+  {
+   "uuid": "297bab53-e14e-4719-901a-3c41e156834b",
+   "name": "Dr. med. Arzt-2",
+   "group_id": "Patient-7",
+   "labels": [
+    "Provider",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:03:45.124605",
+   "summary": "Patient-7 presented to Dr. med. Arzt-2 at the Klinik für Onkologie und Hämatologie of Klinikum Berlin for ongoing management.\nDr. med. Arzt-2 operates from the Klinik für Onkologie und Hämatologie at Klinikum Berlin – Klinik-1.\nDr. med. Arzt-2 is affiliated with Klinikum Berlin – Klinik-1 at Beethovenstraße 65, 13597 Berlin.\nPatient-7 received an inpatient admission referral issued by Dr. med. Arzt-2 for Docetaxel chemotherapy.\nDr. med. Arzt-2 authored the discharge summary from the Department of Oncology and Hematology at Klinikum Berlin, Klinik-1.\nPatient-7 received care from Dr. med. Arzt-2 at Klinikum Berlin, Klinik für Onkologie und Hämatologie on January 21, 2027.\nDr. med. Arzt-2 authored a medical follow-up report for Patient-7 at the Klinik für Onkologie und Hämatologie at Klinikum Berlin.\nDr. med. Arzt-2 practices at Klinikum Berlin.\nDr. med. Arzt-2 works at the Klinik für Onkologie und Hämatologie.\nPatient-7 was seen by Dr. med. Arzt-2 during a routine follow-up evaluation on February 11, 2027.\nDr. med. Arzt-2 ordered a laboratory test for patient Patient-7 at Klinikum Berlin – Klinik-1, Clinic for Oncology and Hematology.\nPatient-7 had a laboratory evaluation ordered by Dr. med. Arzt-2 on March 25, 2027.\nPatient-7 was evaluated by Dr. med. Arzt-2 during a routine follow-up on March 25, 2027.\nPatient-7 presented to Dr. med. Arzt-2 at the Klinik für Onkologie und Hämatologie of Klinikum Berlin - Klinik-1 for evaluation.\nDr. med. Arzt-2 ordered the laboratory evaluation from Klinikum Berlin, Klinik-1, Klinik für Onkologie und Hämatologie.\nPatient-7's case was chaired by Dr. med. Arzt-2.",
+   "attributes": {
+    "specialty": "Onkologie und Hämatologie",
+    "institution": "Klinikum Berlin",
+    "department": "Klinik für Onkologie und Hämatologie"
+   }
+  },
+  {
+   "uuid": "f66f6a00-84d4-4731-a294-18e42822c18a",
+   "name": "ECOG performance status",
+   "group_id": "Patient-7",
+   "labels": [
+    "VitalSigns",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:04:17.314484",
+   "summary": "Patient-7 has an ECOG performance status of 2.\nPatient-7 maintained an ECOG performance status of 2 on March 25, 2027.\nPatient-7 exhibited an ECOG performance status of 2 during the clinical evaluation on September 16, 2027.\nPatient-7 presented with an overall good general condition noted as ECOG 3 on January 29, 2028.\nPatient-7 has an ECOG performance status of 3.\nPatient-7 presented with an ECOG performance status of 3 on June 17, 2028.\nPatient-7 presents with a stable clinical course and a good general condition documented as ECOG 3.\nPatient-7 presented with an ECOG performance status of 4.",
+   "attributes": {
+    "measurement_date": null,
+    "blood_pressure": null,
+    "heart_rate": null,
+    "weight": null,
+    "height": null,
+    "temperature": null,
+    "oxygen_saturation": null
+   }
+  },
+  {
+   "uuid": "106be11c-312c-4f4e-80db-d79923485cb6",
+   "name": "Institut für Pathologie",
+   "group_id": "Patient-7",
+   "labels": [
+    "Provider",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:02:28.075087",
+   "summary": "The 12 prostate core needle biopsies were received and evaluated by the Institut für Pathologie at Klinikum Berlin – Klinik-1.\nPatient-7 had a pathology report issued by the Institut für Pathologie at Klinikum Berlin – Klinik-1.",
+   "attributes": {
+    "specialty": "Pathologie",
+    "institution": "Klinikum Berlin",
+    "department": "Institut für Pathologie"
+   }
+  },
+  {
+   "uuid": "e9ab9602-ec23-4b16-9b7a-b3015c6246aa",
+   "name": "Klinik für Onkologie und Hämatologie",
+   "group_id": "Patient-7",
+   "labels": [
+    "Provider",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:03:45.124622",
+   "summary": "Patient-7 was evaluated and managed at the Klinik für Onkologie und Hämatologie of Klinikum Berlin.\nDr. med. Arzt-2 operates from the Klinik für Onkologie und Hämatologie at Klinikum Berlin – Klinik-1.\nPatient-7 was discharged following an inpatient stay at Klinikum Berlin, Klinik-1, Klinik für Onkologie und Hämatologie after treatment.\nDr. med. Arzt-2 authored the discharge summary from the Department of Oncology and Hematology at Klinikum Berlin, Klinik-1.\nPatient-7 had a laboratory test performed at Klinikum Berlin, Klinik für Onkologie und Hämatologie under the care of Dr. med. Arzt-2 on January 21, 2027.\nDr. med. Arzt-2 authored a medical follow-up report for Patient-7 at the Klinik für Onkologie und Hämatologie at Klinikum Berlin.\nPatient-7 received follow-up care for metastatic prostate cancer at the Klinik für Onkologie und Hämatologie.\nDr. med. Arzt-2 works at the Klinik für Onkologie und Hämatologie.\nPatient-7 presented for a routine follow-up evaluation at the Klinik für Onkologie und Hämatologie of Klinikum Berlin on February 11, 2027.\nPatient-7 underwent a laboratory test at Klinikum Berlin – Klinik-1, Clinic for Oncology and Hematology.\nPatient-7 underwent a routine follow-up evaluation at the Klinik für Onkologie und Hämatologie of Klinikum Berlin.\nPatient-7 presented for a routine follow-up evaluation at Klinikum Berlin, Klinik für Onkologie und Hämatologie on March 25, 2027.\nPatient-7 was evaluated for routine follow-up at the Klinik für Onkologie und Hämatologie of Klinikum Berlin – Klinik-1.\nPatient-7 was evaluated at the Klinik für Onkologie und Hämatologie of Klinikum Berlin - Klinik-1.\nPatient-7 underwent laboratory evaluation at Klinikum Berlin, Klinik-1, Klinik für Onkologie und Hämatologie.\nDr. med. Arzt-2 ordered the laboratory evaluation from Klinikum Berlin, Klinik-1, Klinik für Onkologie und Hämatologie.\nPatient-7 is managed at Klinik für Onkologie und Hämatologie.",
+   "attributes": {
+    "specialty": "Onkologie und Hämatologie",
+    "institution": "Klinikum Berlin",
+    "department": "Klinik für Onkologie und Hämatologie"
+   }
+  },
+  {
+   "uuid": "5f7e1fe2-57e4-4e00-8bbe-cadb7e86bc7b",
+   "name": "Klinikum Berlin",
+   "group_id": "Patient-7",
+   "labels": [
+    "Provider",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:03:45.124634",
+   "summary": "Patient-7 received care at Klinikum Berlin, specifically at the Klinik für Onkologie und Hämatologie.\nDr. med. Arzt-2 practices at Klinikum Berlin.\nPatient-7 received routine follow-up management at Klinikum Berlin on September 16, 2027.\nPatient-7 is managed at Klinikum Berlin.\nDr. med. Arzt-1 evaluated Patient-7 at Klinikum Berlin.\nPatient-7 was evaluated at Klinikum Berlin located at Beethovenstraße 65, 13597 Berlin.",
+   "attributes": {
+    "specialty": null,
+    "institution": "Klinikum Berlin",
+    "department": "Urologische Klinik"
+   }
+  },
+  {
+   "uuid": "85244ca2-4896-47ff-9f3a-09999a97f0ce",
+   "name": "Klinikum Berlin - Klinik-1",
+   "group_id": "Patient-7",
+   "labels": [
+    "Provider",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:01:47.102005",
+   "summary": "Patient Patient-7 was referred to the Urologische Klinik at Klinikum Berlin - Klinik-1 located at Beethovenstraße 65, 13597 Berlin.\nPatient-7 had laboratory tests performed at Klinikum Berlin – Klinik-1, Urologische Klinik on November 8, 2026.\nDr. med. Arzt-2 is affiliated with Klinikum Berlin – Klinik-1 at Beethovenstraße 65, 13597 Berlin.\nPatient-7 was evaluated at Klinikum Berlin - Klinik-1 located at Beethovenstraße 65, 13597 Berlin.",
+   "attributes": {
+    "specialty": "Onkologie und Hämatologie",
+    "institution": "Klinikum Berlin",
+    "department": "Klinik für Onkologie und Hämatologie"
+   }
+  },
+  {
+   "uuid": "5e330d8d-f600-4c99-a417-d7241a3f8604",
+   "name": "Leuprorelin 3-Monats-Depot",
+   "group_id": "Patient-7",
+   "labels": [
+    "Medication",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:03:45.124691",
+   "summary": "Patient-7 was prescribed Leuprorelin 3-Monats-Depot as part of androgen deprivation therapy.",
+   "attributes": {
+    "dosage": null,
+    "route": null,
+    "frequency": "3-Monats-Depot",
+    "start_date": null,
+    "end_date": null
+   }
+  },
+  {
+   "uuid": "da54e5e4-9aa0-47d1-b870-b69090110f2d",
+   "name": "Nuklearmedizin",
+   "group_id": "Patient-7",
+   "labels": [
+    "Provider",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:03:15.971919",
+   "summary": "Nuklearmedizin department at Klinikum Berlin participated in the interdisciplinary tumor conference on December 10, 2026, concerning Patient-7 with metastatic C61 Prostatakarzinom.",
+   "attributes": {
+    "specialty": "Nuklearmedizin",
+    "institution": "Klinikum Berlin",
+    "department": "Nuklearmedizin"
+   }
+  },
+  {
+   "uuid": "a214479c-e72d-480b-9458-eee2b42386b0",
+   "name": "Onkologie",
+   "group_id": "Patient-7",
+   "labels": [
+    "Provider",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:03:15.971904",
+   "summary": "Onkologie department at Klinikum Berlin participated in the interdisciplinary tumor conference on December 10, 2026, concerning Patient-7 with metastatic C61 Prostatakarzinom.",
+   "attributes": {
+    "specialty": null,
+    "institution": "Klinikum Berlin",
+    "department": "Onkologie"
+   }
+  },
+  {
+   "uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "name": "PSA",
+   "group_id": "Patient-7",
+   "labels": [
+    "TumorMarker",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:01:47.102126",
+   "summary": "Patient-7 has a total PSA tumor marker level of 6.6 ng/ml on January 29, 2028, with a rising trend indicating clinical and biochemical progression of C61 Prostatakarzinom (metastasiert). On February 26, 2028, the total PSA value rose to 8.5 ng/ml, which is elevated compared to the reference range of 0.00 to 4.00 ng/ml. On March 25, 2028, the total PSA value was 11.0 ng/ml (reference range 0.00 – 4.00 ng/ml), maintaining a rising PSA-Verlauf. On April 22, 2028, the total PSA value reached 14.1 ng/ml with a reference range of 0.00 – 4.00 ng/ml, evaluated as elevated (↑ Erhöht).\nThe rising PSA value indicates clinical and biochemical progress for C61 Prostatakarzinom.\nPatient-7 had a total PSA level of 18.3 ng/ml measured during evaluation.\nA total PSA value of 18.3 ng/ml is evaluated as elevated compared to the reference range of 0.00 – 4.00 ng/ml for C61 Prostatakarzinom.\nThe rising total PSA value of 18.3 ng/ml indicates biochemical and clinical progression of metastatic prostate cancer.\nLaboratory evaluation revealed a total PSA level of 23.5 ng/ml for Patient-7 on June 17, 2028.\nPatient-7 had a total PSA (PSA (gesamt)) level of 23.5 ng/ml evaluated at Klinikum Berlin – Klinik-1, Urologische Klinik.\nAn elevated total PSA (PSA (gesamt)) level of 23.5 ng/ml indicates C61 Prostatakarzinom (metastasiert – Chemotherapie + Nuklearmedizin (Radium-223)).\nPatient-7 has an elevated and rising current PSA-Wert tumor marker level of 23.5 ng/ml with an ansteigend trend indicating clinical and biochemical progress.",
+   "attributes": {
+    "marker_value": "23.5",
+    "unit": "ng/ml",
+    "reference_range": "0.00 – 4.00 ng/ml",
+    "test_date": "2028-06-17T00:00:00"
+   }
+  },
+  {
+   "uuid": "9df7d2a3-a4fe-4616-a977-4a21a33b3267",
+   "name": "Pathologie",
+   "group_id": "Patient-7",
+   "labels": [
+    "Provider",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:03:15.971933",
+   "summary": "Institut für Pathologie at Klinikum Berlin issued a pathology report on November 17, 2026, for Patient-7, confirming an adenocarcinoma of the prostate (Gleason 4+5=9, ISUP 5, ICD-10 C61). The department also participated in the interdisciplinary tumor conference on December 10, 2026.",
+   "attributes": {
+    "specialty": null,
+    "institution": "Klinikum Berlin",
+    "department": "Institut für Pathologie"
+   }
+  },
+  {
+   "uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "name": "Patient-7",
+   "group_id": "Patient-7",
+   "labels": [
+    "Patient",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:01:47.101702",
+   "summary": "Patient-7, born November 17, 1967, case number URO-2026-0007, managed by Dr. med. Arzt-1 at the Urologische Klinik of Klinikum Berlin, had metastasized C61 Prostatakarzinom with a Gleason score of 4+5=9 (ISUP 5) and staging cT3b cN1 cM1b. Treatment involved chemotherapy and nuclear medicine using Radium-223 therapy. PSA levels measured 14.1 ng/ml on April 22, 2028, 18.3 ng/ml on May 20, 2028, and 23.5 ng/ml on June 17, 2028, indicating biochemical progression. On September 4, 2028, the patient presented with severe bone pain and fatigue, an ECOG performance status of 4, and exhausted curative options, leading to a shift to palliative care with WHO step 2 analgesia and Best Supportive Care. Patient-7 passed away on September 22, 2028, at Klinikum Berlin due to progressive metastatic castration-resistant prostate cancer.",
+   "attributes": {
+    "patient_id": "Patient-7",
+    "date_of_birth": "November 17, 1967",
+    "gender": null
+   }
+  },
+  {
+   "uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "name": "Prostatakarzinom",
+   "group_id": "Patient-7",
+   "labels": [
+    "Diagnosis",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:01:47.102163",
+   "summary": "Patient-7 has a primary diagnosis of C61 Prostatakarzinom (metastasiert, cT3b cN1 cM1b, Gleason score 4+5=9, ISUP 5), managed with chemotherapy and nuclear medicine using Radium-223. Routine monitoring shows total PSA levels with an ansteigend (rising) trend indicating clinical and biochemical progress, progressing from 11.0 ng/ml on March 25, 2028, to 14.1 ng/ml on April 22, 2028, 18.3 ng/ml on May 20, 2028, and 23.5 ng/ml on June 17, 2028. The patient maintains a stable clinical course overall with a good general condition and an ECOG performance status of 3, while experiencing bone pain and fatigue.\nPatient-7 presented with the diagnosis of C61 Prostatakarzinom (metastasiert, advanced stage following chemotherapy and nuclear medicine with Radium-223, with curative therapy approaches exhausted).\nThe advanced stage of C61 Prostatakarzinom follows chemotherapy and nuclear medicine with Radium-223.\nThe advanced stage of C61 Prostatakarzinom follows chemotherapy and nuclear medicine with Radium-223.\nKnochenschmerz is a symptom associated with the metastatic C61 Prostatakarzinom condition.\nFatigue is a symptom associated with the metastatic C61 Prostatakarzinom condition.\nPatient-7 has an advanced stage of C61 Prostatakarzinom with curative therapy options exhausted.",
+   "attributes": {
+    "icd_code": "C61",
+    "stage": "cT3b cN1 cM1b",
+    "date_confirmed": "November 17, 2026",
+    "status": "active"
+   }
+  },
+  {
+   "uuid": "33418545-28c3-4b6f-9819-643c5e58d81c",
+   "name": "Radium-223",
+   "group_id": "Patient-7",
+   "labels": [
+    "Medication",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:04:17.314452",
+   "summary": "Patient-7's treatment plan includes Radium-223 therapy administered as 6 cycles given every 4 weeks for metastatic C61 Prostatakarzinom, with ongoing administration documented through June 17, 2028.\nThe advanced stage of C61 Prostatakarzinom follows chemotherapy and nuclear medicine with Radium-223.\nPatient-7 previously received nuclear medicine treatment with Radium-223.",
+   "attributes": {
+    "dosage": null,
+    "route": null,
+    "frequency": "every 4 weeks",
+    "start_date": null,
+    "end_date": null
+   }
+  },
+  {
+   "uuid": "1a56b581-09f5-457b-875a-24615cd2e2ad",
+   "name": "Spezialisierte Ambulante Palliativversorgung",
+   "group_id": "Patient-7",
+   "labels": [
+    "Provider",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:18:45.646473",
+   "summary": "The further care plan for Patient-7 recommended close connection to Spezialisierte Ambulante Palliativversorgung.",
+   "attributes": {
+    "specialty": "Palliative Care",
+    "institution": "Klinikum Berlin",
+    "department": "Urologische Klinik"
+   }
+  },
+  {
+   "uuid": "d5a4c030-8762-46da-985e-2511faf5b55c",
+   "name": "Urologie",
+   "group_id": "Patient-7",
+   "labels": [
+    "Provider",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:03:15.971886",
+   "summary": "Urologie department at Klinikum Berlin participated in the interdisciplinary tumor conference on December 10, 2026, concerning Patient-7 with metastatic C61 Prostatakarzinom.",
+   "attributes": {
+    "specialty": "Urologie",
+    "institution": "Klinikum Berlin",
+    "department": "Urologie"
+   }
+  },
+  {
+   "uuid": "6a564764-b685-4b20-ac22-37920eb07bf5",
+   "name": "Urologische Klinik",
+   "group_id": "Patient-7",
+   "labels": [
+    "Provider",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:01:47.101949",
+   "summary": "Urologische Klinik at Klinikum Berlin, located at Beethovenstraße 65, 13597 Berlin, provides care and treatment evaluations for Patient-7 under the care of Dr. med. Arzt-1, managing metastatic prostate cancer (C61 Prostatakarzinom) with chemotherapy and nuclear medicine (Radium-223), routine follow-ups, laboratory testing including PSA evaluations, and palliative medicine consultations.\nPatient-7 was evaluated regarding palliative care at the Urological Clinic at Klinikum Berlin.",
+   "attributes": {
+    "specialty": "Urologie",
+    "institution": "Klinikum Berlin",
+    "department": "Urologische Klinik"
+   }
+  },
+  {
+   "uuid": "0200ad60-3026-405c-9106-c76664399c9f",
+   "name": "Zentrallabor at Klinikum Berlin – Klinik-1, Urologische Klinik",
+   "group_id": "Patient-7",
+   "labels": [
+    "Provider",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:08:46.809544",
+   "summary": "Patient-7 had a laboratory report issued by the Zentrallabor at Klinikum Berlin – Klinik-1, Urologische Klinik.\nPatient-7 was evaluated at the Urologische Klinik, Klinikum Berlin – Klinik-1 by Dr. med. Arzt-1 on March 25, 2028.\nThe laboratory report was ordered and signed electronically by sender Dr. med. Arzt-1 from the Urologische Klinik at Zentrallabor on March 25, 2028.\nDr. med. Arzt-1 managed patient care at the Urologische Klinik, Klinikum Berlin – Klinik-1.\nPatient-7 had a laboratory evaluation performed at the Urologische Klinik, Klinikum Berlin – Klinik-1.",
+   "attributes": {
+    "specialty": null,
+    "institution": "Klinikum Berlin",
+    "department": "Urologische Klinik"
+   }
+  },
+  {
+   "uuid": "af86da12-fe77-41c6-8070-0343070e59e9",
+   "name": "Zentrallabor of Klinikum Berlin",
+   "group_id": "Patient-7",
+   "labels": [
+    "Provider",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:05:53.171688",
+   "summary": "Patient-7 had laboratory testing performed at the Zentrallabor of Klinikum Berlin.\nPatient-7 had a laboratory evaluation performed and released by the Zentrallabor at Klinikum Berlin – Klinik-1 on March 25, 2027.\nThe total PSA laboratory test was released and validated by the Zentrallabor, Klinikum Berlin – Klinik-1.\nPatient-7 had laboratory tests performed at the Zentrallabor of Klinikum Berlin – Klinik-1 under the care of Dr. med. Arzt-1.\nPatient-7 had a laboratory evaluation validated and released by the Zentrallabor of Klinikum Berlin – Klinik-1.",
+   "attributes": {
+    "specialty": null,
+    "institution": "Klinikum Berlin",
+    "department": "Zentrallabor"
+   }
+  },
+  {
+   "uuid": "58eacf37-c55f-4631-992b-3e0443c4d770",
+   "name": "adenocarcinoma of the prostate",
+   "group_id": "Patient-7",
+   "labels": [
+    "Entity",
+    "PathologyResult"
+   ],
+   "created_at": "2026-11-18T18:02:28.075166",
+   "summary": "Patient-7 has a histological finding of an adenocarcinoma of the prostate with a Gleason-Score of 4+5=9 (ISUP 5).\nThe clinical diagnosis of C61 Prostatakarzinom is confirmed by the histological finding of an adenocarcinoma of the prostate with a Gleason-Score of 4+5=9 (ISUP 5).\nPatient-7 has a Gleason score of 4+5=9 (ISUP 5) associated with the diagnosis on January 29, 2028.\nPatient-7 has a Gleason score of 4+5=9 (ISUP 5) and staging of cT3b cN1 cM1b.",
+   "attributes": {
+    "grade": "4+5=9",
+    "finding": "C61 Prostatakarzinom",
+    "specimen_site": "prostate",
+    "pathology_date": "November 17, 2026"
+   }
+  },
+  {
+   "uuid": "a4593aa3-e07f-49dd-a957-4ec7987ad9d9",
+   "name": "androgen deprivation therapy",
+   "group_id": "Patient-7",
+   "labels": [
+    "Entity",
+    "TreatmentPlan"
+   ],
+   "created_at": "2026-11-18T18:03:45.124673",
+   "summary": "Patient-7 has a treatment plan that includes the initiation of androgen deprivation therapy.\nPatient-7 received treatment involving androgen deprivation therapy, though experiencing a rising PSA level despite it.",
+   "attributes": {
+    "therapy_type": "androgen deprivation therapy",
+    "planned_start": null,
+    "recommendation": "continue the current treatment strategy",
+    "decision_date": "2026-12-10"
+   }
+  },
+  {
+   "uuid": "b0e09d96-2470-45d4-ace0-dc21a4bbcd64",
+   "name": "bone metastases",
+   "group_id": "Patient-7",
+   "labels": [
+    "Entity",
+    "ImagingResult"
+   ],
+   "created_at": "2026-11-18T18:02:52.963939",
+   "summary": "The bone scintigraphy revealed multiple bone metastases in the spine, pelvis, and ribs.\nThe identified bone metastases are consistent with the prostate cancer diagnosis of C61 Prostatakarzinom.\nPatient-7 has confirmed multiple bone metastases in the spine, pelvis, and ribs.",
+   "attributes": {
+    "modality": "bone scintigraphy",
+    "body_region": "spine, pelvis, and ribs",
+    "finding": "multiple bone metastases in the spine, pelvis, and ribs, with suspicious lesions confirmed",
+    "impression": "findings indicate multiple bone metastases consistent with the prostate cancer diagnosis",
+    "imaging_date": "November 30, 2026"
+   }
+  },
+  {
+   "uuid": "6c44cd14-b44a-4478-b2f0-0d0e3f916014",
+   "name": "bone scintigraphy",
+   "group_id": "Patient-7",
+   "labels": [
+    "Entity",
+    "Procedure"
+   ],
+   "created_at": "2026-11-18T18:02:52.963725",
+   "summary": "Patient-7 underwent a bone scintigraphy procedure on November 30, 2026.\nThe bone scintigraphy procedure for Patient-7 was ordered and performed by Dr. med. Arzt-1.\nThe bone scintigraphy procedure was performed at the Urologische Klinik, Klinikum Berlin.\nThe bone scintigraphy revealed multiple bone metastases in the spine, pelvis, and ribs.",
+   "attributes": {
+    "procedure_date": "November 30, 2026",
+    "outcome": "multiple bone metastases in the spine, pelvis, and ribs, with suspicious lesions confirmed",
+    "indication": "staging for prostate cancer"
+   }
+  },
+  {
+   "uuid": "fd94dfc3-b619-46f7-83d0-07f3982f9e7e",
+   "name": "cT3b cN1 cM1b",
+   "group_id": "Patient-7",
+   "labels": [
+    "Diagnosis",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:10:57.842971",
+   "summary": "Patient-7 has a staging of cT3b cN1 cM1b on January 29, 2028.",
+   "attributes": {
+    "icd_code": "C61",
+    "stage": "cT3b cN1 cM1b",
+    "date_confirmed": null,
+    "status": null
+   }
+  },
+  {
+   "uuid": "a4c391d4-90f8-4740-8ff7-379b63ea2629",
+   "name": "chemotherapy",
+   "group_id": "Patient-7",
+   "labels": [
+    "Entity",
+    "TreatmentPlan"
+   ],
+   "created_at": "2026-11-18T18:03:45.124682",
+   "summary": "Patient-7 has a treatment plan that includes 6 cycles of chemotherapy.\nPatient-7 is undergoing ongoing chemotherapy treatment for C61 Prostatakarzinom.\nPatient-7 is under treatment with chemotherapy for metastatic C61 Prostatakarzinom.\nPatient-7 is undergoing chemotherapy as part of their treatment.\nMetastatic C61 Prostatakarzinom is treated with Chemotherapie.\nPatient-7 is undergoing chemotherapy as part of the treatment for metastatic prostate cancer on March 25, 2028.\nPatient-7 is undergoing treatment involving chemotherapy.\nPatient-7 is treated with chemotherapy for C61 Prostatakarzinom.\nPatient-7's metastatic condition is managed with chemotherapy as part of the continuation of the current treatment strategy.\nThe advanced stage of C61 Prostatakarzinom follows chemotherapy and nuclear medicine with Radium-223.",
+   "attributes": {
+    "therapy_type": "chemotherapy",
+    "planned_start": null,
+    "recommendation": "continuation of the current treatment strategy",
+    "decision_date": "2026-12-10"
+   }
+  },
+  {
+   "uuid": "e28f080f-cbfe-4160-ba39-509f1729f10b",
+   "name": "fatigue",
+   "group_id": "Patient-7",
+   "labels": [
+    "Symptom",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:01:47.102087",
+   "summary": "Patient Patient-7 presented with symptoms of fatigue.\nPatient-7 presents with symptoms of fatigue.\nPatient-7 reported fatigue on January 29, 2028.\nPatient-7 presented with fatigue on March 25, 2028.\nPatient-7 reported experiencing fatigue during the clinical visit.\nPatient-7 clinical presentation included fatigue on June 17, 2028.\nFatigue is a symptom associated with the metastatic C61 Prostatakarzinom condition.",
+   "attributes": {
+    "severity": null,
+    "onset_date": null,
+    "duration": null,
+    "status": "active"
+   }
+  },
+  {
+   "uuid": "e44dd7cf-b5c9-49b5-8229-3271515ff43b",
+   "name": "hemoglobin (Hb)",
+   "group_id": "Patient-7",
+   "labels": [
+    "LabTest",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:02:05.381826",
+   "summary": "Patient-7 underwent laboratory testing for hemoglobin (Hb), resulting in 14.1 g/dl.",
+   "attributes": {
+    "test_value": "14.1",
+    "unit": "g/dl",
+    "reference_range": "13.5 – 17.5 g/dl",
+    "test_date": "2026-11-08",
+    "result_status": "normal"
+   }
+  },
+  {
+   "uuid": "69ca1a7c-2b09-4902-9d5e-d5a610cf808e",
+   "name": "knochenschmerzen",
+   "group_id": "Patient-7",
+   "labels": [
+    "Symptom",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:01:47.102046",
+   "summary": "Patient Patient-7 presented with symptoms of knochenschmerzen.\nPatient-7 reported experiencing bone pain and fatigue.\nPatient-7 reported symptoms including knochenschmerzen on January 29, 2028.\nPatient-7 presented with bone pain on March 25, 2028.\nPatient-7 reported experiencing bone pain during the clinical visit.\nPatient-7 reported ongoing bone pain during the evaluation.\nPatient-7 clinical presentation included bone pain on June 17, 2028.\nPatient-7 reported symptoms of severe knochenschmerz.\nKnochenschmerz is a symptom associated with the metastatic C61 Prostatakarzinom condition.\nPatient-7 presented with severe knochenschmerzen as part of their symptom load.",
+   "attributes": {
+    "severity": "severe",
+    "onset_date": null,
+    "duration": null,
+    "status": "active"
+   }
+  },
+  {
+   "uuid": "22253965-cbcc-4bed-9098-381b9ef78ec2",
+   "name": "lactate dehydrogenase (LDH)",
+   "group_id": "Patient-7",
+   "labels": [
+    "LabTest",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:02:05.381785",
+   "summary": "Patient-7 underwent laboratory testing for lactate dehydrogenase (LDH), resulting in 195.0 U/L.",
+   "attributes": {
+    "test_value": "195.0",
+    "unit": "U/L",
+    "reference_range": "135 – 250 U/L",
+    "test_date": "November 8, 2026",
+    "result_status": "normal"
+   }
+  },
+  {
+   "uuid": "0645a4c2-a147-4788-a008-3c03752c4adc",
+   "name": "mCSPC unter ADT + Docetaxel",
+   "group_id": "Patient-7",
+   "labels": [
+    "Diagnosis",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:04:50.036678",
+   "summary": "Patient-7 was treated for the diagnosis mCSPC unter ADT + Docetaxel during the inpatient stay.\nThe diagnosis mCSPC unter ADT + Docetaxel involves treatment with Docetaxel.",
+   "attributes": {
+    "icd_code": null,
+    "stage": null,
+    "date_confirmed": null,
+    "status": "active"
+   }
+  },
+  {
+   "uuid": "0794b6ba-2358-4ada-a785-c807d67d0e06",
+   "name": "progressive metastatic castration-resistant prostate cancer",
+   "group_id": "Patient-7",
+   "labels": [
+    "Diagnosis",
+    "Entity"
+   ],
+   "created_at": "2026-11-18T18:19:17.949448",
+   "summary": "Patient-7 passed away from progressive metastatic castration-resistant prostate cancer.",
+   "attributes": {
+    "icd_code": "C61",
+    "stage": "cT3b cN1 cM1b",
+    "date_confirmed": null,
+    "status": "active"
+   }
+  },
+  {
+   "uuid": "4959c776-2b4f-4e3b-8266-8748e7f495bd",
+   "name": "prostate core needle biopsies",
+   "group_id": "Patient-7",
+   "labels": [
+    "Entity",
+    "Procedure"
+   ],
+   "created_at": "2026-11-18T18:02:28.075157",
+   "summary": "Patient-7 underwent 12 prostate core needle biopsies submitted to the pathology report.\nThe 12 prostate core needle biopsies were received and evaluated by the Institut für Pathologie at Klinikum Berlin – Klinik-1.",
+   "attributes": {
+    "procedure_date": "2026-11-17",
+    "outcome": "adenocarcinoma of the prostate with a Gleason-Score of 4+5=9 (ISUP 5)",
+    "indication": "Vd. a. Prostatakarzinom (C61)"
+   }
+  }
+ ],
+ "edges": [
+  {
+   "uuid": "01f3dbf8-214b-4ee4-8fb5-14888ac40ea0",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:01:51.318816",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient Patient-7 has a strongly elevated PSA level of 103,9 ng/ml.",
+   "episodes": [
+    "c364e150-2cb4-41e5-9e0a-8612bc1ea8c4",
+    "63d62f13-cbbf-47b2-82f7-21c7cc7c0914"
+   ],
+   "expired_at": "2026-11-18T18:05:18.977527",
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": "2027-01-21T00:00:00",
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "08100bc5-3b95-4692-be41-21fd003bd08e",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "85244ca2-4896-47ff-9f3a-09999a97f0ce",
+   "created_at": "2026-11-18T18:01:51.318672",
+   "name": "MANAGED_AT",
+   "fact": "Patient Patient-7 was referred to the Urologische Klinik at Klinikum Berlin - Klinik-1 located at Beethovenstraße 65, 13597 Berlin.",
+   "episodes": [
+    "c364e150-2cb4-41e5-9e0a-8612bc1ea8c4"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "3bb76436-fb8f-4d24-80ab-0a5b9f61828e",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "6a564764-b685-4b20-ac22-37920eb07bf5",
+   "created_at": "2026-11-18T18:01:51.318562",
+   "name": "MANAGED_AT",
+   "fact": "Patient Patient-7 was referred by referring provider Dr. med. Arzt-1 from the Urologische Klinik with an Überweisungsbrief.",
+   "episodes": [
+    "c364e150-2cb4-41e5-9e0a-8612bc1ea8c4"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "59809d34-5d48-4703-b5d1-5ee0e4fd7f39",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:01:51.318886",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient Patient-7 has a referring diagnosis of Vd. a. Prostatakarzinom (C61) – Urologische Abklärung.",
+   "episodes": [
+    "c364e150-2cb4-41e5-9e0a-8612bc1ea8c4"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "82ace30b-eaae-40c4-89f2-4b3593d1a676",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "69ca1a7c-2b09-4902-9d5e-d5a610cf808e",
+   "created_at": "2026-11-18T18:01:51.318729",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient Patient-7 presented with symptoms of knochenschmerzen.",
+   "episodes": [
+    "c364e150-2cb4-41e5-9e0a-8612bc1ea8c4",
+    "7c61aded-2692-4d16-8638-73d27b27de34"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a6778945-32aa-4829-9e5a-7c8240f4e8c2",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "e28f080f-cbfe-4160-ba39-509f1729f10b",
+   "created_at": "2026-11-18T18:01:51.318772",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient Patient-7 presented with symptoms of fatigue.",
+   "episodes": [
+    "c364e150-2cb4-41e5-9e0a-8612bc1ea8c4"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ee4a086d-d490-4bba-8183-7e932a88e2d6",
+   "group_id": "Patient-7",
+   "source_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "target_node_uuid": "6a564764-b685-4b20-ac22-37920eb07bf5",
+   "created_at": "2026-11-18T18:01:51.318932",
+   "name": "RELATES_TO",
+   "fact": "Referring provider Dr. med. Arzt-1 is from the Urologische Klinik.",
+   "episodes": [
+    "c364e150-2cb4-41e5-9e0a-8612bc1ea8c4"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-06T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-06T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "0d0037f1-4647-4b59-9a04-d12d3db7f0a1",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "e44dd7cf-b5c9-49b5-8229-3271515ff43b",
+   "created_at": "2026-11-18T18:02:10.599321",
+   "name": "HAD_LAB_TEST",
+   "fact": "Patient-7 underwent laboratory testing for hemoglobin (Hb), resulting in 14.1 g/dl.",
+   "episodes": [
+    "63d62f13-cbbf-47b2-82f7-21c7cc7c0914"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-08T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-08T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "125ddf25-7433-465f-82fe-ce8aed753750",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "61f1b950-936e-451a-8702-ccfe2e3c40f2",
+   "created_at": "2026-11-18T18:02:10.599244",
+   "name": "HAD_LAB_TEST",
+   "fact": "Patient-7 underwent laboratory testing for Alkaline phosphatase (AP), resulting in 85.0 U/L.",
+   "episodes": [
+    "63d62f13-cbbf-47b2-82f7-21c7cc7c0914"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-08T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-08T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "16ccdb23-e7e0-4ce6-a75d-3b0a3c8671b2",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "22253965-cbcc-4bed-9098-381b9ef78ec2",
+   "created_at": "2026-11-18T18:02:10.599284",
+   "name": "HAD_LAB_TEST",
+   "fact": "Patient-7 underwent laboratory testing for lactate dehydrogenase (LDH), resulting in 195.0 U/L.",
+   "episodes": [
+    "63d62f13-cbbf-47b2-82f7-21c7cc7c0914"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-08T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-08T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "804209ac-8e6c-400e-966d-dc59908aa5b9",
+   "group_id": "Patient-7",
+   "source_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:02:10.599370",
+   "name": "INDICATES",
+   "fact": "The severely elevated PSA (gesamt) value of 103.9 ng/ml is evaluated in relation to the diagnosis of Vd. a. Prostatakarzinom (C61).",
+   "episodes": [
+    "63d62f13-cbbf-47b2-82f7-21c7cc7c0914"
+   ],
+   "expired_at": "2026-11-18T18:05:18.977535",
+   "valid_at": "2026-11-08T00:00:00",
+   "invalid_at": "2027-01-21T00:00:00",
+   "reference_time": "2026-11-08T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "893df62f-ccb8-490c-9704-ac80fbf36c46",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "85244ca2-4896-47ff-9f3a-09999a97f0ce",
+   "created_at": "2026-11-18T18:02:10.599073",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 had laboratory tests performed at Klinikum Berlin – Klinik-1, Urologische Klinik on November 8, 2026.",
+   "episodes": [
+    "63d62f13-cbbf-47b2-82f7-21c7cc7c0914"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-08T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-08T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "efe1b3c7-58c6-4712-8b92-0785c24410eb",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:02:10.599154",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 has a clinical diagnosis of Vd. a. Prostatakarzinom (C61) listed on the laboratory report.",
+   "episodes": [
+    "63d62f13-cbbf-47b2-82f7-21c7cc7c0914"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-08T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-08T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "0060fc1c-7bb8-41b8-af4e-7a841853571d",
+   "group_id": "Patient-7",
+   "source_node_uuid": "58eacf37-c55f-4631-992b-3e0443c4d770",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:02:33.352049",
+   "name": "CONFIRMED_BY",
+   "fact": "The clinical diagnosis of C61 Prostatakarzinom is confirmed by the histological finding of an adenocarcinoma of the prostate with a Gleason-Score of 4+5=9 (ISUP 5).",
+   "episodes": [
+    "8ebbd34c-0be8-4da7-9efa-cd20df4619eb"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-17T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-17T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "0ed52767-f746-488a-bf0f-4e2113a59787",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "4959c776-2b4f-4e3b-8266-8748e7f495bd",
+   "created_at": "2026-11-18T18:02:33.351917",
+   "name": "UNDERWENT",
+   "fact": "Patient-7 underwent 12 prostate core needle biopsies submitted to the pathology report.",
+   "episodes": [
+    "8ebbd34c-0be8-4da7-9efa-cd20df4619eb"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-17T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-17T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "1e8ea521-2375-4022-9c69-f97cda1e3f8e",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:02:33.351774",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 has a clinical diagnosis of C61 Prostatakarzinom.",
+   "episodes": [
+    "8ebbd34c-0be8-4da7-9efa-cd20df4619eb",
+    "b2a0113e-4f5b-4d29-bf10-16d5eeb7e7b8",
+    "296868ce-5eaf-4fcb-8e0d-7cf8b3752d5e",
+    "cbcaec2b-441d-4aa1-941c-b572ef6ed5e1",
+    "4685fd21-4578-4c8b-8b19-f8bdb97b13c6"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-17T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-17T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "30261ddb-c7a0-4d06-a10c-f5213e95f1bf",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "58eacf37-c55f-4631-992b-3e0443c4d770",
+   "created_at": "2026-11-18T18:02:33.351978",
+   "name": "HAS_PATHOLOGY",
+   "fact": "Patient-7 has a histological finding of an adenocarcinoma of the prostate with a Gleason-Score of 4+5=9 (ISUP 5).",
+   "episodes": [
+    "8ebbd34c-0be8-4da7-9efa-cd20df4619eb"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-17T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-17T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "4c4cb9f4-1cf6-4998-9753-a9f565d64201",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:02:33.351854",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 has a preoperative tumor marker PSA level of 103,9 ng/ml.",
+   "episodes": [
+    "8ebbd34c-0be8-4da7-9efa-cd20df4619eb"
+   ],
+   "expired_at": "2026-11-18T18:05:18.977544",
+   "valid_at": "2026-11-17T00:00:00",
+   "invalid_at": "2027-01-21T00:00:00",
+   "reference_time": "2026-11-17T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "64103432-8e0b-4ef7-a544-2f344c179131",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "106be11c-312c-4f4e-80db-d79923485cb6",
+   "created_at": "2026-11-18T18:02:33.352182",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 had a pathology report issued by the Institut für Pathologie at Klinikum Berlin – Klinik-1.",
+   "episodes": [
+    "8ebbd34c-0be8-4da7-9efa-cd20df4619eb"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-17T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-17T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c184b6a6-729a-4306-a7a5-c304d4d44018",
+   "group_id": "Patient-7",
+   "source_node_uuid": "4959c776-2b4f-4e3b-8266-8748e7f495bd",
+   "target_node_uuid": "106be11c-312c-4f4e-80db-d79923485cb6",
+   "created_at": "2026-11-18T18:02:33.352123",
+   "name": "PERFORMED_BY",
+   "fact": "The 12 prostate core needle biopsies were received and evaluated by the Institut für Pathologie at Klinikum Berlin – Klinik-1.",
+   "episodes": [
+    "8ebbd34c-0be8-4da7-9efa-cd20df4619eb"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-17T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-17T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "17a607a9-edf8-4018-9759-f4c5a77c51c9",
+   "group_id": "Patient-7",
+   "source_node_uuid": "b0e09d96-2470-45d4-ace0-dc21a4bbcd64",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:02:57.852326",
+   "name": "INDICATES",
+   "fact": "The identified bone metastases are consistent with the prostate cancer diagnosis of C61 Prostatakarzinom.",
+   "episodes": [
+    "b2a0113e-4f5b-4d29-bf10-16d5eeb7e7b8"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-30T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-30T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "23a3dd45-9323-4af0-95dc-eb4468656a5f",
+   "group_id": "Patient-7",
+   "source_node_uuid": "6c44cd14-b44a-4478-b2f0-0d0e3f916014",
+   "target_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "created_at": "2026-11-18T18:02:57.852162",
+   "name": "PERFORMED_BY",
+   "fact": "The bone scintigraphy procedure for Patient-7 was ordered and performed by Dr. med. Arzt-1.",
+   "episodes": [
+    "b2a0113e-4f5b-4d29-bf10-16d5eeb7e7b8"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-30T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-30T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "5e0cf1ff-36ff-4412-a023-f98f3ce1117f",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "b0e09d96-2470-45d4-ace0-dc21a4bbcd64",
+   "created_at": "2026-11-18T18:02:57.852367",
+   "name": "HAS_IMAGING",
+   "fact": "Patient-7 has confirmed multiple bone metastases in the spine, pelvis, and ribs.",
+   "episodes": [
+    "b2a0113e-4f5b-4d29-bf10-16d5eeb7e7b8"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-30T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-30T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "8f622a3c-82da-48b5-a6c9-f5689969d000",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "6c44cd14-b44a-4478-b2f0-0d0e3f916014",
+   "created_at": "2026-11-18T18:02:57.852105",
+   "name": "UNDERWENT",
+   "fact": "Patient-7 underwent a bone scintigraphy procedure on November 30, 2026.",
+   "episodes": [
+    "b2a0113e-4f5b-4d29-bf10-16d5eeb7e7b8"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-30T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-30T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "9545a07b-e252-4cc3-bb18-5add0878a41a",
+   "group_id": "Patient-7",
+   "source_node_uuid": "6c44cd14-b44a-4478-b2f0-0d0e3f916014",
+   "target_node_uuid": "b0e09d96-2470-45d4-ace0-dc21a4bbcd64",
+   "created_at": "2026-11-18T18:02:57.852268",
+   "name": "RELATES_TO",
+   "fact": "The bone scintigraphy revealed multiple bone metastases in the spine, pelvis, and ribs.",
+   "episodes": [
+    "b2a0113e-4f5b-4d29-bf10-16d5eeb7e7b8"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-30T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-30T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "d6c51afa-9088-4629-82f5-f9e65bf224dd",
+   "group_id": "Patient-7",
+   "source_node_uuid": "6c44cd14-b44a-4478-b2f0-0d0e3f916014",
+   "target_node_uuid": "6a564764-b685-4b20-ac22-37920eb07bf5",
+   "created_at": "2026-11-18T18:02:57.852218",
+   "name": "PERFORMED_BY",
+   "fact": "The bone scintigraphy procedure was performed at the Urologische Klinik, Klinikum Berlin.",
+   "episodes": [
+    "b2a0113e-4f5b-4d29-bf10-16d5eeb7e7b8"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-11-30T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-11-30T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "00406323-0cb3-4b20-bbff-aec047d9f32a",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:03:22.798402",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 has a current PSA level of 103.9 ng/ml.",
+   "episodes": [
+    "58a18d6b-2890-42c5-baed-f691a2dfaf2d",
+    "3f7dbaf7-d65c-4d33-8da7-08cb9122c25f"
+   ],
+   "expired_at": "2026-11-18T18:05:18.977551",
+   "valid_at": "2026-12-10T00:00:00",
+   "invalid_at": "2027-01-21T00:00:00",
+   "reference_time": "2026-12-10T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "341e7647-8f62-46f0-a0bd-e1e516136eba",
+   "group_id": "Patient-7",
+   "source_node_uuid": "b841f87a-a553-40f3-b931-357a183051ca",
+   "target_node_uuid": "acbae3a9-84d1-4773-8b99-d54186c76fb3",
+   "created_at": "2026-11-18T18:03:22.798809",
+   "name": "RELATES_TO",
+   "fact": "Adt Plus Chemotherapy incorporates Docetaxel according to the STAMPEDE protocol for mHSPC Gleason 9 and PSA > 100.",
+   "episodes": [
+    "58a18d6b-2890-42c5-baed-f691a2dfaf2d"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-10T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-10T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "4499911b-f4d7-4293-b381-d6fc6bde36f2",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "b841f87a-a553-40f3-b931-357a183051ca",
+   "created_at": "2026-11-18T18:03:22.798527",
+   "name": "HAS_TREATMENT_PLAN",
+   "fact": "Patient-7 has a tumor board consensus recommendation of Adt Plus Chemotherapy.",
+   "episodes": [
+    "58a18d6b-2890-42c5-baed-f691a2dfaf2d"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-10T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-10T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "5e507786-48bb-41e8-983e-1adc9e97c9c8",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:03:22.798293",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 presents with a known metastatic C61 Prostatakarzinom staged as cT3b cN1 cM1b with a Gleason score of 4+5=9 (ISUP 5).",
+   "episodes": [
+    "58a18d6b-2890-42c5-baed-f691a2dfaf2d"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-10T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-10T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "84b4c585-6e6d-4613-a7e5-7c6757f7408f",
+   "group_id": "Patient-7",
+   "source_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "target_node_uuid": "b841f87a-a553-40f3-b931-357a183051ca",
+   "created_at": "2026-11-18T18:03:22.798672",
+   "name": "RELATES_TO",
+   "fact": "C61 Prostatakarzinom is treated with Adt Plus Chemotherapy according to the tumor board consensus recommendation.",
+   "episodes": [
+    "58a18d6b-2890-42c5-baed-f691a2dfaf2d"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-10T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-10T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a13d8a00-89cd-46cb-bf27-81398b0d749d",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "6a564764-b685-4b20-ac22-37920eb07bf5",
+   "created_at": "2026-11-18T18:03:22.798105",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 was managed and discussed at the Urologische Klinik, Klinikum Berlin during the interdisciplinary tumor conference.",
+   "episodes": [
+    "58a18d6b-2890-42c5-baed-f691a2dfaf2d"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-10T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-10T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "dfd144d2-68a1-4df3-8d8d-22c252d4ba18",
+   "group_id": "Patient-7",
+   "source_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "target_node_uuid": "6a564764-b685-4b20-ac22-37920eb07bf5",
+   "created_at": "2026-11-18T18:03:22.797844",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-1 issued an interdisciplinary tumor conference protocol at the Urologische Klinik, Klinikum Berlin.",
+   "episodes": [
+    "58a18d6b-2890-42c5-baed-f691a2dfaf2d"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-10T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-10T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "0c7ee382-6f40-4e2e-ba7a-999bc33b4b7b",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "33418545-28c3-4b6f-9819-643c5e58d81c",
+   "created_at": "2026-11-18T18:04:24.025985",
+   "name": "PRESCRIBED",
+   "fact": "Patient-7's treatment plan includes Nuklearmedizin with Radium-223.",
+   "episodes": [
+    "7c61aded-2692-4d16-8638-73d27b27de34"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "15cc218c-3009-44ee-afec-4102eb988329",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:04:24.025772",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 currently presents with an active PSA value of 103.9 ng/ml.",
+   "episodes": [
+    "7c61aded-2692-4d16-8638-73d27b27de34"
+   ],
+   "expired_at": "2026-11-18T18:05:18.977559",
+   "valid_at": "2026-12-28T00:00:00",
+   "invalid_at": "2027-01-21T00:00:00",
+   "reference_time": "2026-12-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "1e815e7e-91b7-4bf7-aaf1-032b0ccffe4d",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "e28f080f-cbfe-4160-ba39-509f1729f10b",
+   "created_at": "2026-11-18T18:04:24.025893",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-7 presents with symptoms of fatigue.",
+   "episodes": [
+    "7c61aded-2692-4d16-8638-73d27b27de34",
+    "4e48725b-b576-4cec-a146-9469177b873a",
+    "d92971ed-3b0a-45f4-807f-2c093797475a",
+    "1871a1c9-1058-4cc1-b7bc-35b14e118a99",
+    "aa069d6e-e6c0-499b-8b64-6c088138653e"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "54f6ff50-9f5e-49fa-b15c-661158a3216f",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:04:24.025726",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 has a clinical diagnosis of C61 Prostatakarzinom (metastasiert – Chemotherapie + Nuklearmedizin (Radium-223)).",
+   "episodes": [
+    "7c61aded-2692-4d16-8638-73d27b27de34",
+    "957d66f7-9c38-4cda-92d1-409650b2afdc",
+    "d5eb93be-860a-4aa1-aa9e-10fe03872b74",
+    "8639a22e-7f4c-461a-ab44-18434620f586",
+    "70960038-2b0d-4e25-a7cb-b6b66547332b"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "6e6f3cd5-6ddb-4269-9bc8-c07475fd99a7",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "acbae3a9-84d1-4773-8b99-d54186c76fb3",
+   "created_at": "2026-11-18T18:03:52.228159",
+   "name": "PRESCRIBED",
+   "fact": "Patient-7 was prescribed Docetaxel at 75 mg/m² for 6 cycles of chemotherapy.",
+   "episodes": [
+    "3f7dbaf7-d65c-4d33-8da7-08cb9122c25f"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "7dc91258-f9a9-4f7c-bcb6-1326f1d2301e",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "e9ab9602-ec23-4b16-9b7a-b3015c6246aa",
+   "created_at": "2026-11-18T18:03:52.227754",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 was evaluated and managed at the Klinik für Onkologie und Hämatologie of Klinikum Berlin.",
+   "episodes": [
+    "3f7dbaf7-d65c-4d33-8da7-08cb9122c25f"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "830ccde6-64f7-4d09-9138-f31f571a620f",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "acbae3a9-84d1-4773-8b99-d54186c76fb3",
+   "created_at": "2026-11-18T18:04:24.025944",
+   "name": "PRESCRIBED",
+   "fact": "Patient-7 has a planned inpatient administration of Docetaxel chemotherapy (Zyklus 1).",
+   "episodes": [
+    "7c61aded-2692-4d16-8638-73d27b27de34"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "879337b4-e3eb-47b2-a5a3-ce6e0267afa7",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "69ca1a7c-2b09-4902-9d5e-d5a610cf808e",
+   "created_at": "2026-11-18T18:03:52.227936",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-7 reported experiencing bone pain and fatigue.",
+   "episodes": [
+    "3f7dbaf7-d65c-4d33-8da7-08cb9122c25f",
+    "4e48725b-b576-4cec-a146-9469177b873a",
+    "d92971ed-3b0a-45f4-807f-2c093797475a"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "9c6bd7d3-2ffc-45f7-ab58-12c0b6ee8372",
+   "group_id": "Patient-7",
+   "source_node_uuid": "297bab53-e14e-4719-901a-3c41e156834b",
+   "target_node_uuid": "85244ca2-4896-47ff-9f3a-09999a97f0ce",
+   "created_at": "2026-11-18T18:04:24.025559",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-2 is affiliated with Klinikum Berlin – Klinik-1 at Beethovenstraße 65, 13597 Berlin.",
+   "episodes": [
+    "7c61aded-2692-4d16-8638-73d27b27de34"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ae3a5fd8-d5fa-4054-b33b-ecf77309f778",
+   "group_id": "Patient-7",
+   "source_node_uuid": "297bab53-e14e-4719-901a-3c41e156834b",
+   "target_node_uuid": "e9ab9602-ec23-4b16-9b7a-b3015c6246aa",
+   "created_at": "2026-11-18T18:04:24.025448",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-2 operates from the Klinik für Onkologie und Hämatologie at Klinikum Berlin – Klinik-1.",
+   "episodes": [
+    "7c61aded-2692-4d16-8638-73d27b27de34"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "b5932698-f20c-487d-83f0-880661786831",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "297bab53-e14e-4719-901a-3c41e156834b",
+   "created_at": "2026-11-18T18:04:24.025648",
+   "name": "RELATES_TO",
+   "fact": "Patient-7 received an inpatient admission referral issued by Dr. med. Arzt-2 for Docetaxel chemotherapy.",
+   "episodes": [
+    "7c61aded-2692-4d16-8638-73d27b27de34"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "b76257ae-3641-4a96-b743-c3c123ec211f",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "a4593aa3-e07f-49dd-a957-4ec7987ad9d9",
+   "created_at": "2026-11-18T18:03:52.228028",
+   "name": "HAS_TREATMENT_PLAN",
+   "fact": "Patient-7 has a treatment plan that includes the initiation of androgen deprivation therapy.",
+   "episodes": [
+    "3f7dbaf7-d65c-4d33-8da7-08cb9122c25f"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ba471fa2-0421-4543-8a50-d8a3a582ad19",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "a4c391d4-90f8-4740-8ff7-379b63ea2629",
+   "created_at": "2026-11-18T18:03:52.228069",
+   "name": "HAS_TREATMENT_PLAN",
+   "fact": "Patient-7 has a treatment plan that includes 6 cycles of chemotherapy.",
+   "episodes": [
+    "3f7dbaf7-d65c-4d33-8da7-08cb9122c25f"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ba74aacd-a2ba-4329-9ceb-79e797ff8fb6",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:03:52.227893",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 has a primary diagnosis of C61 Prostatakarzinom, metastasiert, with a Gleason score of 4+5=9 (ISUP 5) and staging of cT3b cN1 cM1b.",
+   "episodes": [
+    "3f7dbaf7-d65c-4d33-8da7-08cb9122c25f",
+    "4e48725b-b576-4cec-a146-9469177b873a"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "d8ef77e1-aa18-4733-9f9d-5d6a6b4766d3",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "5f7e1fe2-57e4-4e00-8bbe-cadb7e86bc7b",
+   "created_at": "2026-11-18T18:03:52.227815",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 received care at Klinikum Berlin, specifically at the Klinik für Onkologie und Hämatologie.",
+   "episodes": [
+    "3f7dbaf7-d65c-4d33-8da7-08cb9122c25f"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "e3d23fe2-2e38-44c8-8fff-c45047467ea2",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "f66f6a00-84d4-4731-a294-18e42822c18a",
+   "created_at": "2026-11-18T18:04:24.025811",
+   "name": "HAS_VITAL_SIGNS",
+   "fact": "Patient-7 has an ECOG performance status of 2.",
+   "episodes": [
+    "7c61aded-2692-4d16-8638-73d27b27de34",
+    "fb1438f4-e40c-4b82-8e25-f53d635ca44f"
+   ],
+   "expired_at": "2026-11-18T18:11:14.046436",
+   "valid_at": "2026-12-28T00:00:00",
+   "invalid_at": "2028-01-29T00:00:00",
+   "reference_time": "2026-12-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "eb83c102-e483-4c52-a5bd-4a08b0987c35",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "5e330d8d-f600-4c99-a417-d7241a3f8604",
+   "created_at": "2026-11-18T18:03:52.228116",
+   "name": "PRESCRIBED",
+   "fact": "Patient-7 was prescribed Leuprorelin 3-Monats-Depot as part of androgen deprivation therapy.",
+   "episodes": [
+    "3f7dbaf7-d65c-4d33-8da7-08cb9122c25f"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ff2c55de-25c1-4d19-acf6-73e3fd830c61",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "297bab53-e14e-4719-901a-3c41e156834b",
+   "created_at": "2026-11-18T18:03:52.227661",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 presented to Dr. med. Arzt-2 at the Klinik für Onkologie und Hämatologie of Klinikum Berlin for ongoing management.",
+   "episodes": [
+    "3f7dbaf7-d65c-4d33-8da7-08cb9122c25f"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-28T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "05cfc3cc-277c-493b-b93e-e1e6e8cbd0a1",
+   "group_id": "Patient-7",
+   "source_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "target_node_uuid": "33418545-28c3-4b6f-9819-643c5e58d81c",
+   "created_at": "2026-11-18T18:04:55.092620",
+   "name": "TREATED_BY",
+   "fact": "Metastatic prostate cancer (C61 Prostatakarzinom) was managed with nuclear medicine including Radium-223.",
+   "episodes": [
+    "6743d248-d485-499c-8d1b-8a93d022d45c",
+    "67f5cb5d-cc56-42c4-ace5-c37880f8e0b9"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-31T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-31T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "4908f03a-2e3b-4a68-91d9-7359e944909a",
+   "group_id": "Patient-7",
+   "source_node_uuid": "0645a4c2-a147-4788-a008-3c03752c4adc",
+   "target_node_uuid": "acbae3a9-84d1-4773-8b99-d54186c76fb3",
+   "created_at": "2026-11-18T18:04:55.092568",
+   "name": "TREATED_BY",
+   "fact": "The diagnosis mCSPC unter ADT + Docetaxel involves treatment with Docetaxel.",
+   "episodes": [
+    "6743d248-d485-499c-8d1b-8a93d022d45c"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-31T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-31T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "6d5e648f-165f-4ac2-bf1c-d6d779333aee",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "0645a4c2-a147-4788-a008-3c03752c4adc",
+   "created_at": "2026-11-18T18:04:55.092460",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 was treated for the diagnosis mCSPC unter ADT + Docetaxel during the inpatient stay.",
+   "episodes": [
+    "6743d248-d485-499c-8d1b-8a93d022d45c"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-31T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-31T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "85a866d7-82c0-468b-bdb1-2abb34c7e557",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "e9ab9602-ec23-4b16-9b7a-b3015c6246aa",
+   "created_at": "2026-11-18T18:04:55.092296",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 was discharged following an inpatient stay at Klinikum Berlin, Klinik-1, Klinik für Onkologie und Hämatologie after treatment.",
+   "episodes": [
+    "6743d248-d485-499c-8d1b-8a93d022d45c"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-31T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-31T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "8f95d51b-1370-453e-993b-73d48450953b",
+   "group_id": "Patient-7",
+   "source_node_uuid": "297bab53-e14e-4719-901a-3c41e156834b",
+   "target_node_uuid": "e9ab9602-ec23-4b16-9b7a-b3015c6246aa",
+   "created_at": "2026-11-18T18:04:55.092399",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-2 authored the discharge summary from the Department of Oncology and Hematology at Klinikum Berlin, Klinik-1.",
+   "episodes": [
+    "6743d248-d485-499c-8d1b-8a93d022d45c"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-31T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-31T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ea5b27d6-fe5d-4de8-942e-58d9aee2d6a0",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:04:55.092522",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 was managed for metastatic prostate cancer (C61 Prostatakarzinom) with chemotherapy and nuclear medicine.",
+   "episodes": [
+    "6743d248-d485-499c-8d1b-8a93d022d45c"
+   ],
+   "expired_at": null,
+   "valid_at": "2026-12-31T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2026-12-31T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "161a7465-05d0-41cf-a14a-1104581067b2",
+   "group_id": "Patient-7",
+   "source_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:05:15.372388",
+   "name": "INDICATES",
+   "fact": "The total PSA tumor marker value of 66,3 ng/ml evaluates as elevated in the context of C61 Prostatakarzinom.",
+   "episodes": [
+    "957d66f7-9c38-4cda-92d1-409650b2afdc"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "233fddb7-c46e-4bb5-b8d0-6e04bbaa0084",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:05:15.372357",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 had a total PSA tumor marker measurement of 66,3 ng/ml on January 21, 2027.",
+   "episodes": [
+    "957d66f7-9c38-4cda-92d1-409650b2afdc"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "23d39014-d923-4bb7-85de-201b1b69d672",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "33418545-28c3-4b6f-9819-643c5e58d81c",
+   "created_at": "2026-11-18T18:05:37.329284",
+   "name": "PRESCRIBED",
+   "fact": "Patient-7 is managed for metastatic disease with chemotherapy and nuclear medicine including Radium-223.",
+   "episodes": [
+    "296868ce-5eaf-4fcb-8e0d-7cf8b3752d5e",
+    "cbcaec2b-441d-4aa1-941c-b572ef6ed5e1",
+    "6da7424f-95a2-41ab-b087-8bf0d436929d"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "7d15a0a1-80f7-4261-bb0d-aa7f9e9e400c",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "e9ab9602-ec23-4b16-9b7a-b3015c6246aa",
+   "created_at": "2026-11-18T18:05:15.372221",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 had a laboratory test performed at Klinikum Berlin, Klinik für Onkologie und Hämatologie under the care of Dr. med. Arzt-2 on January 21, 2027.",
+   "episodes": [
+    "957d66f7-9c38-4cda-92d1-409650b2afdc"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "950d508c-ba4b-45b2-b847-04e6395f08d2",
+   "group_id": "Patient-7",
+   "source_node_uuid": "297bab53-e14e-4719-901a-3c41e156834b",
+   "target_node_uuid": "e9ab9602-ec23-4b16-9b7a-b3015c6246aa",
+   "created_at": "2026-11-18T18:05:37.329076",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-2 authored a medical follow-up report for Patient-7 at the Klinik für Onkologie und Hämatologie at Klinikum Berlin.",
+   "episodes": [
+    "296868ce-5eaf-4fcb-8e0d-7cf8b3752d5e"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "95715694-0d1b-40d0-977d-7ea6c2fadde3",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "e9ab9602-ec23-4b16-9b7a-b3015c6246aa",
+   "created_at": "2026-11-18T18:05:37.329401",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 received follow-up care for metastatic prostate cancer at the Klinik für Onkologie und Hämatologie.",
+   "episodes": [
+    "296868ce-5eaf-4fcb-8e0d-7cf8b3752d5e"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a8e9219e-ea73-4360-ac46-d54a60e10452",
+   "group_id": "Patient-7",
+   "source_node_uuid": "297bab53-e14e-4719-901a-3c41e156834b",
+   "target_node_uuid": "5f7e1fe2-57e4-4e00-8bbe-cadb7e86bc7b",
+   "created_at": "2026-11-18T18:05:37.329164",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-2 practices at Klinikum Berlin.",
+   "episodes": [
+    "296868ce-5eaf-4fcb-8e0d-7cf8b3752d5e"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ab28e5d4-cef8-4135-b416-22c6169142c3",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "297bab53-e14e-4719-901a-3c41e156834b",
+   "created_at": "2026-11-18T18:05:15.372283",
+   "name": "RELATES_TO",
+   "fact": "Patient-7 received care from Dr. med. Arzt-2 at Klinikum Berlin, Klinik für Onkologie und Hämatologie on January 21, 2027.",
+   "episodes": [
+    "957d66f7-9c38-4cda-92d1-409650b2afdc"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "e8db82fa-01e4-445e-ab5f-0eccc83563f8",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:05:37.329338",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 has a current PSA value of 66.3 ng/ml with a declining and stable trend.",
+   "episodes": [
+    "296868ce-5eaf-4fcb-8e0d-7cf8b3752d5e"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-01-21T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-01-21T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "084c76cd-1cca-4bc1-bf54-f03d2d3133b4",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "af86da12-fe77-41c6-8070-0343070e59e9",
+   "created_at": "2026-11-18T18:05:57.990445",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 had laboratory testing performed at the Zentrallabor of Klinikum Berlin.",
+   "episodes": [
+    "cbcaec2b-441d-4aa1-941c-b572ef6ed5e1"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-11T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-11T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "15088baf-4d6c-4a86-a77c-a9d9b525cdc3",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:06:17.551226",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 has a current PSA-Wert of 45,3 ng/ml with a rückläufig/stabil PSA-Verlauf showing a favorable decrease on February 11, 2027.",
+   "episodes": [
+    "6da7424f-95a2-41ab-b087-8bf0d436929d"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-11T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-11T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "39bed3be-3f3e-41f6-9375-2e9649af1d6f",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:05:57.990363",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 has a total PSA tumor marker level of 45.3 ng/ml.",
+   "episodes": [
+    "cbcaec2b-441d-4aa1-941c-b572ef6ed5e1"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-11T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-11T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "3b6f7b9c-63a9-4966-9bf1-9bcb31095ab4",
+   "group_id": "Patient-7",
+   "source_node_uuid": "297bab53-e14e-4719-901a-3c41e156834b",
+   "target_node_uuid": "e9ab9602-ec23-4b16-9b7a-b3015c6246aa",
+   "created_at": "2026-11-18T18:05:57.990472",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-2 works at the Klinik für Onkologie und Hämatologie.",
+   "episodes": [
+    "cbcaec2b-441d-4aa1-941c-b572ef6ed5e1",
+    "fb1438f4-e40c-4b82-8e25-f53d635ca44f",
+    "3aa4d1e9-c0e7-40e9-be58-850ca0627da8"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-11T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-11T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "be0ce62d-4608-4bd9-9932-b6647a2bdf80",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "e9ab9602-ec23-4b16-9b7a-b3015c6246aa",
+   "created_at": "2026-11-18T18:06:17.550319",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 presented for a routine follow-up evaluation at the Klinik für Onkologie und Hämatologie of Klinikum Berlin on February 11, 2027.",
+   "episodes": [
+    "6da7424f-95a2-41ab-b087-8bf0d436929d"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-11T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-11T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "df2a9833-25d3-40d5-a516-5f242f84cfc3",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "created_at": "2026-11-18T18:06:17.550691",
+   "name": "RELATES_TO",
+   "fact": "Patient-7 was referred by Dr. med. Arzt-1 to the clinic for follow-up care.",
+   "episodes": [
+    "6da7424f-95a2-41ab-b087-8bf0d436929d",
+    "9bbb0254-2ba9-4574-b5b9-3fadc9febb63"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-11T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-11T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "e268cae1-9908-421b-a7fc-4e319b4ea278",
+   "group_id": "Patient-7",
+   "source_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:06:17.551397",
+   "name": "INDICATES",
+   "fact": "The current PSA-Wert reflects the status of C61 Prostatakarzinom (metastasiert) during routine monitoring.",
+   "episodes": [
+    "6da7424f-95a2-41ab-b087-8bf0d436929d"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-11T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-11T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ef3e20f9-1632-4482-9a8b-212d4ec252fc",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:06:17.550816",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 was diagnosed with C61 Prostatakarzinom (metastasiert).",
+   "episodes": [
+    "6da7424f-95a2-41ab-b087-8bf0d436929d",
+    "fb1438f4-e40c-4b82-8e25-f53d635ca44f",
+    "f02e7262-2807-4946-a0f3-47df8092c6b2"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-11T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-11T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "f257da37-5879-4205-84e5-6253431c8ff1",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "297bab53-e14e-4719-901a-3c41e156834b",
+   "created_at": "2026-11-18T18:06:17.550544",
+   "name": "RELATES_TO",
+   "fact": "Patient-7 was seen by Dr. med. Arzt-2 during a routine follow-up evaluation on February 11, 2027.",
+   "episodes": [
+    "6da7424f-95a2-41ab-b087-8bf0d436929d"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-02-11T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-02-11T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "1c0c203c-a25d-496c-bd89-54c340893975",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:06:40.296901",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 has a clinical diagnosis of C61 Prostatakarzinom, which is metastatic with ongoing chemotherapy and nuclear medicine treatment using Radium-223.",
+   "episodes": [
+    "f51c430f-3724-4911-8d56-673bc73fed16"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-03-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-03-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "243222b7-e584-4f27-8730-76cf189c4166",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "33418545-28c3-4b6f-9819-643c5e58d81c",
+   "created_at": "2026-11-18T18:07:04.976430",
+   "name": "PRESCRIBED",
+   "fact": "Patient-7 is treated with a combination strategy including nuclear medicine using Radium-223 and chemotherapy.",
+   "episodes": [
+    "fb1438f4-e40c-4b82-8e25-f53d635ca44f",
+    "9bbb0254-2ba9-4574-b5b9-3fadc9febb63"
+   ],
+   "expired_at": "2026-11-18T18:19:32.060159",
+   "valid_at": "2027-03-04T00:00:00",
+   "invalid_at": "2028-09-22T00:00:00",
+   "reference_time": "2027-03-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "3491e6a3-ffff-4ca5-8889-e17b07d2cff7",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "e9ab9602-ec23-4b16-9b7a-b3015c6246aa",
+   "created_at": "2026-11-18T18:06:40.296820",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 underwent a laboratory test at Klinikum Berlin – Klinik-1, Clinic for Oncology and Hematology.",
+   "episodes": [
+    "f51c430f-3724-4911-8d56-673bc73fed16"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-03-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-03-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "748238f0-d3c2-4729-8e5b-f4d9f00ec809",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:06:40.296978",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 had a total PSA laboratory test result showing an elevated value of 31.6 ng/ml against a reference range of 0.00 – 4.00 ng/ml.",
+   "episodes": [
+    "f51c430f-3724-4911-8d56-673bc73fed16"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-03-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-03-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "881b2092-fef2-4a0c-88be-e0b5297ff2fa",
+   "group_id": "Patient-7",
+   "source_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:06:40.297022",
+   "name": "INDICATES",
+   "fact": "The total PSA laboratory result of 31.6 ng/ml indicates C61 Prostatakarzinom.",
+   "episodes": [
+    "f51c430f-3724-4911-8d56-673bc73fed16"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-03-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-03-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a228b1e7-c51f-4fb5-bdfe-6838c24ebf58",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:07:04.976561",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 has a current PSA-Wert tumor marker value of 31.6 ng/ml with a declining and stable trend.",
+   "episodes": [
+    "fb1438f4-e40c-4b82-8e25-f53d635ca44f"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-03-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-03-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a6a44408-f124-4c32-a557-f4c34dc391db",
+   "group_id": "Patient-7",
+   "source_node_uuid": "297bab53-e14e-4719-901a-3c41e156834b",
+   "target_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "created_at": "2026-11-18T18:06:40.296720",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-2 ordered a laboratory test for patient Patient-7 at Klinikum Berlin – Klinik-1, Clinic for Oncology and Hematology.",
+   "episodes": [
+    "f51c430f-3724-4911-8d56-673bc73fed16"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-03-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-03-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a77c0e88-8e38-4e03-906f-378f75c2fd49",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "e9ab9602-ec23-4b16-9b7a-b3015c6246aa",
+   "created_at": "2026-11-18T18:07:04.976019",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 underwent a routine follow-up evaluation at the Klinik für Onkologie und Hämatologie of Klinikum Berlin.",
+   "episodes": [
+    "fb1438f4-e40c-4b82-8e25-f53d635ca44f"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-03-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-03-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ae70472d-f9f1-474b-9adf-27c01de5ff47",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "a4c391d4-90f8-4740-8ff7-379b63ea2629",
+   "created_at": "2026-11-18T18:06:40.297064",
+   "name": "RELATES_TO",
+   "fact": "Patient-7 is undergoing ongoing chemotherapy treatment for C61 Prostatakarzinom.",
+   "episodes": [
+    "f51c430f-3724-4911-8d56-673bc73fed16",
+    "dded3b89-ac4f-450f-b88f-ad02bae18ab6"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-03-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-03-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "bc3fbffd-41cd-4711-b9f4-e8ed70e1f216",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "33418545-28c3-4b6f-9819-643c5e58d81c",
+   "created_at": "2026-11-18T18:06:40.297106",
+   "name": "PRESCRIBED",
+   "fact": "Patient-7 is undergoing nuclear medicine treatment using Radium-223 for C61 Prostatakarzinom.",
+   "episodes": [
+    "f51c430f-3724-4911-8d56-673bc73fed16"
+   ],
+   "expired_at": "2026-11-18T18:19:32.060170",
+   "valid_at": "2027-03-04T00:00:00",
+   "invalid_at": "2028-09-22T00:00:00",
+   "reference_time": "2027-03-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "1aa5b88a-f2e3-4e1b-94a6-af55601864e7",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "af86da12-fe77-41c6-8070-0343070e59e9",
+   "created_at": "2026-11-18T18:07:26.794858",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 had a laboratory evaluation performed and released by the Zentrallabor at Klinikum Berlin – Klinik-1 on March 25, 2027.",
+   "episodes": [
+    "56daea55-a2c6-4fb6-9ae1-f3690aadeb0a"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-03-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "226c730e-0ef3-44ac-9c5b-e5ed1f5a5f23",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "33418545-28c3-4b6f-9819-643c5e58d81c",
+   "created_at": "2026-11-18T18:07:26.795388",
+   "name": "PRESCRIBED",
+   "fact": "Patient-7 is under treatment with nuclear medicine using Radium-223.",
+   "episodes": [
+    "56daea55-a2c6-4fb6-9ae1-f3690aadeb0a",
+    "30f4d10d-ecec-49db-9d6c-9258af62a3a1",
+    "4e48725b-b576-4cec-a146-9469177b873a",
+    "937089c3-7590-4a14-a961-be4946b4bfdf",
+    "f02e7262-2807-4946-a0f3-47df8092c6b2",
+    "5cfa5b0a-8331-4141-9ac2-e2ecfed889f5"
+   ],
+   "expired_at": "2026-11-18T18:19:32.060178",
+   "valid_at": "2027-03-25T00:00:00",
+   "invalid_at": "2028-09-22T00:00:00",
+   "reference_time": "2027-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "3713081e-2731-427f-82bf-ae77fd25ef5e",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:07:48.516796",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 has a current PSA-Wert (total PSA) of 22.5 ng/ml on March 25, 2027.",
+   "episodes": [
+    "4685fd21-4578-4c8b-8b19-f8bdb97b13c6"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-03-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "639821e2-8bc7-4892-8154-d025d59e60d6",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "33418545-28c3-4b6f-9819-643c5e58d81c",
+   "created_at": "2026-11-18T18:07:48.516671",
+   "name": "PRESCRIBED",
+   "fact": "Patient-7 is undergoing an ongoing treatment regimen involving chemotherapy and nuclear medicine using Radium-223.",
+   "episodes": [
+    "4685fd21-4578-4c8b-8b19-f8bdb97b13c6"
+   ],
+   "expired_at": "2026-11-18T18:19:32.060186",
+   "valid_at": "2027-03-25T00:00:00",
+   "invalid_at": "2028-09-22T00:00:00",
+   "reference_time": "2027-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "64e18626-8e71-43d5-9549-15e57adfc15e",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "f66f6a00-84d4-4731-a294-18e42822c18a",
+   "created_at": "2026-11-18T18:07:48.516527",
+   "name": "HAS_VITAL_SIGNS",
+   "fact": "Patient-7 maintained an ECOG performance status of 2 on March 25, 2027.",
+   "episodes": [
+    "4685fd21-4578-4c8b-8b19-f8bdb97b13c6"
+   ],
+   "expired_at": "2026-11-18T18:11:14.046438",
+   "valid_at": "2027-03-25T00:00:00",
+   "invalid_at": "2028-01-29T00:00:00",
+   "reference_time": "2027-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "66d48407-a120-488d-8297-fba996a15be2",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "297bab53-e14e-4719-901a-3c41e156834b",
+   "created_at": "2026-11-18T18:07:26.795095",
+   "name": "RELATES_TO",
+   "fact": "Patient-7 had a laboratory evaluation ordered by Dr. med. Arzt-2 on March 25, 2027.",
+   "episodes": [
+    "56daea55-a2c6-4fb6-9ae1-f3690aadeb0a"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-03-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "75c3f565-2d38-44de-9dbb-2bf7615203c0",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "e9ab9602-ec23-4b16-9b7a-b3015c6246aa",
+   "created_at": "2026-11-18T18:07:48.516042",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 presented for a routine follow-up evaluation at Klinikum Berlin, Klinik für Onkologie und Hämatologie on March 25, 2027.",
+   "episodes": [
+    "4685fd21-4578-4c8b-8b19-f8bdb97b13c6"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-03-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "82b3c7ac-f0f6-488d-a981-5d2994186e28",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "a4c391d4-90f8-4740-8ff7-379b63ea2629",
+   "created_at": "2026-11-18T18:07:26.795306",
+   "name": "RELATES_TO",
+   "fact": "Patient-7 is under treatment with chemotherapy for metastatic C61 Prostatakarzinom.",
+   "episodes": [
+    "56daea55-a2c6-4fb6-9ae1-f3690aadeb0a"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-03-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "96d403e1-dce5-4e1e-a426-bbabd9538321",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:07:26.795206",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 has a clinical diagnosis of metastatic C61 Prostatakarzinom.",
+   "episodes": [
+    "56daea55-a2c6-4fb6-9ae1-f3690aadeb0a",
+    "98de2d2a-34e9-4613-9b2e-ca76101b56c7"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-03-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "cd025077-323f-49e2-a74a-ca6f43e23857",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "297bab53-e14e-4719-901a-3c41e156834b",
+   "created_at": "2026-11-18T18:07:48.516260",
+   "name": "RELATES_TO",
+   "fact": "Patient-7 was evaluated by Dr. med. Arzt-2 during a routine follow-up on March 25, 2027.",
+   "episodes": [
+    "4685fd21-4578-4c8b-8b19-f8bdb97b13c6"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-03-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "e21d1280-bf7d-499a-adef-35440af79eb6",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:07:26.795479",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 has an elevated total PSA tumor marker value of 22,5 ng/ml.",
+   "episodes": [
+    "56daea55-a2c6-4fb6-9ae1-f3690aadeb0a"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-03-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "0f6ff2a0-76f3-4764-9d1d-da2959cb7152",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "e9ab9602-ec23-4b16-9b7a-b3015c6246aa",
+   "created_at": "2026-11-18T18:08:31.350047",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 was evaluated for routine follow-up at the Klinik für Onkologie und Hämatologie of Klinikum Berlin – Klinik-1.",
+   "episodes": [
+    "3aa4d1e9-c0e7-40e9-be58-850ca0627da8"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-15T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-15T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "3cc4a8fd-2d18-4ae8-9729-d9f874027f2b",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:08:31.350284",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 demonstrated a current PSA-Wert of 16.6 ng/ml showing a rückläufig/stabil PSA-Verlauf.",
+   "episodes": [
+    "3aa4d1e9-c0e7-40e9-be58-850ca0627da8"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-15T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-15T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "63170f61-4db9-42f7-8332-2b1affed8728",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:08:09.833813",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 has a total PSA level of 16.6 ng/ml.",
+   "episodes": [
+    "c5fd571d-4595-47fc-b0a8-2b29af9bedf6"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-15T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-15T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "66dc7145-bc27-4ee2-b15d-bd094b177770",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "a4c391d4-90f8-4740-8ff7-379b63ea2629",
+   "created_at": "2026-11-18T18:08:09.833712",
+   "name": "RELATES_TO",
+   "fact": "Patient-7 is undergoing chemotherapy as part of their treatment.",
+   "episodes": [
+    "c5fd571d-4595-47fc-b0a8-2b29af9bedf6",
+    "937089c3-7590-4a14-a961-be4946b4bfdf"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-15T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-15T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "700a3865-fe1c-4445-9fb5-aa457c35a72c",
+   "group_id": "Patient-7",
+   "source_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:08:09.833867",
+   "name": "INDICATES",
+   "fact": "The total PSA level of 16.6 ng/ml is evaluated in the context of C61 Prostatakarzinom.",
+   "episodes": [
+    "c5fd571d-4595-47fc-b0a8-2b29af9bedf6"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-15T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-15T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ab435342-db2f-464f-b299-38bcb757a08e",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "33418545-28c3-4b6f-9819-643c5e58d81c",
+   "created_at": "2026-11-18T18:08:09.833769",
+   "name": "PRESCRIBED",
+   "fact": "Patient-7 is receiving nuclear medicine therapy with Radium-223.",
+   "episodes": [
+    "c5fd571d-4595-47fc-b0a8-2b29af9bedf6",
+    "3aa4d1e9-c0e7-40e9-be58-850ca0627da8"
+   ],
+   "expired_at": "2026-11-18T18:19:32.060194",
+   "valid_at": "2027-04-15T00:00:00",
+   "invalid_at": "2028-09-22T00:00:00",
+   "reference_time": "2027-04-15T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "cb8b5892-d3ca-4c8d-ae71-9053153aed5e",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:08:31.349699",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 was evaluated for routine follow-up regarding metastatic C61 Prostatakarzinom.",
+   "episodes": [
+    "3aa4d1e9-c0e7-40e9-be58-850ca0627da8"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-15T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-15T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "de4defb7-27c8-422b-bef3-edde542140d7",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:08:09.833608",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 is diagnosed with C61 Prostatakarzinom.",
+   "episodes": [
+    "c5fd571d-4595-47fc-b0a8-2b29af9bedf6",
+    "937089c3-7590-4a14-a961-be4946b4bfdf"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-04-15T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-04-15T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "04e6683b-5183-40d8-b440-f45937351d7d",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "created_at": "2026-11-18T18:09:15.927091",
+   "name": "RELATES_TO",
+   "fact": "Patient-7 presented to Dr. med. Arzt-1 at the Urologische Klinik for routine follow-up evaluation on September 16, 2027.",
+   "episodes": [
+    "30f4d10d-ecec-49db-9d6c-9258af62a3a1"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-09-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "066e9c41-80fa-4bc1-b0fe-6d4a5f9fcddd",
+   "group_id": "Patient-7",
+   "source_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:08:51.870208",
+   "name": "INDICATES",
+   "fact": "A total PSA level of 5,7 ng/ml indicates metastatic C61 Prostatakarzinom.",
+   "episodes": [
+    "dded3b89-ac4f-450f-b88f-ad02bae18ab6"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-09-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "157a65a7-f8d0-4e18-aa67-47c248ae9578",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "6a564764-b685-4b20-ac22-37920eb07bf5",
+   "created_at": "2026-11-18T18:09:15.927287",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 was evaluated at the Urologische Klinik of Klinikum Berlin on September 16, 2027.",
+   "episodes": [
+    "30f4d10d-ecec-49db-9d6c-9258af62a3a1"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-09-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "1f21cd40-1a2b-4700-bb4c-a23e962609c2",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:08:51.870175",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 had a total PSA level measurement of 5,7 ng/ml, which is elevated compared to the reference range.",
+   "episodes": [
+    "dded3b89-ac4f-450f-b88f-ad02bae18ab6"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-09-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "8bb4dc5b-8a4f-496f-9ec9-ac8bc6791f4a",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "5f7e1fe2-57e4-4e00-8bbe-cadb7e86bc7b",
+   "created_at": "2026-11-18T18:09:15.927421",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 received routine follow-up management at Klinikum Berlin on September 16, 2027.",
+   "episodes": [
+    "30f4d10d-ecec-49db-9d6c-9258af62a3a1"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-09-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "9c1dd9e5-487f-472d-8eb0-1c1556125ea5",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:09:15.927928",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 had a current PSA value of 5.7 ng/ml with a declining and stable trend on September 16, 2027.",
+   "episodes": [
+    "30f4d10d-ecec-49db-9d6c-9258af62a3a1"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-09-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "b0fd5526-0872-4a56-a7fa-0cad4d4f31b1",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:08:51.870025",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 has a diagnosis of metastatic C61 Prostatakarzinom, with ongoing chemotherapy and nuclear medicine therapy using Radium-223.",
+   "episodes": [
+    "dded3b89-ac4f-450f-b88f-ad02bae18ab6",
+    "30f4d10d-ecec-49db-9d6c-9258af62a3a1"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-09-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ce49b3ce-8b78-4bcb-a4dd-35f626d0a391",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "33418545-28c3-4b6f-9819-643c5e58d81c",
+   "created_at": "2026-11-18T18:08:51.870134",
+   "name": "PRESCRIBED",
+   "fact": "Patient-7 is receiving nuclear medicine therapy using Radium-223 for metastatic C61 Prostatakarzinom.",
+   "episodes": [
+    "dded3b89-ac4f-450f-b88f-ad02bae18ab6"
+   ],
+   "expired_at": "2026-11-18T18:19:32.060203",
+   "valid_at": "2027-09-16T00:00:00",
+   "invalid_at": "2028-09-22T00:00:00",
+   "reference_time": "2027-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "d134ca5a-8f7c-4240-bdbf-51c336a64c61",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "0200ad60-3026-405c-9106-c76664399c9f",
+   "created_at": "2026-11-18T18:08:51.870258",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 had a laboratory report issued by the Zentrallabor at Klinikum Berlin – Klinik-1, Urologische Klinik.",
+   "episodes": [
+    "dded3b89-ac4f-450f-b88f-ad02bae18ab6"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-09-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "d8f0638c-2966-4d8d-b855-39fa5147050c",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "f66f6a00-84d4-4731-a294-18e42822c18a",
+   "created_at": "2026-11-18T18:09:15.927794",
+   "name": "HAS_VITAL_SIGNS",
+   "fact": "Patient-7 exhibited an ECOG performance status of 2 during the clinical evaluation on September 16, 2027.",
+   "episodes": [
+    "30f4d10d-ecec-49db-9d6c-9258af62a3a1"
+   ],
+   "expired_at": "2026-11-18T18:11:14.046441",
+   "valid_at": "2027-09-16T00:00:00",
+   "invalid_at": "2028-01-29T00:00:00",
+   "reference_time": "2027-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ee01c68c-f850-4efb-9723-7693dd799a06",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "created_at": "2026-11-18T18:08:51.870296",
+   "name": "RELATES_TO",
+   "fact": "Patient-7's laboratory specimen was ordered and submitted by Dr. med. Arzt-1 from the Urologische Klinik.",
+   "episodes": [
+    "dded3b89-ac4f-450f-b88f-ad02bae18ab6"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-09-16T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-09-16T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "07c0798c-d0dc-489e-90db-2a57c892241e",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "e9ab9602-ec23-4b16-9b7a-b3015c6246aa",
+   "created_at": "2026-11-18T18:09:41.300931",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 was evaluated at the Klinik für Onkologie und Hämatologie of Klinikum Berlin - Klinik-1.",
+   "episodes": [
+    "4e48725b-b576-4cec-a146-9469177b873a"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-12-24T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-12-24T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "1faba4ee-3ae0-4c40-a151-8b37c86559d2",
+   "group_id": "Patient-7",
+   "source_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "target_node_uuid": "33418545-28c3-4b6f-9819-643c5e58d81c",
+   "created_at": "2026-11-18T18:10:12.866406",
+   "name": "TREATED_BY",
+   "fact": "Metastatic C61 Prostatakarzinom is treated with Nuklearmedizin using Radium-223.",
+   "episodes": [
+    "98de2d2a-34e9-4613-9b2e-ca76101b56c7",
+    "73dacefe-cb6d-4e8c-b739-65796036b850"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-12-24T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-12-24T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "2e270fef-a20b-4db7-8434-1509b685007e",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "297bab53-e14e-4719-901a-3c41e156834b",
+   "created_at": "2026-11-18T18:09:41.300777",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 presented to Dr. med. Arzt-2 at the Klinik für Onkologie und Hämatologie of Klinikum Berlin - Klinik-1 for evaluation.",
+   "episodes": [
+    "4e48725b-b576-4cec-a146-9469177b873a"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-12-24T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-12-24T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "37bdd1d7-8512-4dbe-ad79-2ceb4b8761eb",
+   "group_id": "Patient-7",
+   "source_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "target_node_uuid": "af86da12-fe77-41c6-8070-0343070e59e9",
+   "created_at": "2026-11-18T18:10:12.866490",
+   "name": "RELATES_TO",
+   "fact": "The total PSA laboratory test was released and validated by the Zentrallabor, Klinikum Berlin – Klinik-1.",
+   "episodes": [
+    "98de2d2a-34e9-4613-9b2e-ca76101b56c7"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-12-24T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-12-24T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "3d5dfa26-77a6-472a-8895-53c51d881155",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "created_at": "2026-11-18T18:09:41.301485",
+   "name": "RELATES_TO",
+   "fact": "Patient-7 was referred by Dr. med. Arzt-1, and outpatient care handover back to Dr. med. Arzt-1 was requested.",
+   "episodes": [
+    "4e48725b-b576-4cec-a146-9469177b873a"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-12-24T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-12-24T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "77bba12b-0f33-474a-a389-d3f418126fe3",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "a4593aa3-e07f-49dd-a957-4ec7987ad9d9",
+   "created_at": "2026-11-18T18:09:41.301194",
+   "name": "RELATES_TO",
+   "fact": "Patient-7 received treatment involving androgen deprivation therapy, though experiencing a rising PSA level despite it.",
+   "episodes": [
+    "4e48725b-b576-4cec-a146-9469177b873a"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-12-24T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-12-24T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "7a10c3ea-ef48-486d-a195-a39967d420ba",
+   "group_id": "Patient-7",
+   "source_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:10:12.866453",
+   "name": "INDICATES",
+   "fact": "The total PSA value indicates C61 Prostatakarzinom.",
+   "episodes": [
+    "98de2d2a-34e9-4613-9b2e-ca76101b56c7"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-12-24T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-12-24T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "917e8cd0-3fcb-46fc-bb2d-91b7c2f727ec",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:09:41.301415",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 laboratory findings showed a current PSA level of 5,3 ng/ml.",
+   "episodes": [
+    "4e48725b-b576-4cec-a146-9469177b873a"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-12-24T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-12-24T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a877a023-dfc8-4639-9024-556b089112ad",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:10:12.866431",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 had an elevated total PSA tumor marker value of 5,3 ng/ml.",
+   "episodes": [
+    "98de2d2a-34e9-4613-9b2e-ca76101b56c7",
+    "9bbb0254-2ba9-4574-b5b9-3fadc9febb63"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-12-24T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-12-24T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ba7b2d1d-9e5c-4294-9ced-2a71b976a268",
+   "group_id": "Patient-7",
+   "source_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "target_node_uuid": "a4c391d4-90f8-4740-8ff7-379b63ea2629",
+   "created_at": "2026-11-18T18:10:12.866379",
+   "name": "RELATES_TO",
+   "fact": "Metastatic C61 Prostatakarzinom is treated with Chemotherapie.",
+   "episodes": [
+    "98de2d2a-34e9-4613-9b2e-ca76101b56c7"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-12-24T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-12-24T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c703965c-caed-4fd9-8840-94ad87f6e695",
+   "group_id": "Patient-7",
+   "source_node_uuid": "297bab53-e14e-4719-901a-3c41e156834b",
+   "target_node_uuid": "e9ab9602-ec23-4b16-9b7a-b3015c6246aa",
+   "created_at": "2026-11-18T18:10:12.866323",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-2 ordered the laboratory evaluation from Klinikum Berlin, Klinik-1, Klinik für Onkologie und Hämatologie.",
+   "episodes": [
+    "98de2d2a-34e9-4613-9b2e-ca76101b56c7"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-12-24T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-12-24T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ebf90937-0322-4596-b258-30b536599d0a",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "e9ab9602-ec23-4b16-9b7a-b3015c6246aa",
+   "created_at": "2026-11-18T18:10:12.866259",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 underwent laboratory evaluation at Klinikum Berlin, Klinik-1, Klinik für Onkologie und Hämatologie.",
+   "episodes": [
+    "98de2d2a-34e9-4613-9b2e-ca76101b56c7"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-12-24T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-12-24T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ec158b47-e353-44a7-ade5-ac248895f2b4",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "85244ca2-4896-47ff-9f3a-09999a97f0ce",
+   "created_at": "2026-11-18T18:09:41.301012",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 was evaluated at Klinikum Berlin - Klinik-1 located at Beethovenstraße 65, 13597 Berlin.",
+   "episodes": [
+    "4e48725b-b576-4cec-a146-9469177b873a"
+   ],
+   "expired_at": null,
+   "valid_at": "2027-12-24T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2027-12-24T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "2ab2e593-31d1-4269-bd2a-0340f40d1767",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "5f7e1fe2-57e4-4e00-8bbe-cadb7e86bc7b",
+   "created_at": "2026-11-18T18:10:37.489383",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 is managed at Klinikum Berlin.",
+   "episodes": [
+    "9bbb0254-2ba9-4574-b5b9-3fadc9febb63"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "7e189e68-bc59-4e84-aee3-7646b52ec980",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "e9ab9602-ec23-4b16-9b7a-b3015c6246aa",
+   "created_at": "2026-11-18T18:10:37.489472",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 is managed at Klinik für Onkologie und Hämatologie.",
+   "episodes": [
+    "9bbb0254-2ba9-4574-b5b9-3fadc9febb63"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c35a1807-27ec-40c1-8938-3808569acd98",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "297bab53-e14e-4719-901a-3c41e156834b",
+   "created_at": "2026-11-18T18:10:37.489561",
+   "name": "RELATES_TO",
+   "fact": "Patient-7's case was chaired by Dr. med. Arzt-2.",
+   "episodes": [
+    "9bbb0254-2ba9-4574-b5b9-3fadc9febb63"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c940c561-da93-4889-87f0-14cc64df5338",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:10:37.489606",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 has a primary diagnosis of C61 Prostatakarzinom.",
+   "episodes": [
+    "9bbb0254-2ba9-4574-b5b9-3fadc9febb63"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "38d39358-cbe8-41fb-8870-0f57affdb9d3",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:11:36.185442",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 had a total PSA tumor marker level of 6.6 ng/ml.",
+   "episodes": [
+    "67f5cb5d-cc56-42c4-ace5-c37880f8e0b9"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "43c9116c-fd87-4fb8-ae46-9072ad6e1798",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "33418545-28c3-4b6f-9819-643c5e58d81c",
+   "created_at": "2026-11-18T18:11:05.351271",
+   "name": "PRESCRIBED",
+   "fact": "Patient-7 is treated with Radium-223 for metastatic prostate cancer on January 29, 2028.",
+   "episodes": [
+    "3c7604f9-be62-4979-93d3-705bc540abe0"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "48aa9be4-b43e-4b20-9319-f1c204200592",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "fd94dfc3-b619-46f7-83d0-07f3982f9e7e",
+   "created_at": "2026-11-18T18:11:05.351518",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 has a staging of cT3b cN1 cM1b on January 29, 2028.",
+   "episodes": [
+    "3c7604f9-be62-4979-93d3-705bc540abe0"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "4e9cc1f1-890d-45ee-9026-001b2707cfce",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "f66f6a00-84d4-4731-a294-18e42822c18a",
+   "created_at": "2026-11-18T18:11:55.059575",
+   "name": "HAS_VITAL_SIGNS",
+   "fact": "Patient-7 has an ECOG performance status of 3.",
+   "episodes": [
+    "73dacefe-cb6d-4e8c-b739-65796036b850",
+    "d92971ed-3b0a-45f4-807f-2c093797475a",
+    "937089c3-7590-4a14-a961-be4946b4bfdf",
+    "5cfa5b0a-8331-4141-9ac2-e2ecfed889f5",
+    "784aea3b-85bc-4e5e-8900-990f9fc2a0c1"
+   ],
+   "expired_at": "2026-11-18T18:19:01.031799",
+   "valid_at": "2028-01-29T00:00:00",
+   "invalid_at": "2028-09-04T00:00:00",
+   "reference_time": "2028-01-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "79055605-c9c3-4665-b76b-e25b24f6e143",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "33418545-28c3-4b6f-9819-643c5e58d81c",
+   "created_at": "2026-11-18T18:11:55.059535",
+   "name": "PRESCRIBED",
+   "fact": "Patient-7 is currently undergoing systemic treatment involving chemotherapy and nuclear medicine with Radium-223.",
+   "episodes": [
+    "73dacefe-cb6d-4e8c-b739-65796036b850"
+   ],
+   "expired_at": "2026-11-18T18:19:32.060210",
+   "valid_at": "2028-01-29T00:00:00",
+   "invalid_at": "2028-09-22T00:00:00",
+   "reference_time": "2028-01-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "827db28f-63dd-49a1-a406-0cbfa907bcaf",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "created_at": "2026-11-18T18:11:05.350981",
+   "name": "RELATES_TO",
+   "fact": "Patient-7 is managed by Dr. med. Arzt-1 at the Urologische Klinik of Klinikum Berlin on January 29, 2028.",
+   "episodes": [
+    "3c7604f9-be62-4979-93d3-705bc540abe0"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "9ed05eff-f9ce-4ee2-b5fd-3cbae9495500",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:11:05.351139",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 was diagnosed with C61 Prostatakarzinom, metastasiert on January 29, 2028.",
+   "episodes": [
+    "3c7604f9-be62-4979-93d3-705bc540abe0"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a4b54f3f-d94a-46d9-ac5e-51c6d741c3d6",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "69ca1a7c-2b09-4902-9d5e-d5a610cf808e",
+   "created_at": "2026-11-18T18:11:05.351739",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-7 reported symptoms including knochenschmerzen on January 29, 2028.",
+   "episodes": [
+    "3c7604f9-be62-4979-93d3-705bc540abe0"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a6e8cf39-f8ac-4a95-b052-28e8ef3856d5",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "6a564764-b685-4b20-ac22-37920eb07bf5",
+   "created_at": "2026-11-18T18:11:05.350730",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 presented at the Urologische Klinik of Klinikum Berlin on January 29, 2028, managed by Dr. med. Arzt-1.",
+   "episodes": [
+    "3c7604f9-be62-4979-93d3-705bc540abe0"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "aa18035a-b9c2-4df8-b9e8-fe9969bcad4b",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "58eacf37-c55f-4631-992b-3e0443c4d770",
+   "created_at": "2026-11-18T18:11:05.351413",
+   "name": "HAS_PATHOLOGY",
+   "fact": "Patient-7 has a Gleason score of 4+5=9 (ISUP 5) associated with the diagnosis on January 29, 2028.",
+   "episodes": [
+    "3c7604f9-be62-4979-93d3-705bc540abe0"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ac1237be-7734-4045-b370-32f8e57f47d2",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "e28f080f-cbfe-4160-ba39-509f1729f10b",
+   "created_at": "2026-11-18T18:11:05.351822",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-7 reported fatigue on January 29, 2028.",
+   "episodes": [
+    "3c7604f9-be62-4979-93d3-705bc540abe0"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "afb0621c-ee9c-42f1-9d84-ab7979d4e465",
+   "group_id": "Patient-7",
+   "source_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:11:55.059680",
+   "name": "INDICATES",
+   "fact": "An active PSA-Wert of 6.6 ng/ml with a rising PSA trend indicates clinical and biochemical progression of C61 Prostatakarzinom.",
+   "episodes": [
+    "73dacefe-cb6d-4e8c-b739-65796036b850"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c1a51857-be35-437e-95ac-5466ac9147d8",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "6a564764-b685-4b20-ac22-37920eb07bf5",
+   "created_at": "2026-11-18T18:11:55.059334",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 presented for routine follow-up evaluation at the Urologische Klinik, Klinikum Berlin under the care of Dr. med. Arzt-1.",
+   "episodes": [
+    "73dacefe-cb6d-4e8c-b739-65796036b850"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c7dfde44-250f-4aad-92df-db06e5886559",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:11:36.185398",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 has a clinical diagnosis of metastatic C61 Prostatakarzinom treated with chemotherapy and nuclear medicine including Radium-223.",
+   "episodes": [
+    "67f5cb5d-cc56-42c4-ace5-c37880f8e0b9",
+    "df385074-f0ce-47c6-b228-73d8eda3e034"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c863d821-72e7-4275-b2b2-c3d568b2410c",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "f66f6a00-84d4-4731-a294-18e42822c18a",
+   "created_at": "2026-11-18T18:11:05.351953",
+   "name": "HAS_VITAL_SIGNS",
+   "fact": "Patient-7 presented with an overall good general condition noted as ECOG 3 on January 29, 2028.",
+   "episodes": [
+    "3c7604f9-be62-4979-93d3-705bc540abe0"
+   ],
+   "expired_at": "2026-11-18T18:19:01.031807",
+   "valid_at": "2028-01-29T00:00:00",
+   "invalid_at": "2028-09-04T00:00:00",
+   "reference_time": "2028-01-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ce2b3771-3d13-4460-92c4-d244398c43ec",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "created_at": "2026-11-18T18:11:55.059426",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 is under the care of Dr. med. Arzt-1 at the Urologische Klinik, Klinikum Berlin.",
+   "episodes": [
+    "73dacefe-cb6d-4e8c-b739-65796036b850",
+    "d92971ed-3b0a-45f4-807f-2c093797475a"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "d7c97c90-33c0-4848-aba2-2a32d14f8865",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "33418545-28c3-4b6f-9819-643c5e58d81c",
+   "created_at": "2026-11-18T18:11:05.351632",
+   "name": "RELATES_TO",
+   "fact": "Patient-7 presented for Radium-223-Therapie (6 zyklen à 4 wochen) on January 29, 2028.",
+   "episodes": [
+    "3c7604f9-be62-4979-93d3-705bc540abe0"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "de081653-a2e4-42b9-891e-0e94322936aa",
+   "group_id": "Patient-7",
+   "source_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "target_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "created_at": "2026-11-18T18:11:36.185325",
+   "name": "RELATES_TO",
+   "fact": "Patient-7 was managed by Dr. med. Arzt-1 at Klinikum Berlin.",
+   "episodes": [
+    "67f5cb5d-cc56-42c4-ace5-c37880f8e0b9"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "e24366ec-1a98-45f8-b8ac-797eeb89c461",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:11:55.059478",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 has a history of metastatic C61 Prostatakarzinom.",
+   "episodes": [
+    "73dacefe-cb6d-4e8c-b739-65796036b850"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "eb481685-cc4b-4c5d-995e-893a05248e49",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:11:55.059621",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 has an active PSA-Wert of 6.6 ng/ml with a rising PSA-Verlauf.",
+   "episodes": [
+    "73dacefe-cb6d-4e8c-b739-65796036b850"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "efc4cdff-211d-444c-b91c-e48061a9ede2",
+   "group_id": "Patient-7",
+   "source_node_uuid": "6a564764-b685-4b20-ac22-37920eb07bf5",
+   "target_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "created_at": "2026-11-18T18:11:36.185239",
+   "name": "RELATES_TO",
+   "fact": "Patient-7 was evaluated and managed at Klinikum Berlin, Klinik-1, Urologische Klinik.",
+   "episodes": [
+    "67f5cb5d-cc56-42c4-ace5-c37880f8e0b9"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "f669709a-21a6-4ca1-b0b3-163bbf842ccb",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:11:05.352063",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 had a current total PSA level of 6.6 ng/ml on January 29, 2028.",
+   "episodes": [
+    "3c7604f9-be62-4979-93d3-705bc540abe0"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-01-29T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-01-29T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "539a3033-95d3-46db-bbff-76fdff6dede2",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "33418545-28c3-4b6f-9819-643c5e58d81c",
+   "created_at": "2026-11-18T18:12:19.934024",
+   "name": "PRESCRIBED",
+   "fact": "Patient-7 presented for Radium-223 therapy consisting of 6 cycles administered every 4 weeks.",
+   "episodes": [
+    "d92971ed-3b0a-45f4-807f-2c093797475a"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-02-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-02-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "639ecf85-2e2d-4cf8-82d4-b43c6f5e41fb",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:13:10.170701",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 has an elevated and rising current PSA-Wert of 8.5 ng/ml.",
+   "episodes": [
+    "937089c3-7590-4a14-a961-be4946b4bfdf"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-02-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-02-26T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "69114f32-c4f7-4944-9f30-527e1e430026",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "created_at": "2026-11-18T18:12:48.785885",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 was under the care of Dr. med. Arzt-1 from the Urologische Klinik.",
+   "episodes": [
+    "df385074-f0ce-47c6-b228-73d8eda3e034"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-02-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-02-26T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "9273070d-e52b-4783-ad6f-fd822b376ec7",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:12:19.934187",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 has a primary diagnosis of C61 Prostatakarzinom, metastasiert, treated with chemotherapy and nuclear medicine.",
+   "episodes": [
+    "d92971ed-3b0a-45f4-807f-2c093797475a"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-02-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-02-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "9a47662c-20a7-4a85-9819-999e536b56ba",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:12:19.934676",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 laboratory evaluation revealed a total PSA value of 8.5 ng/ml.",
+   "episodes": [
+    "d92971ed-3b0a-45f4-807f-2c093797475a",
+    "df385074-f0ce-47c6-b228-73d8eda3e034"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-02-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-02-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a4aa844e-ff08-4819-890d-cf8fddf21df6",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "created_at": "2026-11-18T18:13:10.169723",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 presented to Dr. med. Arzt-1 at the Urologische Klinik, Klinikum Berlin for routine follow-up regarding metastatic prostate cancer.",
+   "episodes": [
+    "937089c3-7590-4a14-a961-be4946b4bfdf"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-02-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-02-26T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a60ca0a0-bae5-43eb-a585-8905e6b69d3a",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:13:10.170254",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 has metastatic prostate cancer currently managed with chemotherapy and nuclear medicine (Radium-223).",
+   "episodes": [
+    "937089c3-7590-4a14-a961-be4946b4bfdf"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-02-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-02-26T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c5e3e520-49d7-492e-8513-1685432e3b4d",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "6a564764-b685-4b20-ac22-37920eb07bf5",
+   "created_at": "2026-11-18T18:12:19.933617",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 presented at the Urologische Klinik of Klinikum Berlin under the care of Dr. med. Arzt-1.",
+   "episodes": [
+    "d92971ed-3b0a-45f4-807f-2c093797475a",
+    "937089c3-7590-4a14-a961-be4946b4bfdf"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-02-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-02-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c8fc12a1-1855-4cf0-99e5-d4e548021c4d",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "58eacf37-c55f-4631-992b-3e0443c4d770",
+   "created_at": "2026-11-18T18:12:19.934316",
+   "name": "HAS_PATHOLOGY",
+   "fact": "Patient-7 has a Gleason score of 4+5=9 (ISUP 5) and staging of cT3b cN1 cM1b.",
+   "episodes": [
+    "d92971ed-3b0a-45f4-807f-2c093797475a"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-02-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-02-28T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "d730f787-48ae-45f0-97ac-8f06844ff8e9",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "af86da12-fe77-41c6-8070-0343070e59e9",
+   "created_at": "2026-11-18T18:12:48.785788",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 had laboratory tests performed at the Zentrallabor of Klinikum Berlin – Klinik-1 under the care of Dr. med. Arzt-1.",
+   "episodes": [
+    "df385074-f0ce-47c6-b228-73d8eda3e034"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-02-26T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-02-26T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "016d1710-494a-4d7f-97cb-b1023523562f",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:13:35.566285",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 was evaluated with a diagnosis of C61 Prostatakarzinom (metastasiert, chemotherapy + nuclear medicine with Radium-223, Gleason score 4+5=9, ISUP 5, cT3b cN1 cM1b) on March 25, 2028.",
+   "episodes": [
+    "61a875a2-b7d1-4db4-9b53-b4ee4b0ec4b4",
+    "a6c6bc29-2697-4619-b983-5e33b00a8ef2"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-03-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "03a871e7-c9b7-4653-956c-b3eeba6e5369",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "created_at": "2026-11-18T18:14:21.205834",
+   "name": "RELATES_TO",
+   "fact": "Patient-7 was evaluated and managed by Dr. med. Arzt-1.",
+   "episodes": [
+    "f02e7262-2807-4946-a0f3-47df8092c6b2",
+    "5cfa5b0a-8331-4141-9ac2-e2ecfed889f5",
+    "784aea3b-85bc-4e5e-8900-990f9fc2a0c1"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-03-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "09693bcd-cd6c-4232-8737-04d204e97dcf",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "e28f080f-cbfe-4160-ba39-509f1729f10b",
+   "created_at": "2026-11-18T18:13:35.566355",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-7 presented with fatigue on March 25, 2028.",
+   "episodes": [
+    "61a875a2-b7d1-4db4-9b53-b4ee4b0ec4b4"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-03-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "0c5ff1b6-9b8f-4890-b0de-6b2206c2ab35",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "a4c391d4-90f8-4740-8ff7-379b63ea2629",
+   "created_at": "2026-11-18T18:14:21.205942",
+   "name": "RELATES_TO",
+   "fact": "Patient-7 is undergoing treatment involving chemotherapy.",
+   "episodes": [
+    "f02e7262-2807-4946-a0f3-47df8092c6b2",
+    "784aea3b-85bc-4e5e-8900-990f9fc2a0c1"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-03-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "29515f2b-e41a-400c-a5aa-30ebda1179cc",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "0200ad60-3026-405c-9106-c76664399c9f",
+   "created_at": "2026-11-18T18:13:35.566201",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 was evaluated at the Urologische Klinik, Klinikum Berlin – Klinik-1 by Dr. med. Arzt-1 on March 25, 2028.",
+   "episodes": [
+    "61a875a2-b7d1-4db4-9b53-b4ee4b0ec4b4"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-03-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "3a36cfca-4302-454b-a063-9aeffde21e8b",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:14:21.206024",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 has an actual PSA-Wert of 11.0 ng/ml.",
+   "episodes": [
+    "f02e7262-2807-4946-a0f3-47df8092c6b2"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-03-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "3fb5a82b-4230-42ca-a6f3-28489c910097",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "69ca1a7c-2b09-4902-9d5e-d5a610cf808e",
+   "created_at": "2026-11-18T18:13:35.566323",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-7 presented with bone pain on March 25, 2028.",
+   "episodes": [
+    "61a875a2-b7d1-4db4-9b53-b4ee4b0ec4b4"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-03-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "4d651056-01c2-4c24-82e4-dd1df6bbb3ce",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "a4c391d4-90f8-4740-8ff7-379b63ea2629",
+   "created_at": "2026-11-18T18:14:00.502293",
+   "name": "RELATES_TO",
+   "fact": "Patient-7 is undergoing chemotherapy as part of the treatment for metastatic prostate cancer on March 25, 2028.",
+   "episodes": [
+    "a6c6bc29-2697-4619-b983-5e33b00a8ef2"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-03-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "96c09fe4-8612-4a2e-b27a-a7f4c51b29f3",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:13:35.566394",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 had a total PSA laboratory value of 11,0 ng/ml on March 25, 2028.",
+   "episodes": [
+    "61a875a2-b7d1-4db4-9b53-b4ee4b0ec4b4",
+    "a6c6bc29-2697-4619-b983-5e33b00a8ef2"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-03-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a17131af-ba6d-4fd3-b730-1baf2b320937",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "created_at": "2026-11-18T18:13:35.566108",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 presented to Dr. med. Arzt-1 at the Urologische Klinik, Klinikum Berlin – Klinik-1 for evaluation of metastatic prostate cancer on March 25, 2028.",
+   "episodes": [
+    "61a875a2-b7d1-4db4-9b53-b4ee4b0ec4b4"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-03-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a7074de5-2339-42e4-a970-e00e0ca8585a",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "33418545-28c3-4b6f-9819-643c5e58d81c",
+   "created_at": "2026-11-18T18:13:35.566444",
+   "name": "RELATES_TO",
+   "fact": "Patient-7's ongoing treatment plan includes Radium-223-Therapie consisting of 6 cycles administered every 4 weeks as of March 25, 2028.",
+   "episodes": [
+    "61a875a2-b7d1-4db4-9b53-b4ee4b0ec4b4"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-03-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "b1ad8ad9-65cf-4d55-bf97-f687f31bc38e",
+   "group_id": "Patient-7",
+   "source_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:14:21.206076",
+   "name": "INDICATES",
+   "fact": "The rising PSA-Wert indicates clinical and biochemical progress for C61 Prostatakarzinom (metastasiert).",
+   "episodes": [
+    "f02e7262-2807-4946-a0f3-47df8092c6b2"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-03-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "d899e3f5-287f-44ae-b38a-17202b1ac0f9",
+   "group_id": "Patient-7",
+   "source_node_uuid": "0200ad60-3026-405c-9106-c76664399c9f",
+   "target_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "created_at": "2026-11-18T18:14:00.502449",
+   "name": "RELATES_TO",
+   "fact": "The laboratory report was ordered and signed electronically by sender Dr. med. Arzt-1 from the Urologische Klinik at Zentrallabor on March 25, 2028.",
+   "episodes": [
+    "a6c6bc29-2697-4619-b983-5e33b00a8ef2"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-03-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "da0fa03a-b7ad-449c-9e75-170f4bf269a5",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "6a564764-b685-4b20-ac22-37920eb07bf5",
+   "created_at": "2026-11-18T18:14:21.205750",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 received care and a follow-up progress report from Dr. med. Arzt-1 at the Urologische Klinik at Klinikum Berlin.",
+   "episodes": [
+    "f02e7262-2807-4946-a0f3-47df8092c6b2"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-03-25T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "e8316f03-1960-4043-8872-6c4dfafcf55e",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "33418545-28c3-4b6f-9819-643c5e58d81c",
+   "created_at": "2026-11-18T18:14:00.502345",
+   "name": "PRESCRIBED",
+   "fact": "Patient-7 is receiving radium-223 therapy as part of the nuclear medicine treatment on March 25, 2028.",
+   "episodes": [
+    "a6c6bc29-2697-4619-b983-5e33b00a8ef2"
+   ],
+   "expired_at": "2026-11-18T18:19:32.060217",
+   "valid_at": "2028-03-25T00:00:00",
+   "invalid_at": "2028-09-22T00:00:00",
+   "reference_time": "2028-03-25T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "0f208de1-c4bf-4577-a2b3-9f533e5f64c5",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:14:45.696681",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 has a confirmed diagnosis of metastasized C61 Prostatakarzinom with a Gleason score of 4+5=9 (ISUP 5) and staging cT3b cN1 cM1b.",
+   "episodes": [
+    "5cfa5b0a-8331-4141-9ac2-e2ecfed889f5"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-04-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-04-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "2282d97e-6345-41ee-98ca-43a91e813bf0",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:14:45.696931",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 has a current total PSA lab test value of 14.1 ng/ml.",
+   "episodes": [
+    "5cfa5b0a-8331-4141-9ac2-e2ecfed889f5",
+    "d5eb93be-860a-4aa1-aa9e-10fe03872b74",
+    "da5fda8f-8b77-44cf-a01d-c094500ce177"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-04-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-04-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "31dd3a51-b093-4205-a073-d4af3b683c8d",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "33418545-28c3-4b6f-9819-643c5e58d81c",
+   "created_at": "2026-11-18T18:15:40.620727",
+   "name": "PRESCRIBED",
+   "fact": "Patient-7 is undergoing nuclear medicine treatment with Radium-223.",
+   "episodes": [
+    "da5fda8f-8b77-44cf-a01d-c094500ce177",
+    "784aea3b-85bc-4e5e-8900-990f9fc2a0c1"
+   ],
+   "expired_at": "2026-11-18T18:19:32.060225",
+   "valid_at": "2028-04-22T00:00:00",
+   "invalid_at": "2028-09-22T00:00:00",
+   "reference_time": "2028-04-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "3c273945-3164-4455-b13e-09785f6d1d12",
+   "group_id": "Patient-7",
+   "source_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:15:40.621067",
+   "name": "INDICATES",
+   "fact": "The rising PSA value indicates clinical and biochemical progress for C61 Prostatakarzinom.",
+   "episodes": [
+    "da5fda8f-8b77-44cf-a01d-c094500ce177"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-04-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-04-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "455e95aa-ffcb-4e14-ad6b-bccb4db7a66d",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "e28f080f-cbfe-4160-ba39-509f1729f10b",
+   "created_at": "2026-11-18T18:14:45.696844",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-7 reported experiencing fatigue during the clinical visit.",
+   "episodes": [
+    "5cfa5b0a-8331-4141-9ac2-e2ecfed889f5",
+    "88c8daf4-fed1-45ce-bb40-4aff60d8fc09"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-04-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-04-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "4cc1d591-aa9b-42a5-bbf7-8d135037ef65",
+   "group_id": "Patient-7",
+   "source_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:15:21.066047",
+   "name": "INDICATES",
+   "fact": "A total PSA value of 14,1 ng/ml indicates C61 Prostatakarzinom.",
+   "episodes": [
+    "d5eb93be-860a-4aa1-aa9e-10fe03872b74"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-04-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-04-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "4e8857f2-e091-4939-8a1d-20e03d04f906",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "6a564764-b685-4b20-ac22-37920eb07bf5",
+   "created_at": "2026-11-18T18:14:45.696518",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 presented at the Urological Clinic of Klinikum Berlin for treatment evaluation.",
+   "episodes": [
+    "5cfa5b0a-8331-4141-9ac2-e2ecfed889f5"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-04-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-04-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "6f0b7a1a-c914-4325-9203-b3b253172630",
+   "group_id": "Patient-7",
+   "source_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "target_node_uuid": "0200ad60-3026-405c-9106-c76664399c9f",
+   "created_at": "2026-11-18T18:15:21.065094",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-1 managed patient care at the Urologische Klinik, Klinikum Berlin – Klinik-1.",
+   "episodes": [
+    "d5eb93be-860a-4aa1-aa9e-10fe03872b74"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-04-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-04-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "7b967d33-5e47-4e97-b53d-742cb226c0d9",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "a4c391d4-90f8-4740-8ff7-379b63ea2629",
+   "created_at": "2026-11-18T18:14:45.696726",
+   "name": "RELATES_TO",
+   "fact": "Patient-7 is treated with chemotherapy for C61 Prostatakarzinom.",
+   "episodes": [
+    "5cfa5b0a-8331-4141-9ac2-e2ecfed889f5"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-04-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-04-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "81ccfa8f-f0a6-436c-94c1-7245069c2142",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:15:40.620543",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 has a diagnosis of C61 Prostatakarzinom with metastatic disease.",
+   "episodes": [
+    "da5fda8f-8b77-44cf-a01d-c094500ce177",
+    "88c8daf4-fed1-45ce-bb40-4aff60d8fc09",
+    "5259a52f-903c-4b82-b5fa-f45abc2dc4cf"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-04-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-04-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "874646ed-c94a-41ad-9eda-4e2fd643ddfb",
+   "group_id": "Patient-7",
+   "source_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "target_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "created_at": "2026-11-18T18:15:40.620384",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-1 issued a follow-up report for Patient-7, who was evaluated for routine follow-up.",
+   "episodes": [
+    "da5fda8f-8b77-44cf-a01d-c094500ce177"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-04-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-04-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "8b3cc0ef-e5ba-4ddd-a5d4-11f4917aa947",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "created_at": "2026-11-18T18:15:21.065381",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 had a laboratory test performed by Dr. med. Arzt-1.",
+   "episodes": [
+    "d5eb93be-860a-4aa1-aa9e-10fe03872b74"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-04-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-04-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "8f4dd12d-f455-4b3c-8c05-83a67c321b38",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "69ca1a7c-2b09-4902-9d5e-d5a610cf808e",
+   "created_at": "2026-11-18T18:14:45.696806",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-7 reported experiencing bone pain during the clinical visit.",
+   "episodes": [
+    "5cfa5b0a-8331-4141-9ac2-e2ecfed889f5"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-04-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-04-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a79781ac-547d-493e-a66a-c11eeb44c037",
+   "group_id": "Patient-7",
+   "source_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "target_node_uuid": "6a564764-b685-4b20-ac22-37920eb07bf5",
+   "created_at": "2026-11-18T18:15:40.620154",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-1 is from the Urologische Klinik at Klinikum Berlin.",
+   "episodes": [
+    "da5fda8f-8b77-44cf-a01d-c094500ce177",
+    "784aea3b-85bc-4e5e-8900-990f9fc2a0c1"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-04-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-04-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "d8f24251-8ba9-4301-af5a-e7d0a8c35c68",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "33418545-28c3-4b6f-9819-643c5e58d81c",
+   "created_at": "2026-11-18T18:14:45.696982",
+   "name": "RELATES_TO",
+   "fact": "Patient-7 has an ongoing treatment plan including Radium-223 therapy administered in 6 cycles à 4 weeks.",
+   "episodes": [
+    "5cfa5b0a-8331-4141-9ac2-e2ecfed889f5",
+    "88c8daf4-fed1-45ce-bb40-4aff60d8fc09"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-04-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-04-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "0395f7db-adf1-4e27-b181-c1db5e60ef36",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "created_at": "2026-11-18T18:16:01.850452",
+   "name": "RELATES_TO",
+   "fact": "Patient-7 was evaluated by Dr. med. Arzt-1 at the Urologische Klinik of Klinikum Berlin.",
+   "episodes": [
+    "88c8daf4-fed1-45ce-bb40-4aff60d8fc09"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-05-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-05-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "046d9084-78d5-449b-aebf-b9b877cab69e",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "6a564764-b685-4b20-ac22-37920eb07bf5",
+   "created_at": "2026-11-18T18:16:01.850362",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 was evaluated at the Urologische Klinik of Klinikum Berlin by Dr. med. Arzt-1.",
+   "episodes": [
+    "88c8daf4-fed1-45ce-bb40-4aff60d8fc09"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-05-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-05-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "15336549-6b13-4ce7-8b3d-58f9ebb09f97",
+   "group_id": "Patient-7",
+   "source_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:16:53.887360",
+   "name": "INDICATES",
+   "fact": "The rising total PSA value of 18.3 ng/ml indicates biochemical and clinical progression of metastatic prostate cancer.",
+   "episodes": [
+    "784aea3b-85bc-4e5e-8900-990f9fc2a0c1"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-05-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-05-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "1e531f71-0e27-4ede-a925-f3abb991ab29",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "0200ad60-3026-405c-9106-c76664399c9f",
+   "created_at": "2026-11-18T18:16:28.752638",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 had a laboratory evaluation performed at the Urologische Klinik, Klinikum Berlin – Klinik-1.",
+   "episodes": [
+    "8639a22e-7f4c-461a-ab44-18434620f586"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-05-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-05-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "49f2c999-841b-4ac2-aa74-20123c317a73",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "69ca1a7c-2b09-4902-9d5e-d5a610cf808e",
+   "created_at": "2026-11-18T18:16:01.850571",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-7 reported ongoing bone pain during the evaluation.",
+   "episodes": [
+    "88c8daf4-fed1-45ce-bb40-4aff60d8fc09"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-05-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-05-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "5b8923e6-f429-42c7-a6e1-2984c675b320",
+   "group_id": "Patient-7",
+   "source_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:16:28.752600",
+   "name": "INDICATES",
+   "fact": "A total PSA value of 18.3 ng/ml is evaluated as elevated compared to the reference range of 0.00 – 4.00 ng/ml for C61 Prostatakarzinom.",
+   "episodes": [
+    "8639a22e-7f4c-461a-ab44-18434620f586"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-05-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-05-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "5f6f1c6a-d49c-4276-805f-b9b50690c435",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "af86da12-fe77-41c6-8070-0343070e59e9",
+   "created_at": "2026-11-18T18:16:28.752703",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 had a laboratory evaluation validated and released by the Zentrallabor of Klinikum Berlin – Klinik-1.",
+   "episodes": [
+    "8639a22e-7f4c-461a-ab44-18434620f586"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-05-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-05-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "8443f675-306e-4f73-9fae-bde295c5e1bf",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:16:01.850657",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 had a total PSA level of 18.3 ng/ml measured during evaluation.",
+   "episodes": [
+    "88c8daf4-fed1-45ce-bb40-4aff60d8fc09",
+    "8639a22e-7f4c-461a-ab44-18434620f586",
+    "784aea3b-85bc-4e5e-8900-990f9fc2a0c1"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-05-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-05-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "9558fee0-1b72-427e-a7f3-82255e032937",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "5f7e1fe2-57e4-4e00-8bbe-cadb7e86bc7b",
+   "created_at": "2026-11-18T18:16:53.887062",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 was evaluated at Klinikum Berlin located at Beethovenstraße 65, 13597 Berlin.",
+   "episodes": [
+    "784aea3b-85bc-4e5e-8900-990f9fc2a0c1"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-05-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-05-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a18f6b6d-0189-4056-b46d-0399ddf477ac",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "6a564764-b685-4b20-ac22-37920eb07bf5",
+   "created_at": "2026-11-18T18:16:53.887012",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 was evaluated at the Urologische Klinik.",
+   "episodes": [
+    "784aea3b-85bc-4e5e-8900-990f9fc2a0c1"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-05-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-05-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a3c8a6fe-eb64-4fc1-86d9-fa220ba97878",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:16:53.887105",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 is diagnosed with metastatic prostate cancer.",
+   "episodes": [
+    "784aea3b-85bc-4e5e-8900-990f9fc2a0c1"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-05-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-05-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a4b84d13-117c-4ad0-bf83-395e7a40286d",
+   "group_id": "Patient-7",
+   "source_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "target_node_uuid": "5f7e1fe2-57e4-4e00-8bbe-cadb7e86bc7b",
+   "created_at": "2026-11-18T18:16:53.886904",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-1 evaluated Patient-7 at Klinikum Berlin.",
+   "episodes": [
+    "784aea3b-85bc-4e5e-8900-990f9fc2a0c1"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-05-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-05-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "b40db78b-63f0-4096-9418-0453d9e83cd5",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "created_at": "2026-11-18T18:16:28.752666",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 was under the care of Dr. med. Arzt-1 during the laboratory evaluation.",
+   "episodes": [
+    "8639a22e-7f4c-461a-ab44-18434620f586"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-05-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-05-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "f12aa1a1-4cbf-4a7a-8699-70c88c6f0b2c",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:16:53.887146",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 has a confirmed diagnosis of C61 Prostatakarzinom.",
+   "episodes": [
+    "784aea3b-85bc-4e5e-8900-990f9fc2a0c1"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-05-20T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-05-20T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "031441ce-a07a-4464-99e8-a5377ed1df54",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:17:42.017484",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 was evaluated with the primary diagnosis of C61 Prostatakarzinom (metastasiert, chemotherapy + nuklearmedizin Radium-223, Gleason 4+5=9, ISUP 5, cT3b cN1 cM1b) on June 17, 2028.",
+   "episodes": [
+    "2374d26c-87c1-4101-b5ee-97dad9af7884"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-17T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-17T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "154cab6d-584d-4dcb-bdd0-7e5ee78c9ddb",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "6a564764-b685-4b20-ac22-37920eb07bf5",
+   "created_at": "2026-11-18T18:18:26.914718",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 was evaluated for routine follow-up regarding diagnosed C61 Prostatakarzinom at the Urologische Klinik of Klinikum Berlin by Dr. med. Arzt-1.",
+   "episodes": [
+    "5259a52f-903c-4b82-b5fa-f45abc2dc4cf"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-17T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-17T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "16b6e06e-51af-45eb-a825-e6c9143e9eb0",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "33418545-28c3-4b6f-9819-643c5e58d81c",
+   "created_at": "2026-11-18T18:18:26.916802",
+   "name": "PRESCRIBED",
+   "fact": "Patient-7's metastatic condition is managed with nuclear medicine using Radium-223 as part of the continuation of the current treatment strategy.",
+   "episodes": [
+    "5259a52f-903c-4b82-b5fa-f45abc2dc4cf"
+   ],
+   "expired_at": "2026-11-18T18:19:32.060234",
+   "valid_at": "2028-06-17T00:00:00",
+   "invalid_at": "2028-09-22T00:00:00",
+   "reference_time": "2028-06-17T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "19341e11-0519-4d17-bfc5-e7ea9fb16fa3",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:17:42.017603",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Laboratory evaluation revealed a total PSA level of 23.5 ng/ml for Patient-7 on June 17, 2028.",
+   "episodes": [
+    "2374d26c-87c1-4101-b5ee-97dad9af7884"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-17T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-17T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "248ed430-01b3-4ab8-b413-aae3df101513",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "f66f6a00-84d4-4731-a294-18e42822c18a",
+   "created_at": "2026-11-18T18:17:42.017573",
+   "name": "HAS_VITAL_SIGNS",
+   "fact": "Patient-7 presented with an ECOG performance status of 3 on June 17, 2028.",
+   "episodes": [
+    "2374d26c-87c1-4101-b5ee-97dad9af7884"
+   ],
+   "expired_at": "2026-11-18T18:19:32.060372",
+   "valid_at": "2028-06-17T00:00:00",
+   "invalid_at": "2028-09-04T00:00:00",
+   "reference_time": "2028-06-17T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "27ed7871-d20a-4b93-a8f9-7850749ae653",
+   "group_id": "Patient-7",
+   "source_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:18:06.779668",
+   "name": "INDICATES",
+   "fact": "An elevated total PSA (PSA (gesamt)) level of 23.5 ng/ml indicates C61 Prostatakarzinom (metastasiert – Chemotherapie + Nuklearmedizin (Radium-223)).",
+   "episodes": [
+    "70960038-2b0d-4e25-a7cb-b6b66547332b"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-17T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-17T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "4b0022e8-4eba-47de-a2cb-58a5280242a5",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "e28f080f-cbfe-4160-ba39-509f1729f10b",
+   "created_at": "2026-11-18T18:17:42.017544",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-7 clinical presentation included fatigue on June 17, 2028.",
+   "episodes": [
+    "2374d26c-87c1-4101-b5ee-97dad9af7884"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-17T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-17T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "656b9f22-a9cf-41cb-8d51-735cc267f5df",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:18:26.917000",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 has an elevated and rising current PSA-Wert tumor marker level of 23.5 ng/ml with an ansteigend trend indicating clinical and biochemical progress.",
+   "episodes": [
+    "5259a52f-903c-4b82-b5fa-f45abc2dc4cf"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-17T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-17T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "72d01a9c-e2de-4634-b36e-c782aa5273fd",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "81d5126d-e876-44e5-bf00-9466d4793083",
+   "created_at": "2026-11-18T18:18:06.779451",
+   "name": "HAS_TUMOR_MARKER",
+   "fact": "Patient-7 had a total PSA (PSA (gesamt)) level of 23.5 ng/ml evaluated at Klinikum Berlin – Klinik-1, Urologische Klinik.",
+   "episodes": [
+    "70960038-2b0d-4e25-a7cb-b6b66547332b"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-17T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-17T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "7462d8d2-cc71-4c09-b9d4-3cae80d49afc",
+   "group_id": "Patient-7",
+   "source_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "target_node_uuid": "6a564764-b685-4b20-ac22-37920eb07bf5",
+   "created_at": "2026-11-18T18:18:06.779253",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-1 ordered laboratory results from Klinikum Berlin – Klinik-1, Urologische Klinik.",
+   "episodes": [
+    "70960038-2b0d-4e25-a7cb-b6b66547332b"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-17T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-17T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "9c3aa869-6391-4792-bf74-1e2514ab5d6d",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "a4c391d4-90f8-4740-8ff7-379b63ea2629",
+   "created_at": "2026-11-18T18:18:26.916637",
+   "name": "RELATES_TO",
+   "fact": "Patient-7's metastatic condition is managed with chemotherapy as part of the continuation of the current treatment strategy.",
+   "episodes": [
+    "5259a52f-903c-4b82-b5fa-f45abc2dc4cf"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-17T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-17T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a09fe9ca-e7e3-4edd-bd79-7b9475ceaf6e",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "6a564764-b685-4b20-ac22-37920eb07bf5",
+   "created_at": "2026-11-18T18:18:06.779023",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 received a laboratory evaluation at Klinikum Berlin – Klinik-1, Urologische Klinik.",
+   "episodes": [
+    "70960038-2b0d-4e25-a7cb-b6b66547332b"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-17T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-17T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "afd2820a-949c-4260-b093-97b22544ffcf",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "6a564764-b685-4b20-ac22-37920eb07bf5",
+   "created_at": "2026-11-18T18:17:42.017407",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 presented to Dr. med. Arzt-1 at the Urologische Klinik of Klinikum Berlin - Klinik-1 on June 17, 2028.",
+   "episodes": [
+    "2374d26c-87c1-4101-b5ee-97dad9af7884"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-17T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-17T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "c8990f6f-de74-43b0-a165-44b497294a0e",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "33418545-28c3-4b6f-9819-643c5e58d81c",
+   "created_at": "2026-11-18T18:17:42.017644",
+   "name": "RELATES_TO",
+   "fact": "Patient-7 has a treatment plan documenting the administration of Radium-223 therapy consisting of 6 cycles administered every 4 weeks on June 17, 2028.",
+   "episodes": [
+    "2374d26c-87c1-4101-b5ee-97dad9af7884"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-17T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-17T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "d7d663e1-a26c-4e89-a7f4-0be55e265b1a",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "69ca1a7c-2b09-4902-9d5e-d5a610cf808e",
+   "created_at": "2026-11-18T18:17:42.017517",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-7 clinical presentation included bone pain on June 17, 2028.",
+   "episodes": [
+    "2374d26c-87c1-4101-b5ee-97dad9af7884"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-06-17T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-06-17T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "e2c79638-977b-4f98-a40a-0cb60c7cc0c5",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "f66f6a00-84d4-4731-a294-18e42822c18a",
+   "created_at": "2026-11-18T18:18:26.916899",
+   "name": "HAS_VITAL_SIGNS",
+   "fact": "Patient-7 presents with a stable clinical course and a good general condition documented as ECOG 3.",
+   "episodes": [
+    "5259a52f-903c-4b82-b5fa-f45abc2dc4cf"
+   ],
+   "expired_at": "2026-11-18T18:19:01.031813",
+   "valid_at": "2028-06-17T00:00:00",
+   "invalid_at": "2028-09-04T00:00:00",
+   "reference_time": "2028-06-17T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "0ea85e23-9388-4f6a-bc76-8a1158d582bc",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "69ca1a7c-2b09-4902-9d5e-d5a610cf808e",
+   "created_at": "2026-11-18T18:18:52.354028",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-7 reported symptoms of severe knochenschmerz.",
+   "episodes": [
+    "1871a1c9-1058-4cc1-b7bc-35b14e118a99"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "43f782b3-1418-4f7d-bd76-5db32e603bfc",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "f66f6a00-84d4-4731-a294-18e42822c18a",
+   "created_at": "2026-11-18T18:18:52.354198",
+   "name": "HAS_VITAL_SIGNS",
+   "fact": "Patient-7 presented with an ECOG performance status of 4.",
+   "episodes": [
+    "1871a1c9-1058-4cc1-b7bc-35b14e118a99",
+    "aa069d6e-e6c0-499b-8b64-6c088138653e"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "45f20a6b-9aad-4dcf-9d29-111be09fe68f",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "created_at": "2026-11-18T18:18:52.353674",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 was evaluated by Dr. med. Arzt-1 for a palliative medicine consultation.",
+   "episodes": [
+    "1871a1c9-1058-4cc1-b7bc-35b14e118a99"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "4d8de301-30b1-4d30-917a-a3e2df440b05",
+   "group_id": "Patient-7",
+   "source_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "target_node_uuid": "a4c391d4-90f8-4740-8ff7-379b63ea2629",
+   "created_at": "2026-11-18T18:18:52.353934",
+   "name": "RELATES_TO",
+   "fact": "The advanced stage of C61 Prostatakarzinom follows chemotherapy and nuclear medicine with Radium-223.",
+   "episodes": [
+    "1871a1c9-1058-4cc1-b7bc-35b14e118a99"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "969e3276-d391-4b4e-adce-276deb832979",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:18:52.353865",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 presented with the diagnosis of C61 Prostatakarzinom (metastasiert, advanced stage following chemotherapy and nuclear medicine with Radium-223, with curative therapy approaches exhausted).",
+   "episodes": [
+    "1871a1c9-1058-4cc1-b7bc-35b14e118a99"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "971f179b-f89e-4a4d-b8ef-5656ac109e66",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "1a56b581-09f5-457b-875a-24615cd2e2ad",
+   "created_at": "2026-11-18T18:18:52.354254",
+   "name": "RELATES_TO",
+   "fact": "The further care plan for Patient-7 recommended close connection to Spezialisierte Ambulante Palliativversorgung.",
+   "episodes": [
+    "1871a1c9-1058-4cc1-b7bc-35b14e118a99"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a6f01ec0-c2aa-426c-b9b6-f1dd9d4f1737",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "6a564764-b685-4b20-ac22-37920eb07bf5",
+   "created_at": "2026-11-18T18:18:52.353774",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 was evaluated at the Urologische Klinik of Klinikum Berlin for a palliative medicine consultation.",
+   "episodes": [
+    "1871a1c9-1058-4cc1-b7bc-35b14e118a99"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "b1aa9b8c-8d00-41c6-a4a5-67113692c804",
+   "group_id": "Patient-7",
+   "source_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "target_node_uuid": "33418545-28c3-4b6f-9819-643c5e58d81c",
+   "created_at": "2026-11-18T18:18:52.353989",
+   "name": "TREATED_BY",
+   "fact": "The advanced stage of C61 Prostatakarzinom follows chemotherapy and nuclear medicine with Radium-223.",
+   "episodes": [
+    "1871a1c9-1058-4cc1-b7bc-35b14e118a99"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "be68fac9-8bcb-4bce-831b-1af13bae5463",
+   "group_id": "Patient-7",
+   "source_node_uuid": "e28f080f-cbfe-4160-ba39-509f1729f10b",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:18:52.354157",
+   "name": "SYMPTOM_OF",
+   "fact": "Fatigue is a symptom associated with the metastatic C61 Prostatakarzinom condition.",
+   "episodes": [
+    "1871a1c9-1058-4cc1-b7bc-35b14e118a99"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "e35c0395-29b8-46a0-a035-25673caa0bdc",
+   "group_id": "Patient-7",
+   "source_node_uuid": "69ca1a7c-2b09-4902-9d5e-d5a610cf808e",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:18:52.354078",
+   "name": "SYMPTOM_OF",
+   "fact": "Knochenschmerz is a symptom associated with the metastatic C61 Prostatakarzinom condition.",
+   "episodes": [
+    "1871a1c9-1058-4cc1-b7bc-35b14e118a99"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-04T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-04T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "1309488c-eb7e-45e0-99be-35c547d10447",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "0794b6ba-2358-4ada-a785-c807d67d0e06",
+   "created_at": "2026-11-18T18:19:24.191262",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 passed away from progressive metastatic castration-resistant prostate cancer.",
+   "episodes": [
+    "aa069d6e-e6c0-499b-8b64-6c088138653e"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "6c18d3fe-1336-4d4e-9bba-e43db3908926",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "79d28ee3-db46-43bd-bbf8-379a5bf3dd71",
+   "created_at": "2026-11-18T18:19:24.191005",
+   "name": "HAS_DIAGNOSIS",
+   "fact": "Patient-7 has an advanced stage of C61 Prostatakarzinom with curative therapy options exhausted.",
+   "episodes": [
+    "aa069d6e-e6c0-499b-8b64-6c088138653e"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "8ab71762-59e0-4c0e-856c-300f2dd42097",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "69ca1a7c-2b09-4902-9d5e-d5a610cf808e",
+   "created_at": "2026-11-18T18:19:24.191094",
+   "name": "HAS_SYMPTOM",
+   "fact": "Patient-7 presented with severe knochenschmerzen as part of their symptom load.",
+   "episodes": [
+    "aa069d6e-e6c0-499b-8b64-6c088138653e"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "a1246df3-147e-4826-8053-76966ec0dfa2",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "33418545-28c3-4b6f-9819-643c5e58d81c",
+   "created_at": "2026-11-18T18:19:24.191049",
+   "name": "PRESCRIBED",
+   "fact": "Patient-7 previously received nuclear medicine treatment with Radium-223.",
+   "episodes": [
+    "aa069d6e-e6c0-499b-8b64-6c088138653e"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ebe13e8a-1922-4d65-9ff7-1d18f02e904b",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "6a564764-b685-4b20-ac22-37920eb07bf5",
+   "created_at": "2026-11-18T18:19:24.190854",
+   "name": "MANAGED_AT",
+   "fact": "Patient-7 was evaluated regarding palliative care at the Urological Clinic at Klinikum Berlin.",
+   "episodes": [
+    "aa069d6e-e6c0-499b-8b64-6c088138653e"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "ed87ded2-03fe-475c-a4f4-988f04e0b54e",
+   "group_id": "Patient-7",
+   "source_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "target_node_uuid": "f876984d-182a-4e5b-b3bb-a3d049576fe9",
+   "created_at": "2026-11-18T18:19:24.191217",
+   "name": "HAS_TREATMENT_PLAN",
+   "fact": "Patient-7's palliative management focused on symptom control and quality of life via Best Supportive Care.",
+   "episodes": [
+    "aa069d6e-e6c0-499b-8b64-6c088138653e"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-22T00:00:00",
+   "attributes": {}
+  },
+  {
+   "uuid": "f25a4020-3c89-470d-9ed2-716f84082a83",
+   "group_id": "Patient-7",
+   "source_node_uuid": "9f8b81d5-1b25-4362-9c95-d256ea80a297",
+   "target_node_uuid": "87734f01-ff0b-494a-aaef-388fd24da841",
+   "created_at": "2026-11-18T18:19:24.190945",
+   "name": "RELATES_TO",
+   "fact": "Dr. med. Arzt-1 provided care for Patient-7 at the Urological Clinic.",
+   "episodes": [
+    "aa069d6e-e6c0-499b-8b64-6c088138653e"
+   ],
+   "expired_at": null,
+   "valid_at": "2028-09-22T00:00:00",
+   "invalid_at": null,
+   "reference_time": "2028-09-22T00:00:00",
+   "attributes": {}
+  }
+ ]
+}

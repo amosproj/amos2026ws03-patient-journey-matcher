@@ -868,7 +868,18 @@ async def db_titles(connection: Any, ids: list[str]) -> dict[str, Any]:
     return {"rows": rows}
 
 
-INDEX_CURRENT = "i.document_changed_at = date_trunc('milliseconds', d.changed_at)"
+def version(document: str) -> str:
+    """The version of `document` for its indexes: its last change, or a later stored transcript.
+
+    `VERSION` in matcher/db/src/documents.ts.
+    """
+    return (
+        f"greatest({document}.changed_at, (SELECT t.read_at FROM transcripts AS t"
+        f" WHERE t.document_id = {document}.id AND t.status <> 'failed'))"
+    )
+
+
+INDEX_CURRENT = f"i.document_changed_at = date_trunc('milliseconds', {version('d')})"
 """An index row `i` holds the current version of its document `d` (`toIndex` in @matcher/db)."""
 
 
@@ -1068,7 +1079,7 @@ def to_index(index: str) -> str:
     """A document `d` an index table has not seen or that changed since (`toIndex`, @matcher/db)."""
     return (
         f"({index}.document_id IS NULL OR {index}.document_changed_at"
-        " IS DISTINCT FROM date_trunc('milliseconds', d.changed_at))"
+        f" IS DISTINCT FROM date_trunc('milliseconds', {version('d')}))"
     )
 
 
@@ -1082,7 +1093,7 @@ def full_text_state(row: str, document: str) -> str:
     return (
         f"CASE WHEN {row}.document_id IS NULL THEN 'new'"
         f" WHEN {row}.status = 'failed' THEN 'failed'"
-        f" WHEN {row}.document_changed_at = date_trunc('milliseconds', {document}.changed_at)"
+        f" WHEN {row}.document_changed_at = date_trunc('milliseconds', {version(document)})"
         f" THEN {row}.status ELSE 'changed' END"
     )
 
@@ -1403,19 +1414,22 @@ async def journey_terms(connection: Any) -> dict[str, Any]:
     return result
 
 
-# ── Transcription job: its setting, and what it reports (keyword.transcription) ──
+# ── Transcription job: its setting, and what it reports (the table transcription) ──
 
 NO_SPEECH_TO_TEXT = "audio, and speech-to-text is off"
-"""Why the indexer skipped a document whose audio the job reads (@matcher/download)."""
-# The rows that wait for the job: `WAITING` in matcher/algorithms/keyword/src/transcription.ts.
-# Keep the two in step; the job itself does not use this copy.
+"""Why an index skipped a document whose audio has no stored transcript yet (@matcher/download)."""
+# The documents that wait for the job: `WAITING` in matcher/transcriber/src/job.ts. Keep the two
+# in step; the job itself does not use this copy.
 WAITING_AUDIO = f"""
-FROM keyword.full_texts AS f JOIN documents AS d ON d.id = f.document_id
-WHERE f.status = 'skipped' AND f.detail = '{NO_SPEECH_TO_TEXT}'
-  AND f.document_changed_at = date_trunc('milliseconds', d.changed_at) AND {NOT_EXPIRED}
+FROM documents AS d LEFT JOIN transcripts AS t ON t.document_id = d.id
+WHERE d.full_text @> '[{{"kind": "audio"}}]' AND NOT d.full_text @> '[{{"kind": "transcript"}}]'
+  AND {NOT_EXPIRED}
   AND (jsonb_typeof(d.extra -> 'metadata_language') = 'string'
        AND d.extra ->> 'metadata_language' <> ''
        AND d.extra ->> 'metadata_language' !~* '^en(-|$)') IS NOT TRUE
+  AND (t.document_id IS NULL
+       OR NOT d.full_text @> jsonb_build_array(jsonb_build_object('url', t.url))
+       OR (t.status = 'failed' AND t.read_at < now() - interval '1 day'))
 """
 JOB_REPORTS = 10
 """Seconds after its last report that the job counts as running; it reports every 2 s."""
@@ -1457,8 +1471,20 @@ async def transcription_overview(connection: Any) -> dict[str, Any]:
         "waiting": None,
         "read": [],
     }
-    if not await has_keyword_index(connection):
+    if not await connection.fetchval("SELECT to_regclass('public.transcripts') IS NOT NULL"):
         return overview
+    overview["exists"] = True
+    rows = await fetch_json(
+        connection,
+        f"""SELECT workers, state, reported_at,
+                   coalesce(reported_at > now() - interval '{JOB_REPORTS} seconds', false)
+                       AS running
+            FROM transcription""",
+    )
+    if rows:
+        overview.update(rows[0])
+        reported = (overview["state"] or {}).get("max_workers")
+        overview["max_workers"] = reported or overview["max_workers"]
     [overview["waiting"]] = await fetch_json(
         connection,
         f"""SELECT count(*) AS documents, coalesce(sum(d.duration_seconds), 0) AS seconds,
@@ -1468,24 +1494,10 @@ async def transcription_overview(connection: Any) -> dict[str, Any]:
     # What became of the audio read so far, whichever run read it.
     overview["read"] = await fetch_json(
         connection,
-        """SELECT f.status, count(*) AS documents, coalesce(sum(d.duration_seconds), 0) AS seconds
-           FROM keyword.full_texts AS f JOIN documents AS d ON d.id = f.document_id
-           WHERE f.media_type ILIKE 'audio/%' GROUP BY 1 ORDER BY 1""",
+        """SELECT t.status, count(*) AS documents, coalesce(sum(d.duration_seconds), 0) AS seconds
+           FROM transcripts AS t JOIN documents AS d ON d.id = t.document_id
+           GROUP BY 1 ORDER BY 1""",
     )
-    if not await connection.fetchval("SELECT to_regclass('keyword.transcription') IS NOT NULL"):
-        return overview
-    overview["exists"] = True
-    rows = await fetch_json(
-        connection,
-        f"""SELECT workers, state, reported_at,
-                   coalesce(reported_at > now() - interval '{JOB_REPORTS} seconds', false)
-                       AS running
-            FROM keyword.transcription""",
-    )
-    if rows:
-        overview.update(rows[0])
-        reported = (overview["state"] or {}).get("max_workers")
-        overview["max_workers"] = reported or overview["max_workers"]
     return overview
 
 
@@ -1493,15 +1505,12 @@ async def set_transcription_workers(connection: Any, workers: Any) -> dict[str, 
     """Sets how many audio files the job reads at once; the running job follows within seconds."""
     overview = await transcription_overview(connection)
     if not overview["exists"]:
-        raise ValueError(
-            "This database has no keyword.transcription table yet: run make index or"
-            " make transcribe once"
-        )
+        raise ValueError("This database has no transcription table yet: run make db")
     most = overview["max_workers"]
     if isinstance(workers, bool) or not isinstance(workers, int) or not 0 <= workers <= most:
         raise ValueError(f"workers must be a whole number from 0 to {most}")
     await connection.execute(
-        "INSERT INTO keyword.transcription (workers) VALUES ($1)"
+        "INSERT INTO transcription (workers) VALUES ($1)"
         " ON CONFLICT (only_row) DO UPDATE SET workers = EXCLUDED.workers",
         workers,
     )
@@ -1539,7 +1548,7 @@ DEMO_JOURNEY = {
         },
     ],
 }
-"""The journey of the example arguments in Documentation/build.md."""
+"""The journey of the example arguments in Documentation/user/mcp-interface.md."""
 MATCH_TIMEOUT = 60
 LOCAL = urllib.request.build_opener(urllib.request.ProxyHandler({}))
 """Opens URLs of this machine without a proxy."""
@@ -2087,7 +2096,7 @@ async def database_facts(connection: Any) -> dict[str, Any]:
             f"""SELECT workers AS wanted, coalesce((state ->> 'workers')::int, 0) AS workers,
                        coalesce(reported_at > now() - interval '{JOB_REPORTS} seconds', false)
                            AS running
-                FROM keyword.transcription"""
+                FROM transcription"""
         )
         facts["transcription"] = dict(job) if job else None
     return facts

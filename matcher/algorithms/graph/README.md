@@ -1,6 +1,6 @@
 # Graph approach: normalization
 
-The first part of the graph approach (#10): patient graphs and PubTator3 annotations in one representation, so that graph matching can compare them (#80). Why and how: [graph normalization](../../../Documentation/graph-normalization.md). The indexer and the matcher are not built yet, so the approach is not in the [registry](../../approaches/src/registry.ts).
+The first part of the graph approach: patient graphs and PubTator3 annotations in one representation, so that graph matching can compare them. Why and how: [graph normalization](../../../Documentation/design/graph-normalization.md). The indexer and the matcher are not built yet, so the approach is not in the [registry](../../approaches/src/registry.ts).
 
 ## What normalization means
 

@@ -1,0 +1,78 @@
+# Local database (PostgreSQL)
+
+The database runs in Docker, defined in `compose.yaml` in the repository root: PostgreSQL 18 with the pg_textsearch extension (BM25) on the pgvector image. The [VM](deployment.md) runs the same setup.
+
+## Prerequisites
+
+- Docker Desktop (Windows/macOS) or Docker Engine with the Compose plugin
+- Check the installation with `docker compose version`
+- On Windows, Docker Desktop needs WSL2
+- No Docker login is needed. `make db` builds the image from `db/Dockerfile`: the pgvector image (PostgreSQL 18 on Debian 13) plus pg_textsearch for the [keyword index](../design/keyword-matching.md).
+
+## Configuration
+
+Configuration is done through environment variables in a `.env` file. The file is not committed. Copy the template and adjust it:
+
+```bash
+cp .env.example .env
+```
+
+| Variable | Description | Example |
+|---|---|---|
+| `POSTGRES_USER` | Database user | `amos` |
+| `POSTGRES_PASSWORD` | Password for the user, choose your own | `set your own password` |
+| `POSTGRES_DB` | Database name | `patient_journey_matcher` |
+| `POSTGRES_PORT` | Port on your machine (default `5432`) | `5432` |
+
+Notes:
+- The database is only reachable from your own machine (`127.0.0.1`).
+- The user, password and database name are only applied on the first start with an empty volume. If you change them later, run `docker compose down -v` to reset (this deletes all data).
+- If port 5432 is already in use, set `POSTGRES_PORT` to another value, e.g. `5433`.
+
+## Commands
+
+```bash
+docker compose up -d        # start the database in the background
+docker compose ps           # check status, should show "healthy"
+docker compose logs -f postgres   # follow the logs
+docker compose stop         # stop, data is kept
+docker compose start        # start again after stop
+docker compose down         # remove the container, data is kept in the volume
+docker compose down -v      # remove container AND data (full reset)
+```
+
+You can leave the database running during normal work. It restarts automatically when Docker Desktop starts, unless you stopped it manually.
+
+## Connecting
+
+Open a SQL shell inside the container (use the values from your `.env`):
+
+```bash
+docker compose exec postgres psql -U amos -d patient_journey_matcher
+```
+
+Type `\q` to leave. Connection URL for clients running on your machine (asyncpg, node-postgres), e.g. `DATABASE_URL` in `crawler/.env`:
+
+```
+postgresql://amos:<password>@127.0.0.1:5432/patient_journey_matcher
+```
+
+Use `127.0.0.1`, not `localhost`: the port is published on IPv4 only. URL-encode special characters in the password. When a component runs as a container in the same Compose file, use the host `postgres` instead.
+
+## Data and initialization
+
+- Data is stored in the Docker volume `pgdata` and survives `stop`, `down` and restarts. Only `down -v` deletes it.
+- SQL files in `db/init/` run once on the first start with an empty volume. They enable the `vector` extension and create the tables `documents`, `crawl_runs`, `transcripts` and `transcription` ([storage and retrieval](../design/storage.md)).
+- `make db` starts the database and applies `db/init/` again, so an existing volume gets new tables without a reset. Without make (works in Bash and PowerShell):
+
+  ```bash
+  docker compose up -d --wait --build
+  docker compose exec -T postgres sh -ec 'for f in /docker-entrypoint-initdb.d/*.sql; do PGOPTIONS=--client-min-messages=warning psql -v ON_ERROR_STOP=1 -q -U "$POSTGRES_USER" -d "$POSTGRES_DB" -f "$f"; done'
+  ```
+- A volume created before the image moved to Debian 13 warns "collation version mismatch" on every connection. Rebuild its indexes once, or reset it with `docker compose down -v` and `make seed`:
+
+  ```bash
+  docker compose exec -T postgres sh -ec 'for db in $(psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -tAc "SELECT datname FROM pg_database WHERE datallowconn" 2>/dev/null); do psql -q -U "$POSTGRES_USER" -d "$db" -c "REINDEX DATABASE" -c "ALTER DATABASE $db REFRESH COLLATION VERSION"; done'
+  ```
+- `make seed` stores a sample crawl of every source ([build](build.md#make-targets)).
+- Use only synthetic patient data.

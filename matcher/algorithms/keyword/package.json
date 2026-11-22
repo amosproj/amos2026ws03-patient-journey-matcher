@@ -4,8 +4,7 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./src/approach.ts",
-    "./transcription": "./src/transcription.ts"
+    ".": "./src/approach.ts"
   },
   "dependencies": {
     "@matcher/core": "workspace:*",

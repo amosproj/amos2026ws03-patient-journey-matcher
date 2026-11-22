@@ -1,5 +1,5 @@
 // Normalization of patient graphs and PubTator3 annotations into one representation, for the
-// graph approach (#10, #80). See Documentation/graph-normalization.md.
+// graph approach (#10, #80). See Documentation/design/graph-normalization.md.
 export { normalizePatientGraph, parseDay } from "./patient.ts";
 export { normalizePubTatorDocument, pubTatorDocuments } from "./pubtator.ts";
 export {

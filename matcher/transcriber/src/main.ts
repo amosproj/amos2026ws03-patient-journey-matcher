@@ -1,6 +1,7 @@
-// The transcription job: speech-to-text for the audio that has no transcript, for the keyword
-// index (Documentation/sources/podcasts.md#indexing). It runs until it is stopped and reads as
-// many files at once as the debug UI sets; an argument, e.g. `2`, sets that number first.
+// The transcription job: speech-to-text for the audio that has no transcript; every index reads
+// what it stores (Documentation/design/keyword-matching.md#speech-to-text). It runs until it is
+// stopped and reads as many files at once as the debug UI sets; an argument, e.g. `2`, sets that
+// number first.
 // WHISPER_MODEL names the model, e.g. `small.en`.
 import { availableParallelism, constants, setPriority } from "node:os";
 import { createPool } from "@matcher/db";
@@ -9,7 +10,7 @@ import {
   createTranscriber,
   silence,
 } from "@matcher/download";
-import { setWorkers, transcribeAudio } from "@matcher/keyword/transcription";
+import { setWorkers, transcribeAudio } from "./job.ts";
 
 /** The advisory lock of the running job; the crawler's store lock has another number. */
 const LOCK = 57;

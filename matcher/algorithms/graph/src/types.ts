@@ -1,6 +1,6 @@
 // The shared representation of the patient graph and the PubTator3 annotations of a paper, see
-// Documentation/graph-normalization.md §3. Both adapters return a NormalizedGraph, so the graph
-// matcher compares the two sides on the same IDs and predicates.
+// Documentation/design/graph-normalization.md §3. Both adapters return a NormalizedGraph, so
+// the graph matcher compares the two sides on the same IDs and predicates.
 
 // Each union below comes from a list, so data.test.ts checks the data files against the same
 // values the code compiles with.

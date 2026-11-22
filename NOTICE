@@ -8,6 +8,6 @@ first topic files in crawler/topics/ were converted from that list and from the
 keyword and channel lists of commit 88ea71a.
 
 That code is licensed under the MIT License, Copyright (c) 2021 The AMOS Projects,
-the same licence as this repository (see LICENSE). The copied files are under
-`backend/` and the adapted source-ingestion code is under `crawler/`. Their
-README files describe the changes against the original.
+the same licence as this repository (see LICENSE). The copied files that are still used are
+under `tools/patient-graph/workers/`, and the adapted source-ingestion code is
+under `crawler/`. Their README files describe the changes against the original.

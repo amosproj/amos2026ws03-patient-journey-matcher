@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "about": "LLM grades for the keyword approach (#58): the sources that a variant of the keyword ranking put in its first 10. A point patient-<n>-<event> is journey patientdata/Patient-<n> with that event as the focus, the latest on as_of. grades: per grade 3 to 0, the source_ids. set: choose a change on sample, confirm it on holdout. Scale and rules: Documentation/matching-evaluation.md.",
+  "about": "LLM grades for the keyword approach (#58): the sources that a variant of the keyword ranking put in its first 10. A point patient-<n>-<event> is journey patientdata/Patient-<n> with that event as the focus, the latest on as_of. grades: per grade 3 to 0, the source_ids. set: choose a change on sample, confirm it on holdout. Scale and rules: research/matching-evaluation.md.",
   "points": {
     "patient-1-e01": {
       "set": "sample",

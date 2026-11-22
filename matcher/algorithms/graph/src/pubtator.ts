@@ -1,6 +1,7 @@
-// PubTator3 annotations of one paper → NormalizedGraph (Documentation/graph-normalization.md §2).
-// Reads the BioC JSON of `publications/export/biocjson`: the entity annotations and the
-// relations. The passage text is not read, so nothing of the abstract is kept.
+// PubTator3 annotations of one paper → NormalizedGraph
+// (Documentation/design/graph-normalization.md §2). Reads the BioC JSON of
+// `publications/export/biocjson`: the entity annotations and the relations. The passage text
+// is not read, so nothing of the abstract is kept.
 import { z } from "zod";
 import outcomes from "../data/outcomes.json" with { type: "json" };
 import { DROPPED_PUBTATOR_TYPES, mapPubTatorRelation } from "./relations.ts";

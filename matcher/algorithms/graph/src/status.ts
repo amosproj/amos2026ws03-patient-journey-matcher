@@ -1,7 +1,8 @@
-// Status of a statement from cue words (Documentation/graph-normalization.md §4.5): whether a
-// fact sentence confirms, suspects or rules out an entity. Status belongs to one statement at
-// its time, not to the concept: prostate cancer is suspected in November and confirmed in
-// December. Without a cue near the entity the sentence says nothing, and the caller falls back.
+// Status of a statement from cue words (Documentation/design/graph-normalization.md §4.5):
+// whether a fact sentence confirms, suspects or rules out an entity. Status belongs to one
+// statement at its time, not to the concept: prostate cancer is suspected in November and
+// confirmed in December. Without a cue near the entity the sentence says nothing, and the
+// caller falls back.
 import cues from "../data/status-cues.json" with { type: "json" };
 import { normalizeName, words } from "./text.ts";
 import type { Status } from "./types.ts";

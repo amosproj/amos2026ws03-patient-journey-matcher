@@ -1,4 +1,4 @@
-// Name normalization (Documentation/graph-normalization.md §4.1): every lookup and every
+// Name normalization (Documentation/design/graph-normalization.md §4.1): every lookup and every
 // comparison of names runs on this form, on the patient side and in the curated tables.
 
 const LEADING_ICD = /^[a-z]\d{2}(?: \d{1,2})? /; // after normalizing: `c61 0 …` was `C61.0 …`

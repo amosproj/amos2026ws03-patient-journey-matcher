@@ -1,5 +1,5 @@
 {
-  "_comment": "Tier 2 of the entity mapping (Documentation/graph-normalization.md §4.1): names of the generated patients, German and English, to the IDs PubTator3 uses. IDs checked 20.11.2026 with the PubTator3 entity lookup and the NLM MeSH lookup. Names are matched whole, after normalizeName; add a row for a missing name instead of matching looser.",
+  "_comment": "Tier 2 of the entity mapping (Documentation/design/graph-normalization.md §4.1): names of the generated patients, German and English, to the IDs PubTator3 uses. IDs checked 20.11.2026 with the PubTator3 entity lookup and the NLM MeSH lookup. Names are matched whole, after normalizeName; add a row for a missing name instead of matching looser.",
   "concepts": [
     {
       "id": "mesh:D011471",

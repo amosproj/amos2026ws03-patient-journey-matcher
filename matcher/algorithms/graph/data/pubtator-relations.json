@@ -1,5 +1,5 @@
 {
-  "_comment": "PubTator3 relations to the shared representation (Documentation/graph-normalization.md §2). The first row that matches the type and the PubTator3 types of both roles wins; a missing `subject` or `object` matches any type. `flip` swaps the roles. Types without a row become `related`.",
+  "_comment": "PubTator3 relations to the shared representation (Documentation/design/graph-normalization.md §2). The first row that matches the type and the PubTator3 types of both roles wins; a missing `subject` or `object` matches any type. `flip` swaps the roles. Types without a row become `related`.",
   "droppedTypes": ["Species", "CellLine"],
   "rows": [
     {

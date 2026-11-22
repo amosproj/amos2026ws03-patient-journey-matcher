@@ -1001,7 +1001,7 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
       <button type="button" data-value="ai_summary">AI</button>
     </div>
     <div class="side-head">
-      <h2>Journey <i class="info" tabindex="0" data-tip="Puts a journey into the arguments below and keeps their other fields: a synthetic journey of patientdata/, the one of the example in Documentation/build.md, or a timeline.json from disk. Only synthetic journeys belong here: the journey goes to the matcher and back, it is not stored or logged.">i</i></h2>
+      <h2>Journey <i class="info" tabindex="0" data-tip="Puts a journey into the arguments below and keeps their other fields: a synthetic journey of patientdata/, the one of the example in Documentation/user/mcp-interface.md, or a timeline.json from disk. Only synthetic journeys belong here: the journey goes to the matcher and back, it is not stored or logged.">i</i></h2>
       <button type="button" class="link-button" id="mt-open" title="Put a timeline.json from disk into the arguments">Open file …</button>
     </div>
     <select id="mt-journey" aria-label="Patient journey"></select>
@@ -1083,7 +1083,7 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
     <div class="gr-legend" id="gr-type-legend"></div>
     <div class="side-head"><h2>Status</h2></div>
     <div class="gr-legend" id="gr-status-legend"></div>
-    <p class="muted gr-note">What <span class="mono">matcher/algorithms/graph</span> makes of the file (<a href="https://github.com/amosproj/amos2026ws03-patient-journey-matcher/blob/main/Documentation/graph-normalization.md" target="_blank" rel="noopener">graph normalization</a>). A hollow node has no shared ID: it is kept by its name but never meets a paper. Edges with the same ends, predicate and status are drawn once, with their count.</p>
+    <p class="muted gr-note">What <span class="mono">matcher/algorithms/graph</span> makes of the file (<a href="https://github.com/amosproj/amos2026ws03-patient-journey-matcher/blob/main/Documentation/design/graph-normalization.md" target="_blank" rel="noopener">graph normalization</a>). A hollow node has no shared ID: it is kept by its name but never meets a paper. Edges with the same ends, predicate and status are drawn once, with their count.</p>
   </aside>
 
   <main aria-label="Graph normalization">
@@ -3105,7 +3105,7 @@ async function ixLoadTerms() {
 
 // ── Transcription: the job that reads audio without a transcript, and its workers ──
 // The job runs on its own: a systemd unit on the VM, make transcribe elsewhere. This page sets
-// how many files it reads at once and shows what it reports (keyword.transcription).
+// how many files it reads at once and shows what it reports (the table transcription).
 const tx = { data: null, error: null, loading: false, controls: "" };
 const fmtLength = (seconds) => seconds == null ? "–" : seconds < 3600 ? `${Math.max(1, Math.round(seconds / 60))} min`
   : `${Math.floor(seconds / 3600)} h ${Math.round((seconds % 3600) / 60)} min`;
@@ -3222,24 +3222,24 @@ function renderTxPanels() {
   const left = Math.max(0, average * waiting.documents - reading.reduce((sum, item) => sum + (item.duration_seconds ?? average), 0));
   const speed = data.state?.speed, pace = wanted || active || 1;
   const read = Object.fromEntries((data.read || []).map((row) => [row.status, row.documents]));
-  const total = (read.indexed || 0) + (read.skipped || 0) + (read.failed || 0);
+  const total = (read.ok || 0) + (read.skipped || 0) + (read.failed || 0);
   const audio = h("div", { class: "panel" },
-    h("h3", {}, "Audio without a transcript", h("small", {}, "the files this job reads, newest first; skipped by the indexer as “audio, and speech-to-text is off”")),
+    h("h3", {}, "Audio without a transcript", h("small", {}, "podcast episodes whose only full text is audio, newest first; the indexes read the stored transcript")),
     h("div", { class: "stats overview", style: "border:0" },
       ovSection("Waiting", h("b", { class: "ov-total" }, fmtCount(files)), ovList([
         ovFigure(fmtAudio(left), "of audio", { cls: left ? "" : "zero", title: waiting.unknown ? `${plural(waiting.unknown, "file")} without a known length ${waiting.unknown === 1 ? "counts" : "count"} as the average` : null }),
       ], true), files ? h("button", { type: "button", class: "link-button", style: "margin-top:6px", onclick: () => dbShowDocuments({ "db-fulltext": "skipped" }, data.waiting_detail) }, "Show these documents") : null),
       ovSection("Read from audio so far", ovList([
-        ovShare("Indexed", read.indexed, total, { unit: "files", color: "--good", tip: "Its keywords are in the index" }),
-        ovShare("Skipped", read.skipped, total, { unit: "files", color: "--dropped", tip: "Not English, no speech, or larger than 150 MB" }),
-        ovShare("Failed", read.failed, total, { unit: "files", color: "--critical", tip: "The download or speech-to-text failed; the next index run gives it back to this job" }),
+        ovShare("Transcribed", read.ok, total, { unit: "files", color: "--good", tip: "Stored for the indexes; the text goes once every index has read it" }),
+        ovShare("Skipped", read.skipped, total, { unit: "files", color: "--dropped", tip: "No speech, an unreadable file, or larger than 150 MB" }),
+        ovShare("Failed", read.failed, total, { unit: "files", color: "--critical", tip: "The download or speech-to-text failed; tried again a day later" }),
       ])),
       ovSection("Pace", ovList([
         ovFigure(speed ? `${speed.toFixed(1)} ×` : "–", "real time per worker", { cls: speed ? "" : "zero", title: "Seconds of audio one worker reads in a second, download included, over the 30 files read last" }),
         ovFigure(speed && left ? fmtSpan((left / (speed * pace)) * 1000) : "–", `left with ${plural(pace, "worker")}`, { cls: speed && left ? "" : "zero", title: "The waiting audio at this pace; a rough estimate" }),
       ], true))));
 
-  const pill = { indexed: "ok", skipped: "plain", failed: "failed", changed: "none" };
+  const pill = { ok: "ok", skipped: "plain", failed: "failed" };
   const recent = data.state?.recent || [];
   const last = recent.length ? h("div", { class: "panel" },
     h("h3", {}, "Read last", h("small", {}, running ? "by the running job" : "by the job that ran last")),
@@ -3248,7 +3248,7 @@ function renderTxPanels() {
       h("tbody", {}, ...recent.map((item) => h("tr", {},
         h("td", { class: "when", title: fmtDateTime(item.at) }, fmtAgo(item.at)),
         h("td", {}, item.title, h("div", { class: "small muted mono" }, item.id)),
-        h("td", {}, h("span", { class: `pill ${pill[item.status] || "plain"}`, title: item.status === "changed" ? "The indexer wrote the row meanwhile: the document changed. What was read is dropped" : null }, item.status),
+        h("td", {}, h("span", { class: `pill ${pill[item.status] || "plain"}` }, item.status),
           item.detail ? h("div", { class: "small muted" }, item.detail) : null),
         h("td", { class: "num" }, fmtLength(item.duration_seconds)),
         h("td", { class: "num" }, fmtSpan(item.seconds * 1000))))))) : null;
@@ -3763,12 +3763,12 @@ const MT_PLANNED = {
   graph: {
     name: "Graph approach",
     text: "Compares relations instead of words: the journey and every source become links between medical concepts, such as olaparib –treats→ prostate cancer, with shared MeSH IDs. A source ranks high when it links the patient's concepts the same way.",
-    doc: "Documentation/research/Graph-based-matching.md",
+    doc: "research/graph-based-matching.md",
   },
   ai_summary: {
     name: "AI approach",
     text: "A trained model judges which sources fit the patient's current situation: by semantic similarity, a direct relevance assessment or summaries made beforehand.",
-    doc: "Documentation/research/ai-based-matching.md",
+    doc: "research/ai-based-matching.md",
   },
 };
 
@@ -4089,7 +4089,7 @@ function mtRenderRaw() {
 
 // ── Example client: the answer as an app could show it ────────────────────────
 // It reads only what the tools answer, no step of the match and no database row, so it shows
-// what a client can build from the contract (Documentation/mcp-interface.md).
+// what a client can build from the contract (Documentation/user/mcp-interface.md).
 const CLIENT_FILES = 8;
 
 function mtRenderClient() {

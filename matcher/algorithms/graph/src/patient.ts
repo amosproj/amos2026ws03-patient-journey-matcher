@@ -1,6 +1,6 @@
-// Patient graph → NormalizedGraph (Documentation/graph-normalization.md §1 and §4). Reads the
-// graph.json of the SS26 pipeline in Graphiti's field names, like the journey reader in
-// mcp-server/src/graph.ts, but keeps what that reader drops: the fact sentences, `invalid_at`
+// Patient graph → NormalizedGraph (Documentation/design/graph-normalization.md §1 and §4).
+// Reads the graph.json of the SS26 pipeline in Graphiti's field names, like the journey reader
+// in mcp-server/src/graph.ts, but keeps what that reader drops: the fact sentences, `invalid_at`
 // and the node attributes. It is also more lenient: a node or edge it cannot read is skipped
 // and reported, not a reason to reject the graph.
 import { z } from "zod";

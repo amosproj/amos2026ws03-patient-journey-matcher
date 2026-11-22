@@ -1,5 +1,6 @@
-// The relation tables (Documentation/graph-normalization.md §4.3): one per source, as data, so
-// that a new type is a new row. A row matches the source type and the types of both ends.
+// The relation tables (Documentation/design/graph-normalization.md §4.3): one per source, as
+// data, so that a new type is a new row. A row matches the source type and the types of both
+// ends.
 import patient from "../data/patient-relations.json" with { type: "json" };
 import pubtator from "../data/pubtator-relations.json" with { type: "json" };
 import type { FactKind, Predicate, Status } from "./types.ts";
