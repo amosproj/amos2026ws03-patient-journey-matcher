@@ -3,28 +3,28 @@ import { z } from "zod";
 
 // Graphiti writes its times as ISO date-times, with or without a time zone. A journey needs the
 // day, as it is written: a time zone does not move it.
-const daySchema = z
-  .union([z.iso.date(), z.iso.datetime({ local: true, offset: true })])
-  .transform((value) => value.slice(0, 10));
+const timeSchema = z.union([
+  z.iso.date(),
+  z.iso.datetime({ local: true, offset: true }),
+]);
 
-const nodeSchema = z.object({
+const nodeSchema = z.looseObject({
   uuid: z.string().min(1),
   name: z.string().min(1),
   labels: z.array(z.string()),
 });
 
-const edgeSchema = z.object({
+const edgeSchema = z.looseObject({
   uuid: z.string().min(1),
   source_node_uuid: z.string().min(1),
   target_node_uuid: z.string().min(1),
-  valid_at: daySchema.nullish(),
+  valid_at: timeSchema.nullish(),
 });
 
 // The patient graph of the SS26 pipeline, see "Patient graph" in Documentation/user/mcp-interface.md.
 // Field names are Graphiti's, so its nodes and edges can be read as they are. Only the fields
-// that the journey is made from are checked. All others are dropped, such as `fact` and
-// `invalid_at` of an edge: Graphiti takes them from the LLM, and an odd value in a field that
-// is not read must not reject the whole graph.
+// that the journey is made from are required. Preserve the other node and edge fields for
+// graph normalization, which can skip malformed evidence without rejecting the journey.
 export const patientGraphSchema = z
   .object({
     // The "now" of the patient, like `as_of` of a journey.
@@ -111,8 +111,9 @@ export function graphJourney({ as_of, nodes, edges }: PatientGraph): {
 
     for (const node of ends) {
       if (node === patient) continue;
-      const names = days.get(valid_at) ?? new Set<string>();
-      days.set(valid_at, names.add(node.name));
+      const date = valid_at.slice(0, 10);
+      const names = days.get(date) ?? new Set<string>();
+      days.set(date, names.add(node.name));
     }
   }
   return {

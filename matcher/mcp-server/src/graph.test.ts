@@ -68,19 +68,17 @@ function at(valid_at: string) {
   return { ...graph, edges: [edge("e1", ["patient", "cancer"], valid_at)] };
 }
 
-test("reads Graphiti's nodes and edges and drops other fields", () => {
+test("preserves the original evidence and attributes alongside the event fields", () => {
   const { nodes, edges } = read({
     ...graph,
-    nodes: graph.nodes.map((entry) => ({ ...entry, group_id: "Patient-5" })),
+    nodes: graph.nodes.map((entry) => ({
+      ...entry,
+      attributes: { icd_code: "C61" },
+    })),
   });
 
-  expect(nodes[0]).toEqual(graph.nodes[0]);
-  expect(edges[1]).toEqual({
-    uuid: "e2",
-    source_node_uuid: "patient",
-    target_node_uuid: "psa",
-    valid_at: "2026-12-08",
-  });
+  expect(nodes[1].attributes).toEqual({ icd_code: "C61" });
+  expect(edges[1]).toEqual(graph.edges[1]);
   expect(edges[4]?.valid_at).toBeNull();
 });
 
@@ -91,7 +89,7 @@ test.each([
   ["2027-01-22T00:00:00Z", "2027-01-22"],
   ["2027-01-22T00:30:00+02:00", "2027-01-22"],
 ])("keeps the written day of the time %s", (time, day) => {
-  expect(read(at(time)).edges[0]?.valid_at).toBe(day);
+  expect(graphJourney(read(at(time))).events[0]?.date).toBe(day);
 });
 
 test.each(["December 8, 2026", "2027-01-22garbage", "2027-01-22T99:99:99", ""])(
@@ -236,6 +234,7 @@ test("match_journey takes a graph and matches its journey", async () => {
   expect(match.mock.calls[0]?.[0].context.map(({ id }) => id)).toEqual([
     "2026-12-08",
   ]);
+  expect(match.mock.calls[0]?.[0].graph).toEqual(graph);
 });
 
 test("gives no event for a graph without a dated fact", () => {

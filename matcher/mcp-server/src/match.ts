@@ -19,7 +19,7 @@ export function createMatchService(
   );
   return {
     async matchJourney(
-      { journey, algorithm, limit, content_types },
+      { journey, graph, algorithm, limit, content_types },
       debug = {},
     ) {
       const matcher = byAlgorithm.get(algorithm);
@@ -30,6 +30,7 @@ export function createMatchService(
         );
       }
       const state = journeyState(journey);
+      if (graph) state.graph = graph;
       debug.trace?.("journey", {
         focus: state.focus.id,
         context: state.context.map((event) => event.id),
@@ -89,5 +90,6 @@ function results(
     rank: index + 1,
     score: byId.get(document.id)?.score,
     matched_terms: byId.get(document.id)?.matchedTerms,
+    explanation: byId.get(document.id)?.explanation,
   }));
 }

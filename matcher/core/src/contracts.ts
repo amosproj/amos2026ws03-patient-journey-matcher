@@ -15,6 +15,23 @@ export interface JourneyEvent {
 export interface JourneyState {
   focus: JourneyEvent;
   context: JourneyEvent[];
+  /** Original Graphiti nodes and edges, when the request supplied a graph. */
+  graph?: {
+    as_of?: string;
+    nodes: {
+      uuid: string;
+      name: string;
+      labels: string[];
+      [field: string]: unknown;
+    }[];
+    edges: {
+      uuid: string;
+      source_node_uuid: string;
+      target_node_uuid: string;
+      valid_at?: string | null;
+      [field: string]: unknown;
+    }[];
+  };
 }
 
 export interface MatchOptions {
@@ -40,6 +57,7 @@ export interface Hit {
   score: number;
   /** The query terms found in the document, for approaches that match terms. */
   matchedTerms?: string[];
+  explanation?: string;
 }
 
 /** Ranks the documents an approach indexed for a journey. */

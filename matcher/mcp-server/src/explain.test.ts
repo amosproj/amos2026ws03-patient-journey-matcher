@@ -68,6 +68,7 @@ test("takes a patient graph like match_journey does", async () => {
 
   expect(matching.matchJourney).toHaveBeenCalledWith(
     {
+      graph,
       journey: {
         patient_id: "Patient-1",
         events: [

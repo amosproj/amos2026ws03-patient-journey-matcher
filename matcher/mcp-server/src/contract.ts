@@ -42,8 +42,7 @@ export const contentTypeSchema = z.enum([
   "podcast_episode",
 ]);
 
-// The patient comes as a journey or as the patient graph of the real app. A graph is turned
-// into its journey here, so the tools and the matchers only ever get a journey.
+// Derive the daily events for all approaches and retain the graph for relationship matching.
 export const matchJourneyInputSchema = z
   .object({
     journey: patientJourneySchema.optional(),
@@ -57,21 +56,22 @@ export const matchJourneyInputSchema = z
     { message: "Send either journey or graph, not both and not neither." },
   )
   .transform(({ journey, graph, ...request }, context) => {
-    if (journey !== undefined) return { journey, ...request };
-    // The refinement above ensures the graph. Its journey has to pass the same checks as one
-    // that a client sends.
-    const made = patientJourneySchema.safeParse(
-      graphJourney(graph as z.output<typeof patientGraphSchema>),
-    );
-    if (made.success) return { journey: made.data, ...request };
-    for (const { message } of made.error.issues) {
-      context.addIssue({
-        code: "custom",
-        path: ["graph"],
-        message: `The journey made from the graph is not valid. ${message}`,
-      });
+    if (!journey) {
+      if (!graph) return z.NEVER;
+      const made = patientJourneySchema.safeParse(graphJourney(graph));
+      if (!made.success) {
+        for (const { message } of made.error.issues) {
+          context.addIssue({
+            code: "custom",
+            path: ["graph"],
+            message: `The journey made from the graph is not valid. ${message}`,
+          });
+        }
+        return z.NEVER;
+      }
+      journey = made.data;
     }
-    return z.NEVER;
+    return { journey, ...(graph && { graph }), ...request };
   });
 
 export const sourceReferenceSchema = z.object({
