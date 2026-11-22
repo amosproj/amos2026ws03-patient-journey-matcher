@@ -18,7 +18,7 @@ jobs:
     # For the store tests (tests/test_store_postgres.py); they apply db/init/ themselves.
     services:
       postgres:
-        image: pgvector/pgvector:pg18-trixie
+        image: pgvector/pgvector:0.8.7-pg18-trixie  # the base image of db/Dockerfile
         env:
           POSTGRES_PASSWORD: postgres
         ports:
@@ -72,3 +72,17 @@ jobs:
       - run: pnpm typecheck
       - run: pnpm test
       - run: pnpm test:integration
+
+  sbom:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10.3.3
+      - uses: pnpm/action-setup@v6
+        with:
+          package_json_file: matcher/package.json
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      # Fails if a lockfile or db/Dockerfile changed without `make sbom`; Syft runs in Docker.
+      - run: uv run scripts/sbom.py --check

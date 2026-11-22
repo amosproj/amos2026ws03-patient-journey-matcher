@@ -16,7 +16,7 @@ x-crawler: &crawler
 
 services:
   postgres:
-    build: db  # pgvector/pgvector:pg18-trixie plus pg_textsearch
+    build: db  # the pgvector image plus pg_textsearch
     command: ["postgres", "-c", "shared_preload_libraries=pg_textsearch"]
     container_name: amos-postgres
     restart: unless-stopped
