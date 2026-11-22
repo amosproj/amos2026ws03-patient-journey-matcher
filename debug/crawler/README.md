@@ -19,3 +19,7 @@ make debug PORT=9000   # on another port
 API keys and `DATABASE_URL` come from `crawler/.env`. Finished crawler runs are kept in `debug/crawler/runs/` (gitignored).
 
 The Index, Matcher and Graph screens run the matcher's own programs, so they need `make build`. The Matcher screen takes the arguments of `match_journey` as one JSON object, the same as "Edit as JSON" in the [MCP Inspector](../../Documentation/build-deploy/build.md#run-the-matcher-locally); its journey list puts one of `patientdata/*/timeline.json`, the example of the [MCP interface](../../Documentation/user/mcp-interface.md#try-it) or a file into them. It passes them on to the matcher and stores none. With "Through the MCP server" it sends them to the server of `make start` instead (on `MCP_PORT`, if set).
+
+In the **Graph** screen, choose **Original (patient graph)** or **Normalized** in the View selector to compare the same patient. Original keeps each node UUID and each directed edge, including administrative nodes; node and edge details show the original JSON. Normalized shows the existing concept mappings and reductions. The original view is available for patient graphs; PubTator papers use the normalized view.
+
+Both Graph views support mouse-wheel zoom at the pointer (50–800%) and dragging to pan. Selecting nodes or switching Original/Normalized keeps the viewport; selecting another graph resets it.

@@ -1690,7 +1690,8 @@ def graph_normalize(kind: str, name: str, min_score: str) -> dict[str, Any]:
         raise RuntimeError(message)
     if not graphs:
         raise LookupError(f"The {kind} file {name} has no document")
-    return {"kind": kind, "name": name, "before": graph_size(kind, path), "graph": graphs[0]}
+    return {"kind": kind, "name": name, "before": graph_size(kind, path), "graph": graphs[0],
+            "original": json.loads(path.read_text(encoding="utf-8")) if kind == "patient" else None}
 
 
 def graph_size(kind: str, path: Path) -> dict[str, int]:
