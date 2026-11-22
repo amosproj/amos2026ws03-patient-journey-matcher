@@ -5,17 +5,20 @@
     {
       "type": "HAS_DIAGNOSIS",
       "subject": "Patient",
-      "fact": "has_condition"
+      "fact": "has_condition",
+      "conditionRole": "diagnosis"
     },
     {
       "type": "HAS_SYMPTOM",
       "subject": "Patient",
-      "fact": "has_condition"
+      "fact": "has_condition",
+      "conditionRole": "symptom"
     },
     {
       "type": "HAS_ALLERGY",
       "subject": "Patient",
-      "fact": "has_condition"
+      "fact": "has_condition",
+      "conditionRole": "allergy"
     },
     {
       "type": "PRESCRIBED",
@@ -62,19 +65,22 @@
       "type": "RELATES_TO",
       "subject": "Patient",
       "object": "Diagnosis",
-      "fact": "has_condition"
+      "fact": "has_condition",
+      "conditionRole": "diagnosis"
     },
     {
       "type": "RELATES_TO",
       "subject": "Patient",
       "object": "Symptom",
-      "fact": "has_condition"
+      "fact": "has_condition",
+      "conditionRole": "symptom"
     },
     {
       "type": "RELATES_TO",
       "subject": "Patient",
       "object": "Allergy",
-      "fact": "has_condition"
+      "fact": "has_condition",
+      "conditionRole": "allergy"
     },
     {
       "type": "RELATES_TO",

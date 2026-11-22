@@ -1,0 +1,133 @@
+import { setTimeout as sleep } from "node:timers/promises";
+import type { Indexer } from "@matcher/core";
+import { indexChangedDocuments, type Queryable } from "@matcher/db";
+import { ZodError } from "zod";
+import { normalizePubTatorDocument, pubTatorDocuments } from "./pubtator.ts";
+import { ensureGraphSchema, type Paper } from "./schema.ts";
+
+const EXPORT =
+  "https://www.ncbi.nlm.nih.gov/research/pubtator3-api/publications/export/biocjson";
+type RequestExport = (url: string, init?: RequestInit) => Promise<Response>;
+
+/** Keep only entities with shared IDs and the relations between them. */
+export function paperFromAnnotations(input: unknown): Paper {
+  const graph = normalizePubTatorDocument(input);
+  const entities: Paper["entities"] = Object.create(null);
+  for (const { id, name, names, type, inTitle } of graph.entities) {
+    if (id !== null) entities[id] = { name: names[0] ?? name, type, inTitle };
+  }
+  const relations = graph.relations.filter(
+    ({ subject, object }) =>
+      Object.hasOwn(entities, subject) && Object.hasOwn(entities, object),
+  );
+  return { entities, relations };
+}
+
+async function fetchPapers(
+  pmids: string[],
+  request: RequestExport,
+  log: (line: string) => void,
+): Promise<Map<string, Paper>> {
+  const papers = new Map<string, Paper>();
+  const response = await request(`${EXPORT}?pmids=${pmids.join(",")}`, {
+    signal: AbortSignal.timeout(60_000),
+  });
+  if (response.status === 404) return papers;
+  if (!response.ok)
+    throw new Error(`PubTator3 export failed (HTTP ${response.status})`);
+  for (const doc of pubTatorDocuments(await response.json())) {
+    const { id, pmid } = (doc ?? {}) as { id?: unknown; pmid?: unknown };
+    const identifier = pmid ?? id;
+    if (typeof identifier !== "string" && typeof identifier !== "number") {
+      log("PubTator3 returned a document without a PMID");
+      continue;
+    }
+    const key = String(identifier);
+    if (!pmids.includes(key)) {
+      log(`Ignoring unexpected PMID ${key} in PubTator3 export`);
+      continue;
+    }
+    try {
+      papers.set(key, paperFromAnnotations(doc));
+    } catch (error) {
+      if (!(error instanceof ZodError)) throw error;
+      log(
+        `Invalid PubTator3 annotations for PMID ${key}: ${error.issues[0].path.join(".")}`,
+      );
+    }
+  }
+  return papers;
+}
+
+export function createGraphIndexer(
+  db: Queryable,
+  request: RequestExport = fetch,
+): Indexer {
+  return {
+    async index(log) {
+      await ensureGraphSchema(db);
+      let nextRequest = 0;
+      let withEntities = 0;
+      let withRelations = 0;
+      let pubmed = 0;
+      let retries = 0;
+      await indexChangedDocuments(
+        db,
+        "graph.indexed_documents",
+        async (documents) => {
+          const pmids = documents
+            .filter(
+              (doc) => doc.source === "pubmed" && /^\d+$/.test(doc.native_id),
+            )
+            .map((doc) => doc.native_id);
+          let papers = new Map<string, Paper>();
+          if (pmids.length) {
+            await sleep(Math.max(0, nextRequest - Date.now()));
+            nextRequest = Date.now() + 1_000;
+            papers = await fetchPapers(pmids, request, log);
+            pubmed += pmids.length;
+            retries += pmids.length - papers.size;
+          }
+          const rows = documents.map((doc) => {
+            const paper =
+              doc.source === "pubmed" ? papers.get(doc.native_id) : undefined;
+            if (paper && Object.keys(paper.entities).length) withEntities++;
+            if (paper?.relations.length) withRelations++;
+            return {
+              id: doc.id,
+              changed: doc.changed_at,
+              entities: paper?.entities ?? {},
+              relations: paper?.relations ?? [],
+              retry:
+                doc.source === "pubmed" &&
+                pmids.includes(doc.native_id) &&
+                !paper,
+            };
+          });
+          // Replace each paper's entities and relations together. A slower run cannot overwrite
+          // a newer version, and a document deleted during the export stays deleted.
+          await db.query(
+            `INSERT INTO graph.documents AS previous
+          (document_id, document_changed_at, entities, relations, retry_at)
+          SELECT d.id, r.changed, r.entities, r.relations,
+                 CASE WHEN r.retry THEN now() + interval '7 days' ELSE 'infinity'::timestamptz END
+          FROM jsonb_to_recordset($1::jsonb) AS r(id text, changed timestamptz, entities jsonb, relations jsonb, retry boolean)
+          JOIN public.documents d ON d.id = r.id AND date_trunc('milliseconds', d.changed_at) <= r.changed
+          ON CONFLICT (document_id) DO UPDATE SET
+            document_changed_at = EXCLUDED.document_changed_at,
+            retry_at = EXCLUDED.retry_at,
+            entities = CASE WHEN EXCLUDED.retry_at = 'infinity' THEN EXCLUDED.entities ELSE previous.entities END,
+            relations = CASE WHEN EXCLUDED.retry_at = 'infinity' THEN EXCLUDED.relations ELSE previous.relations END
+          WHERE previous.document_changed_at < EXCLUDED.document_changed_at
+             OR (previous.document_changed_at = EXCLUDED.document_changed_at AND previous.retry_at IS DISTINCT FROM 'infinity'::timestamptz)`,
+            [JSON.stringify(rows)],
+          );
+        },
+        50,
+      );
+      log(
+        `PubTator3: ${pubmed} PubMed papers checked, ${withEntities} with entities, ${withRelations} with relations, ${retries} scheduled for retry`,
+      );
+    },
+  };
+}

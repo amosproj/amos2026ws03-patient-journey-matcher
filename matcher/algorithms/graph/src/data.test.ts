@@ -50,6 +50,10 @@ test.each([
     expect(allowed, what).toContain(kinds[0]);
     if ("predicate" in row) expect(PREDICATES, what).toContain(row.predicate);
     if ("fact" in row) expect(FACT_KINDS, what).toContain(row.fact);
+    if (row.fact === "has_condition")
+      expect(["diagnosis", "symptom", "allergy"], what).toContain(
+        row.conditionRole,
+      );
     if ("status" in row) expect(STATUSES, what).toContain(row.status);
     if ("about" in row) expect(row.about, what).toBe("source");
     if ("flip" in row) expect(typeof row.flip, what).toBe("boolean");

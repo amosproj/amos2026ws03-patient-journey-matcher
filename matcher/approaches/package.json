@@ -8,6 +8,7 @@
     "@matcher/core": "workspace:*",
     "@matcher/db": "workspace:*",
     "@matcher/download": "workspace:*",
+    "@matcher/graph": "workspace:*",
     "@matcher/keyword": "workspace:*"
   }
 }

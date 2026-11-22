@@ -8,6 +8,8 @@
     "normalize": "node scripts/normalize.ts"
   },
   "dependencies": {
+    "@matcher/core": "workspace:*",
+    "@matcher/db": "workspace:*",
     "zod": "^4.6.7"
   }
 }

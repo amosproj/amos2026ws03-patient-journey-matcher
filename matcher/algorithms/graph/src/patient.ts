@@ -1,8 +1,6 @@
 // Patient graph → NormalizedGraph (Documentation/design/graph-normalization.md).
 // Reads the graph.json of the SS26 pipeline in Graphiti's field names, like the journey reader
-// in mcp-server/src/graph.ts, but keeps what that reader drops: the fact sentences, `invalid_at`
-// and the node attributes. It is also more lenient: a node or edge it cannot read is skipped
-// and reported, not a reason to reject the graph.
+// in mcp-server/src/graph.ts. A node or edge that cannot be normalized is skipped and reported.
 import { z } from "zod";
 import { DROPPED_PATIENT_LABELS, mapPatientEdge } from "./relations.ts";
 import { conceptOf, curated, type Dictionary, resolve } from "./resolve.ts";
@@ -280,7 +278,12 @@ export function normalizePatientGraph(
         skip("a patient fact needs the patient at one end");
         continue;
       }
-      facts.push({ ...statement, kind: mapping.fact, entity });
+      facts.push({
+        ...statement,
+        kind: mapping.fact,
+        conditionRole: mapping.conditionRole,
+        entity,
+      });
       continue;
     }
 
@@ -314,10 +317,11 @@ export function normalizePatientGraph(
     });
   }
 
-  // A pathology result of the diagnosis itself confirms it: from that day, a condition that
+  // A pathology result of the diagnosis itself confirms it: from that day, a diagnosis that
   // nothing else gave a status is asserted. Cues and attributes are never overridden.
   for (const fact of facts) {
-    if (fact.kind !== "has_condition" || fact.status !== "unknown") continue;
+    if (fact.conditionRole !== "diagnosis" || fact.status !== "unknown")
+      continue;
     const by = confirmed.get(fact.entity);
     if (
       by !== undefined &&

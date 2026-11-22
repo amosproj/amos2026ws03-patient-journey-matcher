@@ -3615,12 +3615,12 @@
       "verifiedUsing": [
         {
           "algorithm": "sha1",
-          "hashValue": "67a5c6cf61319da711ea24b2c06c3bde33cd2cf5",
+          "hashValue": "e9a0f25096c7f5f9bfa752ad6fa39f6afeee3518",
           "type": "Hash"
         },
         {
           "algorithm": "sha256",
-          "hashValue": "1d3aece075bc158c73b0ec788e62871ab826fbb28019f28ba5756ff0955b65c9",
+          "hashValue": "b422b0ab2721d1c30671ebb6a44ece154a65230bdd1cb5a94a9146076f45cfc6",
           "type": "Hash"
         }
       ]

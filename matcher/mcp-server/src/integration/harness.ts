@@ -78,7 +78,11 @@ export async function createHarness(url: string) {
       timeoutMs: 100,
       maxBytes: 100000,
     });
-    const approaches = createApproaches({ db: db.pool, downloader });
+    const approaches = createApproaches({
+      db: db.pool,
+      downloader,
+      fetchAnnotations: providers.fetchLocal,
+    });
     const server = createMcpHttpServer(
       createMatchService(approaches, createDocumentStore(db.pool)),
     );
@@ -200,7 +204,10 @@ export async function createHarness(url: string) {
       async match(args = {}) {
         const result = await client.callTool({
           name: "match_journey",
-          arguments: { journey: JOURNEY, ...args },
+          arguments: {
+            ...("graph" in args ? {} : { journey: JOURNEY }),
+            ...args,
+          },
         });
         expect(result.isError).not.toBe(true);
         return matchResultSchema.parse(result.structuredContent);

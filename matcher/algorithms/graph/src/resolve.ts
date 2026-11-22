@@ -66,6 +66,13 @@ const ICD_CODES: ReadonlyMap<string, string> = new Map(
 );
 const ICD_CODE = /^[A-Z]\d{2}(\.\d{1,2})?$/;
 
+/** The ICD names a follow-up can use for an already known diagnosis. */
+export function icdCodesFor(id: string): string[] {
+  return [...ICD_CODES]
+    .filter(([, concept]) => concept === id)
+    .map(([code]) => code);
+}
+
 /**
  * Tier 1: an ICD-10 code as written, else its three-character category. A value that is not
  * shaped like a code is ignored: the graph takes it from an LLM, unchecked.

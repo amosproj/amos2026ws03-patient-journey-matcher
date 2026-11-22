@@ -27,6 +27,10 @@ const documentSchema = z.object({
   pmid: z.union([z.string(), z.number()]).nullish(),
   passages: z.array(
     z.object({
+      infons: z
+        .object({ type: z.unknown().optional() })
+        .nullish()
+        .catch(undefined),
       annotations: z
         .array(z.object({ infons: conceptSchema, text: z.string().nullish() }))
         .default([]),
@@ -65,11 +69,12 @@ const OUTCOME_PREDICATES: Partial<Record<Predicate, Predicate>> = {
 /** The documents of an export (`{ PubTator3: [...] }`), a list of documents, or one document. */
 export function pubTatorDocuments(json: unknown): unknown[] {
   if (Array.isArray(json)) return json;
-  if (typeof json === "object" && json !== null && "PubTator3" in json) {
-    const list = (json as { PubTator3: unknown }).PubTator3;
-    if (Array.isArray(list)) return list;
+  if (typeof json === "object" && json !== null) {
+    if ("PubTator3" in json && Array.isArray(json.PubTator3))
+      return json.PubTator3;
+    if ("id" in json || "pmid" in json || "passages" in json) return [json];
   }
-  return [json];
+  throw new Error("Invalid PubTator3 export: expected BioC documents");
 }
 
 /**
@@ -165,6 +170,12 @@ export function normalizePubTatorDocument(
       const { type } = annotation.infons;
       const read = !DROPPED_PUBTATOR_TYPES.has(type) && TYPES.has(type);
       const keys = read ? add(annotation.infons, annotation.text) : [];
+      if (passage.infons?.type === "title") {
+        for (const key of keys) {
+          const entity = entities.get(key);
+          if (entity) entity.inTitle = true;
+        }
+      }
       if (!read || (type === "Variant" && keys.length === 0))
         leftOut.set(type, (leftOut.get(type) ?? 0) + 1);
     }

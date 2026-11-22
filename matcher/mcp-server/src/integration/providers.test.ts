@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { testDatabaseUrl } from "@matcher/db/testing";
 import { afterAll, beforeAll, describe, expect, test } from "vitest";
 import { createHarness, FILLER, type Harness } from "./harness.ts";
@@ -40,7 +41,7 @@ describe.skipIf(!databaseUrl)("podcast and PubMed sources", () => {
     expect(h.providers.requests).not.toContain("/audio.mp3");
   });
 
-  test("PubMed XML and reference traversal preserve cited-paper provenance", async () => {
+  test("crawled PubMed references keep their provenance and match a patient graph through MCP", async () => {
     const xml = (root: string, dtd: string, contents: string) =>
       `<?xml version="1.0"?><!DOCTYPE ${root} SYSTEM "${dtd}"><${root}>${contents}</${root}>`;
     h.providers.routes.set("/pubmed-search.xml", [
@@ -109,7 +110,72 @@ describe.skipIf(!databaseUrl)("podcast and PubMed sources", () => {
       )
     ).rows[0];
     expect(JSON.stringify(cited.found_by)).toContain("pubmed:301");
+    const annotations = JSON.parse(
+      readFileSync(
+        new URL(
+          "../../../algorithms/graph/fixtures/pubtator/32343890.json",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+    );
+    h.providers.routes.set(
+      "/research/pubtator3-api/publications/export/biocjson",
+      (url) => {
+        const pmids = url.searchParams.get("pmids")?.split(",") ?? [];
+        return {
+          type: "application/json",
+          body: JSON.stringify({
+            PubTator3: pmids.map((id) => ({
+              ...annotations,
+              id,
+              pmid: id,
+              relations: id === "301" ? annotations.relations : [],
+            })),
+          }),
+        };
+      },
+    );
     await h.index();
+    const graph = JSON.parse(
+      readFileSync(
+        new URL(
+          "../../../../patientdata/Patient-5/graph.json",
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+    );
+    const request = {
+      graph: { ...graph, as_of: "2026-12-08" },
+      algorithm: "graph",
+    };
+    const count = h.providers.requests.length;
+    const answer = await h.match(request);
+    expect(answer).toMatchObject({
+      degraded: false,
+      algorithm: "graph",
+      focus_event_id: "2026-12-08",
+      results: [
+        {
+          rank: 1,
+          source_id: "pubmed:301",
+          score: 1,
+          explanation: expect.stringContaining("treats"),
+        },
+        {
+          rank: 2,
+          source_id: "pubmed:302",
+          explanation: expect.stringContaining("Matched the diagnosis"),
+        },
+      ],
+    });
+    expect((await h.match({ ...request, limit: 1 })).results).toHaveLength(1);
+    expect(
+      (await h.match({ ...request, content_types: ["video"] })).results,
+    ).toEqual([]);
+    await h.index();
+    expect(h.providers.requests).toHaveLength(count);
     expect((await h.match()).results.map((r) => r.source_id)).toContain(
       "pubmed:302",
     );
