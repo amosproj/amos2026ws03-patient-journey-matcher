@@ -9,7 +9,6 @@ type Candidate = {
   entities: Paper["entities"];
   relations: Triple[];
 };
-const PAGE_SIZE = 128;
 
 /** Score each diagnosis with its strongest paper relation. Repeated mentions never add weight. */
 function scorePaper(query: GraphQuery, paper: Candidate): Hit | undefined {
@@ -45,12 +44,13 @@ function scorePaper(query: GraphQuery, paper: Candidate): Hit | undefined {
         const known = treatment ? (query.treatments.get(otherId) ?? 0) : 0;
         // shortcut: title co-mentions approximate study focus, use evidence passages when available.
         const inTitle = diagnosis.inTitle && other.inTitle;
+        const strong = treatment || exact > 0;
         const evidence =
-          (treatment || exact ? 3 : 1) +
+          (strong ? 3 : 1) +
           1.5 * exact +
           known +
           0.5 * detail +
-          (inTitle ? 4 : 0);
+          (inTitle ? (strong ? 4 : 1) : 0);
         terms.add(other.name);
         connected++;
         if (evidence <= strongest) continue;
@@ -88,49 +88,90 @@ function scorePaper(query: GraphQuery, paper: Candidate): Hit | undefined {
 
 export function createGraphMatcher(db: Queryable): Matcher {
   return {
-    async match(state, { contentTypes, limit }) {
+    async match(state, { contentTypes, limit, trace }) {
       const query = patientQuery(state);
+      trace?.("query", {
+        cutoff: query.cutoff,
+        focusDate: state.focus.date,
+        conceptOnly: query.conceptOnly,
+        diagnoses: Object.fromEntries(query.diagnoses),
+        treatments: Object.fromEntries(query.treatments),
+        details: Object.fromEntries(query.details),
+        relations: Object.fromEntries(query.relations),
+      });
       if (!query.diagnoses.size) return [];
-      const hits: Hit[] = [];
-      const ids = [...query.diagnoses.keys()];
+      const diagnosisIds = [...query.diagnoses.keys()];
+      const diagnosisWeights = [...query.diagnoses.values()];
+      const contextIds = new Set<string>([
+        ...query.details.keys(),
+        ...diagnosisIds,
+      ]);
+      for (const key of query.relations.keys()) {
+        const [subject, , object] = JSON.parse(key) as [string, string, string];
+        contextIds.add(subject);
+        contextIds.add(object);
+      }
       const relations = query.conceptOnly ? "'[]'::jsonb" : "g.relations";
-      let after: string | null = null;
-      for (;;) {
-        const { rows }: { rows: Candidate[] } = await db.query<Candidate>(
-          `WITH page AS (
-             SELECT g.document_id, g.entities, ${relations} AS relations
-             FROM graph.documents g JOIN documents d ON d.id = g.document_id
-             WHERE g.entities ?| $1::text[] AND (d.expires_at IS NULL OR d.expires_at > now())
-               AND ($2::text[] IS NULL OR d.content_type = ANY($2::text[]))
-               AND ($3::text IS NULL OR g.document_id > $3)
-             ORDER BY g.document_id LIMIT $4
-           )
-           SELECT p.document_id, (
-             SELECT jsonb_object_agg(id, p.entities -> id)
-             FROM unnest($1::text[] || coalesce(links.ends, '{}'::text[])) AS e(id) WHERE p.entities ? id
-           ) AS entities, links.relations
-           FROM page p CROSS JOIN LATERAL (
+      // Single GIN scan: keep every candidate with a relevant link plus the top `limit`
+      // diagnosis-only papers, avoiding repeated keyset re-sorting over an unordered GIN index.
+      const { rows } = await db.query<Candidate>(
+        `WITH scored AS MATERIALIZED (
+           SELECT g.document_id, dx.score AS dx_score, links.relations, links.ends,
+                  jsonb_array_length(links.relations) > 0 AS has_links
+           FROM graph.documents g
+           JOIN public.documents d ON d.id = g.document_id
+           CROSS JOIN LATERAL (
+             SELECT max(q.weight * (1 + CASE WHEN (g.entities -> q.id ->> 'inTitle')::boolean IS TRUE THEN 0.5 ELSE 0 END))
+                    + 0.15 * least(2, count(*) - 1) AS score
+             FROM unnest($1::text[], $2::float8[]) AS q(id, weight)
+             WHERE g.entities -> q.id ->> 'type' = 'disease'
+           ) dx
+           CROSS JOIN LATERAL (
              SELECT coalesce(jsonb_agg(to_jsonb(r) - 'position' ORDER BY r.position), '[]'::jsonb) AS relations,
                     array_agg(DISTINCT r.subject) || array_agg(DISTINCT r.object) AS ends
-             FROM ROWS FROM (jsonb_to_recordset(p.relations) AS (subject text, predicate text, object text))
+             FROM ROWS FROM (jsonb_to_recordset(${relations}) AS (subject text, predicate text, object text))
                   WITH ORDINALITY AS r(subject, predicate, object, position)
-             WHERE r.subject = ANY($1::text[]) OR r.object = ANY($1::text[])
-           ) links ORDER BY p.document_id`,
-          [ids, contentTypes ?? null, after, PAGE_SIZE],
-        );
-        for (const row of rows) {
-          const hit = scorePaper(query, row);
-          if (!hit) continue;
-          // The MCP limit is at most 50. Start at the weakest retained hit.
-          let rank = hits.length;
-          while (rank > 0 && compareHits(hit, hits[rank - 1]) < 0) rank--;
-          if (rank < limit) {
-            hits.splice(rank, 0, hit);
-            if (hits.length > limit) hits.pop();
-          }
+             WHERE (r.subject = ANY($1::text[]) OR r.object = ANY($1::text[]))
+               AND ((r.predicate = 'treats' AND r.object = ANY($1::text[]))
+                    OR (r.predicate <> 'related'
+                        AND (CASE WHEN r.subject = ANY($1::text[]) THEN r.object ELSE r.subject END) = ANY($3::text[])))
+           ) links
+           WHERE g.entities ?| $1::text[]
+             AND (d.expires_at IS NULL OR d.expires_at > now())
+             AND ($4::text[] IS NULL OR d.content_type = ANY($4::text[]))
+             AND dx.score IS NOT NULL
+         ),
+         kept AS (
+           SELECT document_id, relations, ends FROM scored WHERE has_links
+           UNION ALL
+           (SELECT document_id, relations, ends FROM scored WHERE NOT has_links
+            ORDER BY dx_score DESC, document_id COLLATE "C" ASC LIMIT $5)
+         )
+         SELECT k.document_id, (
+           SELECT jsonb_object_agg(id, g.entities -> id)
+           FROM unnest($1::text[] || coalesce(k.ends, '{}'::text[])) AS e(id) WHERE g.entities ? id
+         ) AS entities, k.relations
+         FROM kept k
+         JOIN graph.documents g ON g.document_id = k.document_id`,
+        [
+          diagnosisIds,
+          diagnosisWeights,
+          [...contextIds],
+          contentTypes ?? null,
+          limit,
+        ],
+      );
+      const hits: Hit[] = [];
+      for (const row of rows) {
+        const hit = scorePaper(query, row);
+        if (!hit) continue;
+        // The MCP limit is at most 50. Start at the weakest retained hit.
+        let rank = hits.length;
+        while (rank > 0 && compareHits(hit, hits[rank - 1]) < 0) rank--;
+        if (rank < limit) {
+          hits.splice(rank, 0, hit);
+          if (hits.length > limit) hits.pop();
         }
-        if (rows.length < PAGE_SIZE) break;
-        after = rows[rows.length - 1].document_id;
       }
       return hits.map((hit) => ({ ...hit, score: hit.score / hits[0].score }));
     },
@@ -138,5 +179,8 @@ export function createGraphMatcher(db: Queryable): Matcher {
 }
 
 function compareHits(a: Hit, b: Hit): number {
-  return b.score - a.score || a.documentId.localeCompare(b.documentId);
+  return (
+    b.score - a.score ||
+    (a.documentId < b.documentId ? -1 : a.documentId > b.documentId ? 1 : 0)
+  );
 }

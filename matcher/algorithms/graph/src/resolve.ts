@@ -4,7 +4,7 @@
 // come in as more `Dictionary` entries; the resolver tries them in order.
 import concepts from "../data/concepts.json" with { type: "json" };
 import icd from "../data/icd10-mesh.json" with { type: "json" };
-import { normalizeName, withoutLeadingCode } from "./text.ts";
+import { normalizeName, withoutLeadingCode, words } from "./text.ts";
 import type { EntityType, ResolvedBy } from "./types.ts";
 
 export type Concept = {
@@ -65,6 +65,45 @@ const ICD_CODES: ReadonlyMap<string, string> = new Map(
   Object.entries(icd.codes),
 );
 const ICD_CODE = /^[A-Z]\d{2}(\.\d{1,2})?$/;
+const ICD_IN_TEXT = /\b[A-Z]\d{2}(?:\.\d{1,2})?\b/gi;
+
+// Longest phrases first so specific diseases (e.g. castration-resistant prostate cancer) win over substrings.
+const DISEASE_PHRASES = [...CONCEPTS.values()]
+  .filter((concept) => concept.type === "disease")
+  .flatMap((concept) =>
+    [concept.name, ...concept.names].map((name) => ({
+      concept,
+      phrase: words(name),
+    })),
+  )
+  .filter(({ phrase }) => phrase.length > 0)
+  .sort((a, b) => b.phrase.length - a.phrase.length);
+
+/** Curated diseases and mapped ICD-10 codes found on word boundaries in a free-text field. */
+export function findDiseases(
+  text: string,
+): { concept: Concept; code?: string }[] {
+  const found: { concept: Concept; code?: string }[] = [];
+  const tokens = words(text);
+  for (let i = 0; i < tokens.length; ) {
+    const hit = DISEASE_PHRASES.find(
+      ({ phrase }) =>
+        i + phrase.length <= tokens.length &&
+        phrase.every((word, offset) => tokens[i + offset] === word),
+    );
+    if (hit !== undefined) {
+      found.push({ concept: hit.concept });
+      i += hit.phrase.length;
+      continue;
+    }
+    i++;
+  }
+  for (const [code] of text.matchAll(ICD_IN_TEXT)) {
+    const concept = resolveIcd(code);
+    if (concept?.type === "disease") found.push({ concept, code });
+  }
+  return found;
+}
 
 /** The ICD names a follow-up can use for an already known diagnosis. */
 export function icdCodesFor(id: string): string[] {

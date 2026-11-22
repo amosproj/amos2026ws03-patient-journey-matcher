@@ -418,33 +418,283 @@ test("family history cannot establish or remove a patient's diagnosis", () => {
   ).toBe(true);
 });
 
-test("keeps the strongest hit from a later page and breaks ties across pages", async () => {
+test("keeps the strongest hits with deterministic tie-breaking and traces the normalized query", async () => {
   const all = Array.from({ length: 301 }, (_, i) =>
     paper(String(i).padStart(3, "0")),
   );
   all[300] = paper("300", [relation(drug, "treats", cancer)]);
-  const paged = vi.fn(
-    async (_sql: string, [, , after, size]: unknown[] = []) => {
-      const start =
-        after == null
-          ? 0
-          : all.findIndex((row) => row.document_id === after) + 1;
-      return { rows: all.slice(start, start + Number(size)) };
-    },
-  );
-  const match = createGraphMatcher({
-    query: vi.fn().mockImplementation(paged),
+  const steps: [string, unknown][] = [];
+  const hits = await matcher(all).match(state(diagnosis, treated), {
+    limit: 2,
+    trace: (step, data) => steps.push([step, data]),
   });
-  const hits = await match.match(state(diagnosis, treated), { limit: 2 });
-  expect(paged.mock.calls.length).toBeGreaterThan(1);
   expect(hits.map((hit) => hit.documentId)).toEqual(["300", "000"]);
   expect(hits[0].score).toBe(1);
   expect(hits[1].score).toBeLessThan(1);
+  expect(steps).toEqual([
+    [
+      "query",
+      expect.objectContaining({
+        cutoff: date,
+        conceptOnly: false,
+        diagnoses: { [cancer]: 1.2 },
+      }),
+    ],
+  ]);
+});
+
+test("a title-level finding link does not outrank an abstract treatment match", async () => {
+  const papers = [
+    paper(
+      "psa-title",
+      [relation(gene, "associated_with", cancer)],
+      [cancer, gene],
+    ),
+    paper("treatment-abstract", [relation(drug, "treats", cancer)], [cancer]),
+  ];
+  const hits = await matcher(papers).match(
+    state(diagnosis, received, edge("HAD_LAB_TEST", "p", "gene")),
+    { limit: 2 },
+  );
+  expect(hits.map((hit) => hit.documentId)).toEqual([
+    "treatment-abstract",
+    "psa-title",
+  ]);
+  expect(hits[0].score).toBeGreaterThan(hits[1].score);
+});
+
+test("routine follow-ups without status cues preserve earlier confirmed or suspected status", () => {
+  const confirmed = edge(
+    "HAS_DIAGNOSIS",
+    "p",
+    "dx",
+    "Confirmed prostate cancer.",
+    "2026-12-08",
+  );
+  const followup = edge(
+    "HAS_DIAGNOSIS",
+    "p",
+    "dx",
+    "Patient has C61 Prostatakarzinom.",
+    "2027-06-01",
+  );
+  const query = patientQuery({
+    focus: { ...focus, date: "2027-06-01" },
+    context: [],
+    graph: { nodes, edges: [followup, confirmed] },
+  });
+  expect(query.diagnoses.get(cancer)).toBeCloseTo(1.2);
+
+  const suspected = edge(
+    "HAS_DIAGNOSIS",
+    "p",
+    "dx",
+    "Suspected prostate cancer.",
+    "2026-11-06",
+  );
+  const suspectedFollowup = patientQuery({
+    focus: { ...focus, date: "2027-06-01" },
+    context: [],
+    graph: { nodes, edges: [suspected, followup] },
+  });
+  expect(suspectedFollowup.diagnoses.get(cancer)).toBeCloseTo(0.45 * 1.2);
+
+  // Real synthetic graph regression: Patient-13 is confirmed in 2026/2027, then has plain follow-ups.
+  const patient13 = JSON.parse(
+    readFileSync(
+      new URL("../../../../patientdata/Patient-13/graph.json", import.meta.url),
+      "utf8",
+    ),
+  );
+  const p13 = patientQuery({
+    focus: { ...focus, date: "2029-05-21" },
+    context: [],
+    graph: { ...patient13, as_of: "2029-05-21" },
+  });
+  expect(p13.diagnoses.get(cancer)).toBeCloseTo(1.2);
+  // Unresolved `name:...` triples are never added to `query.relations`.
+  for (const key of p13.relations.keys()) {
+    const [subject, , object] = JSON.parse(key) as [string, string, string];
+    expect(subject.startsWith("name:")).toBe(false);
+    expect(object.startsWith("name:")).toBe(false);
+  }
+
+  // Timeline follow-up mentioning the diagnosis without a cue keeps confirmed status too.
+  const timelineQuery = patientQuery({
+    context: [
+      {
+        ...focus,
+        id: "e1",
+        date: "2026-12-08",
+        type: "diagnosis",
+        label: "Prostate cancer confirmed.",
+      },
+    ],
+    focus: {
+      ...focus,
+      id: "e2",
+      date: "2027-06-01",
+      type: "followup",
+      label: "Routine check",
+      parameters: { diagnosis: "Prostate cancer" },
+    },
+  });
+  expect(timelineQuery.diagnoses.get(cancer)).toBeCloseTo(1.2);
+});
+
+test("extracts mapped diagnoses from real synthetic timeline.json phrases", () => {
+  const readTimeline = (patient: string) =>
+    JSON.parse(
+      readFileSync(
+        new URL(
+          `../../../../patientdata/${patient}/timeline.json`,
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+    );
+  const queryFor = (patient: string) => {
+    const timeline = readTimeline(patient);
+    const events = timeline.events;
+    return patientQuery({
+      focus: events.at(-1),
+      context: events.slice(0, -1),
+    });
+  };
+  expect(queryFor("Patient-5").diagnoses.has(cancer)).toBe(true);
+  expect(queryFor("Patient-7").diagnoses.has("mesh:D064129")).toBe(true);
+  expect(queryFor("Patient-10").diagnoses.has("mesh:D064129")).toBe(true);
+});
+
+test("weights focus-day evidence higher and caps multi-diagnosis and multi-relation bonuses", async () => {
+  const dx2 = { uuid: "dx2", labels: ["Diagnosis"], name: "Liver metastases" };
+  const dx3 = { uuid: "dx3", labels: ["Diagnosis"], name: "Bone metastases" };
+  const dx4 = {
+    uuid: "dx4",
+    labels: ["Diagnosis"],
+    name: "Lymph node metastases",
+  };
+  const multiNodes = [...nodes, dx2, dx3, dx4];
+  const onFocus = edge(
+    "HAS_DIAGNOSIS",
+    "p",
+    "dx",
+    "Confirmed prostate cancer.",
+    date,
+  );
+  const earlier = edge(
+    "HAS_DIAGNOSIS",
+    "p",
+    "dx2",
+    "Confirmed liver metastases.",
+    "2026-10-01",
+  );
+  const focusCheck = patientQuery({
+    focus,
+    context: [],
+    graph: { nodes: multiNodes, edges: [onFocus, earlier] },
+  });
+  expect(focusCheck.diagnoses.get(cancer)).toBeGreaterThan(
+    focusCheck.diagnoses.get(otherDisease) ?? 0,
+  );
+
+  // Multi-relation bonus increases from 1 -> 2 -> 3 relations and caps at 3 (connected - 1 capped at 2).
+  const d3 = "mesh:D001859";
+  const d4 = "mesh:D008207";
+  const richEntities: Paper["entities"] = {
+    ...entities,
+    [d3]: { name: "Bone Neoplasms", type: "disease" },
+    [d4]: { name: "Lymphatic Metastasis", type: "disease" },
+    "mesh:C089740": { name: "abiraterone", type: "chemical" },
+    "mesh:D000077143": { name: "Docetaxel", type: "chemical" },
+    "mesh:C552428": { name: "cabazitaxel", type: "chemical" },
+  };
+  const makeRich = (
+    document_id: string,
+    relations: Paper["relations"],
+    keepEntities: string[] = [
+      cancer,
+      drug,
+      otherDrug,
+      "mesh:C089740",
+      "mesh:D000077143",
+      "mesh:C552428",
+    ],
+  ) => ({
+    document_id,
+    relations,
+    entities: Object.fromEntries(
+      keepEntities.map((id) => [id, richEntities[id]]),
+    ),
+  });
+  const relPapers = [
+    makeRich("r1", [relation(drug, "treats", cancer)]),
+    makeRich("r2", [
+      relation(drug, "treats", cancer),
+      relation(otherDrug, "treats", cancer),
+    ]),
+    makeRich("r3", [
+      relation(drug, "treats", cancer),
+      relation(otherDrug, "treats", cancer),
+      relation("mesh:C089740", "treats", cancer),
+    ]),
+    makeRich("r4", [
+      relation(drug, "treats", cancer),
+      relation(otherDrug, "treats", cancer),
+      relation("mesh:C089740", "treats", cancer),
+      relation("mesh:D000077143", "treats", cancer),
+    ]),
+  ];
+  const relHits = await matcher(relPapers).match(state(diagnosis), {
+    limit: 4,
+  });
+  const byId = new Map(relHits.map((hit) => [hit.documentId, hit.score]));
+  expect(byId.get("r2")).toBeGreaterThan(byId.get("r1") ?? 0);
+  expect(byId.get("r3")).toBeGreaterThan(byId.get("r2") ?? 0);
+  expect(byId.get("r4")).toBeCloseTo(byId.get("r3") ?? 0);
+
+  // Multi-diagnosis bonus increases from 1 -> 2 -> 3 diagnoses and caps at 3 (diagnoses - 1 capped at 2).
+  const allDxState: JourneyState = {
+    focus,
+    context: [],
+    graph: {
+      nodes: multiNodes,
+      edges: [
+        onFocus,
+        earlier,
+        edge(
+          "HAS_DIAGNOSIS",
+          "p",
+          "dx3",
+          "Confirmed bone metastases.",
+          "2026-10-01",
+        ),
+        edge(
+          "HAS_DIAGNOSIS",
+          "p",
+          "dx4",
+          "Confirmed lymph node metastases.",
+          "2026-10-01",
+        ),
+      ],
+    },
+  };
+  const dxPapers = [
+    makeRich("d1", [], [cancer]),
+    makeRich("d2", [], [cancer, otherDisease]),
+    makeRich("d3", [], [cancer, otherDisease, d3]),
+    makeRich("d4", [], [cancer, otherDisease, d3, d4]),
+  ];
+  const dxHits = await matcher(dxPapers).match(allDxState, { limit: 4 });
+  const dxScore = new Map(dxHits.map((hit) => [hit.documentId, hit.score]));
+  expect(dxScore.get("d2")).toBeGreaterThan(dxScore.get("d1") ?? 0);
+  expect(dxScore.get("d3")).toBeGreaterThan(dxScore.get("d2") ?? 0);
+  expect(dxScore.get("d4")).toBeCloseTo(dxScore.get("d3") ?? 0);
 });
 
 const databaseUrl = testDatabaseUrl();
 test.skipIf(!databaseUrl)(
-  "PostgreSQL pages return only the entities and triples needed to rank eligible papers",
+  "PostgreSQL single query returns only relevant relation rows plus top limit diagnosis-only fallbacks",
   async () => {
     const db = await createTestDatabase(databaseUrl as string);
     try {
@@ -475,20 +725,21 @@ test.skipIf(!databaseUrl)(
       const options = { limit: 1, contentTypes: ["journal_article"] };
       const best = await rank.match(state(diagnosis, treated), options);
       expect(best[0].documentId).toBe("pubmed:130");
-      const pages = await Promise.all(
-        read.mock.results.map(({ value }) => value),
-      );
-      expect(pages.length).toBeGreaterThan(1);
-      expect(pages[0].rows[0]).toEqual({
-        document_id: "pubmed:002",
-        entities: { [cancer]: entities[cancer] },
-        relations: [],
-      });
-      expect(pages.at(-1)?.rows.at(-1)).toEqual({
-        document_id: "pubmed:130",
-        entities: { [cancer]: entities[cancer], [drug]: entities[drug] },
-        relations: [{ subject: drug, predicate: "treats", object: cancer }],
-      });
+      expect(read).toHaveBeenCalledTimes(1);
+      const { rows } = await read.mock.results[0].value;
+      // 1 relation-bearing row (pubmed:130) + at most limit (1) diagnosis-only row (pubmed:002).
+      expect(rows).toEqual([
+        {
+          document_id: "pubmed:130",
+          entities: { [cancer]: entities[cancer], [drug]: entities[drug] },
+          relations: [{ subject: drug, predicate: "treats", object: cancer }],
+        },
+        {
+          document_id: "pubmed:002",
+          entities: { [cancer]: entities[cancer] },
+          relations: [],
+        },
+      ]);
       const timeline = {
         focus: { ...focus, type: "diagnosis", label: "PCa" },
         context: [],
@@ -496,6 +747,8 @@ test.skipIf(!databaseUrl)(
       expect((await rank.match(timeline, options))[0].documentId).toBe(
         "pubmed:002",
       );
+      expect(read).toHaveBeenCalledTimes(2);
+      expect((await read.mock.results[1].value).rows).toHaveLength(1);
     } finally {
       await db.drop();
     }

@@ -1,11 +1,12 @@
 import type { JourneyEvent, JourneyState } from "@matcher/core";
 import { normalizePatientGraph } from "./patient.ts";
-import { icdCodesFor, resolve, resolveIcd } from "./resolve.ts";
+import { findDiseases, icdCodesFor, resolveIcd } from "./resolve.ts";
 import { statusFromText } from "./status.ts";
 import { normalizeName } from "./text.ts";
 import type { Status, Triple } from "./types.ts";
 
 export interface GraphQuery {
+  cutoff: string;
   diagnoses: Map<string, number>;
   treatments: Map<string, number>;
   details: Map<string, number>;
@@ -34,6 +35,12 @@ const STATUS_ORDER: Record<Status, number> = {
   negated: 4,
 };
 
+const EXPLICIT_STATUSES: ReadonlySet<Status> = new Set([
+  "asserted",
+  "suspected",
+  "negated",
+]);
+
 type DatedStatus = { validAt?: string; invalidAt?: string; status: Status };
 
 function latest<T extends DatedStatus>(
@@ -41,40 +48,55 @@ function latest<T extends DatedStatus>(
   keyOf: (statement: T) => string,
   cutoff: string,
 ): T[] {
-  const selected = new Map<string, T>();
+  const byKey = new Map<string, T[]>();
   for (const statement of statements) {
     const { validAt, invalidAt } = statement;
     if (!validAt || validAt > cutoff || (invalidAt && invalidAt <= cutoff))
       continue;
     const key = keyOf(statement);
-    const old = selected.get(key);
-    if (
-      !old ||
-      validAt > (old.validAt ?? "") ||
-      (validAt === old.validAt &&
-        STATUS_ORDER[statement.status] > STATUS_ORDER[old.status])
-    ) {
-      selected.set(key, statement);
-    }
+    const list = byKey.get(key) ?? [];
+    list.push(statement);
+    byKey.set(key, list);
   }
-  return [...selected.values()];
+  const result: T[] = [];
+  for (const list of byKey.values()) {
+    list.sort(
+      (a, b) =>
+        (a.validAt ?? "").localeCompare(b.validAt ?? "") ||
+        STATUS_ORDER[a.status] - STATUS_ORDER[b.status],
+    );
+    // An un-cued follow-up (`unknown`) advances the date without erasing an established status.
+    let current = list[0];
+    for (let i = 1; i < list.length; i++) {
+      const next = list[i];
+      current =
+        next.status === "unknown" && EXPLICIT_STATUSES.has(current.status)
+          ? { ...next, status: current.status }
+          : next;
+    }
+    result.push(current);
+  }
+  return result;
 }
 
 function timelineConditions(events: JourneyEvent[]) {
   const diagnoses = new Map<string, { since: string; names: Set<string> }>();
-  const notes: { date: string; text: string; diagnosis?: string }[] = [];
+  const notes: { date: string; text: string; diagnoses: Set<string> }[] = [];
   for (const event of events) {
     const type = normalizeName(event.type);
     if (type === "family history") continue;
     const diagnosis = event.parameters?.diagnosis;
     const code = event.parameters?.icd_code;
-    const names = typeof diagnosis === "string" ? [diagnosis] : [];
+    const fields = typeof diagnosis === "string" ? [diagnosis] : [];
     if (["diagnosis", "pathology", "progression"].includes(type))
-      names.push(event.label);
-    const concept =
-      resolve({ names, icdCode: code })?.concept ??
-      names.map(resolveIcd).find(Boolean);
-    if (concept?.type === "disease") {
+      fields.push(event.label);
+    const hits = fields.flatMap(findDiseases);
+    const byCode = resolveIcd(code);
+    if (byCode?.type === "disease")
+      hits.push({ concept: byCode, code: String(code) });
+    const eventDiagnoses = new Set<string>();
+    for (const { concept, code: matchedCode } of hits) {
+      eventDiagnoses.add(concept.id);
       const known = diagnoses.get(concept.id) ?? {
         since: event.date,
         names: new Set([
@@ -84,17 +106,14 @@ function timelineConditions(events: JourneyEvent[]) {
         ]),
       };
       if (event.date < known.since) known.since = event.date;
-      for (const name of [code, ...names]) {
-        if (typeof name === "string" && resolveIcd(name)?.id === concept.id)
-          known.names.add(name);
-      }
+      if (matchedCode) known.names.add(matchedCode);
       diagnoses.set(concept.id, known);
     }
     const text =
       typeof diagnosis === "string"
         ? `${diagnosis}. ${event.label}`
         : event.label;
-    notes.push({ date: event.date, text, diagnosis: concept?.id });
+    notes.push({ date: event.date, text, diagnoses: eventDiagnoses });
   }
   // Same-day evidence is evaluated together, regardless of the order of the events.
   const statements: (DatedStatus & { entity: string })[] = [];
@@ -103,7 +122,7 @@ function timelineConditions(events: JourneyEvent[]) {
     for (const note of notes) {
       if (note.date < since) continue;
       const status = statusFromText(note.text, aliases)?.status;
-      if (status || note.diagnosis === entity)
+      if (status || note.diagnoses.has(entity))
         statements.push({
           entity,
           validAt: note.date,
@@ -119,7 +138,9 @@ export function patientQuery({
   context,
   graph,
 }: JourneyState): GraphQuery {
+  const cutoff = graph?.as_of ?? focus.date;
   const query: GraphQuery = {
+    cutoff,
     diagnoses: new Map(),
     treatments: new Map(),
     details: new Map(),
@@ -131,14 +152,13 @@ export function patientQuery({
 
   if (!graph) {
     const conditions = timelineConditions([...context, focus]);
-    for (const fact of latest(conditions, (fact) => fact.entity, focus.date)) {
+    for (const fact of latest(conditions, (fact) => fact.entity, cutoff)) {
       if (fact.status !== "negated")
         query.diagnoses.set(fact.entity, weight(fact.validAt, fact.status));
     }
     return query;
   }
 
-  const cutoff = graph.as_of ?? focus.date;
   // Future-only nodes must not contribute aliases or labels to a historical snapshot.
   const edges = graph.edges.filter(
     (edge) => edge.valid_at && edge.valid_at.slice(0, 10) <= cutoff,
@@ -174,7 +194,12 @@ export function patientQuery({
   }
   for (const relation of latest(normalized.relations, tripleKey, cutoff)) {
     // An unspecified relationship on both sides is no evidence that their meanings agree.
-    if (relation.predicate === "related") continue;
+    if (
+      relation.predicate === "related" ||
+      !entities.get(relation.subject)?.id ||
+      !entities.get(relation.object)?.id
+    )
+      continue;
     query.relations.set(
       tripleKey(relation),
       weight(relation.validAt, relation.status),
