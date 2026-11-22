@@ -1,18 +1,19 @@
 # /// script
 # requires-python = ">=3.12"
 # ///
-"""Write sbom.spdx.json, the SBOM in SPDX 3.0 that SCA Tool reads: the third-party packages that
-the projects in this repository need to run, and PostgreSQL with the extensions that db/Dockerfile
-puts into the database image, each with its licence. From the repository root:
+"""Write the SBOM in SPDX 3.0 to sbom.spdx.json, which SCA Tool reads, and in CycloneDX 1.7 to
+sbom.cdx.json: the third-party packages that the projects in this repository need to run, and
+PostgreSQL with the extensions that db/Dockerfile puts into the database image, each with its
+licence. From the repository root:
 
     uv run scripts/sbom.py          # make sbom
-    uv run scripts/sbom.py --check  # fails if it no longer fits the lockfiles and db/Dockerfile
+    uv run scripts/sbom.py --check  # fails if they no longer fit the lockfiles and db/Dockerfile
 
 Syft, run in Docker, reads every lockfile in Git and looks up the licences on npm and PyPI. The
 packages that only the development tools need are then left out: `uv export` and `pnpm sbom
 --prod` name what a project needs to run, without the `dev` dependency group and the
 devDependencies. Licences that the package metadata leaves unclear are set from ALIASES and
-CHECKED. Syft converts the result to SPDX 3.0. Needs Docker, uv and pnpm.
+CHECKED. Syft converts the result to SPDX 3.0 and CycloneDX 1.7. Needs Docker, uv and pnpm.
 """
 
 import argparse
@@ -25,6 +26,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 SPDX = ROOT / "sbom.spdx.json"
+CYCLONEDX = ROOT / "sbom.cdx.json"
 SYFT = "anchore/syft:v1.57.2"
 SUPPLIER = "The AMOS Projects"  # the copyright holder in LICENSE; also the creator of the SBOM
 REPOSITORY = "https://github.com/amosproj/amos2026ws03-patient-journey-matcher"
@@ -270,6 +272,47 @@ def spdx3(spdx: dict) -> dict:
     return sbom
 
 
+def cyclonedx(spdx: dict) -> dict:
+    """The SBOM in CycloneDX 1.7. What Syft's conversion gets wrong is corrected as in spdx3(). It
+    also adds Debian, the system of the database image, as an operating system, and properties
+    that it guesses from the purls, such as an installed size of 0 for pg_textsearch."""
+    bom = json.loads(
+        run(
+            "docker", "run", "--rm", "--interactive", SYFT, "convert", "-",
+            "--output", "cyclonedx-json@1.7", "--quiet",
+            stdin=json.dumps(spdx),
+        )
+    )  # fmt: skip
+    found = {p["SPDXID"].removeprefix("SPDXRef-"): found_in(p) for p in spdx["packages"]}
+    names = {
+        i["licenseId"].removeprefix("LicenseRef-"): i["name"]
+        for i in spdx["hasExtractedLicensingInfos"]
+    }
+    bom["components"] = [c for c in bom["components"] if c["type"] != "operating-system"]
+    for component in bom["components"]:
+        component.pop("properties", None)
+        if component["type"] == "file":
+            continue
+        # "pkg:pypi/colorama@0.4.6?package-id=Package-python-colorama-dbd476bddb1ce9ea"
+        path = found.get(component["bom-ref"].rpartition("package-id=")[2])
+        if path is None:
+            raise SystemExit(f"Syft names {component['bom-ref']} otherwise: update scripts/sbom.py")
+        component["evidence"] = {"occurrences": [{"location": path}]}
+        for licence in component.get("licenses", []):  # Syft drops the LicenseRef- of a name
+            if (name := licence.get("license", {}).get("name")) in names:
+                licence["license"]["name"] = names[name]
+    metadata = bom["metadata"]
+    tool = metadata["tools"]["components"][0]
+    tool["name"], _, tool["version"] = SYFT.rpartition("/")[2].partition(":v")
+    metadata["manufacturer"] = {"name": SUPPLIER}  # of the SBOM
+    metadata["component"].update(
+        type="application",
+        supplier={"name": SUPPLIER},
+        externalReferences=[{"type": "vcs", "url": REPOSITORY}],
+    )
+    return bom
+
+
 def unclear(sbom: dict) -> set[str]:
     """The packages whose declared licence has no SPDX licence ID and was not checked by hand."""
     elements = {e.get("spdxId"): e for e in sbom["@graph"]}
@@ -300,6 +343,19 @@ def write(path: Path, sbom: dict) -> None:
 def contents(sbom: dict) -> list[tuple[str, ...]]:
     """What --check compares: the packages with the files they were found in and the checksums of
     the lockfiles, not the licences, which come from the network."""
+    if "components" in sbom:  # CycloneDX
+        components = sbom["components"]
+        packages = [
+            (c.get("purl") or c["name"], *(o["location"] for o in c["evidence"]["occurrences"]))
+            for c in components
+            if c["type"] != "file"
+        ]
+        files = [
+            (c["name"], *sorted(h["content"] for h in c.get("hashes", [])))
+            for c in components
+            if c["type"] == "file"
+        ]
+        return sorted(packages + files)
     graph = sbom["@graph"]
     packages = [
         (e.get("software_packageUrl") or e["name"], found_in(e) or "")
@@ -315,17 +371,20 @@ def contents(sbom: dict) -> list[tuple[str, ...]]:
 
 
 def check() -> None:
-    if not SPDX.exists():
-        raise SystemExit("sbom.spdx.json is missing: run `make sbom`")
-    spdx = json.loads(SPDX.read_text(encoding="utf-8"))
-    expected, actual = contents(spdx3(build(licences=False))), contents(spdx)
-    for entry in sorted(set(expected) - set(actual)):
-        print("+", *entry)
-    for entry in sorted(set(actual) - set(expected)):
-        print("-", *entry)
-    if expected != actual:
-        raise SystemExit("sbom.spdx.json is out of date (+ new, - old): run `make sbom`")
-    print("sbom.spdx.json fits the lockfiles and db/Dockerfile")
+    for path in (SPDX, CYCLONEDX):
+        if not path.exists():
+            raise SystemExit(f"{path.name} is missing: run `make sbom`")
+    spdx = build(licences=False)
+    for path, convert in ((SPDX, spdx3), (CYCLONEDX, cyclonedx)):
+        expected = contents(convert(spdx))
+        actual = contents(json.loads(path.read_text(encoding="utf-8")))
+        for entry in sorted(set(expected) - set(actual)):
+            print("+", *entry)
+        for entry in sorted(set(actual) - set(expected)):
+            print("-", *entry)
+        if expected != actual:
+            raise SystemExit(f"{path.name} is out of date (+ new, - old): run `make sbom`")
+        print(f"{path.name} fits the lockfiles and db/Dockerfile")
 
 
 def main() -> None:
@@ -336,10 +395,12 @@ def main() -> None:
     if parser.parse_args().check:
         check()
         return
-    sbom = spdx3(build(licences=True))
+    spdx = build(licences=True)
+    sbom, bom = spdx3(spdx), cyclonedx(spdx)
     write(SPDX, sbom)
+    write(CYCLONEDX, bom)
     packages = [e for e in sbom["@graph"] if e["type"] == "software_Package" and found_in(e)]
-    print(f"Wrote {len(packages)} packages to sbom.spdx.json")
+    print(f"Wrote {len(packages)} packages to sbom.spdx.json and sbom.cdx.json")
     if unknown := unclear(sbom):
         print(f"No SPDX licence ID for {len(unknown)}: {', '.join(sorted(unknown))}")
 

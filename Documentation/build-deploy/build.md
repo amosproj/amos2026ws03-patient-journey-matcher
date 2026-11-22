@@ -27,7 +27,7 @@ Run the commands from the repository root. Each `make` target runs the `uv`, `pn
 | `make start` | Builds, then starts the MCP server on `http://127.0.0.1:3000/mcp`; needs the root `.env` |
 | `make debug` | Starts the [debug UI](../../debug/crawler/README.md) for the crawler, the database, the index and the matcher on `http://127.0.0.1:8765` |
 | `make graph PATIENT=Patient-5` | Builds the [patient graph](../user/mcp-interface.md#patient-graph) of one synthetic patient and writes `patientdata/Patient-5/graph.json` with the [patient graph tool](../../tools/patient-graph/README.md); needs `GEMINI_API_KEY` |
-| `make sbom` | Writes the [SBOM](#sbom) `sbom.spdx.json` |
+| `make sbom` | Writes the [SBOM](#sbom) `sbom.spdx.json` and `sbom.cdx.json` |
 
 ## Run the matcher locally
 
@@ -84,7 +84,7 @@ Not covered: the live data sources, the quality of the ranking, reading a valid 
 
 ### SBOM
 
-`make sbom` writes [`sbom.spdx.json`](../../sbom.spdx.json) in SPDX 3.0: the third-party packages that the projects need to run, from every lockfile, and PostgreSQL, pgvector and pg_textsearch from `db/Dockerfile`, each with its licence. Run it after every dependency change; the `sbom` job in CI fails until you do. How it works: [`scripts/sbom.py`](../../scripts/sbom.py).
+`make sbom` writes the SBOM in SPDX 3.0 to [`sbom.spdx.json`](../../sbom.spdx.json) and in CycloneDX 1.7 to [`sbom.cdx.json`](../../sbom.cdx.json): the third-party packages that the projects need to run, from every lockfile, and PostgreSQL, pgvector and pg_textsearch from `db/Dockerfile`, each with its licence. Run it after every dependency change; the `sbom` job in CI fails until you do. How it works: [`scripts/sbom.py`](../../scripts/sbom.py).
 
 - Not included: the operating system packages of the Docker images, Python and Node.js.
 - PostgreSQL has only its major version: the image tag in `db/Dockerfile` names no minor version.
