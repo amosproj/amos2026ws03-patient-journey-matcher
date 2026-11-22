@@ -114,6 +114,45 @@ test("a bad paper and an unrecognized PMID do not discard the rest of the export
   );
 });
 
+const noWait = async () => {};
+
+test("schedules a retry when PubTator3 answers HTTP 404", async () => {
+  const db = batch();
+  await createGraphIndexer(
+    db,
+    async () => new Response(null, { status: 404 }),
+    noWait,
+  ).index(() => {});
+  const rows = JSON.parse(db.query.mock.calls[2][1][0]);
+  expect(rows.map((row: { retry: boolean }) => row.retry)).toEqual([
+    true,
+    true,
+    false,
+  ]);
+});
+
+test("retries transient 429 and 503 responses using Retry-After before succeeding", async () => {
+  const db = batch();
+  const delays: number[] = [];
+  const request = vi
+    .fn()
+    .mockResolvedValueOnce(
+      new Response(null, { status: 429, headers: { "retry-after": "5" } }),
+    )
+    .mockResolvedValueOnce(new Response(null, { status: 503 }))
+    .mockResolvedValueOnce(Response.json({ PubTator3: [exportDocument] }));
+  await createGraphIndexer(db, request, async (ms) => {
+    if (ms > 0) delays.push(ms);
+  }).index(() => {});
+  expect(request).toHaveBeenCalledTimes(3);
+  expect(delays).toEqual([5_000, 2_000]);
+  const rows = JSON.parse(db.query.mock.calls[2][1][0]);
+  expect(rows[0]).toMatchObject({
+    retry: false,
+    entities: { "mesh:D011471": { inTitle: true } },
+  });
+});
+
 test.each([
   () => new Response(null, { status: 503 }),
   () => Response.json({ error: "unexpected export" }),
@@ -122,7 +161,7 @@ test.each([
   async (response) => {
     const db = batch();
     await expect(
-      createGraphIndexer(db, async () => response()).index(() => {}),
+      createGraphIndexer(db, async () => response(), noWait).index(() => {}),
     ).rejects.toThrow();
     expect(db.query).toHaveBeenCalledTimes(2);
   },
@@ -190,5 +229,28 @@ describe.skipIf(!databaseUrl)("graph annotation retries in PostgreSQL", () => {
     ]);
     await index();
     expect(request).toHaveBeenCalledTimes(2);
+
+    // Stale-write protection: a document updated during the export is not overwritten by the stale batch.
+    let bumped = false;
+    const concurrentRequest = vi.fn(async (_url: string) => {
+      if (!bumped) {
+        bumped = true;
+        await db.query(
+          "UPDATE documents SET changed_at = changed_at + interval '1 minute' WHERE id = 'pubmed:4'",
+        );
+        return Response.json({ PubTator3: [] });
+      }
+      return Response.json({ PubTator3: [annotated("4")] });
+    });
+    await db.query(
+      "UPDATE documents SET changed_at = changed_at + interval '1 second' WHERE id = 'pubmed:4'",
+    );
+    await createGraphIndexer(db, concurrentRequest, noWait).index(() => {});
+    expect(concurrentRequest).toHaveBeenCalledTimes(2);
+    const updated = await db.query(
+      "SELECT entities, NOT isfinite(retry_at) AS done FROM graph.documents WHERE document_id = 'pubmed:4'",
+    );
+    expect(updated.rows[0].done).toBe(true);
+    expect(updated.rows[0].entities).toHaveProperty("mesh:D011471");
   });
 });
