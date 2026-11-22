@@ -34,12 +34,12 @@ async function ixRefresh() {
   }
 }
 
-// One job at a time: a run of every approach or of one blocks both Start buttons.
+// One job at a time: a run of every approach or of one blocks all Start buttons.
 function renderIxButtons() {
   const indexer = ix.overview?.indexer;
   const running = indexer?.run?.status === "running";
-  for (const id of ["#ix-start", "#kw-start"]) $(id).disabled = !indexer || running || Boolean(indexer.missing);
-  for (const id of ["#ix-stop", "#kw-stop"]) $(id).disabled = !running;
+  for (const id of ["#ix-start", "#kw-start", "#gr-start"]) $(id).disabled = !indexer || running || Boolean(indexer.missing);
+  for (const id of ["#ix-stop", "#kw-stop", "#gr-stop"]) $(id).disabled = !running;
 }
 
 const ixErrorLines = () => [h("b", {}, ix.error.database ? "Not connected" : "Not loaded"), h("small", {}, ix.error.message), ix.error.hint ? h("span", { class: "hint" }, ix.error.hint) : null];
@@ -68,8 +68,17 @@ function renderIxStats() {
     h("b", { class: `ov-total${overview?.exists ? "" : " muted"}` }, !overview ? "–" : overview.exists ? `${fmtShare(total.indexed + total.skipped, total.documents)} done` : "no index yet"),
     overview ? ovList(COVERAGE_STATES.map(([key, label, cls, tip]) => ovShare(label, total[key], total.documents, { color: COVERAGE_BAR[cls], tip, onclick: () => showScreen("keyword") }))) : null,
     overview ? h("small", { class: "ov-note" }, `of ${fmtCount(total.documents)} documents, not expired`) : null);
+  const g = overview?.graph;
+  const graphCard = ovSection(title("Graph index", "graph"),
+    h("b", { class: `ov-total${g?.exists ? "" : " muted"}` }, !g ? "–" : g.exists ? `${fmtShare(g.indexed, g.pubmed)} done` : "no index yet"),
+    g ? ovList([
+      ovShare("With entities", g.with_entities, g.pubmed, { color: "--good", tip: "PubMed papers with at least one mapped PubTator3 entity", onclick: () => showScreen("graph") }),
+      ovShare("With relations", g.with_relations, g.pubmed, { color: "--accent", tip: "PubMed papers with at least one normalized PubTator3 relation", onclick: () => showScreen("graph") }),
+      ovShare("Waiting for retry", g.retrying, g.pubmed, { color: "--warn", tip: "PubMed papers missing from PubTator3, checked again after 7 days", onclick: () => showScreen("graph") }),
+    ]) : null,
+    g ? h("small", { class: "ov-note" }, `of ${fmtCount(g.pubmed)} PubMed papers, not expired`) : null);
   $("#ix-stats").replaceChildren(keyword,
-    ovSection(title("Graph index", "graph"), h("small", { class: "ov-note" }, "Index all fetches PubTator3 annotations for new or changed PubMed papers.")),
+    graphCard,
     ovSection(title("AI index", "ai"), h("b", { class: "ov-total muted" }, "planned")));
 }
 
@@ -130,12 +139,16 @@ async function ixFollowRun() {
 // Starts or stops the job from the overview or from the screen of an approach, then shows its log.
 async function ixCommand(path, body = {}) {
   const keyword = state.screen === "keyword";
-  const error = $(keyword ? "#kw-error" : "#ix-error");
+  const graphScreen = state.screen === "graph";
+  const error = $(keyword ? "#kw-error" : graphScreen ? "#gr-index-error" : "#ix-error");
   error.textContent = "";
   try {
     await api(path, { method: "POST", body: JSON.stringify(body) });
     if (keyword) kwSwitchTab("log");
-    else ixSwitchTab("log");
+    else {
+      if (graphScreen) showScreen("index");
+      ixSwitchTab("log");
+    }
     // A refresh in progress still holds the state from before the command.
     while (ix.loading) await new Promise((resolve) => setTimeout(resolve, 100));
     await ixRefresh();
@@ -318,7 +331,8 @@ function ixSwitchTab(tab) {
 for (const button of document.querySelectorAll("#ix-tabs button")) button.addEventListener("click", () => ixSwitchTab(button.dataset.ixtab));
 $("#ix-refresh").addEventListener("click", () => { ixRefresh(); txRefresh(); });
 $("#ix-start").addEventListener("click", () => ixCommand("/api/index/run"));
-for (const id of ["#ix-stop", "#kw-stop"]) $(id).addEventListener("click", () => ixCommand("/api/index/cancel"));
+$("#gr-start").addEventListener("click", () => ixCommand("/api/index/run", { approach: "graph" }));
+for (const id of ["#ix-stop", "#kw-stop", "#gr-stop"]) $(id).addEventListener("click", () => ixCommand("/api/index/cancel"));
 const ixAutoRefresh = (screen, checkbox) => state.screen === screen && $(checkbox).checked && document.visibilityState === "visible";
 setInterval(() => { if (ixAutoRefresh("index", "#ix-auto") || ixAutoRefresh("keyword", "#kw-auto")) ixRefresh(); }, 5000);
 // The job follows a new number within seconds: its state is asked for more often than the index.

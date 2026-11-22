@@ -427,7 +427,12 @@
 <div class="layout" id="graph-view" hidden>
   <aside class="side" id="graph-controls">
     <div class="side-head"><h2>Graph index</h2></div>
+    <div class="buttons">
+      <button type="button" class="primary" id="gr-start">Index graph</button>
+      <button type="button" id="gr-stop" disabled>Stop</button>
+    </div>
     <code class="cmd" title="Index PubMed annotations">make index APPROACHES=graph</code>
+    <div class="error" id="gr-index-error"></div>
     <div class="side-head"><h2>Normalization</h2></div>
     <label class="field"><span>Graph</span><select id="gr-source" aria-label="Graph to show"></select></label>
     <label class="field"><span>View</span><select id="gr-view" aria-label="Graph representation"><option value="normalized">Normalized</option><option value="original">Original (patient graph)</option></select></label>

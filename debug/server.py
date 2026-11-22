@@ -1274,6 +1274,41 @@ def indexer_state(*, events: bool = False) -> dict[str, Any]:
     return state
 
 
+async def graph_index_stats(connection: Any) -> dict[str, Any]:
+    """PubMed coverage of `graph.documents` for the Index overview."""
+    exists = bool(await connection.fetchval("SELECT to_regclass('graph.documents') IS NOT NULL"))
+    pubmed = int(
+        await connection.fetchval(
+            f"SELECT count(*) FROM documents AS d WHERE d.source = 'pubmed' AND {NOT_EXPIRED}"
+        )
+    )
+    if not exists:
+        return {
+            "exists": False,
+            "pubmed": pubmed,
+            "indexed": 0,
+            "with_entities": 0,
+            "with_relations": 0,
+            "retrying": 0,
+        }
+    has_retry = bool(
+        await connection.fetchval("SELECT to_regclass('graph.indexed_documents') IS NOT NULL")
+    )
+    done = "NOT isfinite(g.retry_at)" if has_retry else "g.entities <> '{}'::jsonb"
+    retrying = "isfinite(g.retry_at)" if has_retry else "g.entities = '{}'::jsonb"
+    [counts] = await fetch_json(
+        connection,
+        f"""SELECT count(g.document_id) FILTER (WHERE {done}) AS indexed,
+                   count(*) FILTER (WHERE g.entities <> '{{}}'::jsonb) AS with_entities,
+                   count(*) FILTER (WHERE jsonb_array_length(g.relations) > 0) AS with_relations,
+                   count(g.document_id) FILTER (WHERE {retrying}) AS retrying
+            FROM documents AS d
+            LEFT JOIN graph.documents AS g ON g.document_id = d.id
+            WHERE d.source = 'pubmed' AND {NOT_EXPIRED}""",
+    )
+    return {"exists": True, "pubmed": pubmed, **counts}
+
+
 async def index_overview(connection: Any) -> dict[str, Any]:
     exists = await has_keyword_index(connection)
     metadata = "keyword.documents" if exists else NO_INDEX
@@ -1291,6 +1326,7 @@ async def index_overview(connection: Any) -> dict[str, Any]:
         "exists": exists,
         "extension": extension,
         "indexer": indexer_state(),
+        "graph": await graph_index_stats(connection),
         # The stacked bars: the state of each document's full text (`full_text_state`).
         "coverage": await fetch_json(
             connection,
@@ -2447,7 +2483,9 @@ class Handler(BaseHTTPRequestHandler):
             self.send_result(lambda: topic_detail(path.removeprefix("/api/topics/")))
         elif path == "/api/match/journey":
             params = parse_qs(url.query)
-            self.send_result(lambda: load_journey(first(params, "id"), graph=first(params, "kind") == "graph"))
+            self.send_result(
+                lambda: load_journey(first(params, "id"), graph=first(params, "kind") == "graph")
+            )
         elif path.startswith("/api/runs/"):
             run_id, _, suffix = path.removeprefix("/api/runs/").partition("/")
             data = load_run(run_id)

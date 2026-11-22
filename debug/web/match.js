@@ -65,6 +65,30 @@ function mtSetJourney(journey) {
   if (mtParse()) mtRun(true);
 }
 
+// Daily events from a graph, matching mcp-server/src/graph.ts, for the timeline and as-of slider.
+function mtEvents(args) {
+  if (Array.isArray(args?.journey?.events)) return args.journey.events.filter((event) => event && typeof event === "object");
+  const graph = args?.graph;
+  if (!Array.isArray(graph?.nodes) || !Array.isArray(graph?.edges)) return [];
+  const byUuid = new Map(graph.nodes.filter((node) => node?.uuid).map((node) => [node.uuid, node]));
+  const days = new Map();
+  for (const edge of graph.edges) {
+    const date = typeof edge?.valid_at === "string" ? edge.valid_at.slice(0, 10) : "";
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
+    const ends = [byUuid.get(edge.source_node_uuid), byUuid.get(edge.target_node_uuid)].filter(Boolean);
+    if (ends.some((node) => Array.isArray(node.labels) && node.labels.includes("Provider"))) continue;
+    for (const node of ends) {
+      if (Array.isArray(node.labels) && node.labels.includes("Patient")) continue;
+      const names = days.get(date) ?? new Set();
+      if (node.name) names.add(node.name);
+      days.set(date, names);
+    }
+  }
+  return [...days].sort(([a], [b]) => a.localeCompare(b)).map(([date, names]) => ({
+    id: date, type: "facts", label: [...names].sort().join(", "), date,
+  }));
+}
+
 // Reads the arguments from the text box; the server checks them against the contract.
 function mtParse() {
   let args;
@@ -81,10 +105,10 @@ function mtParse() {
   $("#mt-json-error").textContent = "";
   mt.args = args;
   mtRenderAlgorithm();
-  const events = Array.isArray(args.journey?.events) ? args.journey.events : [];
+  const events = mtEvents(args);
   mt.dates = [...new Set(events.map((event) => event?.date).filter((date) => /^\d{4}-\d{2}-\d{2}$/.test(date)))].sort();
   // The focus is the latest event up to as_of; without as_of, the latest of all.
-  const asOf = args.journey?.as_of;
+  const asOf = args.journey?.as_of ?? args.graph?.as_of;
   mt.asOf = (typeof asOf === "string" ? mt.dates.filter((date) => date <= asOf) : mt.dates).at(-1) ?? null;
   const slider = $("#mt-asof");
   slider.max = Math.max(0, mt.dates.length - 1);
@@ -97,17 +121,19 @@ function mtShowAsOf() {
   $("#mt-asof").value = Math.max(0, mt.dates.indexOf(mt.asOf));
   const asOf = mt.args?.journey?.as_of ?? mt.args?.graph?.as_of;
   $("#mt-asof-date").textContent = typeof asOf === "string" ? asOf : mt.asOf || "–";
-  const ahead = (mt.args?.journey?.events || []).filter((event) => mt.asOf && event?.date > mt.asOf).length;
+  const ahead = mtEvents(mt.args).filter((event) => mt.asOf && event?.date > mt.asOf).length;
   const where = mt.asOf ? `date ${mt.dates.indexOf(mt.asOf) + 1} of ${mt.dates.length}` : "before the first event";
   $("#mt-asof-note").textContent = mt.dates.length > 1 ? `${typeof asOf === "string" ? "" : "the latest event is the focus · "}${where}${ahead ? ` · ${plural(ahead, "later event")} left out` : ""} · drag, or click an event` : "";
   mtRenderTimeline();
 }
 
-// Cuts the journey at `date`: writes it to journey.as_of in the arguments.
+// Cuts the journey or graph at `date`: writes it to journey.as_of or graph.as_of.
 function mtSetAsOf(date) {
-  if (!mt.dates.includes(date) || date === mt.args.journey.as_of) return;
-  const { as_of: _, ...journey } = mt.args.journey;
-  mt.args = { ...mt.args, journey: { as_of: date, ...journey } };
+  const field = mt.args?.graph ? "graph" : "journey";
+  const target = mt.args?.[field];
+  if (!target || !mt.dates.includes(date) || date === target.as_of) return;
+  const { as_of: _, ...rest } = target;
+  mt.args = { ...mt.args, [field]: { as_of: date, ...rest } };
   $("#mt-json").value = JSON.stringify(mt.args, null, 2);
   mt.asOf = date;
   mtShowAsOf();
@@ -246,13 +272,16 @@ function mtRenderStats() {
   const result = mt.result;
   if (!result) { box.replaceChildren(card("Focus event", "–", "muted"), card("Results", "–", "muted")); return; }
   const answer = result.answer;
-  const terms = mtStep("terms"), rankings = mtStep("rankings"), candidates = mtStep("candidates");
+  const terms = mtStep("terms"), rankings = mtStep("rankings"), candidates = mtStep("candidates"), query = mtStep("query");
   const dropped = candidates?.filter((candidate) => candidate.score == null).length;
   box.replaceChildren(...[
     card("Focus event", answer?.focus_event_id ?? "–", answer ? "" : "muted"),
     terms && card("Search terms: focus + context", `${terms.focus.length + (terms.generic?.length ?? 0)} + ${terms.context.length}`),
     rankings && card("Candidates: metadata + full text", `${rankings.metadata.length} + ${rankings.fullTexts.length}`),
     candidates && card("Candidates without a medical term, dropped", dropped, dropped ? "" : "muted"),
+    query && card("Mapped diagnoses", Object.keys(query.diagnoses).length, Object.keys(query.diagnoses).length ? "" : "muted"),
+    query && !query.conceptOnly && card("Treatments + details", `${Object.keys(query.treatments).length} + ${Object.keys(query.details).length}`),
+    query && !query.conceptOnly && card("Patient relations", Object.keys(query.relations).length, Object.keys(query.relations).length ? "" : "muted"),
     card(answer?.degraded ? "Results (degraded)" : "Results", answer ? answer.results.length : "–", answer?.degraded || result.error ? "bad" : ""),
     card(result.steps?.length ? "Took, incl. starting the matcher" : "Took", `${result.seconds.toFixed(2)} s`, "muted"),
   ].filter(Boolean));
@@ -261,10 +290,10 @@ function mtRenderStats() {
 
 function mtRenderTimeline() {
   const box = $("#mt-timeline");
-  const events = Array.isArray(mt.args?.journey?.events) ? mt.args.journey.events.filter((event) => event && typeof event === "object") : [];
-  if (!events.length) { box.replaceChildren(h("div", { class: "empty" }, mt.args?.graph ? "The request sends a graph: the timeline shows journeys only." : "The journey has no events.")); return; }
+  const events = mtEvents(mt.args);
+  if (!events.length) { box.replaceChildren(h("div", { class: "empty" }, mt.args?.graph ? "The graph has no dated medical facts." : "The journey has no events.")); return; }
   // Focus and context are the matcher's; they show once its answer for this journey is here.
-  const current = mt.request?.journey === mt.args?.journey ? mt.result : null;
+  const current = mt.request?.journey === mt.args?.journey && mt.request?.graph === mt.args?.graph ? mt.result : null;
   const focus = current?.answer?.focus_event_id;
   const context = new Set(current?.steps?.find((entry) => entry.step === "journey")?.data.context || []);
   const date = (event) => String(event.date || "");
@@ -460,13 +489,17 @@ function mtRenderResults() {
     h("i", { style: `left:${at(rank)}%` }),
     h("span", { style: `left:${at(rank)}%;transform:translateX(${index === 0 ? 0 : index === ticks.length - 1 ? -100 : -50}%)` }, rank),
   ]));
+  const hasExplanation = results.some((result) => result.explanation);
   head.replaceChildren(...[
     h("th", { class: "num" }, "#"),
-    traced && h("th", { title: `What rank fusion adds up for the document, the order of the results: 1 / (${constant} + its rank) from the metadata index and ${fullWeight === 1 ? "1" : fullWeight} / (${constant} + its rank) from the full-text index. An index adds nothing where it finds none of the terms; without a full text, the metadata rank counts for both. The bar is the sum, scaled to the best hit.` },
-      "Rank fusion",
-      h("small", {}, h("i", { class: "swatch meta" }), "metadata + ", h("i", { class: "swatch full" }), "full text"),
-      h("small", {}, fullWeight === 1 ? `each 1 / (${constant} + its rank)` : `1 / (${constant} + rank) + ${fullWeight} / (${constant} + rank)`)),
+    traced
+      ? h("th", { title: `What rank fusion adds up for the document, the order of the results: 1 / (${constant} + its rank) from the metadata index and ${fullWeight === 1 ? "1" : fullWeight} / (${constant} + its rank) from the full-text index. An index adds nothing where it finds none of the terms; without a full text, the metadata rank counts for both. The bar is the sum, scaled to the best hit.` },
+        "Rank fusion",
+        h("small", {}, h("i", { class: "swatch meta" }), "metadata + ", h("i", { class: "swatch full" }), "full text"),
+        h("small", {}, fullWeight === 1 ? `each 1 / (${constant} + its rank)` : `1 / (${constant} + rank) + ${fullWeight} / (${constant} + rank)`))
+      : h("th", { title: "Relative score in this result list (0 to 1)" }, "Score"),
     h("th", {}, "Source"), h("th", {}, "Title"),
+    !traced && hasExplanation && h("th", {}, "Why it matches"),
     traced && h("th", { title: `Where the document stands among the best ${last} candidates of each index, by BM25: rank 1 on the left, on a log scale. Blue: metadata, orange: full text; no dot: not among them, or none of the terms there.` },
       "Rank in each index", h("small", {}, axis)),
     traced && h("th", { title: "The two ranks as numbers. –: not among the candidates, or none of the terms there; none: the document has no full text, so its metadata rank counts for both." },
@@ -483,9 +516,12 @@ function mtRenderResults() {
     };
     return h("tr", { class: db.selected?.id === result.source_id ? "selected" : null, onclick: () => dbOpenDocument(result.source_id) },
       h("td", { class: "num" }, result.rank),
-      traced && mtFusion(candidates.get(result.source_id), ranked[0]?.score),
+      traced
+        ? mtFusion(candidates.get(result.source_id), ranked[0]?.score)
+        : h("td", { class: "rank-numbers" }, result.score == null ? "–" : [h("span", { class: "meter" }, h("i", { style: `width:${100 * result.score}%` })), ` ${result.score.toFixed(2)}`]),
       h("td", {}, sourcePill(result.source)),
       h("td", { class: "title" }, result.title, h("div", { class: "muted", style: "font-size:12px" }, [typeLabel(result.content_type), result.published_date, result.source_id].filter(Boolean).join(" · "))),
+      !traced && hasExplanation && h("td", { class: "small" }, result.explanation || "–"),
       traced && mtRankStrip(candidates.get(result.source_id), last),
       h("td", {}, h("div", { class: "heat" }, ...columns.flatMap((column, index) => [gap(index), where(column)]))));
   }));
@@ -495,6 +531,32 @@ function mtRenderResults() {
 function mtRenderRankings() {
   const box = $("#mt-rankings");
   const rankings = mtStep("rankings");
+  const query = mtStep("query");
+  if (!rankings && (mt.request?.algorithm === "graph" || query)) {
+    const note = h("p", { class: "muted", style: "grid-column:1 / 3; margin:10px 0 0" },
+      "Graph matching scores PubTator3 annotations in one pass rather than fusing metadata and full-text BM25 lists.");
+    if (!query) {
+      box.replaceChildren(note, h("div", { class: "empty", style: "grid-column:1 / 3" },
+        mt.via === "mcp" ? "The MCP server answers without the steps of the match." : "No graph query trace available."));
+      return;
+    }
+    const section = (label, map) => {
+      const entries = Object.entries(map || {});
+      return h("div", {},
+        h("h3", {}, `${label} (${entries.length})`),
+        ...(entries.length
+          ? entries.map(([key, weight]) => h("div", { class: "rank-item" }, h("span", { class: "mono" }, key), h("span", { class: "n" }, Number(weight).toFixed(2))))
+          : [h("div", { class: "empty" }, "None")]));
+    };
+    box.replaceChildren(
+      note,
+      section(`Diagnoses (cutoff ${query.cutoff}${query.conceptOnly ? ", timeline only" : ""})`, query.diagnoses),
+      section("Treatments", query.treatments),
+      section("Details", query.details),
+      section("Patient relations", query.relations),
+    );
+    return;
+  }
   const intro = h("p", { class: "muted", style: "grid-column:1 / 3; margin:10px 0 0" }, "Before rank fusion: the best candidates of each index in its own order, and where each one ended. Rank fusion merges the two lists into the results.");
   if (!rankings) {
     const why = mt.via === "mcp" ? "The MCP server answers without the steps of the match."
@@ -544,7 +606,7 @@ function mtRenderClient() {
     return;
   }
   const answer = result.answer;
-  const focus = (mt.request?.journey?.events || []).find((event) => event?.id === answer.focus_event_id);
+  const focus = mtEvents(mt.request).find((event) => event?.id === answer.focus_event_id);
   const state = answer.degraded ? h("div", { class: "notice" }, `The search is not available right now, so this is not “nothing relevant”.\n${answer.degraded_reason || ""}`)
     : answer.results.length ? null : h("div", { class: "notice quiet" }, "Nothing relevant for this event.");
   box.replaceChildren(...[
@@ -568,6 +630,7 @@ function mtClientCard(result) {
           result.score == null ? null : h("span", { class: "meter" }, h("i", { style: `width:${100 * result.score}%` })))),
       h("h4", {}, h("a", { href: result.url, target: "_blank", rel: "noopener noreferrer" }, result.title)),
       authors.length ? h("div", { class: "byline" }, authors.length > 3 ? `${authors.slice(0, 3).join(", ")} and ${authors.length - 3} more` : authors.join(", ")) : null,
+      result.explanation ? h("p", { class: "muted", style: "margin:4px 0 0;font-size:13px" }, result.explanation) : null,
       h("p", { class: `summary${result.summary ? "" : " none"}` }, result.summary || "No summary"),
       h("div", { class: "src-foot" },
         h("button", { type: "button", title: "get_source: the files of this source at its origin", onclick: (event) => mtClientFiles(result.source_id, files, event.currentTarget) }, "Files"),

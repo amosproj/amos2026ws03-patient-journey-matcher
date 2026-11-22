@@ -95,7 +95,7 @@ function showScreen(screen) {
   if (screen === "db") { dbSwitchTab(db.tab, false); dbRefresh(); }
   else if (screen === "index") { ixSwitchTab(ix.tab); ixRefresh(); txRefresh(); }
   else if (screen === "keyword") { kwSwitchTab(kw.tab); ixRefresh(); txRefresh(); }
-  else if (screen === "graph") grShow();
+  else if (screen === "graph") { grShow(); ixRefresh(); }
   else if (screen === "ai") history.replaceState(null, "", "#index-ai");
   else if (screen === "match") mtShow();
   else if (screen === "info") infoShow();
