@@ -1582,20 +1582,27 @@ def mcp_running() -> bool:
         return False
 
 
-def match_meta() -> dict[str, Any]:
+def stored_patients(filename: str) -> list[str]:
     def number(path: Path) -> tuple[int, str]:
         digits = re.search(r"\d+", path.parent.name)
         return int(digits.group()) if digits else 0, path.parent.name
 
-    stored = sorted(JOURNEYS_DIR.glob("*/timeline.json"), key=number)
+    paths = sorted(JOURNEYS_DIR.glob(f"*/{filename}"), key=number)
+    return [path.parent.name for path in paths]
+
+
+def match_meta() -> dict[str, Any]:
     return {
-        "journeys": ["demo", *(path.parent.name for path in stored)],
+        "journeys": ["demo", *stored_patients("timeline.json")],
+        "graphs": stored_patients("graph.json"),
         "missing": matcher_missing(),
         "mcp": {"url": f"http://127.0.0.1:{mcp_port()}/mcp", "running": mcp_running()},
     }
 
 
-def load_journey(journey_id: str) -> Any:
+def load_journey(journey_id: str, *, graph: bool = False) -> Any:
+    if graph:
+        return json.loads(graph_file("patient", journey_id).read_text(encoding="utf-8"))
     if journey_id == "demo":
         return DEMO_JOURNEY
     path = JOURNEYS_DIR / journey_id / "timeline.json"
@@ -1642,14 +1649,8 @@ GRAPH_ENVIRONMENT = ("PATH", "HOME", "LANG", "SYSTEMROOT")
 
 def graph_meta() -> dict[str, Any]:
     """The graphs the screen can show: patient graphs of `make graph` and PubTator3 fixtures."""
-
-    def number(path: Path) -> tuple[int, str]:
-        digits = re.search(r"\d+", path.parent.name)
-        return int(digits.group()) if digits else 0, path.parent.name
-
-    patients = sorted(JOURNEYS_DIR.glob("*/graph.json"), key=number)
     return {
-        "patients": [path.parent.name for path in patients],
+        "patients": stored_patients("graph.json"),
         "papers": sorted(path.stem for path in PUBTATOR_FIXTURES.glob("*.json")),
         "missing": matcher_missing(),
     }
@@ -2445,7 +2446,8 @@ class Handler(BaseHTTPRequestHandler):
         elif path.startswith("/api/topics/"):
             self.send_result(lambda: topic_detail(path.removeprefix("/api/topics/")))
         elif path == "/api/match/journey":
-            self.send_result(lambda: load_journey(first(parse_qs(url.query), "id")))
+            params = parse_qs(url.query)
+            self.send_result(lambda: load_journey(first(params, "id"), graph=first(params, "kind") == "graph"))
         elif path.startswith("/api/runs/"):
             run_id, _, suffix = path.removeprefix("/api/runs/").partition("/")
             data = load_run(run_id)

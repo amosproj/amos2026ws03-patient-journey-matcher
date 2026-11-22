@@ -5,7 +5,7 @@
 const MT_DEFAULTS = { algorithm: "keyword", limit: 10 };
 const mt = {
   meta: null, args: null, dates: [], asOf: null, request: null, via: null, result: null,
-  tuning: {}, settings: "", tab: "results", cache: new Map(), sources: new Map(), ticket: 0, timer: 0,
+  tuning: {}, settings: "", tab: "results", cache: new Map(), sources: new Map(), ticket: 0, loadTicket: 0, timer: 0,
 };
 
 // The data of a step of the match shown, e.g. "terms"; undefined through the MCP server.
@@ -19,7 +19,7 @@ async function mtShow() {
     mt.meta = await api("/api/match/meta");
     if (first) {
       $("#mt-journey").replaceChildren(
-        ...mt.meta.journeys.map((id) => h("option", { value: id }, id === "demo" ? "demo-1, the example of build.md" : id)),
+        ...[...new Set([...mt.meta.journeys, ...mt.meta.graphs])].map((id) => h("option", { value: id }, id === "demo" ? "demo-1 (timeline example)" : id)),
         h("option", { value: "", disabled: true }, "Edited or opened"));
       await mtLoadJourney(mt.meta.journeys[0]);
     }
@@ -37,16 +37,31 @@ function mtRenderSide() {
   if (!viaMcp && mt.meta?.missing) $("#mt-error").textContent = mt.meta.missing;
 }
 
-async function mtLoadJourney(id) {
-  const journey = await api(`/api/match/journey?${queryString({ id })}`);
-  $("#mt-journey").value = id;
-  mtSetJourney(journey);
+async function mtLoadJourney(id, asOf) {
+  const picker = $("#mt-journey");
+  picker.value = id;
+  picker.dataset.loaded = "";
+  clearTimeout(mt.timer);
+  const ticket = ++mt.loadTicket;
+  const graph = mt.meta.graphs.includes(id) && (mtAlgorithm() === "graph" || !mt.meta.journeys.includes(id));
+  try {
+    const patient = await api(`/api/match/journey?${queryString({ id, kind: graph ? "graph" : "journey" })}`);
+    if (ticket !== mt.loadTicket || picker.value !== id) return;
+    picker.dataset.loaded = id;
+    mtSetJourney(asOf ? { ...patient, as_of: asOf } : patient);
+  } catch (error) {
+    if (ticket === mt.loadTicket && picker.value === id) {
+      picker.value = "";
+      $("#mt-error").textContent = error.message;
+    }
+  }
 }
 
 // Puts a journey into the arguments and keeps their other fields.
 function mtSetJourney(journey) {
   const { journey: _, graph: __, ...others } = mt.args || MT_DEFAULTS; // a request has a journey or a graph
-  $("#mt-json").value = JSON.stringify({ journey, ...others }, null, 2);
+  const input = Array.isArray(journey?.nodes) && Array.isArray(journey?.edges) ? { graph: journey } : { journey };
+  $("#mt-json").value = JSON.stringify({ ...input, ...others }, null, 2);
   if (mtParse()) mtRun(true);
 }
 
@@ -80,7 +95,7 @@ function mtParse() {
 
 function mtShowAsOf() {
   $("#mt-asof").value = Math.max(0, mt.dates.indexOf(mt.asOf));
-  const asOf = mt.args?.journey?.as_of;
+  const asOf = mt.args?.journey?.as_of ?? mt.args?.graph?.as_of;
   $("#mt-asof-date").textContent = typeof asOf === "string" ? asOf : mt.asOf || "–";
   const ahead = (mt.args?.journey?.events || []).filter((event) => mt.asOf && event?.date > mt.asOf).length;
   const where = mt.asOf ? `date ${mt.dates.indexOf(mt.asOf) + 1} of ${mt.dates.length}` : "before the first event";
@@ -182,14 +197,8 @@ function mtRender() {
   mtRenderPending();
 }
 
-// Graph and AI are planned: match_journey answers NOT_AVAILABLE for them until their matchers
-// are added, and then their results show here like the keyword matcher's.
+// Background for approaches that match_journey cannot run yet.
 const MT_PLANNED = {
-  graph: {
-    name: "Graph approach",
-    text: "Compares relations instead of words: the journey and every source become links between medical concepts, such as olaparib –treats→ prostate cancer, with shared MeSH IDs. A source ranks high when it links the patient's concepts the same way.",
-    doc: "research/graph-based-matching.md",
-  },
   ai_summary: {
     name: "AI approach",
     text: "A trained model judges which sources fit the patient's current situation: by semantic similarity, a direct relevance assessment or summaries made beforehand.",
@@ -215,10 +224,20 @@ function mtRenderPending() {
 }
 
 for (const button of document.querySelectorAll("#mt-algorithm button")) button.addEventListener("click", () => {
-  if (!mt.args || mtAlgorithm() === button.dataset.value) return;
-  mt.args = { ...mt.args, algorithm: button.dataset.value };
+  const picker = $("#mt-journey");
+  if (!mt.args || (!picker.value && !mtParse()) || mtAlgorithm() === button.dataset.value) return;
+  clearTimeout(mt.timer);
+  const previous = mtAlgorithm(), algorithm = button.dataset.value;
+  mt.args = { ...mt.args, algorithm };
   $("#mt-json").value = JSON.stringify(mt.args, null, 2);
   mtRenderAlgorithm();
+  const selected = picker.value;
+  if (selected && (previous === "graph" || algorithm === "graph")) {
+    const id = selected === "demo" && algorithm === "graph" ? mt.meta.graphs[0] ?? selected : selected;
+    const asOf = id === picker.dataset.loaded ? (mt.args.graph ?? mt.args.journey)?.as_of : undefined;
+    mtLoadJourney(id, asOf);
+    return;
+  }
   mtRun(false);
 });
 
@@ -362,7 +381,7 @@ function mtRenderNotice() {
   else if (result.answer.degraded) {
     const missing = /does not exist/.test(failure?.message || "");
     text = `Degraded: ${result.answer.degraded_reason}${failure ? `\n${failure.name || "Error"}${failure.code ? ` ${failure.code}` : ""}: ${failure.message}` : ""}${missing ? "\nThe index is missing: start the indexer on the Index overview, or run make index." : ""}`;
-  } else if (!result.answer.results.length) [text, info] = ["No stored document shares a term with this journey.", true];
+  } else if (!result.answer.results.length) [text, info] = [result.answer.algorithm === "graph" ? "No indexed paper matched a mapped patient diagnosis." : "No stored document shares a term with this journey.", true];
   box.hidden = !text;
   box.className = `notice${info ? " quiet" : ""}`;
   box.textContent = text || "";
@@ -609,6 +628,7 @@ function mtDocumentParts(id) {
     ["Metadata", `${candidate.metadataRank ? `rank ${candidate.metadataRank}, BM25 ${mtBm25(candidate.metadataBm25)}` : `not among the best ${last}`}${candidate.metadataTerms.length ? ` · ${candidate.metadataTerms.join(", ")}` : " · no term"}`],
     ["Full text", !candidate.hasFullText ? "none indexed: the metadata rank stands in for it" : `${candidate.fullTextRank ? `rank ${candidate.fullTextRank}, BM25 ${mtBm25(candidate.fullTextBm25)}` : `not among the best ${last}`}${candidate.fullTextTerms.length ? ` · ${candidate.fullTextTerms.join(", ")}` : " · no term"}`]);
   else if (result.matched_terms?.length) rows.push(["Terms", result.matched_terms.join(", ")]);
+  if (result?.explanation) rows.push(["Why it matches", result.explanation]);
   return [h("div", { class: "label" }, "In this match"), h("dl", {}, ...rows.flatMap(([label, value]) => [h("dt", {}, label), h("dd", {}, value)]))];
 }
 
@@ -622,7 +642,7 @@ function mtSwitchTab(tab) {
 
 for (const button of document.querySelectorAll("#mt-tabs button")) button.addEventListener("click", () => mtSwitchTab(button.dataset.mttab));
 $("#mt-run").addEventListener("click", () => mtRun(true));
-$("#mt-journey").addEventListener("change", (event) => mtLoadJourney(event.target.value).catch((error) => { $("#mt-error").textContent = error.message; }));
+$("#mt-journey").addEventListener("change", (event) => mtLoadJourney(event.target.value));
 $("#mt-open").addEventListener("click", () => $("#mt-file").click());
 $("#mt-file").addEventListener("change", async (event) => {
   const [file] = event.target.files;

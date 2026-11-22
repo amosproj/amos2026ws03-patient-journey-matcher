@@ -2,12 +2,7 @@
 // ── Index: the overview of the shared jobs, then one screen per approach ───────
 // The indexer job brings the index of every approach up to date, or of one. Its lines start with
 // the approach that writes them (`keyword: …`), so the screen of an approach shows only its own.
-// Graph and AI have no indexer yet: Index › Graph shows the normalization, Index › AI a card.
 const ix = { overview: null, error: null, tab: "log", loading: false, run: null, stream: null };
-const IX_PLANNED = [
-  ["graph", "Graph index", "Only the normalization is built (#80); the indexer and matcher follow (#10)."],
-  ["ai", "AI index", "Not built yet (#9)."],
-];
 // Lines of the other approaches and of the steps after them, left out of the keyword log.
 const KW_LOG_HIDES = new Set(["graph", "ai_summary", "transcripts"]);
 
@@ -74,7 +69,8 @@ function renderIxStats() {
     overview ? ovList(COVERAGE_STATES.map(([key, label, cls, tip]) => ovShare(label, total[key], total.documents, { color: COVERAGE_BAR[cls], tip, onclick: () => showScreen("keyword") }))) : null,
     overview ? h("small", { class: "ov-note" }, `of ${fmtCount(total.documents)} documents, not expired`) : null);
   $("#ix-stats").replaceChildren(keyword,
-    ...IX_PLANNED.map(([screen, label, note]) => ovSection(title(label, screen), h("b", { class: "ov-total muted" }, "planned"), h("small", { class: "ov-note" }, note))));
+    ovSection(title("Graph index", "graph"), h("small", { class: "ov-note" }, "Index all fetches PubTator3 annotations for new or changed PubMed papers.")),
+    ovSection(title("AI index", "ai"), h("b", { class: "ov-total muted" }, "planned")));
 }
 
 function renderIxDown() {
