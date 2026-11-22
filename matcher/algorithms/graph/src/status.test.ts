@@ -103,6 +103,7 @@ test("without a cue, or without the name in the sentence, there is no status", (
 test("node attributes: only known values", () => {
   expect(statusFromAttribute("active")).toBe("asserted");
   expect(statusFromAttribute("Active")).toBe("asserted");
+  expect(statusFromAttribute("confirmed")).toBe("asserted");
   expect(statusFromAttribute("resolved")).toBeUndefined();
   expect(statusFromAttribute(null)).toBeUndefined();
 });
@@ -123,6 +124,14 @@ test.each([
   ["Knochenmetastasen nicht bestätigt.", undefined],
   ["Bone metastases were confirmed.", "asserted"],
   ["Bone metastases were ruled out.", "negated"],
+  // A cue after a negation that no cue lists says nothing, not the opposite.
+  ["Bone metastases could not be ruled out.", undefined],
+  ["Bone metastases can't be ruled out.", undefined],
+  ["Bone metastases cannot be completely excluded.", undefined],
+  ["Bone metastases have not been confirmed.", undefined],
+  // A confirmed suspicion is confirmed, though "suspected" stands nearer.
+  ["The biopsy confirmed the suspected bone metastases.", "asserted"],
+  ["MRI confirmed the suspicion of bone metastases.", "asserted"],
 ])("statusFromText(%j) = %j", (text, expected) => {
   expect(
     statusFromText(text, ["bone metastases", "Knochenmetastasen"])?.status,

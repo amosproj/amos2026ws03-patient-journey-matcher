@@ -36,6 +36,7 @@ const CUES: readonly Cue[] = cues.cues.map((cue) => ({
 const CLAUSE_BREAKS: ReadonlySet<string> = new Set(
   cues.clauseBreaks.map(normalizeName),
 );
+const NEGATORS: ReadonlySet<string> = new Set(cues.negators.map(normalizeName));
 const ATTRIBUTES: ReadonlyMap<string, Status> = new Map(
   Object.entries(cues.attributes).map(([value, status]) => [
     normalizeName(value),
@@ -117,11 +118,19 @@ export function statusFromText(
             other.end - other.start > one.end - one.start,
         ),
     );
+    // A pseudo cue says nothing, and neither does a cue after a negation ("could not be ruled
+    // out", "has not been confirmed"); both still block the shorter cues inside them.
+    const effective = kept.filter(
+      ({ cue, start }) =>
+        cue.status !== "pseudo" &&
+        !clause
+          .slice(Math.max(0, start - cues.negatorWindow), start)
+          .some((word) => NEGATORS.has(word)),
+    );
     for (const name of phrases.flatMap((phrase) =>
       occurrences(clause, phrase),
     )) {
-      for (const match of kept) {
-        if (match.cue.status === "pseudo") continue;
+      for (const match of effective) {
         if (match.start < name.end && name.start < match.end) continue;
         const distance =
           match.cue.position === "pre"

@@ -41,6 +41,19 @@ test.each([
     "Diagnosis",
     { kind: "relation", predicate: "indicates", flip: false, confirms: true },
   ],
+  // The schema of tools/patient-graph has it from the diagnosis too (15 of 26 edges in patientdata/).
+  [
+    "CONFIRMED_BY",
+    "Diagnosis",
+    "PathologyResult",
+    {
+      kind: "relation",
+      predicate: "indicates",
+      flip: true,
+      about: "source",
+      confirms: true,
+    },
+  ],
   [
     "SYMPTOM_OF",
     "Symptom",
@@ -52,6 +65,13 @@ test.each([
     "Diagnosis",
     "Medication",
     { kind: "relation", predicate: "treats", flip: true, about: "source" },
+  ],
+  // Not in that schema, but the graph's LLM writes it from the drug too (Patient-10, Patient-12).
+  [
+    "TREATED_BY",
+    "Medication",
+    "Diagnosis",
+    { kind: "relation", predicate: "treats", flip: false },
   ],
   [
     "MANAGED_AT",

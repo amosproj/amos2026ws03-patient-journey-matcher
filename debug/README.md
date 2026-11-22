@@ -20,6 +20,6 @@ make debug PORT=9000   # on another port
 
 API keys and `DATABASE_URL` come from `crawler/.env`. Finished crawler runs are kept in `debug/runs/` (gitignored).
 
-The page in `web/` needs no build step. `index.html` holds the markup of every screen; each screen has its own script, named after it (`runs.js`, `index-keyword.js` …), and a stylesheet if it needs one. `base.js` and `base.css` hold what the screens share; `app.js` switches screens and starts the page, so it loads last. A new screen is a block in `index.html` and a new script.
+A new screen is a block in `web/index.html` and a script of its own there; the page needs no build step.
 
 The Index and Matcher screens run the matcher's own programs, so they need `make build`. The Matcher screen takes the arguments of `match_journey` as one JSON object, the same as "Edit as JSON" in the [MCP Inspector](../Documentation/build-deploy/build.md#run-the-matcher-locally); its journey list puts one of `patientdata/*/timeline.json`, the example of the [MCP interface](../Documentation/user/mcp-interface.md#try-it) or a file into them. It passes them on to the matcher and stores none. With "Through the MCP server" it sends them to the server of `make start` instead (on `MCP_PORT`, if set).

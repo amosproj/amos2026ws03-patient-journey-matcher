@@ -1,5 +1,5 @@
 {
-  "_comment": "Tier 2 of the entity mapping (Documentation/design/graph-normalization.md#entities): names of the generated patients, German and English, to the IDs PubTator3 uses. IDs checked 20.11.2026 with the PubTator3 entity lookup and the NLM MeSH lookup. Names are matched whole, after normalizeName; add a row for a missing name instead of matching looser.",
+  "_comment": "Tier 2 of the entity mapping (Documentation/design/graph-normalization.md#entities): names of the generated patients, German and English, to the IDs PubTator3 uses. IDs checked 20. and 22.11.2026 with the PubTator3 entity lookup and the NLM MeSH lookup. Names are matched whole, after normalizeName; add a row for a missing name instead of matching looser.",
   "concepts": [
     {
       "id": "mesh:D011471",
@@ -15,7 +15,10 @@
         "prostatakarzinom",
         "prostata karzinom",
         "adenokarzinom der prostata",
-        "pca"
+        "pca",
+        "hormone sensitive prostate cancer",
+        "metastatic hormone sensitive prostate cancer",
+        "mhspc"
       ]
     },
     {
@@ -89,6 +92,12 @@
       "names": ["pain", "bone pain", "schmerzen", "knochenschmerzen"]
     },
     {
+      "id": "mesh:D005221",
+      "type": "disease",
+      "name": "Fatigue",
+      "names": ["fatigue", "mudigkeit"]
+    },
+    {
       "id": "mesh:D016729",
       "type": "chemical",
       "name": "Leuprolide",
@@ -125,6 +134,12 @@
       "type": "chemical",
       "name": "enzalutamide",
       "names": ["enzalutamide", "enzalutamid", "xtandi"]
+    },
+    {
+      "id": "mesh:C053541",
+      "type": "chemical",
+      "name": "bicalutamide",
+      "names": ["bicalutamide", "bicalutamid", "casodex"]
     },
     {
       "id": "mesh:C531550",

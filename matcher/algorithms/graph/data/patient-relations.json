@@ -1,5 +1,5 @@
 {
-  "_comment": "Patient graph edges to the shared representation (Documentation/design/graph-normalization.md#relations). The first row that matches the edge type and the labels of both nodes wins; a missing `subject` or `object` matches any label. `fact` makes a patient fact, `predicate` a relation, `drop` leaves the edge out. `flip` swaps the two ends. The status is read about the target node, or the source with `about: \"source\"` (TREATED_BY: the disease). `confirms` on an edge whose two ends became one entity (a pathology result of the diagnosis) makes that entity's `has_condition` facts from then on `asserted`, if nothing else set them. An edge from the patient without a fact row is left out. Edges to a node with a dropped label are left out before this table.",
+  "_comment": "Patient graph edges to the shared representation (Documentation/design/graph-normalization.md#relations). The first row that matches the edge type and the labels of both nodes wins; a missing `subject` or `object` matches any label. `fact` makes a patient fact, `predicate` a relation, `drop` leaves the edge out. `flip` swaps the two ends. Some types come both ways round, so each direction has a row: the schema of tools/patient-graph has `CONFIRMED_BY` both ways, and the graph's LLM sometimes writes `TREATED_BY` from the drug. The status is read about the target node, or the source with `about: \"source\"` (TREATED_BY: the disease). `confirms` on an edge whose two ends became one entity (a pathology result of the diagnosis) makes that entity's `has_condition` facts from then on `asserted`, if nothing else set them. An edge from the patient without a fact row is left out. Edges to a node with a dropped label are left out before this table.",
   "droppedLabels": ["Provider", "Appointment", "Referral", "VitalSigns"],
   "rows": [
     {
@@ -116,6 +116,11 @@
     },
     {
       "type": "TREATED_BY",
+      "subject": "Medication",
+      "predicate": "treats"
+    },
+    {
+      "type": "TREATED_BY",
       "predicate": "treats",
       "flip": true,
       "about": "source"
@@ -123,6 +128,14 @@
     {
       "type": "INDICATES",
       "predicate": "indicates"
+    },
+    {
+      "type": "CONFIRMED_BY",
+      "subject": "Diagnosis",
+      "predicate": "indicates",
+      "flip": true,
+      "about": "source",
+      "confirms": true
     },
     {
       "type": "CONFIRMED_BY",

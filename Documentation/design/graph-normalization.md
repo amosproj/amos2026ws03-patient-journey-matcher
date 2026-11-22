@@ -40,7 +40,7 @@ Both inputs become entities and relations between them; the patient graph also g
 | `related` | as stored | `RELATES_TO` between findings | none |
 | `has_condition`, `receives`, `has_finding` | patient → entity | edges from the `Patient` node, such as `HAS_DIAGNOSIS`, `UNDERWENT`, `HAS_PATHOLOGY` | none |
 
-Unknown relation types become `related`; they are not rejected. Symmetric predicates store their two ends in a fixed order, so `A compared_with B` and `B compared_with A` are one triple.
+An unknown relation type between two entities becomes `related`; it is not rejected. An unknown edge type from the patient is left out. Symmetric predicates store their two ends in a fixed order, so `A compared_with B` and `B compared_with A` are one triple.
 
 **Status** of a patient statement: `asserted`, `suspected`, `negated`, `planned` or `unknown` ([status](#status)). PubTator3 relations are `asserted` and keep their score.
 
@@ -83,9 +83,9 @@ Each input has one table that maps a relation by its type and the types of both 
 
 Status belongs to one statement at its time, not to the concept: in Patient-5, prostate cancer is suspected in November 2026 and confirmed in December. The matcher is to take the latest statement per concept up to `as_of`. For each patient edge, the first of these rules applies ([`status.ts`](../../matcher/algorithms/graph/src/status.ts), cue words in [`status-cues.json`](../../matcher/algorithms/graph/data/status-cues.json)):
 
-1. **A cue word near the entity in the fact sentence, in the same clause:** `suspected`, `Verdacht auf`, `cannot be ruled out` → `suspected`; `no evidence of`, `ruled out`, `ausgeschlossen` → `negated`; `confirmed`, `diagnosed with` → `asserted`. Of two overlapping cues the longer wins. German cues are kept because German terms leak into Graphiti's English facts.
+1. **A cue word near the entity in the fact sentence, in the same clause:** `suspected`, `Verdacht auf`, `cannot be ruled out` → `suspected`; `no evidence of`, `ruled out`, `ausgeschlossen` → `negated`; `confirmed`, `diagnosed with` → `asserted`. Of two overlapping cues the longer wins. A cue right after a negation says nothing: `could not be ruled out`, `has not been confirmed`. German cues are kept because German terms leak into Graphiti's English facts.
 2. **`planned`** for a treatment plan.
-3. **The node attribute `status: active`** → `asserted`, but only from the node's `date_confirmed` on. Graphiti rewrites a node with every document, so the attribute describes the end of the record, not its first weeks.
+3. **The node attribute `status: active` or `confirmed`** → `asserted`, but only from the node's `date_confirmed` on. Graphiti rewrites a node with every document, so the attribute describes the end of the record, not its first weeks.
 4. **`unknown`.** Never `asserted` by default; the matcher is to treat `unknown` as weaker than `asserted`, not as a negative. One exception: a condition that is still `unknown` becomes `asserted` from the day a pathology result of the same concept confirms it (`CONFIRMED_BY`).
 
 ## Try it
@@ -105,10 +105,9 @@ An entity without an ID can never match a paper. Close the gap with a row in `co
 
 - **PubTator3's `treat` is a negative correlation:** the chemical lowers the disease. A `treats` triple says that a paper links the drug and the disease, not that the drug works. `causes` can be a side effect, such as olaparib causing anemia.
 - **PubTator3 has no negation, no evidence sentence and no date.** A relation holds for the whole title and abstract, with a confidence score only, so a central result and a background mention look the same.
-- **Gaps in PubTator3:** it does not annotate leuprorelin, leuprolide or goserelin, the drugs of several synthetic patients, so their facts never meet a paper triple. It often annotates "PSA" as the gene NPEPPS instead of KLK3, and it gives abiraterone two IDs that do not match each other.
-- **Procedures** such as prostatectomy, radiotherapy and biopsy have IDs on the patient side, but PubTator3 has no procedure type, so they match no paper triple.
+- **Gaps in PubTator3:** it does not annotate leuprorelin, leuprolide, goserelin or the drug class PARP inhibitor, all named by synthetic patients, so their facts never meet a paper triple. It often annotates "PSA" as the gene NPEPPS instead of KLK3, and it gives abiraterone two IDs that do not match each other.
 - **`TREATED_BY` is missing from some patient graphs**, Patient-5 among them. They give no `treats` triple, and matching starts from the patient facts, as the [research](../../research/graph-based-matching.md#2-questions-our-matching-proposal-must-answer) plans with typed placeholders.
-- **Curated names** cover the concepts of the 20 synthetic patients. A name that the graph's LLM writes differently has no ID until it is added. Broader and narrower concepts (castration-resistant prostate cancer under prostate cancer) are not expanded.
+- **Curated names** cover the main concepts of the 20 synthetic patients. A name that the graph's LLM writes differently has no ID until it is added. Broader and narrower concepts (castration-resistant prostate cancer under prostate cancer) are not expanded.
 - **Status comes from rules** over sentences that an LLM has already rewritten: a hedge it dropped is lost. There is no status for past conditions ("history of", "Z. n.") yet.
 - **Worked out on Patient-5 and three papers.** Types absent from them, such as `Bind`, are mapped from their documented meaning, not from data.
 - **Out of scope:** PubMed MeSH headings and the concepts of Zenodo, arXiv, podcasts and YouTube. Graph matching covers only PubMed papers with PubTator3 annotations; the keyword approach finds the rest, and the two rankings can be merged with `reciprocalRankFusion`.

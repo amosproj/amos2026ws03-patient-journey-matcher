@@ -1,7 +1,9 @@
 {
-  "_comment": "Status cues (Documentation/design/graph-normalization.md#status). A `pre` cue stands at most `window` words before the entity name, a `post` cue at most `postWindow` words after it (`X was ruled out`), both in the same clause; a cue with its own `window` uses that instead. Bare negations (`no`, `ohne`) reach only the next word or two, so `no prior treatment has prostate cancer` negates nothing. Where two cues overlap, the longer wins: `cannot be ruled out` beats `ruled out`, `not confirmed` beats `confirmed`. `pseudo` cues only block shorter ones (`no change` is not a negation, `not confirmed` says neither yes nor no). Cues and clause breaks are matched after normalizeName.",
+  "_comment": "Status cues (Documentation/design/graph-normalization.md#status). A `pre` cue stands at most `window` words before the entity name, a `post` cue at most `postWindow` words after it (`X was ruled out`), both in the same clause; a cue with its own `window` uses that instead. Bare negations (`no`, `ohne`) reach only the next word or two, so `no prior treatment has prostate cancer` negates nothing. Where two cues overlap, the longer wins: `cannot be ruled out` beats `ruled out`, `not confirmed` beats `confirmed`. `pseudo` cues only block shorter ones (`no change` is not a negation, `not confirmed` says neither yes nor no). So does a cue with one of `negators` among the `negatorWindow` words before it: `could not be ruled out` and `has not been confirmed` give no status (`t` is what normalizeName leaves of `can't`). Cues and clause breaks are matched after normalizeName.",
   "window": 5,
   "postWindow": 3,
+  "negatorWindow": 3,
+  "negators": ["not", "nicht", "cannot", "never", "t"],
   "clauseBreaks": [
     "but",
     "however",
@@ -14,7 +16,8 @@
     "wobei"
   ],
   "attributes": {
-    "active": "asserted"
+    "active": "asserted",
+    "confirmed": "asserted"
   },
   "cues": [
     {
@@ -255,6 +258,16 @@
     },
     {
       "text": "diagnosed with",
+      "status": "asserted",
+      "position": "pre"
+    },
+    {
+      "text": "confirmed the suspected",
+      "status": "asserted",
+      "position": "pre"
+    },
+    {
+      "text": "confirmed the suspicion of",
       "status": "asserted",
       "position": "pre"
     },
