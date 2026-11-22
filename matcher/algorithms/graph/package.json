@@ -1,0 +1,13 @@
+{
+  "name": "@matcher/graph",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/index.ts",
+  "scripts": {
+    "normalize": "node scripts/normalize.ts"
+  },
+  "dependencies": {
+    "zod": "^4.6.7"
+  }
+}

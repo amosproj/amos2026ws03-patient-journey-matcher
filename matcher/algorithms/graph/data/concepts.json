@@ -1,0 +1,319 @@
+{
+  "_comment": "Tier 2 of the entity mapping (Documentation/design/graph-normalization.md#entities): names of the generated patients, German and English, to the IDs PubTator3 uses. IDs checked 20. and 22.11.2026 with the PubTator3 entity lookup and the NLM MeSH lookup. Names are matched whole, after normalizeName; add a row for a missing name instead of matching looser.",
+  "concepts": [
+    {
+      "id": "mesh:D011471",
+      "type": "disease",
+      "name": "Prostatic Neoplasms",
+      "names": [
+        "prostate cancer",
+        "prostatic cancer",
+        "prostatic neoplasms",
+        "prostate carcinoma",
+        "prostate adenocarcinoma",
+        "adenocarcinoma of the prostate",
+        "prostatakarzinom",
+        "prostata karzinom",
+        "adenokarzinom der prostata",
+        "pca",
+        "hormone sensitive prostate cancer",
+        "metastatic hormone sensitive prostate cancer",
+        "mhspc"
+      ]
+    },
+    {
+      "id": "mesh:D064129",
+      "type": "disease",
+      "name": "Prostatic Neoplasms, Castration-Resistant",
+      "names": [
+        "castration resistant prostate cancer",
+        "metastatic castration resistant prostate cancer",
+        "crpc",
+        "mcrpc",
+        "kastrationsresistentes prostatakarzinom",
+        "kastrationsresistenz"
+      ]
+    },
+    {
+      "id": "mesh:D009364",
+      "type": "disease",
+      "name": "Neoplasm Recurrence, Local",
+      "names": [
+        "local recurrence",
+        "lokalrezidiv",
+        "lokalrezidiv in der prostataloge"
+      ]
+    },
+    {
+      "id": "mesh:D009362",
+      "type": "disease",
+      "name": "Neoplasm Metastasis",
+      "names": [
+        "metastasis",
+        "metastases",
+        "distant metastases",
+        "metastasen",
+        "fernmetastasen"
+      ]
+    },
+    {
+      "id": "mesh:D001859",
+      "type": "disease",
+      "name": "Bone Neoplasms",
+      "names": [
+        "bone metastases",
+        "bone metastasis",
+        "knochenmetastasen",
+        "multiple knochenmetastasen"
+      ]
+    },
+    {
+      "id": "mesh:D008207",
+      "type": "disease",
+      "name": "Lymphatic Metastasis",
+      "names": [
+        "lymph node metastases",
+        "lymph node metastasis",
+        "lymph node involvement",
+        "lymphknotenmetastasen",
+        "lymphknotenbefall"
+      ]
+    },
+    {
+      "id": "mesh:D008113",
+      "type": "disease",
+      "name": "Liver Neoplasms",
+      "names": ["liver metastases", "lebermetastasen"]
+    },
+    {
+      "id": "mesh:D010146",
+      "type": "disease",
+      "name": "Pain",
+      "names": ["pain", "bone pain", "schmerzen", "knochenschmerzen"]
+    },
+    {
+      "id": "mesh:D005221",
+      "type": "disease",
+      "name": "Fatigue",
+      "names": ["fatigue", "mudigkeit"]
+    },
+    {
+      "id": "mesh:D016729",
+      "type": "chemical",
+      "name": "Leuprolide",
+      "names": [
+        "leuprorelin",
+        "leuprolide",
+        "leuprorelin acetate",
+        "leuprolide acetate",
+        "eligard",
+        "lupron",
+        "trenantone"
+      ]
+    },
+    {
+      "id": "mesh:D017273",
+      "type": "chemical",
+      "name": "Goserelin",
+      "names": ["goserelin", "zoladex"]
+    },
+    {
+      "id": "mesh:C089740",
+      "type": "chemical",
+      "name": "abiraterone",
+      "names": ["abiraterone", "abirateron", "zytiga"]
+    },
+    {
+      "id": "mesh:D000069501",
+      "type": "chemical",
+      "name": "Abiraterone Acetate",
+      "names": ["abiraterone acetate", "abirateronacetat"]
+    },
+    {
+      "id": "mesh:C540278",
+      "type": "chemical",
+      "name": "enzalutamide",
+      "names": ["enzalutamide", "enzalutamid", "xtandi"]
+    },
+    {
+      "id": "mesh:C053541",
+      "type": "chemical",
+      "name": "bicalutamide",
+      "names": ["bicalutamide", "bicalutamid", "casodex"]
+    },
+    {
+      "id": "mesh:C531550",
+      "type": "chemical",
+      "name": "olaparib",
+      "names": ["olaparib", "lynparza"]
+    },
+    {
+      "id": "mesh:D000077143",
+      "type": "chemical",
+      "name": "Docetaxel",
+      "names": ["docetaxel", "taxotere"]
+    },
+    {
+      "id": "mesh:C552428",
+      "type": "chemical",
+      "name": "cabazitaxel",
+      "names": ["cabazitaxel", "jevtana"]
+    },
+    {
+      "id": "mesh:C000615150",
+      "type": "chemical",
+      "name": "Radium-223",
+      "names": ["radium 223", "radium 223 dichloride", "xofigo"]
+    },
+    {
+      "id": "mesh:D011241",
+      "type": "chemical",
+      "name": "Prednisone",
+      "names": ["prednisone", "prednison"]
+    },
+    {
+      "id": "mesh:D013739",
+      "type": "chemical",
+      "name": "Testosterone",
+      "names": ["testosterone", "testosteron"]
+    },
+    {
+      "id": "mesh:D000726",
+      "type": "chemical",
+      "name": "Androgen Antagonists",
+      "names": [
+        "adt",
+        "androgen deprivation therapy",
+        "androgen deprivation",
+        "androgenentzug",
+        "androgenentzugstherapie",
+        "hormone therapy",
+        "hormontherapie"
+      ]
+    },
+    {
+      "id": "ncbigene:354",
+      "type": "gene",
+      "name": "KLK3",
+      "names": [
+        "psa",
+        "prostate specific antigen",
+        "prostataspezifisches antigen",
+        "total psa",
+        "gesamt psa",
+        "psa value",
+        "psa level",
+        "elevated psa level",
+        "psa increase",
+        "psa anstieg"
+      ]
+    },
+    {
+      "id": "ncbigene:675",
+      "type": "gene",
+      "name": "BRCA2",
+      "names": ["brca2", "brca2 mutation"]
+    },
+    {
+      "id": "ncbigene:672",
+      "type": "gene",
+      "name": "BRCA1",
+      "names": ["brca1", "brca1 mutation"]
+    },
+    {
+      "id": "mesh:D011468",
+      "type": "procedure",
+      "name": "Prostatectomy",
+      "names": [
+        "prostatectomy",
+        "radical prostatectomy",
+        "robot assisted radical prostatectomy",
+        "rpe",
+        "rarp",
+        "ralp",
+        "radikale prostatektomie",
+        "roboterassistierte radikale prostatektomie"
+      ]
+    },
+    {
+      "id": "mesh:D011878",
+      "type": "procedure",
+      "name": "Radiotherapy",
+      "names": [
+        "radiotherapy",
+        "radiation therapy",
+        "salvage radiotherapy",
+        "adjuvant radiotherapy",
+        "rt",
+        "salvage rt",
+        "strahlentherapie",
+        "bestrahlung",
+        "salvage bestrahlung"
+      ]
+    },
+    {
+      "id": "mesh:D050397",
+      "type": "procedure",
+      "name": "Radiotherapy, Intensity-Modulated",
+      "names": ["imrt", "intensity modulated radiotherapy"]
+    },
+    {
+      "id": "mesh:D001706",
+      "type": "procedure",
+      "name": "Biopsy",
+      "names": [
+        "biopsy",
+        "prostate biopsy",
+        "stanzbiopsie",
+        "stanzbiopsie der prostata",
+        "prostatastanzbiopsie",
+        "prostatastanzbiopsien",
+        "transrektale stanzbiopsie der prostata"
+      ]
+    },
+    {
+      "id": "mesh:D057832",
+      "type": "procedure",
+      "name": "Watchful Waiting",
+      "names": ["active surveillance", "watchful waiting", "aktive uberwachung"]
+    },
+    {
+      "id": "mesh:D016879",
+      "type": "procedure",
+      "name": "Salvage Therapy",
+      "names": ["salvage therapy", "salvage therapie"]
+    },
+    {
+      "id": "mesh:D000072078",
+      "type": "procedure",
+      "name": "Positron Emission Tomography Computed Tomography",
+      "names": ["pet ct", "psma pet ct", "psma pet"]
+    },
+    {
+      "id": "mesh:D008279",
+      "type": "procedure",
+      "name": "Magnetic Resonance Imaging",
+      "names": [
+        "mri",
+        "mrt",
+        "mpmri",
+        "multiparametric mri",
+        "mpmri of the prostate",
+        "mrt der prostata",
+        "multiparametrische mrt der prostata"
+      ]
+    },
+    {
+      "id": "mesh:D062885",
+      "type": "device",
+      "name": "Urinary Catheters",
+      "names": [
+        "urinary catheter",
+        "transurethral catheter",
+        "transurethral indwelling catheter",
+        "dauerkatheter",
+        "blasenkatheter"
+      ]
+    }
+  ]
+}

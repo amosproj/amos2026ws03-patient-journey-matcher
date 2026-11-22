@@ -31,7 +31,7 @@ start: build
 	cd matcher && pnpm --filter @matcher/mcp-server start
 
 debug:
-	cd crawler && uv run --locked python ../debug/crawler/server.py --port $(PORT)
+	cd crawler && uv run --locked python ../debug/server.py --port $(PORT)
 
 # Writes the runtime dependencies of all projects and of the database image with their licences
 # to sbom.spdx.json (SPDX 3, for SCA Tool) and sbom.cdx.json (CycloneDX 1.7); needs Docker. Run it

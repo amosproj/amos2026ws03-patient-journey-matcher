@@ -1,0 +1,71 @@
+/* Index › Graph (#80): the normalized patient graph or PubTator3 annotations of a paper. */
+.grtab { position: absolute; inset: 0; display: none; }
+.grtab.active { display: flex; flex-direction: column; }
+#grtab-graph { overflow: hidden; }
+#gr-svg { flex: 1; min-height: 0; width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; user-select: none; }
+#gr-svg.panning, #gr-svg.panning * { cursor: grabbing; }
+.gr-dot { fill: var(--line-strong); }
+.gr-grid { opacity: .55; }
+.gr-scene.enter { animation: gr-in .32s ease-out; transform-box: fill-box; transform-origin: center; }
+@keyframes gr-in { from { opacity: 0; transform: scale(.97); } }
+.gr-empty { font-size: 13px; fill: var(--muted); text-anchor: middle; }
+
+/* Nodes: the type's colour; hollow and dashed without a shared ID; the hub in ink. */
+.gr-node { cursor: pointer; transition: opacity .15s; }
+.gr-node .gr-halo { fill: color-mix(in srgb, var(--node) 15%, transparent); transition: fill .15s; }
+.gr-node .gr-core { fill: var(--node); stroke: var(--panel); stroke-width: 2.5; }
+.gr-node.unresolved .gr-core { fill: var(--panel); stroke: var(--node); stroke-width: 2; stroke-dasharray: 3.5 2.5; }
+.gr-node.unresolved .gr-halo { fill: color-mix(in srgb, var(--node) 7%, transparent); }
+.gr-node:hover .gr-halo, .gr-node.on .gr-halo { fill: color-mix(in srgb, var(--node) 32%, transparent); }
+.gr-node.hub .gr-core { fill: var(--text); }
+.gr-node.hub .gr-halo { fill: color-mix(in srgb, var(--text) 10%, transparent); }
+.gr-node .gr-glyph { fill: var(--panel); pointer-events: none; }
+.gr-node .gr-ring { fill: none; stroke: var(--accent); stroke-width: 2; }
+.gr-label { pointer-events: none; transition: opacity .15s; }
+.gr-label text { font-size: 12px; font-weight: 600; fill: var(--text); paint-order: stroke; stroke: var(--panel); stroke-width: 4px; stroke-linejoin: round; }
+.gr-label .gr-sub { font: 500 10px ui-monospace, SFMono-Regular, Menlo, monospace; fill: var(--muted); }
+.gr-label .gr-sub.none { font-style: italic; }
+.gr-leader { stroke: var(--muted); stroke-width: .8; opacity: .55; }
+
+/* Edges: the colour and dashes of their status; spokes quieter than relations. */
+.s-asserted { --status: var(--text); }
+.s-suspected { --status: var(--pending); }
+.s-negated { --status: var(--critical); }
+.s-planned { --status: var(--meta); }
+.s-unknown { --status: var(--dropped); }
+.gr-edge { fill: none; stroke: var(--status); stroke-width: 1.6; stroke-linecap: round; }
+.gr-edge.s-suspected { stroke-dasharray: 5 4; }
+.gr-edge.s-planned { stroke-dasharray: 1.5 3.5; }
+.gr-link { cursor: pointer; transition: opacity .15s; }
+.gr-link .gr-edge { opacity: .78; transition: stroke-width .12s, opacity .12s; }
+.gr-spoke .gr-edge { stroke-width: 1.2; opacity: .5; }
+.gr-link:hover .gr-edge, .gr-link.on .gr-edge, .gr-link.selected .gr-edge { opacity: 1; stroke-width: 2.4; }
+.gr-spoke:hover .gr-edge, .gr-spoke.on .gr-edge, .gr-spoke.selected .gr-edge { stroke-width: 1.8; }
+.gr-hit { fill: none; stroke: transparent; stroke-width: 12; pointer-events: stroke; }
+.gr-arrow { fill: var(--status); }
+.gr-pill { pointer-events: none; transition: opacity .15s; }
+.gr-pill rect { fill: var(--panel); stroke: var(--line-strong); stroke-width: 1; }
+.gr-pill text { font-size: 10.5px; fill: var(--muted); text-anchor: middle; }
+.gr-pill.on text, .gr-pill.selected text { fill: var(--text); }
+.gr-pill.on rect, .gr-pill.selected rect { stroke: var(--muted); }
+/* Hovering or selecting a node keeps it, its neighbours and its edges; the rest fades. */
+#gr-svg.focusing [data-node]:not(.on), #gr-svg.focusing [data-edge]:not(.on) { opacity: .13; }
+
+.gr-tools { position: absolute; top: 12px; right: 12px; z-index: 2; display: flex; flex-direction: column; gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: 10px; background: color-mix(in srgb, var(--panel) 88%, transparent); box-shadow: var(--shadow); }
+.gr-tools button { display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 0; border-radius: 7px; background: none; color: var(--muted); cursor: pointer; }
+.gr-tools button:hover { background: var(--hover); color: var(--text); }
+.gr-tools svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+.content:has(#gr-detail.open) .gr-tools { right: calc(min(440px, 92%) + 12px); }
+.gr-hint { position: absolute; left: 12px; bottom: 10px; padding: 3px 9px; border-radius: 6px; background: color-mix(in srgb, var(--panel) 85%, transparent); color: var(--muted); font-size: 11.5px; pointer-events: none; }
+
+.gr-legend { display: flex; flex-direction: column; gap: 5px; font-size: 12.5px; }
+.gr-legend span { display: flex; align-items: center; gap: 8px; }
+.gr-legend svg { flex: none; }
+.gr-note { font-size: 12px; margin: 0; }
+.pill.gr-pill { --pill: var(--status, var(--dropped)); }
+.gr-summary { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; }
+.gr-stmts { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.gr-stmts li { border-top: 1px solid var(--line); padding-top: 8px; }
+.gr-stmts .head { display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline; }
+.gr-stmts q { display: block; color: var(--muted); font-size: 12.5px; margin-top: 3px; quotes: "“" "”"; }
+.detail h4 { margin: 16px 0 0; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }

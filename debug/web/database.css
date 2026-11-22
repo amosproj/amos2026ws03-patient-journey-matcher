@@ -1,0 +1,54 @@
+/* Database: filters, pages, the schema and emptying tables. */
+.filters { display: flex; flex-direction: column; gap: 9px; }
+.filter-chip { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 5px 8px; border-radius: 6px; background: var(--selected); font-size: 12px; }
+.filter-chip button { border: 0; background: none; cursor: pointer; color: var(--muted); font-size: 15px; line-height: 1; padding: 0 2px; }
+.filter-chip button:hover { color: var(--error); }
+.dbtab { position: absolute; inset: 0; display: none; }
+.dbtab.active { display: flex; flex-direction: column; }
+.pager { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.pager button { border: 1px solid var(--line-strong); background: var(--panel); border-radius: 6px; padding: 3px 9px; cursor: pointer; }
+.pager button:hover:not(:disabled) { background: var(--hover); }
+.pager button:disabled { opacity: .4; cursor: default; }
+.pager select { width: auto; padding: 3px 6px; }
+th.sortable { cursor: pointer; user-select: none; }
+th.sortable:hover, th.sorted { color: var(--text); }
+th.sorted::after { content: " ↓"; }
+th.sorted.asc::after { content: " ↑"; }
+td.cmdcell { font: 11.5px ui-monospace, Menlo, monospace; color: var(--muted); max-width: 380px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+td.cell { font-size: 12px; max-width: 320px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.schema { flex: 1; overflow: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 14px; }
+.schema-card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
+.schema-card h3 { margin: 0; padding: 9px 12px; font-size: 13px; display: flex; gap: 10px; align-items: baseline; border-bottom: 1px solid var(--line); }
+.schema-card h3 small { color: var(--muted); font-weight: 400; }
+.schema-card th { position: static; }
+.schema-card tbody tr { cursor: default; }
+.schema-card tbody tr:hover { background: none; }
+.schema-card .defs { padding: 8px 12px 10px; display: grid; gap: 4px; font: 11.5px/1.5 ui-monospace, Menlo, monospace; color: var(--muted); word-break: break-word; }
+.schema-card .defs b { color: var(--text); font-weight: 600; }
+.copy { border: 1px solid var(--line); background: none; border-radius: 5px; font-size: 11px; padding: 0 6px; margin-left: 6px; cursor: pointer; color: var(--muted); }
+.copy:hover { color: var(--accent); }
+.detail .actions { display: flex; gap: 8px; margin: 10px 0; }
+.detail .actions button { padding: 5px 10px; border-radius: 6px; border: 1px solid var(--line-strong); background: none; color: var(--text); cursor: pointer; font-weight: 600; }
+.detail .actions button:hover { background: var(--hover); }
+.detail .label { color: var(--muted); font-size: 12px; margin-top: 10px; }
+.db-tables li { position: relative; }
+.db-tables .empty-table { position: absolute; right: 6px; top: 50%; transform: translateY(-50%); visibility: hidden; border: 1px solid var(--error); background: var(--panel); color: var(--error); border-radius: 5px; font-size: 11px; padding: 0 7px; line-height: 18px; cursor: pointer; }
+.db-tables li:hover .empty-table { visibility: visible; }
+.db-tables li:hover:has(.empty-table) small { visibility: hidden; }
+.db-notice { border-radius: 8px; padding: 8px 10px; font-size: 12px; background: color-mix(in srgb, var(--good) 12%, transparent); color: var(--text); }
+dialog.confirm { border: 1px solid var(--line); border-radius: 12px; padding: 18px 20px; width: min(470px, 92vw); background: var(--panel); color: var(--text); box-shadow: var(--shadow-pop); }
+dialog.confirm::backdrop { background: rgb(10 11 13 / .5); }
+dialog.confirm h3 { margin: 0 0 6px; font-size: 15px; color: var(--error); }
+dialog.confirm p { margin: 6px 0; }
+.empty-list { list-style: none; margin: 10px 0; padding: 0; border: 1px solid var(--line); border-radius: 8px; }
+.empty-list li { display: flex; justify-content: space-between; gap: 10px; padding: 6px 10px; }
+.empty-list li + li { border-top: 1px solid var(--line); }
+.empty-list small { color: var(--muted); }
+.buttons button.danger { background: var(--danger); border-color: var(--danger); color: #fff; }
+
+.db-tables li.schema-name { cursor: default; padding: 8px 8px 2px; font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+.db-tables li.schema-name:hover { background: none; }
+.term-test { display: grid; gap: 4px; margin: 8px 0; }
+.term-test small { color: var(--muted); }
+.yes { color: color-mix(in oklab, var(--good) 70%, var(--text)); font-weight: 600; }
+.no { color: var(--muted); }

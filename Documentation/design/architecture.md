@@ -48,7 +48,7 @@ Only what the code uses today. Versions are pinned in `crawler/uv.lock` and `mat
 | | Make | One command per task: build, test, run ([make targets](../build-deploy/build.md)) | GPL-3.0; a build tool, not part of the product |
 | | GitHub Actions | Checks on every pull request | service terms |
 | **Development tools** | MCP Inspector | Manual calls to the MCP server | MIT / Apache-2.0 |
-| | Debug UI (`debug/crawler/`) | Browse the database, the index and the matcher | MIT (this repository) |
+| | Debug UI (`debug/`) | Browse the database, the index and the matcher | MIT (this repository) |
 | | graphiti-core, Kuzu, Gemini (in `tools/patient-graph/`) | `make graph`: patient graphs from the synthetic documents | Apache-2.0, MIT, service terms |
 
 ## 4 Explanation of the diagrams and choices
@@ -61,7 +61,7 @@ Only what the code uses today. Versions are pinned in `crawler/uv.lock` and `mat
 4. **Match.** A client calls `match_journey` with a journey or a patient graph and can ask for one approach with `algorithm`; without it, the server is to choose the best results itself (today keyword). The server validates the input, takes the latest event as the focus and older events as context, and the matcher of the chosen approach ranks the sources in its index. The graph matcher will compare the patient's relations with the papers' triples; the `ai_summary` matcher will embed the journey, take the nearest sources and can let a language model rerank them.
 5. **Fetch.** `get_source` returns the links to a source's files at its origin; the client downloads them itself.
 
-To follow these steps with real data, use the [debug UI](../../debug/crawler/README.md) (`make debug`): one screen per step, from crawler runs and stored documents to the index, the transcription job and each step of a match.
+To follow these steps with real data, use the [debug UI](../../debug/README.md) (`make debug`): one screen per step, from crawler runs and stored documents to the index, the transcription job and each step of a match.
 
 | Component | Runs as | When |
 |---|---|---|
