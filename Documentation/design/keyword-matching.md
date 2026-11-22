@@ -2,7 +2,7 @@
 
 The keyword baseline: `match_journey` with `algorithm: keyword` ranks the stored documents by [BM25](https://en.wikipedia.org/wiki/Okapi_BM25) on the words they share with the patient journey, in their metadata and full texts. It is one of the interchangeable approaches ([adding an approach](../../matcher/algorithms/README.md)). Code: [`matcher/algorithms/keyword/`](../../matcher/algorithms/keyword/src/), downloads: [`matcher/download/`](../../matcher/download/src/). How to run it: [build and run](../build-deploy/build.md#run-the-matcher-locally).
 
-How the ranking was tuned and measured: [keyword tuning](../../research/keyword-tuning.md). The Matcher screen of the [debug UI](../../debug/crawler/README.md) shows every step below for a synthetic journey, and its Index screen what the index holds per source.
+How the ranking was tuned and measured: [keyword tuning](../../research/keyword-tuning.md). The Matcher screen of the [debug UI](../../debug/crawler/README.md) shows every step below for a synthetic journey, and its Index › Keyword screen what the index holds per source.
 
 ## How it works
 
@@ -67,13 +67,13 @@ Both metadata and full-text indexing skip documents whose `extra.metadata_langua
 | `lexemes` | The distinct English stems of `terms`, for `matched_terms` |
 | `words`, `url`, `media_type`, `fetched_at`, `document_changed_at` | Number of keywords (at most 50,000), the file read, when, and the document version it was built from |
 
-Check a run on the Index screen of the [debug UI](../../debug/crawler/README.md), or with `SELECT status, detail, count(*) FROM keyword.full_texts GROUP BY 1, 2 ORDER BY 3 DESC`.
+Check a run on the Index › Keyword screen of the [debug UI](../../debug/crawler/README.md), or with `SELECT status, detail, count(*) FROM keyword.full_texts GROUP BY 1, 2 ORDER BY 3 DESC`.
 
 **Licences.** This approach reads full texts under any licence, also "all rights reserved": the project is non-profit and keeps keywords only; the transcript of an audio file is kept only until every index has read it. Other approaches decide for themselves ([licences](sources.md#licences)).
 
 ### Speech-to-text
 
-The indexer reads podcast audio as its transcript. An episode without a transcript file waits as `audio, and speech-to-text is off` until the transcription job ([`matcher/transcriber`](../../matcher/transcriber/src/main.ts), `make transcribe`) has read its audio: newest first, if the episode's metadata is English or of unknown language, until it is stopped; `make index` and the crawls never wait for it. The job downloads each audio file into memory, transcribes it offline with Whisper ([`scripts/transcribe.py`](../../scripts/transcribe.py), model from `WHISPER_MODEL`) and stores the text in the table `transcripts`. The next `make index` reads it like a downloaded text; once every index has read it, the text is dropped, and the keywords stay as long as the episode keeps its audio file. How many files it reads at once is set on the Index screen of the [debug UI](../../debug/crawler/README.md), also while it runs (none at first), or with `make transcribe WORKERS=2`; the table `transcription` holds that number and the job's last report. M4A and MP4 audio is not read. Model choice: [Whisper models](../../research/sources/podcasts.md#whisper-models); on the VM the job runs as a service ([transcription](../build-deploy/deployment.md#transcription)).
+The indexer reads podcast audio as its transcript. An episode without a transcript file waits as `audio, and speech-to-text is off` until the transcription job ([`matcher/transcriber`](../../matcher/transcriber/src/main.ts), `make transcribe`) has read its audio: newest first, if the episode's metadata is English or of unknown language, until it is stopped; `make index` and the crawls never wait for it. The job downloads each audio file into memory, transcribes it offline with Whisper ([`scripts/transcribe.py`](../../scripts/transcribe.py), model from `WHISPER_MODEL`) and stores the text in the table `transcripts`. The next `make index` reads it like a downloaded text; once every index has read it, the text is dropped, and the keywords stay as long as the episode keeps its audio file. How many files it reads at once is set on the Index › Overview screen of the [debug UI](../../debug/crawler/README.md), also while it runs (none at first), or with `make transcribe WORKERS=2`; the table `transcription` holds that number and the job's last report. M4A and MP4 audio is not read. Model choice: [Whisper models](../../research/sources/podcasts.md#whisper-models); on the VM the job runs as a service ([transcription](../build-deploy/deployment.md#transcription)).
 
 ## Keywords
 

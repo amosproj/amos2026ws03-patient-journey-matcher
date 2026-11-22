@@ -4,15 +4,16 @@ Start it from the repository root with `make debug` (see debug/crawler/README.md
 crawler's uv environment and only uses the crawler's public Python API (`run_requests`
 with its factory and sleep hooks, `crawler.store` for `--store`), asyncpg and the standard
 library, so the crawler needs nothing extra for it. The database view only reads, except when
-the user empties tables and types the database name to confirm, and when the Index screen sets
+the user empties tables and types the database name to confirm, and when the Index overview sets
 how many audio files the transcription job reads at once.
 
-The matcher is TypeScript, so its logic stays there: the Index screen starts the indexer job
-(`matcher/indexer`) as a child process and reads its tables, and the Matcher screen asks
-`node src/main.ts explain` in `matcher/mcp-server` for the answer of `match_journey` with the
-steps of the match, and `node src/main.ts get_source` for the files of one source. The Graph
-screen shows a patient graph or PubTator3 annotations normalized by `scripts/normalize.ts` of
-`matcher/algorithms/graph`. Journeys are passed on, never stored or logged.
+The matcher is TypeScript, so its logic stays there: the Index screens start the indexer job
+(`matcher/indexer`) as a child process, for every approach or one, and read its tables, and the
+Matcher screen asks `node src/main.ts explain` in `matcher/mcp-server` for the answer of
+`match_journey` with the steps of the match, and `node src/main.ts get_source` for the files of
+one source. Index › Graph shows a patient graph or PubTator3 annotations normalized by
+`scripts/normalize.ts` of `matcher/algorithms/graph`. Journeys are passed on, never stored or
+logged.
 """
 
 import argparse
@@ -782,7 +783,7 @@ def document_filter(params: dict[str, list[str]], indexed: bool) -> tuple[str, l
     if full_text or detail:
         if not indexed:
             raise ValueError("No keyword index yet: run make index")
-        # Like the Index screen: the indexer leaves expired documents alone.
+        # Like the keyword coverage: the indexer leaves expired documents alone.
         conditions.append("(expires_at IS NULL OR expires_at > now())")
         if full_text:
             states = FULL_TEXT_FILTERS.get(full_text)
@@ -1070,7 +1071,7 @@ async def db_table(connection: Any, params: dict[str, list[str]]) -> dict[str, A
     }
 
 
-# ── Index screen: what the keyword index holds, and the indexer job ──────────────
+# ── Index screens: the indexer job, and what the keyword index holds ─────────────
 
 NOT_EXPIRED = "(d.expires_at IS NULL OR d.expires_at > now())"
 
@@ -1109,7 +1110,7 @@ FULL_TEXT_FILTERS = {
     "failed": ["failed"],
     "unread": ["new", "changed"],
 }
-"""The full-text filter of the documents table: the columns of the Index screen's coverage."""
+"""The full-text filter of the documents table: the columns of the keyword coverage."""
 
 
 NO_INDEX = (
@@ -1119,7 +1120,7 @@ NO_INDEX = (
 """Stands in for an index table before the first `make index`: every document is to index."""
 WORD_BUCKETS = [100, 250, 500, 1000, 2000, 4000, 8000, 16000, 32000, 50000]
 """Keywords per full text, for the histogram; 50,000 is the indexer's limit (`MAX_WORDS`)."""
-# The estimate of the Index screen copies two rules of matcher/download/src: the media types
+# The estimate of Index › Keyword copies two rules of matcher/download/src: the media types
 # `formatOf` reads (extract.ts) and the seconds between two requests to a host (`INTERVAL_MS`
 # in downloader.ts). Keep them in step; the indexer itself does not use these copies.
 READABLE_TYPES = [
@@ -1179,10 +1180,11 @@ def matcher_environment() -> dict[str, str]:
 class IndexRun(EventLog):
     """One run of the indexer job (`make index`); its output lines are the events."""
 
-    command = "make index"
-
-    def __init__(self) -> None:
+    def __init__(self, approach: str | None) -> None:
         super().__init__()
+        self.approach = approach
+        """The one approach to index, or None for all of them."""
+        self.command = "make index" + (f" APPROACHES={approach}" if approach else "")
         self.process: subprocess.Popen[str] | None = None
         self.cancel_requested = False
 
@@ -1190,6 +1192,7 @@ class IndexRun(EventLog):
         return {
             "id": self.id,
             "command": self.command,
+            "approach": self.approach,
             "started_at": self.started_at,
             "status": self.status,
             "duration": self.duration,
@@ -1202,7 +1205,7 @@ def run_indexer(run: IndexRun, environment: dict[str, str]) -> None:
     code: int | None = None
     try:
         run.process = subprocess.Popen(
-            ["node", "src/main.ts"],
+            ["node", "src/main.ts", *([run.approach] if run.approach else [])],
             cwd=MATCHER_DIR / "indexer",
             env=environment,
             stdin=subprocess.DEVNULL,
@@ -1229,13 +1232,17 @@ def run_indexer(run: IndexRun, environment: dict[str, str]) -> None:
             run.emit("index_" + run.status, code=code)
 
 
-def start_indexer() -> IndexRun:
+def start_indexer(approach: Any = None) -> IndexRun:
+    """Starts the indexer job for every approach, or for the one named, e.g. `keyword`."""
     global INDEXING
+    named = isinstance(approach, str) and re.fullmatch("[a-z_]+", approach)
+    if approach is not None and not named:
+        raise ValueError("approach must be the name of one approach, e.g. keyword")
     environment = matcher_environment()
     with LOCK:
         if INDEXING is not None and INDEXING.status == "running":
             raise RuntimeError("The indexer is already running")
-        run = INDEXING = IndexRun()
+        run = INDEXING = IndexRun(approach)
     threading.Thread(target=run_indexer, args=(run, environment), daemon=True).start()
     return run
 
@@ -1616,7 +1623,7 @@ def run_matcher(command: str, request: dict[str, Any]) -> dict[str, Any]:
         raise RuntimeError(message) from error
 
 
-# ── Graph screen: the normalization of patient graphs and PubTator3 annotations (#80) ────
+# ── Index › Graph: the normalization of patient graphs and PubTator3 annotations (#80) ───
 
 GRAPH_DIR = MATCHER_DIR / "algorithms" / "graph"
 PUBTATOR_FIXTURES = GRAPH_DIR / "fixtures" / "pubtator"
@@ -1922,7 +1929,7 @@ def own_runs() -> dict[str, Any]:
         },
         "index": None
         if index is None or index.status != "running"
-        else {"id": index.id, "started_at": index.started_at},
+        else {"id": index.id, "command": index.command, "started_at": index.started_at},
     }
 
 
@@ -2457,11 +2464,10 @@ class Handler(BaseHTTPRequestHandler):
             self.start_run()
         elif path == "/api/db/empty":
             self.empty_db()
-        elif path == "/api/index/run":
-            self.send_result(lambda: start_indexer().summary())
         elif path == "/api/index/cancel":
             self.send_result(stop_indexer)
         elif path in (
+            "/api/index/run",
             "/api/index/terms",
             "/api/index/transcription",
             "/api/db/titles",
@@ -2475,6 +2481,8 @@ class Handler(BaseHTTPRequestHandler):
                 return
             if path == "/api/match":
                 self.send_result(lambda: match(body))
+            elif path == "/api/index/run":
+                self.send_result(lambda: start_indexer(body.get("approach")).summary())
             elif path == "/api/index/transcription":
                 self.send_db(
                     lambda connection: set_transcription_workers(connection, body.get("workers")),

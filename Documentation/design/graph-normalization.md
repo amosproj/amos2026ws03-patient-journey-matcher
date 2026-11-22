@@ -97,7 +97,7 @@ pnpm --dir matcher --filter @matcher/graph normalize patientdata/Patient-5/graph
 pnpm --dir matcher --filter @matcher/graph normalize matcher/algorithms/graph/fixtures/pubtator/32343890.json --min-score 0.5
 ```
 
-It prints each entity with its ID and the tier that found it, the patient facts, the relations and what was left out. The Graph screen of the [debug UI](../../debug/crawler/README.md) shows the same, with the sentence and cue behind each status. The papers are trimmed PubTator3 exports ([test fixtures](../../matcher/algorithms/graph/fixtures/pubtator/README.md)).
+It prints each entity with its ID and the tier that found it, the patient facts, the relations and what was left out. The Index › Graph screen of the [debug UI](../../debug/crawler/README.md) shows the same, with the sentence and cue behind each status. The papers are trimmed PubTator3 exports ([test fixtures](../../matcher/algorithms/graph/fixtures/pubtator/README.md)).
 
 An entity without an ID can never match a paper. Close the gap with a row in `concepts.json`, not with a looser match; [`data.test.ts`](../../matcher/algorithms/graph/src/data.test.ts) checks the data files against each other.
 

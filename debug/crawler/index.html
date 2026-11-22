@@ -26,7 +26,7 @@
   --good: #1a9a55; --pending: #e8a200; --critical: #d33b3b;
   --shadow: 0 1px 2px rgb(16 18 24 / .05); --shadow-pop: 0 12px 32px rgb(16 18 24 / .14), 0 2px 6px rgb(16 18 24 / .06);
   --gutter: clamp(12px, 2vw, 32px);
-  /* Graph screen: one colour per entity type of the normalized graph. */
+  /* Index › Graph: one colour per entity type of the normalized graph. */
   --t-disease: #b8326f; --t-chemical: #2556cf; --t-gene: #1a8a4c; --t-variant: #0c7f86;
   --t-procedure: #d0601f; --t-finding: #7556e0; --t-device: #85663a; --t-patient: #16181d;
 }
@@ -49,7 +49,7 @@ html, body { height: 100%; }
 body {
   margin: 0; font: 14px/1.45 "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   background: var(--bg); color: var(--text);
-  display: grid; grid-template-rows: auto minmax(0, 1fr); overflow: hidden;
+  display: grid; grid-template-rows: auto minmax(0, 1fr); grid-template-columns: minmax(0, 1fr); overflow: hidden;
 }
 a { color: var(--text); cursor: pointer; text-decoration: underline; text-decoration-color: color-mix(in srgb, currentColor 35%, transparent); text-underline-offset: 2px; }
 a:hover { text-decoration-color: currentColor; }
@@ -299,6 +299,9 @@ td.found { min-width: 190px; }
 .views button { border: 1px solid transparent; background: transparent; border-radius: 7px; padding: 6px 14px; cursor: pointer; color: var(--muted); font-weight: 600; }
 .views button:hover { color: var(--text); }
 .views button.active { background: var(--raised); color: var(--text); border-color: var(--line); box-shadow: var(--shadow); }
+/* The index screens: the overview of what every index shares, then one screen per approach. */
+.view-group { display: flex; align-items: center; gap: 3px; margin-inline: 3px; padding-inline: 3px; border-inline: 1px solid var(--line-strong); }
+.view-group-label { padding-inline: 7px 3px; font-size: 10.5px; font-weight: 650; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 .check { display: flex; align-items: center; gap: 7px; font-size: 12.5px; cursor: pointer; }
 .check:has(input:disabled) { opacity: .5; cursor: default; }
 .muted { color: var(--muted); }
@@ -391,8 +394,10 @@ textarea:focus { outline: 3px solid color-mix(in srgb, var(--accent) 15%, transp
 .db-tables li.plain:hover { background: none; }
 .heat .any { background: var(--series); }
 .pill.none { background: none; color: var(--muted); box-shadow: inset 0 0 0 1px var(--line); }
-.ixtab, .mttab, .infotab { position: absolute; inset: 0; display: none; }
-.ixtab.active, .mttab.active, .infotab.active { display: flex; flex-direction: column; }
+.ixtab, .kwtab, .mttab, .infotab { position: absolute; inset: 0; display: none; }
+.ixtab.active, .kwtab.active, .mttab.active, .infotab.active { display: flex; flex-direction: column; }
+/* An approach without an index yet: its card stands where the index would. */
+.planned { padding: 28px 16px 36px; overflow: auto; }
 .panels { flex: 1; overflow: auto; padding: 12px 16px; display: flex; flex-direction: column; gap: 14px; }
 .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; }
 .panel > h3 { margin: 0; padding: 9px 12px; font-size: 13px; display: flex; gap: 10px; align-items: baseline; border-bottom: 1px solid var(--line); }
@@ -634,10 +639,17 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
 .topic-links { margin: 0; padding: 0; list-style: none; display: grid; gap: 5px; font-size: 12.5px; }
 .topic-file summary { cursor: pointer; color: var(--muted); font-size: 12.5px; }
 .topic-file pre { margin: 8px 0 0; padding: 10px 12px; border-radius: 6px; background: var(--code); font-size: 11.5px; max-height: 420px; overflow: auto; }
-@media (max-width: 840px) {
+/* The screens stay in one row with the brand as long as they fit, then get a row of their own. */
+@media (max-width: 1320px) { .views button { padding-inline: 10px; } }
+@media (max-width: 1240px) { .brand h1 { display: none; } }
+@media (max-width: 1100px) {
   header { flex-wrap: wrap; gap: 6px 12px; padding-block: 8px; }
-  .views { order: 1; width: 100%; }
+  .brand h1 { display: block; }
+  .views { order: 1; width: 100%; overflow-x: auto; }
   .views button { flex: 1; padding: 6px 4px; }
+  .view-group { flex: 4 1 auto; }
+}
+@media (max-width: 840px) {
   .controls-toggle { font-size: 12px; padding: 6px 8px; }
   .theme-toggle { width: 32px; height: 32px; }
 }
@@ -665,7 +677,7 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
   .environment summary { padding-inline: 6px; }
   .controls-toggle { font-size: 0; gap: 0; padding: 9px; }
 }
-/* Graph screen (#80): the normalized patient graph or PubTator3 annotations of a paper. */
+/* Index › Graph (#80): the normalized patient graph or PubTator3 annotations of a paper. */
 .grtab { position: absolute; inset: 0; display: none; }
 .grtab.active { display: flex; flex-direction: column; }
 #gr-svg { flex: 1; min-height: 0; width: 100%; height: 100%; display: block; cursor: grab; touch-action: none; user-select: none; }
@@ -713,9 +725,14 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
   <nav class="views" id="views" aria-label="Pipeline screens">
     <button type="button" data-screen="runs" class="active" aria-current="page">Runs</button>
     <button type="button" data-screen="db">Database</button>
-    <button type="button" data-screen="index">Index</button>
+    <div class="view-group" role="group" aria-labelledby="view-group-index">
+      <span class="view-group-label" id="view-group-index">Index</span>
+      <button type="button" data-screen="index" title="The indexer job and the transcription job, which every index shares">Overview</button>
+      <button type="button" data-screen="keyword">Keyword</button>
+      <button type="button" data-screen="graph" title="For now the graph normalization">Graph</button>
+      <button type="button" data-screen="ai" title="Not built yet">AI</button>
+    </div>
     <button type="button" data-screen="match">Matcher</button>
-    <button type="button" data-screen="graph">Graph</button>
     <button type="button" data-screen="info">Info</button>
   </nav>
   <details class="environment"><summary>Environment</summary><div class="chips" id="env"></div></details>
@@ -862,7 +879,7 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
         </label>
         <label class="field"><span>Topic</span><select id="db-topic"><option value="">All topics</option></select></label>
         <label class="field"><span>Licence</span><select id="db-licence"><option value="">All licences</option></select></label>
-        <label class="field"><span>Full text <i class="info" tabindex="0" data-tip="What the keyword indexer did with a document's full text, as on the Index screen. Leaves out expired documents. Needs make index.">i</i></span>
+        <label class="field"><span>Full text <i class="info" tabindex="0" data-tip="What the keyword indexer did with a document's full text, as on Index › Keyword. Leaves out expired documents. Needs make index.">i</i></span>
           <select id="db-fulltext"><option value="">All</option><option value="indexed">Indexed</option><option value="skipped">Skipped</option><option value="failed">Failed</option><option value="unread">New or changed</option></select>
         </label>
         <label class="field"><span>Expiry <i class="info" tabindex="0" data-tip="Only YouTube rows expire, 30 days after they were retrieved. The next store run deletes expired rows; until then readers such as @matcher/db ignore them.">i</i></span>
@@ -918,22 +935,19 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
 <div class="layout" id="index-view" hidden>
   <aside class="side" id="index-controls">
     <div class="side-head">
-      <h2>Keyword index</h2>
+      <h2>Indexer <i class="info" tabindex="0" data-tip="The indexer job of make index: brings the index of every approach up to date with the stored documents, one approach after the other. It reads the full texts of new and changed documents and tries failed downloads again. Stopping is safe: the next run continues with the documents not read yet. The screen of an approach starts the job for that approach only.">i</i></h2>
       <button type="button" class="link-button" id="ix-refresh" title="Load everything again">↻ Refresh</button>
     </div>
     <div class="db-conn" id="ix-state"><b>Loading …</b></div>
     <label class="check"><input type="checkbox" id="ix-auto" checked> Refresh every 5 s <small class="muted" id="ix-updated"></small></label>
-    <div class="side-head">
-      <h2>Indexer <i class="info" tabindex="0" data-tip="The indexer job of make index: brings the indexes of all approaches up to date with the stored documents. It reads the full texts of new and changed documents and tries failed downloads again. Stopping is safe: the next run continues with the documents not read yet.">i</i></h2>
-    </div>
     <div class="buttons">
-      <button type="button" class="primary" id="ix-start">Start indexing</button>
+      <button type="button" class="primary" id="ix-start">Index all</button>
       <button type="button" id="ix-stop" disabled>Stop</button>
     </div>
     <code class="cmd" title="The same run in the terminal">make index</code>
     <div class="error" id="ix-error"></div>
     <div class="side-head">
-      <h2>Transcription <i class="info" tabindex="0" data-tip="Speech-to-text for audio that has no transcript, mostly podcast episodes. The indexer skips them (audio, and speech-to-text is off); the transcription job reads them, newest first, and stores their keywords. The job runs on its own: as a service on the VM, with make transcribe elsewhere. Here you set how many files it reads at once, also while it runs: it follows within seconds. With fewer or Off, the files in work are read to their end and no new one starts. On the VM the job only gets processor time that nothing else wants.">i</i></h2>
+      <h2>Transcription <i class="info" tabindex="0" data-tip="Speech-to-text for audio that has no transcript, mostly podcast episodes. The indexer skips them (audio, and speech-to-text is off); the transcription job reads them, newest first, and stores their transcripts for every index. The job runs on its own: as a service on the VM, with make transcribe elsewhere. Here you set how many files it reads at once, also while it runs: it follows within seconds. With fewer or Off, the files in work are read to their end and no new one starts. On the VM the job only gets processor time that nothing else wants.">i</i></h2>
     </div>
     <div class="db-conn" id="tx-state"><b>Loading …</b></div>
     <div class="field">
@@ -942,51 +956,85 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
     </div>
     <small class="muted" id="tx-note" style="margin-top:-8px"></small>
     <div class="error" id="tx-error"></div>
+  </aside>
+
+  <main aria-label="Index overview">
+    <div class="stats overview" id="ix-stats"></div>
+    <nav class="tabs" id="ix-tabs">
+      <button data-ixtab="log" class="active">Indexer log</button>
+      <button data-ixtab="transcription" title="The job that reads audio without a transcript, and its workers">Transcription <span class="badge" id="tx-count">0</span></button>
+    </nav>
+    <div class="content">
+      <section class="ixtab active" id="ixtab-log">
+        <div class="log-tools"><label><input type="checkbox" id="ix-follow" checked> Follow</label><span id="ix-run"></span></div>
+        <div class="log" id="ix-log"><div class="empty">No indexer run since this server started. Use Index all in the controls.</div></div>
+      </section>
+      <section class="ixtab" id="ixtab-transcription"><div class="panels" id="tx-panels"></div></section>
+      <div class="db-down" id="ix-down" hidden></div>
+    </div>
+  </main>
+</div>
+
+<div class="layout" id="keyword-view" hidden>
+  <aside class="side" id="keyword-controls">
+    <div class="side-head">
+      <h2>Keyword index</h2>
+      <button type="button" class="link-button" id="kw-refresh" title="Load everything again">↻ Refresh</button>
+    </div>
+    <div class="db-conn" id="kw-state"><b>Loading …</b></div>
+    <label class="check"><input type="checkbox" id="kw-auto" checked> Refresh every 5 s <small class="muted" id="kw-updated"></small></label>
+    <div class="side-head">
+      <h2>Indexer <i class="info" tabindex="0" data-tip="Runs the indexer job for the keyword index only; Index all on the Index overview runs it for every approach. Stopping is safe: the next run continues with the documents not read yet.">i</i></h2>
+    </div>
+    <div class="buttons">
+      <button type="button" class="primary" id="kw-start">Index keyword</button>
+      <button type="button" id="kw-stop" disabled>Stop</button>
+    </div>
+    <code class="cmd" title="The same run in the terminal">make index APPROACHES=keyword</code>
+    <div class="error" id="kw-error"></div>
     <div class="side-head">
       <h2>Next run downloads <i class="info" tabindex="0" data-tip="The full texts the next run reads, by the host of the file it tries first, and how long that host takes at its pace: arxiv.org one request every 15 s, zenodo.org 1 s, the PMC bucket 0.1 s, others 3 s. A rough estimate: hosts are read in parallel, and second files and retries add to it.">i</i></h2>
     </div>
-    <ul class="db-tables" id="ix-hosts"></ul>
+    <ul class="db-tables" id="kw-hosts"></ul>
   </aside>
 
   <main aria-label="Keyword index">
-    <div class="stats" id="ix-stats"></div>
-    <nav class="tabs" id="ix-tabs">
-      <button data-ixtab="coverage" class="active">Coverage</button>
-      <button data-ixtab="transcription" title="The job that reads audio without a transcript, and its workers">Transcription <span class="badge" id="tx-count">0</span></button>
-      <button data-ixtab="log">Indexer log</button>
-      <button data-ixtab="vocabulary">Vocabulary</button>
-      <button data-ixtab="terms">Journey terms</button>
+    <div class="stats" id="kw-stats"></div>
+    <nav class="tabs" id="kw-tabs">
+      <button data-kwtab="coverage" class="active">Coverage</button>
+      <button data-kwtab="log">Indexer log</button>
+      <button data-kwtab="vocabulary">Vocabulary</button>
+      <button data-kwtab="terms">Journey terms</button>
     </nav>
     <div class="content">
-      <section class="ixtab active" id="ixtab-coverage"><div class="panels" id="ix-coverage"></div></section>
-      <section class="ixtab" id="ixtab-transcription"><div class="panels" id="tx-panels"></div></section>
-      <section class="ixtab" id="ixtab-log">
-        <div class="log-tools"><label><input type="checkbox" id="ix-follow" checked> Follow</label><span id="ix-run"></span></div>
-        <div class="log" id="ix-log"><div class="empty">No indexer run since this server started. Use Start indexing in the controls.</div></div>
+      <section class="kwtab active" id="kwtab-coverage"><div class="panels" id="kw-coverage"></div></section>
+      <section class="kwtab" id="kwtab-log">
+        <div class="log-tools"><label><input type="checkbox" id="kw-follow" checked> Follow</label><span id="kw-run"></span></div>
+        <div class="log" id="kw-log"><div class="empty">No indexer run since this server started. Use Index keyword in the controls.</div></div>
       </section>
-      <section class="ixtab" id="ixtab-vocabulary">
+      <section class="kwtab" id="kwtab-vocabulary">
         <div class="toolbar">
-          <input type="text" id="ix-word" placeholder="Words that contain …">
-          <select id="ix-words-limit"><option value="100">Top 100</option><option value="250">Top 250</option><option value="500">Top 500</option></select>
-          <span class="muted" id="ix-words-shown"></span>
+          <input type="text" id="kw-word" placeholder="Words that contain …">
+          <select id="kw-words-limit"><option value="100">Top 100</option><option value="250">Top 250</option><option value="500">Top 500</option></select>
+          <span class="muted" id="kw-words-shown"></span>
         </div>
         <div class="table-wrap">
           <table>
             <thead><tr><th class="num">#</th><th>Keyword</th><th>Occurrences</th><th class="num">Full texts</th><th>Indexed as</th></tr></thead>
-            <tbody id="ix-words"></tbody>
+            <tbody id="kw-words"></tbody>
           </table>
         </div>
       </section>
-      <section class="ixtab" id="ixtab-terms">
-        <div class="toolbar"><span class="muted" id="ix-terms-shown"></span></div>
+      <section class="kwtab" id="kwtab-terms">
+        <div class="toolbar"><span class="muted" id="kw-terms-shown"></span></div>
         <div class="table-wrap">
           <table>
             <thead><tr><th>English term</th><th>German journey words</th><th>In metadata</th><th>In full texts</th><th></th></tr></thead>
-            <tbody id="ix-terms"></tbody>
+            <tbody id="kw-terms"></tbody>
           </table>
         </div>
       </section>
-      <div class="db-down" id="ix-down" hidden></div>
+      <div class="db-down" id="kw-down" hidden></div>
     </div>
   </main>
 </div>
@@ -1073,7 +1121,9 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
 
 <div class="layout" id="graph-view" hidden>
   <aside class="side" id="graph-controls">
-    <div class="side-head"><h2>Graph comparison</h2></div>
+    <div class="side-head"><h2>Graph index</h2></div>
+    <div class="db-conn off"><b>Not built yet</b><small>The graph indexer and matcher follow (#10). Until then, this screen shows the normalization of one file.</small></div>
+    <div class="side-head"><h2>Normalization</h2></div>
     <label class="field"><span>Graph</span><select id="gr-source" aria-label="Graph to show"></select></label>
     <label class="field"><span>View</span><select id="gr-view" aria-label="Graph representation"><option value="normalized">Normalized</option><option value="original">Original (patient graph)</option></select></label>
     <p id="gr-original-note" class="muted gr-note" hidden>Original nodes and directed edges, including providers and appointments. Click a node to inspect its original attributes. Switch to Normalized to compare merged concepts and omitted edges.</p>
@@ -1103,6 +1153,24 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
       <section class="grtab" id="grtab-statements"><div class="table-wrap"><table id="gr-statements"></table></div></section>
       <section class="grtab" id="grtab-skipped"><div class="table-wrap"><table id="gr-skipped"></table></div></section>
       <aside class="detail" id="gr-detail"></aside>
+    </div>
+  </main>
+</div>
+
+<div class="layout" id="ai-view" hidden>
+  <aside class="side" id="ai-controls">
+    <div class="side-head"><h2>AI index</h2></div>
+    <div class="db-conn off"><b>Not built yet</b><small>The indexer follows with the AI approach (ai_summary, #9).</small></div>
+  </aside>
+
+  <main aria-label="AI index">
+    <div class="planned">
+      <div class="mt-pending-card">
+        <h3>AI index <span class="pill plain">planned</span></h3>
+        <p class="muted">Not built yet: there is no AI indexer, and match_journey answers NOT_AVAILABLE for the algorithm ai_summary.</p>
+        <p>Its indexer is to store an embedding, and perhaps a summary, of each document. This screen is to show which documents it has done, the model and its version, the cost and time of each run, and the summary of one document.</p>
+        <small class="muted mono">research/ai-based-matching.md</small>
+      </div>
     </div>
   </main>
 </div>
@@ -2546,7 +2614,7 @@ function termTest(id) {
 
 function indexParts(doc, index) {
   const parts = [h("div", { class: "label" }, "Keyword index")];
-  if (!index) return [...parts, h("div", { class: "note" }, "No keyword index yet: start the indexer on the Index screen, or run make index.")];
+  if (!index) return [...parts, h("div", { class: "note" }, "No keyword index yet: start the indexer on Index › Keyword, or run make index.")];
   const { metadata, full_text: fullText } = index;
   const outdated = (row) => row.current ? null : h("span", { class: "expiring", title: "The document changed since it was indexed; the next indexer run reads it again." }, " · outdated");
   const rows = [
@@ -2720,7 +2788,8 @@ function dbSwitchTab(tab, load = true) {
   if (load && dbReady()) dbLoadTab();
 }
 
-const SCREENS = { runs: "#runs-view", db: "#db-view", index: "#index-view", match: "#match-view", graph: "#graph-view", info: "#info-view" };
+// The Index screens: the overview, then one per approach (hash #index, #index-keyword, …).
+const SCREENS = { runs: "#runs-view", db: "#db-view", index: "#index-view", keyword: "#keyword-view", graph: "#graph-view", ai: "#ai-view", match: "#match-view", info: "#info-view" };
 
 const narrowScreen = window.matchMedia("(max-width: 760px)");
 const controlsToggle = $("#controls-toggle");
@@ -2773,8 +2842,10 @@ function showScreen(screen) {
   for (const [name, view] of Object.entries(SCREENS)) $(view).hidden = name !== screen;
   if (screen === "db") { dbSwitchTab(db.tab, false); dbRefresh(); }
   else if (screen === "index") { ixSwitchTab(ix.tab); ixRefresh(); txRefresh(); }
-  else if (screen === "match") mtShow();
+  else if (screen === "keyword") { kwSwitchTab(kw.tab); ixRefresh(); txRefresh(); }
   else if (screen === "graph") grShow();
+  else if (screen === "ai") history.replaceState(null, "", "#index-ai");
+  else if (screen === "match") mtShow();
   else if (screen === "info") infoShow();
   else switchTab(state.tab);
 }
@@ -2805,23 +2876,36 @@ $("#db-reset").addEventListener("click", () => {
 $("#db-refresh").addEventListener("click", () => dbRefresh());
 setInterval(() => { if (state.screen === "db" && $("#db-auto").checked && document.visibilityState === "visible") dbRefresh(); }, 5000);
 
-// ── Index screen: what the keyword index holds, and the indexer job ────────────
-// The columns of the coverage (FULL_TEXT_STATES): the first two are done, the next run reads
-// the other two.
+// ── Index: the overview of the shared jobs, then one screen per approach ───────
+// The indexer job brings the index of every approach up to date, or of one. Its lines start with
+// the approach that writes them (`keyword: …`), so the screen of an approach shows only its own.
+// Graph and AI have no indexer yet: Index › Graph shows the normalization, Index › AI a card.
+const ix = { overview: null, error: null, tab: "log", loading: false, run: null, stream: null };
+const IX_PLANNED = [
+  ["graph", "Graph index", "Only the normalization is built (#80); the indexer and matcher follow (#10)."],
+  ["ai", "AI index", "Not built yet (#9)."],
+];
+// Lines of the other approaches and of the steps after them, left out of the keyword log.
+const KW_LOG_HIDES = new Set(["graph", "ai_summary", "transcripts"]);
+
+// The columns of the keyword coverage (FULL_TEXT_STATES): the first two are done, the next run
+// reads the other two.
 const COVERAGE_STATES = [
   ["indexed", "Indexed", "good", FULL_TEXT_STATES.indexed[1]],
   ["skipped", "Skipped", "neutral", FULL_TEXT_STATES.skipped[1]],
   ["failed", "Failed", "critical", FULL_TEXT_STATES.failed[1]],
   ["unread", "New or changed", "pending", "Open: not read yet, or changed since it was read; the next run reads it"],
 ];
-const ix = { overview: null, error: null, tab: "coverage", by: "source", loading: false, rendered: "", run: null, stream: null, wordsTicket: 0, termsLoaded: false };
+const COVERAGE_BAR = { good: "--good", neutral: "--dropped", critical: "--critical", pending: "--pending" };
+const kw = { tab: "coverage", by: "source", rendered: "", wordsTicket: 0, termsLoaded: false };
 
-function ixTotals() {
+function kwTotals() {
   const total = { documents: 0, metadata: 0, metadata_to_index: 0, indexed: 0, skipped: 0, failed: 0, unread: 0, to_read: 0 };
   for (const row of ix.overview?.coverage || []) for (const key of Object.keys(total)) total[key] += row[key];
   return total;
 }
 
+// One request for both screens: the state of the indexer job comes with the keyword index.
 async function ixRefresh() {
   if (ix.loading) return;
   ix.loading = true;
@@ -2833,29 +2917,70 @@ async function ixRefresh() {
       ix.overview = null;
       ix.error = { message: error.message, hint: error.data?.hint, database: Boolean(error.data?.unavailable) };
     }
+    renderIxButtons();
     renderIxSide();
     renderIxStats();
-    renderIxCoverage();
+    renderKwSide();
+    renderKwStats();
+    renderKwCoverage();
     renderIxDown();
-    $("#ix-updated").textContent = `· ${fmtClock(new Date().toISOString())}`;
+    const updated = `· ${fmtClock(new Date().toISOString())}`;
+    $("#ix-updated").textContent = updated;
+    $("#kw-updated").textContent = updated;
     await ixFollowRun();
   } finally {
     ix.loading = false;
   }
 }
 
+// One job at a time: a run of every approach or of one blocks both Start buttons.
+function renderIxButtons() {
+  const indexer = ix.overview?.indexer;
+  const running = indexer?.run?.status === "running";
+  for (const id of ["#ix-start", "#kw-start"]) $(id).disabled = !indexer || running || Boolean(indexer.missing);
+  for (const id of ["#ix-stop", "#kw-stop"]) $(id).disabled = !running;
+}
+
+const ixErrorLines = () => [h("b", {}, ix.error.database ? "Not connected" : "Not loaded"), h("small", {}, ix.error.message), ix.error.hint ? h("span", { class: "hint" }, ix.error.hint) : null];
+
 function renderIxSide() {
   const box = $("#ix-state");
+  if (ix.error) { box.className = "db-conn down"; box.replaceChildren(...ixErrorLines().filter(Boolean)); return; }
+  const indexer = ix.overview?.indexer;
+  if (!indexer) return;
+  const run = indexer.run, running = run?.status === "running";
+  const ended = run && !running && run.duration != null ? new Date(new Date(run.started_at).getTime() + run.duration * 1000).toISOString() : null;
+  box.className = `db-conn${running ? "" : run?.status === "failed" ? " down" : " off"}`;
+  box.replaceChildren(...[
+    h("b", {}, running ? "Indexing" : "Not running"),
+    run ? h("small", { class: "mono" }, run.command) : null,
+    h("small", {}, running ? `Started ${fmtAgo(run.started_at)}` : run ? `Last run ${run.status} ${fmtAgo(ended)}, after ${fmtSeconds(run.duration)}` : "No run since this server started."),
+    indexer.missing ? h("span", { class: "hint" }, indexer.missing) : null,
+  ].filter(Boolean));
+}
+
+// One part per approach: how far its index is; a click opens its screen.
+function renderIxStats() {
+  const overview = ix.overview, total = kwTotals();
+  const title = (label, screen) => h("a", { onclick: () => showScreen(screen), title: `Open Index › ${label.replace(/ index$/, "")}` }, label);
+  const keyword = ovSection(title("Keyword index", "keyword"),
+    h("b", { class: `ov-total${overview?.exists ? "" : " muted"}` }, !overview ? "–" : overview.exists ? `${fmtShare(total.indexed + total.skipped, total.documents)} done` : "no index yet"),
+    overview ? ovList(COVERAGE_STATES.map(([key, label, cls, tip]) => ovShare(label, total[key], total.documents, { color: COVERAGE_BAR[cls], tip, onclick: () => showScreen("keyword") }))) : null,
+    overview ? h("small", { class: "ov-note" }, `of ${fmtCount(total.documents)} documents, not expired`) : null);
+  $("#ix-stats").replaceChildren(keyword,
+    ...IX_PLANNED.map(([screen, label, note]) => ovSection(title(label, screen), h("b", { class: "ov-total muted" }, "planned"), h("small", { class: "ov-note" }, note))));
+}
+
+// ── Index › Keyword: what the keyword index holds ──
+function renderKwSide() {
+  const box = $("#kw-state");
   const overview = ix.overview;
   const lines = (...items) => items.filter(Boolean);
-  const running = overview?.indexer.run?.status === "running";
-  $("#ix-start").disabled = !overview || running || Boolean(overview.indexer.missing);
-  $("#ix-stop").disabled = !running;
   if (ix.error) {
     box.className = "db-conn down";
-    box.replaceChildren(...lines(h("b", {}, ix.error.database ? "Not connected" : "Not loaded"), h("small", {}, ix.error.message), ix.error.hint && h("span", { class: "hint" }, ix.error.hint)));
+    box.replaceChildren(...ixErrorLines().filter(Boolean));
   } else if (overview) {
-    const total = ixTotals();
+    const total = kwTotals();
     const waiting = Math.max(total.to_read, total.metadata_to_index);
     const { available, installed, preloaded } = overview.extension;
     box.className = `db-conn${waiting || !overview.exists || !available || !preloaded ? " warn" : ""}`;
@@ -2871,27 +2996,26 @@ function renderIxSide() {
     ));
   }
   const hosts = overview?.hosts || [];
-  const list = $("#ix-hosts");
+  const list = $("#kw-hosts");
   if (!hosts.length) list.replaceChildren(h("li", { class: "empty" }, overview ? "Nothing: every full text is read" : "–"));
   else list.replaceChildren(...hosts.map((host) => h("li", { class: "plain" },
     h("code", {}, host.host || "no readable file"),
     h("small", {}, host.host ? `${plural(host.documents, "file")} · about ${fmtSpan(host.seconds * 1000)}` : `${host.documents} · skipped at once`))));
 }
 
-function renderIxStats() {
-  const box = $("#ix-stats");
+function renderKwStats() {
+  const box = $("#kw-stats");
   box.classList.toggle("overview", Boolean(ix.overview));
   if (!ix.overview) { box.replaceChildren(card("Documents", "–", "muted"), card("Full texts indexed", "–", "muted")); return; }
-  const total = ixTotals();
+  const total = kwTotals();
   const words = ix.overview.words;
-  const bar = { good: "--good", neutral: "--dropped", critical: "--critical", pending: "--pending" };
   box.replaceChildren(
     ovSection("Documents, not expired", h("b", { class: "ov-total" }, fmtCount(total.documents)), ovList([
       ovShare("Metadata indexed", total.metadata, total.documents, { tip: "Its title, abstract and subjects are in the keyword index" }),
     ])),
     // Each document's full text is in one of these states, as in the coverage below.
     ovSection("Full texts", ovList(COVERAGE_STATES.map(([key, label, cls, tip]) =>
-      ovShare(label, total[key], total.documents, { color: bar[cls], tip, onclick: () => dbShowDocuments({ "db-fulltext": key }) })))),
+      ovShare(label, total[key], total.documents, { color: COVERAGE_BAR[cls], tip, onclick: () => dbShowDocuments({ "db-fulltext": key }) })))),
     ovSection("Keyword index", ovList([
       ovFigure(words ? fmtCompact(words.words) : "–", "keywords stored", { cls: words ? "" : "zero" }),
       ovFigure(words?.last_read ? fmtAgo(words.last_read) : "–", "last full text indexed", { cls: words?.last_read ? "" : "zero" }),
@@ -2901,7 +3025,7 @@ function renderIxStats() {
 }
 
 function coverageGroups() {
-  const field = ix.by === "source" ? "source" : "content_type";
+  const field = kw.by === "source" ? "source" : "content_type";
   const groups = new Map();
   for (const row of ix.overview.coverage) {
     const group = groups.get(row[field]) || { key: row[field], documents: 0, indexed: 0, skipped: 0, failed: 0, unread: 0 };
@@ -2919,8 +3043,8 @@ function coverageBar(group) {
 }
 
 function coveragePanel() {
-  const total = ixTotals();
-  const filterId = ix.by === "source" ? "db-source" : "db-type";
+  const total = kwTotals();
+  const filterId = kw.by === "source" ? "db-source" : "db-type";
   const number = (group, key) => {
     const filters = { "db-fulltext": key };
     if (group.key) filters[filterId] = group.key;
@@ -2933,17 +3057,17 @@ function coveragePanel() {
     ...COVERAGE_STATES.map(([key]) => number(group, key)),
     h("td", { class: "num" }, fmtShare(group.indexed + group.skipped, group.documents)));
   const seg = h("span", { class: "mini-seg" }, ...[["source", "Source"], ["type", "Content type"]].map(([value, label]) =>
-    h("button", { type: "button", class: ix.by === value ? "active" : null, onclick: () => { ix.by = value; renderIxCoverage(); } }, label)));
+    h("button", { type: "button", class: kw.by === value ? "active" : null, onclick: () => { kw.by = value; renderKwCoverage(); } }, label)));
   const legend = (label, states) => h("span", { class: "legend-row" }, label, ...states.map(([, name, cls, tip]) => h("span", { title: tip }, h("i", { class: `swatch ${cls}` }), name)));
   return h("div", { class: "panel" },
     h("h3", {}, "Full texts by", seg, h("span", { class: "spacer" }),
       legend("Done:", COVERAGE_STATES.slice(0, 2)), legend("Open, the next run reads them:", COVERAGE_STATES.slice(2))),
     h("table", {},
-      h("thead", {}, h("tr", {}, h("th", {}, ix.by === "source" ? "Source" : "Content type"), h("th", {}, "Share"), h("th", { class: "num" }, "Documents"),
+      h("thead", {}, h("tr", {}, h("th", {}, kw.by === "source" ? "Source" : "Content type"), h("th", {}, "Share"), h("th", { class: "num" }, "Documents"),
         ...COVERAGE_STATES.map(([, label, , tip]) => h("th", { class: "num", title: tip }, label)),
         h("th", { class: "num", title: "Indexed or skipped: the share the next run leaves alone" }, "Done"))),
       h("tbody", {},
-        ...coverageGroups().map((group) => row(group, ix.by === "source" ? sourcePill(group.key) : typeLabel(group.key))),
+        ...coverageGroups().map((group) => row(group, kw.by === "source" ? sourcePill(group.key) : typeLabel(group.key))),
         row({ ...total, key: null }, h("b", {}, "All")))));
 }
 
@@ -2986,28 +3110,28 @@ function formatsPanel() {
         h("td", { class: "num" }, fmtCount(Math.round(format.words / format.documents))))))));
 }
 
-function renderIxCoverage() {
+function renderKwCoverage() {
   if (!ix.overview) return;
   // The view refreshes every 5 s: build it again only when something changed.
-  const snapshot = JSON.stringify([ix.by, ix.overview.exists, ix.overview.coverage, ix.overview.reasons, ix.overview.words, ix.overview.formats, tx.data?.waiting_detail]);
-  if (snapshot === ix.rendered) return;
-  ix.rendered = snapshot;
+  const snapshot = JSON.stringify([kw.by, ix.overview.exists, ix.overview.coverage, ix.overview.reasons, ix.overview.words, ix.overview.formats, tx.data?.waiting_detail]);
+  if (snapshot === kw.rendered) return;
+  kw.rendered = snapshot;
   const parts = [coveragePanel()];
-  if (!ix.overview.exists) parts.unshift(h("div", { class: "notice quiet", style: "margin:0" }, "No keyword index yet, so no document is indexed. Use Start indexing in the controls, or run make index; the first run reads every full text and takes a while (see “Next run downloads”)."));
+  if (!ix.overview.exists) parts.unshift(h("div", { class: "notice quiet", style: "margin:0" }, "No keyword index yet, so no document is indexed. Use Index keyword in the controls, or run make index; the first run reads every full text and takes a while (see “Next run downloads”)."));
   else parts.push(reasonsPanel(), wordsPanel(), formatsPanel());
-  $("#ix-coverage").replaceChildren(...parts.filter(Boolean));
+  $("#kw-coverage").replaceChildren(...parts.filter(Boolean));
 }
 
 function renderIxDown() {
-  const box = $("#ix-down");
-  box.hidden = !ix.error;
-  if (ix.error) box.replaceChildren(h("div", { class: "db-down-box" }, h("h3", {}, ix.error.database ? "Database not reachable" : "The index could not be loaded"), h("p", {}, ix.error.message), ix.error.hint ? h("p", { class: "cmd" }, ix.error.hint) : null, h("button", { type: "button", onclick: () => ixRefresh() }, "Try again")));
+  for (const id of ["#ix-down", "#kw-down"]) {
+    const box = $(id);
+    box.hidden = !ix.error;
+    if (ix.error) box.replaceChildren(h("div", { class: "db-down-box" }, h("h3", {}, ix.error.database ? "Database not reachable" : "The index could not be loaded"), h("p", {}, ix.error.message), ix.error.hint ? h("p", { class: "cmd" }, ix.error.hint) : null, h("button", { type: "button", onclick: () => ixRefresh() }, "Try again")));
+  }
 }
 
-// ── The indexer run: its output lines, live ──
+// ── The indexer run: its output lines, live, on the overview and on the screen of an approach ──
 function ixAppendLog(event) {
-  const log = $("#ix-log");
-  if (log.firstElementChild?.classList.contains("empty")) log.replaceChildren();
   const [cls, text] = {
     index_started: ["run", `Start: ${event.command}`],
     line: [/\berror\b|ECONN|ENOTFOUND/i.test(event.text || "") ? "err" : "ok", event.text],
@@ -3016,10 +3140,20 @@ function ixAppendLog(event) {
     index_failed: ["err", `The indexer failed (exit code ${event.code ?? "unknown"})`],
     index_cancelled: ["err", "Stopped: the next run continues with the documents not read yet"],
   }[event.type] || ["start", JSON.stringify(event)];
-  log.append(h("div", { class: cls }, h("span", { class: "t" }, `${event.t.toFixed(1)} s`), h("span", {}, text)));
-  while (log.childElementCount > LOG_LIMIT) log.firstElementChild.remove();
-  if ($("#ix-follow").checked) log.scrollTop = log.scrollHeight;
-  if (event.type === "line" && event.text.includes("full texts:")) $("#ix-run").textContent = event.text.replace(/^\w+: /, "");
+  const writer = event.type === "line" ? /^(\w+): /.exec(event.text || "")?.[1] : null;
+  const logs = [["#ix-log", "#ix-follow"]];
+  if (!KW_LOG_HIDES.has(writer)) logs.push(["#kw-log", "#kw-follow"]);
+  for (const [logId, followId] of logs) {
+    const log = $(logId);
+    if (log.firstElementChild?.classList.contains("empty")) log.replaceChildren();
+    log.append(h("div", { class: cls }, h("span", { class: "t" }, `${event.t.toFixed(1)} s`), h("span", {}, text)));
+    while (log.childElementCount > LOG_LIMIT) log.firstElementChild.remove();
+    if ($(followId).checked) log.scrollTop = log.scrollHeight;
+  }
+  if (writer === "keyword" && event.text.includes("full texts:")) {
+    $("#ix-run").textContent = event.text;
+    $("#kw-run").textContent = event.text.replace(/^\w+: /, "");
+  }
 }
 
 // Shows the run the server reports: its lines so far, then the stream while it runs.
@@ -3029,8 +3163,8 @@ async function ixFollowRun() {
   ix.run = run.id;
   const data = await api("/api/index/run");
   if (data.run?.id !== run.id) { ix.run = null; return; }
-  $("#ix-log").replaceChildren();
-  $("#ix-run").textContent = "";
+  for (const id of ["#ix-log", "#kw-log"]) $(id).replaceChildren();
+  for (const id of ["#ix-run", "#kw-run"]) $(id).textContent = "";
   for (const event of data.events) ixAppendLog(event);
   if (data.run.status !== "running") return;
   ix.stream?.close();
@@ -3042,26 +3176,30 @@ async function ixFollowRun() {
   stream.onerror = () => { if (stream.readyState === EventSource.CLOSED) done(); };
 }
 
-async function ixCommand(path) {
-  $("#ix-error").textContent = "";
+// Starts or stops the job from the overview or from the screen of an approach, then shows its log.
+async function ixCommand(path, body = {}) {
+  const keyword = state.screen === "keyword";
+  const error = $(keyword ? "#kw-error" : "#ix-error");
+  error.textContent = "";
   try {
-    await api(path, { method: "POST", body: "{}" });
-    ixSwitchTab("log");
+    await api(path, { method: "POST", body: JSON.stringify(body) });
+    if (keyword) kwSwitchTab("log");
+    else ixSwitchTab("log");
     // A refresh in progress still holds the state from before the command.
     while (ix.loading) await new Promise((resolve) => setTimeout(resolve, 100));
     await ixRefresh();
-  } catch (error) {
-    $("#ix-error").textContent = error.message;
+  } catch (failure) {
+    error.textContent = failure.message;
   }
 }
 
-async function ixLoadWords() {
-  const ticket = ++ix.wordsTicket;
-  const body = $("#ix-words");
-  $("#ix-words-shown").textContent = "Counting the keywords of every full text …";
+async function kwLoadWords() {
+  const ticket = ++kw.wordsTicket;
+  const body = $("#kw-words");
+  $("#kw-words-shown").textContent = "Counting the keywords of every full text …";
   try {
-    const data = await api(`/api/index/vocabulary?${queryString({ limit: $("#ix-words-limit").value, q: $("#ix-word").value.trim() })}`);
-    if (ticket !== ix.wordsTicket) return;
+    const data = await api(`/api/index/vocabulary?${queryString({ limit: $("#kw-words-limit").value, q: $("#kw-word").value.trim() })}`);
+    if (ticket !== kw.wordsTicket) return;
     const top = Math.max(1, ...data.rows.map((row) => row.count));
     const stems = (row) => !row.stems.length
       ? h("span", { class: "pill none", title: "An English stop word: stored, but not searched" }, "stop word, not searched")
@@ -3073,16 +3211,16 @@ async function ixLoadWords() {
       h("td", { class: "num" }, `${fmtCount(row.documents)} · ${fmtShare(row.documents, data.documents)}`),
       h("td", { class: "small" }, stems(row)),
     )) : [messageRow(5, "No keyword matches.")]));
-    $("#ix-words-shown").textContent = `the most frequent keywords of ${plural(data.documents, "full text")}`;
+    $("#kw-words-shown").textContent = `the most frequent keywords of ${plural(data.documents, "full text")}`;
   } catch (error) {
-    if (ticket !== ix.wordsTicket) return;
+    if (ticket !== kw.wordsTicket) return;
     body.replaceChildren(messageRow(5, error.message, "small error"));
-    $("#ix-words-shown").textContent = "";
+    $("#kw-words-shown").textContent = "";
   }
 }
 
-async function ixLoadTerms() {
-  const body = $("#ix-terms");
+async function kwLoadTerms() {
+  const body = $("#kw-terms");
   try {
     const data = await api("/api/index/journey-terms");
     const found = (term) => term.metadata + term.full_text;
@@ -3098,11 +3236,11 @@ async function ixLoadTerms() {
       h("td", { class: "small" }, share(term.full_text, data.totals.full_text)),
       h("td", {}, flag(term)),
     )));
-    $("#ix-terms-shown").textContent = `${plural(rows.length, "English term")} of german-terms.json and the indexed documents each one finds, the rarest first`;
-    ix.termsLoaded = true;
+    $("#kw-terms-shown").textContent = `${plural(rows.length, "English term")} of german-terms.json and the indexed documents each one finds, the rarest first`;
+    kw.termsLoaded = true;
   } catch (error) {
     body.replaceChildren(messageRow(5, error.message, "small error"));
-    $("#ix-terms-shown").textContent = "";
+    $("#kw-terms-shown").textContent = "";
   }
 }
 
@@ -3265,30 +3403,42 @@ function renderTx() {
   const badge = $("#tx-count");
   badge.textContent = active;
   badge.classList.toggle("bad", !running && wanted > 0);
-  // The reasons of the coverage name the rows this job reads, once they are known.
-  renderIxCoverage();
+  // The reasons of the keyword coverage name the rows this job reads, once they are known.
+  renderKwCoverage();
 }
 
 function ixSwitchTab(tab) {
   ix.tab = tab;
-  history.replaceState(null, "", tab === "coverage" ? "#index" : `#index-${tab}`);
+  history.replaceState(null, "", tab === "log" ? "#index" : `#index-${tab}`);
   for (const button of document.querySelectorAll("#ix-tabs button")) button.classList.toggle("active", button.dataset.ixtab === tab);
   for (const section of document.querySelectorAll(".ixtab")) section.classList.toggle("active", section.id === `ixtab-${tab}`);
   if (tab === "log") { const log = $("#ix-log"); log.scrollTop = log.scrollHeight; }
-  if (tab === "vocabulary" && !$("#ix-words").childElementCount) ixLoadWords();
-  if (tab === "terms" && !ix.termsLoaded) ixLoadTerms();
+}
+
+function kwSwitchTab(tab) {
+  kw.tab = tab;
+  history.replaceState(null, "", tab === "coverage" ? "#index-keyword" : `#index-keyword-${tab}`);
+  for (const button of document.querySelectorAll("#kw-tabs button")) button.classList.toggle("active", button.dataset.kwtab === tab);
+  for (const section of document.querySelectorAll(".kwtab")) section.classList.toggle("active", section.id === `kwtab-${tab}`);
+  if (tab === "log") { const log = $("#kw-log"); log.scrollTop = log.scrollHeight; }
+  if (tab === "vocabulary" && !$("#kw-words").childElementCount) kwLoadWords();
+  if (tab === "terms" && !kw.termsLoaded) kwLoadTerms();
 }
 
 for (const button of document.querySelectorAll("#ix-tabs button")) button.addEventListener("click", () => ixSwitchTab(button.dataset.ixtab));
-$("#ix-refresh").addEventListener("click", () => { ix.termsLoaded = false; if (ix.tab === "vocabulary") ixLoadWords(); if (ix.tab === "terms") ixLoadTerms(); ixRefresh(); txRefresh(); });
+for (const button of document.querySelectorAll("#kw-tabs button")) button.addEventListener("click", () => kwSwitchTab(button.dataset.kwtab));
+$("#ix-refresh").addEventListener("click", () => { ixRefresh(); txRefresh(); });
+$("#kw-refresh").addEventListener("click", () => { kw.termsLoaded = false; if (kw.tab === "vocabulary") kwLoadWords(); if (kw.tab === "terms") kwLoadTerms(); ixRefresh(); txRefresh(); });
 $("#ix-start").addEventListener("click", () => ixCommand("/api/index/run"));
-$("#ix-stop").addEventListener("click", () => ixCommand("/api/index/cancel"));
-let ixTyping = 0;
-$("#ix-word").addEventListener("input", () => { clearTimeout(ixTyping); ixTyping = setTimeout(ixLoadWords, 300); });
-$("#ix-words-limit").addEventListener("change", ixLoadWords);
-setInterval(() => { if (state.screen === "index" && $("#ix-auto").checked && document.visibilityState === "visible") ixRefresh(); }, 5000);
+$("#kw-start").addEventListener("click", () => ixCommand("/api/index/run", { approach: "keyword" }));
+for (const id of ["#ix-stop", "#kw-stop"]) $(id).addEventListener("click", () => ixCommand("/api/index/cancel"));
+let kwTyping = 0;
+$("#kw-word").addEventListener("input", () => { clearTimeout(kwTyping); kwTyping = setTimeout(kwLoadWords, 300); });
+$("#kw-words-limit").addEventListener("change", kwLoadWords);
+const ixAutoRefresh = (screen, checkbox) => state.screen === screen && $(checkbox).checked && document.visibilityState === "visible";
+setInterval(() => { if (ixAutoRefresh("index", "#ix-auto") || ixAutoRefresh("keyword", "#kw-auto")) ixRefresh(); }, 5000);
 // The job follows a new number within seconds: its state is asked for more often than the index.
-setInterval(() => { if (state.screen === "index" && $("#ix-auto").checked && document.visibilityState === "visible") txRefresh(); }, 2500);
+setInterval(() => { if (ixAutoRefresh("index", "#ix-auto")) txRefresh(); }, 2500);
 
 // ── Info screen: the machine, the timers, what runs, the topic files ──────────
 const info = { data: null, error: null, tab: "schedule", loading: false, topic: null, topics: new Map(), docCounts: null, countsAsked: false };
@@ -3402,7 +3552,7 @@ function renderInfoStats() {
       plan && !plan.live ? h("small", { class: "ov-note" }, "This machine runs no timers") : null),
     ovSection(h("span", { title: "Runs started from this page, the timers of this machine, the MCP server and the database. A crawl or make index started in a terminal shows only as a process, under Running." }, "Running now"), ovList([
       ovFigure(runs.crawl ? "running" : "none", "crawler run", { cls: runs.crawl ? "on" : "zero", title: runs.crawl?.command ?? null, onclick: runs.crawl ? () => infoShowRun(runs.crawl.id) : null }),
-      ovFigure(runs.index ? "running" : "none", "indexer", { cls: runs.index ? "on" : "zero", onclick: runs.index ? () => showScreen("index") : null }),
+      ovFigure(runs.index ? "running" : "none", "indexer", { cls: runs.index ? "on" : "zero", title: runs.index?.command ?? null, onclick: runs.index ? infoShowIndexer : null }),
       infoTranscription(data.database?.transcription),
       plan?.live ? ovFigure(timers.length ? fmtCount(timers.length) : "none", timers.length === 1 ? "timer job" : "timer jobs", { cls: timers.length ? "on" : "zero", title: timers.map((job) => job.label).join(", ") || null }) : null,
       ovFigure(data.mcp.running ? "up" : "down", "MCP server", { cls: data.mcp.running ? "on" : plan?.live ? "bad" : "zero", title: data.mcp.url }),
@@ -3411,12 +3561,18 @@ function renderInfoStats() {
   );
 }
 
-// The transcription job: a service of its own, set on the Index screen.
+// The indexer run started from this page, with its log on the Index overview.
+function infoShowIndexer() {
+  ix.tab = "log";
+  showScreen("index");
+}
+
+// The transcription job: a service of its own, set on the Index overview.
 function infoTranscription(job) {
   const reading = job?.running && job.workers > 0, stopped = Boolean(job && !job.running && job.wanted > 0);
   return ovFigure(reading ? plural(job.workers, "file") : stopped ? "down" : job?.running ? "off" : "none", "transcription", {
     cls: reading ? "on" : stopped ? "bad" : "zero",
-    title: !job ? "No transcription job has run on this database" : `${plural(job.wanted, "file")} at once set on the Index screen; ${job.running ? `the job reads ${job.workers}` : "no job reports"}`,
+    title: !job ? "No transcription job has run on this database" : `${plural(job.wanted, "file")} at once set on the Index overview; ${job.running ? `the job reads ${job.workers}` : "no job reports"}`,
     onclick: () => { ix.tab = "transcription"; showScreen("index"); },
   });
 }
@@ -3483,7 +3639,7 @@ function renderInfoRunning() {
   const panel = (title, note, ...body) => h("div", { class: "panel" }, h("h3", {}, title, note ? h("small", {}, note) : null), h("div", { class: "panel-body" }, ...body));
   const started = [
     runs.crawl && line(h("span", { class: "mono" }, runs.crawl.command), `for ${fmtAgo(runs.crawl.started_at).replace(/ ago$/, "")}${runs.crawl.store ? ", with Store" : ""}`, show(() => infoShowRun(runs.crawl.id))),
-    runs.index && line("make index", `for ${fmtAgo(runs.index.started_at).replace(/ ago$/, "")}`, show(() => showScreen("index"))),
+    runs.index && line(h("span", { class: "mono" }, runs.index.command), `for ${fmtAgo(runs.index.started_at).replace(/ ago$/, "")}`, show(infoShowIndexer)),
   ].filter(Boolean);
   const timers = infoJobs().filter((job) => job.running);
   const database = data.database;
@@ -3939,7 +4095,7 @@ function mtRenderNotice() {
   if (result.error) text = `match_journey refuses this request (${result.error.code}):\n${result.error.message}`;
   else if (result.answer.degraded) {
     const missing = /does not exist/.test(failure?.message || "");
-    text = `Degraded: ${result.answer.degraded_reason}${failure ? `\n${failure.name || "Error"}${failure.code ? ` ${failure.code}` : ""}: ${failure.message}` : ""}${missing ? "\nThe index is missing: start the indexer on the Index screen, or run make index." : ""}`;
+    text = `Degraded: ${result.answer.degraded_reason}${failure ? `\n${failure.name || "Error"}${failure.code ? ` ${failure.code}` : ""}: ${failure.message}` : ""}${missing ? "\nThe index is missing: start the indexer on the Index overview, or run make index." : ""}`;
   } else if (!result.answer.results.length) [text, info] = ["No stored document shares a term with this journey.", true];
   box.hidden = !text;
   box.className = `notice${info ? " quiet" : ""}`;
@@ -4234,7 +4390,7 @@ $("#mt-tuning-reset").addEventListener("click", () => {
   mtRun(true);
 });
 
-// ── Graph screen: the normalized patient graph or PubTator3 annotations of a paper (#80) ──
+// ── Index › Graph: the normalized patient graph or PubTator3 annotations of a paper (#80) ──
 const gr = { meta: null, source: null, data: null, tab: "graph", selected: null, loading: 0 };
 const GR_TYPES = ["disease", "chemical", "gene", "variant", "procedure", "finding", "device"];
 const GR_STATUSES = ["asserted", "suspected", "negated", "planned", "unknown"];
@@ -4354,7 +4510,7 @@ async function grLoad() {
 
 function grSwitchTab(tab) {
   gr.tab = tab;
-  history.replaceState(null, "", tab === "graph" ? "#graph" : `#graph-${tab}`);
+  history.replaceState(null, "", tab === "graph" ? "#index-graph" : `#index-graph-${tab}`);
   for (const button of document.querySelectorAll("#gr-tabs button")) button.classList.toggle("active", button.dataset.grtab === tab);
   for (const section of document.querySelectorAll(".grtab")) section.classList.toggle("active", section.id === `grtab-${tab}`);
   if (tab === "graph" && gr.data) grDraw();
@@ -4715,14 +4871,15 @@ async function init() {
     if (["runs", "schema"].includes(hash.slice(3))) db.tab = hash.slice(3);
     showScreen("db");
   } else if (hash === "index" || hash.startsWith("index-")) {
-    if (["transcription", "log", "vocabulary", "terms"].includes(hash.slice(6))) ix.tab = hash.slice(6);
-    showScreen("index");
+    // #index-transcription, #index-keyword-terms, #index-graph-entities, #index-ai …
+    const [, screen = "index", tab] = /^index(?:-(keyword|graph|ai))?(?:-([a-z]+))?$/.exec(hash) || [];
+    if (screen === "index" && tab === "transcription") ix.tab = tab;
+    if (screen === "keyword" && ["log", "vocabulary", "terms"].includes(tab)) kw.tab = tab;
+    if (screen === "graph" && ["entities", "statements", "skipped"].includes(tab)) gr.tab = tab;
+    showScreen(screen);
   } else if (hash === "match" || hash.startsWith("match-")) {
     if (["rankings", "answer", "client"].includes(hash.slice(6))) mt.tab = hash.slice(6);
     showScreen("match");
-  } else if (hash === "graph" || hash.startsWith("graph-")) {
-    if (["entities", "statements", "skipped"].includes(hash.slice(6))) gr.tab = hash.slice(6);
-    showScreen("graph");
   } else if (hash === "info" || hash.startsWith("info-")) {
     if (["running", "topics"].includes(hash.slice(5))) info.tab = hash.slice(5);
     showScreen("info");
