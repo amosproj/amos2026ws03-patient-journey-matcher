@@ -49,7 +49,7 @@ seed: db
 index: build
 	cd matcher && pnpm --filter @matcher/indexer start $(APPROACHES)
 
-# Reads the audio that has no transcript with speech-to-text, for the keyword index, until it is
+# Reads the audio that has no transcript with speech-to-text, for the indexes, until it is
 # stopped: `WHISPER_MODEL=tiny-q5_1 make transcribe`. How many files it reads at once is set in
 # the debug UI, also while it runs, or here: `make transcribe WORKERS=2`.
 transcribe: build
@@ -61,6 +61,6 @@ test-integration: build
 
 # Builds the graph of one generated patient with the SS26 graph steps and writes it to
 # patientdata/<patient>/graph.json, e.g. `make graph PATIENT=Patient-5`; needs GEMINI_API_KEY,
-# see scripts/patient_graph.py.
+# see tools/patient-graph/README.md.
 graph:
-	cd backend && uv run --locked --group graph python ../scripts/patient_graph.py $(PATIENT)
+	cd tools/patient-graph && uv run --locked python patient_graph.py $(PATIENT)

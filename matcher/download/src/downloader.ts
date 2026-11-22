@@ -62,7 +62,7 @@ export function audioLocators<L extends Locator>(locators: readonly L[]): L[] {
 
 const USER_AGENT =
   "patient-journey-matcher/0.1 (+https://github.com/amosproj/amos2026ws03-patient-journey-matcher)";
-// The request budgets of Documentation/sources/README.md §5: arXiv's robots.txt asks for 15 s,
+// The request budgets of Documentation/design/sources.md: arXiv's robots.txt asks for 15 s,
 // Zenodo allows 60 file requests a minute, the PMC bucket publishes no limit; podcast hosts
 // and all others get our own 20 a minute.
 const INTERVAL_MS: Record<string, number> = {

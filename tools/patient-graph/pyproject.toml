@@ -1,0 +1,25 @@
+[project]
+name = "patient-graph"
+version = "0.1.0"
+description = "Builds patient graphs from the synthetic patients with the graph steps of SS26 (see README.md)"
+requires-python = ">=3.12"
+dependencies = [
+    "google-genai>=1.0.0",
+    "graphiti-core[google-genai]>=0.3.17",
+    # The embedded graph database used instead of SS26's Neo4j.
+    "kuzu>=0.11.3",
+    "python-dotenv==1.0.1",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.2.0",
+]
+
+[tool.uv]
+# Not an installable package: workers/ is imported from this folder.
+package = false
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]

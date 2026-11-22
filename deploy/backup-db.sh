@@ -1,7 +1,7 @@
 #!/bin/bash
 # Dumps the database (pg_dump custom format) into BACKUP_DIR and keeps the newest 7 dumps.
 # matcher-backup.timer of deploy/vm-setup.sh runs it every night; restore:
-# Documentation/deployment.md#backups-and-cleanup.
+# Documentation/build-deploy/deployment.md#backups-and-cleanup.
 set -euo pipefail
 
 BACKUP_DIR=${BACKUP_DIR:-/var/backups/matcher}

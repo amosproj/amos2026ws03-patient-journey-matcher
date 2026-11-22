@@ -961,7 +961,7 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
       <button type="button" data-value="ai_summary">AI</button>
     </div>
     <div class="side-head">
-      <h2>Journey <i class="info" tabindex="0" data-tip="Puts a journey into the arguments below and keeps their other fields: a synthetic journey of patientdata/, the one of the example in Documentation/build.md, or a timeline.json from disk. Only synthetic journeys belong here: the journey goes to the matcher and back, it is not stored or logged.">i</i></h2>
+      <h2>Journey <i class="info" tabindex="0" data-tip="Puts a journey into the arguments below and keeps their other fields: a synthetic journey of patientdata/, the one of the example in Documentation/user/mcp-interface.md, or a timeline.json from disk. Only synthetic journeys belong here: the journey goes to the matcher and back, it is not stored or logged.">i</i></h2>
       <button type="button" class="link-button" id="mt-open" title="Put a timeline.json from disk into the arguments">Open file …</button>
     </div>
     <select id="mt-journey" aria-label="Patient journey"></select>
@@ -3688,12 +3688,12 @@ const MT_PLANNED = {
   graph: {
     name: "Graph approach",
     text: "Compares relations instead of words: the journey and every source become links between medical concepts, such as olaparib –treats→ prostate cancer, with shared MeSH IDs. A source ranks high when it links the patient's concepts the same way.",
-    doc: "Documentation/research/Graph-based-matching.md",
+    doc: "research/graph-based-matching.md",
   },
   ai_summary: {
     name: "AI approach",
     text: "A trained model judges which sources fit the patient's current situation: by semantic similarity, a direct relevance assessment or summaries made beforehand.",
-    doc: "Documentation/research/ai-based-matching.md",
+    doc: "research/ai-based-matching.md",
   },
 };
 
@@ -4014,7 +4014,7 @@ function mtRenderRaw() {
 
 // ── Example client: the answer as an app could show it ────────────────────────
 // It reads only what the tools answer, no step of the match and no database row, so it shows
-// what a client can build from the contract (Documentation/mcp-interface.md).
+// what a client can build from the contract (Documentation/user/mcp-interface.md).
 const CLIENT_FILES = 8;
 
 function mtRenderClient() {
