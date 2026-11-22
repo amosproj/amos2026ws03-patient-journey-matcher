@@ -10,7 +10,7 @@ matcher/ first. From the repository root:
 import json
 import re
 import tomllib
-from importlib.metadata import metadata
+from importlib.metadata import PackageNotFoundError, metadata
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -25,7 +25,13 @@ def python_dependencies():
     for scope, requirements in groups.items():
         for requirement in requirements:
             name = re.match(r"[A-Za-z0-9._-]+", requirement)[0]
-            meta = metadata(name)
+            try:
+                meta = metadata(name)
+            except PackageNotFoundError:
+                raise SystemExit(
+                    f"{name} is not installed in this Python: run "
+                    "`uv run --project crawler python scripts/dependencies.py`"
+                ) from None
             licence = meta.get("License-Expression") or meta.get("License") or ""
             yield name, meta["Version"], licence, scope
 
