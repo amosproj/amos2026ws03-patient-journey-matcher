@@ -2,7 +2,7 @@
 
 Build, user and technical documentation of the Patient Journey Matcher. 
 
-New here: read the [software architecture](design/architecture.md) first, then explore the pipeline in the [debug UI](../debug/crawler/README.md) (`make debug`). 
+New here: read the [software architecture](design/architecture.md) first, then explore the pipeline in the [debug UI](../debug/README.md) (`make debug`). 
 - Terms: [glossary](glossary.md). 
 - The team's investigations, with methods and measurements: [research](../research/README.md).
 
@@ -11,7 +11,7 @@ New here: read the [software architecture](design/architecture.md) first, then e
 How to use the software.
 
 - [MCP interface](user/mcp-interface.md): connect, try it, the tools `match_journey` and `get_source`, errors
-- [Debug UI](../debug/crawler/README.md): the best way to explore the pipeline, one screen per step: crawler runs, stored documents, the index, the transcription job and each step of a match
+- [Debug UI](../debug/README.md): the best way to explore the pipeline, one screen per step: crawler runs, stored documents, the index, the transcription job and each step of a match
 - [Synthetic patients](../patientdata/patientdata.md): journeys and graphs to send for testing
 - [Patient graph tool](../tools/patient-graph/README.md): build the patient graph of a synthetic patient, the second input form of `match_journey`
 
@@ -23,6 +23,7 @@ The architecture and the code.
 - [Data sources](design/sources.md): what is crawled, keys, request budgets, licences
 - [Storage and retrieval](design/storage.md): tables, columns, who writes and who reads them
 - [Keyword matching](design/keyword-matching.md): how the keyword approach ranks sources, and its limits
+- [Graph normalization](design/graph-normalization.md): how patient graphs and PubTator3 annotations get shared IDs, predicates and a status, for the graph approach
 - Next to the code: [crawler](../crawler/README.md), [matcher packages](../matcher/README.md), [adding an approach](../matcher/algorithms/README.md)
 
 ## Build and deploy documentation

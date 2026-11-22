@@ -1,0 +1,182 @@
+/* Matcher: the journey, the steps of the match and the example client. */
+textarea {
+  font: 11.5px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; color: inherit; width: 100%; min-height: 170px;
+  resize: vertical; padding: 7px 8px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--panel);
+}
+textarea:focus { outline: 3px solid color-mix(in srgb, var(--accent) 15%, transparent); outline-offset: 0; border-color: var(--accent); }
+.heat .any { background: var(--series); }
+/* One scrollbar for the column: an open event list never hides the results. Rows as tall as their
+   content: in auto rows a box with its own scrolling (timeline, tabs) shrinks when the terms open. */
+.layout > .match-main { grid-template-rows: repeat(5, max-content); align-content: start; overflow-y: auto; }
+/* A long journey scrolls in its own row instead of widening the page. */
+.match-main > * { min-width: 0; }
+/* Fixed rows: the results keep the last one when the terms are hidden (MCP server). */
+.match-main > .tabs { grid-row: 4; }
+.match-main > .content { grid-row: 5; overflow: visible; }
+.match-main .mttab { position: static; }
+/* A planned algorithm: its card stands where the results would, the journey stays. */
+.match-main > .mt-pending { grid-row: 4; padding: 28px 16px 36px; }
+.match-main.pending > :is(.stats, .terms-disclosure, .tabs, .content) { display: none; }
+/* Keep vertical scrolling in the main column. Wide result matrices can pan sideways. */
+.match-main .rank-lists, .match-main .raw, .match-main .client { overflow: visible; }
+.match-main .table-wrap { overflow-x: auto; }
+/* A document opens beside the column, wherever it is scrolled. */
+#mt-detail { position: fixed; }
+td.title { min-width: 260px; max-width: 460px; }
+.journey-panel { margin: 16px 16px 8px; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; }
+.journey-bar { position: relative; overflow: hidden; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 12px; padding: 12px 14px; background: var(--code); }
+.match-main[aria-busy="true"] .journey-bar::after {
+  content: ""; position: absolute; bottom: 0; left: 0; width: 44%; height: 3px;
+  background: linear-gradient(90deg, transparent, var(--accent), transparent);
+  animation: match-sweep 1.4s ease-in-out infinite;
+}
+@keyframes match-sweep { from { transform: translateX(-100%); } to { transform: translateX(230%); } }
+.match-main[aria-busy="true"] .mttab.active { opacity: .6; }
+.journey-bar h2 { font-size: 16px; margin: 0 auto 0 0; letter-spacing: -.025em; }
+.journey-bar label, .journey-bar b { font-size: 12px; }
+.journey-bar input { width: clamp(64px, 10vw, 170px); }
+.journey-bar b { font-variant-numeric: tabular-nums; }
+.timeline { display: flex; align-items: stretch; overflow-x: auto; padding: 12px 14px 8px; }
+.timeline .empty { padding: 12px 0; text-align: left; }
+.ev {
+  flex: 1 0 164px; max-width: 255px; position: relative; display: grid; grid-template-rows: auto auto 1fr auto; align-content: start;
+  text-align: left; border: 0; background: transparent; border-radius: 8px; padding: 6px 10px; cursor: pointer;
+}
+.ev::before { content: ""; position: absolute; left: 12px; right: -12px; top: 32px; height: 2px; background: var(--line); }
+.ev:last-child::before { display: none; }
+.ev .when { display: block; font-size: 12px; line-height: 16px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.ev .dot { position: relative; z-index: 1; display: block; height: 12px; width: 12px; border: 2px solid var(--muted); background: var(--panel); margin: 5px 0 7px; }
+.ev.context .dot, .ev.focus .dot { border-color: var(--accent); }
+.ev.focus, .ev.focus:hover { background: var(--selected); }
+.ev.focus .dot { background: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 18%, transparent); }
+.ev.focus .when, .ev.focus .what { color: var(--accent); font-weight: 650; }
+.ev.future { color: var(--muted); }
+.ev.future .dot { border-style: dashed; }
+.ev .what { display: block; margin-top: 4px; font-size: 11px; color: var(--muted); overflow-wrap: anywhere; }
+.ev .label { font-size: 14px; line-height: 1.3; font-weight: 600; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.ev:hover { background: var(--hover); }
+#mt-asof-note { display: block; padding: 0 14px 10px; font-size: 12px; }
+#mt-asof-note:empty { display: none; }
+.disclosure { border: 1px solid var(--line); border-radius: 9px; }
+.disclosure > summary { padding: 9px 12px; color: var(--muted); font-size: 13px; font-weight: 600; cursor: pointer; }
+.disclosure > summary:hover { color: var(--accent); }
+.tuning-body { padding: 0 12px 12px; }
+.tuning-body .link-button { margin: 8px 0; }
+.tuning-body input:invalid { border-color: var(--error); }
+.request-editor textarea { margin: 0 10px 10px; width: calc(100% - 20px); background: var(--code); }
+.terms-disclosure { margin: 0 16px 6px; }
+.terms { display: grid; gap: 7px; padding: 4px 12px 12px; }
+/* label left, chips right: wrapped chips stay under the first chip */
+.term-row { display: grid; grid-template-columns: 132px 1fr; gap: 5px; align-items: baseline; }
+.term-row > .row-label { font-size: 12px; font-weight: 600; color: var(--muted); }
+.term-row > .row-label small { display: block; font-size: 11px; font-weight: 400; }
+.term-row > .chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.term.none { border-style: dashed; border-color: var(--error); }
+.term.common { border-color: var(--warn); }
+.term.unused { color: var(--muted); border-style: dashed; }
+/* Documents with a term: a square in the colour of each index, as in the results. */
+.sq { display: inline-block; width: 7px; height: 7px; margin: 0 3px 0 5px; border-radius: 2px; }
+.sq.m { background: var(--meta); }
+.sq.f { background: var(--full); }
+.term small .sq:first-child { margin-left: 0; }
+.term-key { margin-left: 137px; font-size: 11.5px; color: var(--muted); }
+.terms details summary { cursor: pointer; font-size: 12px; color: var(--muted); }
+/* How one event became terms: who it is on the left, its label and terms on the right. */
+.ev-terms { display: grid; grid-template-columns: 132px 1fr; gap: 3px 5px; padding: 6px 0; border-top: 1px dashed var(--line); font-size: 12px; }
+.ev-terms:first-of-type { margin-top: 6px; }
+.ev-terms .head { grid-row: span 3; color: var(--muted); font-size: 11px; }
+.ev-terms .head b { display: block; color: var(--text); font-size: 12px; }
+.ev-terms.focus .head b { color: var(--accent); }
+.ev-terms .chips { display: flex; flex-wrap: wrap; gap: 4px; }
+.ev-terms .left { color: var(--muted); font-size: 11.5px; }
+/* The key above the events: the same columns, its chips each with what they mean. */
+.ev-terms.key { margin-top: 8px; padding: 8px 0; }
+.ev-terms.key .head b { color: var(--muted); }
+.ev-terms.key .chips { gap: 4px 16px; }
+.key-item { display: inline-flex; gap: 6px; align-items: baseline; color: var(--muted); }
+/* The parts of a rank-fusion score side by side: metadata, then full text. */
+.meter.split { display: inline-flex; width: 80px; }
+.meter.split i { border-radius: 0; }
+.meter i.m { background: var(--meta); }
+.meter i.f { background: var(--full); }
+/* Where a hit stands in each index: one axis for all rows, rank 1 on the left, on a log
+   scale, as the first ranks count most. */
+.ranks { position: relative; width: 132px; height: 14px; }
+.ranks::before { content: ""; position: absolute; left: 0; right: 0; top: 6px; height: 1px; background: var(--line); }
+.ranks i { position: absolute; top: 2px; width: 10px; height: 10px; margin-left: -5px; border-radius: 50%; box-shadow: 0 0 0 2px var(--panel); }
+.ranks .m { background: var(--meta); }
+.ranks .f { background: var(--full); }
+td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: tabular-nums; color: var(--muted); }
+/* results header: labels at the bottom, under the vertical term names */
+#mt-head th { vertical-align: bottom; white-space: nowrap; }
+#mt-head th small { display: block; margin-top: 2px; font-size: 11px; font-weight: 400; }
+#mt-head .swatch { width: 8px; height: 8px; margin-right: 3px; vertical-align: 0; }
+/* The scale of the rank dots, ticks at 1, 10, 100 …, matching .ranks. */
+.rank-axis { position: relative; width: 132px; height: 15px; margin-top: 4px; border-top: 1px solid var(--muted); }
+.rank-axis i { position: absolute; top: -4px; height: 4px; border-left: 1px solid var(--muted); }
+.rank-axis span { position: absolute; top: 1px; font-size: 10.5px; font-variant-numeric: tabular-nums; }
+/* per hit and query term: left half metadata, right half full text; names cut at one height */
+.heat-head, .heat { display: flex; gap: 2px; }
+.heat-head span { width: 18px; max-height: 96px; writing-mode: vertical-rl; transform: rotate(180deg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-weight: 400; }
+.heat-head span.focus { color: var(--text); font-weight: 700; }
+.heat span { display: flex; width: 18px; height: 14px; border-radius: 3px; background: var(--code); overflow: hidden; }
+.heat span i { flex: 1; }
+.heat .m { background: var(--meta); }
+.heat .f { background: var(--full); }
+.heat-head .gap, .heat .gap { width: 6px; background: none; }
+.rank-lists { flex: 1; overflow: auto; display: grid; grid-template-columns: 1fr 1fr; gap: 0 18px; padding: 0 16px 12px; align-content: start; }
+.rank-lists h3 { position: sticky; top: 0; margin: 0; padding: 9px 0 7px; font-size: 12px; font-weight: 600; color: var(--muted); background: var(--bg); border-bottom: 1px solid var(--line); z-index: 1; }
+.rank-item { display: grid; grid-template-columns: 26px 70px 1fr 48px; gap: 8px; align-items: baseline; padding: 4px 4px; border-bottom: 1px solid var(--line); font-size: 12.5px; cursor: pointer; }
+.rank-item:hover { background: var(--hover); }
+.rank-item .n { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+.rank-item small { color: var(--muted); }
+.pill.hit { background: var(--text); color: var(--panel); }
+.raw { flex: 1; overflow: auto; padding: 12px 16px; }
+.raw pre { margin: 0 0 12px; padding: 10px; border-radius: 6px; background: var(--code); font-size: 11px; overflow: auto; }
+.raw summary { cursor: pointer; margin-bottom: 8px; color: var(--muted); }
+/* Example client: the answer as an app could show it, from the fields of the tools only. */
+.client { flex: 1; overflow: auto; padding: 0 16px 24px; }
+.client > * { max-width: 940px; margin-left: auto; margin-right: auto; }
+.match-main:has(#mttab-client.active) > :is(.stats, .terms-disclosure) { display: none; }
+.client { background: var(--bg); display: flow-root; }
+.client .notice { margin-block: 12px; }
+.client-head { margin-top: 14px; margin-bottom: 10px; }
+.client-head small { color: var(--muted); }
+.client-head h3 { margin: 4px 0 0; font-size: clamp(18px, 2vw, 25px); letter-spacing: -.035em; line-height: 1.3; }
+
+.src-card { display: grid; gap: 16px; margin-bottom: 12px; padding: 18px 20px; background: var(--panel); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); }
+.src-card.top-result { border-inline-start: 4px solid var(--accent); }
+.src-card.has-image { grid-template-columns: 176px 1fr; }
+.src-card > img { width: 176px; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 6px; background: var(--code); }
+.src-card > div { min-width: 0; }
+.src-meta { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+.src-meta .rank { color: var(--accent); font-size: 15px; font-weight: 650; margin-left: auto; white-space: nowrap; font-variant-numeric: tabular-nums; }
+.src-meta .meter { margin: 0 0 0 7px; }
+.src-card h4 { margin: 9px 0 4px; font-size: clamp(17px, 1.6vw, 22px); letter-spacing: -.025em; font-weight: 650; line-height: 1.35; }
+.src-card h4 a { color: var(--text); text-decoration: none; }
+.src-card h4 a:hover { text-decoration: underline; }
+.src-card .byline { font-size: 12px; color: var(--muted); }
+.src-card .summary { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; margin: 9px 0 0; font-size: 14px; line-height: 1.55; white-space: pre-line; overflow-wrap: anywhere; }
+.src-card.more .summary { display: block; }
+.src-card .summary.none { color: var(--muted); }
+.src-foot { display: flex; gap: 6px 12px; align-items: center; flex-wrap: wrap; margin-top: 9px; font-size: 12px; color: var(--muted); }
+.src-foot button { padding: 3px 10px; border: 1px solid var(--line); border-radius: 6px; background: none; color: var(--accent); font-weight: 600; cursor: pointer; }
+.src-foot button:hover { background: var(--hover); }
+.src-foot button:disabled { opacity: .5; cursor: default; }
+/* minmax(0, …): a long line of the JSON must not widen the card. */
+.files { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; font-size: 12.5px; }
+.files:not(:empty) { margin-top: 9px; padding-top: 9px; border-top: 1px solid var(--line); }
+.file { display: flex; gap: 2px 10px; align-items: baseline; flex-wrap: wrap; }
+.file a { overflow-wrap: anywhere; }
+.files summary { margin-top: 4px; cursor: pointer; color: var(--muted); font-size: 12px; }
+.files pre { max-height: 260px; overflow: auto; margin: 6px 0 0; padding: 10px; border-radius: 6px; background: var(--code); font-size: 11px; white-space: pre-wrap; overflow-wrap: anywhere; }
+
+@media (max-width: 760px) {
+  .journey-panel, .terms-disclosure { margin-inline: 8px; }
+  .journey-bar h2 { flex-basis: 100%; }
+  .rank-lists { display: block; }
+  .term-row, .ev-terms { grid-template-columns: 1fr; }
+  .term-key { margin-left: 0; }
+  .src-card.has-image { grid-template-columns: 1fr; }
+  .src-card > img { width: 100%; max-height: 160px; }
+}

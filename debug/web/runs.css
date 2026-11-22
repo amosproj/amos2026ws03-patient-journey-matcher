@@ -1,0 +1,41 @@
+/* Runs: the run form, the run history and the citation graph. */
+.topics { display: flex; flex-direction: column; gap: 2px; max-height: 220px; overflow: auto; border: 1px solid var(--line); border-radius: 6px; padding: 4px; }
+.topics label { display: flex; gap: 8px; align-items: baseline; padding: 4px 6px; border-radius: 5px; cursor: pointer; }
+.topics label:hover { background: var(--hover); }
+.topics label.disabled { opacity: .45; cursor: default; }
+.topics small { color: var(--muted); margin-left: auto; white-space: nowrap; }
+.runs { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 4px; }
+.runs li {
+  padding: 7px 8px; border-radius: 6px; cursor: pointer; border: 1px solid transparent;
+  display: grid; grid-template-columns: auto 1fr auto auto; gap: 2px 8px; align-items: center;
+}
+.runs li:hover { background: var(--hover); }
+.runs li.active { border-color: var(--line-strong); background: var(--selected); }
+.runs li.empty { cursor: default; color: var(--muted); display: block; }
+.runs .when { font-weight: 600; }
+.runs .what { grid-column: 2 / 5; color: var(--muted); font: 11px ui-monospace, Menlo, monospace; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.runs .count { color: var(--muted); font-size: 12px; }
+.runs .del {
+  border: 1px solid transparent; background: none; color: var(--muted); cursor: pointer;
+  font-size: 12px; padding: 0 5px; border-radius: 5px; line-height: 18px;
+}
+.runs .del:hover { color: var(--error); border-color: var(--line); }
+.runs .del.armed { color: #fff; background: var(--danger); border-color: var(--danger); }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--dropped); grid-row: 1 / 3; }
+.status-dot.finished { background: var(--good); }
+.status-dot.running { background: var(--accent); animation: pulse 1s infinite; }
+.status-dot.failed, .status-dot.cancelled { background: var(--critical); }
+
+.tab { position: absolute; inset: 0; display: none; }
+.tab.active { display: flex; flex-direction: column; }
+#tab-graph canvas { flex: 1; width: 100%; height: 100%; display: block; cursor: grab; }
+#tab-graph canvas.dragging { cursor: grabbing; }
+.legend { position: absolute; left: 16px; bottom: 12px; display: flex; gap: 14px; background: color-mix(in srgb, var(--panel) 85%, transparent); padding: 6px 10px; border-radius: 6px; border: 1px solid var(--line); font-size: 12px; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 5px; vertical-align: -1px; }
+.graph-note { position: absolute; right: 16px; bottom: 12px; color: var(--muted); font-size: 12px; }
+.tooltip { position: absolute; pointer-events: none; background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; max-width: 380px; font-size: 12px; box-shadow: var(--shadow-pop); display: none; z-index: 5; }
+
+@media (max-width: 760px) {
+  .graph-note { top: 8px; bottom: auto; }
+  .legend { flex-wrap: wrap; gap: 4px 10px; }
+}

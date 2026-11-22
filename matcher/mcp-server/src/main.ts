@@ -19,7 +19,7 @@ const command = process.argv[2];
 if (command === "explain" || command === "get_source") {
   // `node src/main.ts explain` answers the one `match_journey` request on stdin with the steps
   // of the match, `node src/main.ts get_source` the one `get_source` request; both without a
-  // server. The debug UI runs them (debug/crawler/README.md).
+  // server. The debug UI runs them (debug/README.md).
   try {
     const request: unknown = JSON.parse(await text(process.stdin));
     const answer =

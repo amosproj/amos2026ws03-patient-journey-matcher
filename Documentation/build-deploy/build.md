@@ -25,7 +25,7 @@ Run the commands from the repository root. Each `make` target runs the `uv`, `pn
 | `make index` | Builds, then updates the indexes of all approaches, today the [keyword index](../design/keyword-matching.md) |
 | `WHISPER_MODEL=tiny-q5_1 make transcribe` | Builds, then runs the [transcription job](../design/keyword-matching.md#speech-to-text) until you stop it: speech-to-text for podcast audio that has no transcript, for the indexes. It reads no file until you set how many at once: [options](#options) or the debug UI |
 | `make start` | Builds, then starts the MCP server on `http://127.0.0.1:3000/mcp`; needs the root `.env` |
-| `make debug` | Starts the [debug UI](../../debug/crawler/README.md) for the crawler, the database, the index and the matcher on `http://127.0.0.1:8765` |
+| `make debug` | Starts the [debug UI](../../debug/README.md) for the crawler, the database, the index and the matcher on `http://127.0.0.1:8765` |
 | `make graph PATIENT=Patient-5` | Builds the [patient graph](../user/mcp-interface.md#patient-graph) of one synthetic patient and writes `patientdata/Patient-5/graph.json` with the [patient graph tool](../../tools/patient-graph/README.md); needs `GEMINI_API_KEY` |
 
 ## Run the matcher locally
@@ -37,7 +37,7 @@ make index             # keyword index; the first run is slow, see Limitations
 make start             # MCP server, keep it running
 ```
 
-Then call it from a second terminal with the MCP Inspector: [MCP interface, try it](../user/mcp-interface.md#try-it). To see each step of the pipeline with this data, start the [debug UI](../../debug/crawler/README.md) with `make debug`.
+Then call it from a second terminal with the MCP Inspector: [MCP interface, try it](../user/mcp-interface.md#try-it). To see each step of the pipeline with this data, start the [debug UI](../../debug/README.md) with `make debug`.
 
 ## Options
 

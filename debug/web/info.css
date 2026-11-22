@@ -1,0 +1,27 @@
+/* Info screen */
+.ov-row.on b { color: color-mix(in oklab, var(--good) 70%, var(--text)); }
+.info-facts { display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 4px 12px; margin: 0; font-size: 12.5px; }
+.info-facts dt { color: var(--muted); }
+.info-facts dd { margin: 0; overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.info-line { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; padding: 7px 0; border-top: 1px solid var(--line); font-size: 12.5px; }
+.info-line:first-child { border-top: 0; padding-top: 0; }
+.info-line .link-button { margin-left: auto; }
+.topic-browser { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(220px, 300px) minmax(0, 1fr); }
+.topic-list { display: flex; flex-direction: column; gap: 8px; min-height: 0; padding: 12px; border-right: 1px solid var(--line); }
+.topic-list .db-tables { flex: 1; min-height: 0; overflow: auto; }
+.topic-detail { overflow: auto; padding: 16px 20px 28px; display: grid; gap: 20px; align-content: start; }
+.topic-head h3 { margin: 0 0 2px; font-size: 18px; letter-spacing: -.02em; }
+.topic-section h4 { margin: 0 0 8px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.topic-section h4 small { margin-left: 4px; color: var(--text); font-size: 12px; }
+.topic-section > p { margin: -4px 0 8px; color: var(--muted); font-size: 12px; }
+.topic-group + .topic-group { margin-top: 12px; }
+.topic-group > small { display: block; margin-bottom: 5px; color: var(--muted); font-size: 11.5px; }
+.topic-detail .term { white-space: normal; padding: 1px 8px; }
+.topic-links { margin: 0; padding: 0; list-style: none; display: grid; gap: 5px; font-size: 12.5px; }
+.topic-file summary { cursor: pointer; color: var(--muted); font-size: 12.5px; }
+.topic-file pre { margin: 8px 0 0; padding: 10px 12px; border-radius: 6px; background: var(--code); font-size: 11.5px; max-height: 420px; overflow: auto; }
+
+@media (max-width: 760px) {
+  .topic-browser { grid-template-columns: 1fr; grid-template-rows: auto minmax(0, 1fr); }
+  .topic-list { max-height: 40vh; border-right: 0; border-bottom: 1px solid var(--line); }
+}

@@ -1,0 +1,335 @@
+{
+  "_comment": "Status cues (Documentation/design/graph-normalization.md#status). A `pre` cue stands at most `window` words before the entity name, a `post` cue at most `postWindow` words after it (`X was ruled out`), both in the same clause; a cue with its own `window` uses that instead. Bare negations (`no`, `ohne`) reach only the next word or two, so `no prior treatment has prostate cancer` negates nothing. Where two cues overlap, the longer wins: `cannot be ruled out` beats `ruled out`, `not confirmed` beats `confirmed`. `pseudo` cues only block shorter ones (`no change` is not a negation, `not confirmed` says neither yes nor no). So does a cue with one of `negators` among the `negatorWindow` words before it: `could not be ruled out` and `has not been confirmed` give no status (`t` is what normalizeName leaves of `can't`). Cues and clause breaks are matched after normalizeName.",
+  "window": 5,
+  "postWindow": 3,
+  "negatorWindow": 3,
+  "negators": ["not", "nicht", "cannot", "never", "t"],
+  "clauseBreaks": [
+    "but",
+    "however",
+    "although",
+    "though",
+    "except",
+    "aber",
+    "jedoch",
+    "allerdings",
+    "wobei"
+  ],
+  "attributes": {
+    "active": "asserted",
+    "confirmed": "asserted"
+  },
+  "cues": [
+    {
+      "text": "suspected",
+      "status": "suspected",
+      "position": "pre"
+    },
+    {
+      "text": "suspected diagnosis of",
+      "status": "suspected",
+      "position": "pre"
+    },
+    {
+      "text": "suspicion of",
+      "status": "suspected",
+      "position": "pre"
+    },
+    {
+      "text": "possible",
+      "status": "suspected",
+      "position": "pre"
+    },
+    {
+      "text": "probable",
+      "status": "suspected",
+      "position": "pre"
+    },
+    {
+      "text": "likely",
+      "status": "suspected",
+      "position": "pre"
+    },
+    {
+      "text": "presumed",
+      "status": "suspected",
+      "position": "pre"
+    },
+    {
+      "text": "verdacht auf",
+      "status": "suspected",
+      "position": "pre"
+    },
+    {
+      "text": "verdacht",
+      "status": "suspected",
+      "position": "pre"
+    },
+    {
+      "text": "fraglich",
+      "status": "suspected",
+      "position": "pre"
+    },
+    {
+      "text": "fragliche",
+      "status": "suspected",
+      "position": "pre"
+    },
+    {
+      "text": "fraglicher",
+      "status": "suspected",
+      "position": "pre"
+    },
+    {
+      "text": "wahrscheinlich",
+      "status": "suspected",
+      "position": "pre"
+    },
+    {
+      "text": "cannot be ruled out",
+      "status": "suspected",
+      "position": "post"
+    },
+    {
+      "text": "can not be ruled out",
+      "status": "suspected",
+      "position": "post"
+    },
+    {
+      "text": "cannot be excluded",
+      "status": "suspected",
+      "position": "post"
+    },
+    {
+      "text": "not excluded",
+      "status": "suspected",
+      "position": "post"
+    },
+    {
+      "text": "nicht auszuschliessen",
+      "status": "suspected",
+      "position": "post"
+    },
+    {
+      "text": "nicht ausgeschlossen",
+      "status": "suspected",
+      "position": "post"
+    },
+    {
+      "text": "can not rule out",
+      "status": "suspected",
+      "position": "pre"
+    },
+    {
+      "text": "cannot rule out",
+      "status": "suspected",
+      "position": "pre"
+    },
+    {
+      "text": "nicht sicher ausgeschlossen",
+      "status": "suspected",
+      "position": "post"
+    },
+    {
+      "text": "can not be excluded",
+      "status": "suspected",
+      "position": "post"
+    },
+    {
+      "text": "not ruled out",
+      "status": "suspected",
+      "position": "post"
+    },
+    {
+      "text": "no",
+      "status": "negated",
+      "position": "pre",
+      "window": 1
+    },
+    {
+      "text": "no evidence of",
+      "status": "negated",
+      "position": "pre"
+    },
+    {
+      "text": "no signs of",
+      "status": "negated",
+      "position": "pre"
+    },
+    {
+      "text": "without",
+      "status": "negated",
+      "position": "pre",
+      "window": 1
+    },
+    {
+      "text": "without evidence of",
+      "status": "negated",
+      "position": "pre"
+    },
+    {
+      "text": "negative for",
+      "status": "negated",
+      "position": "pre"
+    },
+    {
+      "text": "absence of",
+      "status": "negated",
+      "position": "pre"
+    },
+    {
+      "text": "free of",
+      "status": "negated",
+      "position": "pre"
+    },
+    {
+      "text": "kein",
+      "status": "negated",
+      "position": "pre",
+      "window": 1
+    },
+    {
+      "text": "keine",
+      "status": "negated",
+      "position": "pre",
+      "window": 1
+    },
+    {
+      "text": "keinen",
+      "status": "negated",
+      "position": "pre",
+      "window": 1
+    },
+    {
+      "text": "kein hinweis auf",
+      "status": "negated",
+      "position": "pre"
+    },
+    {
+      "text": "kein anhalt fur",
+      "status": "negated",
+      "position": "pre"
+    },
+    {
+      "text": "kein nachweis von",
+      "status": "negated",
+      "position": "pre"
+    },
+    {
+      "text": "ohne",
+      "status": "negated",
+      "position": "pre",
+      "window": 1
+    },
+    {
+      "text": "ruled out",
+      "status": "negated",
+      "position": "post"
+    },
+    {
+      "text": "excluded",
+      "status": "negated",
+      "position": "post"
+    },
+    {
+      "text": "ausgeschlossen",
+      "status": "negated",
+      "position": "post"
+    },
+    {
+      "text": "nicht behandelt mit",
+      "status": "negated",
+      "position": "post"
+    },
+    {
+      "text": "not treated with",
+      "status": "negated",
+      "position": "post"
+    },
+    {
+      "text": "confirmed",
+      "status": "asserted",
+      "position": "pre"
+    },
+    {
+      "text": "histologically proven",
+      "status": "asserted",
+      "position": "pre"
+    },
+    {
+      "text": "diagnosed with",
+      "status": "asserted",
+      "position": "pre"
+    },
+    {
+      "text": "confirmed the suspected",
+      "status": "asserted",
+      "position": "pre"
+    },
+    {
+      "text": "confirmed the suspicion of",
+      "status": "asserted",
+      "position": "pre"
+    },
+    {
+      "text": "gesichertes",
+      "status": "asserted",
+      "position": "pre"
+    },
+    {
+      "text": "confirmed",
+      "status": "asserted",
+      "position": "post"
+    },
+    {
+      "text": "histologically confirmed",
+      "status": "asserted",
+      "position": "post"
+    },
+    {
+      "text": "gesichert",
+      "status": "asserted",
+      "position": "post"
+    },
+    {
+      "text": "bestatigt",
+      "status": "asserted",
+      "position": "post"
+    },
+    {
+      "text": "histologisch nachgewiesen",
+      "status": "asserted",
+      "position": "post"
+    },
+    {
+      "text": "no change",
+      "status": "pseudo",
+      "position": "pre"
+    },
+    {
+      "text": "no increase",
+      "status": "pseudo",
+      "position": "pre"
+    },
+    {
+      "text": "keine veranderung",
+      "status": "pseudo",
+      "position": "pre"
+    },
+    {
+      "text": "nicht gesichert",
+      "status": "pseudo",
+      "position": "post"
+    },
+    {
+      "text": "nicht bestatigt",
+      "status": "pseudo",
+      "position": "post"
+    },
+    {
+      "text": "not confirmed",
+      "status": "pseudo",
+      "position": "post"
+    }
+  ]
+}

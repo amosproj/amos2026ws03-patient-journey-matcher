@@ -1,17 +1,19 @@
 """Debug UI for the crawler, the database, the index and the matcher.
 
-Start it from the repository root with `make debug` (see debug/crawler/README.md). It runs in the
+Start it from the repository root with `make debug` (see debug/README.md). It runs in the
 crawler's uv environment and only uses the crawler's public Python API (`run_requests`
 with its factory and sleep hooks, `crawler.store` for `--store`), asyncpg and the standard
 library, so the crawler needs nothing extra for it. The database view only reads, except when
-the user empties tables and types the database name to confirm, and when the Index screen sets
+the user empties tables and types the database name to confirm, and when the Index overview sets
 how many audio files the transcription job reads at once.
 
-The matcher is TypeScript, so its logic stays there: the Index screen starts the indexer job
-(`matcher/indexer`) as a child process and reads its tables, and the Matcher screen asks
-`node src/main.ts explain` in `matcher/mcp-server` for the answer of `match_journey` with the
-steps of the match, and `node src/main.ts get_source` for the files of one source. Journeys are
-passed on, never stored or logged.
+The matcher is TypeScript, so its logic stays there: the Index screens start the indexer job
+(`matcher/indexer`) as a child process, for every approach or one, and read its tables, and the
+Matcher screen asks `node src/main.ts explain` in `matcher/mcp-server` for the answer of
+`match_journey` with the steps of the match, and `node src/main.ts get_source` for the files of
+one source. Index › Graph shows a patient graph or PubTator3 annotations normalized by
+`scripts/normalize.ts` of `matcher/algorithms/graph`. Journeys are passed on, never stored or
+logged.
 """
 
 import argparse
@@ -21,6 +23,7 @@ import importlib
 import io
 import json
 import logging
+import math
 import os
 import platform
 import re
@@ -63,9 +66,17 @@ from crawler.store import (
 )
 
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parent.parent
+ROOT = HERE.parent
 MATCHER_DIR = ROOT / "matcher"
 RUNS_DIR = HERE / "runs"
+WEB_DIR = HERE / "web"
+"""The page: index.html, one script and stylesheet per screen; nothing else is served."""
+WEB_FILE = re.compile(r"/([a-z0-9-]+\.(?:html|css|js))")
+WEB_TYPES = {
+    ".html": "text/html; charset=utf-8",
+    ".css": "text/css; charset=utf-8",
+    ".js": "text/javascript; charset=utf-8",
+}
 ENV_KEYS = (
     "NCBI_ENTREZ_EMAIL",
     "NCBI_API_KEY",
@@ -780,7 +791,7 @@ def document_filter(params: dict[str, list[str]], indexed: bool) -> tuple[str, l
     if full_text or detail:
         if not indexed:
             raise ValueError("No keyword index yet: run make index")
-        # Like the Index screen: the indexer leaves expired documents alone.
+        # Like the keyword coverage: the indexer leaves expired documents alone.
         conditions.append("(expires_at IS NULL OR expires_at > now())")
         if full_text:
             states = FULL_TEXT_FILTERS.get(full_text)
@@ -1068,7 +1079,7 @@ async def db_table(connection: Any, params: dict[str, list[str]]) -> dict[str, A
     }
 
 
-# ── Index screen: what the keyword index holds, and the indexer job ──────────────
+# ── Index screens: the indexer job, and what the keyword index holds ─────────────
 
 NOT_EXPIRED = "(d.expires_at IS NULL OR d.expires_at > now())"
 
@@ -1107,7 +1118,7 @@ FULL_TEXT_FILTERS = {
     "failed": ["failed"],
     "unread": ["new", "changed"],
 }
-"""The full-text filter of the documents table: the columns of the Index screen's coverage."""
+"""The full-text filter of the documents table: the columns of the keyword coverage."""
 
 
 NO_INDEX = (
@@ -1117,7 +1128,7 @@ NO_INDEX = (
 """Stands in for an index table before the first `make index`: every document is to index."""
 WORD_BUCKETS = [100, 250, 500, 1000, 2000, 4000, 8000, 16000, 32000, 50000]
 """Keywords per full text, for the histogram; 50,000 is the indexer's limit (`MAX_WORDS`)."""
-# The estimate of the Index screen copies two rules of matcher/download/src: the media types
+# The estimate of Index › Keyword copies two rules of matcher/download/src: the media types
 # `formatOf` reads (extract.ts) and the seconds between two requests to a host (`INTERVAL_MS`
 # in downloader.ts). Keep them in step; the indexer itself does not use these copies.
 READABLE_TYPES = [
@@ -1177,10 +1188,11 @@ def matcher_environment() -> dict[str, str]:
 class IndexRun(EventLog):
     """One run of the indexer job (`make index`); its output lines are the events."""
 
-    command = "make index"
-
-    def __init__(self) -> None:
+    def __init__(self, approach: str | None) -> None:
         super().__init__()
+        self.approach = approach
+        """The one approach to index, or None for all of them."""
+        self.command = "make index" + (f" APPROACHES={approach}" if approach else "")
         self.process: subprocess.Popen[str] | None = None
         self.cancel_requested = False
 
@@ -1188,6 +1200,7 @@ class IndexRun(EventLog):
         return {
             "id": self.id,
             "command": self.command,
+            "approach": self.approach,
             "started_at": self.started_at,
             "status": self.status,
             "duration": self.duration,
@@ -1200,7 +1213,7 @@ def run_indexer(run: IndexRun, environment: dict[str, str]) -> None:
     code: int | None = None
     try:
         run.process = subprocess.Popen(
-            ["node", "src/main.ts"],
+            ["node", "src/main.ts", *([run.approach] if run.approach else [])],
             cwd=MATCHER_DIR / "indexer",
             env=environment,
             stdin=subprocess.DEVNULL,
@@ -1227,13 +1240,17 @@ def run_indexer(run: IndexRun, environment: dict[str, str]) -> None:
             run.emit("index_" + run.status, code=code)
 
 
-def start_indexer() -> IndexRun:
+def start_indexer(approach: Any = None) -> IndexRun:
+    """Starts the indexer job for every approach, or for the one named, e.g. `keyword`."""
     global INDEXING
+    named = isinstance(approach, str) and re.fullmatch("[a-z_]+", approach)
+    if approach is not None and not named:
+        raise ValueError("approach must be the name of one approach, e.g. keyword")
     environment = matcher_environment()
     with LOCK:
         if INDEXING is not None and INDEXING.status == "running":
             raise RuntimeError("The indexer is already running")
-        run = INDEXING = IndexRun()
+        run = INDEXING = IndexRun(approach)
     threading.Thread(target=run_indexer, args=(run, environment), daemon=True).start()
     return run
 
@@ -1614,6 +1631,107 @@ def run_matcher(command: str, request: dict[str, Any]) -> dict[str, Any]:
         raise RuntimeError(message) from error
 
 
+# ── Index › Graph: the normalization of patient graphs and PubTator3 annotations (#80) ───
+
+GRAPH_DIR = MATCHER_DIR / "algorithms" / "graph"
+PUBTATOR_FIXTURES = GRAPH_DIR / "fixtures" / "pubtator"
+GRAPH_TIMEOUT = 30
+GRAPH_ENVIRONMENT = ("PATH", "HOME", "LANG", "SYSTEMROOT")
+"""All the normalizer gets of this server's environment: it needs no keys and no database."""
+
+
+def graph_meta() -> dict[str, Any]:
+    """The graphs the screen can show: patient graphs of `make graph` and PubTator3 fixtures."""
+
+    def number(path: Path) -> tuple[int, str]:
+        digits = re.search(r"\d+", path.parent.name)
+        return int(digits.group()) if digits else 0, path.parent.name
+
+    patients = sorted(JOURNEYS_DIR.glob("*/graph.json"), key=number)
+    return {
+        "patients": [path.parent.name for path in patients],
+        "papers": sorted(path.stem for path in PUBTATOR_FIXTURES.glob("*.json")),
+        "missing": matcher_missing(),
+    }
+
+
+def graph_file(kind: str, name: str) -> Path:
+    if not JOURNEY_ID.fullmatch(name):
+        raise ValueError(f"Not a graph name: {name}")
+    if kind == "patient":
+        path = JOURNEYS_DIR / name / "graph.json"
+    elif kind == "paper":
+        path = PUBTATOR_FIXTURES / f"{name}.json"
+    else:
+        raise ValueError(f"Not a graph kind: {kind}")
+    if not path.exists():
+        raise LookupError(f"No {kind} graph {name}")
+    return path
+
+
+def graph_normalize(kind: str, name: str, min_score: str) -> dict[str, Any]:
+    """The NormalizedGraph of one file, by the graph package's own `normalize --json`, and how
+    many nodes and edges or annotations and relations the file has before it."""
+    path = graph_file(kind, name)
+    try:
+        score = float(min_score or 0)
+    except ValueError as error:
+        raise ValueError(f"min_score is not a number: {min_score}") from error
+    if not math.isfinite(score) or not 0 <= score <= 1:
+        raise ValueError(f"min_score must be between 0 and 1: {min_score}")
+    missing = matcher_missing()
+    if missing:
+        raise ValueError(missing)
+    try:
+        done = subprocess.run(
+            ["node", "scripts/normalize.ts", str(path), "--json", "--min-score", str(score)],
+            cwd=GRAPH_DIR,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            timeout=GRAPH_TIMEOUT,
+            env={key: os.environ[key] for key in GRAPH_ENVIRONMENT if key in os.environ},
+        )
+    except subprocess.TimeoutExpired as error:
+        raise RuntimeError(f"The normalization did not finish within {GRAPH_TIMEOUT} s") from error
+    graphs: Any = None
+    if done.returncode == 0:
+        with contextlib.suppress(json.JSONDecodeError):
+            graphs = json.loads(done.stdout)
+    if not isinstance(graphs, list):
+        lines = (done.stderr.strip() or done.stdout.strip()).splitlines()
+        message = next((line for line in lines if re.match(r"\w*Error\b", line)), "")
+        message = message or f"The normalization failed (exit code {done.returncode})"
+        raise RuntimeError(message)
+    if not graphs:
+        raise LookupError(f"The {kind} file {name} has no document")
+    return {"kind": kind, "name": name, "before": graph_size(kind, path), "graph": graphs[0],
+            "original": json.loads(path.read_text(encoding="utf-8")) if kind == "patient" else None}
+
+
+def graph_size(kind: str, path: Path) -> dict[str, int]:
+    """How many nodes and edges, or annotations and relations of the first document, a file
+    has. The normalizer has read it already, so an odd shape only gives zeros here."""
+    try:
+        raw: Any = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        raw = None
+
+    def items(value: Any, key: str) -> list[Any]:
+        found = value.get(key) if isinstance(value, dict) else None
+        return found if isinstance(found, list) else []
+
+    if kind == "patient":
+        return {"nodes": len(items(raw, "nodes")), "edges": len(items(raw, "edges"))}
+    # An export (`{"PubTator3": [...]}`), a list of documents or one document, as the script reads.
+    documents = raw if isinstance(raw, list) else items(raw, "PubTator3") or [raw]
+    first = documents[0] if documents else None
+    return {
+        "annotations": sum(len(items(p, "annotations")) for p in items(first, "passages")),
+        "relations": len(items(first, "relations")),
+    }
+
+
 def call_mcp(tool: str, arguments: dict[str, Any]) -> dict[str, Any]:
     """A tool of the running MCP server (`make start`), as a client gets it."""
     call = {
@@ -1819,7 +1937,7 @@ def own_runs() -> dict[str, Any]:
         },
         "index": None
         if index is None or index.status != "running"
-        else {"id": index.id, "started_at": index.started_at},
+        else {"id": index.id, "command": index.command, "started_at": index.started_at},
     }
 
 
@@ -2294,11 +2412,13 @@ class Handler(BaseHTTPRequestHandler):
             return
         url = urlparse(self.path)
         path = url.path
-        if path in ("/", "/index.html"):
-            body = (HERE / "index.html").read_bytes()
+        page = WEB_FILE.fullmatch("/index.html" if path == "/" else path)
+        if page and (WEB_DIR / page[1]).is_file():
+            body = (WEB_DIR / page[1]).read_bytes()
             self.send_response(200)
-            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Type", WEB_TYPES[Path(page[1]).suffix])
             self.send_header("Content-Length", str(len(body)))
+            # Read from disk on every request, so a reload shows an edit without a restart.
             self.send_header("Cache-Control", "no-store")
             self.end_headers()
             self.wfile.write(body)
@@ -2312,6 +2432,12 @@ class Handler(BaseHTTPRequestHandler):
             self.route_db(path, parse_qs(url.query))
         elif path == "/api/index" or path.startswith("/api/index/"):
             self.route_index(path, parse_qs(url.query))
+        elif path == "/api/graph/meta":
+            self.send_json(graph_meta())
+        elif path == "/api/graph/normalize":
+            params = parse_qs(url.query)
+            kind, name, score = (first(params, key) for key in ("kind", "name", "min_score"))
+            self.send_result(lambda: graph_normalize(kind, name, score))
         elif path == "/api/match/meta":
             self.send_json(match_meta())
         elif path == "/api/info":
@@ -2348,11 +2474,10 @@ class Handler(BaseHTTPRequestHandler):
             self.start_run()
         elif path == "/api/db/empty":
             self.empty_db()
-        elif path == "/api/index/run":
-            self.send_result(lambda: start_indexer().summary())
         elif path == "/api/index/cancel":
             self.send_result(stop_indexer)
         elif path in (
+            "/api/index/run",
             "/api/index/terms",
             "/api/index/transcription",
             "/api/db/titles",
@@ -2366,6 +2491,8 @@ class Handler(BaseHTTPRequestHandler):
                 return
             if path == "/api/match":
                 self.send_result(lambda: match(body))
+            elif path == "/api/index/run":
+                self.send_result(lambda: start_indexer(body.get("approach")).summary())
             elif path == "/api/index/transcription":
                 self.send_db(
                     lambda connection: set_transcription_workers(connection, body.get("workers")),
@@ -2492,6 +2619,8 @@ def main() -> None:
     )
     refresh_env()
     load_summaries()
+    # The page asks for all its files at once; the default queue of 5 resets some of them.
+    ThreadingHTTPServer.request_queue_size = 128
     server = ThreadingHTTPServer((arguments.host, arguments.port), Handler)
     server.daemon_threads = True
     print(f"Debug UI: http://{arguments.host}:{arguments.port}", flush=True)

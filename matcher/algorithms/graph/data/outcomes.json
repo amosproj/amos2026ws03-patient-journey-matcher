@@ -1,0 +1,4 @@
+{
+  "_comment": "Diseases that are outcomes, not conditions: `olaparib treats Death` becomes `olaparib improves_outcome Death`, so it never matches the disease of a patient.",
+  "ids": ["mesh:D003643", "mesh:D018450"]
+}
