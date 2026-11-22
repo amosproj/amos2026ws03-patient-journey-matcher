@@ -441,7 +441,7 @@
     <div class="gr-legend" id="gr-type-legend"></div>
     <div class="side-head"><h2>Status</h2></div>
     <div class="gr-legend" id="gr-status-legend"></div>
-    <p class="muted gr-note">What <span class="mono">matcher/algorithms/graph</span> makes of the file (<a href="https://github.com/amosproj/amos2026ws03-patient-journey-matcher/blob/main/Documentation/design/graph-normalization.md" target="_blank" rel="noopener">graph normalization</a>). A hollow node has no shared ID: it is kept by its name but never meets a paper. Edges with the same ends, predicate and status are drawn once, with their count.</p>
+    <p class="muted gr-note">What <span class="mono">matcher/algorithms/graph</span> makes of the file (<a href="https://github.com/amosproj/amos2026ws03-patient-journey-matcher/blob/main/Documentation/design/graph-normalization.md" target="_blank" rel="noopener">graph normalization</a>). A hollow node has no shared ID: it is kept by its name but never meets a paper. The facts of one entity are one spoke from the patient, with a line per status; relations with the same ends, predicate and status are drawn once, with their count.</p>
   </aside>
 
   <main aria-label="Graph normalization">
@@ -453,7 +453,15 @@
       <button data-grtab="skipped">Left out <span class="badge" id="gr-n-skipped">0</span></button>
     </nav>
     <div class="content">
-      <section class="grtab active" id="grtab-graph"><svg id="gr-svg" role="img" aria-label="Normalized graph"></svg></section>
+      <section class="grtab active" id="grtab-graph">
+        <svg id="gr-svg" role="img" aria-label="Normalized graph"></svg>
+        <div class="gr-tools" role="group" aria-label="Zoom">
+          <button type="button" id="gr-zoom-in" title="Zoom in" aria-label="Zoom in"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 3v10M3 8h10"/></svg></button>
+          <button type="button" id="gr-zoom-out" title="Zoom out" aria-label="Zoom out"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10"/></svg></button>
+          <button type="button" id="gr-fit" title="Fit the graph into the view" aria-label="Fit the graph into the view"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10"/></svg></button>
+        </div>
+        <div class="gr-hint">Scroll to zoom · drag to pan · double-click to fit · click for details</div>
+      </section>
       <section class="grtab" id="grtab-entities"><div class="table-wrap"><table id="gr-entities"></table></div></section>
       <section class="grtab" id="grtab-statements"><div class="table-wrap"><table id="gr-statements"></table></div></section>
       <section class="grtab" id="grtab-skipped"><div class="table-wrap"><table id="gr-skipped"></table></div></section>
