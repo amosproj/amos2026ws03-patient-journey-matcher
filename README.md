@@ -46,7 +46,7 @@ Podcast audio without a transcript: `WHISPER_MODEL=tiny-q5_1 make transcribe WOR
 
 ### Explore the pipeline
 
-`make debug` starts the [debug UI](debug/crawler/README.md) on http://127.0.0.1:8765: one screen per step, from crawler runs and stored documents to the index and each step of a match (search terms per event, the rank of each hit in both indexes, the rank fusion), plus the machine and its timers.
+`make debug` starts the [debug UI](debug/README.md) on http://127.0.0.1:8765: one screen per step, from crawler runs and stored documents to the index and each step of a match (search terms per event, the rank of each hit in both indexes, the rank fusion), plus the machine and its timers.
 
 ## Development
 
@@ -71,7 +71,7 @@ Single checks, run in the project's folder:
 
 ## Documentation
 
-- **User:** [MCP interface](Documentation/user/mcp-interface.md), [synthetic patients](patientdata/patientdata.md), [patient graph tool](tools/patient-graph/README.md), [debug UI](debug/crawler/README.md)
+- **User:** [MCP interface](Documentation/user/mcp-interface.md), [synthetic patients](patientdata/patientdata.md), [patient graph tool](tools/patient-graph/README.md), [debug UI](debug/README.md)
 - **Design:** [software architecture](Documentation/design/architecture.md), [data sources](Documentation/design/sources.md), [storage](Documentation/design/storage.md), [keyword matching](Documentation/design/keyword-matching.md)
 - **Build and deploy:** [build, run and test](Documentation/build-deploy/build.md), [local database](Documentation/build-deploy/database.md), [deployment](Documentation/build-deploy/deployment.md)
 - **Research:** [the team's investigations](research/README.md)
@@ -86,7 +86,7 @@ Index of all pages and the [glossary](Documentation/glossary.md): [Documentation
 | `matcher/` | TypeScript pnpm workspace: MCP server, indexer, transcription job, approaches and shared packages ([README](matcher/README.md)) |
 | `db/` | PostgreSQL image and schema |
 | `deploy/` | Setup and backup scripts of the VM ([deployment](Documentation/build-deploy/deployment.md)) |
-| `debug/crawler/` | [Debug UI](debug/crawler/README.md) for the crawler, the database, the index and the matcher |
+| `debug/` | [Debug UI](debug/README.md) for the crawler, the database, the index and the matcher |
 | `scripts/` | Sample crawl, coverage report, speech-to-text, SBOM |
 | `patientdata/` | [Synthetic patients](patientdata/patientdata.md) for development and tests |
 | `tools/patient-graph/` | Helper tool that builds patient graphs, the second matching input, from the synthetic patients; code from SS26 ([README](tools/patient-graph/README.md)) |

@@ -1,6 +1,6 @@
 """Debug UI for the crawler, the database, the index and the matcher.
 
-Start it from the repository root with `make debug` (see debug/crawler/README.md). It runs in the
+Start it from the repository root with `make debug` (see debug/README.md). It runs in the
 crawler's uv environment and only uses the crawler's public Python API (`run_requests`
 with its factory and sleep hooks, `crawler.store` for `--store`), asyncpg and the standard
 library, so the crawler needs nothing extra for it. The database view only reads, except when
@@ -66,9 +66,17 @@ from crawler.store import (
 )
 
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parent.parent
+ROOT = HERE.parent
 MATCHER_DIR = ROOT / "matcher"
 RUNS_DIR = HERE / "runs"
+WEB_DIR = HERE / "web"
+"""The page: index.html, one script and stylesheet per screen; nothing else is served."""
+WEB_FILE = re.compile(r"/([a-z0-9-]+\.(?:html|css|js))")
+WEB_TYPES = {
+    ".html": "text/html; charset=utf-8",
+    ".css": "text/css; charset=utf-8",
+    ".js": "text/javascript; charset=utf-8",
+}
 ENV_KEYS = (
     "NCBI_ENTREZ_EMAIL",
     "NCBI_API_KEY",
@@ -2404,11 +2412,13 @@ class Handler(BaseHTTPRequestHandler):
             return
         url = urlparse(self.path)
         path = url.path
-        if path in ("/", "/index.html"):
-            body = (HERE / "index.html").read_bytes()
+        page = WEB_FILE.fullmatch("/index.html" if path == "/" else path)
+        if page and (WEB_DIR / page[1]).is_file():
+            body = (WEB_DIR / page[1]).read_bytes()
             self.send_response(200)
-            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Content-Type", WEB_TYPES[Path(page[1]).suffix])
             self.send_header("Content-Length", str(len(body)))
+            # Read from disk on every request, so a reload shows an edit without a restart.
             self.send_header("Cache-Control", "no-store")
             self.end_headers()
             self.wfile.write(body)

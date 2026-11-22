@@ -9,6 +9,7 @@ What each folder holds: [repository](README.md#repository). Where new things go:
 - `matcher/algorithms/<name>/`: a new matching approach ([add an approach](matcher/algorithms/README.md#add-an-approach))
 - `matcher/core/`, `matcher/db/`, `matcher/download/`: code that several matcher packages share (contracts, database access, full-text downloads)
 - `matcher/mcp-server/src/`: the MCP tools
+- `debug/web/`: a new screen of the debug UI, one script each ([debug UI](debug/README.md))
 - `db/init/`: changes to the shared tables, in a new numbered file ([schema changes](Documentation/design/storage.md#schema-changes)); an approach keeps its own tables in its package
 - `scripts/`: single-file scripts, such as the sample crawl; `deploy/`: scripts for the VM
 - `tools/<name>/`: standalone helper programs, such as the [patient graph tool](tools/patient-graph/README.md)

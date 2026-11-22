@@ -23,7 +23,7 @@ Left out:
 ## Indexing
 
 1. The indexers try the locators in their order ([keyword matching](../../Documentation/design/keyword-matching.md#full-texts)); they are read as PDFs, with the default budget of 3 s per host.
-2. Other publisher sites may refuse automated downloads too, or answer with an HTML page; such documents keep their metadata only. Measure the readable share with the Index › Keyword screen of the [debug UI](../../debug/crawler/README.md), and add hosts that always fail to `NO_AUTOMATED_DOWNLOAD`.
+2. Other publisher sites may refuse automated downloads too, or answer with an HTML page; such documents keep their metadata only. Measure the readable share with the Index › Keyword screen of the [debug UI](../../debug/README.md), and add hosts that always fail to `NO_AUTOMATED_DOWNLOAD`.
 
 ## To be aware of
 

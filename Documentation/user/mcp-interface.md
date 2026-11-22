@@ -37,7 +37,7 @@ In the browser, connect to the server, open **Tools** and pick `match_journey`. 
 }
 ```
 
-The answer names the focus event `e2` and lists papers on biochemical recurrence after prostatectomy. The Matcher screen of the [debug UI](../../debug/crawler/README.md) takes the same JSON and shows how an answer came about. The synthetic journeys in [`patientdata/`](../../patientdata/patientdata.md) can be sent unchanged.
+The answer names the focus event `e2` and lists papers on biochemical recurrence after prostatectomy. The Matcher screen of the [debug UI](../../debug/README.md) takes the same JSON and shows how an answer came about. The synthetic journeys in [`patientdata/`](../../patientdata/patientdata.md) can be sent unchanged.
 
 The same without a browser:
 

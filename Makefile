@@ -31,7 +31,7 @@ start: build
 	cd matcher && pnpm --filter @matcher/mcp-server start
 
 debug:
-	cd crawler && uv run --locked python ../debug/crawler/server.py --port $(PORT)
+	cd crawler && uv run --locked python ../debug/server.py --port $(PORT)
 
 # Starts the database and applies db/init/ again; the files are idempotent, so this also
 # brings an existing volume up to date.
