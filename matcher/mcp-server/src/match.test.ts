@@ -71,7 +71,12 @@ const journey = {
 
 test("answers with the stored documents of the matcher's hits, in its order", async () => {
   const approach = keyword([
-    { documentId: "pubmed:2", score: 1, matchedTerms: ["psa"] },
+    {
+      documentId: "pubmed:2",
+      score: 1,
+      matchedTerms: ["psa"],
+      explanation: "Matched PSA.",
+    },
     { documentId: "pubmed:9", score: 0.8 },
     { documentId: "pubmed:1", score: 0.5 },
   ]);
@@ -96,7 +101,13 @@ test("answers with the stored documents of the matcher's hits, in its order", as
     focus_event_id: "e2",
     degraded: false,
     results: [
-      { rank: 1, source_id: "pubmed:2", score: 1, matched_terms: ["psa"] },
+      {
+        rank: 1,
+        source_id: "pubmed:2",
+        score: 1,
+        matched_terms: ["psa"],
+        explanation: "Matched PSA.",
+      },
       { rank: 2, source_id: "pubmed:1", score: 0.5 },
     ],
   });
