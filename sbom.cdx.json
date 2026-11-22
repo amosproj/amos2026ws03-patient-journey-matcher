@@ -2,10 +2,10 @@
   "$schema": "http://cyclonedx.org/schema/bom-1.7.schema.json",
   "bomFormat": "CycloneDX",
   "specVersion": "1.7",
-  "serialNumber": "urn:uuid:f4ee1488-3c41-49ff-b4cd-12258b7ffe7d",
+  "serialNumber": "urn:uuid:9af8599f-01a7-4437-a9c8-fc7816d342d1",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-22T19:17:38Z",
+    "timestamp": "2026-11-22T20:06:00Z",
     "tools": {
       "components": [
         {
@@ -20,7 +20,7 @@
       "bom-ref": "98b1806d64fda9a2",
       "type": "application",
       "name": "patient-journey-matcher",
-      "version": "sprint-05-release-48-g99785e1",
+      "version": "sprint-05-release-69-g8a7f96d",
       "supplier": {
         "name": "The AMOS Projects"
       },
@@ -2749,11 +2749,11 @@
       "hashes": [
         {
           "alg": "SHA-1",
-          "content": "5fc81d711a470c0fbb837d6baf7cb30d1c56e847"
+          "content": "67a5c6cf61319da711ea24b2c06c3bde33cd2cf5"
         },
         {
           "alg": "SHA-256",
-          "content": "419cdde3a6fd5a1d8c9fc01aac981d563f8909bae06c9f2e7f6afc0f279a0a27"
+          "content": "1d3aece075bc158c73b0ec788e62871ab826fbb28019f28ba5756ff0955b65c9"
         }
       ]
     },
