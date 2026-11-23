@@ -749,6 +749,16 @@ test.skipIf(!databaseUrl)(
       );
       expect(read).toHaveBeenCalledTimes(2);
       expect((await read.mock.results[1].value).rows).toHaveLength(1);
+      // The SQL sorts the diagnosis-only papers itself: the two with the diagnosis in the title win.
+      await db.pool.query(
+        `UPDATE graph.documents SET entities = jsonb_set(entities, '{${cancer},inTitle}', 'true')
+         WHERE document_id IN ('pubmed:100', 'pubmed:101')`,
+      );
+      const titled = await rank.match(timeline, { ...options, limit: 2 });
+      expect(titled.map((hit) => hit.documentId)).toEqual([
+        "pubmed:100",
+        "pubmed:101",
+      ]);
     } finally {
       await db.drop();
     }
