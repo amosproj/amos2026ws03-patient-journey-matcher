@@ -50,6 +50,13 @@ export function createMatchService(
           degraded: false,
         };
       } catch (error) {
+        if (
+          error instanceof Error &&
+          "code" in error &&
+          error.code === "NOT_AVAILABLE"
+        ) {
+          throw new ToolError("NOT_AVAILABLE", error.message);
+        }
         console.error(withSqlState(`${algorithm} search failed`, error));
         // The trace goes back to the developer who sent the journey, so it gets the message.
         const details =

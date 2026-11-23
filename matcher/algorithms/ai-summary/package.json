@@ -1,0 +1,11 @@
+{
+  "name": "@matcher/ai-summary",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": "./src/approach.ts",
+  "dependencies": {
+    "@matcher/core": "workspace:*",
+    "@matcher/db": "workspace:*"
+  }
+}

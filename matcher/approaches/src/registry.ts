@@ -1,3 +1,4 @@
+import { createSemanticApproach, parseModel } from "@matcher/ai-summary";
 import type { Approach } from "@matcher/core";
 import type { Queryable } from "@matcher/db";
 import type { Downloader } from "@matcher/download";
@@ -16,7 +17,19 @@ export interface Dependencies {
  * graph #10) is one more entry here.
  */
 export function createApproaches(dependencies: Dependencies): Approach[] {
-  return [createKeywordApproach(dependencies)];
+  const approaches = [createKeywordApproach(dependencies)];
+  if (process.env.SEMANTIC_MODEL) {
+    approaches.push(
+      createSemanticApproach({
+        db: dependencies.db,
+        model: parseModel(process.env.SEMANTIC_MODEL),
+        indexModels: (process.env.SEMANTIC_MODELS || process.env.SEMANTIC_MODEL)
+          .split(",")
+          .map(parseModel),
+      }),
+    );
+  }
+  return approaches;
 }
 
 /** The approaches with these names, in the order of the list; all of them for no names. */
