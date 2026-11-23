@@ -6,6 +6,7 @@ import {
 } from "@matcher/db/testing";
 import { beforeAll, describe, expect, test, vi } from "vitest";
 import { createGraphIndexer } from "./indexer.ts";
+import { ensureGraphSchema } from "./schema.ts";
 
 const exportDocument = JSON.parse(
   readFileSync(
@@ -23,21 +24,26 @@ const documents = ["pubmed:32343890", "pubmed:2", "zenodo:32343890"].map(
   }),
 );
 
-// Schema creation, one batch, its upsert, then no more changed documents.
-function batch() {
+/** What the downloader gives for an export with this JSON. */
+function answer(json: unknown) {
+  return { status: 200, body: new TextEncoder().encode(JSON.stringify(json)) };
+}
+
+// Schema creation, one batch, its upserts, then no more changed documents.
+function batch(rows: unknown[] = documents) {
   return {
     query: vi
       .fn()
       .mockResolvedValueOnce({ rows: [] })
-      .mockResolvedValueOnce({ rows: documents })
+      .mockResolvedValueOnce({ rows })
       .mockResolvedValue({ rows: [] }),
   };
 }
 
 test("indexes the matching PMID, keeps entity-only papers and never requests another source", async () => {
   const db = batch();
-  const request = vi.fn().mockResolvedValue(
-    Response.json({
+  const get = vi.fn().mockResolvedValue(
+    answer({
       PubTator3: [
         { ...exportDocument, id: "2", pmid: 2, relations: [] },
         exportDocument,
@@ -45,9 +51,9 @@ test("indexes the matching PMID, keeps entity-only papers and never requests ano
     }),
   );
   const log = vi.fn();
-  await createGraphIndexer(db, request).index(log);
-  expect(request).toHaveBeenCalledTimes(1);
-  expect(new URL(request.mock.calls[0][0]).searchParams.get("pmids")).toBe(
+  await createGraphIndexer(db, get).index(log);
+  expect(get).toHaveBeenCalledTimes(1);
+  expect(new URL(get.mock.calls[0][0]).searchParams.get("pmids")).toBe(
     "32343890,2",
   );
   const rows = JSON.parse(db.query.mock.calls[2][1][0]);
@@ -76,9 +82,9 @@ test("indexes the matching PMID, keeps entity-only papers and never requests ano
 
 test("only missing PubMed records are scheduled for retry", async () => {
   const db = batch();
-  await createGraphIndexer(db, async () =>
-    Response.json({ PubTator3: [] }),
-  ).index(() => {});
+  await createGraphIndexer(db, async () => answer({ PubTator3: [] })).index(
+    () => {},
+  );
   const rows = JSON.parse(db.query.mock.calls[2][1][0]);
   expect(rows).toHaveLength(documents.length);
   for (const row of rows)
@@ -94,7 +100,7 @@ test("a bad paper and an unrecognized PMID do not discard the rest of the export
   const db = batch();
   const log = vi.fn();
   await createGraphIndexer(db, async () =>
-    Response.json({
+    answer({
       PubTator3: [
         { id: "2", passages: [{ annotations: [{ infons: {} }] }] },
         { id: "999", passages: [] },
@@ -114,55 +120,51 @@ test("a bad paper and an unrecognized PMID do not discard the rest of the export
   );
 });
 
-const noWait = async () => {};
+// PubTator3 answers 400 when it knows none of the PMIDs of a request.
+test.each([400, 404])(
+  "schedules a retry when PubTator3 knows none of the papers (HTTP %i)",
+  async (status) => {
+    const db = batch();
+    await createGraphIndexer(db, async () => ({ status })).index(() => {});
+    const rows = JSON.parse(db.query.mock.calls[2][1][0]);
+    expect(rows.map((row: { retry: boolean }) => row.retry)).toEqual([
+      true,
+      true,
+      false,
+    ]);
+  },
+);
 
-test("schedules a retry when PubTator3 answers HTTP 404", async () => {
-  const db = batch();
-  await createGraphIndexer(
-    db,
-    async () => new Response(null, { status: 404 }),
-    noWait,
-  ).index(() => {});
-  const rows = JSON.parse(db.query.mock.calls[2][1][0]);
-  expect(rows.map((row: { retry: boolean }) => row.retry)).toEqual([
-    true,
-    true,
-    false,
-  ]);
-});
-
-test("retries transient 429 and 503 responses using Retry-After before succeeding", async () => {
-  const db = batch();
-  const delays: number[] = [];
-  const request = vi
-    .fn()
-    .mockResolvedValueOnce(
-      new Response(null, { status: 429, headers: { "retry-after": "5" } }),
-    )
-    .mockResolvedValueOnce(new Response(null, { status: 503 }))
-    .mockResolvedValueOnce(Response.json({ PubTator3: [exportDocument] }));
-  await createGraphIndexer(db, request, async (ms) => {
-    if (ms > 0) delays.push(ms);
-  }).index(() => {});
-  expect(request).toHaveBeenCalledTimes(3);
-  expect(delays).toEqual([5_000, 2_000]);
-  const rows = JSON.parse(db.query.mock.calls[2][1][0]);
-  expect(rows[0]).toMatchObject({
-    retry: false,
-    entities: { "mesh:D011471": { inTitle: true } },
-  });
+test("asks PubTator3 for at most 50 papers at a time and stores each answer", async () => {
+  const papers = Array.from({ length: 120 }, (_, index) => ({
+    id: `pubmed:${index + 1}`,
+    source: "pubmed",
+    native_id: String(index + 1),
+    changed_at: changed,
+  }));
+  const db = batch(papers);
+  const get = vi.fn(async (_url: string) => answer({ PubTator3: [] }));
+  await createGraphIndexer(db, get).index(() => {});
+  expect(
+    get.mock.calls.map(
+      ([url]) => new URL(url).searchParams.get("pmids")?.split(",").length,
+    ),
+  ).toEqual([50, 50, 20]);
+  // The schema, the changed documents, three upserts, no more changed documents.
+  expect(db.query).toHaveBeenCalledTimes(6);
 });
 
 test.each([
-  () => new Response(null, { status: 503 }),
-  () => Response.json({ error: "unexpected export" }),
+  async () => ({ status: 403 }),
+  async () => answer({ error: "unexpected export" }),
+  async () => {
+    throw new Error("HTTP 503");
+  },
 ])(
-  "a failed or invalid export leaves the previous index intact and the batch retryable",
-  async (response) => {
+  "a refused, invalid or failed export leaves the previous index intact and the batch retryable",
+  async (get) => {
     const db = batch();
-    await expect(
-      createGraphIndexer(db, async () => response(), noWait).index(() => {}),
-    ).rejects.toThrow();
+    await expect(createGraphIndexer(db, get).index(() => {})).rejects.toThrow();
     expect(db.query).toHaveBeenCalledTimes(2);
   },
 );
@@ -175,33 +177,30 @@ describe.skipIf(!databaseUrl)("graph annotation retries in PostgreSQL", () => {
     return () => database.drop();
   });
 
-  test("upgrades old rows, keeps good annotations on failure and retries due PMIDs without metadata changes", async () => {
+  test("keeps good annotations on failure and retries due PMIDs without metadata changes", async () => {
     const db = database.pool;
     await db.query(`
       INSERT INTO documents (id, source, native_id, content_type, title, canonical_url, retrieved_at)
       SELECT 'pubmed:' || n, 'pubmed', n::text, 'journal_article', 'Title', 'https://example.org', now()
-      FROM generate_series(1, 4) AS n;
-      CREATE SCHEMA graph;
-      CREATE TABLE graph.documents (
-        document_id text PRIMARY KEY REFERENCES public.documents(id) ON DELETE CASCADE,
-        document_changed_at timestamptz NOT NULL, entities jsonb NOT NULL, relations jsonb NOT NULL
-      );
+      FROM generate_series(1, 4) AS n`);
+    await ensureGraphSchema(db);
+    // 2: PubTator3 did not have it and the retry is due. 3: indexed before the document changed.
+    await db.query(`
       INSERT INTO graph.documents
       SELECT id, date_trunc('milliseconds', changed_at) - CASE WHEN native_id = '3' THEN interval '1 day' ELSE interval '0' END,
              CASE WHEN native_id = '2' THEN '{}'::jsonb ELSE '{"old": {}}'::jsonb END,
-             CASE WHEN native_id = '2' THEN '[]'::jsonb ELSE '["old"]'::jsonb END
-      FROM documents WHERE native_id IN ('2', '3', '4');`);
+             CASE WHEN native_id = '2' THEN '[]'::jsonb ELSE '["old"]'::jsonb END,
+             CASE WHEN native_id = '2' THEN now() ELSE 'infinity'::timestamptz END
+      FROM documents WHERE native_id IN ('2', '3', '4')`);
     const annotated = (id: string) => ({ ...exportDocument, id, pmid: id });
     let records = [
       annotated("1"),
       { id: "3", passages: [{}], relations: "invalid" },
     ];
-    const request = vi.fn(async (_url: string) =>
-      Response.json({ PubTator3: records }),
-    );
-    const index = () => createGraphIndexer(db, request).index(() => {});
+    const get = vi.fn(async (_url: string) => answer({ PubTator3: records }));
+    const index = () => createGraphIndexer(db, get).index(() => {});
     const pmids = () =>
-      request.mock.calls.map(([url]) => new URL(url).searchParams.get("pmids"));
+      get.mock.calls.map(([url]) => new URL(url).searchParams.get("pmids"));
     await index();
     expect(pmids()).toEqual(["1,2,3"]);
     const waiting = await db.query(
@@ -212,7 +211,7 @@ describe.skipIf(!databaseUrl)("graph annotation retries in PostgreSQL", () => {
       { document_id: "pubmed:3", entities: { old: {} }, relations: ["old"] },
     ]);
     await index();
-    expect(request).toHaveBeenCalledTimes(1);
+    expect(get).toHaveBeenCalledTimes(1);
     await db.query(
       "UPDATE graph.documents SET retry_at = now() WHERE isfinite(retry_at)",
     );
@@ -228,29 +227,51 @@ describe.skipIf(!databaseUrl)("graph annotation retries in PostgreSQL", () => {
       "pubmed:3",
     ]);
     await index();
-    expect(request).toHaveBeenCalledTimes(2);
+    expect(get).toHaveBeenCalledTimes(2);
 
     // Stale-write protection: a document updated during the export is not overwritten by the stale batch.
     let bumped = false;
-    const concurrentRequest = vi.fn(async (_url: string) => {
+    const concurrentGet = vi.fn(async (_url: string) => {
       if (!bumped) {
         bumped = true;
         await db.query(
           "UPDATE documents SET changed_at = changed_at + interval '1 minute' WHERE id = 'pubmed:4'",
         );
-        return Response.json({ PubTator3: [] });
+        return answer({ PubTator3: [] });
       }
-      return Response.json({ PubTator3: [annotated("4")] });
+      return answer({ PubTator3: [annotated("4")] });
     });
     await db.query(
       "UPDATE documents SET changed_at = changed_at + interval '1 second' WHERE id = 'pubmed:4'",
     );
-    await createGraphIndexer(db, concurrentRequest, noWait).index(() => {});
-    expect(concurrentRequest).toHaveBeenCalledTimes(2);
+    await createGraphIndexer(db, concurrentGet).index(() => {});
+    expect(concurrentGet).toHaveBeenCalledTimes(2);
     const updated = await db.query(
       "SELECT entities, NOT isfinite(retry_at) AS done FROM graph.documents WHERE document_id = 'pubmed:4'",
     );
     expect(updated.rows[0].done).toBe(true);
     expect(updated.rows[0].entities).toHaveProperty("mesh:D011471");
+  });
+
+  // `DELETE FROM transcripts` is the documented way to have the audio read again.
+  test("keeps indexing when deleted transcripts move the version of a document back", async () => {
+    const db = database.pool;
+    await db.query(`
+      INSERT INTO documents (id, source, native_id, content_type, title, canonical_url, retrieved_at, changed_at)
+      VALUES ('podcast:1', 'podcast', '1', 'podcast_episode', 'Title', 'https://example.org', now(), now() - interval '2 days');
+      INSERT INTO transcripts (document_id, url, status, text, model, read_at)
+      VALUES ('podcast:1', 'https://example.org/a.mp3', 'ok', 'Text.', 'tiny', now() - interval '1 day')`);
+    const index = () =>
+      createGraphIndexer(db, async () => answer({ PubTator3: [] })).index(
+        () => {},
+      );
+    await index();
+    await db.query("DELETE FROM transcripts");
+    await index();
+    const { rows } = await db.query(
+      `SELECT g.document_changed_at = date_trunc('milliseconds', d.changed_at) AS current
+       FROM graph.documents g JOIN documents d ON d.id = g.document_id WHERE d.id = 'podcast:1'`,
+    );
+    expect(rows).toEqual([{ current: true }]);
   });
 });

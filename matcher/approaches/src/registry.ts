@@ -9,8 +9,6 @@ export interface Dependencies {
   db: Queryable;
   /** One for all approaches, so the request budgets per host hold across them. */
   downloader: Downloader;
-  /** The PubTator3 export request during indexing. */
-  fetchAnnotations?: (url: string, init?: RequestInit) => Promise<Response>;
 }
 
 /**

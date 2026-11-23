@@ -78,11 +78,7 @@ export async function createHarness(url: string) {
       timeoutMs: 100,
       maxBytes: 100000,
     });
-    const approaches = createApproaches({
-      db: db.pool,
-      downloader,
-      fetchAnnotations: providers.fetchLocal,
-    });
+    const approaches = createApproaches({ db: db.pool, downloader });
     const server = createMcpHttpServer(
       createMatchService(approaches, createDocumentStore(db.pool)),
     );

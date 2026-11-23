@@ -335,3 +335,18 @@ test("keeps each host's pace when called in parallel", async () => {
   expect(sleep).toHaveBeenCalledOnce();
   expect(sleep.mock.calls[0]?.[0]).toBeGreaterThan(14_900);
 });
+
+test("gets the answer of another URL: its body, or the status of a 4xx", async () => {
+  const fetch = fakeFetch({
+    "https://api.org/known": [new Response('{"found": 1}')],
+    "https://api.org/unknown": [new Response("", { status: 400 })],
+  });
+  const { get } = createDownloader({ fetch, ...instant });
+
+  const known = await get("https://api.org/known");
+  expect(known.status).toBe(200);
+  expect(new TextDecoder().decode(known.body)).toBe('{"found": 1}');
+  await expect(get("https://api.org/unknown")).resolves.toEqual({
+    status: 400,
+  });
+});

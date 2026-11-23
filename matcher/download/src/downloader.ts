@@ -31,6 +31,12 @@ export interface FullText {
   detail?: string;
 }
 
+/** What a server answered: its status and, if that is 2xx, the body, unless it is too large. */
+export interface Answer {
+  status: number;
+  body?: Uint8Array;
+}
+
 /** Reads the full text of a document from its locators. */
 export interface Downloader {
   /** `transcribe`: speech-to-text for audio files; without it, audio is not read. */
@@ -38,6 +44,11 @@ export interface Downloader {
     locators: readonly Locator[],
     transcribe?: Transcribe,
   ): Promise<FullText>;
+  /**
+   * The answer of any other URL, such as an API, with the retries and the request budget of
+   * its host. Throws when the network or the server keeps failing.
+   */
+  get(url: string): Promise<Answer>;
 }
 
 export interface DownloaderOptions {
@@ -63,12 +74,13 @@ export function audioLocators<L extends Locator>(locators: readonly L[]): L[] {
 const USER_AGENT =
   "patient-journey-matcher/0.1 (+https://github.com/amosproj/amos2026ws03-patient-journey-matcher)";
 // The request budgets of Documentation/design/sources.md: arXiv's robots.txt asks for 15 s,
-// Zenodo allows 60 file requests a minute, the PMC bucket publishes no limit; podcast hosts
-// and all others get our own 20 a minute.
+// Zenodo allows 60 file requests a minute, the PMC bucket publishes no limit; PubTator3 at
+// NCBI gets our own one a second, podcast hosts and all others our own 20 a minute.
 const INTERVAL_MS: Record<string, number> = {
   "arxiv.org": 15_000,
   "zenodo.org": 1_000,
   "pmc-oa-opendata.s3.amazonaws.com": 100,
+  "www.ncbi.nlm.nih.gov": 1_000,
 };
 const DEFAULT_INTERVAL_MS = 3_000;
 const MAX_BYTES = 50_000_000;
@@ -78,9 +90,6 @@ const TIMEOUT_MS = 120_000;
 const ATTEMPTS = 3;
 // Locators come in fetch order (arXiv: HTML, then the PDF); later ones are supplements.
 const MAX_LOCATORS = 3;
-
-/** A 4xx answer: the file is not there, the next locator may be. */
-class Unavailable extends Error {}
 
 /** A locator and how the text of its file is read. */
 interface Reader {
@@ -109,11 +118,8 @@ export function createDownloader({
     if (start > now) await sleep(start - now);
   }
 
-  /** The body, or undefined if it is larger than `maxBytes`; network and server errors are retried. */
-  async function get(
-    url: string,
-    maxBytes: number,
-  ): Promise<Uint8Array | undefined> {
+  /** No body if it is larger than `maxBytes`; network and server errors are retried. */
+  async function get(url: string, maxBytes: number): Promise<Answer> {
     for (let attempt = 1; ; attempt++) {
       await turn(new URL(url).host);
       let response: Response;
@@ -122,7 +128,10 @@ export function createDownloader({
           headers: { "User-Agent": USER_AGENT },
           signal: AbortSignal.timeout(timeoutMs),
         });
-        if (response.ok) return await readBody(response, maxBytes);
+        if (response.ok) {
+          const body = await readBody(response, maxBytes);
+          return { status: response.status, body };
+        }
       } catch (error) {
         if (attempt === ATTEMPTS) throw new Error(networkError(error));
         await sleep(2_000 * attempt);
@@ -130,9 +139,7 @@ export function createDownloader({
       }
       await response.body?.cancel();
       const { status } = response;
-      if (status !== 408 && status !== 429 && status < 500) {
-        throw new Unavailable(`HTTP ${status}`);
-      }
+      if (status !== 408 && status !== 429 && status < 500) return { status };
       if (attempt === ATTEMPTS) throw new Error(`HTTP ${status}`);
       await sleep(retryAfterMs(response) ?? 2_000 * attempt);
     }
@@ -156,15 +163,22 @@ export function createDownloader({
       detail: `larger than ${limit} bytes`,
     };
     if ((locator.size ?? 0) > limit) return { result: tooLarge, last: false };
-    let bytes: Uint8Array | undefined;
+    let answer: Answer;
     try {
-      bytes = await get(locator.url, limit);
+      answer = await get(locator.url, limit);
     } catch (error) {
-      // A missing file (arXiv has no HTML for PDF-only uploads): read the next one. A server
-      // or network error: try again later rather than read a lesser file now.
+      // A server or network error: try again later rather than read a lesser file now.
       return {
         result: { ...tried, status: "failed", detail: message(error) },
-        last: !(error instanceof Unavailable),
+        last: true,
+      };
+    }
+    const { status, body: bytes } = answer;
+    // A missing file (arXiv has no HTML for PDF-only uploads): read the next one.
+    if (status < 200 || status > 299) {
+      return {
+        result: { ...tried, status: "failed", detail: `HTTP ${status}` },
+        last: false,
       };
     }
     if (bytes === undefined) return { result: tooLarge, last: false };
@@ -232,7 +246,7 @@ export function createDownloader({
     return { ...result, detail: NO_SPEECH_TO_TEXT };
   }
 
-  return { fullText };
+  return { fullText, get: (url) => get(url, maxBytes) };
 }
 
 /** The body, or undefined once it grows over `maxBytes`. */

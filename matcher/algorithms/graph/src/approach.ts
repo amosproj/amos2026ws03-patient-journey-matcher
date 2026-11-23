@@ -1,18 +1,18 @@
 import type { Approach } from "@matcher/core";
 import type { Queryable } from "@matcher/db";
-import { createGraphIndexer } from "./indexer.ts";
+import { createGraphIndexer, type Get } from "./indexer.ts";
 import { createGraphMatcher } from "./matcher.ts";
 
 export function createGraphApproach({
   db,
-  fetchAnnotations,
+  downloader,
 }: {
   db: Queryable;
-  fetchAnnotations?: (url: string, init?: RequestInit) => Promise<Response>;
+  downloader: { get: Get };
 }): Approach {
   return {
     name: "graph",
-    indexer: createGraphIndexer(db, fetchAnnotations),
+    indexer: createGraphIndexer(db, downloader.get),
     matcher: createGraphMatcher(db),
   };
 }

@@ -48,7 +48,7 @@ const JOURNEY_WORDS = new Set(
  */
 export async function indexFullTexts(
   db: Queryable,
-  downloader: Downloader,
+  downloader: Pick<Downloader, "fullText">,
   log: (line: string) => void = () => {},
 ): Promise<Record<FullTextStatus, number>> {
   await createSchema(db);
