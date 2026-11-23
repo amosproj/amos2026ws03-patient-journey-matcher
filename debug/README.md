@@ -24,4 +24,4 @@ A new screen is a block in `web/index.html` and a script of its own there; the p
 
 The Index and Matcher screens run the matcher's own programs, so they need `make build`. The Matcher screen takes the arguments of `match_journey` as one JSON object, the same as "Edit as JSON" in the [MCP Inspector](../Documentation/build-deploy/build.md#run-the-matcher-locally); its journey list puts one of `patientdata/*/timeline.json`, the example of the [MCP interface](../Documentation/user/mcp-interface.md#try-it) or a file into them. It passes them on to the matcher and stores none. With "Through the MCP server" it sends them to the server of `make start` instead (on `MCP_PORT`, if set).
 
-For semantic matching, see [setup](../matcher/README.md#semantic-matching). The Matcher offers Qwen and BGE-M3 directly; through MCP it uses the server’s configured encoder.
+For semantic matching, see [setup](../matcher/README.md#semantic-matching). With the AI algorithm, the Matcher takes Qwen or BGE-M3 as its model; through MCP it uses the model the server was started with.

@@ -1,33 +1,24 @@
 "use strict";
+// ── Index › AI: the index of each model of the AI approach ──
 const ai = { data: null, loading: false };
 const aiTechnique = () => $("#ai-technique").value;
 const aiName = (model) => model === "qwen" ? "Qwen" : "BGE-M3";
+// What a document is in the index of a model: the first two are done, the next run embeds the third.
+const AI_STATES = [
+  ["indexed", "Embedded", "--good", "Has a vector of its title, abstract or description and subjects"],
+  ["empty", "No text", "--dropped", "Has no title, abstract, description or subjects: nothing to embed"],
+  ["pending", "New or changed", "--pending", "Open: not embedded yet, or changed since; the next run embeds it"],
+];
 
+// Both models come with every answer: the Index overview shows them, whatever this screen's choice is.
 async function aiRefresh() {
   if (ai.loading) return;
   ai.loading = true;
-  const technique = aiTechnique();
   try {
-    const data = await api(`/api/index?${queryString({ technique })}`);
-    if (technique !== aiTechnique()) return;
-    ai.data = data;
-    if (ix.overview) ix.overview.indexer = data.indexer;
-    const running = data.indexer.run?.status === "running";
-    $("#ai-start").disabled = running || Boolean(data.indexer.missing);
-    $("#ai-stop").disabled = !running;
-    $("#ai-technique").disabled = running;
-    $("#ai-error").textContent = data.indexer.missing || "";
-    const ready = data.models.every((model) => model.ready && !model.pending);
-    $("#ai-state").replaceChildren(h("b", {}, ready ? "Up to date" : "Index build needed"),
-      ...data.models.map((model) => h("small", {}, `${aiName(model.model)}: ${fmtCount(model.indexed)} embedded, ${fmtCount(model.pending)} pending`)));
-    $("#ai-stats").replaceChildren(card("Documents", fmtCount(data.models[0]?.documents ?? 0)),
-      ...data.models.flatMap((model) => [
-        card(`${aiName(model.model)} embedded`, fmtCount(model.indexed)),
-        card(`${aiName(model.model)} pending`, fmtCount(model.pending)),
-        card(`${aiName(model.model)} empty metadata`, fmtCount(model.empty)),
-        card(`${aiName(model.model)} index`, model.ready ? "Ready" : "Building"),
-      ]));
-    $("#ai-coverage").replaceChildren(...data.models.map(aiCoveragePanel));
+    ai.data = await api("/api/index?technique=semantic");
+    if (ix.overview) ix.overview.indexer = ai.data.indexer;
+    $("#ai-error").textContent = ai.data.indexer.missing || "";
+    renderAi();
     renderIxButtons();
     renderIxStats();
     await ixFollowRun();
@@ -39,6 +30,35 @@ async function aiRefresh() {
     ai.loading = false;
     renderIxButtons();
   }
+}
+
+// This screen: both models, or the one chosen here.
+function renderAi() {
+  if (!ai.data) return;
+  const models = ai.data.models.filter((model) => aiTechnique() === "semantic" || model.model === aiTechnique());
+  $("#ai-technique").disabled = ai.data.indexer.run?.status === "running";
+  const ready = models.every((model) => model.ready && !model.pending);
+  $("#ai-state").replaceChildren(h("b", {}, ready ? "Up to date" : "Index build needed"),
+    ...models.map((model) => h("small", {}, `${aiName(model.model)}: ${fmtCount(model.indexed)} embedded, ${fmtCount(model.pending)} pending`)));
+  $("#ai-stats").replaceChildren(card("Documents", fmtCount(models[0]?.documents ?? 0)),
+    ...models.flatMap((model) => [
+      card(`${aiName(model.model)} embedded`, fmtCount(model.indexed)),
+      card(`${aiName(model.model)} pending`, fmtCount(model.pending)),
+      card(`${aiName(model.model)} empty metadata`, fmtCount(model.empty)),
+      card(`${aiName(model.model)} index`, model.ready ? "Ready" : "Building"),
+    ]));
+  $("#ai-coverage").replaceChildren(...models.map(aiCoveragePanel));
+}
+
+// One model on the Index overview: how far its index is, in the form of the keyword index next to it.
+function aiOverviewPart(model) {
+  const done = model.indexed + model.empty;
+  return h("div", {},
+    h("h3", { title: model.repository }, aiName(model.model)),
+    h("b", { class: `ov-total${model.ready ? "" : " muted"}` }, done ? `${fmtShare(done, model.documents)} done` : "no index yet"),
+    ovList(AI_STATES.map(([key, label, color, tip]) => ovShare(label, model[key], model.documents, { color, tip, onclick: () => showScreen("ai") }))),
+    // match_journey answers NOT_AVAILABLE for a model until its first build went through.
+    done && !model.ready ? h("small", { class: "ov-note warn" }, "First build unfinished: no matches yet") : null);
 }
 
 function aiCoveragePanel(model) {
@@ -58,14 +78,10 @@ function aiSwitchTab(tab) {
 }
 
 $("#ai-technique").addEventListener("change", async () => {
-  ai.data = null;
-  $("#ai-start").disabled = true;
-  $("#ai-stats").replaceChildren();
-  $("#ai-coverage").replaceChildren();
-  $("#ai-log").replaceChildren();
+  renderAi();
+  // The log again: it holds the lines of the chosen model only.
   ix.run = null;
-  while (ai.loading) await new Promise((resolve) => setTimeout(resolve, 50));
-  await aiRefresh();
+  await ixFollowRun();
 });
 $("#ai-refresh").addEventListener("click", () => aiRefresh());
 $("#ai-start").addEventListener("click", () => ixCommand("/api/index/run", { technique: aiTechnique() }));

@@ -76,9 +76,11 @@ function renderIxStats() {
     h("b", { class: `ov-total${overview?.exists ? "" : " muted"}` }, !overview ? "–" : overview.exists ? `${fmtShare(total.indexed + total.skipped, total.documents)} done` : "no index yet"),
     overview ? ovList(COVERAGE_STATES.map(([key, label, cls, tip]) => ovShare(label, total[key], total.documents, { color: COVERAGE_BAR[cls], tip, onclick: () => showScreen("keyword") }))) : null,
     overview ? h("small", { class: "ov-note" }, `of ${fmtCount(total.documents)} documents, not expired`) : null);
-  const semantic = ovSection(title("AI semantic index", "ai"),
-    ...(ai.data?.models || []).map((model) => h("small", { class: "ov-note" },
-      `${aiName(model.model)}: ${fmtCount(model.indexed)} embedded, ${fmtCount(model.pending)} pending`)));
+  // One approach with an index per model: its part is wide enough for both next to each other.
+  const semantic = ovSection(title("AI index", "ai"),
+    ai.data ? h("div", { class: "ov-parts even" }, ...ai.data.models.map(aiOverviewPart)) : h("b", { class: "ov-total muted" }, "–"),
+    ai.data ? h("small", { class: "ov-note" }, `of ${fmtCount(ai.data.models[0]?.documents ?? 0)} documents, not expired`) : null);
+  semantic.classList.add("wide");
   $("#ix-stats").replaceChildren(keyword, semantic,
     ...IX_PLANNED.map(([screen, label, note]) => ovSection(title(label, screen), h("b", { class: "ov-total muted" }, "planned"), h("small", { class: "ov-note" }, note))));
 }

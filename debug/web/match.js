@@ -5,7 +5,7 @@
 const MT_DEFAULTS = { algorithm: "keyword", limit: 10 };
 const mt = {
   meta: null, args: null, dates: [], asOf: null, request: null, via: null, result: null,
-  technique: "qwen", tuning: {}, settings: "", tab: "results", cache: new Map(), sources: new Map(), ticket: 0, timer: 0,
+  model: "qwen", tuning: {}, settings: "", tab: "results", cache: new Map(), sources: new Map(), ticket: 0, timer: 0,
 };
 
 // The data of a step of the match shown, e.g. "terms"; undefined through the MCP server.
@@ -133,7 +133,8 @@ async function mtRun(fresh) {
   if (!mt.args) return;
   const via = $("#mt-mcp").checked ? "mcp" : "direct";
   const request = mtRequest();
-  const technique = via === "direct" && mtAlgorithm() === "ai_summary" ? mt.technique : undefined;
+  // The model of the AI algorithm is no argument of match_journey: the MCP server has its own.
+  const technique = via === "direct" && mtAlgorithm() === "ai_summary" ? mt.model : undefined;
   const key = JSON.stringify([via, request, technique]);
   const ticket = ++mt.ticket;
   if (fresh) { mt.cache.clear(); mt.sources.clear(); }
@@ -183,8 +184,8 @@ function mtRender() {
   mtRenderPending();
 }
 
-// Graph and AI are planned: match_journey answers NOT_AVAILABLE for them until their matchers
-// are added, and then their results show here like the keyword matcher's.
+// Graph is planned, and AI needs its index: until then match_journey answers NOT_AVAILABLE for
+// them, which shows here with what the approach does or needs.
 const MT_PLANNED = {
   graph: {
     name: "Graph approach",
@@ -198,14 +199,16 @@ const MT_PLANNED = {
   },
 };
 
+// The algorithm, and under AI the model it matches with.
 function mtRenderAlgorithm() {
-  for (const button of document.querySelectorAll("#mt-algorithm button")) {
-    const model = button.dataset.model;
-    const viaMcp = $("#mt-mcp").checked;
-    button.hidden = viaMcp && model === "bge";
-    if (model === "qwen") button.textContent = viaMcp ? "Semantic (server configured)" : "Qwen semantic";
-    button.classList.toggle("active", button.dataset.value === mtAlgorithm() && (!model || viaMcp || model === mt.technique));
+  const algorithm = mtAlgorithm(), viaMcp = $("#mt-mcp").checked;
+  for (const button of document.querySelectorAll("#mt-algorithm button")) button.classList.toggle("active", button.dataset.value === algorithm);
+  $("#mt-model-field").hidden = algorithm !== "ai_summary";
+  for (const button of document.querySelectorAll("#mt-model button")) {
+    button.classList.toggle("active", !viaMcp && button.dataset.value === mt.model);
+    button.disabled = viaMcp;
   }
+  $("#mt-model-note").textContent = viaMcp ? "The MCP server uses the model it was started with." : "";
 }
 
 function mtRenderPending() {
@@ -222,10 +225,15 @@ function mtRenderPending() {
 }
 
 for (const button of document.querySelectorAll("#mt-algorithm button")) button.addEventListener("click", () => {
-  if (!mt.args) return;
-  if (button.dataset.model) mt.technique = button.dataset.model;
+  if (!mt.args || mtAlgorithm() === button.dataset.value) return;
   mt.args = { ...mt.args, algorithm: button.dataset.value };
   $("#mt-json").value = JSON.stringify(mt.args, null, 2);
+  mtRenderAlgorithm();
+  mtRun(false);
+});
+for (const button of document.querySelectorAll("#mt-model button")) button.addEventListener("click", () => {
+  if (!mt.args || mt.model === button.dataset.value) return;
+  mt.model = button.dataset.value;
   mtRenderAlgorithm();
   mtRun(false);
 });
@@ -242,7 +250,7 @@ function mtRenderStats() {
     terms && card("Search terms: focus + context", `${terms.focus.length + (terms.generic?.length ?? 0)} + ${terms.context.length}`),
     rankings && card("Candidates: metadata + full text", `${rankings.metadata.length} + ${rankings.fullTexts.length}`),
     candidates && card("Candidates without a medical term, dropped", dropped, dropped ? "" : "muted"),
-    mtStep("semantic") && card("Encoder", mtStep("semantic").repository),
+    mtStep("semantic") && card(`Model: ${mtStep("semantic").repository}`, aiName(mtStep("semantic").model)),
     mtStep("semantic") && card("Encode / search", `${Math.round(mtStep("semantic").encoder_ms)} / ${Math.round(mtStep("semantic").search_ms)} ms`),
     card(answer?.degraded ? "Results (degraded)" : "Results", answer ? answer.results.length : "–", answer?.degraded || result.error ? "bad" : ""),
     card(result.steps?.length ? "Took, incl. starting the matcher" : "Took", `${result.seconds.toFixed(2)} s`, "muted"),
