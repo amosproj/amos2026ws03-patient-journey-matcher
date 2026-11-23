@@ -1,10 +1,19 @@
 # /// script
 # requires-python = ">=3.12"
 # dependencies = [
+#   "huggingface-hub==0.36.2",
 #   "torch==2.9.1",
 #   "transformers==4.57.3",
-#   "sentence-transformers==5.1.2",
 # ]
+#
+# # The default build for Linux on x86-64 brings NVIDIA's libraries, which are not open source.
+# [tool.uv.sources]
+# torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux' and platform_machine == 'x86_64'" }]
+#
+# [[tool.uv.index]]
+# name = "pytorch-cpu"
+# url = "https://download.pytorch.org/whl/cpu"
+# explicit = true
 # ///
 """Local embedding worker. Run with uv run scripts/semantic.py [--download].
 
@@ -31,6 +40,20 @@ MODELS = {
     "qwen": ("Qwen/Qwen3-Embedding-0.6B", "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3"),
     "bge": ("BAAI/bge-m3", "5617a9f61b028005a4858fdac845db406aefb181"),
 }
+# What a model needs of its repository: the configuration, the weights and the tokenizer.
+FILES = [
+    "config.json",
+    "model.safetensors",
+    "pytorch_model.bin",
+    "tokenizer.json",
+    "tokenizer_config.json",
+    "special_tokens_map.json",
+    "vocab.json",
+    "merges.txt",
+    "sentencepiece.bpe.model",
+]
+POOLING = {"qwen": "last-token", "bge": "cls"}
+MAX_TOKENS = 512
 INSTRUCTION = (
     "Given a patient's current medical situation and history, "
     "retrieve resources relevant to the current situation."
@@ -41,21 +64,46 @@ DEVICE = "cpu"
 
 
 def load(name, download=False):
-    from sentence_transformers import SentenceTransformer
+    """The tokenizer and the model `name`; only one model is kept in memory."""
+    from huggingface_hub import snapshot_download
+    from transformers import AutoModel, AutoTokenizer
 
     if name not in LOADED:
         LOADED.clear()
         gc.collect()
         repository, revision = MODELS[name]
-        LOADED[name] = SentenceTransformer(
+        # Loaded from the folder of the pinned revision. Given the name of the repository,
+        # transformers asks the hub about the model at every start, also with all files here.
+        folder = snapshot_download(
             repository,
             revision=revision,
+            allow_patterns=FILES,
             local_files_only=not download,
-            device=DEVICE,
-            model_kwargs={"attn_implementation": "sdpa"},
         )
-        LOADED[name].max_seq_length = 512
+        tokenizer = AutoTokenizer.from_pretrained(folder)
+        model = AutoModel.from_pretrained(folder, attn_implementation="sdpa")
+        LOADED[name] = (tokenizer, model.to(DEVICE).eval())
     return LOADED[name]
+
+
+def embed(name, texts):
+    """One vector of length 1 per text: of its last token for Qwen, of its first for BGE-M3."""
+    import torch
+
+    tokenizer, model = load(name)
+    position = -1 if POOLING[name] == "last-token" else 0
+    vectors = []
+    with torch.inference_mode():
+        # One text at a time: without padding, the last position is the last token.
+        for text in texts:
+            tokens = tokenizer(
+                text, truncation=True, max_length=MAX_TOKENS, return_tensors="pt"
+            )
+            states = model(**tokens.to(DEVICE)).last_hidden_state[0]
+            vectors.append(
+                torch.nn.functional.normalize(states[position], dim=0).tolist()
+            )
+    return vectors
 
 
 def encode(body):
@@ -66,12 +114,12 @@ def encode(body):
         body.get("device") != DEVICE
         or body.get("repository") != repository
         or body.get("revision") != revision
-        or body.get("maxTokens") != 512
+        or body.get("maxTokens") != MAX_TOKENS
         or body.get("dimensions") != 1024
         or body.get("template") != 1
         or body.get("attention") != "sdpa"
         or body.get("instruction") != INSTRUCTION
-        or body.get("pooling") != ("last-token" if name == "qwen" else "cls")
+        or body.get("pooling") != POOLING[name]
         or body.get("mode") not in ("query", "document")
         or not isinstance(texts, list)
         or not 1 <= len(texts) <= 4
@@ -81,8 +129,7 @@ def encode(body):
     if name == "qwen" and body["mode"] == "query":
         texts = [f"Instruct: {INSTRUCTION}\nQuery: {text}" for text in texts]
     with LOCK:
-        vectors = load(name).encode(texts, normalize_embeddings=True, batch_size=1)
-    return {"vectors": vectors.tolist()}
+        return {"vectors": embed(name, texts)}
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -135,7 +182,7 @@ def worker_configuration():
     return {
         "service": "patient-journey-semantic",
         "device": DEVICE,
-        "max_tokens": 512,
+        "max_tokens": MAX_TOKENS,
         "attention": "sdpa",
         "models": {name: list(value) for name, value in MODELS.items()},
     }
@@ -182,10 +229,6 @@ def run_application(command, ui_port):
     root = Path(__file__).resolve().parent.parent
     environment = dict(os.environ)
     environment.pop("VIRTUAL_ENV", None)
-    source_path = str(root / "crawler/src")
-    environment["PYTHONPATH"] = os.pathsep.join(
-        filter(None, [source_path, environment.get("PYTHONPATH")])
-    )
     environment["SEMANTIC_DEVICE"] = DEVICE
     environment["SEMANTIC_MODEL"] = environment.get("SEMANTIC_MODEL") or "qwen"
     environment["SEMANTIC_MODELS"] = environment.get("SEMANTIC_MODELS") or "qwen,bge"
@@ -197,7 +240,8 @@ def run_application(command, ui_port):
     if endpoint.hostname not in ("localhost", "127.0.0.1", "::1"):
         raise ValueError("SEMANTIC_URL must use a loopback host")
     port = endpoint.port or 8766
-    signal.signal(signal.SIGTERM, interrupt)
+    for stopping in (signal.SIGTERM, signal.SIGHUP):  # SIGHUP: the terminal was closed
+        signal.signal(stopping, interrupt)
     with contextlib.ExitStack() as cleanup:
 
         def launch(arguments, directory):
@@ -210,32 +254,33 @@ def run_application(command, ui_port):
             cleanup.callback(stop, child)
             return child
 
-        if health(port) != worker_configuration():
-            port = available_port(port)
-            print(
-                "Preparing the local encoders. Missing weights will be downloaded.",
-                flush=True,
-            )
-            worker = launch(
-                [
-                    "uv",
-                    "run",
-                    "--locked",
-                    "scripts/semantic.py",
-                    "--prepare",
-                    "--device",
-                    DEVICE,
-                    "--port",
-                    str(port),
-                ],
-                root,
-            )
-            while health(port) != worker_configuration():
-                if worker.poll() is not None:
-                    raise RuntimeError(
-                        "The local encoder could not start. See its output above."
-                    )
-                time.sleep(0.2)
+        # An encoder of its own, also next to one that runs: the command that started that one
+        # stops it when it ends.
+        port = available_port(port)
+        print(
+            "Preparing the local encoders. Missing weights will be downloaded.",
+            flush=True,
+        )
+        worker = launch(
+            [
+                "uv",
+                "run",
+                "--locked",
+                "scripts/semantic.py",
+                "--prepare",
+                "--device",
+                DEVICE,
+                "--port",
+                str(port),
+            ],
+            root,
+        )
+        while health(port) != worker_configuration():
+            if worker.poll() is not None:
+                raise RuntimeError(
+                    "The local encoder could not start. See its output above."
+                )
+            time.sleep(0.2)
         environment["SEMANTIC_URL"] = f"http://127.0.0.1:{port}"
         print(f"Encoder ready at {environment['SEMANTIC_URL']} ({DEVICE}).", flush=True)
         if command == "index":
@@ -275,7 +320,7 @@ def main():
     )
     parser.add_argument(
         "--device",
-        choices=["cpu", "mps", "cuda"],
+        choices=["cpu", "mps"],
         default=os.environ.get("SEMANTIC_DEVICE") or "cpu",
     )
     parser.add_argument("--port", type=int, default=8766)

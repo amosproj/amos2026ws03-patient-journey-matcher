@@ -32,7 +32,7 @@ start: build
 	cd matcher && pnpm --filter @matcher/mcp-server start
 
 debug:
-	cd crawler && PYTHONPATH=src uv run --locked python ../debug/server.py --port $(PORT)
+	cd crawler && uv run --locked python ../debug/server.py --port $(PORT)
 
 # Writes the runtime dependencies of all projects and of the database image with their licences
 # to sbom.spdx.json (SPDX 3, for SCA Tool) and sbom.cdx.json (CycloneDX 1.7); needs Docker. Run it
@@ -75,8 +75,6 @@ graph:
 .PHONY: debug-ai index-ai start-ai
 
 debug-ai index-ai start-ai: build db
-debug-ai index-ai start-ai: export SEMANTIC_MODEL ?= qwen
-debug-ai index-ai start-ai: export SEMANTIC_MODELS ?= qwen,bge
 
 # Each command manages its local encoder and shares one database configuration.
 debug-ai:

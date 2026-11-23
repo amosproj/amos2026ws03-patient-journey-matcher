@@ -43,6 +43,7 @@ Only what the code uses today. Versions are pinned in `crawler/uv.lock` and `mat
 | | pg (node-postgres) | Database access | MIT |
 | | htmlparser2, unpdf (pdf.js) | Text of XML, HTML and PDF full texts | MIT; pdf.js Apache-2.0 |
 | | pywhispercpp, miniaudio | Offline speech-to-text for podcast audio in the transcription job (`make transcribe`) | MIT |
+| | PyTorch, Transformers, with the models Qwen3-Embedding-0.6B and BGE-M3 | Local encoder for the optional semantic matching (`make index-ai`) | BSD-3-Clause, Apache-2.0; the models Apache-2.0, MIT |
 | **Build and test** | Docker Compose | PostgreSQL and one crawler container per data source | Apache-2.0 |
 | | pytest, mypy, Ruff · Vitest, Biome | Tests, type checks, lint and format | MIT; Biome MIT or Apache-2.0 |
 | | Make | One command per task: build, test, run ([make targets](../build-deploy/build.md)) | GPL-3.0; a build tool, not part of the product |
