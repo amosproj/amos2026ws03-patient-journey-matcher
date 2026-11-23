@@ -47,7 +47,7 @@ function renderIxButtons() {
   const running = indexer?.run?.status === "running";
   for (const id of ["#ix-start", "#kw-start", "#ai-start"]) $(id).disabled = !indexer || running || Boolean(indexer.missing);
   for (const id of ["#ix-stop", "#kw-stop", "#ai-stop"]) $(id).disabled = !running;
-  $("#ai-start").disabled ||= ai.loading || !ai.data;
+  $("#ai-start").disabled ||= ai.loading || !ai.data || ai.encoder?.status !== "running";
 }
 
 const ixErrorLines = () => [h("b", {}, ix.error.database ? "Not connected" : "Not loaded"), h("small", {}, ix.error.message), ix.error.hint ? h("span", { class: "hint" }, ix.error.hint) : null];

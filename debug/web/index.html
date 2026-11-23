@@ -480,7 +480,12 @@
 
 <div class="layout" id="ai-view" hidden>
   <aside class="side" id="ai-controls">
-    <div class="side-head"><h2>AI index</h2><button type="button" class="link-button" id="ai-refresh">↻ Refresh</button></div>
+    <div class="side-head"><h2>Encoder <i class="info" tabindex="0" data-tip="The local program that turns texts into vectors, scripts/semantic.py. Indexing and the AI approach of the Matcher need it. It loads Qwen and BGE-M3 before it answers; the first start downloads them (about 3 GB). One started by make debug-ai shows here, and that command stops it.">i</i></h2><button type="button" class="link-button" id="ai-refresh">↻ Refresh</button></div>
+    <div class="db-conn" id="ai-encoder"><b>Loading …</b></div>
+    <div class="buttons"><button type="button" class="primary" id="ai-encoder-start" disabled>Start encoder</button><button type="button" id="ai-encoder-stop" disabled>Stop encoder</button></div>
+    <code class="cmd" id="ai-encoder-lines" title="The last lines of the encoder" hidden></code>
+    <div class="error" id="ai-encoder-error"></div>
+    <div class="side-head"><h2>AI index</h2></div>
     <label class="field" for="ai-technique">Model</label>
     <select id="ai-technique">
       <option value="semantic">Both models</option>

@@ -1,6 +1,6 @@
 "use strict";
 // ── Index › AI: the index of each model of the AI approach ──
-const ai = { data: null, loading: false };
+const ai = { data: null, loading: false, encoder: null, encoderError: null };
 const aiTechnique = () => $("#ai-technique").value;
 const aiName = (model) => model === "qwen" ? "Qwen" : "BGE-M3";
 // What a document is in the index of a model: the first two are done, the next run embeds the third.
@@ -15,6 +15,7 @@ async function aiRefresh() {
   if (ai.loading) return;
   ai.loading = true;
   try {
+    await aiEncoderRefresh();
     ai.data = await api("/api/index?technique=semantic");
     if (ix.overview) ix.overview.indexer = ai.data.indexer;
     $("#ai-error").textContent = ai.data.indexer.missing || "";
@@ -39,7 +40,8 @@ function renderAi() {
   $("#ai-technique").disabled = ai.data.indexer.run?.status === "running";
   const ready = models.every((model) => model.ready && !model.pending);
   $("#ai-state").replaceChildren(h("b", {}, ready ? "Up to date" : "Index build needed"),
-    ...models.map((model) => h("small", {}, `${aiName(model.model)}: ${fmtCount(model.indexed)} embedded, ${fmtCount(model.pending)} pending`)));
+    ...models.map((model) => h("small", {}, `${aiName(model.model)}: ${fmtCount(model.indexed)} embedded, ${fmtCount(model.pending)} pending`)),
+    ...(ai.encoder && ai.encoder.status !== "running" ? [h("span", { class: "hint" }, "Indexing needs the encoder: start it above.")] : []));
   $("#ai-stats").replaceChildren(card("Documents", fmtCount(models[0]?.documents ?? 0)),
     ...models.flatMap((model) => [
       card(`${aiName(model.model)} embedded`, fmtCount(model.indexed)),
@@ -71,6 +73,65 @@ function aiCoveragePanel(model) {
     h("table", {}, h("thead", {}, h("tr", {}, ...headings.map((label) => h("th", {}, label)))), h("tbody", {}, ...rows)));
 }
 
+// ── The encoder: the one this server started, or one of another command such as make debug-ai ──
+const AI_ENCODER = {
+  running: ["Running", ""],
+  starting: ["Starting …", " warn"],
+  failed: ["Failed", " down"],
+  stopped: ["Not running", " off"],
+};
+
+async function aiEncoderRefresh() {
+  try {
+    ai.encoder = await api("/api/index/encoder");
+    ai.encoderError = null;
+  } catch (error) {
+    ai.encoder = null;
+    ai.encoderError = error.message;
+  }
+  renderAiEncoder();
+  renderAi();
+  renderIxButtons();
+}
+
+function renderAiEncoder() {
+  const box = $("#ai-encoder"), encoder = ai.encoder, lines = $("#ai-encoder-lines");
+  if (!encoder) {
+    box.className = `db-conn${ai.encoderError ? " down" : ""}`;
+    box.replaceChildren(h("b", {}, ai.encoderError ? "Not loaded" : "Loading …"), ...(ai.encoderError ? [h("small", {}, ai.encoderError)] : []));
+    for (const id of ["#ai-encoder-start", "#ai-encoder-stop"]) $(id).disabled = true;
+    lines.hidden = true;
+    return;
+  }
+  const { status, own } = encoder, [label, cls] = AI_ENCODER[status];
+  box.className = `db-conn${cls}`;
+  box.replaceChildren(...[
+    h("b", {}, label),
+    h("small", { class: "mono" }, `${encoder.url} · ${encoder.device}`),
+    status === "starting" ? h("small", {}, `Started ${fmtAgo(encoder.started_at)}. Loading both models; the first start downloads them.`) : null,
+    status === "running" && own ? h("small", {}, `Started here ${fmtAgo(encoder.started_at)}; stops with this server.`) : null,
+    status === "running" && !own ? h("small", {}, "Started by another command, such as make debug-ai, which stops it.") : null,
+    status === "failed" ? h("span", { class: "hint" }, `Ended with exit code ${encoder.code}; its last lines are below.`) : null,
+  ].filter(Boolean));
+  $("#ai-encoder-start").disabled = status === "starting" || status === "running";
+  // Stop also clears an encoder that failed; one of another command is stopped there.
+  $("#ai-encoder-stop").disabled = !own;
+  $("#ai-encoder-stop").textContent = status === "failed" ? "Clear" : "Stop encoder";
+  lines.hidden = status === "running" || !encoder.lines.length;
+  lines.replaceChildren(...encoder.lines.slice(-8).map((line) => h("div", {}, line)));
+}
+
+async function aiEncoderCommand(path) {
+  $("#ai-encoder-error").textContent = "";
+  for (const id of ["#ai-encoder-start", "#ai-encoder-stop"]) $(id).disabled = true;
+  try {
+    await api(path, { method: "POST", body: "{}" });
+  } catch (error) {
+    $("#ai-encoder-error").textContent = error.message;
+  }
+  await aiEncoderRefresh();
+}
+
 function aiSwitchTab(tab) {
   $("#aitab-coverage").hidden = tab !== "coverage";
   $("#aitab-log").hidden = tab !== "log";
@@ -86,5 +147,9 @@ $("#ai-technique").addEventListener("change", async () => {
 $("#ai-refresh").addEventListener("click", () => aiRefresh());
 $("#ai-start").addEventListener("click", () => ixCommand("/api/index/run", { technique: aiTechnique() }));
 $("#ai-stop").addEventListener("click", () => ixCommand("/api/index/cancel"));
+$("#ai-encoder-start").addEventListener("click", () => aiEncoderCommand("/api/index/encoder/start"));
+$("#ai-encoder-stop").addEventListener("click", () => aiEncoderCommand("/api/index/encoder/stop"));
 for (const button of document.querySelectorAll("#ai-tabs button")) button.addEventListener("click", () => aiSwitchTab(button.dataset.aitab));
 setInterval(() => { if (ixAutoRefresh("ai", "#ai-auto")) aiRefresh(); }, 5000);
+// A start takes from seconds to minutes: its state is asked for more often until it answers.
+setInterval(() => { if (state.screen === "ai" && document.visibilityState === "visible" && ai.encoder?.status === "starting") aiEncoderRefresh(); }, 1500);

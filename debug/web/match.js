@@ -194,7 +194,7 @@ const MT_PLANNED = {
   },
   ai_summary: {
     name: "AI approach",
-    text: "Run make index-ai to build both semantic indexes, then start this screen with make debug-ai.",
+    text: "Start the encoder under Index › AI and build the index there, or run make index-ai.",
     doc: "research/ai-based-matching.md",
   },
 };
