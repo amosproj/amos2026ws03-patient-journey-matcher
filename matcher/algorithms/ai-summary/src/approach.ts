@@ -27,6 +27,9 @@ export class SemanticNotReady extends Error {
   readonly code = "NOT_AVAILABLE";
 }
 
+/** Texts in one request to the encoder: the most its worker takes (scripts/semantic.py). */
+const REQUEST_SIZE = 4;
+
 export function createSemanticApproach({
   db,
   model,
@@ -60,22 +63,26 @@ export function createSemanticApproach({
         `);
           let processed = 0;
           log(`${model}: indexing metadata`);
+          // Finding the next documents reads all of `documents`, so they come in the large default
+          // batches. The encoder takes fewer texts at once: each request is stored on its own.
           const count = await indexChangedDocuments(
             db,
             table,
-            async (documents) => {
-              const texts = documents.map(metadataText);
-              const inputs = texts.filter((text) => text.trim().length > 0);
-              const vectors = inputs.length
-                ? await encoder.encode(model, "document", inputs)
-                : [];
-              let position = 0;
-              const values = texts.map((text) =>
-                text.trim() ? JSON.stringify(vectors[position++]) : null,
-              );
-              // One statement commits a batch atomically. Concurrent runs cannot overwrite newer rows.
-              await db.query(
-                `
+            async (batch) => {
+              for (let start = 0; start < batch.length; start += REQUEST_SIZE) {
+                const documents = batch.slice(start, start + REQUEST_SIZE);
+                const texts = documents.map(metadataText);
+                const inputs = texts.filter((text) => text.trim().length > 0);
+                const vectors = inputs.length
+                  ? await encoder.encode(model, "document", inputs)
+                  : [];
+                let position = 0;
+                const values = texts.map((text) =>
+                  text.trim() ? JSON.stringify(vectors[position++]) : null,
+                );
+                // One statement commits a request atomically. Concurrent runs cannot overwrite newer rows.
+                await db.query(
+                  `
             INSERT INTO ${table} (document_id, document_changed_at, embedding)
             SELECT batch.id, changed, vector::vector FROM
               unnest($1::text[], $2::timestamptz[], $3::text[]) AS batch(id, changed, vector)
@@ -85,17 +92,17 @@ export function createSemanticApproach({
               embedding = excluded.embedding
             WHERE ${table.split(".")[1]}.document_changed_at <= excluded.document_changed_at
           `,
-                [
-                  documents.map((d) => d.id),
-                  documents.map((d) => d.changed_at),
-                  values,
-                ],
-              );
-              processed += documents.length;
-              if (processed % 64 === 0)
-                log(`${model}: ${processed} records processed`);
+                  [
+                    documents.map((d) => d.id),
+                    documents.map((d) => d.changed_at),
+                    values,
+                  ],
+                );
+                processed += documents.length;
+                if (processed % 64 === 0)
+                  log(`${model}: ${processed} records processed`);
+              }
             },
-            4,
           );
           await db.query(
             "INSERT INTO ai_summary.ready VALUES ($1) ON CONFLICT DO NOTHING",
@@ -127,19 +134,26 @@ export function createSemanticApproach({
           queryText(state),
         ]);
         const encoded = performance.now();
+        // shortcut: an exact search that reads every vector, about 0.25 s per 100,000 documents;
+        // add an HNSW index (with hnsw.iterative_scan, for the filters) before the VM corpus is served.
+        // OFFSET 0 keeps the subquery apart, so the distance is computed once per row, not three times.
         const result = await db.query<{
           document_id: string;
           similarity: number;
         }>(
           `
-          SELECT i.document_id, 1 - (i.embedding <=> $1::vector) AS similarity
-          FROM ${table} AS i JOIN public.documents AS d ON d.id = i.document_id
-          WHERE i.embedding IS NOT NULL
-            AND i.document_changed_at >= date_trunc('milliseconds', d.changed_at)
-            AND (d.expires_at IS NULL OR d.expires_at > now())
-            AND ($2::text[] IS NULL OR d.content_type = ANY($2))
-            AND (i.embedding <=> $1::vector) < 1
-          ORDER BY i.embedding <=> $1::vector, i.document_id
+          SELECT document_id, 1 - distance AS similarity
+          FROM (
+            SELECT i.document_id, i.embedding <=> $1::vector AS distance
+            FROM ${table} AS i JOIN public.documents AS d ON d.id = i.document_id
+            WHERE i.embedding IS NOT NULL
+              AND i.document_changed_at >= date_trunc('milliseconds', d.changed_at)
+              AND (d.expires_at IS NULL OR d.expires_at > now())
+              AND ($2::text[] IS NULL OR d.content_type = ANY($2))
+            OFFSET 0
+          ) AS scored
+          WHERE distance < 1
+          ORDER BY distance, document_id
           LIMIT $3
         `,
           [JSON.stringify(vector), options.contentTypes ?? null, options.limit],

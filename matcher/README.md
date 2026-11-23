@@ -30,6 +30,6 @@ make debug-ai   # start the encoder, MCP server and debug UI
 
 These commands prepare dependencies, models and the database. The first index build can take time; interrupted builds resume. Open the printed URL and choose an encoder under Index › AI or a technique on the Matcher screen. Ctrl+C stops the services. `make start-ai` runs the encoder and MCP server alone.
 
-Semantic matching uses titles, abstracts or descriptions and subjects, capped at 512 tokens. Results return the existing abstract or description. MCP uses `algorithm: "ai_summary"` with the server's configured encoder. Settings and defaults are in the root [`.env.example`](../.env.example). Use the same `SEMANTIC_DEVICE` for indexing and matching.
+Semantic matching uses titles, abstracts or descriptions and subjects, capped at 512 tokens. Results return the existing abstract or description. MCP uses `algorithm: "ai_summary"` with the server's configured encoder. Settings and defaults are in the root [`.env.example`](../.env.example).
 
 With the encoder running and `TEST_DATABASE_URL` set, `SEMANTIC_SMOKE=1 pnpm exec vitest run mcp-server/src/semantic-live.test.ts` from `matcher/` checks real-model indexing on a small synthetic fixture.

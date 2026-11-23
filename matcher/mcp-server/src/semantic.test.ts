@@ -1,11 +1,12 @@
 import {
+  configuration,
   createEncoder,
   createSemanticApproach,
   indexTable,
   type Model,
   queryText,
 } from "@matcher/ai-summary";
-import { createDocumentStore } from "@matcher/db";
+import { createDocumentStore, type Queryable } from "@matcher/db";
 import {
   createTestDatabase,
   type TestDatabase,
@@ -80,6 +81,40 @@ test("refuses malformed or unnormalized inference responses", async () => {
     ).rejects.toThrow("Invalid embedding");
   } finally {
     vi.unstubAllGlobals();
+  }
+});
+
+test("sends only the start of a long text, and no half of a character pair", async () => {
+  const sent: string[][] = [];
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (_url: unknown, request: { body: string }) => {
+      const { texts } = JSON.parse(request.body) as { texts: string[] };
+      sent.push(texts);
+      return Response.json({ vectors: texts.map(() => vector(0)) });
+    }),
+  );
+  try {
+    await createEncoder().encode("qwen", "document", [
+      "word ".repeat(120_000), // 600,000 characters: the worker refuses over 500,000
+      `${"a".repeat(19_999)}\u{1F48A} and more`, // the cut lands inside the emoji
+      "short",
+    ]);
+    expect(sent[0].map((text) => text.length)).toEqual([20_000, 20_000, 5]);
+    expect(sent[0].every((text) => text.isWellFormed())).toBe(true);
+  } finally {
+    vi.unstubAllGlobals();
+  }
+});
+
+test("one index for every device", () => {
+  const table = indexTable("qwen");
+  vi.stubEnv("SEMANTIC_DEVICE", "mps");
+  try {
+    expect(configuration("qwen").device).toBe("mps");
+    expect(indexTable("qwen")).toBe(table);
+  } finally {
+    vi.unstubAllEnvs();
   }
 });
 
@@ -297,6 +332,40 @@ describe.skipIf(!testDatabaseUrl())(
         `SELECT document_id FROM ${indexTable("qwen")} WHERE document_id LIKE 'pubmed:resume%'`,
       );
       expect(complete.rows).toHaveLength(5);
+    });
+
+    test("asks for the next documents per batch, and the encoder for 4 texts at most", async () => {
+      for (let index = 0; index < 9; index++) {
+        await database.pool.query(
+          "INSERT INTO documents (id, source, native_id, content_type, title, canonical_url, retrieved_at) VALUES ($1, 'pubmed', $2, 'journal_article', 'Alpha', 'https://example.org', now())",
+          [`pubmed:batch${index}`, `batch${index}`],
+        );
+      }
+      let lookups = 0;
+      const db: Queryable = {
+        query(text, values) {
+          // The query of `documentsToIndex`, which reads all of `documents`.
+          if (text.includes("LEFT JOIN")) lookups++;
+          return database.pool.query(text, values);
+        },
+      };
+      const requests: number[] = [];
+      await createSemanticApproach({
+        db,
+        model: "qwen",
+        encoder: {
+          encode: async (_model, _mode, texts) => {
+            requests.push(texts.length);
+            return texts.map(() => vector(0));
+          },
+        },
+      }).indexer.index(() => {});
+      expect(requests).toEqual([4, 4, 1]);
+      expect(lookups).toBe(2); // the 9 documents, then none
+      const stored = await database.pool.query(
+        `SELECT 1 FROM ${indexTable("qwen")} WHERE document_id LIKE 'pubmed:batch%' AND embedding IS NOT NULL`,
+      );
+      expect(stored.rows).toHaveLength(9);
     });
   },
 );

@@ -22,6 +22,8 @@ export const settings = {
 };
 export const instruction =
   "Given a patient's current medical situation and history, retrieve resources relevant to the current situation.";
+/** The start of a text that is sent: several times what the encoder reads of it (`maxTokens`). */
+const MAX_CHARACTERS = 20_000;
 
 export function parseModel(value: string): Model {
   if (value === "qwen" || value === "bge") return value;
@@ -30,14 +32,16 @@ export function parseModel(value: string): Model {
 
 export function configuration(model: Model) {
   const device = process.env.SEMANTIC_DEVICE || "cpu";
-  if (!["cpu", "mps", "cuda"].includes(device))
-    throw new Error("SEMANTIC_DEVICE must be cpu, mps or cuda");
+  if (!["cpu", "mps"].includes(device))
+    throw new Error("SEMANTIC_DEVICE must be cpu or mps");
   return { model, ...models[model], ...settings, instruction, device };
 }
 
 export function indexTable(model: Model): string {
+  // One index for every device: the device changes a vector only by rounding. Hashed as "cpu",
+  // so the tables keep the names they got on the default device.
   const hash = createHash("sha256")
-    .update(JSON.stringify(configuration(model)))
+    .update(JSON.stringify({ ...configuration(model), device: "cpu" }))
     .digest("hex")
     .slice(0, 16);
   return `ai_summary.${model}_${hash}`;
@@ -82,7 +86,14 @@ export function createEncoder(
         method: "POST",
         redirect: "error",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...configuration(model), mode, texts }),
+        body: JSON.stringify({
+          ...configuration(model),
+          mode,
+          // The worker refuses a longer text, and one with half a character pair after the cut.
+          texts: texts.map((text) =>
+            text.slice(0, MAX_CHARACTERS).toWellFormed(),
+          ),
+        }),
         signal: AbortSignal.timeout(mode === "document" ? 180_000 : 45_000),
       });
       if (!response.ok) throw new Error("Semantic encoder unavailable");
