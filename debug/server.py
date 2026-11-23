@@ -19,6 +19,7 @@ logged.
 import argparse
 import asyncio
 import contextlib
+import http.client
 import importlib
 import io
 import json
@@ -1175,24 +1176,37 @@ def matcher_missing() -> str | None:
 
 
 def matcher_environment() -> dict[str, str]:
-    """The environment of the matcher's programs: this one plus the crawler's `DATABASE_URL`."""
+    """The environment of the matcher's programs: this one plus the crawler's `DATABASE_URL`
+    and the encoder that this server started."""
     missing = matcher_missing()
     if missing:
         raise ValueError(missing)
     try:
-        return {**os.environ, "DATABASE_URL": database_url()}
+        return with_encoder({**os.environ, "DATABASE_URL": database_url()})
     except StoreError as error:
         raise ValueError(str(error)) from error
+
+
+INDEX_TECHNIQUES = {
+    "all": ([], None, "make index"),
+    "keyword": (["keyword"], None, "make index APPROACHES=keyword"),
+    "graph": (["graph"], None, "make index APPROACHES=graph"),
+    "semantic": (["ai_summary"], "qwen,bge", "make index-ai"),
+    "qwen": (["ai_summary"], "qwen", "make index-ai SEMANTIC_MODELS=qwen"),
+    "bge": (["ai_summary"], "bge", "make index-ai SEMANTIC_MODELS=bge"),
+}
 
 
 class IndexRun(EventLog):
     """One run of the indexer job (`make index`); its output lines are the events."""
 
-    def __init__(self, approach: str | None) -> None:
+    def __init__(self, technique: str = "all") -> None:
         super().__init__()
-        self.approach = approach
-        """The one approach to index, or None for all of them."""
-        self.command = "make index" + (f" APPROACHES={approach}" if approach else "")
+        arguments, models, command = INDEX_TECHNIQUES[technique]
+        self.arguments = arguments
+        self.approach = arguments[0] if arguments else None
+        self.models = models
+        self.command = command
         self.process: subprocess.Popen[str] | None = None
         self.cancel_requested = False
 
@@ -1213,7 +1227,7 @@ def run_indexer(run: IndexRun, environment: dict[str, str]) -> None:
     code: int | None = None
     try:
         run.process = subprocess.Popen(
-            ["node", "src/main.ts", *([run.approach] if run.approach else [])],
+            ["node", "src/main.ts", *run.arguments],
             cwd=MATCHER_DIR / "indexer",
             env=environment,
             stdin=subprocess.DEVNULL,
@@ -1240,17 +1254,20 @@ def run_indexer(run: IndexRun, environment: dict[str, str]) -> None:
             run.emit("index_" + run.status, code=code)
 
 
-def start_indexer(approach: Any = None) -> IndexRun:
-    """Starts the indexer job for every approach, or for the one named, e.g. `keyword`."""
+def start_indexer(technique: str = "all") -> IndexRun:
     global INDEXING
-    named = isinstance(approach, str) and re.fullmatch("[a-z_]+", approach)
-    if approach is not None and not named:
-        raise ValueError("approach must be the name of one approach, e.g. keyword")
+    if not isinstance(technique, str) or technique not in INDEX_TECHNIQUES:
+        raise ValueError("Choose all, keyword, graph, semantic, qwen or bge")
+    if INDEX_TECHNIQUES[technique][1] and encoder_state()["status"] != "running":
+        raise RuntimeError("The AI index needs the encoder: start it and wait until it runs")
     environment = matcher_environment()
     with LOCK:
         if INDEXING is not None and INDEXING.status == "running":
             raise RuntimeError("The indexer is already running")
-        run = INDEXING = IndexRun(approach)
+        run = INDEXING = IndexRun(technique)
+        if run.models:
+            environment["SEMANTIC_MODEL"] = run.models.split(",")[0]
+            environment["SEMANTIC_MODELS"] = run.models
     threading.Thread(target=run_indexer, args=(run, environment), daemon=True).start()
     return run
 
@@ -1268,7 +1285,8 @@ def stop_indexer() -> dict[str, Any]:
 
 def indexer_state(*, events: bool = False) -> dict[str, Any]:
     run = INDEXING
-    state: dict[str, Any] = {"missing": matcher_missing(), "run": run.summary() if run else None}
+    state: dict[str, Any] = {"missing": matcher_missing(), "run": run.summary() if run else None,
+                             "techniques": list(INDEX_TECHNIQUES)}
     if events and run is not None:
         state["events"] = list(run.events)
     return state
@@ -1304,7 +1322,231 @@ async def graph_index_stats(connection: Any) -> dict[str, Any]:
     return {"exists": True, "pubmed": pubmed, **counts}
 
 
-async def index_overview(connection: Any) -> dict[str, Any]:
+# ── Index › AI: the local encoder of the AI approach (scripts/semantic.py) ──────────────────
+
+ENCODER_URL = "http://127.0.0.1:8766"
+"""Where the matcher looks for the encoder without SEMANTIC_URL."""
+ENCODER_SERVICE = "patient-journey-semantic"
+ENCODER_LINES = 30
+ENCODER_LOCK = threading.Lock()
+LOOPBACK = ("localhost", "127.0.0.1", "::1")
+PROGRESS = re.compile(r"(.+?):\s+\d+%\|")
+"""A step of a download's progress bar; it replaces the step before of the same file."""
+
+
+class Encoder:
+    """The encoder this server started, with the last lines it wrote."""
+
+    def __init__(self, process: "subprocess.Popen[str]", port: int, device: str) -> None:
+        self.process = process
+        self.url = f"http://127.0.0.1:{port}"
+        self.device = device
+        self.started_at = datetime.now(UTC).isoformat(timespec="seconds")
+        self.lines: list[str] = []
+        self.lines_lock = threading.Lock()
+
+    def running(self) -> bool:
+        return self.process.poll() is None
+
+    def read_output(self) -> None:
+        assert self.process.stdout is not None
+        for text in self.process.stdout:
+            line = text.rstrip()
+            if not line:
+                continue
+            progress = PROGRESS.match(line)
+            with self.lines_lock:
+                last = PROGRESS.match(self.lines[-1]) if self.lines else None
+                if progress and last and last[1] == progress[1]:
+                    self.lines[-1] = line
+                else:
+                    self.lines = [*self.lines[1 - ENCODER_LINES :], line]
+
+
+ENCODER: Encoder | None = None
+"""The encoder this server started, until it is stopped; one that failed stays to show why."""
+
+
+def encoder_device() -> str:
+    """The device of the encoder; the matcher's requests must name the same one."""
+    device = os.environ.get("SEMANTIC_DEVICE") or "cpu"
+    if device not in ("cpu", "mps"):
+        raise ValueError("SEMANTIC_DEVICE must be cpu or mps")
+    return device
+
+
+def encoder_health(url: str) -> dict[str, Any] | None:
+    """What the encoder at `url` says of itself, or None if none answers there."""
+    if urlsplit(url).hostname not in LOOPBACK:
+        return None
+    try:
+        with LOCAL.open(f"{url.rstrip('/')}/health", timeout=0.5) as response:
+            data = json.load(response)
+    except (OSError, ValueError, http.client.HTTPException):
+        return None
+    return data if isinstance(data, dict) and data.get("service") == ENCODER_SERVICE else None
+
+
+def encoder_state() -> dict[str, Any]:
+    """The encoder the matcher's programs reach: the one this server started, else one that
+    answers at SEMANTIC_URL, such as that of make debug-ai, which only that command stops."""
+    encoder = ENCODER
+    if encoder is not None:
+        with encoder.lines_lock:
+            lines = list(encoder.lines)
+        code = encoder.process.poll()
+        status = (
+            "failed" if code is not None
+            else "running" if encoder_health(encoder.url)
+            else "starting"
+        )
+        return {"status": status, "own": True, "url": encoder.url, "device": encoder.device,
+                "started_at": encoder.started_at, "code": code, "lines": lines}
+    url = os.environ.get("SEMANTIC_URL") or ENCODER_URL
+    health = encoder_health(url)
+    return {"status": "running" if health else "stopped", "own": False, "url": url,
+            "device": health.get("device") if health else encoder_device(), "lines": []}
+
+
+def with_encoder(environment: dict[str, str]) -> dict[str, str]:
+    """`environment` with the address and device of the encoder this server started."""
+    encoder = ENCODER
+    if encoder is not None and encoder.running():
+        environment = {
+            **environment, "SEMANTIC_URL": encoder.url, "SEMANTIC_DEVICE": encoder.device
+        }
+    return environment
+
+
+def free_port(preferred: int) -> int:
+    """`preferred`, or any free port if it is taken. The encoder opens its port only after it
+    has loaded both models, so a taken one would fail minutes later."""
+    with socket.socket() as connection:
+        try:
+            connection.bind(("127.0.0.1", preferred))
+        except OSError:
+            connection.bind(("127.0.0.1", 0))
+        return int(connection.getsockname()[1])
+
+
+def start_encoder() -> dict[str, Any]:
+    """Starts the encoder like make debug-ai does. It loads both models before it answers and
+    downloads the weights that are missing."""
+    global ENCODER
+    with ENCODER_LOCK:
+        state = encoder_state()
+        if state["status"] in ("starting", "running"):
+            raise RuntimeError(f"An encoder is already {state['status']} at {state['url']}")
+        device = encoder_device()
+        endpoint = urlsplit(os.environ.get("SEMANTIC_URL") or ENCODER_URL)
+        if endpoint.hostname not in LOOPBACK:
+            raise ValueError("SEMANTIC_URL must use a loopback host")
+        port = free_port(endpoint.port or 8766)
+        environment = {key: value for key, value in os.environ.items() if key != "VIRTUAL_ENV"}
+        try:
+            process = subprocess.Popen(
+                ["uv", "run", "--locked", "scripts/semantic.py", "--prepare",
+                 "--device", device, "--port", str(port)],
+                cwd=ROOT,
+                env=environment,
+                stdin=subprocess.DEVNULL,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT,
+                text=True,
+                encoding="utf-8",
+                errors="replace",
+                # Its own process group: a stop reaches the Python that uv starts.
+                start_new_session=True,
+            )
+        except OSError as error:
+            raise RuntimeError(describe_error(error)) from error
+        encoder = ENCODER = Encoder(process, port, device)
+    # Read all the time: a full pipe would halt the encoder.
+    threading.Thread(target=encoder.read_output, daemon=True).start()
+    return encoder_state()
+
+
+def stop_process_group(process: "subprocess.Popen[str]") -> None:
+    with contextlib.suppress(ProcessLookupError):
+        os.killpg(process.pid, signal.SIGTERM)
+    try:
+        process.wait(timeout=10)
+    except subprocess.TimeoutExpired:
+        with contextlib.suppress(ProcessLookupError):
+            os.killpg(process.pid, signal.SIGKILL)
+        process.wait()
+
+
+def stop_encoder() -> dict[str, Any]:
+    """Stops the encoder this server started, or forgets the one that failed."""
+    global ENCODER
+    with ENCODER_LOCK:
+        encoder, run = ENCODER, INDEXING
+        if encoder is None:
+            raise RuntimeError("This UI started no encoder; the command that started it stops it")
+        indexing = (
+            run is not None and run.status == "running" and run.approach not in ("keyword", "graph")
+        )
+        if encoder.running() and indexing:
+            raise RuntimeError("The indexer is using the encoder: stop the indexer first")
+        stop_process_group(encoder.process)
+        ENCODER = None
+    return encoder_state()
+
+
+def semantic_profiles() -> list[dict[str, Any]]:
+    """Read the canonical encoder configuration and table names from the matcher."""
+    script = (
+        "import {configuration,indexTable} from '../algorithms/ai-summary/src/encoder.ts';"
+        "console.log(JSON.stringify(['qwen','bge'].map(model=>"
+        "({...configuration(model),table:indexTable(model)}))));"
+    )
+    done = subprocess.run(
+        ["node", "--input-type=module", "-e", script],
+        cwd=MATCHER_DIR / "indexer", env=dict(os.environ),
+        capture_output=True, text=True, check=True, timeout=10,
+    )
+    return json.loads(done.stdout)
+
+
+async def semantic_overview(connection: Any, technique: str) -> dict[str, Any]:
+    profiles = semantic_profiles()
+    chosen = [p for p in profiles if technique == "semantic" or p["model"] == technique]
+    has_ready = await connection.fetchval("SELECT to_regclass('ai_summary.ready') IS NOT NULL")
+    models = []
+    for profile in chosen:
+        table = profile["table"]
+        if not re.fullmatch(r"ai_summary\.[a-z][a-z0-9_]+", table):
+            raise ValueError("Invalid semantic index table")
+        exists = bool(await connection.fetchval("SELECT to_regclass($1) IS NOT NULL", table))
+        index = table if exists else (
+            "(SELECT NULL::text AS document_id, NULL::timestamptz AS document_changed_at,"
+            " NULL::text AS embedding WHERE false)"
+        )
+        pending = to_index("i")
+        coverage = await fetch_json(connection, f"""
+            SELECT d.source, d.content_type, count(*) AS documents,
+                   count(*) FILTER (WHERE NOT {pending} AND i.embedding IS NOT NULL) AS indexed,
+                   count(*) FILTER (WHERE {pending}) AS pending,
+                   count(*) FILTER (WHERE NOT {pending} AND i.embedding IS NULL) AS empty
+            FROM documents AS d LEFT JOIN {index} AS i ON i.document_id = d.id
+            WHERE {NOT_EXPIRED}
+            GROUP BY 1, 2 ORDER BY 1, 2
+        """)
+        totals = {key: sum(row[key] for row in coverage)
+                  for key in ("documents", "indexed", "pending", "empty")}
+        ready = exists and has_ready and bool(await connection.fetchval(
+            "SELECT EXISTS (SELECT 1 FROM ai_summary.ready WHERE index_table = $1)", table
+        ))
+        models.append({**profile, **totals, "ready": ready, "coverage": coverage})
+    return {"technique": technique, "indexer": indexer_state(), "models": models}
+
+
+async def index_overview(connection: Any, technique: str = "keyword") -> dict[str, Any]:
+    if technique not in INDEX_TECHNIQUES:
+        raise ValueError("Unknown indexing technique")
+    if technique in ("semantic", "qwen", "bge"):
+        return await semantic_overview(connection, technique)
     exists = await has_keyword_index(connection)
     metadata = "keyword.documents" if exists else NO_INDEX
     full_texts = "keyword.full_texts" if exists else NO_INDEX
@@ -1318,6 +1560,7 @@ async def index_overview(connection: Any) -> dict[str, Any]:
                       AS preloaded""",
     )
     overview: dict[str, Any] = {
+        "technique": technique,
         "exists": exists,
         "extension": extension,
         "indexer": indexer_state(),
@@ -1642,14 +1885,19 @@ def load_journey(journey_id: str, *, graph: bool = False) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def run_matcher(command: str, request: dict[str, Any]) -> dict[str, Any]:
+def run_matcher(command: str, request: dict[str, Any], technique: str | None = None) -> dict[str, Any]:
     """A tool by the matcher's own code: `explain` is `match_journey` with the steps of the
     match, `get_source` is that tool."""
+    environment = matcher_environment()
+    if technique is not None:
+        if technique not in ("qwen", "bge"):
+            raise ValueError("Unknown semantic technique")
+        environment["SEMANTIC_MODEL"] = technique
     try:
         done = subprocess.run(
             ["node", "src/main.ts", command],
             cwd=MATCHER_DIR / "mcp-server",
-            env=matcher_environment(),
+            env=environment,
             input=json.dumps(request),
             capture_output=True,
             text=True,
@@ -1833,7 +2081,14 @@ def match(body: dict[str, Any]) -> dict[str, Any]:
         arguments = {key: value for key, value in request.items() if key != "tuning"}
         result = {"steps": [], **call_mcp("match_journey", arguments)}
     else:
-        result = run_matcher("explain", request)
+        technique = body.get("technique")
+        if technique is not None and (
+            technique not in ("qwen", "bge") or request.get("algorithm") != "ai_summary"
+        ):
+            raise ValueError("Invalid semantic technique")
+        if request.get("algorithm") == "ai_summary" and encoder_state()["status"] != "running":
+            raise RuntimeError("The AI approach needs the encoder: start it under Index › AI")
+        result = run_matcher("explain", request, technique)
     return {**result, "seconds": round(time.monotonic() - started, 2)}
 
 
@@ -2405,7 +2660,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def route_index(self, path: str, params: dict[str, list[str]]) -> None:
         if path == "/api/index":
-            self.send_db(index_overview)
+            self.send_db(lambda connection: index_overview(connection, first(params, "technique") or "keyword"))
         elif path == "/api/index/run":
             self.send_json(indexer_state(events=True))
         elif path == "/api/index/events":
@@ -2416,6 +2671,8 @@ class Handler(BaseHTTPRequestHandler):
             self.send_db(journey_terms)
         elif path == "/api/index/transcription":
             self.send_db(transcription_overview)
+        elif path == "/api/index/encoder":
+            self.send_result(encoder_state)
         else:
             self.send_json({"error": "not found"}, 404)
 
@@ -2511,6 +2768,10 @@ class Handler(BaseHTTPRequestHandler):
             self.empty_db()
         elif path == "/api/index/cancel":
             self.send_result(stop_indexer)
+        elif path == "/api/index/encoder/start":
+            self.send_result(start_encoder)
+        elif path == "/api/index/encoder/stop":
+            self.send_result(stop_encoder)
         elif path in (
             "/api/index/run",
             "/api/index/terms",
@@ -2527,7 +2788,7 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/match":
                 self.send_result(lambda: match(body))
             elif path == "/api/index/run":
-                self.send_result(lambda: start_indexer(body.get("approach")).summary())
+                self.send_result(lambda: start_indexer(body.get("technique", body.get("approach") or "all")).summary())
             elif path == "/api/index/transcription":
                 self.send_db(
                     lambda connection: set_transcription_workers(connection, body.get("workers")),
@@ -2634,6 +2895,10 @@ class Handler(BaseHTTPRequestHandler):
             return
 
 
+def interrupt(*_: Any) -> None:
+    raise KeyboardInterrupt
+
+
 def main() -> None:
     options = argparse.ArgumentParser(description="Debug UI for the crawler and the matcher")
     options.add_argument("--host", default="127.0.0.1")
@@ -2660,8 +2925,15 @@ def main() -> None:
     server.daemon_threads = True
     print(f"Debug UI: http://{arguments.host}:{arguments.port}", flush=True)
     print(f"Crawler .env: {ENV_FILE} ({'found' if ENV_FILE.exists() else 'missing'})", flush=True)
-    with contextlib.suppress(KeyboardInterrupt):
-        server.serve_forever()
+    # A stop (make debug-ai, systemd) or a closed terminal also stops the encoder it started.
+    for stopping in (signal.SIGTERM, signal.SIGHUP):
+        signal.signal(stopping, interrupt)
+    try:
+        with contextlib.suppress(KeyboardInterrupt):
+            server.serve_forever()
+    finally:
+        if ENCODER is not None:
+            stop_process_group(ENCODER.process)
 
 
 if __name__ == "__main__":

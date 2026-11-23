@@ -14,7 +14,7 @@ The Patient Journey Matcher is an MCP server for the AIlixir app. A client sends
 <img src="Documentation/banner.svg" alt="A patient journey goes to the MCP server with match_journey; the keyword, graph and AI summary approaches match it, and the best matches come back as papers, preprints, videos and podcast episodes" width="100%">
 
 - **Crawler (Python):** collects metadata and links from PubMed, arXiv, Zenodo, YouTube and podcast feeds and stores them in PostgreSQL, never the full texts.
-- **Indexer (TypeScript):** builds the [keyword index](Documentation/design/keyword-matching.md) from document text and the [graph index](Documentation/design/graph-normalization.md) from PubTator3 annotations.
+- **Indexer (TypeScript):** builds the [keyword index](Documentation/design/keyword-matching.md) from document text, the [graph index](Documentation/design/graph-normalization.md) from PubTator3 annotations and, if enabled, the index of [semantic matching](matcher/README.md#semantic-matching).
 - **MCP server (TypeScript):** matches the journey against the index and returns the best sources with links to the originals.
 
 How it fits together: [software architecture](Documentation/design/architecture.md). To watch it work with real data, use the [debug UI](#explore-the-pipeline).
@@ -45,6 +45,8 @@ Then call it with the MCP Inspector: [try it](Documentation/user/mcp-interface.m
 Podcast audio without a transcript: `WHISPER_MODEL=tiny-q5_1 make transcribe WORKERS=2` transcribes it, two files at a time, until you stop it; the next `make index` reads the text.
 
 ### Explore the pipeline
+
+For semantic matching, run `make index-ai` once, then `make debug-ai` to start the encoder, MCP server and debug UI together ([settings](matcher/README.md#semantic-matching)).
 
 `make debug` starts the [debug UI](debug/README.md) on http://127.0.0.1:8765: one screen per step, from crawler runs and stored documents to the index and each step of a match (search terms per event, the rank of each hit in both indexes, the rank fusion), plus the machine and its timers.
 

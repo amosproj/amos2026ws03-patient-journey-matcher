@@ -5,6 +5,8 @@
 const ix = { overview: null, error: null, tab: "log", loading: false, run: null, stream: null };
 // Lines of the other approaches and of the steps after them, left out of the keyword log.
 const KW_LOG_HIDES = new Set(["graph", "ai_summary", "transcripts"]);
+// The same for the AI log. A line that starts with none of them, like an error, shows in every log.
+const AI_LOG_HIDES = new Set(["keyword", "graph", "transcripts"]);
 
 // One request for both screens: the state of the indexer job comes with the keyword index.
 async function ixRefresh() {
@@ -28,6 +30,7 @@ async function ixRefresh() {
     const updated = `· ${fmtClock(new Date().toISOString())}`;
     $("#ix-updated").textContent = updated;
     $("#kw-updated").textContent = updated;
+    await aiRefresh();
     await ixFollowRun();
   } finally {
     ix.loading = false;
@@ -36,10 +39,11 @@ async function ixRefresh() {
 
 // One job at a time: a run of every approach or of one blocks all Start buttons.
 function renderIxButtons() {
-  const indexer = ix.overview?.indexer;
+  const indexer = ix.overview?.indexer || ai.data?.indexer;
   const running = indexer?.run?.status === "running";
-  for (const id of ["#ix-start", "#kw-start", "#gr-start"]) $(id).disabled = !indexer || running || Boolean(indexer.missing);
-  for (const id of ["#ix-stop", "#kw-stop", "#gr-stop"]) $(id).disabled = !running;
+  for (const id of ["#ix-start", "#kw-start", "#gr-start", "#ai-start"]) $(id).disabled = !indexer || running || Boolean(indexer.missing);
+  for (const id of ["#ix-stop", "#kw-stop", "#gr-stop", "#ai-stop"]) $(id).disabled = !running;
+  $("#ai-start").disabled ||= ai.loading || !ai.data || ai.encoder?.status !== "running";
 }
 
 const ixErrorLines = () => [h("b", {}, ix.error.database ? "Not connected" : "Not loaded"), h("small", {}, ix.error.message), ix.error.hint ? h("span", { class: "hint" }, ix.error.hint) : null];
@@ -77,9 +81,12 @@ function renderIxStats() {
       ovShare("Waiting for retry", g.retrying, g.pubmed, { color: "--warn", tip: "PubMed papers missing from PubTator3, checked again after 2 days", onclick: () => showScreen("graph") }),
     ]) : null,
     g ? h("small", { class: "ov-note" }, `of ${fmtCount(g.pubmed)} PubMed papers, not expired`) : null);
-  $("#ix-stats").replaceChildren(keyword,
-    graphCard,
-    ovSection(title("AI index", "ai"), h("b", { class: "ov-total muted" }, "planned")));
+  // One approach with an index per model: its part is wide enough for both next to each other.
+  const semantic = ovSection(title("AI index", "ai"),
+    ai.data ? h("div", { class: "ov-parts even" }, ...ai.data.models.map(aiOverviewPart)) : h("b", { class: "ov-total muted" }, "–"),
+    ai.data ? h("small", { class: "ov-note" }, `of ${fmtCount(ai.data.models[0]?.documents ?? 0)} documents, not expired`) : null);
+  semantic.classList.add("wide");
+  $("#ix-stats").replaceChildren(keyword, graphCard, semantic);
 }
 
 function renderIxDown() {
@@ -102,6 +109,8 @@ function ixAppendLog(event) {
   }[event.type] || ["start", JSON.stringify(event)];
   const writer = event.type === "line" ? /^(\w+): /.exec(event.text || "")?.[1] : null;
   const logs = [["#ix-log", "#ix-follow"]];
+  const model = /^ai_summary: (qwen|bge):/.exec(event.text || "")?.[1];
+  if (!AI_LOG_HIDES.has(writer) && (aiTechnique() === "semantic" || !model || model === aiTechnique())) logs.push(["#ai-log", "#ai-follow"]);
   if (!KW_LOG_HIDES.has(writer)) logs.push(["#kw-log", "#kw-follow"]);
   for (const [logId, followId] of logs) {
     const log = $(logId);
@@ -118,12 +127,12 @@ function ixAppendLog(event) {
 
 // Shows the run the server reports: its lines so far, then the stream while it runs.
 async function ixFollowRun() {
-  const run = ix.overview?.indexer.run;
+  const run = ix.overview?.indexer.run || ai.data?.indexer.run;
   if (!run || ix.run === run.id) return;
   ix.run = run.id;
   const data = await api("/api/index/run");
   if (data.run?.id !== run.id) { ix.run = null; return; }
-  for (const id of ["#ix-log", "#kw-log"]) $(id).replaceChildren();
+  for (const id of ["#ix-log", "#kw-log", "#ai-log"]) $(id).replaceChildren();
   for (const id of ["#ix-run", "#kw-run"]) $(id).textContent = "";
   for (const event of data.events) ixAppendLog(event);
   if (data.run.status !== "running") return;
@@ -140,11 +149,13 @@ async function ixFollowRun() {
 async function ixCommand(path, body = {}) {
   const keyword = state.screen === "keyword";
   const graphScreen = state.screen === "graph";
-  const error = $(keyword ? "#kw-error" : graphScreen ? "#gr-index-error" : "#ix-error");
+  const semantic = state.screen === "ai";
+  const error = $(semantic ? "#ai-error" : keyword ? "#kw-error" : graphScreen ? "#gr-index-error" : "#ix-error");
   error.textContent = "";
   try {
     await api(path, { method: "POST", body: JSON.stringify(body) });
     if (keyword) kwSwitchTab("log");
+    else if (semantic) aiSwitchTab("log");
     else {
       if (graphScreen) showScreen("index");
       ixSwitchTab("log");

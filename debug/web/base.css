@@ -150,6 +150,9 @@ main { display: grid; grid-template-rows: auto auto 1fr; min-width: 0; min-heigh
 .ov-parts > div + div { margin-top: 14px; }
 /* A group that wraps onto a row of its own puts its parts side by side. */
 @container (min-width: 520px) { .ov-parts { display: flex; gap: 40px; } .ov-parts > div + div { margin-top: 0; } }
+/* Parts with bars, e.g. the models of the AI index: twice the room of a section, shared evenly. */
+.ov.wide { flex: 2 1 520px; }
+.ov-parts.even > div { flex: 1 1 0; min-width: 0; }
 .ov-total { display: block; margin-bottom: 8px; font-size: clamp(22px, 2.1vw, 30px); line-height: 1.15; letter-spacing: -.035em; font-variant-numeric: tabular-nums; }
 .ov-total.muted { color: var(--muted); }
 .ov-list { display: grid; grid-template-columns: auto minmax(48px, 1fr) max-content; column-gap: 10px; row-gap: 1px; }
@@ -340,6 +343,7 @@ td.link:hover { color: var(--accent); text-decoration: underline; }
 .notice { margin: 12px 16px 0; padding: 9px 12px; border-radius: 8px; background: color-mix(in srgb, var(--critical) 10%, transparent); font-size: 12.5px; white-space: pre-wrap; }
 .notice.quiet { background: var(--code); color: var(--muted); }
 .ov-note { display: block; margin-top: 8px; color: var(--muted); font-size: 11.5px; }
+.ov-note.warn { color: var(--warn); }
 /* The screens stay in one row with the brand as long as they fit, then get a row of their own. */
 @media (max-width: 1320px) { .views button { padding-inline: 10px; } }
 @media (max-width: 1240px) { .brand h1 { display: none; } }

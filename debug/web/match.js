@@ -5,7 +5,7 @@
 const MT_DEFAULTS = { algorithm: "keyword", limit: 10 };
 const mt = {
   meta: null, args: null, dates: [], asOf: null, request: null, via: null, result: null,
-  tuning: {}, settings: "", tab: "results", cache: new Map(), sources: new Map(), ticket: 0, loadTicket: 0, timer: 0,
+  model: "qwen", tuning: {}, settings: "", tab: "results", cache: new Map(), sources: new Map(), ticket: 0, loadTicket: 0, timer: 0,
 };
 
 // The data of a step of the match shown, e.g. "terms"; undefined through the MCP server.
@@ -174,7 +174,9 @@ async function mtRun(fresh) {
   if (!mt.args) return;
   const via = $("#mt-mcp").checked ? "mcp" : "direct";
   const request = mtRequest();
-  const key = JSON.stringify([via, request]);
+  // The model of the AI algorithm is no argument of match_journey: the MCP server has its own.
+  const technique = via === "direct" && mtAlgorithm() === "ai_summary" ? mt.model : undefined;
+  const key = JSON.stringify([via, request, technique]);
   const ticket = ++mt.ticket;
   if (fresh) { mt.cache.clear(); mt.sources.clear(); }
   $("#mt-error").textContent = "";
@@ -189,7 +191,7 @@ async function mtRun(fresh) {
   if (!result) {
     mtBusy(true);
     try {
-      result = await api("/api/match", { method: "POST", body: JSON.stringify({ request, via }) });
+      result = await api("/api/match", { method: "POST", body: JSON.stringify({ request, via, technique }) });
       if (ticket !== mt.ticket) return;
       await mtEnrich(result);
       if (ticket !== mt.ticket) return;
@@ -223,17 +225,26 @@ function mtRender() {
   mtRenderPending();
 }
 
-// Background for approaches that match_journey cannot run yet.
+// AI needs its index: until then match_journey answers NOT_AVAILABLE for it, which shows here
+// with what the approach needs.
 const MT_PLANNED = {
   ai_summary: {
     name: "AI approach",
-    text: "A trained model judges which sources fit the patient's current situation: by semantic similarity, a direct relevance assessment or summaries made beforehand.",
+    text: "Start the encoder under Index › AI and build the index there, or run make index-ai.",
     doc: "research/ai-based-matching.md",
   },
 };
 
+// The algorithm, and under AI the model it matches with.
 function mtRenderAlgorithm() {
-  for (const button of document.querySelectorAll("#mt-algorithm button")) button.classList.toggle("active", button.dataset.value === mtAlgorithm());
+  const algorithm = mtAlgorithm(), viaMcp = $("#mt-mcp").checked;
+  for (const button of document.querySelectorAll("#mt-algorithm button")) button.classList.toggle("active", button.dataset.value === algorithm);
+  $("#mt-model-field").hidden = algorithm !== "ai_summary";
+  for (const button of document.querySelectorAll("#mt-model button")) {
+    button.classList.toggle("active", !viaMcp && button.dataset.value === mt.model);
+    button.disabled = viaMcp;
+  }
+  $("#mt-model-note").textContent = viaMcp ? "The MCP server uses the model it was started with." : "";
 }
 
 function mtRenderPending() {
@@ -243,8 +254,8 @@ function mtRenderPending() {
   $("#mt-pending").hidden = !planned;
   if (!planned) return;
   $("#mt-pending").replaceChildren(h("div", { class: "mt-pending-card" },
-    h("h3", {}, planned.name, h("span", { class: "pill plain" }, "planned")),
-    h("p", { class: "muted" }, `Not built yet: match_journey answers NOT_AVAILABLE for the algorithm ${algorithm}.`),
+    h("h3", {}, planned.name, h("span", { class: "pill plain" }, "unavailable")),
+    h("p", { class: "muted" }, mt.result.error.message),
     planned.text ? h("p", {}, planned.text) : null,
     planned.doc ? h("small", { class: "muted mono" }, planned.doc) : null));
 }
@@ -266,6 +277,12 @@ for (const button of document.querySelectorAll("#mt-algorithm button")) button.a
   }
   mtRun(false);
 });
+for (const button of document.querySelectorAll("#mt-model button")) button.addEventListener("click", () => {
+  if (!mt.args || mt.model === button.dataset.value) return;
+  mt.model = button.dataset.value;
+  mtRenderAlgorithm();
+  mtRun(false);
+});
 
 function mtRenderStats() {
   const box = $("#mt-stats");
@@ -282,6 +299,8 @@ function mtRenderStats() {
     query && card("Mapped diagnoses", Object.keys(query.diagnoses).length, Object.keys(query.diagnoses).length ? "" : "muted"),
     query && !query.conceptOnly && card("Treatments + details", `${Object.keys(query.treatments).length} + ${Object.keys(query.details).length}`),
     query && !query.conceptOnly && card("Patient relations", Object.keys(query.relations).length, Object.keys(query.relations).length ? "" : "muted"),
+    mtStep("semantic") && card(`Model: ${mtStep("semantic").repository}`, aiName(mtStep("semantic").model)),
+    mtStep("semantic") && card("Encode / search", `${Math.round(mtStep("semantic").encoder_ms)} / ${Math.round(mtStep("semantic").search_ms)} ms`),
     card(answer?.degraded ? "Results (degraded)" : "Results", answer ? answer.results.length : "–", answer?.degraded || result.error ? "bad" : ""),
     card(result.steps?.length ? "Took, incl. starting the matcher" : "Took", `${result.seconds.toFixed(2)} s`, "muted"),
   ].filter(Boolean));
@@ -409,7 +428,7 @@ function mtRenderNotice() {
   if (result.error) text = `match_journey refuses this request (${result.error.code}):\n${result.error.message}`;
   else if (result.answer.degraded) {
     const missing = /does not exist/.test(failure?.message || "");
-    text = `Degraded: ${result.answer.degraded_reason}${failure ? `\n${failure.name || "Error"}${failure.code ? ` ${failure.code}` : ""}: ${failure.message}` : ""}${missing ? "\nThe index is missing: start the indexer on the Index overview, or run make index." : ""}`;
+    text = `Degraded: ${result.answer.degraded_reason}${failure ? `\n${failure.name || "Error"}${failure.code ? ` ${failure.code}` : ""}: ${failure.message}` : ""}${missing ? "\nThe index is missing: start the indexer on the Index screen, or run make index." : ""}`;
   } else if (!result.answer.results.length) [text, info] = [result.answer.algorithm === "graph" ? "No indexed paper matched a mapped patient diagnosis." : "No stored document shares a term with this journey.", true];
   box.hidden = !text;
   box.className = `notice${info ? " quiet" : ""}`;
@@ -731,6 +750,7 @@ $("#mt-all-terms").addEventListener("change", () => mtRenderResults());
 $("#mt-mcp").addEventListener("change", async () => {
   try { mt.meta = await api("/api/match/meta"); } catch (error) { /* shown by the next match */ }
   mtRenderSide();
+  mtRenderAlgorithm();
   mtRun(true);
 });
 $("#mt-tuning-reset").addEventListener("click", () => {

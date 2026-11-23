@@ -1,6 +1,7 @@
 .PHONY: build test start debug sbom db seed index transcribe graph
 
 PORT ?= 8765
+export SEMANTIC_MODEL SEMANTIC_MODELS SEMANTIC_URL SEMANTIC_DEVICE
 
 # With the root .env, `make test` runs the database tests against the database from `make db`
 # instead of skipping them, and `make seed`, `make index`, `make transcribe` and `make start` use
@@ -9,7 +10,7 @@ ifneq ($(wildcard .env),)
 include .env
 LOCAL_DATABASE_URL := postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@127.0.0.1:$(or $(POSTGRES_PORT),5432)/$(POSTGRES_DB)
 export TEST_DATABASE_URL ?= $(LOCAL_DATABASE_URL)
-seed index transcribe start: export DATABASE_URL ?= $(LOCAL_DATABASE_URL)
+seed index transcribe start debug-ai index-ai start-ai: export DATABASE_URL ?= $(LOCAL_DATABASE_URL)
 endif
 
 build:
@@ -70,3 +71,17 @@ test-integration: build
 # see tools/patient-graph/README.md.
 graph:
 	cd tools/patient-graph && uv run --locked python patient_graph.py $(PATIENT)
+
+.PHONY: debug-ai index-ai start-ai
+
+debug-ai index-ai start-ai: build db
+
+# Each command manages its local encoder and shares one database configuration.
+debug-ai:
+	uv run --locked scripts/semantic.py --run debug --ui-port $(PORT)
+
+index-ai:
+	uv run --locked scripts/semantic.py --run index
+
+start-ai:
+	uv run --locked scripts/semantic.py --run start
