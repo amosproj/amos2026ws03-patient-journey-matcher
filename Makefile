@@ -34,7 +34,9 @@ start: build
 debug:
 	cd crawler && PYTHONPATH=src uv run --locked python ../debug/server.py --port $(PORT)
 
-# Updates the committed runtime dependency inventories.
+# Writes the runtime dependencies of all projects and of the database image with their licences
+# to sbom.spdx.json (SPDX 3, for SCA Tool) and sbom.cdx.json (CycloneDX 1.7); needs Docker. Run it
+# after every dependency change: CI fails until you do.
 sbom:
 	uv run scripts/sbom.py
 
