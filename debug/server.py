@@ -1291,17 +1291,12 @@ async def graph_index_stats(connection: Any) -> dict[str, Any]:
             "with_relations": 0,
             "retrying": 0,
         }
-    has_retry = bool(
-        await connection.fetchval("SELECT to_regclass('graph.indexed_documents') IS NOT NULL")
-    )
-    done = "NOT isfinite(g.retry_at)" if has_retry else "g.entities <> '{}'::jsonb"
-    retrying = "isfinite(g.retry_at)" if has_retry else "g.entities = '{}'::jsonb"
     [counts] = await fetch_json(
         connection,
-        f"""SELECT count(g.document_id) FILTER (WHERE {done}) AS indexed,
+        f"""SELECT count(g.document_id) FILTER (WHERE NOT isfinite(g.retry_at)) AS indexed,
                    count(*) FILTER (WHERE g.entities <> '{{}}'::jsonb) AS with_entities,
                    count(*) FILTER (WHERE jsonb_array_length(g.relations) > 0) AS with_relations,
-                   count(g.document_id) FILTER (WHERE {retrying}) AS retrying
+                   count(g.document_id) FILTER (WHERE isfinite(g.retry_at)) AS retrying
             FROM documents AS d
             LEFT JOIN graph.documents AS g ON g.document_id = d.id
             WHERE d.source = 'pubmed' AND {NOT_EXPIRED}""",

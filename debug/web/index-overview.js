@@ -74,7 +74,7 @@ function renderIxStats() {
     g ? ovList([
       ovShare("With entities", g.with_entities, g.pubmed, { color: "--good", tip: "PubMed papers with at least one mapped PubTator3 entity", onclick: () => showScreen("graph") }),
       ovShare("With relations", g.with_relations, g.pubmed, { color: "--accent", tip: "PubMed papers with at least one normalized PubTator3 relation", onclick: () => showScreen("graph") }),
-      ovShare("Waiting for retry", g.retrying, g.pubmed, { color: "--warn", tip: "PubMed papers missing from PubTator3, checked again after 7 days", onclick: () => showScreen("graph") }),
+      ovShare("Waiting for retry", g.retrying, g.pubmed, { color: "--warn", tip: "PubMed papers missing from PubTator3, checked again after 2 days", onclick: () => showScreen("graph") }),
     ]) : null,
     g ? h("small", { class: "ov-note" }, `of ${fmtCount(g.pubmed)} PubMed papers, not expired`) : null);
   $("#ix-stats").replaceChildren(keyword,
