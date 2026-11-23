@@ -2,10 +2,10 @@
   "$schema": "http://cyclonedx.org/schema/bom-1.7.schema.json",
   "bomFormat": "CycloneDX",
   "specVersion": "1.7",
-  "serialNumber": "urn:uuid:a97a2edd-441e-4c27-88f3-f959f5b5b82b",
+  "serialNumber": "urn:uuid:b586de5f-2222-4983-bf43-118618c5dc3c",
   "version": 1,
   "metadata": {
-    "timestamp": "2026-11-23T14:48:18Z",
+    "timestamp": "2026-11-23T17:25:46Z",
     "tools": {
       "components": [
         {
@@ -20,7 +20,7 @@
       "bom-ref": "98b1806d64fda9a2",
       "type": "application",
       "name": "patient-journey-matcher",
-      "version": "sprint-05-release-76-gae3e666",
+      "version": "sprint-05-release-78-g31a112b",
       "supplier": {
         "name": "The AMOS Projects"
       },
@@ -536,27 +536,6 @@
         "occurrences": [
           {
             "location": "tools/patient-graph/uv.lock"
-          }
-        ]
-      }
-    },
-    {
-      "bom-ref": "pkg:pypi/cloudpickle@3.1.3?package-id=Package-python-cloudpickle-a1e3e6643ae27ce3",
-      "type": "library",
-      "name": "cloudpickle",
-      "version": "3.1.3",
-      "licenses": [
-        {
-          "license": {
-            "id": "BSD-3-Clause"
-          }
-        }
-      ],
-      "purl": "pkg:pypi/cloudpickle@3.1.3",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
           }
         ]
       }
@@ -1237,7 +1216,7 @@
       "licenses": [
         {
           "license": {
-            "name": "Apache"
+            "id": "Apache-2.0"
           }
         }
       ],
@@ -1360,6 +1339,13 @@
       "type": "library",
       "name": "jinja2",
       "version": "3.1.6",
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
       "purl": "pkg:pypi/jinja2@3.1.6",
       "evidence": {
         "occurrences": [
@@ -1386,27 +1372,6 @@
         "occurrences": [
           {
             "location": "tools/patient-graph/uv.lock"
-          }
-        ]
-      }
-    },
-    {
-      "bom-ref": "pkg:pypi/joblib@1.6.0?package-id=Package-python-joblib-00dbd179e114bd67",
-      "type": "library",
-      "name": "joblib",
-      "version": "1.6.0",
-      "licenses": [
-        {
-          "license": {
-            "id": "BSD-3-Clause"
-          }
-        }
-      ],
-      "purl": "pkg:pypi/joblib@1.6.0",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
           }
         ]
       }
@@ -1524,7 +1489,7 @@
       "licenses": [
         {
           "license": {
-            "name": "BSD"
+            "id": "BSD-3-Clause"
           }
         }
       ],
@@ -1554,27 +1519,6 @@
         "occurrences": [
           {
             "location": "crawler/uv.lock"
-          }
-        ]
-      }
-    },
-    {
-      "bom-ref": "pkg:pypi/narwhals@2.29.0?package-id=Package-python-narwhals-1a249edbd7db3cbd",
-      "type": "library",
-      "name": "narwhals",
-      "version": "2.29.0",
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT"
-          }
-        }
-      ],
-      "purl": "pkg:pypi/narwhals@2.29.0",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
           }
         ]
       }
@@ -1687,321 +1631,6 @@
         }
       ],
       "purl": "pkg:pypi/numpy@2.5.5",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
-          }
-        ]
-      }
-    },
-    {
-      "bom-ref": "pkg:pypi/nvidia-cublas-cu12@12.8.4.1?package-id=Package-python-nvidia-cublas-cu12-f776382a2daaf0aa",
-      "type": "library",
-      "name": "nvidia-cublas-cu12",
-      "version": "12.8.4.1",
-      "licenses": [
-        {
-          "license": {
-            "name": "NVIDIA Proprietary Software"
-          }
-        }
-      ],
-      "purl": "pkg:pypi/nvidia-cublas-cu12@12.8.4.1",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
-          }
-        ]
-      }
-    },
-    {
-      "bom-ref": "pkg:pypi/nvidia-cuda-cupti-cu12@12.8.90?package-id=Package-python-nvidia-cuda-cupti-cu12-37da100da4dfb60f",
-      "type": "library",
-      "name": "nvidia-cuda-cupti-cu12",
-      "version": "12.8.90",
-      "licenses": [
-        {
-          "license": {
-            "name": "NVIDIA Proprietary Software"
-          }
-        }
-      ],
-      "purl": "pkg:pypi/nvidia-cuda-cupti-cu12@12.8.90",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
-          }
-        ]
-      }
-    },
-    {
-      "bom-ref": "pkg:pypi/nvidia-cuda-nvrtc-cu12@12.8.93?package-id=Package-python-nvidia-cuda-nvrtc-cu12-12ce43d98deec87d",
-      "type": "library",
-      "name": "nvidia-cuda-nvrtc-cu12",
-      "version": "12.8.93",
-      "licenses": [
-        {
-          "license": {
-            "name": "NVIDIA Proprietary Software"
-          }
-        }
-      ],
-      "purl": "pkg:pypi/nvidia-cuda-nvrtc-cu12@12.8.93",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
-          }
-        ]
-      }
-    },
-    {
-      "bom-ref": "pkg:pypi/nvidia-cuda-runtime-cu12@12.8.90?package-id=Package-python-nvidia-cuda-runtime-cu12-bbed4053379bc17c",
-      "type": "library",
-      "name": "nvidia-cuda-runtime-cu12",
-      "version": "12.8.90",
-      "licenses": [
-        {
-          "license": {
-            "name": "NVIDIA Proprietary Software"
-          }
-        }
-      ],
-      "purl": "pkg:pypi/nvidia-cuda-runtime-cu12@12.8.90",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
-          }
-        ]
-      }
-    },
-    {
-      "bom-ref": "pkg:pypi/nvidia-cudnn-cu12@9.10.2.21?package-id=Package-python-nvidia-cudnn-cu12-2dd7c5916633841c",
-      "type": "library",
-      "name": "nvidia-cudnn-cu12",
-      "version": "9.10.2.21",
-      "licenses": [
-        {
-          "license": {
-            "name": "NVIDIA Proprietary"
-          }
-        }
-      ],
-      "purl": "pkg:pypi/nvidia-cudnn-cu12@9.10.2.21",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
-          }
-        ]
-      }
-    },
-    {
-      "bom-ref": "pkg:pypi/nvidia-cufft-cu12@11.3.3.83?package-id=Package-python-nvidia-cufft-cu12-500379c6e3999a8a",
-      "type": "library",
-      "name": "nvidia-cufft-cu12",
-      "version": "11.3.3.83",
-      "licenses": [
-        {
-          "license": {
-            "name": "NVIDIA Proprietary Software"
-          }
-        }
-      ],
-      "purl": "pkg:pypi/nvidia-cufft-cu12@11.3.3.83",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
-          }
-        ]
-      }
-    },
-    {
-      "bom-ref": "pkg:pypi/nvidia-cufile-cu12@1.13.1.3?package-id=Package-python-nvidia-cufile-cu12-2ba4b5f987bab8a9",
-      "type": "library",
-      "name": "nvidia-cufile-cu12",
-      "version": "1.13.1.3",
-      "licenses": [
-        {
-          "license": {
-            "name": "NVIDIA Proprietary Software"
-          }
-        }
-      ],
-      "purl": "pkg:pypi/nvidia-cufile-cu12@1.13.1.3",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
-          }
-        ]
-      }
-    },
-    {
-      "bom-ref": "pkg:pypi/nvidia-curand-cu12@10.3.9.90?package-id=Package-python-nvidia-curand-cu12-a46772f8a802fc27",
-      "type": "library",
-      "name": "nvidia-curand-cu12",
-      "version": "10.3.9.90",
-      "licenses": [
-        {
-          "license": {
-            "name": "NVIDIA Proprietary Software"
-          }
-        }
-      ],
-      "purl": "pkg:pypi/nvidia-curand-cu12@10.3.9.90",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
-          }
-        ]
-      }
-    },
-    {
-      "bom-ref": "pkg:pypi/nvidia-cusolver-cu12@11.7.3.90?package-id=Package-python-nvidia-cusolver-cu12-1f81036e09b76f6c",
-      "type": "library",
-      "name": "nvidia-cusolver-cu12",
-      "version": "11.7.3.90",
-      "licenses": [
-        {
-          "license": {
-            "name": "NVIDIA Proprietary Software"
-          }
-        }
-      ],
-      "purl": "pkg:pypi/nvidia-cusolver-cu12@11.7.3.90",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
-          }
-        ]
-      }
-    },
-    {
-      "bom-ref": "pkg:pypi/nvidia-cusparse-cu12@12.5.8.93?package-id=Package-python-nvidia-cusparse-cu12-6ea9fcd697ba7dee",
-      "type": "library",
-      "name": "nvidia-cusparse-cu12",
-      "version": "12.5.8.93",
-      "licenses": [
-        {
-          "license": {
-            "name": "NVIDIA Proprietary Software"
-          }
-        }
-      ],
-      "purl": "pkg:pypi/nvidia-cusparse-cu12@12.5.8.93",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
-          }
-        ]
-      }
-    },
-    {
-      "bom-ref": "pkg:pypi/nvidia-cusparselt-cu12@0.7.1?package-id=Package-python-nvidia-cusparselt-cu12-9d02699cbd863d4c",
-      "type": "library",
-      "name": "nvidia-cusparselt-cu12",
-      "version": "0.7.1",
-      "licenses": [
-        {
-          "license": {
-            "name": "NVIDIA Proprietary Software"
-          }
-        }
-      ],
-      "purl": "pkg:pypi/nvidia-cusparselt-cu12@0.7.1",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
-          }
-        ]
-      }
-    },
-    {
-      "bom-ref": "pkg:pypi/nvidia-nccl-cu12@2.27.5?package-id=Package-python-nvidia-nccl-cu12-0995280ceaaa1ee3",
-      "type": "library",
-      "name": "nvidia-nccl-cu12",
-      "version": "2.27.5",
-      "licenses": [
-        {
-          "license": {
-            "id": "BSD-3-Clause"
-          }
-        }
-      ],
-      "purl": "pkg:pypi/nvidia-nccl-cu12@2.27.5",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
-          }
-        ]
-      }
-    },
-    {
-      "bom-ref": "pkg:pypi/nvidia-nvjitlink-cu12@12.8.93?package-id=Package-python-nvidia-nvjitlink-cu12-4edaa8e3c2089678",
-      "type": "library",
-      "name": "nvidia-nvjitlink-cu12",
-      "version": "12.8.93",
-      "licenses": [
-        {
-          "license": {
-            "name": "NVIDIA Proprietary Software"
-          }
-        }
-      ],
-      "purl": "pkg:pypi/nvidia-nvjitlink-cu12@12.8.93",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
-          }
-        ]
-      }
-    },
-    {
-      "bom-ref": "pkg:pypi/nvidia-nvshmem-cu12@3.3.20?package-id=Package-python-nvidia-nvshmem-cu12-579fb7eec377c2aa",
-      "type": "library",
-      "name": "nvidia-nvshmem-cu12",
-      "version": "3.3.20",
-      "licenses": [
-        {
-          "license": {
-            "id": "BSD-3-Clause"
-          }
-        }
-      ],
-      "purl": "pkg:pypi/nvidia-nvshmem-cu12@3.3.20",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
-          }
-        ]
-      }
-    },
-    {
-      "bom-ref": "pkg:pypi/nvidia-nvtx-cu12@12.8.90?package-id=Package-python-nvidia-nvtx-cu12-6418fa507a9cb051",
-      "type": "library",
-      "name": "nvidia-nvtx-cu12",
-      "version": "12.8.90",
-      "licenses": [
-        {
-          "license": {
-            "id": "Apache-2.0"
-          }
-        }
-      ],
-      "purl": "pkg:pypi/nvidia-nvtx-cu12@12.8.90",
       "evidence": {
         "occurrences": [
           {
@@ -2256,27 +1885,6 @@
         "occurrences": [
           {
             "location": "db/Dockerfile"
-          }
-        ]
-      }
-    },
-    {
-      "bom-ref": "pkg:pypi/pillow@13.0.0?package-id=Package-python-pillow-dabcaab72d611c3e",
-      "type": "library",
-      "name": "pillow",
-      "version": "13.0.0",
-      "licenses": [
-        {
-          "license": {
-            "id": "MIT-CMU"
-          }
-        }
-      ],
-      "purl": "pkg:pypi/pillow@13.0.0",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
           }
         ]
       }
@@ -3103,60 +2711,6 @@
       "type": "library",
       "name": "safetensors",
       "version": "0.8.0",
-      "purl": "pkg:pypi/safetensors@0.8.0",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
-          }
-        ]
-      }
-    },
-    {
-      "bom-ref": "pkg:pypi/scikit-learn@1.9.1?package-id=Package-python-scikit-learn-e687202fe66ac6e2",
-      "type": "library",
-      "name": "scikit-learn",
-      "version": "1.9.1",
-      "licenses": [
-        {
-          "license": {
-            "id": "BSD-3-Clause"
-          }
-        }
-      ],
-      "purl": "pkg:pypi/scikit-learn@1.9.1",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
-          }
-        ]
-      }
-    },
-    {
-      "bom-ref": "pkg:pypi/scipy@1.18.1?package-id=Package-python-scipy-4e5aaa651fd237a5",
-      "type": "library",
-      "name": "scipy",
-      "version": "1.18.1",
-      "licenses": [
-        {
-          "expression": "BSD-3-Clause AND BSD-3-Clause-Open-MPI AND GPL-3.0-only AND GPL-3.0-or-later AND LGPL-2.1-or-later"
-        }
-      ],
-      "purl": "pkg:pypi/scipy@1.18.1",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
-          }
-        ]
-      }
-    },
-    {
-      "bom-ref": "pkg:pypi/sentence-transformers@5.1.2?package-id=Package-python-sentence-transformers-625fa78a24e5dafe",
-      "type": "library",
-      "name": "sentence-transformers",
-      "version": "5.1.2",
       "licenses": [
         {
           "license": {
@@ -3164,7 +2718,7 @@
           }
         }
       ],
-      "purl": "pkg:pypi/sentence-transformers@5.1.2",
+      "purl": "pkg:pypi/safetensors@0.8.0",
       "evidence": {
         "occurrences": [
           {
@@ -3241,9 +2795,7 @@
       "version": "1.14.0",
       "licenses": [
         {
-          "license": {
-            "name": "BSD"
-          }
+          "expression": "BSD-3-Clause AND MIT"
         }
       ],
       "purl": "pkg:pypi/sympy@1.14.0",
@@ -3277,31 +2829,17 @@
       }
     },
     {
-      "bom-ref": "pkg:pypi/threadpoolctl@3.8.0?package-id=Package-python-threadpoolctl-b015aa2099f6e6f8",
-      "type": "library",
-      "name": "threadpoolctl",
-      "version": "3.8.0",
-      "licenses": [
-        {
-          "license": {
-            "id": "BSD-3-Clause"
-          }
-        }
-      ],
-      "purl": "pkg:pypi/threadpoolctl@3.8.0",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
-          }
-        ]
-      }
-    },
-    {
       "bom-ref": "pkg:pypi/tokenizers@0.22.2?package-id=Package-python-tokenizers-e420c6f8850f7773",
       "type": "library",
       "name": "tokenizers",
       "version": "0.22.2",
+      "licenses": [
+        {
+          "license": {
+            "id": "Apache-2.0"
+          }
+        }
+      ],
       "purl": "pkg:pypi/tokenizers@0.22.2",
       "evidence": {
         "occurrences": [
@@ -3312,7 +2850,7 @@
       }
     },
     {
-      "bom-ref": "pkg:pypi/torch@2.9.1?package-id=Package-python-torch-fc568f003d5f1ddd",
+      "bom-ref": "pkg:pypi/torch@2.9.1?package-id=Package-python-torch-cf8c3673a7ef785c",
       "type": "library",
       "name": "torch",
       "version": "2.9.1",
@@ -3324,6 +2862,27 @@
         }
       ],
       "purl": "pkg:pypi/torch@2.9.1",
+      "evidence": {
+        "occurrences": [
+          {
+            "location": "scripts/semantic.py.lock"
+          }
+        ]
+      }
+    },
+    {
+      "bom-ref": "pkg:pypi/torch@2.9.1%2Bcpu?package-id=Package-python-torch-7c62b8bcbb1896c0",
+      "type": "library",
+      "name": "torch",
+      "version": "2.9.1+cpu",
+      "licenses": [
+        {
+          "license": {
+            "id": "BSD-3-Clause"
+          }
+        }
+      ],
+      "purl": "pkg:pypi/torch@2.9.1%2Bcpu",
       "evidence": {
         "occurrences": [
           {
@@ -3378,25 +2937,11 @@
       "licenses": [
         {
           "license": {
-            "name": "Apache 2.0 License"
+            "id": "Apache-2.0"
           }
         }
       ],
       "purl": "pkg:pypi/transformers@4.57.3",
-      "evidence": {
-        "occurrences": [
-          {
-            "location": "scripts/semantic.py.lock"
-          }
-        ]
-      }
-    },
-    {
-      "bom-ref": "pkg:pypi/triton@3.5.1?package-id=Package-python-triton-58aa160b023e0d29",
-      "type": "library",
-      "name": "triton",
-      "version": "3.5.1",
-      "purl": "pkg:pypi/triton@3.5.1",
       "evidence": {
         "occurrences": [
           {
@@ -3776,11 +3321,11 @@
       "hashes": [
         {
           "alg": "SHA-1",
-          "content": "76eccf3c22b29f48e81fb2a8a76eb6775ac3d789"
+          "content": "c0f955b800fd565b9c7e195211b67172cf56fc39"
         },
         {
           "alg": "SHA-256",
-          "content": "cdb2c86ede6e91daca5a5efcdb4c239d7225a0cd37ad4d8fd92d94232cc3b207"
+          "content": "4cc28c459cfd305b2085a9115ddb4a54b9f562461edb9b1ca83d72bbc4a549da"
         }
       ]
     },
@@ -4129,12 +3674,6 @@
       ]
     },
     {
-      "ref": "pkg:pypi/joblib@1.6.0?package-id=Package-python-joblib-00dbd179e114bd67",
-      "dependsOn": [
-        "pkg:pypi/cloudpickle@3.1.3?package-id=Package-python-cloudpickle-a1e3e6643ae27ce3"
-      ]
-    },
-    {
       "ref": "pkg:pypi/miniaudio@1.73?package-id=Package-python-miniaudio-4f1d9a7acfdd85e4",
       "dependsOn": [
         "pkg:pypi/cffi@2.1.1?package-id=Package-python-cffi-66b80ae3ef0c0f5e"
@@ -4144,32 +3683,6 @@
       "ref": "pkg:pypi/neo4j@6.4.1?package-id=Package-python-neo4j-eb9bb1b53e6142a7",
       "dependsOn": [
         "pkg:pypi/pytz@2026.6?package-id=Package-python-pytz-843cd3469c3c844c"
-      ]
-    },
-    {
-      "ref": "pkg:pypi/nvidia-cudnn-cu12@9.10.2.21?package-id=Package-python-nvidia-cudnn-cu12-2dd7c5916633841c",
-      "dependsOn": [
-        "pkg:pypi/nvidia-cublas-cu12@12.8.4.1?package-id=Package-python-nvidia-cublas-cu12-f776382a2daaf0aa"
-      ]
-    },
-    {
-      "ref": "pkg:pypi/nvidia-cufft-cu12@11.3.3.83?package-id=Package-python-nvidia-cufft-cu12-500379c6e3999a8a",
-      "dependsOn": [
-        "pkg:pypi/nvidia-nvjitlink-cu12@12.8.93?package-id=Package-python-nvidia-nvjitlink-cu12-4edaa8e3c2089678"
-      ]
-    },
-    {
-      "ref": "pkg:pypi/nvidia-cusolver-cu12@11.7.3.90?package-id=Package-python-nvidia-cusolver-cu12-1f81036e09b76f6c",
-      "dependsOn": [
-        "pkg:pypi/nvidia-cublas-cu12@12.8.4.1?package-id=Package-python-nvidia-cublas-cu12-f776382a2daaf0aa",
-        "pkg:pypi/nvidia-cusparse-cu12@12.5.8.93?package-id=Package-python-nvidia-cusparse-cu12-6ea9fcd697ba7dee",
-        "pkg:pypi/nvidia-nvjitlink-cu12@12.8.93?package-id=Package-python-nvidia-nvjitlink-cu12-4edaa8e3c2089678"
-      ]
-    },
-    {
-      "ref": "pkg:pypi/nvidia-cusparse-cu12@12.5.8.93?package-id=Package-python-nvidia-cusparse-cu12-6ea9fcd697ba7dee",
-      "dependsOn": [
-        "pkg:pypi/nvidia-nvjitlink-cu12@12.8.93?package-id=Package-python-nvidia-nvjitlink-cu12-4edaa8e3c2089678"
       ]
     },
     {
@@ -4307,35 +3820,6 @@
       ]
     },
     {
-      "ref": "pkg:pypi/scikit-learn@1.9.1?package-id=Package-python-scikit-learn-e687202fe66ac6e2",
-      "dependsOn": [
-        "pkg:pypi/joblib@1.6.0?package-id=Package-python-joblib-00dbd179e114bd67",
-        "pkg:pypi/narwhals@2.29.0?package-id=Package-python-narwhals-1a249edbd7db3cbd",
-        "pkg:pypi/numpy@2.5.5?package-id=Package-python-numpy-36e1a24d8f1fbe03",
-        "pkg:pypi/scipy@1.18.1?package-id=Package-python-scipy-4e5aaa651fd237a5",
-        "pkg:pypi/threadpoolctl@3.8.0?package-id=Package-python-threadpoolctl-b015aa2099f6e6f8"
-      ]
-    },
-    {
-      "ref": "pkg:pypi/scipy@1.18.1?package-id=Package-python-scipy-4e5aaa651fd237a5",
-      "dependsOn": [
-        "pkg:pypi/numpy@2.5.5?package-id=Package-python-numpy-36e1a24d8f1fbe03"
-      ]
-    },
-    {
-      "ref": "pkg:pypi/sentence-transformers@5.1.2?package-id=Package-python-sentence-transformers-625fa78a24e5dafe",
-      "dependsOn": [
-        "pkg:pypi/huggingface-hub@0.36.2?package-id=Package-python-huggingface-hub-e92c497a8e78454c",
-        "pkg:pypi/pillow@13.0.0?package-id=Package-python-pillow-dabcaab72d611c3e",
-        "pkg:pypi/scikit-learn@1.9.1?package-id=Package-python-scikit-learn-e687202fe66ac6e2",
-        "pkg:pypi/scipy@1.18.1?package-id=Package-python-scipy-4e5aaa651fd237a5",
-        "pkg:pypi/torch@2.9.1?package-id=Package-python-torch-fc568f003d5f1ddd",
-        "pkg:pypi/tqdm@4.70.1?package-id=Package-python-tqdm-8802570402222699",
-        "pkg:pypi/transformers@4.57.3?package-id=Package-python-transformers-87f64704401fd5d0",
-        "pkg:pypi/typing-extensions@4.16.0?package-id=Package-python-typing-extensions-192014c1aa4c470f"
-      ]
-    },
-    {
       "ref": "pkg:pypi/sympy@1.14.0?package-id=Package-python-sympy-ff16ecdccfd59f6a",
       "dependsOn": [
         "pkg:pypi/mpmath@1.3.0?package-id=Package-python-mpmath-67fa2b7b26b32b99"
@@ -4348,30 +3832,26 @@
       ]
     },
     {
-      "ref": "pkg:pypi/torch@2.9.1?package-id=Package-python-torch-fc568f003d5f1ddd",
+      "ref": "pkg:pypi/torch@2.9.1%2Bcpu?package-id=Package-python-torch-7c62b8bcbb1896c0",
       "dependsOn": [
         "pkg:pypi/filelock@4.3.0?package-id=Package-python-filelock-59a7853825c62b5f",
         "pkg:pypi/fsspec@2026.9.0?package-id=Package-python-fsspec-93653caa0986a7c7",
         "pkg:pypi/jinja2@3.1.6?package-id=Package-python-jinja2-8e49525e602945cd",
         "pkg:pypi/networkx@3.7?package-id=Package-python-networkx-9918f54c9f1173dc",
-        "pkg:pypi/nvidia-cublas-cu12@12.8.4.1?package-id=Package-python-nvidia-cublas-cu12-f776382a2daaf0aa",
-        "pkg:pypi/nvidia-cuda-cupti-cu12@12.8.90?package-id=Package-python-nvidia-cuda-cupti-cu12-37da100da4dfb60f",
-        "pkg:pypi/nvidia-cuda-nvrtc-cu12@12.8.93?package-id=Package-python-nvidia-cuda-nvrtc-cu12-12ce43d98deec87d",
-        "pkg:pypi/nvidia-cuda-runtime-cu12@12.8.90?package-id=Package-python-nvidia-cuda-runtime-cu12-bbed4053379bc17c",
-        "pkg:pypi/nvidia-cudnn-cu12@9.10.2.21?package-id=Package-python-nvidia-cudnn-cu12-2dd7c5916633841c",
-        "pkg:pypi/nvidia-cufft-cu12@11.3.3.83?package-id=Package-python-nvidia-cufft-cu12-500379c6e3999a8a",
-        "pkg:pypi/nvidia-cufile-cu12@1.13.1.3?package-id=Package-python-nvidia-cufile-cu12-2ba4b5f987bab8a9",
-        "pkg:pypi/nvidia-curand-cu12@10.3.9.90?package-id=Package-python-nvidia-curand-cu12-a46772f8a802fc27",
-        "pkg:pypi/nvidia-cusolver-cu12@11.7.3.90?package-id=Package-python-nvidia-cusolver-cu12-1f81036e09b76f6c",
-        "pkg:pypi/nvidia-cusparse-cu12@12.5.8.93?package-id=Package-python-nvidia-cusparse-cu12-6ea9fcd697ba7dee",
-        "pkg:pypi/nvidia-cusparselt-cu12@0.7.1?package-id=Package-python-nvidia-cusparselt-cu12-9d02699cbd863d4c",
-        "pkg:pypi/nvidia-nccl-cu12@2.27.5?package-id=Package-python-nvidia-nccl-cu12-0995280ceaaa1ee3",
-        "pkg:pypi/nvidia-nvjitlink-cu12@12.8.93?package-id=Package-python-nvidia-nvjitlink-cu12-4edaa8e3c2089678",
-        "pkg:pypi/nvidia-nvshmem-cu12@3.3.20?package-id=Package-python-nvidia-nvshmem-cu12-579fb7eec377c2aa",
-        "pkg:pypi/nvidia-nvtx-cu12@12.8.90?package-id=Package-python-nvidia-nvtx-cu12-6418fa507a9cb051",
         "pkg:pypi/setuptools@84.2.1?package-id=Package-python-setuptools-57dec236b7488bc6",
         "pkg:pypi/sympy@1.14.0?package-id=Package-python-sympy-ff16ecdccfd59f6a",
-        "pkg:pypi/triton@3.5.1?package-id=Package-python-triton-58aa160b023e0d29",
+        "pkg:pypi/typing-extensions@4.16.0?package-id=Package-python-typing-extensions-192014c1aa4c470f"
+      ]
+    },
+    {
+      "ref": "pkg:pypi/torch@2.9.1?package-id=Package-python-torch-cf8c3673a7ef785c",
+      "dependsOn": [
+        "pkg:pypi/filelock@4.3.0?package-id=Package-python-filelock-59a7853825c62b5f",
+        "pkg:pypi/fsspec@2026.9.0?package-id=Package-python-fsspec-93653caa0986a7c7",
+        "pkg:pypi/jinja2@3.1.6?package-id=Package-python-jinja2-8e49525e602945cd",
+        "pkg:pypi/networkx@3.7?package-id=Package-python-networkx-9918f54c9f1173dc",
+        "pkg:pypi/setuptools@84.2.1?package-id=Package-python-setuptools-57dec236b7488bc6",
+        "pkg:pypi/sympy@1.14.0?package-id=Package-python-sympy-ff16ecdccfd59f6a",
         "pkg:pypi/typing-extensions@4.16.0?package-id=Package-python-typing-extensions-192014c1aa4c470f"
       ]
     },
