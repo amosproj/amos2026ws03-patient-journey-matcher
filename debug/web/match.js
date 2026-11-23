@@ -666,4 +666,3 @@ $("#mt-tuning-reset").addEventListener("click", () => {
   for (const input of document.querySelectorAll("#mt-tuning input")) input.value = input.dataset.default;
   mtRun(true);
 });
-

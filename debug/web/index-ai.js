@@ -32,10 +32,12 @@ async function aiRefresh() {
     renderIxStats();
     await ixFollowRun();
   } catch (error) {
+    ai.data = null;
     $("#ai-error").textContent = error.message;
     $("#ai-start").disabled = true;
   } finally {
     ai.loading = false;
+    renderIxButtons();
   }
 }
 
@@ -57,6 +59,7 @@ function aiSwitchTab(tab) {
 
 $("#ai-technique").addEventListener("change", async () => {
   ai.data = null;
+  $("#ai-start").disabled = true;
   $("#ai-stats").replaceChildren();
   $("#ai-coverage").replaceChildren();
   $("#ai-log").replaceChildren();

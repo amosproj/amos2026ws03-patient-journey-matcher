@@ -45,6 +45,7 @@ function renderIxButtons() {
   const running = indexer?.run?.status === "running";
   for (const id of ["#ix-start", "#kw-start", "#ai-start"]) $(id).disabled = !indexer || running || Boolean(indexer.missing);
   for (const id of ["#ix-stop", "#kw-stop", "#ai-stop"]) $(id).disabled = !running;
+  $("#ai-start").disabled ||= ai.loading || !ai.data;
 }
 
 const ixErrorLines = () => [h("b", {}, ix.error.database ? "Not connected" : "Not loaded"), h("small", {}, ix.error.message), ix.error.hint ? h("span", { class: "hint" }, ix.error.hint) : null];
@@ -118,12 +119,12 @@ function ixAppendLog(event) {
 
 // Shows the run the server reports: its lines so far, then the stream while it runs.
 async function ixFollowRun() {
-  const run = ix.overview?.indexer.run;
+  const run = ix.overview?.indexer.run || ai.data?.indexer.run;
   if (!run || ix.run === run.id) return;
   ix.run = run.id;
   const data = await api("/api/index/run");
   if (data.run?.id !== run.id) { ix.run = null; return; }
-  for (const id of ["#ix-log", "#kw-log"]) $(id).replaceChildren();
+  for (const id of ["#ix-log", "#kw-log", "#ai-log"]) $(id).replaceChildren();
   for (const id of ["#ix-run", "#kw-run"]) $(id).textContent = "";
   for (const event of data.events) ixAppendLog(event);
   if (data.run.status !== "running") return;
