@@ -179,6 +179,15 @@ importers:
         specifier: ^5.0.5
         version: 5.0.5(@types/node@24.19.2)(vite@8.3.5(@types/node@24.19.2))
 
+  algorithms/ai-summary:
+    dependencies:
+      '@matcher/core':
+        specifier: workspace:*
+        version: link:../../core
+      '@matcher/db':
+        specifier: workspace:*
+        version: link:../../db
+
   algorithms/graph:
     dependencies:
       zod:
@@ -206,6 +215,9 @@ importers:
 
   approaches:
     dependencies:
+      '@matcher/ai-summary':
+        specifier: workspace:*
+        version: link:../algorithms/ai-summary
       '@matcher/core':
         specifier: workspace:*
         version: link:../core
@@ -282,6 +294,9 @@ importers:
         specifier: ^4.6.7
         version: 4.6.7
     devDependencies:
+      '@matcher/ai-summary':
+        specifier: workspace:*
+        version: link:../algorithms/ai-summary
       '@modelcontextprotocol/client':
         specifier: ^2.4.0
         version: 2.4.0

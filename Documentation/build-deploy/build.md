@@ -22,9 +22,12 @@ Run the commands from the repository root. Each `make` target runs the `uv`, `pn
 | `make test-integration` | Builds, then runs only the [end-to-end tests](#end-to-end-tests) |
 | `make db` | Starts the [database](database.md) and applies `db/init/`; needs the root `.env` |
 | `make seed` | Runs `make db`, then stores a sample crawl of every source ([`scripts/seed.py`](../../scripts/seed.py)) |
-| `make index` | Builds, then updates the indexes of all approaches, today the [keyword index](../design/keyword-matching.md) |
+| `make index` | Builds, then updates the indexes of enabled approaches ([keyword](../design/keyword-matching.md), [semantic](../../matcher/README.md#semantic-matching)) |
 | `WHISPER_MODEL=tiny-q5_1 make transcribe` | Builds, then runs the [transcription job](../design/keyword-matching.md#speech-to-text) until you stop it: speech-to-text for podcast audio that has no transcript, for the indexes. It reads no file until you set how many at once: [options](#options) or the debug UI |
 | `make start` | Builds, then starts the MCP server on `http://127.0.0.1:3000/mcp`; needs the root `.env` |
+| `make index-ai` | Prepares the local encoder and indexes metadata with Qwen and BGE-M3 |
+| `make debug-ai` | Starts the encoder, MCP server and debug UI together |
+| `make start-ai` | Starts the encoder and MCP server together |
 | `make debug` | Starts the [debug UI](../../debug/README.md) for the crawler, the database, the index and the matcher on `http://127.0.0.1:8765` |
 | `make graph PATIENT=Patient-5` | Builds the [patient graph](../user/mcp-interface.md#patient-graph) of one synthetic patient and writes `patientdata/Patient-5/graph.json` with the [patient graph tool](../../tools/patient-graph/README.md); needs `GEMINI_API_KEY` |
 | `make sbom` | Writes the [SBOM](#sbom) `sbom.spdx.json` and `sbom.cdx.json` |

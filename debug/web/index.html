@@ -35,7 +35,7 @@
       <button type="button" data-screen="index" title="The indexer job and the transcription job, which every index shares">Overview</button>
       <button type="button" data-screen="keyword">Keyword</button>
       <button type="button" data-screen="graph" title="For now the graph normalization">Graph</button>
-      <button type="button" data-screen="ai" title="Not built yet">AI</button>
+      <button type="button" data-screen="ai" title="Semantic indexing with Qwen and BGE-M3">AI</button>
     </div>
     <button type="button" data-screen="match">Matcher</button>
     <button type="button" data-screen="info">Info</button>
@@ -347,12 +347,20 @@
 <div class="layout" id="match-view" hidden>
   <aside class="side" id="match-controls">
     <div class="side-head">
-      <h2>Algorithm <i class="info" tabindex="0" data-tip="The algorithm argument of match_journey. Keyword is built. Graph and AI (ai_summary) are planned: until their matchers are added, match_journey answers NOT_AVAILABLE for them.">i</i></h2>
+      <h2>Algorithm <i class="info" tabindex="0" data-tip="The algorithm argument of match_journey. Keyword is built. AI (ai_summary) is semantic matching: it needs the local encoder and an index (make index-ai, then make debug-ai). Graph is planned.">i</i></h2>
     </div>
     <div class="seg" id="mt-algorithm" role="group" aria-label="Algorithm">
       <button type="button" data-value="keyword" class="active">Keyword</button>
       <button type="button" data-value="graph">Graph</button>
       <button type="button" data-value="ai_summary">AI</button>
+    </div>
+    <div class="field" id="mt-model-field" hidden>
+      <span>Model <i class="info" tabindex="0" data-tip="The encoder of the AI algorithm; each model has an index of its own (Index › AI). A choice of this screen, not an argument of match_journey: the MCP server uses the model it was started with (SEMANTIC_MODEL).">i</i></span>
+      <div class="seg" id="mt-model" role="group" aria-label="Model of the AI algorithm">
+        <button type="button" data-value="qwen" class="active">Qwen</button>
+        <button type="button" data-value="bge">BGE-M3</button>
+      </div>
+      <small class="muted" id="mt-model-note"></small>
     </div>
     <div class="side-head">
       <h2>Journey <i class="info" tabindex="0" data-tip="Puts a journey into the arguments below and keeps their other fields: a synthetic journey of patientdata/, the one of the example in Documentation/user/mcp-interface.md, or a timeline.json from disk. Only synthetic journeys belong here: the journey goes to the matcher and back, it is not stored or logged.">i</i></h2>
@@ -472,18 +480,29 @@
 
 <div class="layout" id="ai-view" hidden>
   <aside class="side" id="ai-controls">
+    <div class="side-head"><h2>Encoder <i class="info" tabindex="0" data-tip="The local program that turns texts into vectors, scripts/semantic.py. Indexing and the AI approach of the Matcher need it. It loads Qwen and BGE-M3 before it answers; the first start downloads them (about 3 GB). One started by make debug-ai shows here, and that command stops it.">i</i></h2><button type="button" class="link-button" id="ai-refresh">↻ Refresh</button></div>
+    <div class="db-conn" id="ai-encoder"><b>Loading …</b></div>
+    <div class="buttons"><button type="button" class="primary" id="ai-encoder-start" disabled>Start encoder</button><button type="button" id="ai-encoder-stop" disabled>Stop encoder</button></div>
+    <code class="cmd" id="ai-encoder-lines" title="The last lines of the encoder" hidden></code>
+    <div class="error" id="ai-encoder-error"></div>
     <div class="side-head"><h2>AI index</h2></div>
-    <div class="db-conn off"><b>Not built yet</b><small>The indexer follows with the AI approach (ai_summary, #9).</small></div>
+    <label class="field" for="ai-technique">Model</label>
+    <select id="ai-technique">
+      <option value="semantic">Both models</option>
+      <option value="qwen">Qwen</option>
+      <option value="bge">BGE-M3</option>
+    </select>
+    <div class="db-conn" id="ai-state"><b>Loading …</b></div>
+    <label class="check"><input type="checkbox" id="ai-auto" checked> Refresh every 5 s</label>
+    <div class="buttons"><button type="button" class="primary" id="ai-start" disabled>Start indexing</button><button type="button" id="ai-stop" disabled>Stop</button></div>
+    <div class="error" id="ai-error"></div>
   </aside>
-
   <main aria-label="AI index">
-    <div class="planned">
-      <div class="mt-pending-card">
-        <h3>AI index <span class="pill plain">planned</span></h3>
-        <p class="muted">Not built yet: there is no AI indexer, and match_journey answers NOT_AVAILABLE for the algorithm ai_summary.</p>
-        <p>Its indexer is to store an embedding, and perhaps a summary, of each document. This screen is to show which documents it has done, the model and its version, the cost and time of each run, and the summary of one document.</p>
-        <small class="muted mono">research/ai-based-matching.md</small>
-      </div>
+    <div class="stats" id="ai-stats"></div>
+    <nav class="tabs" id="ai-tabs"><button data-aitab="coverage" class="active">Coverage</button><button data-aitab="log">Indexer log</button></nav>
+    <div class="content">
+      <section id="aitab-coverage"><div class="panels" id="ai-coverage"></div></section>
+      <section id="aitab-log" hidden><div class="log-tools"><label><input type="checkbox" id="ai-follow" checked> Follow</label></div><div class="log" id="ai-log"><div class="empty">No run for the AI index since this server started.</div></div></section>
     </div>
   </main>
 </div>
@@ -547,6 +566,7 @@
 <script src="index-overview.js"></script>
 <script src="index-keyword.js"></script>
 <script src="index-graph.js"></script>
+<script src="index-ai.js"></script>
 <script src="match.js"></script>
 <script src="info.js"></script>
 <script src="app.js"></script>

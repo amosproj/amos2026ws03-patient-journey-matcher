@@ -1,6 +1,6 @@
 # MCP interface
 
-How a client uses the Patient Journey Matcher: the two MCP tools, their inputs and outputs, and the errors. The server is `patient-journey-matcher` version 0.1.0. The schemas in [`matcher/mcp-server/src/contract.ts`](../../matcher/mcp-server/src/contract.ts) are the source of truth for field names and limits. `match_journey` works with the `keyword` approach ([keyword matching](../design/keyword-matching.md)); `graph` and `ai_summary` answer with the error code `NOT_AVAILABLE`.
+How a client uses the Patient Journey Matcher: the two MCP tools, their inputs and outputs, and the errors. The server is `patient-journey-matcher` version 0.1.0. The schemas in [`matcher/mcp-server/src/contract.ts`](../../matcher/mcp-server/src/contract.ts) are the source of truth for field names and limits. `match_journey` works with the `keyword` approach ([keyword matching](../design/keyword-matching.md)) and, when enabled, `ai_summary` ([semantic setup](../../matcher/README.md#semantic-matching)). Graph and disabled or unbuilt semantic indexes answer with `NOT_AVAILABLE`.
 
 All fields use `snake_case`, like the journey generator.
 
@@ -55,7 +55,7 @@ npx @modelcontextprotocol/inspector --cli http://127.0.0.1:3000/mcp --transport 
 | `match_journey` | Returns the sources most relevant to the most recent event of a patient journey. Takes either a `journey` or a `graph`, not both |
 | `get_source` | Returns the links to the files of one matched source at its origin. The client downloads them itself |
 
-A client that wants the results of one approach sets `algorithm`. Without it, the server is to choose the best results itself once graph and `ai_summary` exist; today it uses `keyword`.
+Set `algorithm` to choose an approach. It defaults to `keyword`.
 
 ### `match_journey` input
 

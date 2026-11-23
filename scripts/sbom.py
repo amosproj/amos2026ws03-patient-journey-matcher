@@ -36,6 +36,7 @@ ALIASES = {
     "3-Clause BSD License": "BSD-3-Clause",
     "Apache 2": "Apache-2.0",
     "Apache 2.0": "Apache-2.0",
+    "Apache 2.0 License": "Apache-2.0",
     "Apache License, Version 2.0": "Apache-2.0",
     "BSD 3-Clause OR Apache-2.0": "(BSD-3-Clause OR Apache-2.0)",
 }
@@ -44,8 +45,15 @@ ALIASES = {
 CHECKED = {
     "pkg:pypi/biopython@1.88": "LicenseRef-Biopython-License-Agreement",  # has no SPDX ID
     "pkg:pypi/colorama@0.4.6": "BSD-3-Clause",
+    "pkg:pypi/huggingface-hub@0.36.2": "Apache-2.0",
     "pkg:pypi/impit@0.15.1": "Apache-2.0",
+    "pkg:pypi/jinja2@3.1.6": "BSD-3-Clause",
+    "pkg:pypi/mpmath@1.3.0": "BSD-3-Clause",
     "pkg:pypi/pyasn1-modules@0.4.2": "BSD-2-Clause",
+    "pkg:pypi/safetensors@0.8.0": "Apache-2.0",
+    "pkg:pypi/sympy@1.14.0": "(BSD-3-Clause AND MIT)",  # MIT: the LaTeX parser it copied
+    "pkg:pypi/tokenizers@0.22.2": "Apache-2.0",
+    "pkg:pypi/torch@2.9.1%2Bcpu": "BSD-3-Clause",  # the CPU build for Linux, which is not on PyPI
 }
 
 
@@ -108,7 +116,8 @@ def runtime(lockfile: Path) -> set[str]:
         raise SystemExit(f"{lockfile}: scripts/sbom.py does not know this kind of lockfile")
     components = json.loads(bom).get("components", [])
     if lockfile.name != "pnpm-lock.yaml":
-        return {c["purl"] for c in components}
+        # uv adds the index of a package that is not from PyPI ("?repository_url="), Syft does not
+        return {c["purl"].partition("?")[0] for c in components}
     # pnpm also lists the workspace packages that others depend on, without a download location
     return {c["purl"] for c in components if c.get("externalReferences")}
 
