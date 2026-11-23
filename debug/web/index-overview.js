@@ -9,6 +9,8 @@ const IX_PLANNED = [
 ];
 // Lines of the other approaches and of the steps after them, left out of the keyword log.
 const KW_LOG_HIDES = new Set(["graph", "ai_summary", "transcripts"]);
+// The same for the AI log. A line that starts with none of them, like an error, shows in every log.
+const AI_LOG_HIDES = new Set(["keyword", "graph", "transcripts"]);
 
 // One request for both screens: the state of the indexer job comes with the keyword index.
 async function ixRefresh() {
@@ -102,7 +104,7 @@ function ixAppendLog(event) {
   const writer = event.type === "line" ? /^(\w+): /.exec(event.text || "")?.[1] : null;
   const logs = [["#ix-log", "#ix-follow"]];
   const model = /^ai_summary: (qwen|bge):/.exec(event.text || "")?.[1];
-  if (writer === null || (writer === "ai_summary" && (aiTechnique() === "semantic" || !model || model === aiTechnique()))) logs.push(["#ai-log", "#ai-follow"]);
+  if (!AI_LOG_HIDES.has(writer) && (aiTechnique() === "semantic" || !model || model === aiTechnique())) logs.push(["#ai-log", "#ai-follow"]);
   if (!KW_LOG_HIDES.has(writer)) logs.push(["#kw-log", "#kw-follow"]);
   for (const [logId, followId] of logs) {
     const log = $(logId);
