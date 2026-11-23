@@ -6,7 +6,6 @@
 const ix = { overview: null, error: null, tab: "log", loading: false, run: null, stream: null };
 const IX_PLANNED = [
   ["graph", "Graph index", "Only the normalization is built (#80); the indexer and matcher follow (#10)."],
-  ["ai", "AI index", "Not built yet (#9)."],
 ];
 // Lines of the other approaches and of the steps after them, left out of the keyword log.
 const KW_LOG_HIDES = new Set(["graph", "ai_summary", "transcripts"]);
@@ -33,6 +32,7 @@ async function ixRefresh() {
     const updated = `· ${fmtClock(new Date().toISOString())}`;
     $("#ix-updated").textContent = updated;
     $("#kw-updated").textContent = updated;
+    await aiRefresh();
     await ixFollowRun();
   } finally {
     ix.loading = false;
@@ -41,10 +41,10 @@ async function ixRefresh() {
 
 // One job at a time: a run of every approach or of one blocks both Start buttons.
 function renderIxButtons() {
-  const indexer = ix.overview?.indexer;
+  const indexer = ix.overview?.indexer || ai.data?.indexer;
   const running = indexer?.run?.status === "running";
-  for (const id of ["#ix-start", "#kw-start"]) $(id).disabled = !indexer || running || Boolean(indexer.missing);
-  for (const id of ["#ix-stop", "#kw-stop"]) $(id).disabled = !running;
+  for (const id of ["#ix-start", "#kw-start", "#ai-start"]) $(id).disabled = !indexer || running || Boolean(indexer.missing);
+  for (const id of ["#ix-stop", "#kw-stop", "#ai-stop"]) $(id).disabled = !running;
 }
 
 const ixErrorLines = () => [h("b", {}, ix.error.database ? "Not connected" : "Not loaded"), h("small", {}, ix.error.message), ix.error.hint ? h("span", { class: "hint" }, ix.error.hint) : null];
@@ -73,7 +73,10 @@ function renderIxStats() {
     h("b", { class: `ov-total${overview?.exists ? "" : " muted"}` }, !overview ? "–" : overview.exists ? `${fmtShare(total.indexed + total.skipped, total.documents)} done` : "no index yet"),
     overview ? ovList(COVERAGE_STATES.map(([key, label, cls, tip]) => ovShare(label, total[key], total.documents, { color: COVERAGE_BAR[cls], tip, onclick: () => showScreen("keyword") }))) : null,
     overview ? h("small", { class: "ov-note" }, `of ${fmtCount(total.documents)} documents, not expired`) : null);
-  $("#ix-stats").replaceChildren(keyword,
+  const semantic = ovSection(title("AI semantic index", "ai"),
+    ...(ai.data?.models || []).map((model) => h("small", { class: "ov-note" },
+      `${aiName(model.model)}: ${fmtCount(model.indexed)} embedded, ${fmtCount(model.pending)} pending`)));
+  $("#ix-stats").replaceChildren(keyword, semantic,
     ...IX_PLANNED.map(([screen, label, note]) => ovSection(title(label, screen), h("b", { class: "ov-total muted" }, "planned"), h("small", { class: "ov-note" }, note))));
 }
 
@@ -97,6 +100,8 @@ function ixAppendLog(event) {
   }[event.type] || ["start", JSON.stringify(event)];
   const writer = event.type === "line" ? /^(\w+): /.exec(event.text || "")?.[1] : null;
   const logs = [["#ix-log", "#ix-follow"]];
+  const model = /^ai_summary: (qwen|bge):/.exec(event.text || "")?.[1];
+  if (writer === null || (writer === "ai_summary" && (aiTechnique() === "semantic" || !model || model === aiTechnique()))) logs.push(["#ai-log", "#ai-follow"]);
   if (!KW_LOG_HIDES.has(writer)) logs.push(["#kw-log", "#kw-follow"]);
   for (const [logId, followId] of logs) {
     const log = $(logId);
@@ -134,11 +139,13 @@ async function ixFollowRun() {
 // Starts or stops the job from the overview or from the screen of an approach, then shows its log.
 async function ixCommand(path, body = {}) {
   const keyword = state.screen === "keyword";
-  const error = $(keyword ? "#kw-error" : "#ix-error");
+  const semantic = state.screen === "ai";
+  const error = $(semantic ? "#ai-error" : keyword ? "#kw-error" : "#ix-error");
   error.textContent = "";
   try {
     await api(path, { method: "POST", body: JSON.stringify(body) });
     if (keyword) kwSwitchTab("log");
+    else if (semantic) aiSwitchTab("log");
     else ixSwitchTab("log");
     // A refresh in progress still holds the state from before the command.
     while (ix.loading) await new Promise((resolve) => setTimeout(resolve, 100));

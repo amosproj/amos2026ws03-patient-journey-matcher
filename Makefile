@@ -34,6 +34,10 @@ start: build
 debug:
 	cd crawler && PYTHONPATH=src uv run --locked python ../debug/server.py --port $(PORT)
 
+# Updates the committed runtime dependency inventories.
+sbom:
+	uv run scripts/sbom.py
+
 # Starts the database and applies db/init/ again; the files are idempotent, so this also
 # brings an existing volume up to date.
 db:

@@ -1185,14 +1185,25 @@ def matcher_environment() -> dict[str, str]:
         raise ValueError(str(error)) from error
 
 
+INDEX_TECHNIQUES = {
+    "all": ([], None, "make index"),
+    "keyword": (["keyword"], None, "make index APPROACHES=keyword"),
+    "semantic": (["ai_summary"], "qwen,bge", "make index-ai"),
+    "qwen": (["ai_summary"], "qwen", "make index-ai SEMANTIC_MODELS=qwen"),
+    "bge": (["ai_summary"], "bge", "make index-ai SEMANTIC_MODELS=bge"),
+}
+
+
 class IndexRun(EventLog):
     """One run of the indexer job (`make index`); its output lines are the events."""
 
-    def __init__(self, approach: str | None) -> None:
+    def __init__(self, technique: str = "all") -> None:
         super().__init__()
-        self.approach = approach
-        """The one approach to index, or None for all of them."""
-        self.command = "make index" + (f" APPROACHES={approach}" if approach else "")
+        arguments, models, command = INDEX_TECHNIQUES[technique]
+        self.arguments = arguments
+        self.approach = arguments[0] if arguments else None
+        self.models = models
+        self.command = command
         self.process: subprocess.Popen[str] | None = None
         self.cancel_requested = False
 
@@ -1213,7 +1224,7 @@ def run_indexer(run: IndexRun, environment: dict[str, str]) -> None:
     code: int | None = None
     try:
         run.process = subprocess.Popen(
-            ["node", "src/main.ts", *([run.approach] if run.approach else [])],
+            ["node", "src/main.ts", *run.arguments],
             cwd=MATCHER_DIR / "indexer",
             env=environment,
             stdin=subprocess.DEVNULL,
@@ -1240,17 +1251,18 @@ def run_indexer(run: IndexRun, environment: dict[str, str]) -> None:
             run.emit("index_" + run.status, code=code)
 
 
-def start_indexer(approach: Any = None) -> IndexRun:
-    """Starts the indexer job for every approach, or for the one named, e.g. `keyword`."""
+def start_indexer(technique: str = "all") -> IndexRun:
     global INDEXING
-    named = isinstance(approach, str) and re.fullmatch("[a-z_]+", approach)
-    if approach is not None and not named:
-        raise ValueError("approach must be the name of one approach, e.g. keyword")
+    if not isinstance(technique, str) or technique not in INDEX_TECHNIQUES:
+        raise ValueError("Choose all, keyword, semantic, qwen or bge")
     environment = matcher_environment()
     with LOCK:
         if INDEXING is not None and INDEXING.status == "running":
             raise RuntimeError("The indexer is already running")
-        run = INDEXING = IndexRun(approach)
+        run = INDEXING = IndexRun(technique)
+        if run.models:
+            environment["SEMANTIC_MODEL"] = run.models.split(",")[0]
+            environment["SEMANTIC_MODELS"] = run.models
     threading.Thread(target=run_indexer, args=(run, environment), daemon=True).start()
     return run
 
@@ -1268,13 +1280,66 @@ def stop_indexer() -> dict[str, Any]:
 
 def indexer_state(*, events: bool = False) -> dict[str, Any]:
     run = INDEXING
-    state: dict[str, Any] = {"missing": matcher_missing(), "run": run.summary() if run else None}
+    state: dict[str, Any] = {"missing": matcher_missing(), "run": run.summary() if run else None,
+                             "techniques": list(INDEX_TECHNIQUES)}
     if events and run is not None:
         state["events"] = list(run.events)
     return state
 
 
-async def index_overview(connection: Any) -> dict[str, Any]:
+def semantic_profiles() -> list[dict[str, Any]]:
+    """Read the canonical encoder configuration and table names from the matcher."""
+    script = (
+        "import {configuration,indexTable} from '../algorithms/ai-summary/src/encoder.ts';"
+        "console.log(JSON.stringify(['qwen','bge'].map(model=>"
+        "({...configuration(model),table:indexTable(model)}))));"
+    )
+    done = subprocess.run(
+        ["node", "--input-type=module", "-e", script],
+        cwd=MATCHER_DIR / "indexer", env=dict(os.environ),
+        capture_output=True, text=True, check=True, timeout=10,
+    )
+    return json.loads(done.stdout)
+
+
+async def semantic_overview(connection: Any, technique: str) -> dict[str, Any]:
+    profiles = semantic_profiles()
+    chosen = [p for p in profiles if technique == "semantic" or p["model"] == technique]
+    has_ready = await connection.fetchval("SELECT to_regclass('ai_summary.ready') IS NOT NULL")
+    models = []
+    for profile in chosen:
+        table = profile["table"]
+        if not re.fullmatch(r"ai_summary\.[a-z][a-z0-9_]+", table):
+            raise ValueError("Invalid semantic index table")
+        exists = bool(await connection.fetchval("SELECT to_regclass($1) IS NOT NULL", table))
+        index = table if exists else (
+            "(SELECT NULL::text AS document_id, NULL::timestamptz AS document_changed_at,"
+            " NULL::text AS embedding WHERE false)"
+        )
+        pending = to_index("i")
+        coverage = await fetch_json(connection, f"""
+            SELECT d.source, d.content_type, count(*) AS documents,
+                   count(*) FILTER (WHERE NOT {pending} AND i.embedding IS NOT NULL) AS indexed,
+                   count(*) FILTER (WHERE {pending}) AS pending,
+                   count(*) FILTER (WHERE NOT {pending} AND i.embedding IS NULL) AS empty
+            FROM documents AS d LEFT JOIN {index} AS i ON i.document_id = d.id
+            WHERE {NOT_EXPIRED}
+            GROUP BY 1, 2 ORDER BY 1, 2
+        """)
+        totals = {key: sum(row[key] for row in coverage)
+                  for key in ("documents", "indexed", "pending", "empty")}
+        ready = exists and has_ready and bool(await connection.fetchval(
+            "SELECT EXISTS (SELECT 1 FROM ai_summary.ready WHERE index_table = $1)", table
+        ))
+        models.append({**profile, **totals, "ready": ready, "coverage": coverage})
+    return {"technique": technique, "indexer": indexer_state(), "models": models}
+
+
+async def index_overview(connection: Any, technique: str = "keyword") -> dict[str, Any]:
+    if technique not in INDEX_TECHNIQUES:
+        raise ValueError("Unknown indexing technique")
+    if technique in ("semantic", "qwen", "bge"):
+        return await semantic_overview(connection, technique)
     exists = await has_keyword_index(connection)
     metadata = "keyword.documents" if exists else NO_INDEX
     full_texts = "keyword.full_texts" if exists else NO_INDEX
@@ -1288,6 +1353,7 @@ async def index_overview(connection: Any) -> dict[str, Any]:
                       AS preloaded""",
     )
     overview: dict[str, Any] = {
+        "technique": technique,
         "exists": exists,
         "extension": extension,
         "indexer": indexer_state(),
@@ -1604,14 +1670,19 @@ def load_journey(journey_id: str) -> Any:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
-def run_matcher(command: str, request: dict[str, Any]) -> dict[str, Any]:
+def run_matcher(command: str, request: dict[str, Any], technique: str | None = None) -> dict[str, Any]:
     """A tool by the matcher's own code: `explain` is `match_journey` with the steps of the
     match, `get_source` is that tool."""
+    environment = matcher_environment()
+    if technique is not None:
+        if technique not in ("qwen", "bge"):
+            raise ValueError("Unknown semantic technique")
+        environment["SEMANTIC_MODEL"] = technique
     try:
         done = subprocess.run(
             ["node", "src/main.ts", command],
             cwd=MATCHER_DIR / "mcp-server",
-            env=matcher_environment(),
+            env=environment,
             input=json.dumps(request),
             capture_output=True,
             text=True,
@@ -1801,7 +1872,12 @@ def match(body: dict[str, Any]) -> dict[str, Any]:
         arguments = {key: value for key, value in request.items() if key != "tuning"}
         result = {"steps": [], **call_mcp("match_journey", arguments)}
     else:
-        result = run_matcher("explain", request)
+        technique = body.get("technique")
+        if technique is not None and (
+            technique not in ("qwen", "bge") or request.get("algorithm") != "ai_summary"
+        ):
+            raise ValueError("Invalid semantic technique")
+        result = run_matcher("explain", request, technique)
     return {**result, "seconds": round(time.monotonic() - started, 2)}
 
 
@@ -2373,7 +2449,7 @@ class Handler(BaseHTTPRequestHandler):
 
     def route_index(self, path: str, params: dict[str, list[str]]) -> None:
         if path == "/api/index":
-            self.send_db(index_overview)
+            self.send_db(lambda connection: index_overview(connection, first(params, "technique") or "keyword"))
         elif path == "/api/index/run":
             self.send_json(indexer_state(events=True))
         elif path == "/api/index/events":
@@ -2492,7 +2568,7 @@ class Handler(BaseHTTPRequestHandler):
             if path == "/api/match":
                 self.send_result(lambda: match(body))
             elif path == "/api/index/run":
-                self.send_result(lambda: start_indexer(body.get("approach")).summary())
+                self.send_result(lambda: start_indexer(body.get("technique", body.get("approach") or "all")).summary())
             elif path == "/api/index/transcription":
                 self.send_db(
                     lambda connection: set_transcription_workers(connection, body.get("workers")),
