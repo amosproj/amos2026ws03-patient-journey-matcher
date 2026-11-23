@@ -254,7 +254,7 @@ def run_application(command, ui_port):
         gui = launch(
             [
                 str(root / "crawler/.venv/bin/python"),
-                "../debug/crawler/server.py",
+                "../debug/server.py",
                 "--port",
                 str(gui_port),
             ],
