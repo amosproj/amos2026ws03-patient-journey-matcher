@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 import { z } from "zod";
 import { evaluate } from "./evaluate.ts";
-import { loadGrades } from "./judgments.ts";
+import { loadGrades, mergeGrades } from "./judgments.ts";
 
 // Only the fields the evaluation needs from a match_journey result.
 const matchResultSchema = z.object({
@@ -12,18 +12,25 @@ const matchResultSchema = z.object({
   ),
 });
 
-const [runDir, judgmentFile] = process.argv.slice(2);
+const [runDir, ...judgmentFiles] = process.argv.slice(2);
 if (runDir === undefined) {
-  console.error("Usage: pnpm evaluate <run-dir> [judgment-file]");
+  console.error("Usage: pnpm evaluate <run-dir> [judgment-file...]");
   console.error("<run-dir> holds one match_journey result per point.");
-  console.error("[judgment-file] defaults to judgments.json.");
+  console.error(
+    "[judgment-file...] defaults to judgments.json; several are merged,",
+  );
+  console.error("the first file that grades a source for a point counts.");
   process.exit(2);
 }
 const cwd = process.env.INIT_CWD ?? process.cwd();
 const base = path.resolve(cwd, runDir);
 
-const file = await loadGrades(
-  judgmentFile === undefined ? undefined : path.resolve(cwd, judgmentFile),
+const file = mergeGrades(
+  await Promise.all(
+    judgmentFiles.length === 0
+      ? [loadGrades()]
+      : judgmentFiles.map((name) => loadGrades(path.resolve(cwd, name))),
+  ),
 );
 const run = new Map<string, string[]>();
 for (const point of file.points) {

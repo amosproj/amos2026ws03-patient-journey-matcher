@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 import { evaluate } from "./evaluate.ts";
-import { type JudgmentFile, loadGrades } from "./judgments.ts";
+import { type JudgmentFile, loadGrades, mergeGrades } from "./judgments.ts";
 
 const point = {
   journey: "Patient-5",
@@ -43,6 +43,30 @@ test("unjudged results in the top 10 are listed for the next round", () => {
   expect(report.unjudged).toEqual(new Map([["one", ["pubmed:9"]]]));
 });
 
+test("merged judgment files add points and sources, the first grade of a pair counts", () => {
+  const merged = mergeGrades([
+    file,
+    {
+      points: [
+        {
+          id: "one",
+          judgments: [
+            { source_id: "pubmed:1", grade: 0 },
+            { source_id: "pubmed:4", grade: 2 },
+          ],
+        },
+        { id: "three", judgments: [{ source_id: "pubmed:5", grade: 1 }] },
+      ],
+    },
+  ]);
+  expect(merged.points.map(({ id }) => id)).toEqual(["one", "two", "three"]);
+  expect(merged.points[0].judgments).toEqual([
+    { source_id: "pubmed:1", grade: 3 },
+    { source_id: "pubmed:2", grade: 0 },
+    { source_id: "pubmed:4", grade: 2 },
+  ]);
+});
+
 test("judgments.json is valid and has no duplicates", async () => {
   const { points } = await loadGrades();
   expect(new Set(points.map(({ id }) => id)).size).toBe(points.length);
@@ -52,13 +76,14 @@ test("judgments.json is valid and has no duplicates", async () => {
   }
 });
 
-test("keyword-llm-judgments.json is valid and grades no source twice for a point", async () => {
-  const { points } = await loadGrades(
-    new URL("../keyword-llm-judgments.json", import.meta.url),
-  );
-  expect(points.length).toBeGreaterThan(0);
-  for (const { judgments } of points) {
-    const ids = judgments.map(({ source_id }) => source_id);
-    expect(new Set(ids).size).toBe(ids.length);
-  }
-});
+test.each(["keyword-llm-judgments.json", "graph-llm-judgments.json"])(
+  "%s is valid and grades no source twice for a point",
+  async (name) => {
+    const { points } = await loadGrades(new URL(`../${name}`, import.meta.url));
+    expect(points.length).toBeGreaterThan(0);
+    for (const { judgments } of points) {
+      const ids = judgments.map(({ source_id }) => source_id);
+      expect(new Set(ids).size).toBe(ids.length);
+    }
+  },
+);
