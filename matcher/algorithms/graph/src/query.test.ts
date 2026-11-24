@@ -55,6 +55,55 @@ const graphQuery = (
 const conceptOf = (query: ReturnType<typeof patientQuery>, id: string) =>
   query.concepts.find((concept) => concept.ids[0] === id);
 
+test("C34 alone retrieves narrower lung papers without recording a patient subtype", () => {
+  const lung = "mesh:D008175";
+  const nsclc = "mesh:D002289";
+  const graph = graphQuery(
+    [edge("HAS_DIAGNOSIS", "p", "lung", "Confirmed C34.")],
+    [{ uuid: "lung", name: "C34", labels: ["Diagnosis"] }],
+  );
+  const timeline = patientQuery({
+    context: [],
+    focus: { ...focus, type: "diagnosis", label: "Confirmed C34." },
+  });
+  for (const query of [graph, timeline]) {
+    expect(query.evidence.filter((item) => item.diagnosis)).toMatchObject([
+      { diagnosis: lung },
+    ]);
+    const diagnoses = query.concepts.filter((c) => c.role === "diagnosis");
+    expect(diagnoses.map((c) => c.name)).toEqual(["Lung Neoplasms"]);
+    expect(diagnoses[0].ids).toContain(nsclc);
+  }
+});
+
+test("pathology ruling out the diagnosis supersedes an earlier confirmation", () => {
+  const breast = { uuid: "b", labels: ["Diagnosis"], name: "Breast cancer" };
+  const confirmed = "Confirmed breast cancer.";
+  const excluded = "Pathology ruled out breast cancer.";
+  const graph = graphQuery(
+    [
+      edge("HAS_DIAGNOSIS", "p", "b", confirmed, "2026-01-02"),
+      edge("HAS_DIAGNOSIS", "p", "b", excluded, "2026-01-07"),
+    ],
+    [breast],
+    "2026-01-07",
+  );
+  const timeline = patientQuery({
+    context: [
+      { id: "dx", type: "diagnosis", date: "2026-01-02", label: confirmed },
+    ],
+    focus: {
+      id: "exclude",
+      type: "pathology",
+      date: "2026-01-07",
+      label: excluded,
+    },
+  });
+  for (const [format, query] of Object.entries({ graph, timeline })) {
+    expect.soft(query.diagnoses.size, format).toBe(0);
+  }
+});
+
 test("a diagnosis lets in papers on it and on its narrower forms", () => {
   const query = graphQuery([diagnosis]);
   expect([...query.diagnoses.keys()]).toEqual([cancer, crpc]);

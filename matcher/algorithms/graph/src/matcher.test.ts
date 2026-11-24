@@ -512,6 +512,131 @@ test("a title can supply a missing procedure and a major topic for it counts onl
   expect(hits[1].score).toBeGreaterThan(hits[2].score);
 });
 
+test.skipIf(!databaseUrl)(
+  "PostgreSQL: a breast cancer journey ranks workup, planned and active treatment at their cutoffs",
+  async () => {
+    const breast = "mesh:D001943";
+    const db = await createTestDatabase(databaseUrl as string);
+    try {
+      await ensureGraphSchema(db.pool);
+      const link = { subject: olaparib, predicate: "treats", object: breast };
+      for (const [pmid, title, mesh, relations] of [
+        [
+          "101",
+          "Systemic therapy for breast cancer",
+          { [olaparib]: MESH_MAJOR },
+          [link],
+        ],
+        [
+          "102",
+          "Diagnosis of breast cancer",
+          { [`${breast}Q000175`]: MESH_MAJOR },
+          [],
+        ],
+      ] as const) {
+        await db.pool.query(
+          `WITH doc AS (
+             INSERT INTO documents (id, source, native_id, content_type, title, canonical_url, retrieved_at)
+             VALUES ('pubmed:' || $1, 'pubmed', $1, 'journal_article', $2, 'https://example.org', now())
+             RETURNING id, changed_at
+           )
+           INSERT INTO graph.documents (document_id, document_changed_at, entities, relations, retry_at, mesh)
+           SELECT id, changed_at, '{}'::jsonb, $3::jsonb, 'infinity', $4::jsonb FROM doc`,
+          [
+            pmid,
+            title,
+            JSON.stringify(relations),
+            JSON.stringify({ [breast]: MESH_MAJOR, ...mesh }),
+          ],
+        );
+      }
+      const dx = { uuid: "b", labels: ["Diagnosis"], name: "Breast cancer" };
+      const patient = [nodes[0], dx, nodes[2]];
+      const condition = (fact: string, day: string) =>
+        edge("HAS_DIAGNOSIS", "p", "b", fact, day);
+      const treatment = (action: string, day: string, invalid_at: string) => ({
+        ...edge(
+          "TREATED_BY",
+          "b",
+          "rx",
+          `Olaparib ${action} for breast cancer.`,
+          day,
+        ),
+        invalid_at,
+      });
+      const suspect = condition("Suspected breast cancer.", "2026-01-01");
+      const confirm = condition("Confirmed breast cancer.", "2026-01-02");
+      const plan = treatment("planned", "2026-01-03", "2026-01-04");
+      const start = treatment("given", "2026-01-04", "2026-01-06");
+      const exclude = condition("Breast cancer was ruled out.", "2026-01-07");
+      const course = [suspect, confirm, plan, start, exclude];
+      const matcher = createGraphMatcher(db.pool);
+      function at(
+        as_of: string,
+        edges: Graph["edges"] = course,
+        graphNodes = patient,
+      ) {
+        const focusDate = edges
+          .map((item) => item.valid_at ?? "")
+          .filter((day) => day <= as_of)
+          .sort()
+          .at(-1);
+        return matcher.match(
+          {
+            graph: { nodes: graphNodes, edges, as_of },
+            focus: { ...focus, date: focusDate ?? as_of },
+            context: [],
+          },
+          { limit: 10 },
+        );
+      }
+      const early = await at("2026-01-01", [suspect]);
+      expect(order(early)).toEqual(["pubmed:102", "pubmed:101"]);
+      expect(await at("2026-01-01")).toEqual(early);
+      const confirmed = await at("2026-01-02");
+      expect(confirmed[0]).toMatchObject({
+        documentId: "pubmed:101",
+        explanation: expect.stringContaining(
+          "Studies a treatment for Breast Neoplasms.",
+        ),
+      });
+      const planned = await at("2026-01-03");
+      expect(planned[0].explanation).toContain("Studies a planned treatment");
+      expect(planned[0].explanation).not.toContain(
+        "documented treatment indication",
+      );
+      const active = await at("2026-01-05");
+      expect(active[0]).toMatchObject({
+        documentId: "pubmed:101",
+        explanation: expect.stringContaining("documented treatment indication"),
+      });
+      const duplicate = { ...dx, uuid: "alias", name: "Mammakarzinom" };
+      expect(
+        await at(
+          "2026-01-05",
+          [
+            ...course,
+            { ...confirm, uuid: "second-diagnosis", target_node_uuid: "alias" },
+            { ...start, uuid: "second-indication", source_node_uuid: "alias" },
+          ],
+          [...patient, duplicate],
+        ),
+      ).toEqual(active);
+      const ended = await at("2026-01-06");
+      expect(ended).toHaveLength(2);
+      for (const hit of ended) {
+        expect(hit.matchedTerms).not.toContain("olaparib");
+        expect(hit.explanation).not.toMatch(
+          /planned treatment|documented treatment indication/,
+        );
+      }
+      expect(await at("2026-01-07")).toEqual([]);
+    } finally {
+      await db.drop();
+    }
+  },
+);
+
 test("a treats relation to the acetate ID counts for abiraterone", async () => {
   const q = {
     context: [{ ...focus, type: "diagnosis", label: "Prostate cancer" }],
@@ -615,6 +740,38 @@ test("a drug for the current diagnosis beats the same drug for a comorbidity, ev
   );
 });
 
+test("a paper-only lung subtype is not a documented patient indication", async () => {
+  const smallCell = "mesh:D055752";
+  const cisplatin = "mesh:D002945";
+  const [hit] = await rank(
+    [
+      {
+        id: "small-cell-study",
+        evidence: { [smallCell]: 1, [cisplatin]: 1 },
+        relations: [
+          { subject: cisplatin, predicate: "treats", object: smallCell },
+        ],
+      },
+    ],
+    {
+      context: [
+        { ...focus, id: "dx", type: "diagnosis", label: "Confirmed C34." },
+      ],
+      focus: {
+        ...focus,
+        type: "therapy",
+        label: "Cisplatin started.",
+        parameters: { drug: "Cisplatin", indication: "C34" },
+      },
+    },
+  );
+  expect(hit.documentId).toBe("small-cell-study");
+  expect(hit.explanation).toContain("Lung Neoplasms");
+  expect(hit.explanation).not.toMatch(
+    /documented treatment indication \([^)]*Small Cell Lung Carcinoma/i,
+  );
+});
+
 test("a paper's prostate-specific care phase cannot penalize a breast cancer treatment", async () => {
   const evidence = { "mesh:D001943": 1 };
   const hits = await rank(
@@ -633,6 +790,49 @@ test("a paper's prostate-specific care phase cannot penalize a breast cancer tre
   );
   expect(hits).toHaveLength(2);
   expect(hits[0].score).toEqual(hits[1].score);
+});
+
+test("a cancelled timeline plan gives no drug advantage after cancellation", async () => {
+  const diagnosis = {
+    ...focus,
+    id: "dx",
+    date: "2026-01-01",
+    type: "diagnosis",
+    label: "Confirmed breast cancer.",
+  };
+  const plan = {
+    ...focus,
+    id: "plan",
+    date: "2026-01-02",
+    type: "treatment_decision",
+    label: "Olaparib planned.",
+    parameters: { drug: "Olaparib", indication: "C50" },
+  };
+  const cancelled = {
+    ...plan,
+    id: "stop",
+    date: "2026-01-03",
+    type: "followup",
+    label: "Olaparib cancelled; not started.",
+  };
+  const disease = { "mesh:D001943": 1 };
+  const papers = [
+    { id: "a-control", evidence: disease },
+    { id: "z-olaparib", evidence: { ...disease, [olaparib]: 1 } },
+  ];
+  const before = await rank(papers, { focus: diagnosis, context: [] });
+  expect(order(before)).toEqual(["a-control", "z-olaparib"]);
+  expect(
+    order(await rank(papers, { focus: plan, context: [diagnosis] })),
+  ).toEqual(["z-olaparib", "a-control"]);
+  const after = await rank(papers, {
+    focus: cancelled,
+    context: [diagnosis, plan],
+  });
+  expect(order(after)).toEqual(order(before));
+  expect(
+    after.find((p) => p.documentId === "z-olaparib")?.matchedTerms,
+  ).not.toContain("olaparib");
 });
 
 test("confirmation alone can retrieve treatments for this disease", async () => {

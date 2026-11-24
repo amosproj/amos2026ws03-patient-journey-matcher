@@ -1,0 +1,34 @@
+{
+  "nodes": [
+    { "uuid": "p", "name": "Synthetic patient", "labels": ["Patient"] },
+    { "uuid": "breast", "name": "Breast cancer", "labels": ["Diagnosis"] },
+    { "uuid": "lung", "name": "Lung cancer", "labels": ["Diagnosis"] },
+    { "uuid": "rx", "name": "Olaparib", "labels": ["Medication"] }
+  ],
+  "edges": [
+    {
+      "uuid": "dx1",
+      "name": "HAS_DIAGNOSIS",
+      "source_node_uuid": "p",
+      "target_node_uuid": "breast",
+      "valid_at": "2026-01-10",
+      "fact": "Breast cancer confirmed."
+    },
+    {
+      "uuid": "dx2",
+      "name": "HAS_DIAGNOSIS",
+      "source_node_uuid": "p",
+      "target_node_uuid": "lung",
+      "valid_at": "2026-01-10",
+      "fact": "Lung cancer confirmed."
+    },
+    {
+      "uuid": "therapy",
+      "name": "PRESCRIBED",
+      "source_node_uuid": "p",
+      "target_node_uuid": "rx",
+      "valid_at": "2026-02-09",
+      "fact": "Olaparib started."
+    }
+  ]
+}

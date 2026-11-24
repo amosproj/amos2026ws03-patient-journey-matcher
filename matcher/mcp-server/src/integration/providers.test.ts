@@ -119,23 +119,22 @@ describe.skipIf(!databaseUrl)("podcast and PubMed sources", () => {
         "utf8",
       ),
     );
-    h.providers.routes.set(
-      "/research/pubtator3-api/publications/export/biocjson",
-      (url) => {
-        const pmids = url.searchParams.get("pmids")?.split(",") ?? [];
-        return {
-          type: "application/json",
-          body: JSON.stringify({
-            PubTator3: pmids.map((id) => ({
-              ...annotations,
-              id,
-              pmid: id,
-              relations: id === "301" ? annotations.relations : [],
-            })),
-          }),
-        };
-      },
-    );
+    const exportPath = "/research/pubtator3-api/publications/export/biocjson";
+    const healthy = (url: URL) => {
+      const pmids = url.searchParams.get("pmids")?.split(",") ?? [];
+      return {
+        type: "application/json",
+        body: JSON.stringify({
+          PubTator3: pmids.map((id) => ({
+            ...annotations,
+            id,
+            pmid: id,
+            relations: id === "301" ? annotations.relations : [],
+          })),
+        }),
+      };
+    };
+    h.providers.routes.set(exportPath, healthy);
     await h.index();
     const graph = JSON.parse(
       readFileSync(
@@ -176,6 +175,41 @@ describe.skipIf(!databaseUrl)("podcast and PubMed sources", () => {
     ).toEqual([]);
     await h.index();
     expect(h.providers.requests).toHaveLength(count);
+    // PubTator3 omits 302 and returns a malformed update for 301. Keep both
+    // papers searchable until the annotations can be fetched again.
+    h.providers.routes.set(exportPath, [
+      {
+        type: "application/json",
+        body: JSON.stringify({
+          PubTator3: [{ id: "301", passages: "malformed" }],
+        }),
+      },
+    ]);
+    await h.db.pool.query(
+      "UPDATE documents SET changed_at = changed_at + interval '1 second' WHERE source = 'pubmed'",
+    );
+    await h.index();
+    const waiting = await h.db.pool.query(
+      "SELECT document_id FROM graph.documents WHERE isfinite(retry_at) AND retry_at > now() ORDER BY document_id",
+    );
+    expect(waiting.rows.map((row) => row.document_id)).toEqual([
+      "pubmed:301",
+      "pubmed:302",
+    ]);
+    expect(await h.match(request)).toEqual(answer);
+    h.providers.routes.set(exportPath, healthy);
+    await h.db.pool.query(
+      "UPDATE graph.documents SET retry_at = now() WHERE isfinite(retry_at)",
+    );
+    await h.index();
+    expect(
+      (
+        await h.db.pool.query(
+          "SELECT document_id FROM graph.documents WHERE isfinite(retry_at)",
+        )
+      ).rows,
+    ).toEqual([]);
+    expect(await h.match(request)).toEqual(answer);
     expect((await h.match()).results.map((r) => r.source_id)).toContain(
       "pubmed:302",
     );
