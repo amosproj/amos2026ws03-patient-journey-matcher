@@ -743,34 +743,125 @@ test("a drug for the current diagnosis beats the same drug for a comorbidity, ev
 test("a paper-only lung subtype is not a documented patient indication", async () => {
   const smallCell = "mesh:D055752";
   const cisplatin = "mesh:D002945";
-  const [hit] = await rank(
-    [
-      {
-        id: "small-cell-study",
-        evidence: { [smallCell]: 1, [cisplatin]: 1 },
-        relations: [
-          { subject: cisplatin, predicate: "treats", object: smallCell },
-        ],
-      },
-    ],
+  const papers: Paper[] = [
     {
-      context: [
-        { ...focus, id: "dx", type: "diagnosis", label: "Confirmed C34." },
+      id: "small-cell-study",
+      evidence: { [smallCell]: 1, [cisplatin]: 1 },
+      relations: [
+        { subject: cisplatin, predicate: "treats", object: smallCell },
       ],
-      focus: {
-        ...focus,
-        type: "therapy",
-        label: "Cisplatin started.",
-        parameters: { drug: "Cisplatin", indication: "C34" },
-      },
     },
-  );
-  expect(hit.documentId).toBe("small-cell-study");
-  expect(hit.explanation).toContain("Lung Neoplasms");
-  expect(hit.explanation).not.toMatch(
-    /documented treatment indication \([^)]*Small Cell Lung Carcinoma/i,
-  );
+  ];
+  const diagnosis = {
+    ...focus,
+    id: "dx",
+    type: "diagnosis",
+    label: "Confirmed C34.",
+  };
+  const therapy = {
+    ...focus,
+    type: "therapy",
+    label: "Cisplatin started.",
+    parameters: { drug: "Cisplatin", indication: "C34" },
+  };
+  const subtype = {
+    ...diagnosis,
+    id: "subtype",
+    label: "Confirmed small cell lung carcinoma.",
+  };
+  const laterPlan = {
+    ...therapy,
+    id: "plan",
+    date: "2026-12-09",
+    type: "treatment_decision",
+    label: "Cisplatin planned.",
+    parameters: { drug: "Cisplatin", indication: "Small cell lung carcinoma" },
+  };
+  for (const input of [
+    { context: [diagnosis], focus: therapy },
+    { context: [diagnosis, therapy, subtype], focus: laterPlan },
+  ]) {
+    const [hit] = await rank(papers, input);
+    expect(hit.documentId).toBe("small-cell-study");
+    expect(hit.explanation).toContain(
+      "documented treatment indication (Cisplatin → Lung Neoplasms)",
+    );
+    expect(hit.explanation).toContain(
+      "The paper studies a narrower diagnosis (Small Cell Lung Carcinoma)",
+    );
+  }
 });
+
+test.each([
+  ["nichtkleinzellig", "mesh:D002289", "mesh:D055752"],
+  ["kleinzellig", "mesh:D055752", "mesh:D002289"],
+])(
+  "histology %s in a lung journey demotes the opposing histology",
+  async (label, observed, conflicting) => {
+    const lung = "mesh:D008175";
+    const cisplatin = "mesh:D002945";
+    const linked = (
+      id: string,
+      target: string,
+      others: string[] = [],
+    ): Paper => ({
+      id,
+      evidence: {
+        [lung]: 1,
+        [cisplatin]: 1,
+        [target]: 1,
+        ...Object.fromEntries(others.map((id) => [id, 1])),
+      },
+      relations: [{ subject: cisplatin, predicate: "treats", object: target }],
+    });
+    const papers = [
+      linked("a-conflict", conflicting),
+      linked("b-confirmed", observed),
+      linked("c-broader", lung),
+      linked("d-bronchial", "mesh:D001984"),
+      linked("e-mixed", observed, [conflicting]),
+    ];
+    const statement = `Cisplatin started for lung cancer. Histologie: ${label}.`;
+    const dx = {
+      ...focus,
+      id: "dx",
+      type: "diagnosis",
+      label: "Confirmed C34.",
+    };
+    const treatment = {
+      ...focus,
+      type: "therapy",
+      label: statement,
+      parameters: { drug: "Cisplatin", indication: "C34" },
+    };
+    const graph: Graph = {
+      nodes: [
+        nodes[0],
+        { uuid: "dx", labels: ["Diagnosis"], name: "C34" },
+        { uuid: "rx", labels: ["Medication"], name: "Cisplatin" },
+      ],
+      edges: [
+        edge("HAS_DIAGNOSIS", "p", "dx", dx.label),
+        edge("TREATED_BY", "dx", "rx", statement),
+      ],
+    };
+    for (const input of [
+      { context: [dx], focus: treatment },
+      { context: [], focus, graph },
+    ]) {
+      const hits = await rank(papers, input);
+      expect(hits).toHaveLength(papers.length);
+      const last = hits.at(-1);
+      expect(last?.documentId).toBe("a-conflict");
+      expect(last?.explanation).toContain("different histology");
+      expect(last?.matchedTerms).not.toContain("Cisplatin");
+      for (const other of hits.slice(0, -1)) {
+        expect(other.score).toBeGreaterThan(last?.score ?? 0);
+        expect(other.matchedTerms).toContain("Cisplatin");
+      }
+    }
+  },
+);
 
 test("a paper's prostate-specific care phase cannot penalize a breast cancer treatment", async () => {
   const evidence = { "mesh:D001943": 1 };

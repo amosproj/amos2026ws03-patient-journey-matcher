@@ -76,6 +76,80 @@ test("C34 alone retrieves narrower lung papers without recording a patient subty
   }
 });
 
+test("histology follows the dated pathology and its site in both formats", () => {
+  const lung = { uuid: "lung", name: "C34", labels: ["Diagnosis"] };
+  const breast = { uuid: "breast", name: "C50", labels: ["Diagnosis"] };
+  const report = { uuid: "path", name: "Biopsy", labels: ["PathologyResult"] };
+  const dx = edge("HAS_DIAGNOSIS", "p", "lung", "Confirmed C34.", "2026-01-01");
+  const biopsy = edge(
+    "HAS_PATHOLOGY",
+    "p",
+    "path",
+    "Histologie: nichtkleinzellig.",
+    "2026-01-02",
+  );
+  const repeat = { ...dx, uuid: "restated", valid_at: "2026-01-03" };
+  const excluded = {
+    ...biopsy,
+    uuid: "revised",
+    fact: "Histologie: nichtkleinzellig ausgeschlossen.",
+    valid_at: "2026-01-04",
+  };
+  const history = [dx, biopsy, repeat, excluded];
+  const subtypes = (facts: typeof history, cutoff: string) => {
+    const events = facts.map((item) => ({
+      id: item.uuid,
+      type: item.name === "HAS_DIAGNOSIS" ? "diagnosis" : "pathology",
+      label: item.fact,
+      date: item.valid_at as string,
+    }));
+    const timeline = patientQuery({
+      context: events,
+      focus: { ...focus, date: cutoff },
+    });
+    const graph = graphQuery(facts, [lung, breast, report], cutoff);
+    return [timeline.histology?.observed, graph.histology?.observed];
+  };
+  const nsclc = "mesh:D002289";
+  expect(subtypes(history, "2026-01-01")).toEqual([undefined, undefined]);
+  expect(subtypes(history, "2026-01-02")).toEqual([nsclc, nsclc]);
+  expect(subtypes(history, "2026-01-03")).toEqual([nsclc, nsclc]);
+  expect(subtypes(history, "2026-01-04")).toEqual([undefined, undefined]);
+  const expiring = [dx, { ...biopsy, invalid_at: "2026-01-03" }];
+  expect(
+    graphQuery(expiring, [lung, report], "2026-01-02").histology?.observed,
+  ).toBe(nsclc);
+  expect(
+    graphQuery(expiring, [lung, report], "2026-01-03").histology,
+  ).toBeUndefined();
+
+  const secondCancer = edge(
+    "HAS_DIAGNOSIS",
+    "p",
+    "breast",
+    "Confirmed C50.",
+    "2026-01-01",
+  );
+  for (const fact of [
+    "Histologie: nichtkleinzellig.",
+    "C50. Histologie: nichtkleinzellig.",
+  ]) {
+    expect(
+      subtypes([dx, secondCancer, { ...biopsy, fact }], "2026-01-02"),
+    ).toEqual([undefined, undefined]);
+  }
+  expect(
+    subtypes(
+      [
+        dx,
+        secondCancer,
+        { ...biopsy, fact: "C34. Histologie: nichtkleinzellig." },
+      ],
+      "2026-01-02",
+    ),
+  ).toEqual([nsclc, nsclc]);
+});
+
 test("pathology ruling out the diagnosis supersedes an earlier confirmation", () => {
   const breast = { uuid: "b", labels: ["Diagnosis"], name: "Breast cancer" };
   const confirmed = "Confirmed breast cancer.";
@@ -722,13 +796,17 @@ test("planning or cancelling a treatment does not record it as given", () => {
   const context = [
     { ...focus, type: "diagnosis", label: "Confirmed breast cancer" },
   ];
-  for (const label of ["Olaparib planned.", "Olaparib cancelled."]) {
+  for (const [label, type] of [
+    ["Olaparib planned.", "systemic_therapy"],
+    ["Olaparib cancelled.", "systemic_therapy"],
+    ["Confirmed Olaparib was not started.", "treatment_decision"],
+  ]) {
     const query = patientQuery({
       context,
       focus: {
         ...focus,
         label,
-        type: "systemic_therapy",
+        type,
         parameters: { drug: "Olaparib", indication: "C50" },
       },
     });
@@ -737,6 +815,122 @@ test("planning or cancelling a treatment does not record it as given", () => {
     expect(query.treatments.has(drug)).toBe(false);
     expect(query.relations.size).toBe(0);
   }
+});
+
+test("withdrawing a plan without an indication preserves other drugs and a later start", () => {
+  const diagnosis = {
+    ...focus,
+    id: "dx",
+    date: "2026-01-01",
+    type: "diagnosis",
+    label: "Confirmed breast cancer.",
+  };
+  const plan = {
+    id: "plan",
+    date: "2026-01-02",
+    type: "treatment_decision",
+    label: "Olaparib planned.",
+    parameters: { drug: "Olaparib", indication: "C50" },
+  };
+  const other = {
+    ...plan,
+    id: "other",
+    label: "Docetaxel planned.",
+    parameters: { drug: "Docetaxel", indication: "C50" },
+  };
+  const cancel = {
+    id: "cancel",
+    date: "2026-01-03",
+    type: "followup",
+    label: "Olaparib not started.",
+  };
+  const after = patientQuery({
+    focus: cancel,
+    context: [diagnosis, plan, other],
+  });
+  expect(conceptOf(after, drug)).toBeUndefined();
+  expect(
+    after.concepts.find((c) => c.name.toLowerCase() === "docetaxel")
+      ?.plannedFor,
+  ).toContain("mesh:D001943");
+  expect(after.stage.plannedTherapy).toBe(true);
+  for (const [label, stillPlanned] of [
+    ["Olaparib cancelled and Docetaxel remains planned.", true],
+    ["Olaparib abgesagt und Docetaxel weiterhin geplant.", true],
+    ["Olaparib and Docetaxel cancelled.", false],
+  ] as const) {
+    const update = patientQuery({
+      context: [diagnosis, plan, other],
+      focus: {
+        ...cancel,
+        label,
+        parameters: { drug: "Olaparib and Docetaxel", indication: "C50" },
+      },
+    });
+    expect(conceptOf(update, drug), label).toBeUndefined();
+    const docetaxel = update.concepts.find(
+      (c) => c.name.toLowerCase() === "docetaxel",
+    );
+    expect(
+      docetaxel?.plannedFor?.includes("mesh:D001943") ?? false,
+      label,
+    ).toBe(stillPlanned);
+    expect(update.stage.plannedTherapy, label).toBe(stillPlanned);
+  }
+
+  const restart = {
+    ...plan,
+    id: "restart",
+    date: "2026-01-04",
+    type: "therapy",
+    label: "Olaparib started.",
+  };
+  const active = patientQuery({
+    focus: restart,
+    context: [diagnosis, plan, cancel],
+  });
+  expect(active.treatments.has(drug)).toBe(true);
+  expect(
+    active.relations.has(JSON.stringify([drug, "treats", "mesh:D001943"])),
+  ).toBe(true);
+  expect(active.stage.plannedTherapy).toBe(false);
+});
+
+test("a cancellation for one indication keeps the same drug's plan for another diagnosis", () => {
+  const diagnosis = (id: string, label: string) => ({
+    ...focus,
+    id,
+    type: "diagnosis",
+    label,
+    date: "2026-01-01",
+  });
+  const plan = (id: string, indication: string) => ({
+    id,
+    date: "2026-01-02",
+    type: "treatment_decision",
+    label: "Olaparib planned.",
+    parameters: { drug: "Olaparib", indication },
+  });
+  const query = patientQuery({
+    context: [
+      diagnosis("lung", "Confirmed C34."),
+      diagnosis("breast", "Confirmed C50."),
+      plan("a", "C34"),
+      plan("b", "C50"),
+    ],
+    focus: {
+      ...plan("cancel", "Breast cancer"),
+      date: "2026-01-03",
+      label: "Treatment update.",
+      parameters: {
+        drug: "Olaparib",
+        indication: "Breast cancer",
+        treatment_status: "cancelled",
+      },
+    },
+  });
+  expect(conceptOf(query, drug)?.plannedFor).toContain("mesh:D008175");
+  expect(conceptOf(query, drug)?.plannedFor).not.toContain("mesh:D001943");
 });
 
 test("a second malignancy and a multi-indication drug do not imply a prostate diagnosis", () => {

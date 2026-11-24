@@ -233,9 +233,9 @@ function treatmentPatterns(
   diagnosisOnly: boolean,
 ): string[] {
   if (diagnosisOnly)
-    return [...query.diagnoses.keys()].map((object) =>
-      JSON.stringify([{ predicate: "treats", object }]),
-    );
+    return [...query.diagnoses.keys()]
+      .filter((id) => id !== query.histology?.conflicting)
+      .map((object) => JSON.stringify([{ predicate: "treats", object }]));
   return query.concepts.flatMap(({ ids, role, diagnoses, plannedFor }) =>
     (role === "drug" || role === "procedure") && diagnoses
       ? diagnoses
@@ -272,6 +272,7 @@ export function createGraphMatcher(
         focusDate: state.focus.date,
         conceptOnly: query.conceptOnly,
         diagnoses: Object.fromEntries(query.diagnoses),
+        histology: query.histology,
         concepts: query.concepts,
         stage: { ...query.stage, states: [...query.stage.states] },
         treatments: Object.fromEntries(query.treatments),
@@ -417,17 +418,31 @@ function rank(
   // PubTator does not annotate procedures. Read the same curated concepts from the title
   // of each candidate, counting the stronger of title and indexed evidence once.
   const titleIds = new Set(terms.findConcepts(row.title).map(({ id }) => id));
+  const paperNames = (id: string) =>
+    row.diagnoses.includes(id) ||
+    id in row.mesh ||
+    titleIds.has(id) ||
+    row.relations.some(
+      ({ predicate, object }) => predicate === "treats" && object === id,
+    );
+  const conflictingHistology =
+    query.histology &&
+    paperNames(query.histology.conflicting) &&
+    !paperNames(query.histology.observed);
   let titleScore = 0;
   let mainTopic = 0;
   const linked: string[] = [];
   const exact: string[] = [];
   const planned: string[] = [];
+  const paperSubtypes = new Set<string>();
   let relation = 0;
   const studied =
     diagnosisOnly &&
     row.relations.find(
       ({ predicate, object }) =>
-        predicate === "treats" && query.diagnoses.has(object),
+        predicate === "treats" &&
+        query.diagnoses.has(object) &&
+        object !== query.histology?.conflicting,
     );
   query.concepts.forEach((concept, index) => {
     if (
@@ -452,16 +467,35 @@ function rank(
       const compatible = indications.filter(({ object }) =>
         concept.diagnoses
           ? concept.diagnoses.includes(object)
-          : query.diagnoses.has(object),
+          : query.diagnoses.has(object) &&
+            object !== query.histology?.conflicting,
       );
       if (indications.length && !compatible.length) return;
-      const given = compatible.find(
+      const given = compatible.filter(
         ({ object }) => !concept.plannedFor?.includes(object),
       );
-      const link = given ?? compatible[0];
+      const choices = given.length ? given : compatible;
+      const targets = given.length
+        ? concept.documentedTargets?.active
+        : concept.documentedTargets?.planned;
+      const link =
+        choices.find(({ object }) => targets?.includes(object)) ?? choices[0];
       if (link) {
-        const pair = `${concept.name} → ${terms.conceptOf(link.object)?.name ?? link.object}`;
-        if (!given) planned.push(pair);
+        const paperDiagnosis =
+          terms.conceptOf(link.object)?.name ?? link.object;
+        const target = targets?.includes(link.object)
+          ? terms.conceptOf(link.object)
+          : targets
+              ?.map((id) => terms.conceptOf(id))
+              .find(
+                (diagnosis) =>
+                  diagnosis?.narrower?.includes(link.object) ||
+                  diagnosis?.also?.includes(link.object),
+              );
+        const pair = `${concept.name} → ${target?.name ?? paperDiagnosis}`;
+        if (target?.narrower?.includes(link.object))
+          paperSubtypes.add(paperDiagnosis);
+        if (!given.length) planned.push(pair);
         else {
           (concept.diagnoses ? exact : linked).push(pair);
           relation += values.relation * worth * (concept.diagnoses ? 2 : 1);
@@ -505,6 +539,7 @@ function rank(
     stage.factor *
     (care ? values.stageFit : 1) *
     (phase === undefined ? 1 : severity[phase]) *
+    (conflictingHistology ? severity.strong : 1) *
     (lab ? values.research : 1) *
     (otherSex ? values.population : 1) *
     (foreign ? values.otherDisease : 1) *
@@ -527,6 +562,12 @@ function rank(
       : "",
     planned.length
       ? `Studies a planned treatment (${planned.join(", ")}).`
+      : "",
+    paperSubtypes.size
+      ? `The paper studies a narrower diagnosis (${[...paperSubtypes].join(", ")}).`
+      : "",
+    conflictingHistology
+      ? "Studies a different histology from the patient's."
       : "",
     studied
       ? `Studies a treatment for ${terms.conceptOf(studied.object)?.name ?? studied.object}.`
