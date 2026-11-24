@@ -315,8 +315,11 @@ export function createGraphMatcher(
          -- Rare among the papers on the diagnosis means telling: inverse frequency as in BM25.
          idf AS (
            SELECT grp, greatest(CASE WHEN grp = ANY($12::int[]) THEN 1 ELSE 0 END,
-                  ln(1 + ((SELECT count(*) FROM candidates) - count(*) + 0.5) / (count(*) + 0.5))) AS idf
-           FROM evidence GROUP BY grp
+                  ln(1 + ((SELECT count(*) FROM candidates) - count(e.document_id) + 0.5) /
+                         (count(e.document_id) + 0.5))) AS idf
+           FROM (SELECT DISTINCT grp FROM q) AS requested
+           LEFT JOIN evidence e USING (grp)
+           GROUP BY grp
          ),
          scored AS (
            SELECT e.document_id, sum(e.weight * e.strength * i.idf) AS score,

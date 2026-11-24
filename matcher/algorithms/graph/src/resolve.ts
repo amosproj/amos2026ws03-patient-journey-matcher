@@ -110,6 +110,14 @@ export function broaderDiagnosis(id: string): string | undefined {
   return BROADER_DIAGNOSIS.get(id);
 }
 
+/** A diagnostic name and a code may describe the same disease at different specificity. */
+export function compatibleDiagnoses(a: Concept, b: Concept): boolean {
+  return (
+    a.id === b.id ||
+    Boolean(a.narrower?.includes(b.id) || b.narrower?.includes(a.id))
+  );
+}
+
 /** A dictionary of whole normalized names. A name listed for two concepts is an error. */
 export function nameDictionary(
   list: readonly Concept[],
@@ -148,11 +156,19 @@ const ICD_CODE = /^[A-Z]\d{2}(?:\.\d{1,2})?$/;
 const ICD_IN_TEXT =
   /\b[A-Z]\d{2}(?:\.\d+)?(?:\s*[-–—]\s*[A-Z]\d{2}(?:\.\d+)?)?(?!\w|\.\w)/gi;
 
-type DiseaseHit = { concept: Concept; code?: string };
+type Mention = {
+  concept: Concept;
+  mention: string;
+  start: number;
+  end: number;
+};
+type DiseaseHit = { concept: Concept; mention: string; code?: string };
 export type Terminology = {
   dictionaries: readonly Dictionary[];
   conceptOf(id: string): Concept | undefined;
   findConcepts(text: string): Concept[];
+  /** Longest matched names and their character offsets in normalized text. */
+  findMentions(text: string): Mention[];
   findDiseases(text: string): DiseaseHit[];
 };
 
@@ -164,8 +180,9 @@ function phraseLookup(names: ReadonlyMap<string, Concept>) {
       .sort((a, b) => b.phrase.length - a.phrase.length),
     ({ phrase }) => phrase[0],
   );
-  return (text: string, diseasesOnly = false): Concept[] => {
-    const result = new Set<Concept>();
+  return (text: string, diseasesOnly = false): Mention[] => {
+    const result: Mention[] = [];
+    let offset = 0;
     const tokens = words(text);
     for (let i = 0; i < tokens.length; i++) {
       const match = grouped
@@ -176,11 +193,18 @@ function phraseLookup(names: ReadonlyMap<string, Concept>) {
             phrase.every((word, offset) => word === tokens[i + offset]),
         );
       if (match) {
-        result.add(match.concept);
+        const mention = match.phrase.join(" ");
+        result.push({
+          concept: match.concept,
+          mention,
+          start: offset,
+          end: offset + mention.length,
+        });
+        offset += mention.length + 1;
         i += match.phrase.length - 1;
-      }
+      } else offset += tokens[i].length + 1;
     }
-    return [...result];
+    return result;
   };
 }
 
@@ -256,15 +280,18 @@ export function createTerminology(
   return {
     dictionaries,
     conceptOf: byId,
-    findConcepts: (text) => find(text),
+    findMentions: find,
+    findConcepts: (text) => [...new Set(find(text).map((hit) => hit.concept))],
     findDiseases(text) {
-      const found: DiseaseHit[] = find(text, true).map((concept) => ({
-        concept,
-      }));
+      const found: DiseaseHit[] = find(text, true);
       for (const [code] of text.matchAll(ICD_IN_TEXT)) {
         const concept = resolveIcd(code);
         if (concept?.type === "disease")
-          found.push({ concept: byId(concept.id) ?? concept, code });
+          found.push({
+            concept: byId(concept.id) ?? concept,
+            mention: code,
+            code,
+          });
       }
       return found;
     },
@@ -273,13 +300,6 @@ export function createTerminology(
 
 export const defaultTerminology = createTerminology();
 export const { findConcepts, findDiseases } = defaultTerminology;
-
-/** The ICD names a follow-up can use for an already known diagnosis. */
-export function icdCodesFor(id: string): string[] {
-  return [...ICD_CODES]
-    .filter(([, concept]) => concept === id)
-    .map(([code]) => code);
-}
 
 /**
  * Tier 1: a mapped ICD-10 code as written. Categories are never inferred from their children. A value that is not
@@ -309,8 +329,10 @@ export function resolve(
     );
     for (const [, leading, bracketed] of codes) {
       const concept = resolveIcd(leading ?? bracketed);
-      if (concept && byCode && byCode.id !== concept.id) return undefined;
-      byCode ??= concept;
+      if (concept && byCode && !compatibleDiagnoses(concept, byCode))
+        return undefined;
+      if (concept && (!byCode || byCode.narrower?.includes(concept.id)))
+        byCode = concept;
     }
   }
   for (const dictionary of dictionaries) {
@@ -320,11 +342,9 @@ export function resolve(
         const concept =
           form === undefined ? undefined : dictionary.lookup(form);
         if (concept !== undefined) {
-          if (
-            !byCode ||
-            byCode.id === concept.id ||
-            byCode.narrower?.includes(concept.id)
-          )
+          if (byCode && concept.narrower?.includes(byCode.id))
+            return { concept: byCode, resolvedBy: "icd" };
+          if (!byCode || compatibleDiagnoses(byCode, concept))
             return {
               concept,
               resolvedBy:

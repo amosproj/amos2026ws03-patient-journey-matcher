@@ -3,8 +3,11 @@
 // patient's ranks lower; one about his current state ranks higher.
 import neoplasms from "../data/neoplasms.json" with { type: "json" };
 import data from "../data/stages.json" with { type: "json" };
-import { conceptOf } from "./resolve.ts";
+import { conceptOf, type Terminology } from "./resolve.ts";
 import { MESH_MAJOR } from "./schema.ts";
+import { statusFromText } from "./status.ts";
+import { normalizeName } from "./text.ts";
+import type { Status } from "./types.ts";
 
 export const STAGES = [
   "screening",
@@ -72,21 +75,65 @@ const NEGATED_BEFORE =
 const NEGATED_AFTER =
   /^\w* (?:free|frei|ausgeschlossen|ruled out|excluded)\b|^\w*(?:free|frei)\b/;
 
-/** The states a normalized text names, unless negated ("kein Fernmetastasennachweis"). */
-export function stageCues(text: string): Set<Stage> {
-  const states = new Set<Stage>();
-  for (const stage of STAGE_DATA) {
-    if (stage.names === undefined) continue;
-    const pattern = new RegExp(stage.names.source, "g");
-    for (const match of text.matchAll(pattern)) {
-      const before = text.slice(Math.max(0, match.index - 40), match.index);
-      const after = text.slice(match.index + match[0].length);
-      if (NEGATED_BEFORE.test(before) || NEGATED_AFTER.test(after)) continue;
-      states.add(stage.id);
-      break;
+export type StageObservation = {
+  stage: Stage;
+  entity?: string;
+  status: Status;
+};
+
+export function conceptStages(id: string): Stage[] {
+  return STAGE_DATA.filter((stage) => stage.concepts.includes(id)).map(
+    (stage) => stage.id,
+  );
+}
+
+/** Keep the site of a stage cue so a later negative bone scan can revise that finding alone. */
+export function* stageObservations(
+  text: string,
+  terminology?: Terminology,
+): Generator<StageObservation> {
+  for (const part of text.split(
+    /[;!?]|\.(?=\s|$)|,|\b(?:but|aber|jedoch)\b/i,
+  )) {
+    const clause = normalizeName(part);
+    const mentions = terminology?.findMentions(clause);
+    if (/\b[cp]?m0\b/.test(clause))
+      yield { stage: "metastatic", status: "negated" };
+    for (const stage of STAGE_DATA) {
+      if (!stage.names) continue;
+      for (const match of clause.matchAll(
+        new RegExp(stage.names.source, "g"),
+      )) {
+        const before = clause.slice(0, match.index);
+        const after = clause.slice(match.index + match[0].length);
+        // The configured patterns include word stems, whereas status cues need the full name.
+        const phrase =
+          (/\w*$/.exec(before)?.[0] ?? "") +
+          match[0] +
+          (/^\w*/.exec(after)?.[0] ?? "");
+        const site = mentions?.find(
+          (hit) =>
+            hit.start <= match.index &&
+            match.index < hit.end &&
+            stage.concepts.includes(hit.concept.id),
+        );
+        const status =
+          NEGATED_BEFORE.test(before) || NEGATED_AFTER.test(after)
+            ? "negated"
+            : (statusFromText(part, [site?.mention ?? phrase])?.status ??
+              "unknown");
+        yield { stage: stage.id, entity: site?.concept.id, status };
+      }
     }
   }
-  return states;
+}
+
+export function stageCues(text: string): Set<Stage> {
+  return new Set(
+    [...stageObservations(text)]
+      .filter((cue) => cue.status === "asserted" || cue.status === "unknown")
+      .map((cue) => cue.stage),
+  );
 }
 
 /**
@@ -99,8 +146,9 @@ export function patientStage(
   texts: readonly string[],
   therapy: Omit<PatientStage, "states">,
   prostateContext = true,
+  observed: Iterable<Stage> = [],
 ): PatientStage {
-  const states = new Set<Stage>();
+  const states = new Set<Stage>(observed);
   for (const stage of STAGE_DATA) {
     if (ids.some((id) => stage.concepts.includes(id))) states.add(stage.id);
   }

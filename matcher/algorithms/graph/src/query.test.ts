@@ -178,6 +178,348 @@ test("pathology ruling out the diagnosis supersedes an earlier confirmation", ()
   }
 });
 
+test.each([
+  ["CONFIRMED_BY", "breast", "path", "Biopsy"],
+  ["CONFIRMED_BY", "path", "breast", "Breast cancer"],
+  ["INDICATES", "path", "breast", "Biopsy"],
+  ["HAS_PATHOLOGY", "p", "path", "Biopsy"],
+  ["HAS_PATHOLOGY", "p", "path", "Breast cancer"],
+])(
+  "a dated %s from %s to %s (%s) can revise a diagnosis",
+  (kind, from, to, pathology) => {
+    const breast = "mesh:D001943";
+    const extra = [
+      { uuid: "breast", labels: ["Diagnosis"], name: "Breast cancer" },
+      {
+        uuid: "path",
+        labels: [kind === "INDICATES" ? "LabTest" : "PathologyResult"],
+        name: pathology,
+      },
+    ];
+    const prior = edge(
+      "HAS_DIAGNOSIS",
+      "p",
+      "breast",
+      "Confirmed breast cancer.",
+      "2026-01-01",
+    );
+    const veto = edge(
+      kind,
+      from,
+      to,
+      "The biopsy ruled out breast cancer.",
+      "2026-01-02",
+    );
+    const hasBreast = (
+      edges: NonNullable<JourneyState["graph"]>["edges"],
+      day: string,
+    ) => graphQuery(edges, extra, day).diagnoses.has(breast);
+    expect(hasBreast([prior, veto], "2026-01-01")).toBe(true);
+    expect(
+      hasBreast([veto, { ...prior, valid_at: veto.valid_at }], "2026-01-02"),
+    ).toBe(false);
+    expect(hasBreast([prior, veto], "2026-01-03")).toBe(false);
+    expect(
+      hasBreast([prior, { ...veto, invalid_at: "2026-01-03" }], "2026-01-03"),
+    ).toBe(true);
+    const repeat = {
+      ...veto,
+      uuid: "repeat",
+      fact: "The biopsy confirmed breast cancer.",
+      valid_at: "2026-01-04",
+    };
+    expect(hasBreast([prior, veto, repeat], "2026-01-04")).toBe(true);
+    expect(
+      hasBreast(
+        [prior, { ...veto, fact: "The biopsy was negative." }],
+        "2026-01-02",
+      ),
+    ).toBe(true);
+  },
+);
+
+test.each([
+  "Small cell lung cancer ruled out.",
+  "No small cell lung cancer.",
+  "Histology: small cell ruled out.",
+])(
+  "a subtype exclusion stays out of diagnosis and treatment groups: %s",
+  (label) => {
+    const lung = "mesh:D008175",
+      small = "mesh:D055752";
+    const dx = {
+      ...focus,
+      id: "dx",
+      type: "diagnosis",
+      date: "2026-01-01",
+      label: "Confirmed lung cancer.",
+    };
+    const plan = {
+      ...dx,
+      id: "rx",
+      type: "treatment_decision",
+      label: "Olaparib planned.",
+      parameters: { drug: "Olaparib", indication: "C34" },
+    };
+    const excluded = {
+      ...dx,
+      id: "path",
+      type: "pathology",
+      date: "2026-01-02",
+      label,
+    };
+    const timeline = patientQuery({ context: [dx, plan], focus: excluded });
+    const extra = [
+      { uuid: "lung", labels: ["Diagnosis"], name: "Lung cancer" },
+      { uuid: "path", labels: ["PathologyResult"], name: "Biopsy" },
+    ];
+    const edges = [
+      edge("HAS_DIAGNOSIS", "p", "lung", dx.label, dx.date),
+      edge("TREATED_BY", "lung", "rx", plan.label, plan.date),
+      label.startsWith("Histology")
+        ? edge("HAS_PATHOLOGY", "p", "path", label, excluded.date)
+        : edge("HAS_DIAGNOSIS", "p", "lung", label, excluded.date),
+    ];
+    for (const q of [timeline, graphQuery(edges, extra, excluded.date)]) {
+      expect(q.diagnoses.has(lung)).toBe(true);
+      expect(q.diagnoses.has(small)).toBe(false);
+      expect(conceptOf(q, lung)?.ids).not.toContain(small);
+      const treatment = conceptOf(q, drug);
+      expect(treatment?.plannedFor).toContain(lung);
+      expect(treatment?.diagnoses).not.toContain(small);
+      expect(treatment?.plannedFor).not.toContain(small);
+    }
+    const restored = patientQuery({
+      context: [dx, plan, excluded],
+      focus: {
+        ...dx,
+        date: "2026-01-03",
+        label: "Confirmed small cell lung cancer.",
+      },
+    });
+    expect(restored.diagnoses.has(small)).toBe(true);
+    expect(restored.histology?.observed).toBe(small);
+  },
+);
+
+test("only active evidence of distant spread contributes to the timeline stage", () => {
+  const dx = {
+    ...focus,
+    type: "diagnosis",
+    label: "Confirmed prostate cancer.",
+    date: "2026-01-01",
+  };
+  const imaging = (date: string, label: string, parameters = {}) => ({
+    id: date,
+    date,
+    type: "imaging",
+    label,
+    parameters,
+  });
+  const suspect = imaging("2026-01-02", "Suspected bone metastases.");
+  const confirmed = imaging("2026-01-03", "Bone metastases confirmed.");
+  const retracted = imaging("2026-01-05", "Bone metastases ruled out.");
+  const scan = (...events: ReturnType<typeof imaging>[]) =>
+    patientQuery({
+      context: [dx, ...events.slice(0, -1)],
+      focus: events[events.length - 1],
+    });
+  expect(scan(suspect).stage.states.has("metastatic")).toBe(false);
+  expect(
+    scan(
+      imaging("2026-01-02", "Staging", {
+        diagnosis: "Bone metastases",
+        diagnosis_status: "suspected",
+      }),
+    ).stage.states.has("metastatic"),
+  ).toBe(false);
+  expect(scan(suspect, confirmed).stage.states.has("metastatic")).toBe(true);
+  const after = scan(suspect, confirmed, retracted);
+  expect(after.stage.states.has("metastatic")).toBe(false);
+  expect(conceptOf(after, "mesh:D001859")).toBeUndefined();
+  const independent = imaging("2026-01-04", "Staging", { liver_mets: true });
+  expect(
+    scan(confirmed, independent, retracted).stage.states.has("metastatic"),
+  ).toBe(true);
+  expect(
+    scan(
+      confirmed,
+      independent,
+      retracted,
+      imaging("2026-01-06", "Staging", { liver_mets: false }),
+    ).stage.states.has("metastatic"),
+  ).toBe(false);
+  expect(
+    scan(confirmed, independent, imaging("2026-01-06", "M0 local recurrence"))
+      .stage.states,
+  ).toEqual(new Set(["recurrence"]));
+  expect(
+    scan(suspect, retracted, {
+      ...confirmed,
+      date: "2026-01-07",
+    }).stage.states.has("metastatic"),
+  ).toBe(true);
+});
+
+test.each(["Cabazitaxel", "Radium-223"])(
+  "only a received %s can imply a stage",
+  (name) => {
+    const extra = [{ uuid: "drug", labels: ["Medication"], name }];
+    const allergy = edge("HAS_ALLERGY", "p", "drug", `Allergy to ${name}`);
+    const q = graphQuery([diagnosis, allergy], extra);
+    expect(
+      q.concepts.find((item) => item.name.toLowerCase() === name.toLowerCase())
+        ?.role,
+    ).toBe("finding");
+    expect(q.stage.states.size).toBe(0);
+    for (const given of [
+      edge("PRESCRIBED", "p", "drug", `${name} received.`),
+      edge("TREATED_BY", "dx", "drug", `${name} received.`),
+    ])
+      expect(
+        graphQuery([diagnosis, given], extra).stage.states.has(
+          "castration_resistant",
+        ),
+      ).toBe(true);
+    const dx = {
+      ...focus,
+      type: "diagnosis",
+      label: "Confirmed prostate cancer.",
+    };
+    expect(
+      patientQuery({
+        context: [dx],
+        focus: { ...focus, label: `Allergy to ${name}` },
+      }).stage.states.size,
+    ).toBe(0);
+  },
+);
+
+test("actions stay with their respective treatments on the same day", () => {
+  const dx = {
+    ...focus,
+    type: "diagnosis",
+    label: "Confirmed prostate cancer.",
+    date: "2026-01-01",
+  };
+  const second = { uuid: "enza", labels: ["Medication"], name: "Enzalutamide" };
+  const enza = "mesh:C540278";
+  for (const label of [
+    "The patient has not received olaparib. Enzalutamide started.",
+    "Olaparib cancelled and enzalutamide started.",
+    "No olaparib was given. Enzalutamide started.",
+  ]) {
+    const tx = {
+      ...focus,
+      type: "therapy",
+      label,
+      parameters: { drug: "Olaparib and enzalutamide", indication: "C61" },
+    };
+    const timeline = patientQuery({ context: [dx], focus: tx });
+    const graph = graphQuery(
+      [
+        diagnosis,
+        edge("TREATED_BY", "dx", "rx", label),
+        edge("TREATED_BY", "dx", "enza", label),
+      ],
+      [second],
+    );
+    for (const q of [timeline, graph]) {
+      expect(q.treatments.has(drug)).toBe(false);
+      expect(q.treatments.has(enza)).toBe(true);
+      expect(q.stage.systemicTherapy).toBe(true);
+      expect(q.relations.has(JSON.stringify([enza, "treats", cancer]))).toBe(
+        true,
+      );
+      expect(q.relations.has(JSON.stringify([drug, "treats", cancer]))).toBe(
+        false,
+      );
+    }
+  }
+});
+
+test.each([
+  ["Confirmed breast cancer.", { icd_code: "C34" }],
+  ["Confirmed breast cancer (C34).", {}],
+  ["Breast cancer ruled out.", { icd_code: "C34" }],
+  ["Confirmed C50.", { icd_code: "C34" }],
+])(
+  "inconsistent diagnosis and ICD evidence in %s contributes no concepts",
+  (label, parameters) => {
+    const q = patientQuery({
+      context: [],
+      focus: { ...focus, type: "diagnosis", label, parameters },
+    });
+    expect(q.concepts).toEqual([]);
+    expect(q.diagnoses.size).toBe(0);
+    expect(q.evidence).toContainEqual(
+      expect.objectContaining({
+        detail: "Diagnostic name and ICD code disagree",
+      }),
+    );
+    const compatible = patientQuery({
+      context: [],
+      focus: {
+        ...focus,
+        type: "diagnosis",
+        label: "Confirmed small cell lung cancer.",
+        parameters: { icd_code: "C34" },
+      },
+    });
+    expect(compatible.histology?.observed).toBe("mesh:D055752");
+  },
+);
+
+test("family relationships and accompaniment keep the diagnosis with its subject", () => {
+  const dx = (label: string, parameters = {}) =>
+    patientQuery({
+      context: [],
+      focus: { ...focus, type: "diagnosis", label, parameters },
+    });
+  expect(
+    dx("Grandmother had breast cancer.", { icd_code: "C50" }).diagnoses.size,
+  ).toBe(0);
+  expect(
+    dx(
+      "Mother accompanied the patient for the confirmed breast cancer diagnosis.",
+      { icd_code: "C50" },
+    ).stage.diagnosed,
+  ).toBe(true);
+  const mixed = dx(
+    "Grandfather had prostate cancer; patient referred for staging.",
+    { diagnosis: "Breast cancer", icd_code: "C50" },
+  );
+  expect(mixed.diagnoses.has("mesh:D001943")).toBe(true);
+  expect(mixed.diagnoses.has(cancer)).toBe(false);
+});
+
+test("a plan and its cancellation can name the same indication by label and code", () => {
+  const plan = {
+    ...focus,
+    type: "treatment_decision",
+    id: "plan",
+    date: "2026-01-01",
+    label: "Olaparib planned.",
+    parameters: { drug: "Olaparib", indication: "Breast cancer (C50)" },
+  };
+  const cancel = {
+    ...plan,
+    id: "cancel",
+    date: "2026-01-02",
+    label: "Olaparib cancelled.",
+    parameters: { drug: "Olaparib", indication: "C50" },
+  };
+  const q = patientQuery({
+    context: [
+      { ...focus, type: "diagnosis", date: plan.date, label: "Confirmed C50." },
+      plan,
+    ],
+    focus: cancel,
+  });
+  expect(q.stage.plannedTherapy).toBe(false);
+  expect(conceptOf(q, drug)).toBeUndefined();
+});
+
 test("a diagnosis lets in papers on it and on its narrower forms", () => {
   const query = graphQuery([diagnosis]);
   expect([...query.diagnoses.keys()]).toEqual([cancer, crpc]);

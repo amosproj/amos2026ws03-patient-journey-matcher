@@ -183,6 +183,41 @@ test("a paper on a state the patient is not in falls behind, one on his state ri
   expect(fitting[0].explanation).toContain("the patient's disease state");
 });
 
+test("ruling out the last metastatic site removes the ranking advantage of a metastatic paper", async () => {
+  const dx = {
+    ...focus,
+    date: "2026-01-01",
+    type: "diagnosis",
+    label: "Confirmed prostate cancer.",
+  };
+  const scan = {
+    ...focus,
+    date: "2026-01-02",
+    type: "imaging",
+    label: "Bone metastases confirmed.",
+  };
+  const retraction = {
+    ...scan,
+    date: "2026-01-03",
+    label: "Bone metastases ruled out.",
+  };
+  const papers = [
+    { id: "general", title: "Prostate cancer", evidence: { [cancer]: 1 } },
+    {
+      id: "spread",
+      title: "Metastatic prostate cancer",
+      evidence: { [cancer]: 1 },
+    },
+  ];
+  expect(order(await rank(papers, { context: [dx], focus: scan }))).toEqual([
+    "spread",
+    "general",
+  ]);
+  expect(
+    order(await rank(papers, { context: [dx, scan], focus: retraction })),
+  ).toEqual(["general", "spread"]);
+});
+
 test("treatment papers wait for a treatment decision", async () => {
   // Only a PSA value so far: the patient is still being diagnosed.
   const workup = state(diagnosis, edge("HAS_TUMOR_MARKER", "p", "psa"));
@@ -482,6 +517,32 @@ test.skipIf(!databaseUrl)(
         expect.arrayContaining(["pubmed:32343890", "pubmed:35923949"]),
       );
       expect(known).not.toContain("pubmed:30345884");
+    } finally {
+      await db.drop();
+    }
+  },
+);
+
+test.skipIf(!databaseUrl)(
+  "PostgreSQL ranks a title-only procedure when no candidate annotates it",
+  async () => {
+    const db = await createTestDatabase(databaseUrl as string);
+    try {
+      await ensureGraphSchema(db.pool);
+      await db.pool.query(`INSERT INTO documents (id,source,native_id,content_type,title,canonical_url,retrieved_at)
+      SELECT 'pubmed:' || id,'pubmed',id,'journal_article',title,'https://example.org',now()
+      FROM (VALUES ('1','Outcomes of prostate cancer'), ('2','Outcomes after radical prostatectomy')) AS papers(id,title)`);
+      await db.pool.query(
+        `INSERT INTO graph.documents (document_id, document_changed_at, entities, relations, retry_at, mesh)
+      SELECT id,changed_at,'{}','[]','infinity',$1::jsonb FROM documents`,
+        [JSON.stringify({ [cancer]: MESH_MAJOR })],
+      );
+      const hits = await createGraphMatcher(db.pool).match(
+        state(diagnosis, edge("UNDERWENT", "p", "rp")),
+        { limit: 2 },
+      );
+      expect(order(hits)).toEqual(["pubmed:2", "pubmed:1"]);
+      expect(hits[0].score).toBeGreaterThan(hits[1].score);
     } finally {
       await db.drop();
     }

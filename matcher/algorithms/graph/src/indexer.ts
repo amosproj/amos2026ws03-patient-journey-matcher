@@ -47,8 +47,19 @@ async function fetchPapers(
   const { status, body } = await get(`${EXPORT}?pmids=${pmids.join(",")}`);
   // PubTator3 answers 400 when it knows none of the PMIDs.
   if (status === 400 || status === 404) return papers;
-  if (!body) {
-    throw new Error(`PubTator3 export failed or is too large (HTTP ${status})`);
+  // The downloader omits the body of a successful response that exceeds its byte limit.
+  if (status === 413 || (status >= 200 && status < 300 && !body)) {
+    if (pmids.length === 1) {
+      log(`PubTator3 export too large for PMID ${pmids[0]}`);
+      return papers;
+    }
+    const middle = Math.ceil(pmids.length / 2);
+    const left = await fetchPapers(pmids.slice(0, middle), get, log);
+    const right = await fetchPapers(pmids.slice(middle), get, log);
+    return new Map([...left, ...right]);
+  }
+  if (status < 200 || status >= 300 || !body) {
+    throw new Error(`PubTator3 export failed (HTTP ${status})`);
   }
   const json: unknown = JSON.parse(new TextDecoder().decode(body));
   for (const doc of pubTatorDocuments(json)) {
@@ -147,6 +158,11 @@ export function createGraphIndexer(db: Queryable, get: Get): Indexer {
               await indexPapers(documents.slice(i, i + PAPERS_PER_REQUEST));
             }
           },
+        );
+        // Include removed papers as well as new or changed annotations. Readers can keep
+        // using the previous list until the complete refresh becomes visible.
+        await db.query(
+          "REFRESH MATERIALIZED VIEW CONCURRENTLY graph.corpus_terms",
         );
       } finally {
         clearInterval(progress);

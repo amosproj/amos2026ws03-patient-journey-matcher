@@ -14,6 +14,19 @@ export const MESH_MAJOR = 4;
 export const MESH_MINOR = 8;
 export const MESH_SUBSTANCE = 16;
 
+export const CORPUS_TERMS = `
+    SELECT e.key AS id, e.value->>'type' AS type, min(alias) AS name,
+           array_agg(DISTINCT alias ORDER BY alias) AS names
+    FROM graph.documents AS g
+    CROSS JOIN LATERAL jsonb_each(g.entities) AS e
+    CROSS JOIN LATERAL jsonb_array_elements_text(
+      coalesce(e.value->'names', jsonb_build_array(e.value->>'name'))
+    ) AS mention(alias)
+    WHERE e.value->>'type' IN ('disease', 'chemical')
+      AND e.key ~ '^mesh:[CD][0-9]+$' AND length(alias) BETWEEN 4 AND 160
+    GROUP BY e.key, e.value->>'type'
+  `;
+
 const SCHEMA = `
   -- Serialize schema creation when two index jobs start together.
   SELECT pg_advisory_xact_lock(hashtext('graph.schema'));
@@ -49,6 +62,8 @@ const SCHEMA = `
   -- Hide due retries from the change detector, but keep any last good data searchable.
   CREATE OR REPLACE VIEW graph.indexed_documents AS
     SELECT document_id, document_changed_at FROM graph.documents WHERE retry_at > now();
+  CREATE MATERIALIZED VIEW IF NOT EXISTS graph.corpus_terms AS ${CORPUS_TERMS};
+  CREATE UNIQUE INDEX IF NOT EXISTS graph_corpus_terms_id_type ON graph.corpus_terms (id, type);
 `;
 
 /** Creates the graph index on its first run. */

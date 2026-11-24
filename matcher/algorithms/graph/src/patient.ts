@@ -8,12 +8,14 @@ import {
   type Dictionary,
   defaultTerminology,
   resolve,
+  type Terminology,
 } from "./resolve.ts";
 import {
+  diseaseMentions,
+  graphTreatmentStatus,
   patientText,
   statusFromAttribute,
   statusFromText,
-  treatmentStatus,
 } from "./status.ts";
 import { normalizeName, withoutLeadingCode } from "./text.ts";
 import {
@@ -162,8 +164,9 @@ function statusFromNode(
 export function normalizePatientGraph(
   input: unknown,
   {
-    dictionaries = defaultTerminology.dictionaries,
-  }: { dictionaries?: readonly Dictionary[] } = {},
+    terminology = defaultTerminology,
+    dictionaries = terminology.dictionaries,
+  }: { terminology?: Terminology; dictionaries?: readonly Dictionary[] } = {},
 ): NormalizedGraph {
   const graph = graphSchema.parse(input);
   const skipped: Skipped[] = [];
@@ -228,9 +231,7 @@ export function normalizePatientGraph(
 
   const relations: NormalizedRelation[] = [];
   const facts: PatientFact[] = [];
-  // Entities confirmed by an edge between two of their own nodes: the earliest day, and the
-  // edge type, which becomes the cue.
-  const confirmed = new Map<string, { from: string; cue: string }>();
+  const confirmations: { entity: string; from: string; cue: string }[] = [];
 
   for (const edge of graphEdges) {
     const skip = (reason: string) =>
@@ -280,16 +281,38 @@ export function normalizePatientGraph(
         continue;
       }
     }
+    const parent = aboutKey ? concepts.get(aboutKey) : undefined;
+    const mentions =
+      text && (parent?.type === "disease" || edge.name === "HAS_PATHOLOGY")
+        ? diseaseMentions(text, terminology)
+        : [];
     const cue =
-      text && aboutKey ? statusFromText(text, namesOf(aboutKey)) : undefined;
+      text && aboutKey
+        ? statusFromText(
+            text,
+            namesOf(aboutKey),
+            mentions
+              .filter((hit) => hit.concept.id !== aboutKey)
+              .map((hit) => hit.mention),
+          )
+        : undefined;
     const treatment =
       mapping.kind === "relation"
         ? mapping.predicate === "treats"
         : mapping.fact === "receives";
-    const course = treatment ? treatmentStatus(text ?? "") : undefined;
+    const intervention =
+      mapping.kind === "relation" && !mapping.flip ? source : target;
+    const course =
+      treatment && text
+        ? graphTreatmentStatus(
+            text,
+            namesOf(keyOf.get(intervention.uuid) ?? ""),
+            terminology,
+          )
+        : undefined;
     const statement = {
       status:
-        (course === "negated" || cue?.status === "negated"
+        (course === "negated" || (!course && cue?.status === "negated")
           ? "negated"
           : undefined) ??
         (mapping.kind === "fact" ? mapping.status : undefined) ??
@@ -308,6 +331,68 @@ export function normalizePatientGraph(
       invalidAt,
       origin: { source: "patient" as const, ref: edge.uuid, type: edge.name },
     };
+
+    // A pathology statement about a named disease is evidence at its own date, including
+    // when the result and the diagnosis normalize to the same entity.
+    const pathology =
+      edge.name === "HAS_PATHOLOGY" ||
+      (mapping.kind === "relation" &&
+        mapping.predicate === "indicates" &&
+        (mapping.confirms ||
+          [
+            "PathologyResult",
+            "LabTest",
+            "ImagingResult",
+            "TumorMarker",
+          ].includes(mapping.flip ? targetLabel : sourceLabel)));
+    const diagnosisEdge =
+      mapping.kind === "fact" && mapping.conditionRole === "diagnosis";
+    let narrower = false;
+    if (diagnosisEdge || pathology) {
+      for (const { concept, mention, code, status } of mentions) {
+        if (!status) continue;
+        const subtype = parent?.narrower?.includes(concept.id);
+        const namedInResult =
+          pathology &&
+          (concept.id === aboutKey ||
+            (mapping.kind === "fact" && parent?.type !== "disease"));
+        if (
+          !subtype &&
+          !(namedInResult && (status === "asserted" || status === "negated"))
+        )
+          continue;
+        narrower ||= Boolean(subtype);
+        if (!entities.has(concept.id)) {
+          concepts.set(concept.id, concept);
+          entities.set(concept.id, {
+            key: concept.id,
+            id: concept.id,
+            type: concept.type,
+            name: concept.name,
+            names: [mention],
+            labels: ["Diagnosis"],
+            sources: [about.uuid],
+            resolvedBy:
+              resolve({ names: [mention], icdCode: code }, dictionaries)
+                ?.resolvedBy ?? null,
+          });
+        }
+        facts.push({
+          ...statement,
+          status,
+          kind: "has_condition",
+          conditionRole: "diagnosis",
+          entity: concept.id,
+        });
+      }
+      // A cue on a narrower phrase does not restate the broader diagnosis.
+      if (
+        diagnosisEdge &&
+        narrower &&
+        !mentions.some((hit) => hit.concept.id === aboutKey)
+      )
+        continue;
+    }
 
     if (mapping.kind === "fact") {
       const other =
@@ -343,10 +428,20 @@ export function normalizePatientGraph(
         validAt !== undefined &&
         statement.status !== "negated" &&
         statement.status !== "suspected";
-      if (confirms) {
-        const known = confirmed.get(first);
-        if (known === undefined || validAt < known.from)
-          confirmed.set(first, { from: validAt, cue: edge.name });
+      if (
+        confirms &&
+        !mentions.some((hit) => hit.concept.id === first && hit.status)
+      ) {
+        if (invalidAt)
+          facts.push({
+            ...statement,
+            kind: "has_condition",
+            conditionRole: "diagnosis",
+            entity: first,
+            status: "asserted",
+          });
+        else
+          confirmations.push({ entity: first, from: validAt, cue: edge.name });
       }
       skip(
         `both ends are the same entity${confirms ? `; confirms it from ${validAt}` : ""}`,
@@ -366,14 +461,33 @@ export function normalizePatientGraph(
 
   // A pathology result of the diagnosis itself confirms it: from that day, a diagnosis that
   // nothing else gave a status is asserted. Cues and attributes are never overridden.
+  const revisions = facts.filter(
+    (fact) =>
+      fact.conditionRole === "diagnosis" &&
+      (fact.status === "negated" || fact.status === "suspected"),
+  );
+  confirmations.sort((a, b) => b.from.localeCompare(a.from));
   for (const fact of facts) {
-    if (fact.conditionRole !== "diagnosis" || fact.status !== "unknown")
-      continue;
-    const by = confirmed.get(fact.entity);
+    const date = fact.validAt;
     if (
-      by !== undefined &&
-      fact.validAt !== undefined &&
-      fact.validAt >= by.from
+      !date ||
+      fact.conditionRole !== "diagnosis" ||
+      fact.status !== "unknown"
+    )
+      continue;
+    const by = confirmations.find(
+      (item) => item.entity === fact.entity && item.from <= date,
+    );
+    if (
+      by &&
+      !revisions.some(
+        (item) =>
+          item.entity === fact.entity &&
+          item.validAt &&
+          item.validAt >= by.from &&
+          item.validAt <= date &&
+          (!item.invalidAt || date < item.invalidAt),
+      )
     ) {
       fact.status = "asserted";
       fact.cue = by.cue;

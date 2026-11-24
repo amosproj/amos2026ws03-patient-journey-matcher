@@ -5,6 +5,7 @@ import {
   testDatabaseUrl,
 } from "@matcher/db/testing";
 import { beforeAll, describe, expect, test, vi } from "vitest";
+import { loadCorpusTerminology } from "./corpus-terminology.ts";
 import { createGraphIndexer } from "./indexer.ts";
 import {
   ensureGraphSchema,
@@ -155,8 +156,87 @@ test("asks PubTator3 for at most 50 papers at a time and stores each answer", as
       ([url]) => new URL(url).searchParams.get("pmids")?.split(",").length,
     ),
   ).toEqual([50, 50, 20]);
-  // The schema, the changed documents, three upserts, no more changed documents.
-  expect(db.query).toHaveBeenCalledTimes(6);
+  const upserts = db.query.mock.calls.filter(([sql]) =>
+    sql.startsWith("INSERT INTO graph.documents"),
+  );
+  expect(upserts.map(([, values]) => JSON.parse(values[0]).length)).toEqual([
+    50, 50, 20,
+  ]);
+  expect(db.query).toHaveBeenLastCalledWith(
+    "REFRESH MATERIALIZED VIEW CONCURRENTLY graph.corpus_terms",
+  );
+});
+
+test.each([200, 413])(
+  "isolates a single oversized PMID (HTTP %i) and continues indexing",
+  async (status) => {
+    const papers = Array.from({ length: 51 }, (_, i) => ({
+      ...documents[0],
+      id: `pubmed:${i + 1}`,
+      native_id: String(i + 1),
+    }));
+    const db = batch(papers);
+    const get = vi.fn(async (url: string) => {
+      const ids = (new URL(url).searchParams.get("pmids") ?? "").split(",");
+      if (ids.includes("17")) return { status };
+      return answer({
+        PubTator3: ids.map((id) => ({ ...exportDocument, id, pmid: id })),
+      });
+    });
+    await createGraphIndexer(db, get).index(() => {});
+    const indexed = db.query.mock.calls.flatMap(([sql, values]) =>
+      sql.startsWith("INSERT INTO graph.documents")
+        ? JSON.parse(values[0])
+        : [],
+    );
+    expect(indexed).toHaveLength(51);
+    expect(indexed.filter((row) => row.retry).map((row) => row.id)).toEqual([
+      "pubmed:17",
+    ]);
+    expect(indexed.at(-1)).toMatchObject({
+      id: "pubmed:51",
+      entities: { "mesh:D011471": { inTitle: true } },
+    });
+  },
+);
+
+test("oversized combined exports retain every paper that fits individually", async () => {
+  const db = batch();
+  const log = vi.fn();
+  await createGraphIndexer(db, async (url) => {
+    const ids = (new URL(url).searchParams.get("pmids") ?? "").split(",");
+    if (ids.length > 1) return { status: 200 };
+    return answer({
+      PubTator3: [{ ...exportDocument, id: ids[0], pmid: ids[0] }],
+    });
+  }).index(log);
+  const rows = JSON.parse(db.query.mock.calls[2][1][0]);
+  for (const row of rows.slice(0, 2)) {
+    expect(row.retry).toBe(false);
+    expect(row.entities).toHaveProperty("mesh:D011471");
+  }
+});
+
+test("independent matcher processes read the prepared corpus vocabulary", async () => {
+  const rows = [
+    {
+      id: "mesh:D008175",
+      type: "disease",
+      name: "Fixture tumour alias",
+      names: ["Fixture tumour alias"],
+    },
+  ];
+  for (let i = 0; i < 2; i++) {
+    const db = { query: vi.fn().mockResolvedValue({ rows }) };
+    const terms = await loadCorpusTerminology(db);
+    expect(terms.findDiseases("Fixture tumour alias")[0]?.concept.id).toBe(
+      "mesh:D008175",
+    );
+    expect(await loadCorpusTerminology(db)).toBe(terms);
+    expect(db.query.mock.calls).toEqual([
+      ["SELECT * FROM graph.corpus_terms ORDER BY id, type"],
+    ]);
+  }
 });
 
 test.each([
@@ -256,6 +336,45 @@ describe.skipIf(!databaseUrl)("graph annotation retries in PostgreSQL", () => {
     );
     expect(updated.rows[0].done).toBe(true);
     expect(updated.rows[0].entities).toHaveProperty("mesh:D011471");
+  });
+
+  test("the persisted vocabulary follows changed, ambiguous and deleted annotations", async () => {
+    const db = database.pool;
+    const ids = ["9001", "9002"];
+    await ensureGraphSchema(db);
+    const alias = "FixtureAnnotationSpelling";
+    const concepts = ["mesh:D008175", "mesh:D001943"];
+    for (const [i, id] of ids.entries()) {
+      await db.query(
+        "INSERT INTO documents(id,source,native_id,content_type,title,canonical_url,retrieved_at) VALUES ($1,'pubmed',$2,'journal_article','Test','https://example.org',now())",
+        [`pubmed:${id}`, id],
+      );
+      await db.query(
+        "INSERT INTO graph.documents(document_id, document_changed_at, entities, relations, retry_at, mesh) SELECT id,date_trunc('milliseconds',changed_at),$2::jsonb,'[]','infinity','{}' FROM documents WHERE id=$1",
+        [
+          `pubmed:${id}`,
+          JSON.stringify({ [concepts[i]]: { type: "disease", name: alias } }),
+        ],
+      );
+    }
+    const index = () =>
+      createGraphIndexer(db, async () => answer({ PubTator3: [] })).index(
+        () => {},
+      );
+    const lookup = async () =>
+      (await loadCorpusTerminology({ query: db.query.bind(db) }))
+        .findDiseases(alias)
+        .map((hit) => hit.concept.id);
+    await index();
+    expect(await lookup()).toEqual([]);
+    await db.query("DELETE FROM documents WHERE id = 'pubmed:9002'");
+    await index();
+    expect(await lookup()).toEqual([concepts[0]]);
+    await db.query(
+      "UPDATE graph.documents SET entities = '{}' WHERE document_id = 'pubmed:9001'",
+    );
+    await index();
+    expect(await lookup()).toEqual([]);
   });
 
   // `DELETE FROM transcripts` is the documented way to have the audio read again.
