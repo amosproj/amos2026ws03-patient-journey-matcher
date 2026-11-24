@@ -26,7 +26,7 @@ The documented Patient-5 run from #53 processed 35 documents and produced **34 n
 
 Working example: a patient has diagnosis A treated with medication B. A paper about B for A should be distinguished from a paper about B for C. Mentioning the same concepts does not necessarily establish the same relationship.
 
-This proposal predates the [graph matcher](../Documentation/design/graph-normalization.md). Its ranking weights and research focus heuristic still need evaluation.
+This proposal predates the [graph matcher](../Documentation/design/graph-normalization.md). Its ranking was measured afterwards: [results](#7-results).
 
 | Question | Explanation | Our decision |
 |---|---|---|
@@ -120,3 +120,29 @@ Reconsider a graph database if future requirements involve frequent deep travers
   - Retrieve available annotations for crawled PubMed papers by PMID and convert them into our resource-side triples, retaining the resource reference and available supporting text. 
   - Map patient concepts and relation types to compatible identifiers and labels, then compare our diagnosis-anchored query patterns with these triples.
 - **Remaining work:** Validate relation coverage and extraction quality on our papers. Patient-context matching, ranking and identifying whether a relationship is centrally investigated remain our responsibility. Other resource types require a separate extraction approach.
+
+## 7. Results
+
+Measured for #69 on 2026-11-24 with the [matching evaluation](matching-evaluation.md): the 129 points of `keyword-llm-judgments.json`, rules and weights chosen on the 67 sample points (Patient-1, 4, 5, 8, 10), the 62 holdout points (Patient-2, 3, 6, 7, 9) run once at the end. The corpus was a slice of 29,720 documents of the VM: every prostate cancer paper, every graded source, papers naming a drug or gene of the patients, and 2 % of all other PubMed papers. Every source in a first 10 has a grade: LLM graders who did not know which ranking found it graded the missing ones, and graded again the sources that only the earlier grades covered, so that all rankings share one set of graders ([`graph-llm-judgments.json`](../matcher/evaluation/graph-llm-judgments.json)).
+
+| Ranking | nDCG@10 | sample | holdout | precision@5 | grade 0 in the first 10 |
+|---|---|---|---|---|---|
+| Keyword | 0.554 | 0.575 | 0.531 | 0.68 | 9 % |
+| Graph before #69's rework | 0.145 | 0.171 | 0.117 | 0.16 | 59 % |
+| Graph, patient graph | 0.448 | 0.484 | 0.409 | 0.54 | 6 % |
+| Graph, timeline | 0.532 | 0.564 | 0.498 | 0.65 | 5 % |
+
+What made the difference, largest first:
+
+- **MeSH headings.** PubTator3 annotates no procedure and not leuprolide or goserelin; MeSH covers them and the disease states. A focus concept as a MeSH major topic is the strongest sign of a relevant paper in the grades.
+- **Concepts weighted by rarity instead of a fixed bonus.** Before, any drug linked to prostate cancer in the title won, so 92 of 129 points got one identical first 10 of docetaxel trials. Now 79 of 128 first 10s differ, and ties fell from 99.7 % to 26 % of the hits.
+- **The current therapy and the news of the day.** A switch to enzalutamide or cabazitaxel puts its papers first, a restated earlier surgery does not.
+- **Disease state and phase.** Papers on a state the patient is not in, on treatment before any treatment decision, on another cancer, lab research or the other sex rank lower, by how strongly the grades rate them down.
+- **Publication type**, +0.04 on the sample points.
+
+Limits:
+
+- **The patient graphs** score lower than the timelines because the synthetic graphs name the patient's pathway in early diagnosis texts and stop before the timeline ends ([limitations](../Documentation/design/graph-normalization.md#known-limitations)).
+- **The grades come from LLMs**, not clinicians. They agree within one grade with the earlier LLM grades on 97 to 100 % of the pairs graded twice, but grade stricter. On the earlier grades, keyword scores 0.626, the patient graph 0.461 and the timeline 0.539.
+- **The disease-state rules and the diagnosis inference** are written for prostate cancer.
+

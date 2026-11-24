@@ -1,6 +1,6 @@
 # Graph normalization
 
-The first part of the graph approach. Graph matching compares the patient graph with the PubTator3 annotations of a paper: the entities that PubTator3 found in the title and abstract, and the relations between them ([research](../../research/graph-based-matching.md)). The two inputs say the same things in different words, IDs and relation types:
+The first part of the graph approach. Graph matching compares the patient graph with the PubTator3 annotations of a paper: the entities that PubTator3 found in the title and abstract, and the relations between them; and with the paper's PubMed MeSH headings ([research](../../research/graph-based-matching.md)). The two inputs say the same things in different words, IDs and relation types:
 
 | | Patient graph | PubTator3 annotations of a paper |
 |---|---|---|
@@ -15,7 +15,7 @@ patient:  mesh:C531550 (olaparib)  treats  mesh:D011471 (prostate cancer)   asse
 paper:    mesh:C531550 (olaparib)  treats  mesh:D011471 (prostate cancer)   score 0.998
 ```
 
-It gives every name a shared ID, maps every edge and relation type to one predicate with one direction, and gives each patient statement a status. It runs offline and sends nothing about the patient out. During indexing, only PubMed IDs go to PubTator3. The index keeps concept IDs, names, title mentions and relations for papers under any licence. Patient queries read this index locally. Code: [`matcher/algorithms/graph/`](../../matcher/algorithms/graph/src/). What the patient graph holds and lacks: [input findings](../../research/graph-based-matching.md#input-format-and-findings).
+It gives every name a shared ID, maps every edge and relation type to one predicate with one direction, and gives each patient statement a status. It runs offline and sends nothing about the patient out. During indexing, only PubMed IDs go to PubTator3. The index keeps concept IDs, names, title mentions, relations and the MeSH headings of `documents.subjects` for papers under any licence. Patient queries read this index locally. Code: [`matcher/algorithms/graph/`](../../matcher/algorithms/graph/src/). What the patient graph holds and lacks: [input findings](../../research/graph-based-matching.md#input-format-and-findings).
 
 ## Shared representation
 
@@ -76,8 +76,15 @@ Each input has one table that maps a relation by its type and the types of both 
 - **Outcomes are not diseases:** with an outcome from [`outcomes.json`](../../matcher/algorithms/graph/data/outcomes.json), `olaparib treats Death` becomes `olaparib improves_outcome Death`, so it never matches a patient's disease.
 - **Left out:** `Provider`, `Appointment`, `Referral` and `VitalSigns` nodes with their edges, the PubTator3 types `Species` and `CellLine`, variants without a dbSNP number or HGVS name (`C>G` alone names no one variant), edges whose two ends became one entity, and PubTator3 relations below a minimum score (0 by default; the value is still to be chosen). Each is listed with the reason. A node or edge that cannot be read is left out too and does not reject the graph.
 - **Duplicates:** relations with the same triple in one paper become one, with the highest score.
-- Papers need a shared, non-negated diagnosis. Each patient edge keeps its role as a diagnosis, symptom or allergy even when the nodes share a concept ID. A paper with the diagnosis alone is a partial match. A directed treatment relation to that diagnosis scores higher. A drug linked only to another disease adds nothing.
-- A treatment recorded for the patient adds weight when the paper links it to the diagnosis. An explicit patient edge with the same two IDs, predicate and direction adds further weight. Separate diagnosis and prescription facts leave the treatment indication open. Findings and other diagnoses add context when the paper links them to the matched diagnosis.
+## Ranking
+
+A paper is a candidate when its PubTator3 annotations or MeSH headings name one of the patient's non-negated diagnoses or a narrower form of it, such as castration-resistant prostate cancer ([`matcher.ts`](../../matcher/algorithms/graph/src/matcher.ts)).
+
+- **Concepts:** the patient's statements active on `as_of` become weighted concepts: diagnoses, disease states, drugs, procedures, tests, genes, findings and symptoms. A concept counts with the IDs a paper may carry for it: `also`, `broader` and `narrower` in [`concepts.json`](../../matcher/algorithms/graph/data/concepts.json), and MeSH qualifiers such as Prostatic Neoplasms/surgery. The focus day weighs the news of the day, the current therapy (the one started last, also when a document restates it) and, at half strength, measurements such as PSA.
+- **Score:** each concept counts once, with its strongest evidence on the paper (PubTator3 title or abstract, MeSH major topic, other heading or substance), times its inverse frequency among the candidates. A rare concept tells more than the diagnosis that every candidate shares.
+- **Rerank:** the best candidates go up when PubTator3 links the patient's drug to his diagnosis, when the diagnosis is their main topic, and when they are about his disease state. They go down, by how strongly they contradict him, when they are about another state ([`stages.ts`](../../matcher/algorithms/graph/src/stages.ts), [`stages.json`](../../matcher/algorithms/graph/data/stages.json)), about treatment before any treatment decision, lab research, about the other sex, another cancer ([`neoplasms.json`](../../matcher/algorithms/graph/data/neoplasms.json)) or a treatment option he did not get. The publication type counts a little: guidelines and reviews up, case reports down.
+
+The constants are `SETTINGS` in `matcher.ts`; the debug UI can override them (`tuning`). How they were set and what they achieve: [results](../../research/graph-based-matching.md#7-results).
 
 ## Status
 
@@ -99,18 +106,19 @@ pnpm --dir matcher --filter @matcher/graph normalize matcher/algorithms/graph/fi
 
 It prints each entity with its ID and the tier that found it, the patient facts, the relations and what was left out. The Index › Graph screen of the [debug UI](../../debug/README.md) shows the same, with the sentence and cue behind each status. The papers are trimmed PubTator3 exports ([test fixtures](../../matcher/algorithms/graph/fixtures/pubtator/README.md)).
 
-After crawling PubMed papers, run `make index APPROACHES=graph`. In the debug UI, select **Matcher → Graph** and choose Patient-5. Each result explains its strongest match. On a timeline, a diagnosis, pathology or progression event can supply a mapped diagnosis name or ICD code in its label. Other events can supply `parameters.diagnosis` or `parameters.icd_code`. Later events can confirm or rule out a known diagnosis. Family history is excluded. Timeline results use diagnoses alone.
+After crawling PubMed papers, run `make index APPROACHES=graph`. In the debug UI, select **Matcher → Graph** and choose Patient-5. Each result explains its strongest match. On a timeline, a diagnosis, pathology or progression event can supply a mapped diagnosis name or ICD code in its label. Other events can supply `parameters.diagnosis` or `parameters.icd_code`. Later events can confirm or rule out a known diagnosis. Family history is excluded. The other concepts come from the labels and text parameters of the events, and from the parameters in [`timeline.json`](../../matcher/algorithms/graph/data/timeline.json). A tumor board plans the therapies it names; the latest event that gives one sets the current therapy.
 
 An entity without an ID can never match a paper. Close the gap with a row in `concepts.json`, not with a looser match; [`data.test.ts`](../../matcher/algorithms/graph/src/data.test.ts) checks the data files against each other.
 
 ## Known limitations
 
 - **PubTator3's `treat` is a negative correlation:** the chemical lowers the disease. A `treats` triple says that a paper links the drug and the disease, not that the drug works. `causes` can be a side effect, such as olaparib causing anemia.
-- **PubTator3 has no negation, no evidence sentence and no date.** A relation covers the whole abstract. The matcher gives extra weight when PubTator3 finds both ends in the title. This approximates research focus and cannot distinguish a comparison, a background mention or a negative study result with certainty. Ranking weights have not been validated against relevance judgments.
-- **Gaps in PubTator3:** it does not annotate leuprorelin, leuprolide, goserelin or the drug class PARP inhibitor, all named by synthetic patients, so their facts never meet a paper triple. It often annotates "PSA" as the gene NPEPPS instead of KLK3, and it gives abiraterone two IDs that do not match each other.
+- **PubTator3 has no negation, no evidence sentence and no date.** A relation covers the whole abstract. The matcher gives extra weight when PubTator3 finds both ends in the title. This approximates research focus and cannot distinguish a comparison, a background mention or a negative study result with certainty.
+- **Gaps in PubTator3:** it does not annotate leuprorelin, leuprolide, goserelin, the drug class PARP inhibitor or any procedure, so only the MeSH headings find them. It often annotates "PSA" as the gene NPEPPS instead of KLK3, and it gives abiraterone two IDs that do not match each other.
 - **`TREATED_BY` is missing from some patient graphs**, Patient-5 among them. A paper can still match a treatment for the diagnosis. The matcher does not extract additional indications from free text.
-- **Curated names** cover the main concepts of the 20 synthetic patients. A name that the graph's LLM writes differently has no ID until it is added. Broader and narrower concepts (castration-resistant prostate cancer under prostate cancer) are not expanded.
+- **Curated names** cover the main concepts of the 20 synthetic patients. A name that the graph's LLM writes differently has no ID until it is added; the matcher then uses the curated names the name contains (`Strahlentherapie der Prostataloge`: radiotherapy). Broader and narrower concepts are expanded only where `concepts.json` lists them.
 - **Status comes from rules** over sentences that an LLM has already rewritten: a hedge it dropped is lost. There is no status for past conditions ("history of", "Z. n.") yet.
 - **Worked out on Patient-5 and three papers.** Types absent from them, such as `Bind`, are mapped from their documented meaning, not from data.
-- **A journey often names no diagnosis.** Without a patient graph the matcher reads only the event fields named above. 6 of the 20 synthetic journeys name their cancer in none of them and get no results; others name it late.
-- **Out of scope:** PubMed MeSH headings and the concepts of Zenodo, arXiv, podcasts and YouTube. Graph matching covers PubMed papers with usable PubTator3 annotations. Missing or malformed records are checked again after two days. Earlier annotations stay searchable during retries. A failed request is retried on the next index run. The keyword approach also covers other sources.
+- **A journey often names no diagnosis.** Without a patient graph the matcher infers it: a Gleason grade, a pT stage, a prostatectomy, a drug given only for prostate cancer or a tumor board decision on a therapy assert it; a PSA from 4 ng/ml at referral or a PI-RADS from 3 make it suspected. These rules are written for prostate cancer.
+- **The synthetic patient graphs name the pathway early and lag the timeline:** Patient-5's diagnosis text names the later recurrence a month before the surgery, Patient-8's names enzalutamide years before he gets it, and Patient-10's graph ends two months before his palliative care. The matcher reads a graph as it is.
+- **Out of scope:** the concepts of Zenodo, arXiv, podcasts and YouTube. Graph matching covers PubMed papers with PubTator3 annotations or MeSH headings. Missing or malformed records are checked again after two days. Earlier annotations stay searchable during retries. A failed request is retried on the next index run. The keyword approach also covers other sources.

@@ -98,6 +98,13 @@ The first 58 judgments (5 to 7 per point) were graded from the PubMed titles and
 
 **LLM grades for the keyword approach (#58)** are in a file of their own, [`keyword-llm-judgments.json`](../matcher/evaluation/keyword-llm-judgments.json): 9,028 grades for 129 points, only for sources that the keyword ranking found. They are not part of `judgments.json`; see [keyword tuning](keyword-tuning.md#checking-a-change).
 
+**LLM grades for the graph approach (#69)** are in [`graph-llm-judgments.json`](../matcher/evaluation/graph-llm-judgments.json): 5,110 grades for the same points, for the sources that keyword or a graph ranking put in its first 10 on a slice of the VM corpus. 697 of them grade sources that `keyword-llm-judgments.json` grades too; these graders are stricter. Give the runner both files, this one first, to compare rankings on one set of graders; the first file that grades a source for a point counts:
+
+```sh
+cd matcher
+pnpm --filter @matcher/evaluation evaluate ../runs/graph evaluation/graph-llm-judgments.json evaluation/keyword-llm-judgments.json
+```
+
 ## Open questions
 
 1. The points use `timeline.json`. A graph-based approach needs the same points cut at `as_of` in the graph format; the `graph` input already takes `as_of`.

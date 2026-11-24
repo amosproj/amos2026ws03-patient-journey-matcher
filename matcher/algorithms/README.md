@@ -17,7 +17,7 @@ The keyword approach as the example:
 
 Other files hold what only this approach needs, e.g. keyword's word lists in `data/` and the script that builds one in `scripts/`.
 
-The [graph approach](../../Documentation/design/graph-normalization.md) indexes PubTator3 annotations and compares them with the dated relationships in a patient graph.
+The [graph approach](../../Documentation/design/graph-normalization.md) indexes PubTator3 annotations and PubMed MeSH headings and ranks papers by the concepts and disease state of a patient graph or timeline at a point in time.
 
 ## Contracts
 
