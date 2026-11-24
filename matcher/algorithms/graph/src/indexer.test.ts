@@ -6,7 +6,12 @@ import {
 } from "@matcher/db/testing";
 import { beforeAll, describe, expect, test, vi } from "vitest";
 import { createGraphIndexer } from "./indexer.ts";
-import { ensureGraphSchema } from "./schema.ts";
+import {
+  ensureGraphSchema,
+  MESH_MAJOR,
+  MESH_MINOR,
+  MESH_SUBSTANCE,
+} from "./schema.ts";
 
 const exportDocument = JSON.parse(
   readFileSync(
@@ -251,6 +256,55 @@ describe.skipIf(!databaseUrl)("graph annotation retries in PostgreSQL", () => {
     );
     expect(updated.rows[0].done).toBe(true);
     expect(updated.rows[0].entities).toHaveProperty("mesh:D011471");
+  });
+
+  test("stores the MeSH headings with their flags, also for rows indexed before the column", async () => {
+    const db = database.pool;
+    const subjects = [
+      {
+        scheme: "mesh",
+        id: "D011471",
+        label: "Prostatic Neoplasms",
+        major: true,
+      },
+      {
+        scheme: "mesh",
+        id: "D011471Q000601",
+        label: "Prostatic Neoplasms/surgery",
+        major: true,
+      },
+      { scheme: "mesh", id: "D011468", label: "Prostatectomy", major: false },
+      { scheme: "mesh", id: "C540278", label: "enzalutamide", major: null },
+      { scheme: "keyword", id: null, label: "robotic surgery", major: null },
+    ];
+    await db.query(
+      `INSERT INTO documents (id, source, native_id, content_type, title, canonical_url, retrieved_at, subjects)
+       SELECT 'pubmed:' || n, 'pubmed', n::text, 'journal_article', 'Title', 'https://example.org', now(), $1::jsonb
+       FROM generate_series(10, 11) AS n`,
+      [JSON.stringify(subjects)],
+    );
+    await ensureGraphSchema(db);
+    // pubmed:11 was indexed before the mesh column existed.
+    await db.query(`
+      INSERT INTO graph.documents (document_id, document_changed_at, entities, relations, retry_at)
+      SELECT id, date_trunc('milliseconds', changed_at), '{}', '[]', 'infinity' FROM documents
+      WHERE id = 'pubmed:11'`);
+    await createGraphIndexer(db, async () => answer({ PubTator3: [] })).index(
+      () => {},
+    );
+    const { rows } = await db.query(
+      "SELECT document_id, mesh FROM graph.documents WHERE document_id IN ('pubmed:10', 'pubmed:11') ORDER BY document_id",
+    );
+    const mesh = {
+      "mesh:D011471": MESH_MAJOR,
+      "mesh:D011471Q000601": MESH_MAJOR,
+      "mesh:D011468": MESH_MINOR,
+      "mesh:C540278": MESH_SUBSTANCE,
+    };
+    expect(rows).toEqual([
+      { document_id: "pubmed:10", mesh },
+      { document_id: "pubmed:11", mesh },
+    ]);
   });
 
   // `DELETE FROM transcripts` is the documented way to have the audio read again.

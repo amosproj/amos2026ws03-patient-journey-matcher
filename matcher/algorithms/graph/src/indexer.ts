@@ -112,18 +112,21 @@ export function createGraphIndexer(db: Queryable, get: Get): Indexer {
         // Replace each paper's entities and relations together; a paper to ask for again keeps
         // its last ones. A document that changed during the export is not written and comes
         // back, one deleted meanwhile stays deleted, and a finished row of the same version stays.
+        // The MeSH headings come from the stored document, so they never wait for PubTator3.
         await db.query(
           `INSERT INTO graph.documents AS previous
-          (document_id, document_changed_at, entities, relations, retry_at)
+          (document_id, document_changed_at, entities, relations, retry_at, mesh)
           SELECT d.id, r.changed, r.entities, r.relations,
-                 CASE WHEN r.retry THEN now() + interval '2 days' ELSE 'infinity'::timestamptz END
+                 CASE WHEN r.retry THEN now() + interval '2 days' ELSE 'infinity'::timestamptz END,
+                 graph.mesh_flags(d.subjects)
           FROM jsonb_to_recordset($1::jsonb) AS r(id text, changed timestamptz, entities jsonb, relations jsonb, retry boolean)
           JOIN public.documents d ON d.id = r.id AND date_trunc('milliseconds', d.changed_at) <= r.changed
           ON CONFLICT (document_id) DO UPDATE SET
             document_changed_at = EXCLUDED.document_changed_at,
             retry_at = EXCLUDED.retry_at,
             entities = CASE WHEN EXCLUDED.retry_at = 'infinity' THEN EXCLUDED.entities ELSE previous.entities END,
-            relations = CASE WHEN EXCLUDED.retry_at = 'infinity' THEN EXCLUDED.relations ELSE previous.relations END
+            relations = CASE WHEN EXCLUDED.retry_at = 'infinity' THEN EXCLUDED.relations ELSE previous.relations END,
+            mesh = EXCLUDED.mesh
           WHERE previous.document_changed_at <> EXCLUDED.document_changed_at
              OR previous.retry_at <> 'infinity'::timestamptz`,
           [JSON.stringify(rows)],
