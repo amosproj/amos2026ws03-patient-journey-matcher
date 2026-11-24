@@ -12,6 +12,24 @@ export type Concept = {
   type: EntityType;
   name: string;
   names: string[];
+  /** IDs of the same concept in another vocabulary, e.g. the MeSH heading of a gene. */
+  also?: string[];
+  /** Broader concepts a paper may name instead, e.g. radiotherapy for IMRT. */
+  broader?: string[];
+  /** Narrower diagnoses that imply this one, e.g. castration-resistant prostate cancer. */
+  narrower?: string[];
+  /** A procedure that finds rather than treats, e.g. a biopsy. */
+  diagnostic?: boolean;
+  /** The MeSH qualifier of a diagnosis that papers about this concept carry, e.g. surgery. */
+  qualifier?: string;
+  /** Disease states the concept implies for a patient, e.g. radium-223: castration-resistant. */
+  stages?: string[];
+  /** The role the matcher gives it instead of the one of its type, e.g. `stage`. */
+  role?: string;
+  /** A diagnosis only one sex can have, such as prostate cancer. */
+  sex?: string;
+  /** The diagnosis that giving this shows, for a journey that names none (prostatectomy). */
+  implies?: string;
 };
 
 export type Resolution = {
@@ -32,6 +50,17 @@ const CONCEPTS: ReadonlyMap<string, Concept> = new Map<string, Concept>(
 /** The curated concept of an ID, with its preferred name and all its names. */
 export function conceptOf(id: string): Concept | undefined {
   return CONCEPTS.get(id);
+}
+
+const BROADER_DIAGNOSIS: ReadonlyMap<string, string> = new Map(
+  [...CONCEPTS.values()].flatMap((concept) =>
+    (concept.narrower ?? []).map((narrower) => [narrower, concept.id]),
+  ),
+);
+
+/** The diagnosis a narrower one is a form of: prostate cancer for castration-resistant. */
+export function broaderDiagnosis(id: string): string | undefined {
+  return BROADER_DIAGNOSIS.get(id);
 }
 
 /** A dictionary of whole normalized names. A name listed for two concepts is an error. */
@@ -68,8 +97,7 @@ const ICD_CODE = /^[A-Z]\d{2}(\.\d{1,2})?$/;
 const ICD_IN_TEXT = /\b[A-Z]\d{2}(?:\.\d{1,2})?\b/gi;
 
 // Longest phrases first so specific diseases (e.g. castration-resistant prostate cancer) win over substrings.
-const DISEASE_PHRASES = [...CONCEPTS.values()]
-  .filter((concept) => concept.type === "disease")
+const PHRASES = [...CONCEPTS.values()]
   .flatMap((concept) =>
     [concept.name, ...concept.names].map((name) => ({
       concept,
@@ -78,26 +106,43 @@ const DISEASE_PHRASES = [...CONCEPTS.values()]
   )
   .filter(({ phrase }) => phrase.length > 0)
   .sort((a, b) => b.phrase.length - a.phrase.length);
+const DISEASE_PHRASES = PHRASES.filter(
+  ({ concept }) => concept.type === "disease",
+);
 
-/** Curated diseases and mapped ICD-10 codes found on word boundaries in a free-text field. */
-export function findDiseases(
-  text: string,
-): { concept: Concept; code?: string }[] {
-  const found: { concept: Concept; code?: string }[] = [];
+/** The curated concepts whose names stand on word boundaries in `text`, longest first. */
+function findPhrases(text: string, phrases: typeof PHRASES): Concept[] {
+  const found: Concept[] = [];
   const tokens = words(text);
   for (let i = 0; i < tokens.length; ) {
-    const hit = DISEASE_PHRASES.find(
+    const hit = phrases.find(
       ({ phrase }) =>
         i + phrase.length <= tokens.length &&
         phrase.every((word, offset) => tokens[i + offset] === word),
     );
     if (hit !== undefined) {
-      found.push({ concept: hit.concept });
+      found.push(hit.concept);
       i += hit.phrase.length;
       continue;
     }
     i++;
   }
+  return found;
+}
+
+/** Curated concepts of any type named in a free-text field, each once. */
+export function findConcepts(text: string): Concept[] {
+  return [...new Set(findPhrases(text, PHRASES))];
+}
+
+/** Curated diseases and mapped ICD-10 codes found on word boundaries in a free-text field. */
+export function findDiseases(
+  text: string,
+): { concept: Concept; code?: string }[] {
+  const found: { concept: Concept; code?: string }[] = findPhrases(
+    text,
+    DISEASE_PHRASES,
+  ).map((concept) => ({ concept }));
   for (const [code] of text.matchAll(ICD_IN_TEXT)) {
     const concept = resolveIcd(code);
     if (concept?.type === "disease") found.push({ concept, code });

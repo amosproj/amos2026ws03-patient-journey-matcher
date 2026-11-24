@@ -1,186 +1,446 @@
-import type { Hit, Matcher } from "@matcher/core";
+import type { Hit, Matcher, MatchOptions } from "@matcher/core";
 import type { Queryable } from "@matcher/db";
-import { type GraphQuery, patientQuery, tripleKey } from "./query.ts";
-import type { Paper } from "./schema.ts";
+import {
+  DEFAULT_WEIGHTS,
+  type GraphQuery,
+  patientQuery,
+  type QueryConcept,
+  type QueryWeights,
+} from "./query.ts";
+import { MESH_MAJOR, MESH_MINOR, type Paper } from "./schema.ts";
+import {
+  otherDisease,
+  otherTreatment,
+  paperStages,
+  phaseConflict,
+  stageFactor,
+} from "./stages.ts";
 import type { Triple } from "./types.ts";
+
+// Ranking constants; `tuning` sets others within min..max (debug UI, benchmark).
+const SETTINGS = {
+  // How strongly a paper has a concept; the strongest evidence counts.
+  title: { value: 1, min: 0, max: 5, whole: false }, // PubTator3 found it in the title
+  major: { value: 1, min: 0, max: 5, whole: false }, // a MeSH major topic
+  substance: { value: 0.7, min: 0, max: 5, whole: false }, // the chemical list
+  minor: { value: 0.5, min: 0, max: 5, whole: false }, // another MeSH heading
+  text: { value: 0.4, min: 0, max: 5, whole: false }, // PubTator3, abstract only
+  // What a concept is worth for the patient, by its role.
+  diagnosis: {
+    value: DEFAULT_WEIGHTS.roles.diagnosis,
+    min: 0,
+    max: 20,
+    whole: false,
+  },
+  stage: { value: DEFAULT_WEIGHTS.roles.stage, min: 0, max: 20, whole: false },
+  drug: { value: DEFAULT_WEIGHTS.roles.drug, min: 0, max: 20, whole: false },
+  procedure: {
+    value: DEFAULT_WEIGHTS.roles.procedure,
+    min: 0,
+    max: 20,
+    whole: false,
+  },
+  test: { value: DEFAULT_WEIGHTS.roles.test, min: 0, max: 20, whole: false },
+  gene: { value: DEFAULT_WEIGHTS.roles.gene, min: 0, max: 20, whole: false },
+  finding: {
+    value: DEFAULT_WEIGHTS.roles.finding,
+    min: 0,
+    max: 20,
+    whole: false,
+  },
+  symptom: {
+    value: DEFAULT_WEIGHTS.roles.symptom,
+    min: 0,
+    max: 20,
+    whole: false,
+  },
+  focus: { value: DEFAULT_WEIGHTS.focus, min: 1, max: 20, whole: false },
+  broader: { value: DEFAULT_WEIGHTS.broader, min: 0, max: 1, whole: false },
+  aspect: { value: DEFAULT_WEIGHTS.aspect, min: 0, max: 5, whole: false },
+  // Share of the focus factor for a measurement of the focus day (PSA), which recurs.
+  measurement: {
+    value: DEFAULT_WEIGHTS.measurement,
+    min: 0,
+    max: 1,
+    whole: false,
+  },
+  // 1: disease-state cues also from the sentences of the statements, 0: names only.
+  sentences: { value: 1, min: 0, max: 1, whole: true },
+  // The patient's drug linked to his diagnosis by PubTator3, as a share of the drug's worth.
+  relation: { value: 0.5, min: 0, max: 5, whole: false },
+  // How much a paper loses when the diagnosis is not its main topic (only in the abstract).
+  mainTopic: { value: 0.5, min: 0, max: 1, whole: false },
+  // A paper about the patient's disease state, or about a state or phase he is not in; how
+  // strongly it contradicts his (stages.ts) picks the factor.
+  stageFit: { value: 1.3, min: 1, max: 5, whole: false },
+  conflictStrong: { value: 0.15, min: 0, max: 1, whole: false },
+  conflictModerate: { value: 0.4, min: 0, max: 1, whole: false },
+  conflictMild: { value: 0.7, min: 0, max: 1, whole: false },
+  // Lab or animal research without patients (MeSH), which can only be generic for him.
+  research: { value: 0.25, min: 0, max: 1, whole: false },
+  // A paper only on the other sex (MeSH check tags), e.g. women for prostate cancer.
+  population: { value: 0.25, min: 0, max: 1, whole: false },
+  // A paper about another cancer (major MeSH topic), or about a treatment option he did not get.
+  otherDisease: { value: 0.15, min: 0, max: 1, whole: false },
+  otherTreatment: { value: 0.7, min: 0, max: 1, whole: false },
+  // How much the publication type counts (guidelines and reviews up, case reports down).
+  format: { value: 1, min: 0, max: 3, whole: false },
+  // Papers re-ranked after the concept score.
+  candidates: { value: 300, min: 1, max: 5000, whole: true },
+};
+type Setting = keyof typeof SETTINGS;
+
+// MeSH headings of lab and animal research, and the age groups only patient studies get.
+const LAB = [
+  "mesh:D045744", // Cell Line, Tumor
+  "mesh:D002460", // Cell Line
+  "mesh:D051379", // Mice
+  "mesh:D051381", // Rats
+  "mesh:D023041", // Xenograft Model Antitumor Assays
+  "mesh:D066298", // In Vitro Techniques
+  "mesh:D000818", // Animals
+];
+const AGES = [
+  "mesh:D000328", // Adult
+  "mesh:D008875", // Middle Aged
+  "mesh:D000368", // Aged
+  "mesh:D000369", // Aged, 80 and over
+];
+
+// Publication types that the LLM grades of the sample journeys rated better or worse.
+const FORMATS: Record<string, number> = {
+  "Practice Guideline": 1.2,
+  Guideline: 1.2,
+  Review: 1.15,
+  "Systematic Review": 1.15,
+  "Meta-Analysis": 1.15,
+  "Randomized Controlled Trial": 1.1,
+  "Clinical Trial, Phase III": 1.1,
+  "Case Reports": 0.7,
+  "Clinical Trial Protocol": 0.7,
+  Letter: 0.85,
+  Comment: 0.85,
+  Editorial: 0.85,
+  "Clinical Trial, Phase II": 0.85,
+};
+const SEX_TAGS: Record<string, string> = {
+  male: "mesh:D008297",
+  female: "mesh:D005260",
+};
 
 type Candidate = {
   document_id: string;
+  score: number;
+  matched: Record<string, number>;
+  idf: Record<string, number>;
+  title: string;
+  published: string | null;
+  publication_types: string[];
   entities: Paper["entities"];
   relations: Triple[];
+  mesh: Record<string, number>;
 };
 
-/** Score each diagnosis with its strongest paper relation. Repeated mentions never add weight. */
-function scorePaper(query: GraphQuery, paper: Candidate): Hit | undefined {
-  let best = 0;
-  let diagnoses = 0;
-  let explanation = "";
-  const terms = new Set<string>();
-  for (const [id, weight] of query.diagnoses) {
-    const diagnosis = paper.entities[id];
-    if (diagnosis?.type !== "disease") continue;
-    diagnoses++;
-    terms.add(diagnosis.name);
-    let strongest = 0;
-    let reason = `Matched the diagnosis ${diagnosis.name}.`;
-    let connected = 0;
-    if (!query.conceptOnly) {
-      for (const relation of paper.relations) {
-        const { subject, predicate, object } = relation;
-        if (subject !== id && object !== id) continue;
-        const otherId = subject === id ? object : subject;
-        const other = paper.entities[otherId];
-        const recorded = query.relations.get(tripleKey(relation));
-        if (recorded === 0) continue;
-        const exact = recorded ?? 0;
-        const treatment =
-          predicate === "treats" && object === id && other.type === "chemical";
-        const detail = Math.max(
-          query.details.get(otherId) ?? 0,
-          query.diagnoses.get(otherId) ?? 0,
-        );
-        if (!exact && !treatment && (!detail || predicate === "related"))
-          continue;
-        const known = treatment ? (query.treatments.get(otherId) ?? 0) : 0;
-        // shortcut: title co-mentions approximate study focus, use evidence passages when available.
-        const inTitle = diagnosis.inTitle && other.inTitle;
-        const strong = treatment || exact > 0;
-        const evidence =
-          (strong ? 3 : 1) +
-          1.5 * exact +
-          known +
-          0.5 * detail +
-          (inTitle ? (strong ? 4 : 1) : 0);
-        terms.add(other.name);
-        connected++;
-        if (evidence <= strongest) continue;
-        strongest = evidence;
-        const link = `${paper.entities[subject].name} — ${predicate} → ${paper.entities[object].name}`;
-        const context = exact
-          ? "The patient graph records the same relationship."
-          : known
-            ? "The journey also records this treatment."
-            : treatment
-              ? "The paper links a treatment to the diagnosis."
-              : "The paper links the diagnosis to another patient finding.";
-        reason = `${context} PubTator3 annotated ${link}.${inTitle ? " Both concepts occur in the title." : ""}`;
-      }
-    }
-    const score =
-      weight *
-      (1 +
-        (diagnosis.inTitle ? 0.5 : 0) +
-        strongest +
-        Math.min(2, Math.max(0, connected - 1)) * 0.15);
-    if (score > best) {
-      best = score;
-      explanation = reason;
+function settings(
+  tuning: MatchOptions["tuning"] = {},
+  trace: MatchOptions["trace"],
+): Record<Setting, number> {
+  const names = Object.keys(SETTINGS) as Setting[];
+  const values = Object.fromEntries(
+    names.map((name) => [name, tuning[name] ?? SETTINGS[name].value]),
+  ) as Record<Setting, number>;
+  trace?.(
+    "settings",
+    names.map((name) => ({
+      name,
+      ...SETTINGS[name],
+      default: SETTINGS[name].value,
+      value: values[name],
+    })),
+  );
+  for (const name of names) {
+    const { min, max, whole } = SETTINGS[name];
+    const value = values[name];
+    if (
+      !(value >= min && value <= max && (!whole || Number.isInteger(value)))
+    ) {
+      throw new RangeError(
+        `${name} must be a ${whole ? "whole " : ""}number from ${min} to ${max}, not ${value}`,
+      );
     }
   }
-  if (!best) return undefined;
+  return values;
+}
+
+function queryWeights(values: Record<Setting, number>): QueryWeights {
+  const { roles } = DEFAULT_WEIGHTS;
   return {
-    documentId: paper.document_id,
-    score: best + 0.15 * Math.min(2, diagnoses - 1),
-    matchedTerms: [...terms].sort(),
-    explanation,
+    roles: Object.fromEntries(
+      Object.keys(roles).map((role) => [
+        role,
+        role in values
+          ? values[role as Setting]
+          : roles[role as keyof typeof roles],
+      ]),
+    ) as QueryWeights["roles"],
+    focus: values.focus,
+    broader: values.broader,
+    aspect: values.aspect,
+    sentences: values.sentences === 1,
+    measurement: values.measurement,
   };
+}
+
+/** All IDs the patient's own concepts go by, including his diagnoses and their forms. */
+function ownIds(query: GraphQuery): Set<string> {
+  return new Set([
+    ...query.diagnoses.keys(),
+    ...query.concepts.flatMap(({ ids }) => ids),
+  ]);
+}
+
+/** The factor of a paper's publication types: the lowest below 1, else the highest. */
+function formatFactor(types: readonly string[], strength: number): number {
+  const factors = types.map((type) => FORMATS[type] ?? 1);
+  const low = Math.min(1, ...factors);
+  const factor = low < 1 ? low : Math.max(1, ...factors);
+  return 1 + strength * (factor - 1);
+}
+
+/** A paper whose MeSH check tags name only the other sex than the patient's. */
+function otherSexOnly(
+  mesh: Readonly<Record<string, number>>,
+  sex: string | undefined,
+): boolean {
+  if (sex === undefined) return false;
+  const own = SEX_TAGS[sex];
+  const others = Object.entries(SEX_TAGS).filter(([one]) => one !== sex);
+  return (
+    own !== undefined && !(own in mesh) && others.some(([, tag]) => tag in mesh)
+  );
+}
+
+/** Lab or animal research: such MeSH headings and no age group of patients. */
+function isLabResearch(mesh: Readonly<Record<string, number>>): boolean {
+  return LAB.some((id) => id in mesh) && !AGES.some((id) => id in mesh);
+}
+
+/** The patient's drugs that PubTator3 links to one of his diagnoses in the paper. */
+function linkedDrugs(
+  query: GraphQuery,
+  relations: readonly Triple[],
+): Set<string> {
+  const drugs = new Set<string>();
+  for (const { subject, predicate, object } of relations) {
+    if (
+      predicate === "treats" &&
+      query.treatments.has(subject) &&
+      query.diagnoses.has(object)
+    )
+      drugs.add(subject);
+  }
+  return drugs;
 }
 
 export function createGraphMatcher(db: Queryable): Matcher {
   return {
-    async match(state, { contentTypes, limit, trace }) {
-      const query = patientQuery(state);
+    async match(state, { contentTypes, limit, tuning, trace }) {
+      const values = settings(tuning, trace);
+      const query = patientQuery(state, queryWeights(values));
       trace?.("query", {
         cutoff: query.cutoff,
         focusDate: state.focus.date,
         conceptOnly: query.conceptOnly,
         diagnoses: Object.fromEntries(query.diagnoses),
+        concepts: query.concepts,
+        stage: { ...query.stage, states: [...query.stage.states] },
         treatments: Object.fromEntries(query.treatments),
-        details: Object.fromEntries(query.details),
         relations: Object.fromEntries(query.relations),
       });
       if (!query.diagnoses.size) return [];
-      const diagnosisIds = [...query.diagnoses.keys()];
-      const diagnosisWeights = [...query.diagnoses.values()];
-      const contextIds = new Set<string>([
-        ...query.details.keys(),
-        ...diagnosisIds,
-      ]);
-      for (const key of query.relations.keys()) {
-        const [subject, , object] = JSON.parse(key) as [string, string, string];
-        contextIds.add(subject);
-        contextIds.add(object);
-      }
-      const relations = query.conceptOnly ? "'[]'::jsonb" : "g.relations";
-      // Single GIN scan: keep every candidate with a relevant link plus the top `limit`
-      // diagnosis-only papers, avoiding repeated keyset re-sorting over an unordered GIN index.
+      // One group per concept: its IDs count once, with the strongest evidence.
+      const groups = query.concepts.flatMap((concept, index) =>
+        concept.ids.map((id) => ({ index, id, weight: concept.weight })),
+      );
       const { rows } = await db.query<Candidate>(
-        `WITH scored AS MATERIALIZED (
-           SELECT g.document_id, dx.score AS dx_score, links.relations, links.ends,
-                  jsonb_array_length(links.relations) > 0 AS has_links
+        `WITH q AS (
+           SELECT * FROM unnest($1::int[], $2::text[], $3::float8[]) AS q(grp, id, weight)
+         ),
+         candidates AS MATERIALIZED (
+           SELECT g.document_id, g.entities, coalesce(g.mesh, '{}'::jsonb) AS mesh
            FROM graph.documents g
            JOIN public.documents d ON d.id = g.document_id
-           CROSS JOIN LATERAL (
-             SELECT max(q.weight * (1 + CASE WHEN (g.entities -> q.id ->> 'inTitle')::boolean IS TRUE THEN 0.5 ELSE 0 END))
-                    + 0.15 * least(2, count(*) - 1) AS score
-             FROM unnest($1::text[], $2::float8[]) AS q(id, weight)
-             WHERE g.entities -> q.id ->> 'type' = 'disease'
-           ) dx
-           CROSS JOIN LATERAL (
-             SELECT coalesce(jsonb_agg(to_jsonb(r) - 'position' ORDER BY r.position), '[]'::jsonb) AS relations,
-                    array_agg(DISTINCT r.subject) || array_agg(DISTINCT r.object) AS ends
-             FROM ROWS FROM (jsonb_to_recordset(${relations}) AS (subject text, predicate text, object text))
-                  WITH ORDINALITY AS r(subject, predicate, object, position)
-             WHERE (r.subject = ANY($1::text[]) OR r.object = ANY($1::text[]))
-               AND ((r.predicate = 'treats' AND r.object = ANY($1::text[]))
-                    OR (r.predicate <> 'related'
-                        AND (CASE WHEN r.subject = ANY($1::text[]) THEN r.object ELSE r.subject END) = ANY($3::text[])))
-           ) links
-           WHERE g.entities ?| $1::text[]
+           WHERE (g.entities ?| $4::text[] OR g.mesh ?| $4::text[])
              AND (d.expires_at IS NULL OR d.expires_at > now())
-             AND ($4::text[] IS NULL OR d.content_type = ANY($4::text[]))
-             AND dx.score IS NOT NULL
+             AND ($5::text[] IS NULL OR d.content_type = ANY ($5::text[]))
          ),
-         kept AS (
-           SELECT document_id, relations, ends FROM scored WHERE has_links
-           UNION ALL
-           (SELECT document_id, relations, ends FROM scored WHERE NOT has_links
-            ORDER BY dx_score DESC, document_id COLLATE "C" ASC LIMIT $5)
+         evidence AS (
+           SELECT c.document_id, q.grp, max(q.weight) AS weight,
+                  max(greatest(
+                    CASE WHEN c.entities ? q.id THEN
+                      CASE WHEN (c.entities -> q.id ->> 'inTitle')::boolean THEN $6::float8 ELSE $7::float8 END
+                    ELSE 0 END,
+                    CASE WHEN c.mesh ? q.id THEN
+                      CASE WHEN ((c.mesh ->> q.id)::int & ${MESH_MAJOR}) <> 0 THEN $8::float8
+                           WHEN ((c.mesh ->> q.id)::int & ${MESH_MINOR}) <> 0 THEN $9::float8
+                           ELSE $10::float8 END
+                    ELSE 0 END)) AS strength
+           FROM candidates c JOIN q ON c.entities ? q.id OR c.mesh ? q.id
+           GROUP BY c.document_id, q.grp
+         ),
+         -- Rare among the papers on the diagnosis means telling: inverse frequency as in BM25.
+         idf AS (
+           SELECT grp, ln(1 + ((SELECT count(*) FROM candidates) - count(*) + 0.5) / (count(*) + 0.5)) AS idf
+           FROM evidence GROUP BY grp
+         ),
+         scored AS (
+           SELECT e.document_id, sum(e.weight * e.strength * i.idf) AS score,
+                  jsonb_object_agg(e.grp, e.strength) AS matched
+           FROM evidence e JOIN idf i USING (grp)
+           GROUP BY e.document_id
          )
-         SELECT k.document_id, (
-           SELECT jsonb_object_agg(id, g.entities -> id)
-           FROM unnest($1::text[] || coalesce(k.ends, '{}'::text[])) AS e(id) WHERE g.entities ? id
-         ) AS entities, k.relations
-         FROM kept k
-         JOIN graph.documents g ON g.document_id = k.document_id`,
+         SELECT s.document_id, s.score, s.matched,
+                (SELECT jsonb_object_agg(grp, idf) FROM idf) AS idf,
+                d.title, d.published_at::text AS published, d.publication_types,
+                g.entities, g.relations, coalesce(g.mesh, '{}'::jsonb) AS mesh
+         FROM scored s
+         JOIN graph.documents g ON g.document_id = s.document_id
+         JOIN public.documents d ON d.id = s.document_id
+         ORDER BY s.score DESC, d.published_at NULLS LAST, s.document_id
+         LIMIT $11`,
         [
-          diagnosisIds,
-          diagnosisWeights,
-          [...contextIds],
+          groups.map(({ index }) => index),
+          groups.map(({ id }) => id),
+          groups.map(({ weight }) => weight),
+          [...query.diagnoses.keys()],
           contentTypes ?? null,
-          limit,
+          values.title,
+          values.text,
+          values.major,
+          values.minor,
+          values.substance,
+          values.candidates,
         ],
       );
-      const hits: Hit[] = [];
-      for (const row of rows) {
-        const hit = scorePaper(query, row);
-        if (!hit) continue;
-        // The MCP limit is at most 50. Start at the weakest retained hit.
-        let rank = hits.length;
-        while (rank > 0 && compareHits(hit, hits[rank - 1]) < 0) rank--;
-        if (rank < limit) {
-          hits.splice(rank, 0, hit);
-          if (hits.length > limit) hits.pop();
-        }
-      }
-      return hits.map((hit) => ({ ...hit, score: hit.score / hits[0].score }));
+      // Not "candidates": the debug UI reads that step as keyword's list.
+      trace?.("pool", {
+        reranked: rows.length,
+        idf: Object.fromEntries(
+          query.concepts.map((concept, index) => [
+            concept.ids[0],
+            rows[0]?.idf[index] ?? 0,
+          ]),
+        ),
+      });
+      const hits = rows
+        .map((row) => ({ row, ...rank(query, row, values) }))
+        // On a tie the older paper first: the graded journeys favour established work.
+        .sort(
+          (a, b) =>
+            b.score - a.score ||
+            (a.row.published ?? "9999").localeCompare(
+              b.row.published ?? "9999",
+            ) ||
+            (a.row.document_id < b.row.document_id ? -1 : 1),
+        )
+        .slice(0, limit);
+      const best = hits[0]?.score ?? 0;
+      return hits
+        .filter(({ score }) => score > 0)
+        .map(({ row, score, matchedTerms, explanation }) => ({
+          documentId: row.document_id,
+          score: score / best,
+          matchedTerms,
+          explanation,
+        })) satisfies Hit[];
     },
   };
 }
 
-function compareHits(a: Hit, b: Hit): number {
-  return (
-    b.score - a.score ||
-    (a.documentId < b.documentId ? -1 : a.documentId > b.documentId ? 1 : 0)
-  );
+/** The final score of a candidate, with the terms and the reason to show. */
+function rank(
+  query: GraphQuery,
+  row: Candidate,
+  values: Record<Setting, number>,
+): { score: number; matchedTerms: string[]; explanation: string } {
+  const contributions: { concept: QueryConcept; part: number }[] = [];
+  let mainTopic = 0;
+  query.concepts.forEach((concept, index) => {
+    const strength = row.matched[index] ?? 0;
+    if (strength <= 0) return;
+    if (concept.role === "diagnosis") mainTopic = Math.max(mainTopic, strength);
+    contributions.push({
+      concept,
+      part: concept.weight * strength * (row.idf[index] ?? 0),
+    });
+  });
+  const drugs = linkedDrugs(query, row.relations);
+  let relation = 0;
+  query.concepts.forEach((concept, index) => {
+    if (concept.role === "drug" && drugs.has(concept.ids[0]))
+      relation += values.relation * concept.weight * (row.idf[index] ?? 0);
+  });
+  const stages = paperStages(row.title, row.mesh);
+  const severity = {
+    strong: values.conflictStrong,
+    moderate: values.conflictModerate,
+    mild: values.conflictMild,
+  };
+  const stage = stageFactor(stages, query.stage, {
+    fit: values.stageFit,
+    ...severity,
+  });
+  const phase = phaseConflict(row.mesh, query.stage);
+  const own = ownIds(query);
+  const foreign = otherDisease(row.mesh, own, query.diagnoses.keys());
+  const alternative = otherTreatment(row.mesh, own, query.stage);
+  const lab = isLabResearch(row.mesh);
+  const otherSex = otherSexOnly(row.mesh, query.sex);
+  const topic =
+    1 - values.mainTopic + values.mainTopic * Math.min(1, mainTopic);
+  const score =
+    (row.score + relation) *
+    topic *
+    stage.factor *
+    (phase === undefined ? 1 : severity[phase]) *
+    (lab ? values.research : 1) *
+    (otherSex ? values.population : 1) *
+    (foreign ? values.otherDisease : 1) *
+    (alternative ? values.otherTreatment : 1) *
+    formatFactor(row.publication_types ?? [], values.format);
+
+  const telling = contributions
+    .filter(({ concept, part }) => part > 0 && concept.role !== "aspect")
+    .sort((a, b) => b.part - a.part);
+  const names = telling.slice(0, 4).map(({ concept }) => concept.name);
+  const reasons = [
+    names.length > 0
+      ? `Matches ${names.join(", ")}.`
+      : "Matches the diagnosis.",
+    drugs.size > 0
+      ? "PubTator3 links the patient's drug to the diagnosis."
+      : "",
+    stage.fitting.length > 0
+      ? `About the patient's disease state (${stage.fitting.join(", ").replaceAll("_", " ")}).`
+      : "",
+    stage.contradicting.length > 0
+      ? `About another disease state (${stage.contradicting.join(", ").replaceAll("_", " ")}).`
+      : "",
+    phase === undefined ? "" : "About another phase of care.",
+    lab ? "Lab or animal research." : "",
+    otherSex ? "About patients of the other sex." : "",
+    foreign ? "About another disease." : "",
+    alternative ? "About a treatment the patient did not get." : "",
+  ];
+  return {
+    score,
+    matchedTerms: [
+      ...new Set(
+        contributions
+          .filter(({ concept }) => concept.role !== "aspect")
+          .map(({ concept }) => concept.name),
+      ),
+    ].sort(),
+    explanation: reasons.filter(Boolean).join(" "),
+  };
 }

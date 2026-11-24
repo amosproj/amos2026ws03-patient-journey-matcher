@@ -161,12 +161,12 @@ describe.skipIf(!databaseUrl)("podcast and PubMed sources", () => {
           rank: 1,
           source_id: "pubmed:301",
           score: 1,
-          explanation: expect.stringContaining("treats"),
+          explanation: expect.stringContaining("Prostatic Neoplasms"),
         },
         {
           rank: 2,
           source_id: "pubmed:302",
-          explanation: expect.stringContaining("Matched the diagnosis"),
+          explanation: expect.stringContaining("Prostatic Neoplasms"),
         },
       ],
     });

@@ -1,0 +1,90 @@
+{
+  "_comment": "Disease states for graph matching (Documentation/design/graph-normalization.md#disease-states). A paper is about a state when its title matches `title` (case-insensitive, JavaScript) or one of `mesh` is a major topic. A patient is in a state when an active statement has one of `concepts`, or an entity name matches `names` (German and English, after normalizeName). Which states contradict each other is in stages.ts. `treatment` and `diagnosis` are MeSH IDs that, as a major topic, make a paper one about treating or about finding the disease; a paper on treatment ranks lower while the patient is still being diagnosed, one only on diagnosis ranks a little lower once his treatment has begun. `alternatives` are treatment options (brachytherapy, radiosurgery, HIFU, hypofractionation, orchiectomy and the like): after his treatment began, a paper with one of them as a major topic that the patient did not get ranks a little lower.",
+  "stages": [
+    {
+      "id": "screening",
+      "title": "screening|early detection",
+      "mesh": ["mesh:D055088", "mesh:D008403"],
+      "concepts": [],
+      "names": ""
+    },
+    {
+      "id": "surveillance",
+      "title": "active surveillance|watchful waiting|expectant management|deferred treatment",
+      "mesh": ["mesh:D057832"],
+      "concepts": ["mesh:D057832"],
+      "names": "active surveillance|aktive uberwachung|watchful waiting"
+    },
+    {
+      "id": "localized",
+      "title": "locali[sz]ed|organ[- ]confined|low[- ]risk|intermediate[- ]risk|early[- ]stage",
+      "mesh": [],
+      "concepts": [],
+      "names": ""
+    },
+    {
+      "id": "recurrence",
+      "title": "biochemical(?:ly)? (?:recurren|relapse|failure|progression)|\\bbcr\\b|psa (?:recurren|relapse|failure|persistence)|recurrent prostate|salvage",
+      "mesh": ["mesh:D009364"],
+      "concepts": ["mesh:D009364"],
+      "names": "rezidiv|recurren|relapse|psa anstieg nach"
+    },
+    {
+      "id": "metastatic",
+      "title": "metasta|(?<!locally )advanced|\\bm1\\b",
+      "mesh": ["mesh:D009362"],
+      "concepts": ["mesh:D009362", "mesh:D001859", "mesh:D008113"],
+      "names": "metastas|metastatic|fernmetast|knochenmetast|lebermetast"
+    },
+    {
+      "id": "hormone_sensitive",
+      "title": "hormone[- ]sensitive|castrat\\w*[- ]sensitive|\\bm?hspc\\b|\\bm?cspc\\b|hormone[- ]na[iï]ve",
+      "mesh": [],
+      "concepts": [],
+      "names": "hormonsensitiv|hormone sensitive|kastrationssensitiv"
+    },
+    {
+      "id": "castration_resistant",
+      "title": "castrat\\w*[- ]resist|\\bm?crpc\\b|hormone[- ](?:refractory|resistant|independent)|androgen[- ]independent",
+      "mesh": ["mesh:D064129"],
+      "concepts": ["mesh:D064129"],
+      "names": "kastrationsresist|castration resist|crpc|hormonrefraktar"
+    }
+  ],
+  "treatment": [
+    "mesh:D011468",
+    "mesh:D011878",
+    "mesh:D050397",
+    "mesh:D018714",
+    "mesh:D001918",
+    "mesh:D000726",
+    "mesh:D018931",
+    "mesh:D000971",
+    "mesh:D000970",
+    "mesh:D011471Q000601",
+    "mesh:D011471Q000532",
+    "mesh:D011471Q000188",
+    "mesh:D011471Q000628",
+    "mesh:D064129Q000188"
+  ],
+  "diagnosis": [
+    "mesh:D001706",
+    "mesh:D061705",
+    "mesh:D055088",
+    "mesh:D008403",
+    "mesh:D011471Q000175",
+    "mesh:D011471Q000000981",
+    "mesh:D008279",
+    "mesh:D000081364"
+  ],
+  "alternatives": [
+    "mesh:D001918",
+    "mesh:D016634",
+    "mesh:D057086",
+    "mesh:D003452",
+    "mesh:D000069473",
+    "mesh:D061766",
+    "mesh:D009919",
+    "mesh:D055011"
+  ]
+}
