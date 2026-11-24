@@ -5,7 +5,7 @@ import patient from "../data/patient-relations.json" with { type: "json" };
 import pubtator from "../data/pubtator-relations.json" with { type: "json" };
 import type { FactKind, PatientFact, Predicate, Status } from "./types.ts";
 
-export type Row = {
+type Row = {
   type: string;
   subject?: string;
   object?: string;
@@ -38,7 +38,7 @@ export type Mapping =
   | { kind: "drop"; reason: string };
 
 /** The first row whose type matches and whose `subject` and `object`, where given, match too. */
-export function findRow(
+function findRow(
   rows: readonly Row[],
   type: string,
   subject: string,

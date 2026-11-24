@@ -3,7 +3,7 @@ import { z } from "zod";
 
 // One evaluation point is a journey cut at as_of, like the app would send it
 // when a new report arrives. Grades follow the scale in judgments.json.
-export const evaluationPointSchema = z.object({
+const evaluationPointSchema = z.object({
   id: z.string().min(1),
   journey: z.string().min(1),
   pathway_id: z.string().optional(),
@@ -21,14 +21,14 @@ export const evaluationPointSchema = z.object({
   ),
 });
 
-export const judgmentFileSchema = z.object({
+const judgmentFileSchema = z.object({
   version: z.literal(1),
   points: z.array(evaluationPointSchema).min(1),
 });
 
 export type JudgmentFile = z.output<typeof judgmentFileSchema>;
 
-export const judgmentsPath = new URL("../judgments.json", import.meta.url);
+const judgmentsPath = new URL("../judgments.json", import.meta.url);
 
 // Many grades in few lines: per point and grade, the source_ids in one string.
 const gradeListSchema = z.object({

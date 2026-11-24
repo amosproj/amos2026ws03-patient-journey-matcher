@@ -43,7 +43,7 @@ export const ROLES = [
   "symptom",
   "aspect",
 ] as const;
-export type Role = (typeof ROLES)[number];
+type Role = (typeof ROLES)[number];
 
 /** A patient concept the matcher looks for in papers. */
 export interface QueryConcept {
@@ -124,7 +124,7 @@ export const DEFAULT_WEIGHTS: QueryWeights = {
   measurement: 0.5,
 };
 
-export function tripleKey({ subject, predicate, object }: Triple): string {
+function tripleKey({ subject, predicate, object }: Triple): string {
   return JSON.stringify([subject, predicate, object]);
 }
 

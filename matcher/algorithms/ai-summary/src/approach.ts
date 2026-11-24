@@ -23,7 +23,7 @@ export {
   queryText,
 } from "./encoder.ts";
 
-export class SemanticNotReady extends Error {
+class SemanticNotReady extends Error {
   readonly code = "NOT_AVAILABLE";
 }
 

@@ -51,8 +51,6 @@ const documentSchema = z.object({
     .default([]),
 });
 
-export type PubTatorDocument = z.input<typeof documentSchema>;
-
 const TYPES: ReadonlyMap<string, EntityType> = new Map([
   ["Disease", "disease"],
   ["Chemical", "chemical"],

@@ -299,7 +299,6 @@ export function createTerminology(
 }
 
 export const defaultTerminology = createTerminology();
-export const { findConcepts, findDiseases } = defaultTerminology;
 
 /**
  * Tier 1: a mapped ICD-10 code as written. Categories are never inferred from their children. A value that is not

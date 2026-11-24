@@ -76,7 +76,7 @@ export type NormalizedEntity = {
   sources: string[];
 };
 
-export type Origin = {
+type Origin = {
   source: "patient" | "pubtator";
   /** Patient edge `uuid`, or `<pmid>:<relation id>`. */
   ref: string;

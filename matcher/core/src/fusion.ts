@@ -1,7 +1,7 @@
 /** Rank fusion's constant from its paper: higher values flatten the lead of the top ranks. */
 export const RANK_CONSTANT = 60;
 
-export interface Ranking {
+interface Ranking {
   /** Rank per document, from 1; documents left out get nothing from this ranking. */
   ranks: ReadonlyMap<string, number>;
   weight: number;

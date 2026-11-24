@@ -48,7 +48,7 @@ export interface MatchOptions {
 }
 
 /** Receives the steps of a match: a name and its data, which must be JSON values. */
-export type Trace = (step: string, data: unknown) => void;
+type Trace = (step: string, data: unknown) => void;
 
 /** A stored document a matcher found for a journey. */
 export interface Hit {
@@ -83,8 +83,4 @@ export interface Approach {
   readonly matcher: Matcher;
 }
 
-export {
-  RANK_CONSTANT,
-  type Ranking,
-  reciprocalRankFusion,
-} from "./fusion.ts";
+export { RANK_CONSTANT, reciprocalRankFusion } from "./fusion.ts";

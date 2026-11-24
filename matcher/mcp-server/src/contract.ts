@@ -3,7 +3,7 @@ import { graphJourney, patientGraphSchema } from "./graph.ts";
 
 // Field names follow the timeline.json of the synthetic journey generator,
 // so a generated journey can be sent as it is. Unknown fields are dropped.
-export const journeyEventSchema = z.object({
+const journeyEventSchema = z.object({
   id: z.string().min(1),
   type: z.string().min(1),
   label: z.string().min(1),
@@ -13,7 +13,7 @@ export const journeyEventSchema = z.object({
 });
 
 // Without an event on or before as_of there is no most recent event to match.
-export const patientJourneySchema = z
+const patientJourneySchema = z
   .object({
     patient_id: z.string().min(1),
     as_of: z.iso.date().optional(),
@@ -28,9 +28,9 @@ export const patientJourneySchema = z
     },
   );
 
-export const algorithmSchema = z.enum(["keyword", "graph", "ai_summary"]);
+const algorithmSchema = z.enum(["keyword", "graph", "ai_summary"]);
 
-export const contentTypeSchema = z.enum([
+const contentTypeSchema = z.enum([
   "journal_article",
   "preprint",
   "conference_paper",
@@ -87,7 +87,7 @@ export const sourceReferenceSchema = z.object({
   licence: z.string().optional(),
 });
 
-export const matchItemSchema = sourceReferenceSchema.extend({
+const matchItemSchema = sourceReferenceSchema.extend({
   rank: z.number().int().min(1),
   score: z.number().min(0).max(1).optional(),
   matched_terms: z.array(z.string()).optional(),

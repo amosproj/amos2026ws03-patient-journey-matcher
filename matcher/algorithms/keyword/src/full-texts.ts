@@ -19,7 +19,7 @@ import { ENGLISH_WORDS } from "./terms.ts";
 export type FullTextStatus = "indexed" | "skipped" | "failed";
 
 /** What `keyword.full_texts` holds of a read file. */
-export interface FullTextRow {
+interface FullTextRow {
   status: FullTextStatus;
   /** Why skipped or failed. */
   detail: string | null;
@@ -135,7 +135,7 @@ export async function indexFullTexts(
 }
 
 /** The row for what a download gave: the keywords of an English text, else why it has none. */
-export function fullTextRow(result: FullText): FullTextRow {
+function fullTextRow(result: FullText): FullTextRow {
   const found = result.status === "ok" ? keywords(result.text) : [];
   const words = found ?? [];
   const status =

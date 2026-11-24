@@ -37,7 +37,7 @@ function toToolError(error: unknown): ToolError {
 }
 
 /** A trace and other ranking constants for the matcher; only `explain` passes them. */
-export type MatchDebug = Pick<MatchOptions, "trace" | "tuning">;
+type MatchDebug = Pick<MatchOptions, "trace" | "tuning">;
 
 export interface MatchService {
   matchJourney(

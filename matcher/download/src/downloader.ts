@@ -1,12 +1,7 @@
 import { extractText, formatOf } from "./extract.ts";
 import type { Transcribe } from "./transcribe.ts";
 
-export {
-  createTranscriber,
-  silence,
-  type Transcribe,
-  type TranscribeLimits,
-} from "./transcribe.ts";
+export { createTranscriber, silence, type Transcribe } from "./transcribe.ts";
 
 /** Where a full text can be fetched: an entry of `documents.full_text`, written by the crawler. */
 export interface Locator {
@@ -32,7 +27,7 @@ export interface FullText {
 }
 
 /** What a server answered: its status and, if that is 2xx, the body, unless it is too large. */
-export interface Answer {
+interface Answer {
   status: number;
   body?: Uint8Array;
 }
