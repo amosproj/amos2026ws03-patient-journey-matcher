@@ -297,8 +297,8 @@ function mtRenderStats() {
     rankings && card("Candidates: metadata + full text", `${rankings.metadata.length} + ${rankings.fullTexts.length}`),
     candidates && card("Candidates without a medical term, dropped", dropped, dropped ? "" : "muted"),
     query && card("Mapped diagnoses", Object.keys(query.diagnoses).length, Object.keys(query.diagnoses).length ? "" : "muted"),
-    query && !query.conceptOnly && card("Treatments + details", `${Object.keys(query.treatments).length} + ${Object.keys(query.details).length}`),
-    query && !query.conceptOnly && card("Patient relations", Object.keys(query.relations).length, Object.keys(query.relations).length ? "" : "muted"),
+    query && card("Patient concepts: focus + other", `${query.concepts.filter((concept) => concept.focus).length} + ${query.concepts.filter((concept) => !concept.focus).length}`),
+    query && card("Disease state", query.stage.states.join(", ").replaceAll("_", " ") || "–", query.stage.states.length ? "" : "muted"),
     mtStep("semantic") && card(`Model: ${mtStep("semantic").repository}`, aiName(mtStep("semantic").model)),
     mtStep("semantic") && card("Encode / search", `${Math.round(mtStep("semantic").encoder_ms)} / ${Math.round(mtStep("semantic").search_ms)} ms`),
     card(answer?.degraded ? "Results (degraded)" : "Results", answer ? answer.results.length : "–", answer?.degraded || result.error ? "bad" : ""),
@@ -553,7 +553,7 @@ function mtRenderRankings() {
   const query = mtStep("query");
   if (!rankings && (mt.request?.algorithm === "graph" || query)) {
     const note = h("p", { class: "muted", style: "grid-column:1 / 3; margin:10px 0 0" },
-      "Graph matching scores PubTator3 annotations in one pass rather than fusing metadata and full-text BM25 lists.");
+      "Graph matching scores the PubTator3 annotations and MeSH headings of the papers against the patient's concepts, weighted by role, focus and rarity, then reranks by disease state; no BM25 lists are fused.");
     if (!query) {
       box.replaceChildren(note, h("div", { class: "empty", style: "grid-column:1 / 3" },
         mt.via === "mcp" ? "The MCP server answers without the steps of the match." : "No graph query trace available."));
@@ -567,11 +567,18 @@ function mtRenderRankings() {
           ? entries.map(([key, weight]) => h("div", { class: "rank-item" }, h("span", { class: "mono" }, key), h("span", { class: "n" }, Number(weight).toFixed(2))))
           : [h("div", { class: "empty" }, "None")]));
     };
+    const concepts = Object.fromEntries((query.concepts || []).map((concept) =>
+      [`${concept.focus ? "★ " : ""}${concept.name} (${concept.role}) ${concept.ids.join(" ")}`, concept.weight]));
+    const { states, ...course } = query.stage || { states: [] };
+    const state = Object.fromEntries([
+      ...states.map((one) => [one.replaceAll("_", " "), 1]),
+      ...Object.entries(course).filter(([, value]) => value).map(([key]) => [key, 1]),
+    ]);
     box.replaceChildren(
       note,
       section(`Diagnoses (cutoff ${query.cutoff}${query.conceptOnly ? ", timeline only" : ""})`, query.diagnoses),
-      section("Treatments", query.treatments),
-      section("Details", query.details),
+      section("Concepts by weight, ★ focus", Object.fromEntries(Object.entries(concepts).sort(([, a], [, b]) => b - a))),
+      section("Disease state and course", state),
       section("Patient relations", query.relations),
     );
     return;
