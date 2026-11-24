@@ -7,7 +7,8 @@ import {
   type QueryConcept,
   type QueryWeights,
 } from "./query.ts";
-import { MESH_MAJOR, MESH_MINOR, type Paper } from "./schema.ts";
+import { findConcepts } from "./resolve.ts";
+import { MESH_MAJOR, MESH_MINOR } from "./schema.ts";
 import {
   otherDisease,
   otherTreatment,
@@ -130,13 +131,11 @@ const SEX_TAGS: Record<string, string> = {
 
 type Candidate = {
   document_id: string;
-  score: number;
   matched: Record<string, number>;
   idf: Record<string, number>;
   title: string;
   published: string | null;
   publication_types: string[];
-  entities: Paper["entities"];
   relations: Triple[];
   mesh: Record<string, number>;
 };
@@ -299,10 +298,10 @@ export function createGraphMatcher(db: Queryable): Matcher {
            FROM evidence e JOIN idf i USING (grp)
            GROUP BY e.document_id
          )
-         SELECT s.document_id, s.score, s.matched,
+         SELECT s.document_id, s.matched,
                 (SELECT jsonb_object_agg(grp, idf) FROM idf) AS idf,
                 d.title, d.published_at::text AS published, d.publication_types,
-                g.entities, g.relations, coalesce(g.mesh, '{}'::jsonb) AS mesh
+                g.relations, coalesce(g.mesh, '{}'::jsonb) AS mesh
          FROM scored s
          JOIN graph.documents g ON g.document_id = s.document_id
          JOIN public.documents d ON d.id = s.document_id
@@ -334,10 +333,11 @@ export function createGraphMatcher(db: Queryable): Matcher {
       });
       const hits = rows
         .map((row) => ({ row, ...rank(query, row, values) }))
-        // On a tie the older paper first: the graded journeys favour established work.
+        // On a tie prefer more specific title evidence, then the older paper.
         .sort(
           (a, b) =>
             b.score - a.score ||
+            b.titleScore - a.titleScore ||
             (a.row.published ?? "9999").localeCompare(
               b.row.published ?? "9999",
             ) ||
@@ -362,11 +362,26 @@ function rank(
   query: GraphQuery,
   row: Candidate,
   values: Record<Setting, number>,
-): { score: number; matchedTerms: string[]; explanation: string } {
+): {
+  score: number;
+  titleScore: number;
+  matchedTerms: string[];
+  explanation: string;
+} {
   const contributions: { concept: QueryConcept; part: number }[] = [];
+  // PubTator does not annotate procedures. Read the same curated concepts from the title
+  // of each candidate, counting the stronger of title and indexed evidence once.
+  const titleIds = new Set(findConcepts(row.title).map(({ id }) => id));
+  let titleScore = 0;
   let mainTopic = 0;
   query.concepts.forEach((concept, index) => {
-    const strength = row.matched[index] ?? 0;
+    const inTitle = concept.ids.some((id) => titleIds.has(id));
+    const strength = Math.max(
+      row.matched[index] ?? 0,
+      inTitle ? values.title : 0,
+    );
+    if (inTitle)
+      titleScore += concept.weight * values.title * (row.idf[index] ?? 0);
     if (strength <= 0) return;
     if (concept.role === "diagnosis") mainTopic = Math.max(mainTopic, strength);
     contributions.push({
@@ -377,7 +392,7 @@ function rank(
   const drugs = linkedDrugs(query, row.relations);
   let relation = 0;
   query.concepts.forEach((concept, index) => {
-    if (concept.role === "drug" && drugs.has(concept.ids[0]))
+    if (concept.role === "drug" && concept.ids.some((id) => drugs.has(id)))
       relation += values.relation * concept.weight * (row.idf[index] ?? 0);
   });
   const stages = paperStages(row.title, row.mesh);
@@ -399,7 +414,7 @@ function rank(
   const topic =
     1 - values.mainTopic + values.mainTopic * Math.min(1, mainTopic);
   const score =
-    (row.score + relation) *
+    (contributions.reduce((sum, term) => sum + term.part, 0) + relation) *
     topic *
     stage.factor *
     (phase === undefined ? 1 : severity[phase]) *
@@ -434,6 +449,7 @@ function rank(
   ];
   return {
     score,
+    titleScore,
     matchedTerms: [
       ...new Set(
         contributions

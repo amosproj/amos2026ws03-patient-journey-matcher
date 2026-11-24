@@ -1,4 +1,4 @@
-// Disease states (Documentation/design/graph-normalization.md#disease-states): which states a
+// Disease states (Documentation/design/graph-normalization.md#ranking): which states a
 // paper is about and which the patient is in. A paper about states that all contradict the
 // patient's ranks lower; one about his current state ranks higher.
 import neoplasms from "../data/neoplasms.json" with { type: "json" };
@@ -64,8 +64,9 @@ export type Severity = "strong" | "moderate" | "mild";
 
 // A cue after these words, or before "free", says the patient is not in the state.
 const NEGATED_BEFORE =
-  /\b(?:kein\w*|no|not|without|ohne|negativ\w*|frei von|free of|ausschluss|ausgeschlossen|excluded)\b(?: \w+){0,3} $/;
-const NEGATED_AFTER = /^\w* ?(?:free|frei)\b/;
+  /\b(?:kein\w*|no|not|nicht|without|ohne|negativ\w*|frei von|free of|ausschluss|ausgeschlossen|excluded)\b(?: \w+){0,3} $/;
+const NEGATED_AFTER =
+  /^\w* (?:free|frei|ausgeschlossen|ruled out|excluded)\b|^\w*(?:free|frei)\b/;
 
 /** The states a normalized text names, unless negated ("kein Fernmetastasennachweis"). */
 export function stageCues(text: string): Set<Stage> {
@@ -105,7 +106,6 @@ export function patientStage(
     for (const stage of stageCues(text)) states.add(stage);
   if (states.has("castration_resistant")) {
     states.delete("hormone_sensitive");
-    states.add("metastatic");
   }
   return { states, ...therapy };
 }
@@ -144,7 +144,7 @@ function fits(stage: Stage, patient: PatientStage): boolean {
 
 /**
  * How strongly a paper about this state is meant for patients in another situation. The
- * strengths follow the LLM grades of the sample journeys (out/benchmark): papers on an earlier
+ * strengths follow the LLM grades of the sample journeys (research/graph-based-matching.md#7-results): papers on an earlier
  * phase or on the opposite situation are almost never relevant, a paper on the likely next phase
  * (castration resistance for a metastatic patient on hormone therapy) often is.
  */
@@ -168,7 +168,7 @@ function contradicts(
     case "recurrence":
       return !patient.localTherapy || advanced ? "strong" : undefined;
     case "metastatic":
-      return advanced ? undefined : "moderate";
+      return states.has("metastatic") ? undefined : "moderate";
     case "hormone_sensitive":
       return states.has("castration_resistant") ? "strong" : undefined;
     case "castration_resistant":

@@ -124,12 +124,18 @@ const MEASUREMENTS: ReadonlySet<Role> = new Set(["test", "gene", "finding"]);
 const DRUG_THERAPY = "Q000188";
 const ADVERSE_EFFECTS = "Q000009";
 
-type DatedStatus = { validAt?: string; invalidAt?: string; status: Status };
+type DatedStatus = {
+  validAt?: string;
+  invalidAt?: string;
+  status: Status;
+  text?: string;
+};
 
 function latest<T extends DatedStatus>(
   statements: T[],
   keyOf: (statement: T) => string,
   cutoff: string,
+  stageTexts?: string[],
 ): T[] {
   const byKey = new Map<string, T[]>();
   for (const statement of statements) {
@@ -157,6 +163,20 @@ function latest<T extends DatedStatus>(
           ? { ...next, status: current.status }
           : next;
     }
+    // Several still-valid statements for the same entity can describe different aspects
+    // of its stage. Ignore them all when the latest status rules out that entity.
+    if (
+      stageTexts &&
+      (current.status === "asserted" || current.status === "unknown")
+    ) {
+      for (const item of list) {
+        if (
+          item.text &&
+          (item.status === "asserted" || item.status === "unknown")
+        )
+          stageTexts.push(normalizeName(item.text));
+      }
+    }
     result.push(current);
   }
   return result;
@@ -167,13 +187,21 @@ function timelineConditions(events: JourneyEvent[]) {
   const notes: { date: string; text: string; diagnoses: Set<string> }[] = [];
   for (const event of events) {
     const type = normalizeName(event.type);
-    if (type === "family history") continue;
     const diagnosis = event.parameters?.diagnosis;
     const code = event.parameters?.icd_code;
     const fields = typeof diagnosis === "string" ? [diagnosis] : [];
     if (["diagnosis", "pathology", "progression"].includes(type))
       fields.push(event.label);
-    const hits = fields.flatMap(findDiseases);
+    // An explicit exclusion also counts on a follow-up that never introduced a diagnosis.
+    const excluded = findDiseases(event.label).filter(
+      ({ concept, code }) =>
+        statusFromText(event.label, [
+          concept.name,
+          ...concept.names,
+          ...(code ? [code] : []),
+        ])?.status === "negated",
+    );
+    const hits = [...fields.flatMap(findDiseases), ...excluded];
     const byCode = resolveIcd(code);
     if (byCode?.type === "disease")
       hits.push({ concept: byCode, code: String(code) });
@@ -218,7 +246,8 @@ function timelineConditions(events: JourneyEvent[]) {
 
 /** The text of an event that names concepts: its label and its text parameters. */
 function eventText(event: JourneyEvent): string {
-  const values = Object.values(event.parameters ?? {}).flatMap((value) =>
+  const { participants: _departments, ...parameters } = event.parameters ?? {};
+  const values = Object.values(parameters).flatMap((value) =>
     typeof value === "string"
       ? [value]
       : Array.isArray(value)
@@ -336,11 +365,28 @@ function parameterFacts(event: JourneyEvent): {
   const concepts: Concept[] = [];
   const implied: Implied[] = [];
   const type = normalizeName(event.type);
+  // A measured PSA is a search concept even below the diagnostic threshold. The
+  // synthetic journeys also copy PSA onto unrelated events, such as admissions.
+  const psa = event.parameters?.psa_value;
+  if (
+    (type === "lab test" || type === "followup") &&
+    typeof psa === "number" &&
+    Number.isFinite(psa) &&
+    psa >= 0
+  ) {
+    const marker = conceptOf("ncbigene:354");
+    if (marker) concepts.push(marker);
+  }
   for (const [key, value] of Object.entries(event.parameters ?? {})) {
     const rule = PARAMETERS[key];
     if (rule === undefined || value === null || value === undefined) continue;
     if (rule.events && !rule.events.map(normalizeName).includes(type)) continue;
-    if (rule.atLeast !== undefined && !(Number(value) >= rule.atLeast))
+    if (
+      rule.atLeast !== undefined &&
+      ((typeof value !== "number" && typeof value !== "string") ||
+        !Number.isFinite(Number(value)) ||
+        Number(value) < rule.atLeast)
+    )
       continue;
     const ids = [
       ...(rule.concepts ?? []),
@@ -400,47 +446,71 @@ export function patientQuery(
   }[] = [];
 
   if (!graph) {
-    const events = [...context, focus];
+    const events = [...context, focus]
+      .filter(
+        (event) =>
+          event.date <= cutoff &&
+          normalizeName(event.type) !== "family history",
+      )
+      .sort((a, b) => a.date.localeCompare(b.date));
+    const excluded = new Set<string>();
     const conditions = timelineConditions(events);
     for (const fact of latest(conditions, (fact) => fact.entity, cutoff)) {
-      if (fact.status === "negated") continue;
+      if (fact.status === "negated") {
+        excluded.add(fact.entity);
+        continue;
+      }
       const concept = conceptOf(fact.entity);
       if (concept === undefined) continue;
       const role = roleOf(concept, "diagnosis");
       const weight = weights.roles[role] * factor(fact.validAt, fact.status);
       if (role === "diagnosis" || broaderDiagnosis(concept.id) !== undefined)
         diagnoses.set(concept.id, weight);
-      if (fact.status === "asserted") therapy.diagnosed = true;
+      if (fact.status === "asserted" && diagnoses.has(concept.id))
+        therapy.diagnosed = true;
       found.push({ concept, role, weight, focus: fact.validAt === focus.date });
-      stageIds.push(concept.id);
+      if (fact.status !== "suspected") stageIds.push(concept.id);
     }
     // Per event: the concepts its texts name and its parameters give, whether it plans or gives
     // the therapies among them, and the diagnoses it implies.
     const read = events.map((event) => {
       const type = normalizeName(event.type);
       const parameters = parameterFacts(event);
+      const text = eventText(event);
       const concepts = [
-        ...new Set([...findConcepts(eventText(event)), ...parameters.concepts]),
-      ].filter((concept) => !diagnoses.has(concept.id));
+        ...new Set([...findConcepts(text), ...parameters.concepts]),
+      ].filter(
+        (concept) =>
+          !diagnoses.has(concept.id) &&
+          !excluded.has(concept.id) &&
+          statusFromText(text, [concept.name, ...concept.names])?.status !==
+            "negated",
+      );
       const plans = PLANS.has(type);
       const implied = [...parameters.implied];
       for (const concept of concepts)
-        if (concept.implies !== undefined && !plans)
+        if (
+          concept.implies !== undefined &&
+          GIVES.has(type) &&
+          (concept.id !== "mesh:D011468" ||
+            /\bradical|\bradikal|\brpe\b|\brarp\b|\bralp\b/.test(
+              normalizeName(text),
+            ))
+        )
           implied.push({ id: concept.implies, status: "asserted" });
-      if (
-        plans &&
-        concepts.some((concept) => isTherapy(roleOf(concept, undefined)))
-      )
-        implied.push({ id: "mesh:D011471", status: "asserted" });
-      return { event, type, concepts, plans, gives: GIVES.has(type), implied };
+      return { event, text, concepts, plans, gives: GIVES.has(type), implied };
     });
     // A journey that names no diagnosis implies one: a Gleason grade, a prostatectomy or a
-    // decision on a prostate cancer therapy asserts it, an elevated PSA or PI-RADS makes it
+    // disease-specific treatment supports it, an elevated PSA or PI-RADS makes it
     // suspected (data/timeline.json, concepts.json `implies`).
     const inferred = new Map<string, Status>();
     for (const { implied } of read)
       for (const { id, status } of implied)
-        if (!diagnoses.has(id) && inferred.get(id) !== "asserted")
+        if (
+          !excluded.has(id) &&
+          !diagnoses.has(id) &&
+          inferred.get(id) !== "asserted"
+        )
           inferred.set(id, status);
     for (const [id, status] of inferred) {
       const concept = conceptOf(id);
@@ -453,27 +523,21 @@ export function patientQuery(
     }
     // The current therapy: the therapies of the latest event that gives one, or of the focus
     // event when it decides them.
-    const isGiven = (index: number) =>
-      read[index].gives ||
-      (!read[index].plans && read[index].type !== "tumor board");
     const lastTherapy = read.findLastIndex(
-      ({ concepts }, index) =>
-        (isGiven(index) || index === read.length - 1) &&
+      ({ concepts, gives, plans, event }) =>
+        (gives || (plans && event === focus)) &&
         concepts.some((concept) => isTherapy(roleOf(concept, undefined))),
     );
-    read.forEach(({ event, concepts, plans }, index) => {
-      const text = normalizeName(eventText(event));
-      stageTexts.push(text);
+    read.forEach(({ event, text, concepts, plans, gives }, index) => {
+      stageTexts.push(...text.split(/[.;!?](?:\s|$)/).map(normalizeName));
       const therapies = concepts.filter((concept) =>
         isTherapy(roleOf(concept, undefined)),
       );
       if (plans && therapies.length > 0) therapy.plannedTherapy = true;
-      if (!plans && isGiven(index)) {
+      if (gives) {
         if (
-          therapies.some(
-            (concept) =>
-              roleOf(concept, undefined) === "procedure" &&
-              concept.id !== "mesh:D057832",
+          therapies.some((concept) =>
+            LOCAL_THERAPY.test(normalizeName(concept.name)),
           )
         )
           therapy.localTherapy = true;
@@ -485,7 +549,6 @@ export function patientQuery(
         const role = roleOf(concept, undefined);
         const current = index === lastTherapy && isTherapy(role);
         const status: Status = plans && isTherapy(role) ? "planned" : "unknown";
-        if (role === "drug") treatments.set(concept.id, weights.roles.drug);
         found.push({
           concept,
           role,
@@ -529,17 +592,29 @@ export function patientQuery(
       concept: Concept;
       role: Role;
     }[] = [];
-    for (const fact of latest(
+    const sentences = weights.sentences ? stageTexts : undefined;
+    const activeFacts = latest(
       normalized.facts,
-      (f) => `${f.conditionRole ?? f.kind}:${f.entity}`,
+      (fact) => `${fact.conditionRole ?? fact.kind}:${fact.entity}`,
       cutoff,
-    )) {
+      sentences,
+    );
+    const activeRelations = latest(
+      normalized.relations,
+      tripleKey,
+      cutoff,
+      sentences,
+    );
+    for (const fact of activeFacts) {
       const entity = entities.get(fact.entity);
       if (entity === undefined || fact.status === "negated") continue;
       const names = entity.names.map(normalizeName);
-      if (entity.id !== null) stageIds.push(entity.id);
-      stageTexts.push(...names);
-      if (fact.kind === "receives" && fact.status !== "planned") {
+      if (fact.status !== "planned" && fact.status !== "suspected")
+        stageTexts.push(...names);
+      if (
+        fact.kind === "receives" &&
+        (fact.status === "asserted" || fact.status === "unknown")
+      ) {
         if (names.some((name) => LOCAL_THERAPY.test(name)))
           therapy.localTherapy = true;
         if (names.some((name) => SYSTEMIC_THERAPY.test(name)))
@@ -580,51 +655,104 @@ export function patientQuery(
     // ISO dates sort as text.
     const latestStart = started.sort().at(-1) ?? "";
     for (const { fact, concept, role } of items) {
-      {
-        const onFocusDay = fact.validAt === focus.date;
-        const news = onFocusDay && firstSeen.get(fact.entity) === focus.date;
-        const current =
-          isTherapy(role) &&
-          begins(fact) &&
-          latestStart !== "" &&
-          firstSeen.get(fact.entity) === latestStart;
-        const measurement = onFocusDay && MEASUREMENTS.has(role);
+      const onFocusDay = fact.validAt === focus.date;
+      const news = onFocusDay && firstSeen.get(fact.entity) === focus.date;
+      const current =
+        isTherapy(role) &&
+        begins(fact) &&
+        latestStart !== "" &&
+        firstSeen.get(fact.entity) === latestStart;
+      const measurement = onFocusDay && MEASUREMENTS.has(role);
+      const weight =
+        weights.roles[role] *
+        CERTAINTY[fact.status] *
+        multiplier(news, current, measurement);
+      const narrower =
+        fact.conditionRole === "diagnosis" &&
+        broaderDiagnosis(concept.id) !== undefined;
+      if (role === "diagnosis" || narrower) {
+        diagnoses.set(
+          concept.id,
+          Math.max(weight, diagnoses.get(concept.id) ?? 0),
+        );
+        if (fact.status === "asserted") therapy.diagnosed = true;
+      }
+      found.push({
+        concept,
+        role,
+        weight,
+        focus: news || current || measurement,
+      });
+      // A plan is no evidence of the state it would imply (radium-223: castration-resistant).
+      if (fact.status !== "planned" && fact.status !== "suspected")
+        stageIds.push(concept.id);
+    }
+    // At referral the only diagnosis evidence may be a test that indicates a diagnosis.
+    // A later exclusion by the patient or pathology must still veto this weaker inference.
+    if (!diagnoses.size) {
+      for (const relation of activeRelations) {
+        if (
+          relation.predicate !== "indicates" ||
+          relation.status === "negated" ||
+          relation.status === "planned"
+        )
+          continue;
+        const source = entities.get(relation.subject);
+        const finding = conceptOf(relation.subject);
+        const measured =
+          finding && MEASUREMENTS.has(roleOf(finding, undefined));
+        if (
+          !measured &&
+          !source?.labels.some((label) =>
+            [
+              "LabTest",
+              "TumorMarker",
+              "ImagingResult",
+              "PathologyResult",
+            ].includes(label),
+          )
+        )
+          continue;
+        const target = entities.get(relation.object);
+        const concept = conceptOf(relation.object);
+        if (
+          activeFacts.some(
+            (fact) =>
+              fact.status === "negated" &&
+              ((fact.entity === relation.object &&
+                fact.conditionRole === "diagnosis") ||
+                (fact.entity === relation.subject &&
+                  fact.kind === "has_finding")),
+          ) ||
+          !target?.labels.includes("Diagnosis") ||
+          concept?.type !== "disease" ||
+          roleOf(concept, "diagnosis") !== "diagnosis"
+        )
+          continue;
         const weight =
-          weights.roles[role] *
-          CERTAINTY[fact.status] *
-          multiplier(news, current, measurement);
-        const narrower =
-          fact.conditionRole === "diagnosis" &&
-          broaderDiagnosis(concept.id) !== undefined;
-        if (role === "diagnosis" || narrower) {
-          diagnoses.set(
-            concept.id,
-            Math.max(weight, diagnoses.get(concept.id) ?? 0),
-          );
-          if (fact.status === "asserted") therapy.diagnosed = true;
-        }
-        if (role === "drug") treatments.set(concept.id, weight);
+          weights.roles.diagnosis * factor(relation.validAt, "suspected");
+        diagnoses.set(
+          concept.id,
+          Math.max(weight, diagnoses.get(concept.id) ?? 0),
+        );
         found.push({
           concept,
-          role,
+          role: "diagnosis",
           weight,
-          focus: news || current || measurement,
+          focus: relation.validAt === focus.date,
         });
-        // A plan is no evidence of the state it would imply (radium-223: castration-resistant).
-        if (fact.status !== "planned") stageIds.push(concept.id);
+        if (measured) {
+          const role = roleOf(finding, undefined);
+          found.push({
+            concept: finding,
+            role,
+            weight: weights.roles[role] * factor(relation.validAt, "unknown"),
+            focus: relation.validAt === focus.date,
+          });
+        }
       }
     }
-    for (const statement of [...normalized.facts, ...normalized.relations]) {
-      if (
-        weights.sentences &&
-        statement.text &&
-        statement.status !== "negated" &&
-        statement.validAt !== undefined &&
-        statement.validAt <= cutoff
-      )
-        stageTexts.push(normalizeName(statement.text));
-    }
-    for (const relation of latest(normalized.relations, tripleKey, cutoff)) {
+    for (const relation of activeRelations) {
       // An unspecified relationship on both sides is no evidence that their meanings agree.
       if (
         relation.predicate === "related" ||
@@ -650,9 +778,17 @@ export function patientQuery(
       gate.set(one, Math.max(weight, gate.get(one) ?? 0));
   }
   const concepts = new ConceptSet(weights, new Set(diagnoses.keys()));
-  for (const { concept, role, weight, focus: isFocus } of found)
+  for (const { concept, role, weight, focus: isFocus } of found) {
+    // An incidental mention cannot override the role and evidence of an actual diagnosis.
+    if (role !== "stage" && role !== "diagnosis" && diagnoses.has(concept.id))
+      continue;
     concepts.add(concept, role, weight, isFocus);
-  if (therapy.localTherapy || therapy.systemicTherapy) therapy.diagnosed = true;
+    if (role === "drug")
+      for (const id of [concept.id, ...(concept.also ?? [])])
+        treatments.set(id, Math.max(weight, treatments.get(id) ?? 0));
+  }
+  if (diagnoses.size && (therapy.localTherapy || therapy.systemicTherapy))
+    therapy.diagnosed = true;
   therapy.diagnosticFocus = found.some(
     ({ role, focus: isFocus }) => role === "test" && isFocus,
   );

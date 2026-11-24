@@ -195,7 +195,7 @@ describe.skipIf(!databaseUrl)("graph annotation retries in PostgreSQL", () => {
       SELECT id, date_trunc('milliseconds', changed_at) - CASE WHEN native_id = '3' THEN interval '1 day' ELSE interval '0' END,
              CASE WHEN native_id = '2' THEN '{}'::jsonb ELSE '{"old": {}}'::jsonb END,
              CASE WHEN native_id = '2' THEN '[]'::jsonb ELSE '["old"]'::jsonb END,
-             CASE WHEN native_id = '2' THEN now() ELSE 'infinity'::timestamptz END
+             CASE WHEN native_id = '2' THEN now() ELSE 'infinity'::timestamptz END, '{}'::jsonb
       FROM documents WHERE native_id IN ('2', '3', '4')`);
     const annotated = (id: string) => ({ ...exportDocument, id, pmid: id });
     let records = [
@@ -258,55 +258,6 @@ describe.skipIf(!databaseUrl)("graph annotation retries in PostgreSQL", () => {
     expect(updated.rows[0].entities).toHaveProperty("mesh:D011471");
   });
 
-  test("stores the MeSH headings with their flags, also for rows indexed before the column", async () => {
-    const db = database.pool;
-    const subjects = [
-      {
-        scheme: "mesh",
-        id: "D011471",
-        label: "Prostatic Neoplasms",
-        major: true,
-      },
-      {
-        scheme: "mesh",
-        id: "D011471Q000601",
-        label: "Prostatic Neoplasms/surgery",
-        major: true,
-      },
-      { scheme: "mesh", id: "D011468", label: "Prostatectomy", major: false },
-      { scheme: "mesh", id: "C540278", label: "enzalutamide", major: null },
-      { scheme: "keyword", id: null, label: "robotic surgery", major: null },
-    ];
-    await db.query(
-      `INSERT INTO documents (id, source, native_id, content_type, title, canonical_url, retrieved_at, subjects)
-       SELECT 'pubmed:' || n, 'pubmed', n::text, 'journal_article', 'Title', 'https://example.org', now(), $1::jsonb
-       FROM generate_series(10, 11) AS n`,
-      [JSON.stringify(subjects)],
-    );
-    await ensureGraphSchema(db);
-    // pubmed:11 was indexed before the mesh column existed.
-    await db.query(`
-      INSERT INTO graph.documents (document_id, document_changed_at, entities, relations, retry_at)
-      SELECT id, date_trunc('milliseconds', changed_at), '{}', '[]', 'infinity' FROM documents
-      WHERE id = 'pubmed:11'`);
-    await createGraphIndexer(db, async () => answer({ PubTator3: [] })).index(
-      () => {},
-    );
-    const { rows } = await db.query(
-      "SELECT document_id, mesh FROM graph.documents WHERE document_id IN ('pubmed:10', 'pubmed:11') ORDER BY document_id",
-    );
-    const mesh = {
-      "mesh:D011471": MESH_MAJOR,
-      "mesh:D011471Q000601": MESH_MAJOR,
-      "mesh:D011468": MESH_MINOR,
-      "mesh:C540278": MESH_SUBSTANCE,
-    };
-    expect(rows).toEqual([
-      { document_id: "pubmed:10", mesh },
-      { document_id: "pubmed:11", mesh },
-    ]);
-  });
-
   // `DELETE FROM transcripts` is the documented way to have the audio read again.
   test("keeps indexing when deleted transcripts move the version of a document back", async () => {
     const db = database.pool;
@@ -329,3 +280,58 @@ describe.skipIf(!databaseUrl)("graph annotation retries in PostgreSQL", () => {
     expect(rows).toEqual([{ current: true }]);
   });
 });
+
+test.skipIf(!databaseUrl)(
+  "the first index run creates the graph index and stores source-specific MeSH flags",
+  async () => {
+    const database = await createTestDatabase(databaseUrl as string);
+    const db = database.pool;
+    const subjects = JSON.stringify([
+      { scheme: "mesh", id: "D1", major: true },
+      { scheme: "mesh", id: "D2", major: false },
+      { scheme: "mesh", id: "D2", major: null },
+      { scheme: "mesh", id: "D3Q4", major: true },
+      { scheme: "mesh", id: "D4Q5", major: null },
+      { scheme: "mesh", id: "D5" },
+      { scheme: "mesh", id: "C6", major: null },
+      { scheme: "keyword", id: "D7", major: null },
+      { scheme: "mesh", id: "invalid", major: true },
+    ]);
+    const pubmed = {
+      "mesh:D1": MESH_MAJOR,
+      "mesh:D2": MESH_MINOR | MESH_SUBSTANCE,
+      "mesh:D3Q4": MESH_MAJOR,
+      "mesh:D4Q5": MESH_MINOR,
+      "mesh:D5": MESH_SUBSTANCE,
+      "mesh:C6": MESH_SUBSTANCE,
+    };
+    const zenodo = {
+      ...pubmed,
+      "mesh:D2": MESH_MINOR,
+      "mesh:D5": MESH_MINOR,
+      "mesh:C6": MESH_MINOR,
+    };
+    try {
+      await db.query(
+        `INSERT INTO documents (id, source, native_id, content_type, title, canonical_url, retrieved_at, subjects)
+         SELECT source || ':1', source, '1', 'journal_article', 'Title', 'https://example.org', now(), $1::jsonb
+         FROM (VALUES ('pubmed'), ('zenodo')) AS sources(source)`,
+        [subjects],
+      );
+      const get = vi.fn(async () => answer({ PubTator3: [] }));
+      const indexer = createGraphIndexer(db, get);
+      await indexer.index(() => {});
+      await indexer.index(() => {});
+      expect(get).toHaveBeenCalledTimes(1);
+      const { rows } = await db.query(
+        "SELECT document_id, mesh FROM graph.documents ORDER BY document_id",
+      );
+      expect(rows).toEqual([
+        { document_id: "pubmed:1", mesh: pubmed },
+        { document_id: "zenodo:1", mesh: zenodo },
+      ]);
+    } finally {
+      await database.drop();
+    }
+  },
+);

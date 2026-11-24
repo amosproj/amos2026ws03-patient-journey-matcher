@@ -1,5 +1,5 @@
 {
-  "_comment": "What the events of a journey without a patient graph say (timeline.json of the synthetic journeys; Documentation/design/graph-normalization.md#journeys). Event types: `plans` decide the therapies they name (tumor board), `gives` give them; in other events a named therapy is history or context. `parameters`: a parameter key gives `concepts` when present, `values` per value, or makes a diagnosis asserted or suspected (`implies`), also only from a number up (`atLeast`) and only in some event types (`events`). Proposal and evidence: out/benchmark/research/journey-mapping.json (rules I1, I2, I7, S1, S2).",
+  "_comment": "What the events of a journey without a patient graph say (timeline.json of the synthetic journeys; Documentation/design/graph-normalization.md#ranking). Event types: `plans` decide the therapies they name (tumor board), `gives` give them; in other events a named therapy is history or context. `parameters`: a parameter key gives `concepts` when present, `values` per value, or makes a diagnosis asserted or suspected (`implies`), also only from a number up (`atLeast`) and only in some event types (`events`).",
   "plans": ["tumor_board", "treatment_decision", "hospital_admission"],
   "gives": [
     "systemic_therapy",
@@ -17,11 +17,6 @@
     },
     "gleason_secondary": {
       "concepts": ["mesh:D060787"],
-      "implies": {
-        "mesh:D011471": "asserted"
-      }
-    },
-    "pt_stage": {
       "implies": {
         "mesh:D011471": "asserted"
       }
@@ -48,6 +43,31 @@
       "values": {
         "biochemical_recurrence": ["mesh:D009364", "ncbigene:354"],
         "castration_resistance": ["mesh:D064129", "ncbigene:354"]
+      }
+    },
+    "bone_mets": {
+      "values": {
+        "true": ["mesh:D001859"]
+      }
+    },
+    "liver_mets": {
+      "values": {
+        "true": ["mesh:D008113"]
+      }
+    },
+    "lymph_node_mets": {
+      "values": {
+        "true": ["mesh:D008207"]
+      }
+    },
+    "lymphadenectomy": {
+      "values": {
+        "true": ["mesh:D008197"]
+      }
+    },
+    "pain_management": {
+      "values": {
+        "true": ["mesh:D059408"]
       }
     }
   }

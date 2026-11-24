@@ -325,7 +325,7 @@ test.skipIf(!databaseUrl)(
         ],
         // The surgery only as a minor heading.
         [
-          "2",
+          "0",
           { [cancer]: { type: "disease", inTitle: true } },
           { [prostatectomy]: MESH_MINOR },
         ],
@@ -383,7 +383,7 @@ test.skipIf(!databaseUrl)(
       // contradicts this patient; pubmed:3 has the diagnosis only in the abstract.
       expect(order(hits)).toEqual([
         "pubmed:1",
-        "pubmed:2",
+        "pubmed:0",
         "pubmed:4",
         "pubmed:3",
       ]);
@@ -398,7 +398,33 @@ test.skipIf(!databaseUrl)(
       expect(pool.idf[cancer]).toBeLessThan(0.2);
       expect(pool.idf[prostatectomy]).toBeGreaterThan(pool.idf[cancer]);
 
-      // Patient-5 with the trimmed PubTator3 exports: nothing before his diagnosis is known.
+      // Adding another diagnosis ID and a second channel for the surgery must not
+      // count either concept twice. A one-row shortlist retains the best concept score.
+      await db.pool.query(
+        `UPDATE graph.documents SET entities = entities || $1::jsonb, mesh = mesh || $2::jsonb
+         WHERE document_id = 'pubmed:1'`,
+        [
+          JSON.stringify({ [prostatectomy]: { inTitle: true } }),
+          JSON.stringify({ [cancer]: MESH_MAJOR, [crpc]: MESH_MINOR }),
+        ],
+      );
+      const sameQuery = state(diagnosis, edge("UNDERWENT", "p", "rp"));
+      const matcher = createGraphMatcher(db.pool);
+      const sameHits = await matcher.match(sameQuery, {
+        limit: 10,
+        contentTypes: ["journal_article"],
+      });
+      expect(sameHits.map((hit) => hit.score)).toEqual(
+        hits.map((hit) => hit.score),
+      );
+      const first = await matcher.match(sameQuery, {
+        limit: 1,
+        contentTypes: ["journal_article"],
+        tuning: { candidates: 1 },
+      });
+      expect(order(first)).toEqual(["pubmed:1"]);
+
+      // Patient-5 has a suspected diagnosis at referral, before the later confirmation.
       const graph = JSON.parse(
         readFileSync(
           new URL(
@@ -441,7 +467,8 @@ test.skipIf(!databaseUrl)(
           },
           { limit: 20 },
         );
-      expect(await matchOn("2026-11-06")).toEqual([]);
+      expect(await matchOn("2026-11-05")).toEqual([]);
+      expect(order(await matchOn("2026-11-06"))).toContain("pubmed:32343890");
       const known = order(await matchOn("2026-12-08"));
       expect(known).toEqual(
         expect.arrayContaining(["pubmed:32343890", "pubmed:35923949"]),
@@ -452,3 +479,50 @@ test.skipIf(!databaseUrl)(
     }
   },
 );
+
+test("a title can supply a missing procedure and a major topic for it counts only once", async () => {
+  const q = state(diagnosis, edge("UNDERWENT", "p", "rp"));
+  const same = { [cancer]: 1 };
+  const hits = await rank(
+    [
+      { id: "a", evidence: same },
+      {
+        id: "b",
+        title: "Outcomes after radical prostatectomy",
+        evidence: same,
+      },
+      {
+        id: "c",
+        title: "Outcomes after radical prostatectomy",
+        evidence: { ...same, [prostatectomy]: 1 },
+      },
+    ],
+    q,
+  );
+  expect(order(hits)).toEqual(["b", "c", "a"]);
+  expect(hits[0].score).toEqual(hits[1].score);
+  expect(hits[1].score).toBeGreaterThan(hits[2].score);
+});
+
+test("a treats relation to the acetate ID counts for abiraterone", async () => {
+  const q = {
+    context: [{ ...focus, type: "diagnosis", label: "Prostate cancer" }],
+    focus: { ...focus, type: "systemic_therapy", label: "Abiraterone" },
+  };
+  const same = { [cancer]: 1, "mesh:C089740": 1 };
+  const hits = await rank(
+    [
+      { id: "a", evidence: same },
+      {
+        id: "z",
+        evidence: same,
+        relations: [
+          { subject: "mesh:D000069501", predicate: "treats", object: cancer },
+        ],
+      },
+    ],
+    q,
+  );
+  expect(order(hits)).toEqual(["z", "a"]);
+  expect(hits[0].score).toBeGreaterThan(hits[1].score);
+});

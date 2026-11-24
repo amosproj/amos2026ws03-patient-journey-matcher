@@ -18,7 +18,8 @@
         "pca",
         "hormone sensitive prostate cancer",
         "metastatic hormone sensitive prostate cancer",
-        "mhspc"
+        "mhspc",
+        "mcspc"
       ],
       "narrower": ["mesh:D064129"],
       "sex": "male"
@@ -33,7 +34,8 @@
         "crpc",
         "mcrpc",
         "kastrationsresistentes prostatakarzinom",
-        "kastrationsresistenz"
+        "kastrationsresistenz",
+        "nmcrpc"
       ],
       "sex": "male"
     },
@@ -166,7 +168,6 @@
       "type": "chemical",
       "name": "olaparib",
       "names": ["olaparib", "lynparza"],
-      "stages": ["metastatic", "castration_resistant"],
       "broader": ["mesh:D000067856"]
     },
     {
@@ -189,9 +190,14 @@
       "id": "mesh:C000615150",
       "type": "chemical",
       "name": "Radium-223",
-      "names": ["radium 223", "radium 223 dichloride", "xofigo"],
+      "names": [
+        "radium 223",
+        "radium 223 dichloride",
+        "xofigo",
+        "radium ra 223 dichloride"
+      ],
       "stages": ["metastatic", "castration_resistant"],
-      "also": ["mesh:D011883"],
+      "also": ["mesh:C581106", "mesh:D011883"],
       "broader": ["mesh:D019275"],
       "implies": "mesh:D011471"
     },
@@ -294,7 +300,8 @@
         "strahlentherapie",
         "bestrahlung",
         "salvage bestrahlung",
-        "perkutane strahlentherapie"
+        "perkutane strahlentherapie",
+        "radiotherapie"
       ],
       "qualifier": "Q000532",
       "also": [
@@ -302,8 +309,7 @@
         "mesh:D061089",
         "mesh:D011879",
         "mesh:D018714",
-        "mesh:D050397",
-        "mesh:D001918"
+        "mesh:D050397"
       ]
     },
     {
@@ -349,7 +355,7 @@
       "name": "Positron Emission Tomography Computed Tomography",
       "names": ["pet ct", "psma pet ct", "psma pet"],
       "diagnostic": true,
-      "also": ["mesh:D049268", "mesh:D043425"],
+      "also": ["mesh:D049268"],
       "qualifier": "Q000000981"
     },
     {
@@ -547,8 +553,7 @@
       "id": "mesh:D000067856",
       "type": "chemical",
       "name": "Poly(ADP-ribose) Polymerase Inhibitors",
-      "names": ["parp inhibitor", "parp inhibitors", "parp hemmer"],
-      "stages": ["metastatic", "castration_resistant"]
+      "names": ["parp inhibitor", "parp inhibitors", "parp hemmer"]
     },
     {
       "id": "mesh:D059002",
@@ -645,6 +650,41 @@
       "type": "chemical",
       "name": "Antineoplastic Agents",
       "names": ["chemotherapy", "chemotherapie", "systemic chemotherapy"]
+    },
+    {
+      "id": "mesh:D001918",
+      "type": "procedure",
+      "name": "Brachytherapy",
+      "names": ["brachytherapie"],
+      "broader": ["mesh:D011878"],
+      "qualifier": "Q000532"
+    },
+    {
+      "id": "mesh:D005820",
+      "type": "procedure",
+      "name": "Genetic Testing",
+      "names": ["genetische testung", "keimbahn und somatische genetik"],
+      "diagnostic": true
+    },
+    {
+      "id": "mesh:D000469",
+      "name": "Alkaline Phosphatase",
+      "type": "finding",
+      "role": "test",
+      "names": ["alkalische phosphatase", "alp"]
+    },
+    {
+      "id": "mesh:D007770",
+      "name": "L-Lactate Dehydrogenase",
+      "type": "finding",
+      "role": "test",
+      "names": ["lactate dehydrogenase", "laktatdehydrogenase", "ldh"]
+    },
+    {
+      "id": "mesh:D059408",
+      "type": "procedure",
+      "name": "Pain Management",
+      "names": ["schmerztherapie", "schmerzbehandlung", "pain control"]
     }
   ]
 }

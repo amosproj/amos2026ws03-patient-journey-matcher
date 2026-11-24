@@ -296,7 +296,7 @@ function mtRenderStats() {
     terms && card("Search terms: focus + context", `${terms.focus.length + (terms.generic?.length ?? 0)} + ${terms.context.length}`),
     rankings && card("Candidates: metadata + full text", `${rankings.metadata.length} + ${rankings.fullTexts.length}`),
     candidates && card("Candidates without a medical term, dropped", dropped, dropped ? "" : "muted"),
-    query && card("Mapped diagnoses", Object.keys(query.diagnoses).length, Object.keys(query.diagnoses).length ? "" : "muted"),
+    query && card("Diagnosis IDs for retrieval", Object.keys(query.diagnoses).length, Object.keys(query.diagnoses).length ? "" : "muted"),
     query && card("Patient concepts: focus + other", `${query.concepts.filter((concept) => concept.focus).length} + ${query.concepts.filter((concept) => !concept.focus).length}`),
     query && card("Disease state", query.stage.states.join(", ").replaceAll("_", " ") || "–", query.stage.states.length ? "" : "muted"),
     mtStep("semantic") && card(`Model: ${mtStep("semantic").repository}`, aiName(mtStep("semantic").model)),
@@ -404,7 +404,7 @@ function mtRenderTerms() {
 
 // The matcher's ranking constants as inputs, built again only when their names change.
 function mtRenderTuning() {
-  const settings = mtStep("settings");
+  const settings = (mt.request?.algorithm ?? "keyword") === "keyword" ? mtStep("settings") : undefined;
   const names = settings ? settings.map((setting) => setting.name).join() : mt.settings;
   $("#mt-tuning-box").hidden = !names || mtAlgorithm() !== "keyword";
   if (!settings || names === mt.settings) return;
@@ -553,7 +553,7 @@ function mtRenderRankings() {
   const query = mtStep("query");
   if (!rankings && (mt.request?.algorithm === "graph" || query)) {
     const note = h("p", { class: "muted", style: "grid-column:1 / 3; margin:10px 0 0" },
-      "Graph matching scores the PubTator3 annotations and MeSH headings of the papers against the patient's concepts, weighted by role, focus and rarity, then reranks by disease state; no BM25 lists are fused.");
+      "Graph matching weighs the patient's concepts by role, focus and rarity. It uses paper titles, PubTator3 annotations and MeSH headings, then adjusts for disease state and treatment history.");
     if (!query) {
       box.replaceChildren(note, h("div", { class: "empty", style: "grid-column:1 / 3" },
         mt.via === "mcp" ? "The MCP server answers without the steps of the match." : "No graph query trace available."));
@@ -576,10 +576,10 @@ function mtRenderRankings() {
     ]);
     box.replaceChildren(
       note,
-      section(`Diagnoses (cutoff ${query.cutoff}${query.conceptOnly ? ", timeline only" : ""})`, query.diagnoses),
+      section(`Diagnosis IDs for retrieval (cutoff ${query.cutoff}${query.conceptOnly ? ", timeline only" : ""})`, query.diagnoses),
       section("Concepts by weight, ★ focus", Object.fromEntries(Object.entries(concepts).sort(([, a], [, b]) => b - a))),
       section("Disease state and course", state),
-      section("Patient relations", query.relations),
+      section("Treatments used for drug–diagnosis links", query.treatments),
     );
     return;
   }

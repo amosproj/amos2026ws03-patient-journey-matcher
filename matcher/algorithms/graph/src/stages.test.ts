@@ -1,6 +1,8 @@
 import { expect, test } from "vitest";
 import { MESH_MAJOR, MESH_MINOR } from "./schema.ts";
 import {
+  otherDisease,
+  otherTreatment,
   type PatientStage,
   paperStages,
   patientStage,
@@ -54,7 +56,7 @@ test("a patient's states come from concepts, the states they imply and cues", ()
   );
   expect(
     patientStage([], ["hormonsensitiv", "kastrationsresistent"], none).states,
-  ).toEqual(new Set(["castration_resistant", "metastatic"]));
+  ).toEqual(new Set(["castration_resistant"]));
 });
 
 const patient = (states: string[], therapy: Partial<PatientStage> = {}) =>
@@ -148,4 +150,55 @@ test("treatment papers wait for a treatment decision, diagnosis papers for a tes
   expect(
     phaseConflict({ "mesh:D011468": MESH_MINOR }, patient([])),
   ).toBeUndefined();
+});
+
+test("resistance, regional nodes and a metastasis-free endpoint do not establish distant disease", () => {
+  for (const title of [
+    "Treatment of non-metastatic CRPC",
+    "Metastasis-free survival in nmCRPC",
+    "Locally advanced N1 M0 prostate cancer",
+    "Regional lymph node metastases",
+  ]) {
+    expect(paperStages(title, {}).has("metastatic"), title).toBe(false);
+    expect(stageCues(normalizeName(title)).has("metastatic"), title).toBe(
+      false,
+    );
+  }
+  for (const title of [
+    "Outcomes in mCRPC",
+    "Distant nodal disease (M1a)",
+    "Bone metastases",
+  ]) {
+    expect(paperStages(title, {}).has("metastatic"), title).toBe(true);
+    expect(stageCues(normalizeName(title)).has("metastatic"), title).toBe(true);
+  }
+  expect(patientStage(["mesh:C531550"], ["mhspc"], none).states).toEqual(
+    new Set(["metastatic", "hormone_sensitive"]),
+  );
+  expect(patientStage(["mesh:D064129"], [], none).states).toEqual(
+    new Set(["castration_resistant"]),
+  );
+});
+
+test("a patient's own neoplasm and treatment are exempt from alternative-topic penalties", () => {
+  const cancer = "mesh:D011471";
+  const ovarian = "mesh:D010051";
+  const bone = "mesh:D001859";
+  const own = new Set([cancer, bone, "mesh:D011878"]);
+  expect(
+    otherDisease({ [ovarian]: MESH_MAJOR, [cancer]: MESH_MAJOR }, own, [
+      cancer,
+    ]),
+  ).toBe(false);
+  expect(
+    otherDisease({ [bone]: MESH_MAJOR, "mesh:D014565": MESH_MAJOR }, own, [
+      cancer,
+    ]),
+  ).toBe(false);
+  const brachy = { "mesh:D001918": MESH_MAJOR };
+  const treated = patient([], { localTherapy: true });
+  expect(otherTreatment(brachy, own, treated)).toBe(true);
+  expect(
+    otherTreatment(brachy, new Set([...own, "mesh:D001918"]), treated),
+  ).toBe(false);
 });

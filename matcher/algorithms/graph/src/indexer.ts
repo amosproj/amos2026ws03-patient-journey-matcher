@@ -118,7 +118,7 @@ export function createGraphIndexer(db: Queryable, get: Get): Indexer {
           (document_id, document_changed_at, entities, relations, retry_at, mesh)
           SELECT d.id, r.changed, r.entities, r.relations,
                  CASE WHEN r.retry THEN now() + interval '2 days' ELSE 'infinity'::timestamptz END,
-                 graph.mesh_flags(d.subjects)
+                 graph.mesh_flags(d.source, d.subjects)
           FROM jsonb_to_recordset($1::jsonb) AS r(id text, changed timestamptz, entities jsonb, relations jsonb, retry boolean)
           JOIN public.documents d ON d.id = r.id AND date_trunc('milliseconds', d.changed_at) <= r.changed
           ON CONFLICT (document_id) DO UPDATE SET

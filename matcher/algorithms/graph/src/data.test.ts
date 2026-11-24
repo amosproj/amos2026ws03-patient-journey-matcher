@@ -6,7 +6,11 @@ import icd from "../data/icd10-mesh.json" with { type: "json" };
 import outcomes from "../data/outcomes.json" with { type: "json" };
 import patient from "../data/patient-relations.json" with { type: "json" };
 import pubtator from "../data/pubtator-relations.json" with { type: "json" };
+import stages from "../data/stages.json" with { type: "json" };
 import cues from "../data/status-cues.json" with { type: "json" };
+import timeline from "../data/timeline.json" with { type: "json" };
+import { ROLES } from "./query.ts";
+import { STAGES } from "./stages.ts";
 import { CUE_STATUSES } from "./status.ts";
 import { normalizeName } from "./text.ts";
 import { ENTITY_TYPES, FACT_KINDS, PREDICATES, STATUSES } from "./types.ts";
@@ -92,5 +96,31 @@ test("status cues: valid status, position and window, each written once", () => 
 test("attribute values give a status", () => {
   for (const status of Object.values(cues.attributes)) {
     expect(STATUSES).toContain(status);
+  }
+});
+
+test("the stage and timeline tables reference curated patient concepts", () => {
+  for (const row of concepts.concepts) {
+    if ("role" in row) expect(ROLES).toContain(row.role);
+    for (const stage of row.stages ?? []) expect(STAGES).toContain(stage);
+    for (const id of [...(row.broader ?? []), ...(row.narrower ?? [])])
+      expect(CONCEPT_IDS).toContain(id);
+    if (row.implies) expect(CONCEPT_IDS).toContain(row.implies);
+  }
+  for (const stage of stages.stages) {
+    expect(STAGES).toContain(stage.id);
+    for (const id of stage.concepts) expect(CONCEPT_IDS).toContain(id);
+  }
+  for (const rule of Object.values(timeline.parameters)) {
+    if ("values" in rule)
+      for (const ids of Object.values(rule.values))
+        for (const id of ids) expect(CONCEPT_IDS).toContain(id);
+    if ("concepts" in rule)
+      for (const id of rule.concepts) expect(CONCEPT_IDS).toContain(id);
+    if ("implies" in rule)
+      for (const [id, status] of Object.entries(rule.implies)) {
+        expect(CONCEPT_IDS).toContain(id);
+        expect(STATUSES).toContain(status);
+      }
   }
 });

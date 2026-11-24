@@ -106,20 +106,25 @@ const PHRASES = [...CONCEPTS.values()]
   )
   .filter(({ phrase }) => phrase.length > 0)
   .sort((a, b) => b.phrase.length - a.phrase.length);
-const DISEASE_PHRASES = PHRASES.filter(
-  ({ concept }) => concept.type === "disease",
+// Match only phrases with the same first word. Preserve longest-first order within each group.
+const CONCEPT_PHRASES = Map.groupBy(PHRASES, ({ phrase }) => phrase[0]);
+const DISEASE_PHRASES = Map.groupBy(
+  PHRASES.filter(({ concept }) => concept.type === "disease"),
+  ({ phrase }) => phrase[0],
 );
 
 /** The curated concepts whose names stand on word boundaries in `text`, longest first. */
-function findPhrases(text: string, phrases: typeof PHRASES): Concept[] {
+function findPhrases(text: string, phrases: typeof CONCEPT_PHRASES): Concept[] {
   const found: Concept[] = [];
   const tokens = words(text);
   for (let i = 0; i < tokens.length; ) {
-    const hit = phrases.find(
-      ({ phrase }) =>
-        i + phrase.length <= tokens.length &&
-        phrase.every((word, offset) => tokens[i + offset] === word),
-    );
+    const hit = phrases
+      .get(tokens[i])
+      ?.find(
+        ({ phrase }) =>
+          i + phrase.length <= tokens.length &&
+          phrase.every((word, offset) => tokens[i + offset] === word),
+      );
     if (hit !== undefined) {
       found.push(hit.concept);
       i += hit.phrase.length;
@@ -132,7 +137,7 @@ function findPhrases(text: string, phrases: typeof PHRASES): Concept[] {
 
 /** Curated concepts of any type named in a free-text field, each once. */
 export function findConcepts(text: string): Concept[] {
-  return [...new Set(findPhrases(text, PHRASES))];
+  return [...new Set(findPhrases(text, CONCEPT_PHRASES))];
 }
 
 /** Curated diseases and mapped ICD-10 codes found on word boundaries in a free-text field. */

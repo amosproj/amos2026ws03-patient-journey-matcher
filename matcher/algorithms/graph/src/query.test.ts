@@ -446,3 +446,127 @@ test("extracts mapped diagnoses from real synthetic timeline.json phrases", () =
   expect(queryFor("Patient-7").diagnoses.has(crpc)).toBe(true);
   expect(queryFor("Patient-10").diagnoses.has(crpc)).toBe(true);
 });
+
+test("a family history, department or general treatment decision supplies no patient diagnosis", () => {
+  const family = {
+    ...focus,
+    type: "family_history",
+    label: "Vater mit mCRPC, Lebermetastasen, Abirateron",
+  };
+  const board = {
+    ...focus,
+    type: "tumor_board",
+    label: "Tumorkonferenz",
+    parameters: {
+      participants: ["Strahlentherapie"],
+      decision: "chemotherapy",
+      pt_stage: "pT2",
+    },
+  };
+  const q = patientQuery({ context: [family], focus: board });
+  expect(q.diagnoses.size).toBe(0);
+  expect(q.stage.states.size).toBe(0);
+  expect(q.stage.plannedTherapy).toBe(true);
+  expect(q.stage.localTherapy).toBe(false);
+  expect(conceptOf(q, "mesh:D011878")).toBeUndefined();
+  expect(conceptOf(q, liver)).toBeUndefined();
+});
+
+test("negative staging and a ruled-out diagnosis override weaker timeline evidence", () => {
+  const referral = {
+    ...focus,
+    date: "2026-12-01",
+    type: "referral",
+    label: "PSA",
+    parameters: { psa_value: 8 },
+  };
+  expect(
+    patientQuery({ context: [], focus: referral }).diagnoses.get(cancer),
+  ).toBe(0.45);
+  const review = {
+    ...focus,
+    type: "followup",
+    label: "Prostate cancer ruled out.",
+    parameters: { finding: "Kein Nachweis von Fernmetastasen" },
+  };
+  const q = patientQuery({ context: [referral], focus: review });
+  expect(q.diagnoses.size).toBe(0);
+  expect(q.stage.states.has("metastatic")).toBe(false);
+  expect(conceptOf(q, "mesh:D009362")).toBeUndefined();
+});
+
+test("an M0 local recurrence retains its stage while affirmative site flags support distant spread", () => {
+  const q = (label: string, parameters = {}) =>
+    patientQuery({
+      context: [],
+      focus: { ...focus, type: "staging_workup", label, parameters },
+    });
+  expect(
+    q("Lokalrezidiv in der Prostataloge, keine Fernmetastasen").stage.states,
+  ).toEqual(new Set(["recurrence"]));
+  expect(
+    q("Staging", { bone_mets: false, lymph_node_mets: true }).stage.states,
+  ).toEqual(new Set());
+  expect(q("Staging", { bone_mets: true }).stage.states).toEqual(
+    new Set(["metastatic"]),
+  );
+});
+
+test("a test can indicate a suspected diagnosis before confirmation", () => {
+  const test = { uuid: "lab", name: "PSA", labels: ["LabTest"] };
+  const indicates = edge(
+    "INDICATES",
+    "lab",
+    "dx",
+    "Elevated PSA indicates suspected prostate cancer.",
+  );
+  expect(graphQuery([edge("INDICATES", "rx", "dx")]).diagnoses.size).toBe(0);
+  const q = graphQuery([indicates], [test]);
+  expect(q.diagnoses.get(cancer)).toBeCloseTo(0.45 * DEFAULT_WEIGHTS.focus);
+  expect(q.stage.diagnosed).toBe(false);
+  expect(conceptOf(q, "ncbigene:354")?.focus).toBe(true);
+  expect(
+    graphQuery(
+      [
+        indicates,
+        edge("HAS_DIAGNOSIS", "p", "dx", "Prostate cancer was ruled out."),
+      ],
+      [test],
+    ).diagnoses.size,
+  ).toBe(0);
+  expect(
+    graphQuery([{ ...indicates, invalid_at: date }], [test]).diagnoses.size,
+  ).toBe(0);
+});
+
+test("planned and expired evidence cannot establish an active stage", () => {
+  const radium = { uuid: "ra", name: "Radium-223", labels: ["Medication"] };
+  const planned = edge(
+    "HAS_TREATMENT_PLAN",
+    "p",
+    "ra",
+    "Radium-223 if he progresses to mCRPC.",
+  );
+  const expired = {
+    ...edge(
+      "HAS_DIAGNOSIS",
+      "p",
+      "dx",
+      "Confirmed metastatic prostate cancer.",
+      "2026-01-01",
+    ),
+    invalid_at: date,
+  };
+  expect(graphQuery([planned, expired], [radium]).stage.states).toEqual(
+    new Set(),
+  );
+});
+
+test("a numeric follow-up PSA is searchable below the referral threshold", () => {
+  const q = patientQuery({
+    context: [],
+    focus: { ...focus, type: "followup", parameters: { psa_value: 0.02 } },
+  });
+  expect(q.diagnoses.size).toBe(0);
+  expect(conceptOf(q, "ncbigene:354")?.focus).toBe(true);
+});

@@ -76,7 +76,7 @@ A point with no result file or an empty list scores 0 in `ndcg_10` and `precisio
 
 ## Compare matchers
 
-The same steps work for every matcher we add later.
+On an indexed local database, run `make benchmark-graph` from the repository root to compare graph, keyword and their offline rank fusion on the same patient graphs and timelines. It saves the rankings and metrics under `out/benchmark/runs/`. Use `make benchmark-graph BENCH_SET=sample` while tuning.
 
 1. For each point, call `match_journey` with the whole `timeline.json` of the journey, `as_of` from the point and the matcher as `algorithm`.
 2. Save the result as `<point id>.json`, one folder per matcher, for example `runs/keyword/patient-5-e15.json`.
@@ -98,7 +98,7 @@ The first 58 judgments (5 to 7 per point) were graded from the PubMed titles and
 
 **LLM grades for the keyword approach (#58)** are in a file of their own, [`keyword-llm-judgments.json`](../matcher/evaluation/keyword-llm-judgments.json): 9,028 grades for 129 points, only for sources that the keyword ranking found. They are not part of `judgments.json`; see [keyword tuning](keyword-tuning.md#checking-a-change).
 
-**LLM grades for the graph approach (#69)** are in [`graph-llm-judgments.json`](../matcher/evaluation/graph-llm-judgments.json): 5,110 grades for the same points, for the sources that keyword or a graph ranking put in its first 10 on a slice of the VM corpus. 697 of them grade sources that `keyword-llm-judgments.json` grades too; these graders are stricter. Give the runner both files, this one first, to compare rankings on one set of graders; the first file that grades a source for a point counts:
+The [graph judgments for #69](../matcher/evaluation/graph-llm-judgments.json) cover 6,697 point–source pairs from the top ten of graph, keyword and fused rankings on the VM slice. The earlier keyword judgments cover 697 of the same pairs. Pass the graph judgments first to reproduce the [graph comparison](graph-based-matching.md#7-results). The evaluation uses the first available grade for each pair.
 
 ```sh
 cd matcher
@@ -107,5 +107,4 @@ pnpm --filter @matcher/evaluation evaluate ../runs/graph evaluation/graph-llm-ju
 
 ## Open questions
 
-1. The points use `timeline.json`. A graph-based approach needs the same points cut at `as_of` in the graph format; the `graph` input already takes `as_of`.
-2. Who judges videos and podcasts, and from what: description or transcript?
+1. Who judges videos and podcasts, and from what: description or transcript?
