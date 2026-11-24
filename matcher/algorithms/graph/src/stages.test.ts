@@ -1,6 +1,7 @@
 import { expect, test } from "vitest";
 import { MESH_MAJOR, MESH_MINOR } from "./schema.ts";
 import {
+  careContext,
   otherDisease,
   otherTreatment,
   type PatientStage,
@@ -201,4 +202,76 @@ test("a patient's own neoplasm and treatment are exempt from alternative-topic p
   expect(
     otherTreatment(brachy, new Set([...own, "mesh:D001918"]), treated),
   ).toBe(false);
+});
+
+test("surveillance follow-up needs evidence of monitoring or treatment decisions", () => {
+  const active = patient(["surveillance"]);
+  const surveillance = paperStages("Active surveillance", {});
+  const outcome = { "mesh:D005500": MESH_MINOR, "mesh:D016896": MESH_MINOR };
+  const title = "Conversion to active treatment during active surveillance";
+  expect(careContext(active, surveillance, title, {})).toBe(
+    "surveillance follow-up",
+  );
+  expect(careContext(active, surveillance, "Outcomes", outcome)).toBe(
+    "surveillance follow-up",
+  );
+  expect(
+    careContext(active, surveillance, "Biopsy technique", {}),
+  ).toBeUndefined();
+  expect(
+    careContext(
+      { ...active, diagnosticFocus: true },
+      surveillance,
+      title,
+      outcome,
+    ),
+  ).toBeUndefined();
+  expect(
+    careContext(
+      { ...active, localTherapy: true },
+      surveillance,
+      title,
+      outcome,
+    ),
+  ).toBeUndefined();
+  expect(careContext(active, new Set(), title, outcome)).toBeUndefined();
+});
+
+test("salvage radiotherapy after surgery is a different pathway from salvage prostatectomy", () => {
+  const recurrent = patient(["recurrence"], {
+    localTherapy: true,
+    prostatectomy: true,
+  });
+  const papers = paperStages("", {});
+  const after = "Salvage radiotherapy following radical prostatectomy";
+  expect(
+    careContext(
+      recurrent,
+      papers,
+      "Salvage radiation prior to radical prostatectomy",
+      {},
+    ),
+  ).toBeUndefined();
+  expect(careContext(recurrent, papers, after, {})).toBe(
+    "postoperative salvage radiotherapy",
+  );
+  expect(
+    careContext({ ...recurrent, prostatectomy: false }, papers, after, {}),
+  ).toBeUndefined();
+  expect(
+    careContext(
+      recurrent,
+      papers,
+      "Salvage prostatectomy after radiotherapy",
+      {},
+    ),
+  ).toBeUndefined();
+  expect(
+    careContext(
+      recurrent,
+      papers,
+      "Salvage radiotherapy after primary radiotherapy",
+      {},
+    ),
+  ).toBeUndefined();
 });

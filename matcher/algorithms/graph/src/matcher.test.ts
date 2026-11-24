@@ -526,3 +526,28 @@ test("a treats relation to the acetate ID counts for abiraterone", async () => {
   expect(order(hits)).toEqual(["z", "a"]);
   expect(hits[0].score).toBeGreaterThan(hits[1].score);
 });
+
+test("PSA differential diagnosis rises during investigation of suspected cancer", async () => {
+  const psa = edge("HAS_TUMOR_MARKER", "p", "psa");
+  const suspected = edge(
+    "HAS_DIAGNOSIS",
+    "p",
+    "dx",
+    "Suspected prostate cancer.",
+  );
+  const papers = [
+    { id: "general", evidence: { [cancer]: 1, "ncbigene:354": 1 } },
+    {
+      id: "workup",
+      evidence: { [cancer]: 1, "ncbigene:354": 1 },
+      mesh: { "mesh:D003937": MESH_MINOR, "mesh:D017430": MESH_MINOR },
+    },
+  ];
+  const workup = await rank(papers, state(suspected, psa));
+  expect(order(workup)).toEqual(["workup", "general"]);
+  expect(workup[0].explanation).toContain("diagnostic workup");
+  expect(order(await rank(papers, state(diagnosis, psa)))).toEqual([
+    "general",
+    "workup",
+  ]);
+});

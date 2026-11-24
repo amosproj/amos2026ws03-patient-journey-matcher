@@ -524,6 +524,10 @@ test("a test can indicate a suspected diagnosis before confirmation", () => {
   const q = graphQuery([indicates], [test]);
   expect(q.diagnoses.get(cancer)).toBeCloseTo(0.45 * DEFAULT_WEIGHTS.focus);
   expect(q.stage.diagnosed).toBe(false);
+  expect(q.stage.psaWorkup).toBe(true);
+  expect(graphQuery([indicates, diagnosis], [test]).stage.psaWorkup).toBe(
+    false,
+  );
   expect(conceptOf(q, "ncbigene:354")?.focus).toBe(true);
   expect(
     graphQuery(
@@ -569,4 +573,42 @@ test("a numeric follow-up PSA is searchable below the referral threshold", () =>
   });
   expect(q.diagnoses.size).toBe(0);
   expect(conceptOf(q, "ncbigene:354")?.focus).toBe(true);
+});
+
+test("only a performed prostatectomy qualifies papers about recurrence after surgery", () => {
+  const surgery = {
+    uuid: "rp",
+    name: "radical prostatectomy",
+    labels: ["Procedure"],
+  };
+  const done = edge(
+    "UNDERWENT",
+    "p",
+    "rp",
+    "Patient underwent radical prostatectomy.",
+  );
+  const planned = edge(
+    "HAS_TREATMENT_PLAN",
+    "p",
+    "rp",
+    "Radical prostatectomy is planned.",
+  );
+  const pending = edge(
+    "UNDERWENT",
+    "p",
+    "rp",
+    "Patient is scheduled for radical prostatectomy.",
+  );
+  expect(graphQuery([diagnosis, pending], [surgery]).stage.prostatectomy).toBe(
+    false,
+  );
+  expect(graphQuery([diagnosis, done], [surgery]).stage.prostatectomy).toBe(
+    true,
+  );
+  expect(graphQuery([diagnosis, planned], [surgery]).stage.prostatectomy).toBe(
+    false,
+  );
+  expect(
+    graphQuery([diagnosis, done], [surgery], "2026-11-30").stage.prostatectomy,
+  ).toBe(false);
 });

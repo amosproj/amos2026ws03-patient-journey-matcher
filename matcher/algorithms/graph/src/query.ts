@@ -404,6 +404,9 @@ function parameterFacts(event: JourneyEvent): {
 
 const LOCAL_THERAPY =
   /prostatektom|prostatectom|\brpe\b|\brarp\b|radiotherap|bestrahl|strahlenther|\bimrt\b|brachyther/;
+// A surgery event or UNDERWENT edge can still describe a scheduled or cancelled operation.
+const UNPERFORMED_SURGERY =
+  /\b(?:planned|proposed|scheduled|cancelled|canceled|geplant\w*|abgesagt\w*)\b/i;
 const SYSTEMIC_THERAPY =
   /\badt\b|androgen|hormonther|hormone therap|leupro|gosere|degarel|relugol|bicalut|abirater|enzalut|apalut|darolut|docetax|cabazitax|olaparib|radium|chemother/;
 
@@ -433,6 +436,8 @@ export function patientQuery(
   const therapy = {
     diagnosed: false,
     localTherapy: false,
+    prostatectomy: false,
+    psaWorkup: false,
     systemicTherapy: false,
     plannedTherapy: false,
     diagnosticFocus: false,
@@ -541,6 +546,17 @@ export function patientQuery(
           )
         )
           therapy.localTherapy = true;
+        if (
+          normalizeName(event.type) === "surgery" &&
+          !UNPERFORMED_SURGERY.test(event.label) &&
+          therapies.some(
+            (concept) =>
+              concept.id === "mesh:D011468" &&
+              statusFromText(text, [concept.name, ...concept.names])?.status !==
+                "suspected",
+          )
+        )
+          therapy.prostatectomy = true;
         if (therapies.some((concept) => roleOf(concept, undefined) === "drug"))
           therapy.systemicTherapy = true;
       }
@@ -617,6 +633,11 @@ export function patientQuery(
       ) {
         if (names.some((name) => LOCAL_THERAPY.test(name)))
           therapy.localTherapy = true;
+        if (
+          entity.id === "mesh:D011468" &&
+          !UNPERFORMED_SURGERY.test(fact.text ?? "")
+        )
+          therapy.prostatectomy = true;
         if (names.some((name) => SYSTEMIC_THERAPY.test(name)))
           therapy.systemicTherapy = true;
       }
@@ -792,6 +813,12 @@ export function patientQuery(
   therapy.diagnosticFocus = found.some(
     ({ role, focus: isFocus }) => role === "test" && isFocus,
   );
+  therapy.psaWorkup =
+    !therapy.diagnosed &&
+    diagnoses.has("mesh:D011471") &&
+    found.some(
+      ({ concept, focus: isFocus }) => isFocus && concept.id === "ncbigene:354",
+    );
   const sex = [...diagnoses.keys()]
     .map((id) => conceptOf(id)?.sex)
     .find((one) => one !== undefined);

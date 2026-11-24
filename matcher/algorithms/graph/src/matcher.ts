@@ -10,6 +10,7 @@ import {
 import { findConcepts } from "./resolve.ts";
 import { MESH_MAJOR, MESH_MINOR } from "./schema.ts";
 import {
+  careContext,
   otherDisease,
   otherTreatment,
   paperStages,
@@ -405,6 +406,7 @@ function rank(
     fit: values.stageFit,
     ...severity,
   });
+  const care = careContext(query.stage, stages, row.title, row.mesh);
   const phase = phaseConflict(row.mesh, query.stage);
   const own = ownIds(query);
   const foreign = otherDisease(row.mesh, own, query.diagnoses.keys());
@@ -417,6 +419,7 @@ function rank(
     (contributions.reduce((sum, term) => sum + term.part, 0) + relation) *
     topic *
     stage.factor *
+    (care ? values.stageFit : 1) *
     (phase === undefined ? 1 : severity[phase]) *
     (lab ? values.research : 1) *
     (otherSex ? values.population : 1) *
@@ -441,6 +444,7 @@ function rank(
     stage.contradicting.length > 0
       ? `About another disease state (${stage.contradicting.join(", ").replaceAll("_", " ")}).`
       : "",
+    care ? `About ${care}.` : "",
     phase === undefined ? "" : "About another phase of care.",
     lab ? "Lab or animal research." : "",
     otherSex ? "About patients of the other sex." : "",

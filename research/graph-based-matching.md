@@ -129,16 +129,20 @@ We compared the rankings on 29,720 documents from the VM on 2026-11-24. The slic
 |---|---|---:|---:|---:|---:|---:|
 | Graph before the initial rework | Patient graph | 0.145 | 0.171 | 0.117 | 0.164 | 58.8% |
 | Previous graph matcher | Patient graph | 0.447 | 0.484 | 0.408 | 0.538 | 6.3% |
-| Current graph matcher | Patient graph | 0.475 | 0.519 | 0.427 | 0.563 | 5.7% |
-| Keyword | Patient graph | 0.500 | 0.474 | 0.528 | 0.581 | 14.4% |
-| Graph + keyword, offline | Patient graph | 0.531 | 0.555 | 0.506 | 0.639 | 8.7% |
+| Graph before care-context reranking | Patient graph | 0.475 | 0.519 | 0.427 | 0.563 | 5.7% |
+| Current graph matcher | Patient graph | 0.525 | 0.563 | 0.484 | 0.626 | 3.9% |
+| Keyword | Patient graph | 0.500 | 0.473 | 0.528 | 0.581 | 14.4% |
+| Graph + keyword, offline | Patient graph | 0.551 | 0.571 | 0.530 | 0.647 | 7.2% |
 | Previous graph matcher | Timeline | 0.532 | 0.564 | 0.497 | 0.645 | 5.2% |
-| Current graph matcher | Timeline | 0.568 | 0.588 | 0.546 | 0.682 | 3.8% |
-| Keyword | Timeline | 0.554 | 0.575 | 0.530 | 0.684 | 9.0% |
-| Graph + keyword, offline | Timeline | 0.605 | 0.641 | 0.566 | 0.750 | 5.9% |
+| Graph before care-context reranking | Timeline | 0.568 | 0.587 | 0.546 | 0.682 | 3.8% |
+| Current graph matcher | Timeline | 0.631 | 0.646 | 0.614 | 0.771 | 1.9% |
+| Keyword | Timeline | 0.553 | 0.575 | 0.530 | 0.684 | 9.0% |
+| Graph + keyword, offline | Timeline | 0.636 | 0.666 | 0.603 | 0.774 | 4.1% |
 
 The previous graph matcher introduced MeSH evidence, concept rarity and disease-state weighting. The current matcher uses dated findings and treatment status, checks curated concepts in titles, and distinguishes clinical terms with different meanings. For example, regional nodes and distant metastases supply different evidence. On a patient graph the current version returned results for all 129 points, up from 128. The revisions were measured together. [Graph matching details](../Documentation/design/graph-normalization.md#ranking) · [NCI prostate cancer staging](https://www.cancer.gov/types/prostate/hp/prostate-treatment-pdq)
 
-Against the previous matcher, mean nDCG@10 rose for seven of ten patients with graph input and eight with timeline input. Exact two-sided sign-flip tests, flipping all of each patient's event differences together, gave p = 0.072 and 0.066 respectively. The offline comparator combined each method's first 30 hits by equal-weight reciprocal rank fusion with k = 60. It gave the best overall nDCG on both input types. The pure graph matcher returned the smallest share of clearly off-target results. [Rank fusion method](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf)
+The latest comparison isolates the care question. A paper on differential diagnosis can help at PSA workup. A study of reclassification or a switch to treatment can help during surveillance. After prostatectomy with recurrence, the sequence of treatments in a paper's title matters. Against the preceding version, mean nDCG@10 rose for seven of ten patients with graph input and eight with timeline input. Exact two-sided sign-flip tests, flipping all of each patient's event differences together, gave p = 0.016 and 0.008 respectively.
 
-Every returned top-ten hit has an LLM grade. The last two grading rounds included 250 hidden calibration pairs. Agreement with earlier grades was 68% exact in each round and within one grade on 97% and 96% respectively. The table gives newer judgments precedence where the two pools overlap. Giving earlier judgments precedence reverses the small timeline lead over keyword (graph 0.582, keyword 0.626, fusion 0.644). These are retrospective results on synthetic cases and LLM judgments. Performance on new patients or with clinician judgments remains open. [Pooled judgments](../matcher/evaluation/graph-llm-judgments.json) · [Patient graph limitations](../Documentation/design/graph-normalization.md#known-limitations)
+On the 67 development points, 201 grade-3 keyword hits fell outside the graph top ten. Of those, 123 reached the reranker, 68 passed the diagnosis filter but missed the 300-paper shortlist, and ten failed the filter. In a separate trial, admitting titles with both a diagnosis and a focus concept changed no development top ten. Across all 129 points, 14 of the 48 grade-3 keyword hits previously ranked 11–30 by the graph entered its top ten. One entered from below 30 and six previously shared top-ten hits dropped out. These counts refer to point–source pairs.
+
+The offline comparator combines each method's first 30 hits by equal-weight reciprocal rank fusion with k = 60. Every returned top-ten hit has an LLM grade. The latest round added 163 judgments and included 44 hidden calibration pairs. Agreement with the earlier grades was 59% exact and 98% within one grade. The table gives newer judgments precedence where the pools overlap. Giving earlier judgments precedence yields 0.535 for graph versus 0.512 for keyword on patient graphs, and 0.640 versus 0.626 on timelines. Keyword still leads on the five holdout patients with graph input under the main grading order. These are retrospective results on ten synthetic cases. Performance on new patients or with clinician judgments remains open. [Rank fusion method](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf) · [Pooled judgments](../matcher/evaluation/graph-llm-judgments.json) · [Patient graph limitations](../Documentation/design/graph-normalization.md#known-limitations)
