@@ -3,8 +3,18 @@
 // in mcp-server/src/graph.ts. A node or edge that cannot be normalized is skipped and reported.
 import { z } from "zod";
 import { DROPPED_PATIENT_LABELS, mapPatientEdge } from "./relations.ts";
-import { conceptOf, curated, type Dictionary, resolve } from "./resolve.ts";
-import { statusFromAttribute, statusFromText } from "./status.ts";
+import {
+  type Concept,
+  type Dictionary,
+  defaultTerminology,
+  resolve,
+} from "./resolve.ts";
+import {
+  patientText,
+  statusFromAttribute,
+  statusFromText,
+  treatmentStatus,
+} from "./status.ts";
 import { normalizeName, withoutLeadingCode } from "./text.ts";
 import {
   type EntityType,
@@ -151,7 +161,9 @@ function statusFromNode(
 
 export function normalizePatientGraph(
   input: unknown,
-  { dictionaries = [curated] }: { dictionaries?: readonly Dictionary[] } = {},
+  {
+    dictionaries = defaultTerminology.dictionaries,
+  }: { dictionaries?: readonly Dictionary[] } = {},
 ): NormalizedGraph {
   const graph = graphSchema.parse(input);
   const skipped: Skipped[] = [];
@@ -159,6 +171,7 @@ export function normalizePatientGraph(
   const graphEdges = readEach(graph.edges, edgeSchema, "edge", skipped);
   const nodes = new Map(graphNodes.map((node) => [node.uuid, node]));
   const entities = new Map<string, NormalizedEntity>();
+  const concepts = new Map<string, Concept>();
   const keyOf = new Map<string, string>();
 
   for (const node of nodes.values()) {
@@ -169,6 +182,7 @@ export function normalizePatientGraph(
       dictionaries,
     );
     const concept = resolution?.concept;
+    if (concept) concepts.set(concept.id, concept);
     // Unresolved nodes merge only by their normalized name, without a leading code
     // (`C61 X` is `X`), which never leaves this graph. A name with nothing left (`(C61)`, `–`)
     // merges with nothing.
@@ -203,7 +217,7 @@ export function normalizePatientGraph(
   // code (`C61 Prostatakarzinom` is found as `Prostatakarzinom`), and those of its concept.
   function namesOf(key: string): string[] {
     const entity = entities.get(key);
-    const concept = entity?.id == null ? undefined : conceptOf(entity.id);
+    const concept = entity?.id == null ? undefined : concepts.get(entity.id);
     const names = entity?.names ?? [];
     return [
       ...names,
@@ -249,18 +263,47 @@ export function normalizePatientGraph(
       mapping.kind === "relation" && mapping.about === "source";
     const about = aboutSource ? source : target;
     const aboutKey = keyOf.get(about.uuid);
+    const text = edge.fact == null ? undefined : patientText(edge.fact);
+    if (edge.fact && text !== edge.fact) {
+      const remaining = ` ${normalizeName(text ?? "")} `;
+      const relevant = mapping.kind === "relation" ? [source, target] : [about];
+      if (
+        !text ||
+        relevant.some(
+          (node) =>
+            !namesOf(keyOf.get(node.uuid) ?? "").some((name) =>
+              remaining.includes(` ${normalizeName(name)} `),
+            ),
+        )
+      ) {
+        skip("family history");
+        continue;
+      }
+    }
     const cue =
-      edge.fact == null || aboutKey === undefined
-        ? undefined
-        : statusFromText(edge.fact, namesOf(aboutKey));
+      text && aboutKey ? statusFromText(text, namesOf(aboutKey)) : undefined;
+    const treatment =
+      mapping.kind === "relation"
+        ? mapping.predicate === "treats"
+        : mapping.fact === "receives";
+    const course = treatment ? treatmentStatus(text ?? "") : undefined;
     const statement = {
       status:
-        cue?.status ??
+        (course === "negated" || cue?.status === "negated"
+          ? "negated"
+          : undefined) ??
         (mapping.kind === "fact" ? mapping.status : undefined) ??
+        (mapping.kind === "relation" &&
+        mapping.predicate === "treats" &&
+        [sourceLabel, targetLabel].includes("TreatmentPlan")
+          ? "planned"
+          : undefined) ??
+        course ??
+        cue?.status ??
         statusFromNode(about, validAt) ??
         "unknown",
       cue: cue?.cue,
-      text: edge.fact ?? undefined,
+      text,
       validAt,
       invalidAt,
       origin: { source: "patient" as const, ref: edge.uuid, type: edge.name },
@@ -295,7 +338,11 @@ export function normalizePatientGraph(
       continue;
     }
     if (first === second) {
-      const confirms = mapping.confirms === true && validAt !== undefined;
+      const confirms =
+        mapping.confirms === true &&
+        validAt !== undefined &&
+        statement.status !== "negated" &&
+        statement.status !== "suspected";
       if (confirms) {
         const known = confirmed.get(first);
         if (known === undefined || validAt < known.from)

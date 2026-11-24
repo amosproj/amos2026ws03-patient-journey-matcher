@@ -70,7 +70,12 @@ type Paper = {
  */
 function database(papers: Paper[], idf: Record<string, number> = {}) {
   const query = vi.fn(async (_sql: string, values?: unknown[]) => {
-    const [groups, ids, weights] = values as [number[], string[], number[]];
+    const [groups, ids, weights, diagnoses] = values as [
+      number[],
+      string[],
+      number[],
+      string[],
+    ];
     const groupIdf: Record<number, number> = {};
     const groupWeight: Record<number, number> = {};
     ids.forEach((id, index) => {
@@ -94,6 +99,9 @@ function database(papers: Paper[], idf: Record<string, number> = {}) {
       );
       return {
         document_id: paper.id,
+        diagnoses: diagnoses.filter(
+          (id) => id in (paper.evidence ?? {}) || id in (paper.mesh ?? {}),
+        ),
         score,
         matched,
         idf: groupIdf,
@@ -550,4 +558,102 @@ test("PSA differential diagnosis rises during investigation of suspected cancer"
     "general",
     "workup",
   ]);
+});
+
+test("a drug for the current diagnosis beats the same drug for a comorbidity, even when both papers mention both diseases", async () => {
+  const breast = "mesh:D001943";
+  const lung = "mesh:D008175";
+  const diseases = { [breast]: 1, [lung]: 1, [olaparib]: 1 };
+  const input: JourneyState = {
+    context: [
+      { ...focus, type: "diagnosis", label: "Confirmed breast cancer (C50)." },
+      { ...focus, type: "diagnosis", label: "Confirmed lung cancer (C34)." },
+    ],
+    focus: {
+      ...focus,
+      type: "systemic_therapy",
+      label: "Olaparib started",
+      parameters: { drug: "Olaparib", indication: "Breast cancer" },
+    },
+  };
+  const papers = [
+    {
+      id: "a",
+      evidence: diseases,
+      relations: [
+        { subject: olaparib, predicate: "treats" as const, object: lung },
+      ],
+    },
+    { id: "b", evidence: diseases },
+    {
+      id: "z",
+      evidence: diseases,
+      relations: [
+        { subject: olaparib, predicate: "treats" as const, object: breast },
+      ],
+    },
+  ];
+  const hits = await rank(papers, input);
+  expect(order(hits)).toEqual(["z", "b", "a"]);
+  expect(hits[0].explanation).toContain("documented treatment indication");
+  expect(hits[2].matchedTerms).not.toContain("olaparib");
+
+  const nextPlan = {
+    context: [...input.context, input.focus],
+    focus: {
+      ...focus,
+      date: "2026-12-09",
+      type: "treatment_decision",
+      label: "Olaparib planned",
+      parameters: { drug: "Olaparib", indication: "Lung cancer" },
+    },
+  };
+  const planned = await rank(papers, nextPlan);
+  expect(planned[0].documentId).toBe("z");
+  expect(planned.find((hit) => hit.documentId === "a")?.explanation).toContain(
+    "planned treatment",
+  );
+});
+
+test("a paper's prostate-specific care phase cannot penalize a breast cancer treatment", async () => {
+  const evidence = { "mesh:D001943": 1 };
+  const hits = await rank(
+    [
+      { id: "a", evidence, title: "Salvage treatment in breast cancer" },
+      { id: "b", evidence, title: "Treatment in breast cancer" },
+    ],
+    {
+      focus: {
+        ...focus,
+        type: "diagnosis",
+        label: "Confirmed breast cancer (C50)",
+      },
+      context: [],
+    },
+  );
+  expect(hits).toHaveLength(2);
+  expect(hits[0].score).toEqual(hits[1].score);
+});
+
+test("confirmation alone can retrieve treatments for this disease", async () => {
+  const breast = "mesh:D001943";
+  const drugFor = (object: string) => [
+    { subject: olaparib, predicate: "treats" as const, object },
+  ];
+  const hits = await rank(
+    [
+      {
+        id: "a",
+        evidence: { [breast]: 1 },
+        relations: drugFor("mesh:D008175"),
+      },
+      { id: "z", evidence: { [breast]: 1 }, relations: drugFor(breast) },
+    ],
+    {
+      focus: { ...focus, type: "diagnosis", label: "Confirmed breast cancer" },
+      context: [],
+    },
+  );
+  expect(order(hits)).toEqual(["z", "a"]);
+  expect(hits[0].explanation).toContain("Studies a treatment");
 });

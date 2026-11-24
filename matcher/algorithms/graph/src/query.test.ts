@@ -165,7 +165,12 @@ test("an unresolved node counts with the curated concepts its name contains", ()
 test("a timeline names concepts in its labels and text parameters", () => {
   const query = patientQuery({
     context: [
-      { id: "e1", date: "2026-01-01", type: "diagnosis", label: "PCa" },
+      {
+        id: "e1",
+        date: "2026-01-01",
+        type: "diagnosis",
+        label: "Prostatakarzinom",
+      },
       {
         id: "e2",
         date: "2026-02-01",
@@ -282,7 +287,12 @@ test.each(["HAS_SYMPTOM", "RELATES_TO"])(
 
 test("later timeline statements update the named patient diagnosis only", () => {
   const context = [
-    { ...focus, date: "2026-01-01", type: "diagnosis", label: "PCa" },
+    {
+      ...focus,
+      date: "2026-01-01",
+      type: "diagnosis",
+      label: "Prostatakarzinom",
+    },
     {
       ...focus,
       date: "2026-01-02",
@@ -333,7 +343,7 @@ test("a code can identify a diagnosis and carry its negation", () => {
   expect(patientQuery({ context: [first], focus: update }).diagnoses.size).toBe(
     0,
   );
-  const named = { ...first, label: "PCa", date };
+  const named = { ...first, label: "Prostatakarzinom", date };
   const note = { ...focus, type: "followup", label: "C61 ruled out." };
   expect(patientQuery({ context: [named], focus: note }).diagnoses.size).toBe(
     0,
@@ -354,13 +364,13 @@ test("family history cannot establish or remove a patient's diagnosis", () => {
   expect(
     patientQuery({
       context: [],
-      focus: { ...focus, type: "screening", label: "PCa" },
+      focus: { ...focus, type: "screening", label: "Prostatakarzinom" },
     }).diagnoses.size,
   ).toBe(0);
   const prior = {
     ...focus,
     type: "diagnosis",
-    label: "PCa",
+    label: "Prostatakarzinom",
     date: "2026-01-01",
   };
   expect(
@@ -444,6 +454,7 @@ test("extracts mapped diagnoses from real synthetic timeline.json phrases", () =
   };
   expect(queryFor("Patient-5").diagnoses.has(cancer)).toBe(true);
   expect(queryFor("Patient-7").diagnoses.has(crpc)).toBe(true);
+  expect(conceptOf(queryFor("Patient-8"), cancer)?.role).toBe("diagnosis");
   expect(queryFor("Patient-10").diagnoses.has(crpc)).toBe(true);
 });
 
@@ -611,4 +622,327 @@ test("only a performed prostatectomy qualifies papers about recurrence after sur
   expect(
     graphQuery([diagnosis, done], [surgery], "2026-11-30").stage.prostatectomy,
   ).toBe(false);
+});
+
+test("only explicit treatment and finding links bind their diagnosis in a mixed journey", () => {
+  const breast = "mesh:D001943";
+  const lung = "mesh:D008175";
+  const context = [
+    { ...focus, id: "b", type: "diagnosis", label: "Confirmed breast cancer." },
+    { ...focus, id: "l", type: "diagnosis", label: "Confirmed lung cancer." },
+  ];
+  const event = {
+    ...focus,
+    type: "systemic_therapy",
+    label: "Olaparib given. Lung cancer reviewed.",
+    parameters: { drug: "Olaparib" },
+  };
+  const ambiguous = patientQuery({ context, focus: event });
+  expect(ambiguous.diagnoses.has(breast)).toBe(true);
+  expect(ambiguous.diagnoses.has(lung)).toBe(true);
+  expect(ambiguous.relations.size).toBe(0);
+  expect(ambiguous.evidence).toContainEqual(
+    expect.objectContaining({
+      concept: drug,
+      detail: "No active explicit treatment indication",
+    }),
+  );
+
+  const finding = {
+    ...focus,
+    type: "lab_test",
+    label: "BRCA2 tested",
+    parameters: { test: "BRCA2", indicates: "C50" },
+  };
+  const linked = patientQuery({
+    context: [...context, finding],
+    focus: { ...event, parameters: { ...event.parameters, indication: "C50" } },
+  });
+  expect(conceptOf(linked, drug)?.diagnoses).toContain(breast);
+  expect(conceptOf(linked, drug)?.diagnoses).not.toContain(lung);
+  expect(conceptOf(linked, "ncbigene:675")?.diagnoses).toContain(breast);
+  expect(linked.relations.has(JSON.stringify([drug, "treats", breast]))).toBe(
+    true,
+  );
+  expect(linked.relations.has(JSON.stringify([drug, "treats", lung]))).toBe(
+    false,
+  );
+});
+
+test("planning or cancelling a treatment does not record it as given", () => {
+  const context = [
+    { ...focus, type: "diagnosis", label: "Confirmed breast cancer" },
+  ];
+  for (const label of ["Olaparib planned.", "Olaparib cancelled."]) {
+    const query = patientQuery({
+      context,
+      focus: {
+        ...focus,
+        label,
+        type: "systemic_therapy",
+        parameters: { drug: "Olaparib", indication: "C50" },
+      },
+    });
+    expect(query.stage.systemicTherapy).toBe(false);
+    expect(query.stage.plannedTherapy).toBe(label.includes("planned"));
+    expect(query.treatments.has(drug)).toBe(false);
+    expect(query.relations.size).toBe(0);
+  }
+});
+
+test("a second malignancy and a multi-indication drug do not imply a prostate diagnosis", () => {
+  const query = patientQuery({
+    context: [{ ...focus, type: "diagnosis", label: "Confirmed C50" }],
+    focus: {
+      ...focus,
+      type: "systemic_therapy",
+      label: "Docetaxel given",
+      parameters: { psa_value: 13 },
+    },
+  });
+  expect(query.diagnoses.has(cancer)).toBe(false);
+  expect(query.stage.psaWorkup).toBe(false);
+  expect(query.diagnoses.has("mesh:D001943")).toBe(true);
+  expect(
+    patientQuery({
+      context: [],
+      focus: { ...focus, type: "systemic_therapy", label: "Docetaxel given" },
+    }).diagnoses.size,
+  ).toBe(0);
+});
+
+test("family evidence on a graph diagnosis edge or in a note cannot update the patient", () => {
+  const family = edge(
+    "HAS_DIAGNOSIS",
+    "p",
+    "dx",
+    "His father had confirmed prostate cancer.",
+  );
+  expect(graphQuery([family]).diagnoses.size).toBe(0);
+  expect(
+    patientQuery({
+      context: [],
+      focus: {
+        ...focus,
+        type: "diagnosis",
+        label: "Mutter mit bestätigtem Mammakarzinom",
+        parameters: { icd_code: "C50" },
+      },
+    }).diagnoses.size,
+  ).toBe(0);
+});
+
+test("a dated graph treatment relation scopes the drug even without a prescription edge", () => {
+  const breast = { uuid: "b", name: "Breast cancer", labels: ["Diagnosis"] };
+  const second = edge("HAS_DIAGNOSIS", "p", "b", "Confirmed breast cancer.");
+  const link = edge(
+    "TREATED_BY",
+    "b",
+    "rx",
+    "Breast cancer treated with olaparib.",
+  );
+  const earlier = graphQuery(
+    [diagnosis, second, { ...link, valid_at: "2027-01-01" }],
+    [breast],
+  );
+  expect(earlier.relations.size).toBe(0);
+  const given = graphQuery([diagnosis, second, link], [breast]);
+  expect(conceptOf(given, drug)?.diagnoses).toContain("mesh:D001943");
+  expect(conceptOf(given, drug)?.diagnoses).not.toContain(cancer);
+  expect(given.treatments.has(drug)).toBe(true);
+  const planned = graphQuery(
+    [
+      diagnosis,
+      second,
+      { ...link, fact: "Olaparib planned for breast cancer." },
+    ],
+    [breast],
+  );
+  expect(planned.relations.size).toBe(0);
+  expect(planned.treatments.has(drug)).toBe(false);
+});
+
+test("a mixed family and patient note assigns workup only to the patient's suspected disease", () => {
+  const text = "Mother had breast cancer; patient has suspected lung cancer.";
+  const lung = "mesh:D008175";
+  const breast = "mesh:D001943";
+  const suspected = { ...focus, type: "diagnosis", label: text };
+  const timeline = patientQuery({ context: [], focus: suspected });
+  const graph = graphQuery(
+    [
+      edge("HAS_DIAGNOSIS", "p", "l", text),
+      edge("HAS_DIAGNOSIS", "p", "b", text),
+    ],
+    [
+      { uuid: "l", name: "Lung cancer", labels: ["Diagnosis"] },
+      { uuid: "b", name: "Breast cancer", labels: ["Diagnosis"] },
+    ],
+  );
+  for (const query of [timeline, graph]) {
+    expect(query.diagnoses.has(breast)).toBe(false);
+    expect(conceptOf(query, `${lung}Q000175`)?.role).toBe("aspect");
+  }
+  const later = patientQuery({
+    context: [suspected],
+    focus: {
+      ...focus,
+      type: "diagnosis",
+      date: "2027-01-01",
+      label: "Confirmed lung cancer.",
+    },
+  });
+  expect(conceptOf(later, `${lung}Q000175`)).toBeUndefined();
+});
+
+test("an ICD code added at confirmation cannot identify an earlier unspecified graph lesion", () => {
+  const lesion = {
+    uuid: "lesion",
+    name: "Undetermined lesion",
+    labels: ["Diagnosis"],
+    attributes: { icd_code: "C50", date_confirmed: date },
+  };
+  const early = edge(
+    "HAS_DIAGNOSIS",
+    "p",
+    "lesion",
+    "Unspecified lesion.",
+    "2026-11-01",
+  );
+  expect(graphQuery([early], [lesion], "2026-11-15").diagnoses.size).toBe(0);
+  expect(
+    graphQuery([early], [lesion], date).diagnoses.has("mesh:D001943"),
+  ).toBe(true);
+});
+
+test("conflicting diagnostic codes and names cannot establish either diagnosis", () => {
+  const event = {
+    ...focus,
+    type: "diagnosis",
+    label: "Tumor confirmed.",
+    parameters: { icd_code: "C34", diagnosis: "Breast cancer" },
+  };
+  const timeline = patientQuery({ focus: event, context: [] });
+  expect(timeline.diagnoses.size).toBe(0);
+  expect(timeline.evidence).toContainEqual(
+    expect.objectContaining({
+      ref: event.id,
+      detail: "Diagnostic name and ICD code disagree",
+    }),
+  );
+  const node = {
+    uuid: "conflict",
+    name: "Breast cancer",
+    labels: ["Diagnosis"],
+    attributes: { icd_code: "C34" },
+  };
+  const graph = graphQuery([edge("HAS_DIAGNOSIS", "p", "conflict")], [node]);
+  expect(graph.diagnoses.size).toBe(0);
+});
+
+test.each(["Bone Neoplasms", "Liver Neoplasms"])(
+  "a named %s diagnosis does not require evidence of a different primary disease",
+  (label) => {
+    const site = { uuid: "site", name: label, labels: ["Diagnosis"] };
+    const timeline = patientQuery({
+      context: [],
+      focus: { ...focus, type: "diagnosis", label },
+    });
+    const graph = graphQuery([edge("HAS_DIAGNOSIS", "p", "site")], [site]);
+    for (const query of [timeline, graph]) {
+      expect(query.diagnoses.size).toBeGreaterThan(0);
+      expect(query.stage.states.has("metastatic")).toBe(false);
+    }
+    expect(
+      patientQuery({
+        context: [],
+        focus: { ...focus, type: "diagnosis", label: "Liver metastases" },
+      }).diagnoses.size,
+    ).toBe(0);
+  },
+);
+
+test("a generic treatment event or an administration in a follow-up binds its indication", () => {
+  const context = [{ ...focus, type: "diagnosis", label: "C50" }];
+  for (const [type, label, given] of [
+    ["therapy", "Olaparib", true],
+    ["treatment", "Olaparib", true],
+    ["followup", "Received olaparib", true],
+    ["therapy", "Olaparib prescribed", false],
+  ] as const) {
+    const q = patientQuery({
+      context,
+      focus: {
+        ...focus,
+        type,
+        label,
+        parameters: { drug: "Olaparib", indication: "C50" },
+      },
+    });
+    expect(
+      q.relations.has(JSON.stringify([drug, "treats", "mesh:D001943"])),
+    ).toBe(given);
+  }
+});
+
+test("a non-prostate journey cannot acquire a prostate disease state from the drug or hormonal terminology", () => {
+  const q = patientQuery({
+    context: [{ ...focus, type: "diagnosis", label: "C50" }],
+    focus: {
+      ...focus,
+      type: "therapy",
+      label: "Hormone-sensitive. Radium-223.",
+    },
+  });
+  expect(q.prostateContext).toBe(false);
+  expect(q.stage.states.size).toBe(0);
+});
+
+test("planned and ongoing indications remain distinct in a patient with two diseases", () => {
+  const breast = "mesh:D001943";
+  const lung = "mesh:D008175";
+  const context = [
+    { ...focus, id: "b", type: "diagnosis", label: "Confirmed breast cancer." },
+    { ...focus, id: "l", type: "diagnosis", label: "Confirmed lung cancer." },
+    {
+      ...focus,
+      id: "actual",
+      type: "therapy",
+      label: "Olaparib given",
+      parameters: { drug: "Olaparib", indication: "C50" },
+    },
+  ];
+  const timeline = patientQuery({
+    context,
+    focus: {
+      ...focus,
+      type: "treatment_decision",
+      label: "Olaparib planned",
+      parameters: { drug: "Olaparib", indication: "C34" },
+    },
+  });
+  const b = { uuid: "b", name: "Breast cancer", labels: ["Diagnosis"] };
+  const l = { uuid: "l", name: "Lung cancer", labels: ["Diagnosis"] };
+  const graph = graphQuery(
+    [
+      edge("HAS_DIAGNOSIS", "p", "b"),
+      edge("HAS_DIAGNOSIS", "p", "l"),
+      edge("TREATED_BY", "b", "rx", "Olaparib given"),
+      edge("TREATED_BY", "l", "rx", "Olaparib planned"),
+    ],
+    [b, l],
+  );
+  for (const query of [timeline, graph]) {
+    const intervention = conceptOf(query, drug);
+    expect(intervention?.diagnoses).toEqual(
+      expect.arrayContaining([breast, lung]),
+    );
+    expect(intervention?.plannedFor).toContain(lung);
+    expect(intervention?.plannedFor).not.toContain(breast);
+    expect(query.relations.has(JSON.stringify([drug, "treats", breast]))).toBe(
+      true,
+    );
+    expect(query.relations.has(JSON.stringify([drug, "treats", lung]))).toBe(
+      false,
+    );
+  }
 });

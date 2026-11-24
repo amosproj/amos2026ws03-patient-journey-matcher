@@ -130,19 +130,51 @@ We compared the rankings on 29,720 documents from the VM on 2026-11-24. The slic
 | Graph before the initial rework | Patient graph | 0.145 | 0.171 | 0.117 | 0.164 | 58.8% |
 | Previous graph matcher | Patient graph | 0.447 | 0.484 | 0.408 | 0.538 | 6.3% |
 | Graph before care-context reranking | Patient graph | 0.475 | 0.519 | 0.427 | 0.563 | 5.7% |
-| Current graph matcher | Patient graph | 0.525 | 0.563 | 0.484 | 0.626 | 3.9% |
+| Graph at `03ed881` | Patient graph | 0.525 | 0.563 | 0.484 | 0.626 | 3.9% |
 | Keyword | Patient graph | 0.500 | 0.473 | 0.528 | 0.581 | 14.4% |
 | Graph + keyword, offline | Patient graph | 0.551 | 0.571 | 0.530 | 0.647 | 7.2% |
 | Previous graph matcher | Timeline | 0.532 | 0.564 | 0.497 | 0.645 | 5.2% |
 | Graph before care-context reranking | Timeline | 0.568 | 0.587 | 0.546 | 0.682 | 3.8% |
-| Current graph matcher | Timeline | 0.631 | 0.646 | 0.614 | 0.771 | 1.9% |
+| Graph at `03ed881` | Timeline | 0.631 | 0.646 | 0.614 | 0.771 | 1.9% |
 | Keyword | Timeline | 0.553 | 0.575 | 0.530 | 0.684 | 9.0% |
 | Graph + keyword, offline | Timeline | 0.636 | 0.666 | 0.603 | 0.774 | 4.1% |
 
-The previous graph matcher introduced MeSH evidence, concept rarity and disease-state weighting. The current matcher uses dated findings and treatment status, checks curated concepts in titles, and distinguishes clinical terms with different meanings. For example, regional nodes and distant metastases supply different evidence. On a patient graph the current version returned results for all 129 points, up from 128. The revisions were measured together. [Graph matching details](../Documentation/design/graph-normalization.md#ranking) · [NCI prostate cancer staging](https://www.cancer.gov/types/prostate/hp/prostate-treatment-pdq)
+The previous graph matcher introduced MeSH evidence, concept rarity and disease-state weighting. The matcher at `03ed881` uses dated findings and treatment status, checks curated concepts in titles, and distinguishes clinical terms with different meanings. For example, regional nodes and distant metastases supply different evidence. On a patient graph that version returned results for all 129 points, up from 128. The revisions were measured together. [Graph matching details](../Documentation/design/graph-normalization.md#ranking) · [NCI prostate cancer staging](https://www.cancer.gov/types/prostate/hp/prostate-treatment-pdq)
 
-The latest comparison isolates the care question. A paper on differential diagnosis can help at PSA workup. A study of reclassification or a switch to treatment can help during surveillance. After prostatectomy with recurrence, the sequence of treatments in a paper's title matters. Against the preceding version, mean nDCG@10 rose for seven of ten patients with graph input and eight with timeline input. Exact two-sided sign-flip tests, flipping all of each patient's event differences together, gave p = 0.016 and 0.008 respectively.
+The comparison at `03ed881` isolates the care question. A paper on differential diagnosis can help at PSA workup. A study of reclassification or a switch to treatment can help during surveillance. After prostatectomy with recurrence, the sequence of treatments in a paper's title matters. Against the preceding version, mean nDCG@10 rose for seven of ten patients with graph input and eight with timeline input. Exact two-sided sign-flip tests, flipping all of each patient's event differences together, gave p = 0.016 and 0.008 respectively.
 
 On the 67 development points, 201 grade-3 keyword hits fell outside the graph top ten. Of those, 123 reached the reranker, 68 passed the diagnosis filter but missed the 300-paper shortlist, and ten failed the filter. In a separate trial, admitting titles with both a diagnosis and a focus concept changed no development top ten. Across all 129 points, 14 of the 48 grade-3 keyword hits previously ranked 11–30 by the graph entered its top ten. One entered from below 30 and six previously shared top-ten hits dropped out. These counts refer to point–source pairs.
 
 The offline comparator combines each method's first 30 hits by equal-weight reciprocal rank fusion with k = 60. Every returned top-ten hit has an LLM grade. The latest round added 163 judgments and included 44 hidden calibration pairs. Agreement with the earlier grades was 59% exact and 98% within one grade. The table gives newer judgments precedence where the pools overlap. Giving earlier judgments precedence yields 0.535 for graph versus 0.512 for keyword on patient graphs, and 0.640 versus 0.626 on timelines. Keyword still leads on the five holdout patients with graph input under the main grading order. These are retrospective results on ten synthetic cases. Performance on new patients or with clinician judgments remains open. [Rank fusion method](https://plg.uwaterloo.ca/~gvcormac/cormacksigir09-rrf.pdf) · [Pooled judgments](../matcher/evaluation/graph-llm-judgments.json) · [Patient graph limitations](../Documentation/design/graph-normalization.md#known-limitations)
+
+**Cross-disease evaluation.** The registered `match_journey` tool ran on the same 29,720 documents, indexes and cutoff dates for all three methods. The original graph matcher stopped before retrieval for C50 and C34 at every cutoff in both formats. The index already contained 1,331 documents with the breast cancer ID (`mesh:D001943`) and 464 with the lung cancer ID (`mesh:D008175`). Diagnosis resolution prevented those matches. The corpus also contained treatment studies and same-drug controls for rheumatoid arthritis and the held-out Crohn disease case, so no additional papers were needed.
+
+The four new synthetic cases each contribute three cutoffs, at suspicion, confirmation and treatment. Crohn disease was first exercised after freezing the matcher and used a disease name without an ICD code. The prostate comparison uses the original 129 cutoffs. Existing grades were reused. Codex agents graded 732 additional point–source pairs, including development pools, with the algorithm and rank hidden. The report uses the same enlarged judgment pool for every method. With the original judgments the baseline reproduced 0.525 for graphs and 0.631 for timelines. [Inputs, grading and reproduction](matching-evaluation.md#compare-matchers) · [Additional judgments](../matcher/evaluation/disease-judgments.json)
+
+Each entry gives the graph input first and the timeline second. **Diagnosis** counts queries with the expected retrieval ID. Keyword has no concept resolver. **Relevant** counts queries with at least one grade 2 or 3 result in the top ten. **Off target** counts grade 0 hits out of all returned top-ten places. Times are local MCP round trips in milliseconds.
+
+| Disease | Method | Diagnosis | Empty | Relevant | nDCG@10 | Off target (graph · timeline) | p50 ms | p95 ms |
+|---|---|---:|---:|---:|---:|---|---:|---:|
+| Prostate cancer | Graph `03ed881` | 129 / 129 | 0 / 0 | 118 / 128 | 0.525 / 0.630 | 50/1290 · 24/1290 | 221.7 / 200.9 | 271.6 / 298.3 |
+| Prostate cancer | Graph | 129 / 129 | 0 / 0 | 120 / 129 | 0.530 / 0.633 | 72/1290 · 38/1290 | 242.3 / 236.2 | 304.1 / 294.9 |
+| Prostate cancer | Keyword | — | 0 / 0 | 120 / 125 | 0.499 / 0.553 | 186/1290 · 116/1290 | 46.0 / 44.2 | 75.6 / 60.9 |
+| Breast cancer | Graph `03ed881` | 0 / 0 | 3 / 3 | 0 / 0 | 0.000 / 0.000 | 0 hits · 0 hits | 0.1 / 0.1 | 0.5 / 0.2 |
+| Breast cancer | Graph | 3 / 3 | 0 / 0 | 3 / 3 | 0.522 / 0.537 | 6/30 · 6/30 | 36.5 / 36.2 | 70.1 / 51.2 |
+| Breast cancer | Keyword | — | 2 / 0 | 1 / 2 | 0.010 / 0.133 | 9/10 · 21/30 | 0.9 / 38.5 | 47.8 / 42.6 |
+| Lung cancer | Graph `03ed881` | 0 / 0 | 3 / 3 | 0 / 0 | 0.000 / 0.000 | 0 hits · 0 hits | 0.1 / 0.1 | 0.2 / 0.2 |
+| Lung cancer | Graph | 3 / 3 | 0 / 0 | 2 / 3 | 0.533 / 0.488 | 5/30 · 12/30 | 21.5 / 21.0 | 23.4 / 27.1 |
+| Lung cancer | Keyword | — | 2 / 0 | 1 / 1 | 0.118 / 0.209 | 8/10 · 26/30 | 0.9 / 39.6 | 32.2 / 40.3 |
+| Rheumatoid arthritis | Graph `03ed881` | 0 / 0 | 3 / 3 | 0 / 0 | 0.000 / 0.000 | 0 hits · 0 hits | 0.1 / 0.1 | 0.1 / 0.1 |
+| Rheumatoid arthritis | Graph | 3 / 3 | 0 / 0 | 3 / 3 | 0.750 / 0.761 | 1/30 · 1/30 | 9.5 / 9.9 | 10.8 / 11.2 |
+| Rheumatoid arthritis | Keyword | — | 0 / 0 | 3 / 3 | 0.483 / 0.454 | 3/30 · 4/30 | 31.6 / 32.8 | 34.0 / 52.5 |
+| Crohn disease | Graph `03ed881` | 0 / 0 | 3 / 3 | 0 / 0 | 0.000 / 0.000 | 0 hits · 0 hits | 0.1 / 0.1 | 0.2 / 0.1 |
+| Crohn disease | Graph | 3 / 3 | 0 / 0 | 3 / 3 | 0.430 / 0.430 | 2/30 · 2/30 | 5.8 / 6.0 | 8.2 / 7.7 |
+| Crohn disease | Keyword | — | 0 / 0 | 3 / 3 | 0.749 / 0.824 | 3/30 · 3/30 | 32.5 / 33.6 | 34.8 / 35.9 |
+
+The treatment controls gave the same result in both input formats. The relevant papers reached rank 15 for olaparib in breast cancer, rank 1 for pembrolizumab in lung cancer, rank 3 for methotrexate in rheumatoid arthritis and rank 3 for infliximab in Crohn disease. All four prespecified controls on another disease fell outside the graph top 30. The HTTP integration test also puts both diagnoses and the same drug on both papers, so both pass retrieval. With all other evidence tied, the paper that links the drug to the patient's disease ranks first. [Control PMIDs](../matcher/evaluation/disease-cases.json) · [MCP integration test](../matcher/mcp-server/src/integration/graph.test.ts)
+
+Recognition and current relevance diverged at diagnosis. In the breast timeline, the first paper at suspicion concerned follow-up after completed treatment. At olaparib initiation the first two papers studied olaparib in BRCA-mutated breast cancer. For lung cancer, a screening cost study still ranked second after confirmation, while KEYNOTE-010 ranked first at pembrolizumab initiation. Rheumatoid arthritis returned workup studies at suspicion and methotrexate studies at treatment. [Breast follow-up](https://pubmed.ncbi.nlm.nih.gov/23129741/) · [Adjuvant olaparib](https://pubmed.ncbi.nlm.nih.gov/34081848/) · [Lung screening](https://pubmed.ncbi.nlm.nih.gov/22308519/) · [KEYNOTE-010](https://pubmed.ncbi.nlm.nih.gov/26712084/)
+
+On prostate cancer, mean nDCG improved slightly, while grade-0 hits rose from 50 to 72 on graph inputs and from 24 to 38 on timelines. At the last cutoff for each of the ten additional prostate patients (11–20), both formats returned results and the expected diagnosis. These 20 calls had no relevance grades.
+
+Keyword led on the held-out Crohn case. At suspicion the graph ranked imaging of perianal fistulas and postoperative recurrence highly, before either complication or surgery was documented. The corpus is weighted towards prostate cancer, and each additional disease has only one synthetic patient. These measurements establish retrieval on the tested cases. They leave clinical relevance on other populations and terminology coverage for unmapped codes open. [Fistula imaging](https://pubmed.ncbi.nlm.nih.gov/25816833/) · [Postoperative recurrence](https://pubmed.ncbi.nlm.nih.gov/16697723/)

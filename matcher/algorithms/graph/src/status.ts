@@ -49,6 +49,41 @@ export type StatusCue = {
   cue: string;
 };
 
+// Family history belongs to the relative even when stored on a patient-diagnosis edge.
+const FAMILY =
+  /\b(?:family history|familienanamnese|mother|father|sister|brother|mutter|vater|schwester|bruder)\b/i;
+
+export function patientText(text: string): string {
+  if (!FAMILY.test(text)) return text;
+  // Keep separately attributed clauses, e.g. "mother had A; patient diagnosed with B".
+  return text
+    .replace(VERDACHT_AUF, "verdacht auf ")
+    .split(/[;!?]|\.(?=\s|$)|,?\s+\b(?:but|aber|jedoch)\b\s+/i)
+    .filter((clause) => !FAMILY.test(clause))
+    .join(". ")
+    .trim();
+}
+
+const PLANNED =
+  /\b(?:plan(?:ned)?|proposed|scheduled|recommended|empfohlen|geplant\w*|vorgesehen)\b/i;
+const CANCELLED =
+  /\b(?:cancelled|canceled|abgesagt\w*|not (?:given|started|administered)|nicht (?:begonnen|verabreicht|durchgefuhrt|durchgeführt))\b/i;
+const PERFORMED =
+  /\b(?:administered|received|underwent|given|started|begonnen|verabreicht|durchgeführt|durchgefuhrt)\b/i;
+
+export function treatmentStatus(text: string): Status | undefined {
+  if (CANCELLED.test(text)) return "negated";
+  // A recommendation can describe the strategy under which treatment is already being given.
+  const course = text.replace(
+    /\b(?:the )?recommended (?:treatment |therapy )?(?:regimen|strategy)\b/gi,
+    "",
+  );
+  if (PLANNED.test(course)) return "planned";
+  if (PERFORMED.test(text)) return "asserted";
+  if (/\b(?:prescribed|verordnet|verschrieben)\b/i.test(text)) return "unknown";
+  return undefined;
+}
+
 // "V. a." and "Vd. a." (Verdacht auf) would end a sentence at their dots.
 const VERDACHT_AUF = /\bv\s*d?\s*\.\s*a\s*\./gi;
 
@@ -142,7 +177,6 @@ export function statusFromText(
       });
       // "The suspected X was confirmed": a confirmation after the name ends the suspicion
       // before it, though "suspected" stands nearer.
-      // shortcut: also fires for X in "suspected X and confirmed Y", refine once facts read so
       const confirmed = near.some(
         ({ cue }) => cue.status === "asserted" && cue.position === "post",
       );

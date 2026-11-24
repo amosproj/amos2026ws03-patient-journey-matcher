@@ -2,7 +2,10 @@ import type { Queryable } from "@matcher/db";
 import type { NormalizedEntity, NormalizedRelation } from "./types.ts";
 
 export interface Paper {
-  entities: Record<string, Pick<NormalizedEntity, "name" | "type" | "inTitle">>;
+  entities: Record<
+    string,
+    Pick<NormalizedEntity, "name" | "type" | "inTitle"> & { names?: string[] }
+  >;
   relations: NormalizedRelation[];
 }
 

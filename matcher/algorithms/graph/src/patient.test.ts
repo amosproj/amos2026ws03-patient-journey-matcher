@@ -368,7 +368,7 @@ test("unresolved nodes merge by name; a name with nothing left merges with nothi
     nodes: [
       node("a", "Knochenschmerz links", "Symptom"),
       node("b", "knochenschmerz  LINKS", "Symptom"),
-      node("c", "(C61)", "Symptom"),
+      node("c", "(Z99)", "Symptom"),
       node("d", "–", "LabTest"),
     ],
     edges: [edge("e", "RELATES_TO", "c", "d")],

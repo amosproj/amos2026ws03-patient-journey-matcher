@@ -18,7 +18,7 @@ export const ENTITY_TYPES = [
 export type EntityType = (typeof ENTITY_TYPES)[number];
 
 /** How a patient entity got its ID; `null` when it has none. PubTator3 entities: `"pubtator"`. */
-export type ResolvedBy = "icd" | "curated" | "pubtator" | null;
+export type ResolvedBy = "icd" | "curated" | "mesh" | "pubtator" | null;
 
 /** Relations between two entities. The symmetric ones have no direction, see `SYMMETRIC`. */
 export const PREDICATES = [

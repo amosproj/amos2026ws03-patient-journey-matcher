@@ -1,0 +1,19 @@
+{
+  "Breast": {
+    "diagnosis": "mesh:D001943",
+    "controls": ["pubmed:20609467", "pubmed:20609468"]
+  },
+  "Lung": {
+    "diagnosis": "mesh:D008175",
+    "controls": ["pubmed:26712084", "pubmed:29992241"]
+  },
+  "Arthritis": {
+    "diagnosis": "mesh:D001172",
+    "controls": ["pubmed:12571869", "pubmed:12174922"]
+  },
+  "Crohn": {
+    "holdout": true,
+    "diagnosis": "mesh:D003424",
+    "controls": ["pubmed:20587545", "pubmed:21349113"]
+  }
+}

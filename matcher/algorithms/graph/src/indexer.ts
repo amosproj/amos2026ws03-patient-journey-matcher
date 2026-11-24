@@ -23,7 +23,13 @@ export function paperFromAnnotations(input: unknown): Paper {
   const graph = normalizePubTatorDocument(input);
   const entities: Paper["entities"] = Object.create(null);
   for (const { id, name, names, type, inTitle } of graph.entities) {
-    if (id !== null) entities[id] = { name: names[0] ?? name, type, inTitle };
+    if (id !== null)
+      entities[id] = {
+        name: names[0] ?? name,
+        type,
+        inTitle,
+        ...(names.length > 1 && { names }),
+      };
   }
   const relations = graph.relations.filter(
     ({ subject, object }) =>

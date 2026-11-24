@@ -1,0 +1,33 @@
+{
+  "patient_id": "Crohn",
+  "events": [
+    {
+      "id": "e1",
+      "date": "2026-01-10",
+      "type": "diagnosis",
+      "label": "Verdacht auf Crohn's disease nach entzündlichen Darmbeschwerden.",
+      "parameters": {
+        "diagnosis": "Crohn's disease"
+      }
+    },
+    {
+      "id": "e2",
+      "date": "2026-01-17",
+      "type": "diagnosis",
+      "label": "Crohn's disease bestätigt.",
+      "parameters": {
+        "diagnosis": "Crohn's disease"
+      }
+    },
+    {
+      "id": "e3",
+      "date": "2026-02-09",
+      "type": "systemic_therapy",
+      "label": "Infliximab zur Behandlung von Crohn's disease begonnen. Die Erkrankung ist weiterhin aktiv.",
+      "parameters": {
+        "drug": "Infliximab",
+        "indication": "Crohn's disease"
+      }
+    }
+  ]
+}

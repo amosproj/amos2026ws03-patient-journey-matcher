@@ -580,6 +580,9 @@ function mtRenderRankings() {
       section("Concepts by weight, ★ focus", Object.fromEntries(Object.entries(concepts).sort(([, a], [, b]) => b - a))),
       section("Disease state and course", state),
       section("Treatments used for drug–diagnosis links", query.treatments),
+      ...(query.evidence?.length ? [h("div", {}, h("h3", {}, "Clinical evidence at cutoff"),
+        ...query.evidence.map(({ date, detail, concept, diagnosis, status, ref }) =>
+          h("div", { class: "rank-item" }, [date, detail, concept, diagnosis, status, ref].filter(Boolean).join(" · "))))] : []),
     );
     return;
   }

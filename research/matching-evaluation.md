@@ -92,6 +92,30 @@ On an indexed local database, run `make benchmark-graph` from the repository roo
 
 The test in `matcher/evaluation/src/evaluate.test.ts` checks that `judgments.json` stays valid after each edit.
 
+For the cross-disease comparison, start with a quiet local database containing both indexes. The 29,720-document reference dump is `out/benchmark/vm-slice/graph-benchmark.pgdump` (SHA-256 `400dd3522a93163546a33844e9d46f61ea823f89f0044130a11e0bf390b4f269`). The dump is a local research artifact. A fresh crawl gives different articles and may need additional judgments. To restore the reference dump into a new database on the [local PostgreSQL service](../Documentation/build-deploy/database.md), run the following once from the repository root.
+
+```sh
+docker compose exec -T postgres sh -c 'createdb -U "$POSTGRES_USER" graph_comparison'
+docker compose exec -T postgres sh -c 'pg_restore --exit-on-error --no-owner --no-acl -U "$POSTGRES_USER" -d graph_comparison' < out/benchmark/vm-slice/graph-benchmark.pgdump
+```
+
+For the benchmark, point `DATABASE_URL` at that database or set `POSTGRES_DB=graph_comparison` in the shell when using the repository `.env` credentials. Then run:
+
+```sh
+git worktree add --detach ../graph-baseline 03ed881
+(cd ../graph-baseline/matcher && pnpm install --frozen-lockfile)
+(cd matcher && pnpm install --frozen-lockfile)
+runs=out/benchmark/cross-disease
+node --env-file=.env scripts/benchmark-diseases.mjs run "$runs" ../graph-baseline graph baseline all
+node --env-file=.env scripts/benchmark-diseases.mjs run "$runs" ../graph-baseline keyword keyword all
+node --env-file=.env scripts/benchmark-diseases.mjs run "$runs" . graph graph all
+node scripts/benchmark-diseases.mjs score "$runs"
+```
+
+Each run uses the registered MCP tool over a local in-memory transport with the real database and saves the top ten. Each new disease has three dated snapshots. Use `development`, `prostate` or `holdout` in place of `all` to run one subset in a fresh output directory. Use `regression` to check the final snapshots of the ten remaining prostate journeys without relevance judgments. Timing covers the MCP request and response. Percentiles use one call per prostate point and five per new disease point. A separate trace records the diagnosis IDs used for retrieval. Keyword has no diagnosis IDs. The summary also counts points where a grade-2 or grade-3 article reached the top ten for each algorithm. For the final treatment date, `controls` records the rank of the prespecified two papers up to rank 30. A null rank means outside that window.
+
+Scoring checks the patient input, document and index fingerprints. The grade pool includes the initial development runs and the frozen comparison. It pools missing point–source pairs across inputs and algorithms, orders them by hash and writes `blind.json` with their titles and abstracts. Judge each against the journey through its stated cutoff. Add the grades to [disease-judgments.json](../matcher/evaluation/disease-judgments.json) and rerun `score`. nDCG stays empty for a group while a top-ten grade is missing.
+
 ## Status of the judgments
 
 The first 58 judgments (5 to 7 per point) were graded from the PubMed titles and spot-checked against the abstracts in review. They use real PubMed records that a matcher can also find, with the `source_id` the crawler uses (`pubmed:<PMID>`). If a grade turns out wrong, fix it in `judgments.json` with a short note.

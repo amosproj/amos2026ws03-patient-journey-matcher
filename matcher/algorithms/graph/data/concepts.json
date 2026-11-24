@@ -2,6 +2,18 @@
   "_comment": "Tier 2 of the entity mapping (Documentation/design/graph-normalization.md#entities): names of the generated patients, German and English, to the IDs PubTator3 uses. IDs checked 20. and 22.11.2026 with the PubTator3 entity lookup and the NLM MeSH lookup. Names are matched whole, after normalizeName; add a row for a missing name instead of matching looser. Optional fields: `also` (other IDs of the concept on papers), `broader` and `narrower` (concepts a paper may name instead), `diagnostic` (a procedure that finds), `qualifier` (the MeSH qualifier of a diagnosis its papers carry), `stages` (disease states it implies), `role` (instead of the one of its type), `sex` (of a diagnosis) and `implies` (a diagnosis that giving it shows, for journeys without one).",
   "concepts": [
     {
+      "id": "mesh:D001943",
+      "type": "disease",
+      "name": "Breast Neoplasms",
+      "names": ["Mammakarzinom", "Mammacarcinom"]
+    },
+    {
+      "id": "mesh:D008175",
+      "type": "disease",
+      "name": "Lung Neoplasms",
+      "names": ["Lungenkarzinom", "Bronchialkarzinom"]
+    },
+    {
       "id": "mesh:D011471",
       "type": "disease",
       "name": "Prostatic Neoplasms",
@@ -15,7 +27,6 @@
         "prostatakarzinom",
         "prostata karzinom",
         "adenokarzinom der prostata",
-        "pca",
         "hormone sensitive prostate cancer",
         "metastatic hormone sensitive prostate cancer",
         "mhspc",

@@ -11,3 +11,13 @@ That code is licensed under the MIT License, Copyright (c) 2021 The AMOS Project
 the same licence as this repository (see LICENSE). The copied files that are still used are
 under `tools/patient-graph/workers/`, and the adapted source-ingestion code is
 under `crawler/`. Their README files describe the changes against the original.
+
+matcher/algorithms/graph/data/mesh-terms.json.gz contains an adapted subset of
+Medical Subject Headings (MeSH), 2026, U.S. National Library of Medicine.
+Terms: https://www.nlm.nih.gov/databases/download/terms_and_conditions_mesh.html
+German MeSH 2026, ZB MED – Information Centre for Life Sciences,
+https://repository.publisso.de/resource/frl:6529716, CC BY 4.0,
+https://creativecommons.org/licenses/by/4.0/. The matcher extracts English and
+German terms and disease descendants. It includes WHO code-to-MeSH retrieval
+IDs derived from the Mondo 2026-11-03 exact mapping sets, CC0 1.0,
+https://github.com/monarch-initiative/mondo/tree/v2026-11-03/src/ontology/mappings.

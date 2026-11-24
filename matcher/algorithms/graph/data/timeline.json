@@ -2,6 +2,8 @@
   "_comment": "What the events of a journey without a patient graph say (timeline.json of the synthetic journeys; Documentation/design/graph-normalization.md#ranking). Event types: `plans` decide the therapies they name (tumor board), `gives` give them; in other events a named therapy is history or context. `parameters`: a parameter key gives `concepts` when present, `values` per value, or makes a diagnosis asserted or suspected (`implies`), also only from a number up (`atLeast`) and only in some event types (`events`).",
   "plans": ["tumor_board", "treatment_decision", "hospital_admission"],
   "gives": [
+    "therapy",
+    "treatment",
     "systemic_therapy",
     "radiation",
     "surgery",

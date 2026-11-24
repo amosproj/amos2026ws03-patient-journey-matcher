@@ -1,7 +1,6 @@
-// Entity resolution (Documentation/design/graph-normalization.md#entities): a patient entity gets
-// the ID that PubTator3 uses for the same concept, or none. Tier 1 is the ICD code, tier 2 the
-// curated names. Later tiers, such as a dictionary built from stored PubTator3 annotations,
-// come in as more `Dictionary` entries; the resolver tries them in order.
+// Patient and paper concepts share stable MeSH identifiers. All patient lookups are local.
+import { readFileSync } from "node:fs";
+import { gunzipSync } from "node:zlib";
 import concepts from "../data/concepts.json" with { type: "json" };
 import icd from "../data/icd10-mesh.json" with { type: "json" };
 import { normalizeName, withoutLeadingCode, words } from "./text.ts";
@@ -47,9 +46,57 @@ const CONCEPTS: ReadonlyMap<string, Concept> = new Map<string, Concept>(
   concepts.concepts.map((concept) => [concept.id, concept as Concept]),
 );
 
-/** The curated concept of an ID, with its preferred name and all its names. */
+type MeshData = {
+  diseases: Record<
+    string,
+    [name: string, aliases: string[], narrower: string[]]
+  >;
+  chemicals: Record<string, [name: string, aliases: string[]]>;
+  icd: Record<string, string>;
+};
+
+const mesh: MeshData = JSON.parse(
+  gunzipSync(
+    readFileSync(new URL("../data/mesh-terms.json.gz", import.meta.url)),
+  ).toString("utf8"),
+);
+
+const MESH_CONCEPTS = new Map<string, Concept>(
+  Object.entries(mesh.diseases).map(
+    ([descriptor, [name, names, descendants]]) => {
+      const id = `mesh:${descriptor}`;
+      const clinical = CONCEPTS.get(id);
+      return [
+        id,
+        {
+          id,
+          name,
+          type: "disease",
+          ...(descendants.length && {
+            narrower: descendants.map((child) => `mesh:${child}`),
+          }),
+          ...clinical,
+          names: [...new Set([name, ...names, ...(clinical?.names ?? [])])],
+        },
+      ];
+    },
+  ),
+);
+
+for (const [key, [name, names]] of Object.entries(mesh.chemicals)) {
+  const id = `mesh:${key}`;
+  const clinical = CONCEPTS.get(id);
+  MESH_CONCEPTS.set(id, {
+    id,
+    name,
+    type: "chemical",
+    ...clinical,
+    names: [...new Set([name, ...names, ...(clinical?.names ?? [])])],
+  });
+}
+
 export function conceptOf(id: string): Concept | undefined {
-  return CONCEPTS.get(id);
+  return MESH_CONCEPTS.get(id) ?? CONCEPTS.get(id);
 }
 
 const BROADER_DIAGNOSIS: ReadonlyMap<string, string> = new Map(
@@ -90,70 +137,142 @@ export const curated: Dictionary = nameDictionary(
   "curated",
 );
 
-const ICD_CODES: ReadonlyMap<string, string> = new Map(
-  Object.entries(icd.codes),
-);
-const ICD_CODE = /^[A-Z]\d{2}(\.\d{1,2})?$/;
-const ICD_IN_TEXT = /\b[A-Z]\d{2}(?:\.\d{1,2})?\b/gi;
+const ICD_CODES = new Map<string, string>([
+  ...Object.entries(mesh.icd).map(([code, id]): [string, string] => [
+    code,
+    `mesh:${id}`,
+  ]),
+  ...Object.entries(icd.codes),
+]);
+const ICD_CODE = /^[A-Z]\d{2}(?:\.\d{1,2})?$/;
+const ICD_IN_TEXT =
+  /\b[A-Z]\d{2}(?:\.\d+)?(?:\s*[-–—]\s*[A-Z]\d{2}(?:\.\d+)?)?(?!\w|\.\w)/gi;
 
-// Longest phrases first so specific diseases (e.g. castration-resistant prostate cancer) win over substrings.
-const PHRASES = [...CONCEPTS.values()]
-  .flatMap((concept) =>
-    [concept.name, ...concept.names].map((name) => ({
-      concept,
-      phrase: words(name),
-    })),
-  )
-  .filter(({ phrase }) => phrase.length > 0)
-  .sort((a, b) => b.phrase.length - a.phrase.length);
-// Match only phrases with the same first word. Preserve longest-first order within each group.
-const CONCEPT_PHRASES = Map.groupBy(PHRASES, ({ phrase }) => phrase[0]);
-const DISEASE_PHRASES = Map.groupBy(
-  PHRASES.filter(({ concept }) => concept.type === "disease"),
-  ({ phrase }) => phrase[0],
-);
+type DiseaseHit = { concept: Concept; code?: string };
+export type Terminology = {
+  dictionaries: readonly Dictionary[];
+  conceptOf(id: string): Concept | undefined;
+  findConcepts(text: string): Concept[];
+  findDiseases(text: string): DiseaseHit[];
+};
 
-/** The curated concepts whose names stand on word boundaries in `text`, longest first. */
-function findPhrases(text: string, phrases: typeof CONCEPT_PHRASES): Concept[] {
-  const found: Concept[] = [];
-  const tokens = words(text);
-  for (let i = 0; i < tokens.length; ) {
-    const hit = phrases
-      .get(tokens[i])
-      ?.find(
-        ({ phrase }) =>
-          i + phrase.length <= tokens.length &&
-          phrase.every((word, offset) => tokens[i + offset] === word),
-      );
-    if (hit !== undefined) {
-      found.push(hit.concept);
-      i += hit.phrase.length;
-      continue;
+type Phrase = { concept: Concept; phrase: string[] };
+function phraseLookup(names: ReadonlyMap<string, Concept>) {
+  const grouped = Map.groupBy(
+    [...names]
+      .map(([name, concept]): Phrase => ({ concept, phrase: name.split(" ") }))
+      .sort((a, b) => b.phrase.length - a.phrase.length),
+    ({ phrase }) => phrase[0],
+  );
+  return (text: string, diseasesOnly = false): Concept[] => {
+    const result = new Set<Concept>();
+    const tokens = words(text);
+    for (let i = 0; i < tokens.length; i++) {
+      const match = grouped
+        .get(tokens[i])
+        ?.find(
+          ({ concept, phrase }) =>
+            (!diseasesOnly || concept.type === "disease") &&
+            phrase.every((word, offset) => word === tokens[i + offset]),
+        );
+      if (match) {
+        result.add(match.concept);
+        i += match.phrase.length - 1;
+      }
     }
-    i++;
-  }
-  return found;
+    return [...result];
+  };
 }
 
-/** Curated concepts of any type named in a free-text field, each once. */
-export function findConcepts(text: string): Concept[] {
-  return [...new Set(findPhrases(text, CONCEPT_PHRASES))];
+/** Single-ID aliases after normalization. A short abbreviation needs a reviewed clinical meaning. */
+function indexedNames(list: Iterable<Concept>): Map<string, Concept | null> {
+  const result = new Map<string, Concept | null>();
+  for (const concept of list) {
+    for (const name of [concept.name, ...concept.names]) {
+      const key = normalizeName(name);
+      if (key.length < 4 || !/\p{L}/u.test(key)) continue;
+      const known = result.get(key);
+      result.set(
+        key,
+        known === undefined || known?.id === concept.id ? concept : null,
+      );
+    }
+  }
+  return result;
 }
 
-/** Curated diseases and mapped ICD-10 codes found on word boundaries in a free-text field. */
-export function findDiseases(
-  text: string,
-): { concept: Concept; code?: string }[] {
-  const found: { concept: Concept; code?: string }[] = findPhrases(
-    text,
-    DISEASE_PHRASES,
-  ).map((concept) => ({ concept }));
-  for (const [code] of text.matchAll(ICD_IN_TEXT)) {
-    const concept = resolveIcd(code);
-    if (concept?.type === "disease") found.push({ concept, code });
-  }
-  return found;
+const staticNames = indexedNames(MESH_CONCEPTS.values());
+const clinicalNames = new Map<string, Concept>();
+for (const row of CONCEPTS.values()) {
+  const concept = conceptOf(row.id) ?? row;
+  for (const name of [row.name, ...row.names])
+    clinicalNames.set(normalizeName(name), concept);
 }
+
+export function createTerminology(
+  corpus: readonly Concept[] = [],
+): Terminology {
+  const corpusById = new Map<string, Concept>();
+  const corpusNames = indexedNames(corpus);
+  // An annotation may cover only a temporal prefix (e.g. "post-" in a disease
+  // name). It does not identify that disease in "post-RPE" or "post-operative".
+  for (const prefix of ["ante", "post", "peri"]) corpusNames.delete(prefix);
+  // Published names (including collisions) and reviewed overrides take precedence over annotations.
+  const combined = new Map([...corpusNames, ...staticNames, ...clinicalNames]);
+  const names = new Map<string, Concept>();
+  for (const [alias, concept] of combined) {
+    if (!concept) continue;
+    const standard = conceptOf(concept.id);
+    let canonical = corpusById.get(concept.id);
+    if (
+      !canonical &&
+      corpusNames.get(alias)?.id === concept.id &&
+      !staticNames.has(alias)
+    ) {
+      canonical = {
+        ...(standard ?? concept),
+        names: [...(standard?.names ?? [])],
+      };
+      corpusById.set(concept.id, canonical);
+    }
+    if (canonical && !staticNames.has(alias)) canonical.names.push(alias);
+  }
+  const byId = (id: string) => corpusById.get(id) ?? conceptOf(id);
+  for (const [alias, concept] of combined) {
+    if (concept) names.set(alias, byId(concept.id) ?? concept);
+  }
+  const find = phraseLookup(names);
+  const dictionaries: Dictionary[] = [
+    {
+      resolvedBy: "curated",
+      lookup: (key) => (clinicalNames.has(key) ? names.get(key) : undefined),
+    },
+    {
+      resolvedBy: "mesh",
+      lookup: (key) => (staticNames.has(key) ? names.get(key) : undefined),
+    },
+    { resolvedBy: "pubtator", lookup: (key) => names.get(key) },
+  ];
+  return {
+    dictionaries,
+    conceptOf: byId,
+    findConcepts: (text) => find(text),
+    findDiseases(text) {
+      const found: DiseaseHit[] = find(text, true).map((concept) => ({
+        concept,
+      }));
+      for (const [code] of text.matchAll(ICD_IN_TEXT)) {
+        const concept = resolveIcd(code);
+        if (concept?.type === "disease")
+          found.push({ concept: byId(concept.id) ?? concept, code });
+      }
+      return found;
+    },
+  };
+}
+
+export const defaultTerminology = createTerminology();
+export const { findConcepts, findDiseases } = defaultTerminology;
 
 /** The ICD names a follow-up can use for an already known diagnosis. */
 export function icdCodesFor(id: string): string[] {
@@ -163,15 +282,15 @@ export function icdCodesFor(id: string): string[] {
 }
 
 /**
- * Tier 1: an ICD-10 code as written, else its three-character category. A value that is not
+ * Tier 1: a mapped ICD-10 code as written. Categories are never inferred from their children. A value that is not
  * shaped like a code is ignored: the graph takes it from an LLM, unchecked.
  */
 export function resolveIcd(code: unknown): Concept | undefined {
   if (typeof code !== "string") return undefined;
   const value = code.trim().toUpperCase();
   if (!ICD_CODE.test(value)) return undefined;
-  const id = ICD_CODES.get(value) ?? ICD_CODES.get(value.slice(0, 3));
-  return id === undefined ? undefined : CONCEPTS.get(id);
+  const id = ICD_CODES.get(value);
+  return id === undefined ? undefined : conceptOf(id);
 }
 
 /**
@@ -180,10 +299,20 @@ export function resolveIcd(code: unknown): Concept | undefined {
  */
 export function resolve(
   entity: { names: readonly string[]; icdCode?: unknown },
-  dictionaries: readonly Dictionary[] = [curated],
+  dictionaries: readonly Dictionary[] = defaultTerminology.dictionaries,
 ): Resolution | undefined {
-  const byCode = resolveIcd(entity.icdCode);
-  if (byCode !== undefined) return { concept: byCode, resolvedBy: "icd" };
+  let byCode = resolveIcd(entity.icdCode);
+  for (const name of entity.names) {
+    // Graphiti writes a code at the beginning of the label or in parentheses.
+    const codes = name.matchAll(
+      /(?:^\s*([A-Z]\d{2}(?:\.\d{1,2})?)(?=\s|$)|\(\s*([A-Z]\d{2}(?:\.\d{1,2})?)\s*\))/gi,
+    );
+    for (const [, leading, bracketed] of codes) {
+      const concept = resolveIcd(leading ?? bracketed);
+      if (concept && byCode && byCode.id !== concept.id) return undefined;
+      byCode ??= concept;
+    }
+  }
   for (const dictionary of dictionaries) {
     for (const name of entity.names) {
       const normalized = normalizeName(name);
@@ -191,10 +320,20 @@ export function resolve(
         const concept =
           form === undefined ? undefined : dictionary.lookup(form);
         if (concept !== undefined) {
-          return { concept, resolvedBy: dictionary.resolvedBy };
+          if (
+            !byCode ||
+            byCode.id === concept.id ||
+            byCode.narrower?.includes(concept.id)
+          )
+            return {
+              concept,
+              resolvedBy:
+                byCode?.id === concept.id ? "icd" : dictionary.resolvedBy,
+            };
+          return undefined; // conflicting explicit disease evidence
         }
       }
     }
   }
-  return undefined;
+  return byCode && { concept: byCode, resolvedBy: "icd" };
 }

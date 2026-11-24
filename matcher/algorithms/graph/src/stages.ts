@@ -98,16 +98,23 @@ export function patientStage(
   ids: readonly string[],
   texts: readonly string[],
   therapy: Omit<PatientStage, "states">,
+  prostateContext = true,
 ): PatientStage {
   const states = new Set<Stage>();
   for (const stage of STAGE_DATA) {
     if (ids.some((id) => stage.concepts.includes(id))) states.add(stage.id);
   }
-  for (const id of ids) {
-    for (const stage of conceptOf(id)?.stages ?? []) states.add(stage as Stage);
+  if (prostateContext) {
+    for (const id of ids)
+      for (const stage of conceptOf(id)?.stages ?? [])
+        states.add(stage as Stage);
   }
   for (const text of texts)
     for (const stage of stageCues(text)) states.add(stage);
+  if (!prostateContext) {
+    states.delete("castration_resistant");
+    states.delete("hormone_sensitive");
+  }
   if (states.has("castration_resistant")) {
     states.delete("hormone_sensitive");
   }

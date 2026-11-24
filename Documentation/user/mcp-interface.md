@@ -99,7 +99,7 @@ Set `algorithm` to choose an approach. It defaults to `keyword`.
 | `edges[].source_node_uuid`, `edges[].target_node_uuid` | string | yes | Both nodes are in `nodes` |
 | `edges[].valid_at` | ISO date or date-time, or `null` | no | The day the fact starts |
 
-The server derives daily events for focus and context. With `algorithm` set to `graph`, the matcher also reads the relationships. A timeline alone supports diagnosis-only matches. How it does this is described in [reading a graph](#reading-a-graph). In the answer, `focus_event_id` is then the day of the most recent event, such as `2030-12-16`, because the events of this journey are days.
+The server derives daily events for focus and context. With `algorithm` set to `graph`, the matcher also reads the relationships. For a timeline treatment, pair `parameters.drug`, `medication` or `procedure` with `parameters.indication` to state which diagnosis it treats. A finding or test can name its diagnosis with `parameters.indicates`. With separate mentions the matcher can still search by diagnosis. How it does this is described in [reading a graph](#reading-a-graph). In the answer, `focus_event_id` is then the day of the most recent event, such as `2030-12-16`, because the events of this journey are days.
 
 ### `match_journey` output
 

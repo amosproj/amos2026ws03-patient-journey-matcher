@@ -7,7 +7,7 @@ import {
   type QueryConcept,
   type QueryWeights,
 } from "./query.ts";
-import { findConcepts } from "./resolve.ts";
+import { defaultTerminology, type Terminology } from "./resolve.ts";
 import { MESH_MAJOR, MESH_MINOR } from "./schema.ts";
 import {
   careContext,
@@ -15,6 +15,7 @@ import {
   otherTreatment,
   paperStages,
   phaseConflict,
+  type Stage,
   stageFactor,
 } from "./stages.ts";
 import type { Triple } from "./types.ts";
@@ -132,6 +133,7 @@ const SEX_TAGS: Record<string, string> = {
 
 type Candidate = {
   document_id: string;
+  diagnoses: string[];
   matched: Record<string, number>;
   idf: Record<string, number>;
   title: string;
@@ -225,28 +227,46 @@ function isLabResearch(mesh: Readonly<Record<string, number>>): boolean {
   return LAB.some((id) => id in mesh) && !AGES.some((id) => id in mesh);
 }
 
-/** The patient's drugs that PubTator3 links to one of his diagnoses in the paper. */
-function linkedDrugs(
+/** Explicit indications also participate in shortlisting, before the candidate limit. */
+function treatmentPatterns(
   query: GraphQuery,
-  relations: readonly Triple[],
-): Set<string> {
-  const drugs = new Set<string>();
-  for (const { subject, predicate, object } of relations) {
-    if (
-      predicate === "treats" &&
-      query.treatments.has(subject) &&
-      query.diagnoses.has(object)
-    )
-      drugs.add(subject);
-  }
-  return drugs;
+  diagnosisOnly: boolean,
+): string[] {
+  if (diagnosisOnly)
+    return [...query.diagnoses.keys()].map((object) =>
+      JSON.stringify([{ predicate: "treats", object }]),
+    );
+  return query.concepts.flatMap(({ ids, role, diagnoses, plannedFor }) =>
+    (role === "drug" || role === "procedure") && diagnoses
+      ? diagnoses
+          .filter((id) => !plannedFor?.includes(id))
+          .flatMap((object) =>
+            ids.map((subject) =>
+              JSON.stringify([{ subject, predicate: "treats", object }]),
+            ),
+          )
+      : [],
+  );
 }
 
-export function createGraphMatcher(db: Queryable): Matcher {
+export function createGraphMatcher(
+  db: Queryable,
+  terminology: () => Promise<Terminology> = async () => defaultTerminology,
+): Matcher {
   return {
     async match(state, { contentTypes, limit, tuning, trace }) {
       const values = settings(tuning, trace);
-      const query = patientQuery(state, queryWeights(values));
+      const terms = await terminology();
+      const query = patientQuery(state, queryWeights(values), terms);
+      const prostate = query.prostateContext;
+      // At confirmation a paper studying a treatment for the disease is relevant even
+      // when the patient has never received that drug.
+      const diagnosisOnly =
+        query.stage.diagnosed &&
+        !query.concepts.some(
+          (c) => c.role !== "diagnosis" && c.role !== "aspect" && c.focus,
+        ) &&
+        !query.treatments.size;
       trace?.("query", {
         cutoff: query.cutoff,
         focusDate: state.focus.date,
@@ -256,6 +276,7 @@ export function createGraphMatcher(db: Queryable): Matcher {
         stage: { ...query.stage, states: [...query.stage.states] },
         treatments: Object.fromEntries(query.treatments),
         relations: Object.fromEntries(query.relations),
+        evidence: query.evidence,
       });
       if (!query.diagnoses.size) return [];
       // One group per concept: its IDs count once, with the strongest evidence.
@@ -264,7 +285,8 @@ export function createGraphMatcher(db: Queryable): Matcher {
       );
       const { rows } = await db.query<Candidate>(
         `WITH q AS (
-           SELECT * FROM unnest($1::int[], $2::text[], $3::float8[]) AS q(grp, id, weight)
+           SELECT grp, id, weight, scope FROM unnest($1::int[], $2::text[], $3::float8[]) AS terms(grp, id, weight)
+           LEFT JOIN jsonb_to_recordset($11::jsonb) AS bindings(grp int, scope text[]) USING (grp)
          ),
          candidates AS MATERIALIZED (
            SELECT g.document_id, g.entities, coalesce(g.mesh, '{}'::jsonb) AS mesh
@@ -285,12 +307,14 @@ export function createGraphMatcher(db: Queryable): Matcher {
                            WHEN ((c.mesh ->> q.id)::int & ${MESH_MINOR}) <> 0 THEN $9::float8
                            ELSE $10::float8 END
                     ELSE 0 END)) AS strength
-           FROM candidates c JOIN q ON c.entities ? q.id OR c.mesh ? q.id
+           FROM candidates c JOIN q ON (c.entities ? q.id OR c.mesh ? q.id)
+             AND (q.scope IS NULL OR c.entities ?| q.scope OR c.mesh ?| q.scope)
            GROUP BY c.document_id, q.grp
          ),
          -- Rare among the papers on the diagnosis means telling: inverse frequency as in BM25.
          idf AS (
-           SELECT grp, ln(1 + ((SELECT count(*) FROM candidates) - count(*) + 0.5) / (count(*) + 0.5)) AS idf
+           SELECT grp, greatest(CASE WHEN grp = ANY($12::int[]) THEN 1 ELSE 0 END,
+                  ln(1 + ((SELECT count(*) FROM candidates) - count(*) + 0.5) / (count(*) + 0.5))) AS idf
            FROM evidence GROUP BY grp
          ),
          scored AS (
@@ -302,12 +326,14 @@ export function createGraphMatcher(db: Queryable): Matcher {
          SELECT s.document_id, s.matched,
                 (SELECT jsonb_object_agg(grp, idf) FROM idf) AS idf,
                 d.title, d.published_at::text AS published, d.publication_types,
-                g.relations, coalesce(g.mesh, '{}'::jsonb) AS mesh
+                g.relations, coalesce(g.mesh, '{}'::jsonb) AS mesh,
+                ARRAY(SELECT dx FROM unnest($4::text[]) dx WHERE g.entities ? dx OR g.mesh ? dx) AS diagnoses
          FROM scored s
          JOIN graph.documents g ON g.document_id = s.document_id
          JOIN public.documents d ON d.id = s.document_id
-         ORDER BY s.score DESC, d.published_at NULLS LAST, s.document_id
-         LIMIT $11`,
+         ORDER BY s.score * (1 + CASE WHEN g.relations @> ANY($13::jsonb[]) THEN $14::float8 ELSE 0 END) DESC,
+                  d.published_at NULLS LAST, s.document_id
+         LIMIT $15`,
         [
           groups.map(({ index }) => index),
           groups.map(({ id }) => id),
@@ -319,6 +345,18 @@ export function createGraphMatcher(db: Queryable): Matcher {
           values.major,
           values.minor,
           values.substance,
+          JSON.stringify(
+            query.concepts.flatMap((c, grp) =>
+              c.diagnoses ? [{ grp, scope: c.diagnoses }] : [],
+            ),
+          ),
+          // An anchor shared by every candidate has near-zero IDF. Preserve the strength
+          // of title/major-topic evidence when ranking a new clinical population.
+          query.concepts.flatMap((c, i) =>
+            !prostate && c.role === "diagnosis" ? [i] : [],
+          ),
+          treatmentPatterns(query, diagnosisOnly),
+          values.relation,
           values.candidates,
         ],
       );
@@ -333,7 +371,10 @@ export function createGraphMatcher(db: Queryable): Matcher {
         ),
       });
       const hits = rows
-        .map((row) => ({ row, ...rank(query, row, values) }))
+        .map((row) => ({
+          row,
+          ...rank(query, row, values, terms, prostate, diagnosisOnly),
+        }))
         // On a tie prefer more specific title evidence, then the older paper.
         .sort(
           (a, b) =>
@@ -363,6 +404,9 @@ function rank(
   query: GraphQuery,
   row: Candidate,
   values: Record<Setting, number>,
+  terms: Terminology,
+  prostate: boolean,
+  diagnosisOnly: boolean,
 ): {
   score: number;
   titleScore: number;
@@ -372,31 +416,70 @@ function rank(
   const contributions: { concept: QueryConcept; part: number }[] = [];
   // PubTator does not annotate procedures. Read the same curated concepts from the title
   // of each candidate, counting the stronger of title and indexed evidence once.
-  const titleIds = new Set(findConcepts(row.title).map(({ id }) => id));
+  const titleIds = new Set(terms.findConcepts(row.title).map(({ id }) => id));
   let titleScore = 0;
   let mainTopic = 0;
+  const linked: string[] = [];
+  const exact: string[] = [];
+  const planned: string[] = [];
+  let relation = 0;
+  const studied =
+    diagnosisOnly &&
+    row.relations.find(
+      ({ predicate, object }) =>
+        predicate === "treats" && query.diagnoses.has(object),
+    );
   query.concepts.forEach((concept, index) => {
+    if (
+      concept.diagnoses &&
+      !concept.diagnoses.some((id) => row.diagnoses.includes(id))
+    )
+      return;
     const inTitle = concept.ids.some((id) => titleIds.has(id));
     const strength = Math.max(
       row.matched[index] ?? 0,
       inTitle ? values.title : 0,
     );
-    if (inTitle)
-      titleScore += concept.weight * values.title * (row.idf[index] ?? 0);
     if (strength <= 0) return;
-    if (concept.role === "diagnosis") mainTopic = Math.max(mainTopic, strength);
+    const worth = concept.weight * (row.idf[index] ?? 0);
+    if (
+      (concept.role === "drug" || concept.role === "procedure") &&
+      (concept.diagnoses || concept.ids.some((id) => query.treatments.has(id)))
+    ) {
+      const indications = row.relations.filter(
+        (r) => r.predicate === "treats" && concept.ids.includes(r.subject),
+      );
+      const compatible = indications.filter(({ object }) =>
+        concept.diagnoses
+          ? concept.diagnoses.includes(object)
+          : query.diagnoses.has(object),
+      );
+      if (indications.length && !compatible.length) return;
+      const given = compatible.find(
+        ({ object }) => !concept.plannedFor?.includes(object),
+      );
+      const link = given ?? compatible[0];
+      if (link) {
+        const pair = `${concept.name} → ${terms.conceptOf(link.object)?.name ?? link.object}`;
+        if (!given) planned.push(pair);
+        else {
+          (concept.diagnoses ? exact : linked).push(pair);
+          relation += values.relation * worth * (concept.diagnoses ? 2 : 1);
+        }
+      }
+    }
+    if (inTitle) titleScore += worth * values.title;
+    if (concept.role === "diagnosis") {
+      mainTopic = Math.max(mainTopic, strength);
+      if (studied && concept.ids.includes(studied.object))
+        relation += values.relation * worth * strength;
+    }
     contributions.push({
       concept,
-      part: concept.weight * strength * (row.idf[index] ?? 0),
+      part: worth * strength,
     });
   });
-  const drugs = linkedDrugs(query, row.relations);
-  let relation = 0;
-  query.concepts.forEach((concept, index) => {
-    if (concept.role === "drug" && concept.ids.some((id) => drugs.has(id)))
-      relation += values.relation * concept.weight * (row.idf[index] ?? 0);
-  });
-  const stages = paperStages(row.title, row.mesh);
+  const stages = prostate ? paperStages(row.title, row.mesh) : new Set<Stage>();
   const severity = {
     strong: values.conflictStrong,
     moderate: values.conflictModerate,
@@ -406,11 +489,12 @@ function rank(
     fit: values.stageFit,
     ...severity,
   });
-  const care = careContext(query.stage, stages, row.title, row.mesh);
-  const phase = phaseConflict(row.mesh, query.stage);
+  const care =
+    prostate && careContext(query.stage, stages, row.title, row.mesh);
+  const phase = prostate ? phaseConflict(row.mesh, query.stage) : undefined;
   const own = ownIds(query);
   const foreign = otherDisease(row.mesh, own, query.diagnoses.keys());
-  const alternative = otherTreatment(row.mesh, own, query.stage);
+  const alternative = prostate && otherTreatment(row.mesh, own, query.stage);
   const lab = isLabResearch(row.mesh);
   const otherSex = otherSexOnly(row.mesh, query.sex);
   const topic =
@@ -435,8 +519,17 @@ function rank(
     names.length > 0
       ? `Matches ${names.join(", ")}.`
       : "Matches the diagnosis.",
-    drugs.size > 0
-      ? "PubTator3 links the patient's drug to the diagnosis."
+    exact.length
+      ? `Matches the documented treatment indication (${exact.join(", ")}).`
+      : "",
+    linked.length
+      ? `PubTator3 links the patient's drug to a diagnosis in this paper (${linked.join(", ")}). Patient indication is undocumented.`
+      : "",
+    planned.length
+      ? `Studies a planned treatment (${planned.join(", ")}).`
+      : "",
+    studied
+      ? `Studies a treatment for ${terms.conceptOf(studied.object)?.name ?? studied.object}.`
       : "",
     stage.fitting.length > 0
       ? `About the patient's disease state (${stage.fitting.join(", ").replaceAll("_", " ")}).`

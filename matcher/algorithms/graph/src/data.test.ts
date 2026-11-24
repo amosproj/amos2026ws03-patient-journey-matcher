@@ -10,6 +10,7 @@ import stages from "../data/stages.json" with { type: "json" };
 import cues from "../data/status-cues.json" with { type: "json" };
 import timeline from "../data/timeline.json" with { type: "json" };
 import { ROLES } from "./query.ts";
+import { conceptOf } from "./resolve.ts";
 import { STAGES } from "./stages.ts";
 import { CUE_STATUSES } from "./status.ts";
 import { normalizeName } from "./text.ts";
@@ -31,10 +32,10 @@ test("concepts: a known type, a well-formed ID, each ID once", () => {
   expect(CONCEPT_IDS.size).toBe(concepts.concepts.length);
 });
 
-test("every ICD code points to a curated concept", () => {
+test("every reviewed ICD code points to a disease", () => {
   for (const [code, id] of Object.entries(icd.codes)) {
     expect(code).toMatch(/^[A-Z]\d{2}(\.\d{1,2})?$/);
-    expect(CONCEPT_IDS, `${code} → ${id}`).toContain(id);
+    expect(conceptOf(id)?.type, `${code} → ${id}`).toBe("disease");
   }
 });
 

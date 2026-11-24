@@ -1,0 +1,35 @@
+{
+  "patient_id": "Breast",
+  "events": [
+    {
+      "id": "e1",
+      "date": "2026-01-10",
+      "type": "diagnosis",
+      "label": "Verdacht auf Mammakarzinom nach auffälliger Mammographie.",
+      "parameters": {
+        "diagnosis": "Mammakarzinom",
+        "icd_code": "C50"
+      }
+    },
+    {
+      "id": "e2",
+      "date": "2026-01-17",
+      "type": "diagnosis",
+      "label": "Mammakarzinom bestätigt.",
+      "parameters": {
+        "diagnosis": "Mammakarzinom",
+        "icd_code": "C50"
+      }
+    },
+    {
+      "id": "e3",
+      "date": "2026-02-09",
+      "type": "systemic_therapy",
+      "label": "Olaparib zur Behandlung von Mammakarzinom begonnen. Eine BRCA1-Mutation liegt vor.",
+      "parameters": {
+        "drug": "Olaparib",
+        "indication": "Mammakarzinom"
+      }
+    }
+  ]
+}

@@ -1,7 +1,9 @@
 import { expect, test } from "vitest";
 import {
   conceptOf,
+  createTerminology,
   curated,
+  defaultTerminology,
   nameDictionary,
   resolve,
   resolveIcd,
@@ -27,7 +29,7 @@ test.each([
   expect(normalizeName(text)).toBe(expected);
 });
 
-test("tier 1: an ICD code, else its category; an odd value is ignored", () => {
+test("tier 1: reviewed ICD codes, including legacy C61.0; unknown codes are ignored", () => {
   expect(resolveIcd("C61")?.id).toBe("mesh:D011471");
   expect(resolveIcd(" c61 ")?.id).toBe("mesh:D011471");
   expect(resolveIcd("C61.0")?.id).toBe("mesh:D011471");
@@ -45,7 +47,6 @@ test("the ICD code comes before the name", () => {
 });
 
 test.each([
-  ["C61 Prostatakarzinom", "mesh:D011471"],
   ["prostate cancer", "mesh:D011471"],
   ["Adenokarzinom der Prostata", "mesh:D011471"],
   ["leuprorelin", "mesh:D016729"],
@@ -66,7 +67,7 @@ test("names match whole: no containment, no fuzzy match", () => {
   expect(
     resolve({ names: ["Biochemisches Rezidiv – Salvage-Therapie"] }),
   ).toBeUndefined();
-  expect(resolve({ names: ["prostatitis"] })).toBeUndefined();
+  expect(resolve({ names: ["prostatitis"] })?.concept.id).toBe("mesh:D011472");
 });
 
 test("the concept table decides the type, not the patient label", () => {
@@ -115,4 +116,80 @@ test("a leading code is tried away only for the lookup", () => {
     "mesh:D011471",
   );
   expect(resolve({ names: ["P53 mutation"] })).toBeUndefined();
+});
+
+test("clinical labels and codes retrieve the same bilingual MeSH concept without assuming a subtype", () => {
+  for (const name of [
+    "C34",
+    "C34.9",
+    "Lungenkrebs",
+    "lung cancer",
+    "Lungenkarzinom",
+  ]) {
+    expect(resolve({ names: [name] })?.concept.id).toBe("mesh:D008175");
+  }
+  expect(resolve({ names: ["PCa (C61)"] })).toMatchObject({
+    concept: { id: "mesh:D011471" },
+    resolvedBy: "icd",
+  });
+  expect(resolve({ names: ["PCa (C61)"], icdCode: "C50" })).toBeUndefined();
+  expect(resolve({ names: ["Lungenkarzinom (C50)"] })).toBeUndefined();
+  const lung = resolveIcd("C34");
+  expect(lung?.narrower).toContain("mesh:D002289");
+  expect(
+    resolve({ names: ["non-small cell lung cancer"], icdCode: "C34" })?.concept
+      .id,
+  ).toBe("mesh:D002289");
+  expect(resolve({ names: ["breast cancer"], icdCode: "C34" })).toBeUndefined();
+  expect(
+    defaultTerminology
+      .findDiseases("Confirmed C34.9.")
+      .map(({ concept }) => concept.id),
+  ).toEqual(["mesh:D008175"]);
+  for (const text of [
+    "C50-C61",
+    "C34.72",
+    "C78",
+    "M06",
+    "MS",
+    "RA",
+    "PCA",
+    "PCa",
+  ]) {
+    expect(defaultTerminology.findDiseases(text), text).toEqual([]);
+  }
+});
+
+test("stored mentions support new IDs and synonyms; conflicting and short spellings abstain", () => {
+  const terms = createTerminology([
+    {
+      type: "disease",
+      id: "mesh:C990001",
+      name: "Fixture disease",
+      names: ["same label", "xyz", "post-"],
+    },
+    {
+      type: "disease",
+      id: "mesh:D008175",
+      name: "Fixture lung synonym",
+      names: ["same label"],
+    },
+  ]);
+  for (const text of ["XYZ", "Same label", "post-RPE"]) {
+    expect(terms.findDiseases(text)).toEqual([]);
+    expect(resolve({ names: [text] }, terms.dictionaries)).toBeUndefined();
+  }
+  expect(terms.findDiseases("Suspected fixture disease")).toMatchObject([
+    { concept: { id: "mesh:C990001" } },
+  ]);
+  expect(
+    resolve({ names: ["Fixture lung synonym"] }, terms.dictionaries),
+  ).toMatchObject({
+    concept: {
+      id: "mesh:D008175",
+      name: "Lung Neoplasms",
+      names: expect.arrayContaining(["fixture lung synonym"]),
+    },
+    resolvedBy: "pubtator",
+  });
 });
