@@ -404,7 +404,7 @@ function mtRenderTerms() {
 
 // The matcher's ranking constants as inputs, built again only when their names change.
 function mtRenderTuning() {
-  const settings = (mt.request?.algorithm ?? "keyword") === "keyword" ? mtStep("settings") : undefined;
+  const settings = mtStep("settings");
   const names = settings ? settings.map((setting) => setting.name).join() : mt.settings;
   $("#mt-tuning-box").hidden = !names || mtAlgorithm() !== "keyword";
   if (!settings || names === mt.settings) return;
