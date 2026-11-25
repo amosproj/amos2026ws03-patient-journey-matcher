@@ -52,28 +52,48 @@
     "points": ["e01", "e03", "e09", "e13"]
   },
   "Stomach": {
-    "holdout": true,
     "diagnosis": "mesh:D013274",
     "points": ["e02", "e08", "e13", "e16"]
   },
   "Kidney": {
-    "holdout": true,
     "diagnosis": "mesh:D007680",
     "points": ["e02", "e04", "e10", "e15"]
   },
   "Melanoma": {
-    "holdout": true,
     "diagnosis": "mesh:D008545",
     "points": ["e01", "e08", "e09", "e14"]
   },
   "Depression": {
-    "holdout": true,
     "diagnosis": "mesh:D003866",
     "points": ["e01", "e04", "e08", "e11"]
   },
   "Stroke": {
-    "holdout": true,
     "diagnosis": "mesh:D020521",
     "points": ["e02", "e07", "e10", "e14"]
+  },
+  "Colon": {
+    "holdout": true,
+    "diagnosis": "mesh:D003110",
+    "points": ["e02", "e05", "e10", "e13"]
+  },
+  "Thyroid": {
+    "holdout": true,
+    "diagnosis": "mesh:D013964",
+    "points": ["e02", "e05", "e10", "e14"]
+  },
+  "Infarction": {
+    "holdout": true,
+    "diagnosis": "mesh:D009203",
+    "points": ["e01", "e03", "e10", "e13"]
+  },
+  "Gout": {
+    "holdout": true,
+    "diagnosis": "mesh:D006073",
+    "points": ["e01", "e05", "e08", "e11"]
+  },
+  "COPD": {
+    "holdout": true,
+    "diagnosis": "mesh:D029424",
+    "points": ["e01", "e03", "e05", "e13"]
   }
 }

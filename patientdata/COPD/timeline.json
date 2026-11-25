@@ -1,0 +1,278 @@
+{
+  "patient_id": "COPD",
+  "pathway_id": "copd-01",
+  "start_date": "2027-01-27",
+  "events": [
+    {
+      "id": "e01",
+      "type": "referral",
+      "label": "Überweisung Pneumologie: V.a. COPD",
+      "date": "2027-01-27",
+      "specialist": "hausarzt",
+      "parameters": {
+        "reason": "Seit ca. 2 Jahren zunehmende Belastungsdyspnoe (Luftnot nach 2 Etagen), morgendlicher Husten mit weißlichem Auswurf, in den letzten beiden Wintern jeweils mehrwöchige „Bronchitis“, zuletzt 12/2026 mit Antibiotikum behandelt",
+        "history": "63-jährige Patientin, aktive Raucherin (ca. 42 pack years), art. Hypertonie, Osteopenie; keine Allergien, kein Asthma in der Kindheit",
+        "office_spirometry": "Praxisspirometrie ohne Bronchodilatation: FEV1 1,49 l (62 % Soll), FEV1/FVC 0,60",
+        "spo2_percent": 94,
+        "working_diagnosis": "V.a. COPD, DD Asthma bronchiale",
+        "question": "Lungenfunktionsdiagnostik, Therapieempfehlung"
+      },
+      "documents": ["ueberweisungsschein"],
+      "repeat_index": null
+    },
+    {
+      "id": "e02",
+      "type": "pulmonary_function_test",
+      "label": "Lufu: Spirometrie mit Bronchospasmolyse, Bodyplethysmographie, DLCO",
+      "date": "2027-02-17",
+      "specialist": "pneumologie",
+      "parameters": {
+        "fev1_l_post": 1.58,
+        "fev1_percent_predicted_post": 66,
+        "fvc_l_post": 2.71,
+        "fev1_fvc_post": 0.58,
+        "fev1_fvc_lln": 0.66,
+        "bronchodilator_response": "Salbutamol 400 µg: FEV1 +90 ml (+6 %), keine signifikante Reversibilität",
+        "rv_percent_predicted": 148,
+        "tlc_percent_predicted": 109,
+        "dlco_percent_predicted": 56,
+        "feno_ppb": 14,
+        "capillary_bga": "Raumluft: pO2 66 mmHg, pCO2 39 mmHg",
+        "eosinophils_per_ul": 230,
+        "cat_score": 19,
+        "mmrc_grade": 2,
+        "exacerbations_last_12_months": "1 mittelschwere (ambulant mit Antibiotikum), keine Hospitalisierung",
+        "diagnosis": "COPD GOLD 2, Gruppe B, mit Lungenüberblähung und Diffusionsstörung, V.a. Emphysem",
+        "icd_code": "J44.92"
+      },
+      "documents": ["lungenfunktionsbefund", "laborbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e03",
+      "type": "medication",
+      "label": "Einleitung Dauertherapie LAMA/LABA, Tabakentwöhnung",
+      "date": "2027-02-17",
+      "specialist": "pneumologie",
+      "parameters": {
+        "maintenance_therapy": "Tiotropium/Olodaterol 2,5/2,5 µg, 2 Hübe 1x morgens (Sprühvernebler)",
+        "reliever": "Salbutamol-Dosieraerosol 100 µg, 1–2 Hübe bei Bedarf",
+        "inhaler_training": "Inhalationstechnik geschult und von der Patientin korrekt demonstriert",
+        "smoking_cessation": "Ausführliche Rauchstoppberatung (Fagerström 6 Punkte), Vareniclin über 12 Wochen, Anmeldung zum Tabakentwöhnungskurs, Rauchstopptermin 01.03.2027",
+        "vaccinations": "Pneumokokken (PCV20) und Pertussis-Auffrischung (Tdap) veranlasst; Influenza, COVID-19 und RSV im Herbst; Herpes zoster empfohlen",
+        "non_pharmacological": "Verordnung Lungensport, Bewegungsempfehlung, Einschreibung in das DMP COPD",
+        "diagnostics_ordered": "Low-Dose-CT Thorax, Alpha-1-Antitrypsin",
+        "follow_up": "Kontrolle mit Lungenfunktion in 3 Monaten"
+      },
+      "documents": ["arztbrief", "medikationsplan"],
+      "repeat_index": null
+    },
+    {
+      "id": "e04",
+      "type": "imaging",
+      "label": "Low-Dose-CT Thorax",
+      "date": "2027-03-04",
+      "specialist": "radiologie",
+      "parameters": {
+        "modality": "Niedrigdosis-CT Thorax nativ",
+        "finding": "Zentrilobuläres Lungenemphysem mit Oberlappenbetonung beidseits, Bronchialwandverdickungen; solider Nodulus 4 mm im rechten Unterlappen, kein suspekter Rundherd; geringe Koronarkalzifikationen",
+        "lung_rads": "2",
+        "recommendation": "Kontroll-LDCT in 12 Monaten"
+      },
+      "documents": ["befundbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e05",
+      "type": "followup",
+      "label": "Pneumologische Verlaufskontrolle nach 3 Monaten",
+      "date": "2027-05-19",
+      "specialist": "pneumologie",
+      "parameters": {
+        "smoking_status": "Rauchfrei seit 01.03.2027, Vareniclin bis Mitte Mai eingenommen",
+        "cat_score": 13,
+        "mmrc_grade": 1,
+        "fev1_l_post": 1.66,
+        "fev1_percent_predicted_post": 69,
+        "alpha1_antitrypsin_g_l": 1.36,
+        "inhaler_technique": "korrekt",
+        "vaccinations": "PCV20 und Tdap erfolgt",
+        "assessment": "Stabile COPD unter LAMA/LABA, symptomatische Besserung; kein Alpha-1-Antitrypsin-Mangel",
+        "plan": "Therapie unverändert, Lungensport 1x/Woche; Kontrolle in 6 Monaten bzw. bei Exazerbation"
+      },
+      "documents": ["verlaufsbericht", "lungenfunktionsbefund"],
+      "repeat_index": null
+    },
+    {
+      "id": "e06",
+      "type": "exacerbation",
+      "label": "Mittelschwere AECOPD, ambulante Behandlung",
+      "date": "2027-12-13",
+      "specialist": "hausarzt",
+      "parameters": {
+        "symptoms": "Seit 4 Tagen zunehmende Dyspnoe, vermehrter gelb-grüner Auswurf, subfebrile Temperaturen",
+        "findings": "Giemen und Brummen beidseits, AF 22/min, SpO2 91 %, keine Zeichen der kardialen Dekompensation",
+        "crp_mg_l": 38,
+        "therapy": "Prednisolon 40 mg 1x täglich für 5 Tage, Amoxicillin 1 g 1-1-1 für 5 Tage, Salbutamol bei Bedarf intensiviert",
+        "diagnosis": "Akute Exazerbation der COPD mit Infekt der unteren Atemwege",
+        "icd_code": "J44.02",
+        "plan": "Kontrolle in 48 h; Influenza-Impfung im Oktober erfolgt"
+      },
+      "documents": ["karteieintrag", "rezept"],
+      "repeat_index": null
+    },
+    {
+      "id": "e07",
+      "type": "hospital_admission",
+      "label": "Stationäre Aufnahme: schwere AECOPD mit hyperkapnischer respiratorischer Insuffizienz",
+      "date": "2028-02-07",
+      "specialist": "pneumologie",
+      "parameters": {
+        "presentation": "Ruhe- und Sprechdyspnoe, Einsatz der Atemhilfsmuskulatur, zunehmend somnolent; seit 3 Tagen Fieber, Husten und Gliederschmerzen",
+        "abg_room_air": "pH 7,29, pCO2 68 mmHg, pO2 49 mmHg, HCO3 31 mmol/l",
+        "respiratory_rate_per_min": 30,
+        "virology": "Multiplex-PCR: Influenza A positiv",
+        "eosinophils_per_ul": 360,
+        "crp_mg_l": 74,
+        "procalcitonin_ng_ml": 0.09,
+        "chest_xray": "Kein Infiltrat, Emphysemzeichen",
+        "therapy": "NIV auf der Intermediate Care (IPAP 20, EPAP 5 mbar) über 3 Tage, kontrollierte O2-Gabe mit Ziel-SpO2 88–92 %, Prednisolon 40 mg für 5 Tage, Oseltamivir 75 mg 1-0-1 für 5 Tage, vernebelte Bronchodilatatoren; kein Antibiotikum bei niedrigem PCT ohne Infiltrat",
+        "working_diagnosis": "Schwere akute Exazerbation der COPD bei Influenza A mit akuter hyperkapnischer respiratorischer Insuffizienz"
+      },
+      "documents": ["notaufnahmebericht", "bga_befund"],
+      "repeat_index": null
+    },
+    {
+      "id": "e08",
+      "type": "hospital_discharge",
+      "label": "Entlassung nach AECOPD, Eskalation auf Triple-Therapie",
+      "date": "2028-02-17",
+      "specialist": "pneumologie",
+      "parameters": {
+        "diagnosis": "Schwere AECOPD bei Influenza A mit akuter hyperkapnischer respiratorischer Insuffizienz; COPD GOLD 2, Gruppe E",
+        "icd_code": "J44.02",
+        "secondary_diagnoses": ["J10.1 Influenza A mit Manifestation an den Atemwegen", "J96.01 Akute respiratorische Insuffizienz Typ II", "J43.2 Zentrilobuläres Emphysem", "I10.00 Arterielle Hypertonie"],
+        "course": "NIV über 3 Tage, anschließend Spontanatmung mit 1 l/min O2; bei Entlassung ohne O2 SpO2 90 % in Ruhe",
+        "abg_at_discharge": "Kapillär unter Raumluft: pH 7,40, pCO2 54 mmHg, pO2 58 mmHg",
+        "discharge_medication": ["Beclometason/Formoterol/Glycopyrronium 87/5/9 µg 2 Hübe 1-0-1 mit Spacer", "Salbutamol-Dosieraerosol 100 µg bei Bedarf", "Ramipril 5 mg 1-0-0", "Colecalciferol 1000 IE 1-0-0"],
+        "recommendations": "Pneumologische Anschlussrehabilitation; BGA-Kontrolle in stabiler Phase nach 4–6 Wochen zur Prüfung von LTOT und außerklinischer NIV"
+      },
+      "documents": ["entlassungsbrief", "medikationsplan"],
+      "repeat_index": null
+    },
+    {
+      "id": "e09",
+      "type": "rehabilitation",
+      "label": "Pneumologische Anschlussrehabilitation",
+      "date": "2028-03-06",
+      "specialist": "rehabilitation",
+      "parameters": {
+        "duration": "3 Wochen stationär (06.03.–24.03.2028)",
+        "six_minute_walk_m_start": 290,
+        "six_minute_walk_m_end": 365,
+        "exercise_desaturation": "SpO2-Abfall auf 85 % im 6-Minuten-Gehtest",
+        "cat_score_start": 24,
+        "cat_score_end": 17,
+        "program": "Ausdauer- und Krafttraining, Atemphysiotherapie, Inhalationsschulung, Ernährungsberatung, psychologische Unterstützung",
+        "abg": "Kapillär in Ruhe unter Raumluft: pCO2 55 mmHg, pO2 56 mmHg",
+        "recommendation": "Lungensport fortführen; zeitnahe pneumologische Kontrolle mit BGA bei persistierender Hyperkapnie"
+      },
+      "documents": ["rehaentlassungsbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e10",
+      "type": "followup",
+      "label": "Pneumologische Kontrolle: chronische hyperkapnische respiratorische Insuffizienz",
+      "date": "2028-04-26",
+      "specialist": "pneumologie",
+      "parameters": {
+        "fev1_l_post": 1.1,
+        "fev1_percent_predicted_post": 46,
+        "fev1_fvc_post": 0.47,
+        "gold_grade": 3,
+        "abg_room_air": "Arteriell in Ruhe: pH 7,38, pCO2 56 mmHg, pO2 53 mmHg (Vorbefund Reha 03/2028: pCO2 55 mmHg, pO2 56 mmHg)",
+        "echocardiography": "sPAP 41 mmHg, rechter Ventrikel nicht dilatiert",
+        "hemoglobin_g_dl": 15.6,
+        "smoking_status": "Weiterhin rauchfrei (CO in der Ausatemluft 2 ppm)",
+        "diagnosis": "Chronische hyperkapnische respiratorische Insuffizienz bei COPD GOLD 3, Gruppe E",
+        "icd_code": "J96.11",
+        "therapy_change": "Langzeit-Sauerstofftherapie mindestens 16 h/Tag, 2 l/min in Ruhe und 3 l/min unter Belastung (austitriert), stationärer Konzentrator und Mobilgerät; Einleitung einer außerklinischen NIV angemeldet"
+      },
+      "documents": ["verlaufsbericht", "lungenfunktionsbefund", "bga_befund"],
+      "repeat_index": null
+    },
+    {
+      "id": "e11",
+      "type": "procedure",
+      "label": "Stationäre Einleitung einer außerklinischen NIV",
+      "date": "2028-05-15",
+      "specialist": "pneumologie",
+      "parameters": {
+        "setting": "Beatmungszentrum, 3 Nächte",
+        "baseline": "Nächtliche transkutane pCO2-Messung ohne Beatmung: Maximum 66 mmHg",
+        "ventilation_settings": "Druckkontrollierte High-Intensity-NIV, IPAP 24 mbar, EPAP 6 mbar, Backup-Frequenz 16/min, Mund-Nasen-Maske, O2 2 l/min eingespeist",
+        "result": "Unter NIV nächtlicher tcpCO2 im Mittel 47 mmHg, morgendlicher pCO2 48 mmHg; Nutzung über 6 h/Nacht gut toleriert",
+        "plan": "Kontrolle im Beatmungszentrum in 3 Monaten mit Auslesen der Gerätedaten"
+      },
+      "documents": ["entlassungsbrief", "bga_befund"],
+      "repeat_index": null
+    },
+    {
+      "id": "e12",
+      "type": "followup",
+      "label": "Pneumologische Kontrolle: rezidivierende Exazerbationen unter Triple-Therapie",
+      "date": "2029-03-14",
+      "specialist": "pneumologie",
+      "parameters": {
+        "exacerbations_last_12_months": "2 mittelschwere Exazerbationen (10/2028 und Anfang 01/2029), jeweils ambulant mit Prednisolon behandelt",
+        "symptoms": "Chronischer produktiver Husten, CAT 21, mMRC 3",
+        "eosinophils_per_ul": 420,
+        "eosinophils_note": "In stabiler Phase, mehr als 6 Wochen nach letzter systemischer Steroidgabe",
+        "fev1_l_post": 1.06,
+        "fev1_percent_predicted_post": 45,
+        "adherence": "Inhalationstechnik korrekt, Verordnungsmengen plausibel; NIV-Nutzung im Mittel 6,8 h/Nacht, morgendlicher pCO2 47 mmHg",
+        "assessment": "Unkontrollierte COPD mit eosinophiler Inflammation (Eosinophile ≥ 300/µl) trotz LAMA/LABA/ICS",
+        "plan": "Indikation zur Biologikatherapie mit Dupilumab; Alternativen (Roflumilast, Azithromycin) besprochen"
+      },
+      "documents": ["verlaufsbericht", "laborbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e13",
+      "type": "systemic_therapy",
+      "label": "Beginn Biologikatherapie mit Dupilumab",
+      "date": "2029-03-28",
+      "specialist": "pneumologie",
+      "parameters": {
+        "drug": "Dupilumab",
+        "dose": "300 mg s.c. alle 2 Wochen",
+        "indication": "COPD GOLD 3, Gruppe E, Eosinophile 420/µl, 2 mittelschwere Exazerbationen in 12 Monaten trotz LAMA/LABA/ICS",
+        "administration": "Erste Injektion in der Praxis, Schulung zur Selbstinjektion mit Fertigpen",
+        "concomitant_therapy": "Triple-Therapie, LTOT und nächtliche NIV unverändert",
+        "monitoring": "Aufklärung über Konjunktivitis und Reaktionen an der Injektionsstelle; Blutbild mit Eosinophilen nach 3 Monaten; Therapieevaluation nach 12 Monaten"
+      },
+      "documents": ["arztbrief", "medikationsplan"],
+      "repeat_index": null
+    },
+    {
+      "id": "e14",
+      "type": "followup",
+      "label": "Therapieevaluation nach 12 Monaten Dupilumab",
+      "date": "2030-03-27",
+      "specialist": "pneumologie",
+      "parameters": {
+        "exacerbations_last_12_months": "1 mittelschwere Exazerbation (11/2029), keine Hospitalisierung",
+        "cat_score": 16,
+        "fev1_l_post": 1.21,
+        "fev1_percent_predicted_post": 51,
+        "eosinophils_per_ul": 510,
+        "abg": "Kapillär unter 2 l/min O2: pCO2 46 mmHg, pO2 68 mmHg",
+        "assessment": "Gutes Ansprechen auf Dupilumab",
+        "plan": "Dupilumab fortführen; Triple-Therapie, LTOT und NIV unverändert; Influenza-, COVID-19- und RSV-Impfung im Herbst"
+      },
+      "documents": ["verlaufsbericht", "lungenfunktionsbefund"],
+      "repeat_index": null
+    }
+  ]
+}

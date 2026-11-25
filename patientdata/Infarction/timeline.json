@@ -1,0 +1,297 @@
+{
+  "patient_id": "Infarction",
+  "pathway_id": "mi-01",
+  "start_date": "2027-01-18",
+  "events": [
+    {
+      "id": "e01",
+      "type": "consultation",
+      "label": "Hausärztliche Vorstellung: belastungsabhängiger Thoraxdruck",
+      "date": "2027-01-18",
+      "specialist": "hausarzt",
+      "parameters": {
+        "complaint": "Seit ca. 3 Wochen retrosternales Druckgefühl beim Treppensteigen und bei Kälte, Ausstrahlung in den linken Arm, nach 2–3 min Ruhe rückläufig",
+        "history": "58-jähriger Patient; aktiver Raucher (ca. 35 pack years), Typ-2-Diabetes seit 2021 unter Metformin, art. Hypertonie unter Ramipril, Hypercholesterinämie bisher unbehandelt; Vater Myokardinfarkt mit 52 Jahren",
+        "bp_mmhg": "152/94",
+        "heart_rate_bpm": 78,
+        "bmi_kg_m2": 29.4,
+        "rest_ecg": "Sinusrhythmus 78/min, Linkstyp, keine Erregungsrückbildungsstörungen",
+        "marburg_heart_score": 4,
+        "ldl_c_mg_dl": 152,
+        "hba1c_percent": 7.3,
+        "egfr_ml_min": 89,
+        "working_diagnosis": "V.a. stabile Angina pectoris (CCS II), V.a. chronisches Koronarsyndrom",
+        "icd_code": "I20.9",
+        "measures": ["ASS 100 mg 1-0-0", "Atorvastatin 40 mg 0-0-1", "Glyceroltrinitrat-Spray 0,4 mg bei Bedarf", "Dringende Empfehlung zum Rauchstopp", "Verhalten bei Ruheschmerz besprochen (Notruf 112)"],
+        "referral": "Kardiologie zur weiterführenden Ischämiediagnostik, Termin am 24.02.2027"
+      },
+      "documents": ["ueberweisungsschein", "ekg", "laborbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e02",
+      "type": "emergency",
+      "label": "Notarzteinsatz: akuter Thoraxschmerz, STEMI inferior",
+      "date": "2027-02-08",
+      "specialist": "notfallmedizin",
+      "parameters": {
+        "symptom_onset": "ca. 05:40 Uhr",
+        "complaint": "Seit ca. 50 min anhaltender, starker retrosternaler Druck mit Ausstrahlung in beide Arme, Kaltschweißigkeit, Übelkeit; NRS 8/10",
+        "bp_mmhg": "108/70",
+        "heart_rate_bpm": 54,
+        "spo2_percent": 96,
+        "respiratory_rate_per_min": 18,
+        "ecg": "Sinusbradykardie 54/min, ST-Hebungen in II, III und aVF bis 3 mm, reziproke ST-Senkungen in I und aVL; rechtspräkordial (V4R) keine ST-Hebung",
+        "killip_class": "I",
+        "prehospital_medication": ["ASS 250 mg i.v.", "Heparin 5000 IE i.v.", "Morphin 3 mg i.v.", "Metoclopramid 10 mg i.v."],
+        "logistics": "12-Kanal-EKG telemetrisch an das PCI-Zentrum übermittelt, Direkttransport unter Umgehung der Notaufnahme ins Herzkatheterlabor",
+        "working_diagnosis": "Akuter inferiorer ST-Hebungsinfarkt"
+      },
+      "documents": ["notarztprotokoll", "ekg"],
+      "repeat_index": null
+    },
+    {
+      "id": "e03",
+      "type": "cardiac_catheterization",
+      "label": "Primäre PCI der RCA",
+      "date": "2027-02-08",
+      "specialist": "kardiologie",
+      "parameters": {
+        "access": "A. radialis rechts, 6F",
+        "first_medical_contact_to_wire_min": 74,
+        "door_to_wire_min": 21,
+        "coronary_findings": "RCA proximal thrombotisch verschlossen ohne antegraden Fluss; RIVA medial 75 % Stenose; RCX Wandunregelmäßigkeiten ohne relevante Stenose; Hauptstamm frei",
+        "intervention": "Rekanalisation der RCA, Implantation eines medikamentenfreisetzenden Stents (Everolimus) 3,5 × 28 mm proximal; Ergebnis: normaler antegrader Fluss, keine Reststenose",
+        "lvedp_mmhg": 21,
+        "antithrombotic_therapy": "Prasugrel 60 mg Loading, Heparin gewichtsadaptiert",
+        "diagnosis": "Akuter inferiorer ST-Hebungsinfarkt, koronare 2-Gefäßerkrankung",
+        "icd_code": "I21.1",
+        "plan": "Gestaffelte PCI des RIVA im selben stationären Aufenthalt (komplette Revaskularisation)"
+      },
+      "documents": ["herzkatheterbefund"],
+      "repeat_index": null
+    },
+    {
+      "id": "e04",
+      "type": "lab_test",
+      "label": "Laborverlauf nach STEMI",
+      "date": "2027-02-09",
+      "specialist": "kardiologie",
+      "parameters": {
+        "hs_troponin_t_peak_ng_l": 4120,
+        "ck_max_u_l": 2240,
+        "ldl_c_mg_dl": 88,
+        "lipoprotein_a_nmol_l": 148,
+        "hba1c_percent": 7.4,
+        "creatinine_mg_dl": 0.94,
+        "potassium_mmol_l": 4.2,
+        "comment": "LDL-C unter Atorvastatin 40 mg seit 3 Wochen; Lp(a) deutlich erhöht"
+      },
+      "documents": ["laborbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e05",
+      "type": "imaging",
+      "label": "Transthorakale Echokardiographie",
+      "date": "2027-02-10",
+      "specialist": "kardiologie",
+      "parameters": {
+        "lvef_percent": 44,
+        "method": "biplan nach Simpson",
+        "wall_motion": "Hypokinesie inferior und inferoseptal basal bis mittventrikulär",
+        "valves": "Mitralinsuffizienz I°, übrige Klappen unauffällig",
+        "right_ventricle": "Normale RV-Funktion, TAPSE 21 mm",
+        "other": "Kein LV-Thrombus, kein Perikarderguss"
+      },
+      "documents": ["echobefund"],
+      "repeat_index": null
+    },
+    {
+      "id": "e06",
+      "type": "cardiac_catheterization",
+      "label": "Gestaffelte PCI RIVA",
+      "date": "2027-02-11",
+      "specialist": "kardiologie",
+      "parameters": {
+        "access": "A. radialis rechts, 6F",
+        "intervention": "PCI des RIVA medial mit Implantation eines medikamentenfreisetzenden Stents 3,0 × 22 mm, gutes Ergebnis ohne Reststenose",
+        "rca_control": "Stent in der RCA regelrecht durchgängig",
+        "result": "Komplette Revaskularisation"
+      },
+      "documents": ["herzkatheterbefund"],
+      "repeat_index": null
+    },
+    {
+      "id": "e07",
+      "type": "hospital_discharge",
+      "label": "Entlassung nach inferiorem STEMI",
+      "date": "2027-02-12",
+      "specialist": "kardiologie",
+      "parameters": {
+        "diagnosis": "Akuter inferiorer ST-Hebungsinfarkt am 08.02.2027, koronare 2-Gefäßerkrankung, PCI RCA und RIVA mit DES",
+        "icd_code": "I21.1",
+        "secondary_diagnoses": ["I25.12 Koronare 2-Gefäßerkrankung", "E11.90 Diabetes mellitus Typ 2", "I10.00 Arterielle Hypertonie", "E78.0 Hypercholesterinämie", "F17.2 Nikotinabhängigkeit"],
+        "lvef_percent": 44,
+        "course": "Komplikationsloser Verlauf, keine Rhythmusstörungen im Monitoring",
+        "discharge_medication": [
+          "ASS 100 mg 1-0-0 (dauerhaft)",
+          "Prasugrel 10 mg 1-0-0 (für 12 Monate, bis 02/2028)",
+          "Atorvastatin 80 mg 0-0-1",
+          "Ramipril 5 mg 1-0-0",
+          "Bisoprolol 2,5 mg 1-0-0",
+          "Metformin 1000 mg 1-0-1",
+          "Empagliflozin 10 mg 1-0-0",
+          "Pantoprazol 20 mg 1-0-0",
+          "Glyceroltrinitrat-Spray 0,4 mg bei Bedarf"
+        ],
+        "recommendations": "Kardiologische Anschlussheilbehandlung; LDL-C-Ziel < 55 mg/dl, Lipidkontrolle in 4–6 Wochen; strikter Rauchverzicht; Kontrollechokardiographie in 6–8 Wochen"
+      },
+      "documents": ["entlassungsbrief", "medikationsplan"],
+      "repeat_index": null
+    },
+    {
+      "id": "e08",
+      "type": "rehabilitation",
+      "label": "Kardiologische Anschlussheilbehandlung",
+      "date": "2027-02-22",
+      "specialist": "rehabilitation",
+      "parameters": {
+        "duration": "3 Wochen stationär (22.02.–12.03.2027)",
+        "exercise_test": "Fahrradergometrie bis 125 W, Abbruch wegen muskulärer Erschöpfung, keine Angina pectoris, keine ischämietypischen ST-Veränderungen",
+        "smoking_status": "Seit dem Infarkt rauchfrei",
+        "program": "Ausdauer- und Krafttraining, Ernährungs- und Diabetesschulung, Nichtraucherkurs, psychologische Gespräche",
+        "weight_kg": 91,
+        "recommendation": "Teilnahme an einer ambulanten Herzgruppe, stufenweise Wiedereingliederung"
+      },
+      "documents": ["rehaentlassungsbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e09",
+      "type": "followup",
+      "label": "Kardiologische Kontrolle 8 Wochen nach STEMI",
+      "date": "2027-04-06",
+      "specialist": "kardiologie",
+      "parameters": {
+        "symptoms": "Beschwerdefrei, keine Angina pectoris, NYHA I",
+        "bp_mmhg": "126/78",
+        "heart_rate_bpm": 64,
+        "lvef_percent": 50,
+        "ldl_c_mg_dl": 71,
+        "hba1c_percent": 6.8,
+        "smoking_status": "rauchfrei",
+        "therapy_change": "Ergänzung Ezetimib 10 mg 0-0-1, da LDL-C-Ziel nicht erreicht",
+        "next_visit": "Lipidkontrolle in 6 Wochen beim Hausarzt"
+      },
+      "documents": ["arztbrief", "echobefund", "laborbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e10",
+      "type": "followup",
+      "label": "Kardiologische Jahreskontrolle, Ende der DAPT",
+      "date": "2028-02-15",
+      "specialist": "kardiologie",
+      "parameters": {
+        "symptoms": "Beschwerdefrei, regelmäßig in der Herzgruppe, wieder voll berufstätig",
+        "exercise_test": "Fahrradergometrie bis 150 W, keine Angina pectoris, keine Ischämiezeichen",
+        "lvef_percent": 52,
+        "ldl_c_mg_dl": 49,
+        "hba1c_percent": 6.6,
+        "smoking_status": "rauchfrei",
+        "therapy_change": "Prasugrel planmäßig nach 12 Monaten am 08.02.2028 beendet, ASS 100 mg dauerhaft; übrige Medikation unverändert"
+      },
+      "documents": ["arztbrief", "laborbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e11",
+      "type": "followup",
+      "label": "DMP-Untersuchung KHK und Diabetes mellitus Typ 2",
+      "date": "2029-04-17",
+      "specialist": "hausarzt",
+      "parameters": {
+        "smoking_status": "Seit Herbst 2028 wieder ca. 10 Zigaretten/Tag",
+        "adherence": "Ezetimib nach eigenen Angaben nur unregelmäßig eingenommen",
+        "bp_mmhg": "138/86",
+        "bmi_kg_m2": 30.6,
+        "ldl_c_mg_dl": 66,
+        "hba1c_percent": 7.4,
+        "egfr_ml_min": 85,
+        "uacr_mg_g": 18,
+        "foot_exam": "Fußstatus unauffällig, Monofilament beidseits normal",
+        "therapy_change": "Beginn Semaglutid 0,25 mg s.c. 1x wöchentlich mit Aufdosierung auf 1 mg; Vareniclin und Anmeldung zum Raucherentwöhnungskurs; regelmäßige Ezetimib-Einnahme besprochen"
+      },
+      "documents": ["dmp_dokumentation", "laborbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e12",
+      "type": "imaging",
+      "label": "Stress-MRT bei erneuter Belastungsangina",
+      "date": "2030-03-14",
+      "specialist": "kardiologie",
+      "parameters": {
+        "indication": "Seit ca. 2 Monaten erneut retrosternales Druckgefühl bei mittlerer Belastung (CCS II), unter Nitrospray rasch rückläufig",
+        "modality": "Adenosin-Stress-Perfusions-MRT mit Late-Gadolinium-Enhancement",
+        "finding": "Induzierbare Perfusionsstörung anterior und anterolateral (4 von 16 Segmenten); subendokardiale Narbe inferior (< 50 % Transmuralität), anterior keine Narbe",
+        "lvef_percent": 51,
+        "assessment": "Relevante Ischämie im Versorgungsgebiet von RIVA und RCX",
+        "recommendation": "Invasive Koronarangiographie"
+      },
+      "documents": ["befundbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e13",
+      "type": "cardiac_catheterization",
+      "label": "Koronarangiographie und Heart-Team-Entscheidung",
+      "date": "2030-03-21",
+      "specialist": "kardiologie",
+      "parameters": {
+        "coronary_findings": "RIVA: diffuse In-Stent-Restenose 80 % sowie neue 70 %-Stenose proximal des Stents; RCX: neue 90 %-Stenose des proximalen R. marginalis 1; RCA: Stent ohne Restenose; Hauptstamm frei",
+        "lvedp_mmhg": 16,
+        "diagnosis": "Progrediente koronare Mehrgefäßerkrankung mit diffuser In-Stent-Restenose RIVA und neuer Stenose des R. marginalis 1, RCA-Stent ohne Restenose; Diabetes mellitus Typ 2",
+        "heart_team_decision": "Bei Diabetes mellitus und Mehrgefäßerkrankung mit proximaler RIVA-Beteiligung und diffuser In-Stent-Restenose Empfehlung zur operativen Revaskularisation (ACVB)",
+        "participants": ["kardiologie", "herzchirurgie"]
+      },
+      "documents": ["herzkatheterbefund", "herzteamprotokoll"],
+      "repeat_index": null
+    },
+    {
+      "id": "e14",
+      "type": "surgery",
+      "label": "Aortokoronare Bypassoperation (2-fach ACVB)",
+      "date": "2030-04-09",
+      "specialist": "herzchirurgie",
+      "parameters": {
+        "procedure": "ACVB: LIMA auf RIVA, Vena saphena magna auf R. marginalis 1",
+        "technique": "Mediane Sternotomie, extrakorporale Zirkulation, kardioplegischer Herzstillstand",
+        "postoperative_course": "Extubation am OP-Tag, 2 Tage Intensivstation, kein Vorhofflimmern, Wundverhältnisse reizlos",
+        "discharge": "Entlassung am 8. postoperativen Tag in die Anschlussheilbehandlung"
+      },
+      "documents": ["op_bericht", "entlassungsbrief"],
+      "repeat_index": null
+    },
+    {
+      "id": "e15",
+      "type": "followup",
+      "label": "Kardiologische Kontrolle 6 Monate nach ACVB",
+      "date": "2030-10-08",
+      "specialist": "kardiologie",
+      "parameters": {
+        "symptoms": "Beschwerdefrei, keine Angina pectoris, NYHA I; Z.n. AHB 04–05/2030",
+        "bp_mmhg": "124/76",
+        "lvef_percent": 53,
+        "ldl_c_mg_dl": 64,
+        "hba1c_percent": 6.5,
+        "smoking_status": "Rauchfrei seit 01/2030",
+        "therapy_change": "Beginn PCSK9-Antikörper (Evolocumab 140 mg s.c. alle 2 Wochen) bei Progression der KHK und LDL-C oberhalb des Zielwerts unter Atorvastatin 80 mg und Ezetimib 10 mg",
+        "current_medication": ["ASS 100 mg 1-0-0", "Atorvastatin 80 mg 0-0-1", "Ezetimib 10 mg 0-0-1", "Evolocumab 140 mg s.c. alle 14 Tage", "Ramipril 5 mg 1-0-0", "Bisoprolol 2,5 mg 1-0-0", "Metformin 1000 mg 1-0-1", "Empagliflozin 10 mg 1-0-0", "Semaglutid 1 mg s.c. 1x wöchentlich"]
+      },
+      "documents": ["arztbrief", "laborbericht", "medikationsplan"],
+      "repeat_index": null
+    }
+  ]
+}

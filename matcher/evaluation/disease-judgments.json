@@ -1083,7 +1083,7 @@
         "3": "pubmed:40156843",
         "2": "pubmed:35266164 pubmed:40022078 pubmed:40839273",
         "1": "pubmed:23634670 pubmed:24498905 pubmed:37344384 pubmed:37606429 pubmed:39858442 pubmed:40828947",
-        "0": "pubmed:14011100"
+        "0": "pubmed:14011100 pubmed:23972041"
       }
     },
     "HeartFailure-e09": {
@@ -1110,6 +1110,87 @@
         "2": "pubmed:23642855",
         "1": "pubmed:11274542 pubmed:30536140 pubmed:32956106 pubmed:34244703 pubmed:34269121 pubmed:40891051 pubmed:41287903",
         "0": "pubmed:35124243"
+      }
+    },
+    "Depression-e04": {
+      "as_of": "2027-02-03",
+      "grades": {
+        "1": "pubmed:33634765 pubmed:37638529",
+        "0": "pubmed:16415703 pubmed:19015231 pubmed:23085503 pubmed:23512146 pubmed:25787724 pubmed:37740851 pubmed:38609342 pubmed:40457975"
+      }
+    },
+    "Depression-e08": {
+      "as_of": "2028-02-16",
+      "grades": {
+        "1": "pubmed:29394962 pubmed:33634765",
+        "0": "pubmed:16415703 pubmed:19015231 pubmed:19294953 pubmed:20845239 pubmed:23085503 pubmed:23512146 pubmed:25787724 pubmed:37740851"
+      }
+    },
+    "Stomach-e16": {
+      "as_of": "2028-12-11",
+      "grades": {
+        "3": "pubmed:35030335 pubmed:39528778",
+        "2": "pubmed:18669868 pubmed:24332238",
+        "1": "pubmed:20332133 pubmed:20728210 pubmed:23322206 pubmed:25370767 pubmed:27776843 pubmed:34133211 pubmed:37678277 pubmed:38180622"
+      }
+    },
+    "Gout-e05": {
+      "as_of": "2027-06-02",
+      "grades": {
+        "3": "pubmed:16259349 pubmed:20102992 pubmed:24378930 pubmed:38831665 pubmed:39089837",
+        "2": "pubmed:11978160 pubmed:18250112 pubmed:21382654 pubmed:4606955",
+        "1": "pubmed:11821994 pubmed:36609359"
+      }
+    },
+    "Infarction-e03": {
+      "as_of": "2027-02-08",
+      "grades": {
+        "3": "pubmed:32476540 pubmed:36063862",
+        "2": "pubmed:21067805",
+        "1": "pubmed:17097446 pubmed:25110899 pubmed:25855797 pubmed:30281320 pubmed:33183506 pubmed:34672967",
+        "0": "pubmed:18434732 pubmed:22939359 pubmed:23777442 pubmed:35621088 pubmed:37119051 pubmed:37191906 pubmed:38246651 pubmed:8609338"
+      }
+    },
+    "Infarction-e13": {
+      "as_of": "2030-03-21",
+      "grades": {
+        "2": "pubmed:25110899 pubmed:36301318 pubmed:40022078 pubmed:40156843",
+        "1": "pubmed:11705815 pubmed:22643536 pubmed:29057189 pubmed:37171944 pubmed:37344384 pubmed:40828947",
+        "0": "pubmed:19007693 pubmed:34970915 pubmed:39858442"
+      }
+    },
+    "Thyroid-e14": {
+      "as_of": "2029-12-12",
+      "grades": {
+        "3": "pubmed:24862675",
+        "2": "pubmed:26446582 pubmed:38781736",
+        "1": "pubmed:25471041 pubmed:29374347 pubmed:29664794 pubmed:29848239 pubmed:39645560 pubmed:41372989",
+        "0": "pubmed:12771918 pubmed:25810047"
+      }
+    },
+    "Gout-e01": {
+      "as_of": "2026-12-28",
+      "grades": {
+        "3": "pubmed:23852689",
+        "2": "pubmed:11333356 pubmed:12077033 pubmed:36609359",
+        "1": "pubmed:10212666 pubmed:1820473 pubmed:25589513 pubmed:25739830 pubmed:29888674 pubmed:32366929 pubmed:33427618 pubmed:36109143 pubmed:38831665 pubmed:39089837 pubmed:39939033 pubmed:4606955",
+        "0": "pubmed:25031195 pubmed:30396516"
+      }
+    },
+    "Gout-e08": {
+      "as_of": "2028-03-09",
+      "grades": {
+        "3": "pubmed:20102992 pubmed:39089837",
+        "2": "pubmed:16259349 pubmed:21382654 pubmed:24378930 pubmed:38831665",
+        "1": "pubmed:11821994 pubmed:18250112 pubmed:36609359 pubmed:4606955"
+      }
+    },
+    "Infarction-e10": {
+      "as_of": "2028-02-15",
+      "grades": {
+        "2": "pubmed:25110899 pubmed:38576462",
+        "1": "pubmed:14693990 pubmed:16703238 pubmed:17097446 pubmed:32476540 pubmed:34672967 pubmed:8609338",
+        "0": "pubmed:18434732 pubmed:22939359 pubmed:23777442 pubmed:25855797 pubmed:30281320 pubmed:31594780 pubmed:33183506 pubmed:35621088 pubmed:37119051 pubmed:37191906 pubmed:39012797"
       }
     }
   }
