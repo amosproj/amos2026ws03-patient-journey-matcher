@@ -384,6 +384,17 @@ export function otherDisease(
   );
 }
 
+/**
+ * Diagnoses that name no disease of their own beside a specific cancer of the patient: "Tumor"
+ * or "Adenokarzinom" in the pathology report of a prostate cancer say what kind it is.
+ */
+export function unspecificDiagnoses(diagnoses: readonly string[]): string[] {
+  const specific = diagnoses.some(
+    (id) => NEOPLASMS.has(id) && !GENERIC_NEOPLASMS.has(id),
+  );
+  return specific ? diagnoses.filter((id) => GENERIC_NEOPLASMS.has(id)) : [];
+}
+
 /** After his treatment began: a paper about a treatment option the patient did not get. */
 export function otherTreatment(
   mesh: Readonly<Record<string, number>>,

@@ -110,6 +110,13 @@ export function broaderDiagnosis(id: string): string | undefined {
   return BROADER_DIAGNOSIS.get(id);
 }
 
+const PROSTATE_CANCER = "mesh:D011471";
+
+/** Prostate cancer or one of its forms, such as castration-resistant. */
+export function isProstateCancer(id: string): boolean {
+  return id === PROSTATE_CANCER || broaderDiagnosis(id) === PROSTATE_CANCER;
+}
+
 /** A diagnostic name and a code may describe the same disease at different specificity. */
 export function compatibleDiagnoses(a: Concept, b: Concept): boolean {
   return (
@@ -238,9 +245,6 @@ export function createTerminology(
 ): Terminology {
   const corpusById = new Map<string, Concept>();
   const corpusNames = indexedNames(corpus);
-  // An annotation may cover only a temporal prefix (e.g. "post-" in a disease
-  // name). It does not identify that disease in "post-RPE" or "post-operative".
-  for (const prefix of ["ante", "post", "peri"]) corpusNames.delete(prefix);
   // Published names (including collisions) and reviewed overrides take precedence over annotations.
   const combined = new Map([...corpusNames, ...staticNames, ...clinicalNames]);
   const names = new Map<string, Concept>();

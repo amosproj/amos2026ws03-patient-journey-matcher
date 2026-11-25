@@ -4,7 +4,10 @@ import type { NormalizedEntity, NormalizedRelation } from "./types.ts";
 export interface Paper {
   entities: Record<
     string,
-    Pick<NormalizedEntity, "name" | "type" | "inTitle"> & { names?: string[] }
+    Pick<NormalizedEntity, "type" | "inTitle"> & {
+      /** PubTator3's own name of the concept. How the paper spells it is not kept. */
+      term?: string;
+    }
   >;
   relations: NormalizedRelation[];
 }
@@ -14,16 +17,16 @@ export const MESH_MAJOR = 4;
 export const MESH_MINOR = 8;
 export const MESH_SUBSTANCE = 16;
 
-export const CORPUS_TERMS = `
-    SELECT e.key AS id, e.value->>'type' AS type, min(alias) AS name,
-           array_agg(DISTINCT alias ORDER BY alias) AS names
+// The names PubTator3 gives the diseases and chemicals of the indexed papers, for drugs the
+// distributed vocabulary lacks. Only its own name of a concept (`term`) counts, never a spelling
+// from a paper: one wrong annotation would make a common word a synonym of a disease.
+export const CONCEPT_NAMES = `
+    SELECT e.key AS id, e.value->>'type' AS type, min(e.value->>'term') AS name,
+           array_agg(DISTINCT e.value->>'term' ORDER BY e.value->>'term') AS names
     FROM graph.documents AS g
     CROSS JOIN LATERAL jsonb_each(g.entities) AS e
-    CROSS JOIN LATERAL jsonb_array_elements_text(
-      coalesce(e.value->'names', jsonb_build_array(e.value->>'name'))
-    ) AS mention(alias)
     WHERE e.value->>'type' IN ('disease', 'chemical')
-      AND e.key ~ '^mesh:[CD][0-9]+$' AND length(alias) BETWEEN 4 AND 160
+      AND e.key ~ '^mesh:[CD][0-9]+$' AND length(e.value->>'term') BETWEEN 4 AND 160
     GROUP BY e.key, e.value->>'type'
   `;
 
@@ -62,8 +65,8 @@ const SCHEMA = `
   -- Hide due retries from the change detector, but keep any last good data searchable.
   CREATE OR REPLACE VIEW graph.indexed_documents AS
     SELECT document_id, document_changed_at FROM graph.documents WHERE retry_at > now();
-  CREATE MATERIALIZED VIEW IF NOT EXISTS graph.corpus_terms AS ${CORPUS_TERMS};
-  CREATE UNIQUE INDEX IF NOT EXISTS graph_corpus_terms_id_type ON graph.corpus_terms (id, type);
+  CREATE MATERIALIZED VIEW IF NOT EXISTS graph.concept_names AS ${CONCEPT_NAMES};
+  CREATE UNIQUE INDEX IF NOT EXISTS graph_concept_names_id_type ON graph.concept_names (id, type);
 `;
 
 /** Creates the graph index on its first run. */

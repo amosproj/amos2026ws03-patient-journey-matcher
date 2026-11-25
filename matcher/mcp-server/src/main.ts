@@ -7,7 +7,9 @@ import { createMcpHttpServer } from "./http.ts";
 import { createMatchService } from "./match.ts";
 
 const port = Number(process.env.MCP_PORT ?? 3000);
-const pool = createPool();
+// A search that runs longer is answered as degraded, instead of holding the database.
+const SEARCH_TIMEOUT_MS = 30_000;
+const pool = createPool(undefined, SEARCH_TIMEOUT_MS);
 // The approaches come with all their dependencies; at query time the matchers only read the
 // database, the downloader serves the indexers.
 const service = createMatchService(

@@ -7,7 +7,11 @@ import {
   type QueryConcept,
   type QueryWeights,
 } from "./query.ts";
-import { defaultTerminology, type Terminology } from "./resolve.ts";
+import {
+  defaultTerminology,
+  isProstateCancer,
+  type Terminology,
+} from "./resolve.ts";
 import { MESH_MAJOR, MESH_MINOR } from "./schema.ts";
 import {
   careContext,
@@ -20,7 +24,7 @@ import {
 } from "./stages.ts";
 import type { Triple } from "./types.ts";
 
-// Ranking constants; `tuning` sets others within min..max (debug UI, benchmark).
+// Ranking constants; `tuning` sets others within min..max (`explain`, benchmark).
 const SETTINGS = {
   // How strongly a paper has a concept; the strongest evidence counts.
   title: { value: 1, min: 0, max: 5, whole: false }, // PubTator3 found it in the title
@@ -145,21 +149,11 @@ type Candidate = {
 
 function settings(
   tuning: MatchOptions["tuning"] = {},
-  trace: MatchOptions["trace"],
 ): Record<Setting, number> {
   const names = Object.keys(SETTINGS) as Setting[];
   const values = Object.fromEntries(
     names.map((name) => [name, tuning[name] ?? SETTINGS[name].value]),
   ) as Record<Setting, number>;
-  trace?.(
-    "settings",
-    names.map((name) => ({
-      name,
-      ...SETTINGS[name],
-      default: SETTINGS[name].value,
-      value: values[name],
-    })),
-  );
   for (const name of names) {
     const { min, max, whole } = SETTINGS[name];
     const value = values[name];
@@ -255,10 +249,9 @@ export function createGraphMatcher(
 ): Matcher {
   return {
     async match(state, { contentTypes, limit, tuning, trace }) {
-      const values = settings(tuning, trace);
+      const values = settings(tuning);
       const terms = await terminology();
       const query = patientQuery(state, queryWeights(values), terms);
-      const prostate = query.prostateContext;
       // At confirmation a paper studying a treatment for the disease is relevant even
       // when the patient has never received that drug.
       const diagnosisOnly =
@@ -355,9 +348,10 @@ export function createGraphMatcher(
             ),
           ),
           // An anchor shared by every candidate has near-zero IDF. Preserve the strength
-          // of title/major-topic evidence when ranking a new clinical population.
+          // of title/major-topic evidence when ranking a new clinical population; prostate
+          // cancer keeps its calibrated IDF.
           query.concepts.flatMap((c, i) =>
-            !prostate && c.role === "diagnosis" ? [i] : [],
+            c.role === "diagnosis" && !c.ids.some(isProstateCancer) ? [i] : [],
           ),
           treatmentPatterns(query, diagnosisOnly),
           values.relation,
@@ -377,7 +371,7 @@ export function createGraphMatcher(
       const hits = rows
         .map((row) => ({
           row,
-          ...rank(query, row, values, terms, prostate, diagnosisOnly),
+          ...rank(query, row, values, terms, diagnosisOnly),
         }))
         // On a tie prefer more specific title evidence, then the older paper.
         .sort(
@@ -409,7 +403,6 @@ function rank(
   row: Candidate,
   values: Record<Setting, number>,
   terms: Terminology,
-  prostate: boolean,
   diagnosisOnly: boolean,
 ): {
   score: number;
@@ -516,6 +509,9 @@ function rank(
       part: worth * strength,
     });
   });
+  // The prostate rules are for papers on prostate cancer, whatever else the patient has.
+  const prostate =
+    query.prostateContext && row.diagnoses.some(isProstateCancer);
   const stages = prostate ? paperStages(row.title, row.mesh) : new Set<Stage>();
   const severity = {
     strong: values.conflictStrong,

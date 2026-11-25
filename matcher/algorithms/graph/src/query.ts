@@ -8,6 +8,7 @@ import {
   compatibleDiagnoses,
   conceptOf,
   defaultTerminology,
+  isProstateCancer,
   resolveIcd,
   type Terminology,
 } from "./resolve.ts";
@@ -19,6 +20,7 @@ import {
   type Stage,
   type StageObservation,
   stageObservations,
+  unspecificDiagnoses,
 } from "./stages.ts";
 import {
   diseaseMentions,
@@ -28,7 +30,7 @@ import {
   treatmentClauses,
   treatmentStatus,
 } from "./status.ts";
-import { normalizeName } from "./text.ts";
+import { clip, normalizeName } from "./text.ts";
 import type { EntityType, Status, Triple } from "./types.ts";
 
 /** What a concept is for the patient; the matcher weighs each role on its own. */
@@ -73,6 +75,7 @@ type ClinicalEvidence = {
 };
 
 export interface GraphQuery {
+  /** The patient has prostate cancer: its stage and care rules apply to the papers on it. */
   prostateContext: boolean;
   histology?: { observed: string; conflicting: string };
   evidence: ClinicalEvidence[];
@@ -381,7 +384,21 @@ function eventText(event: JourneyEvent): string {
         ? value.filter((item) => typeof item === "string")
         : [],
   );
-  return [event.label, ...values].join(". ");
+  return clip([event.label, ...values].join(". "));
+}
+
+/** The event with its label and text parameters as the reader takes them, see `clip`. */
+function clipped(event: JourneyEvent): JourneyEvent {
+  if (!event.parameters) return { ...event, label: clip(event.label) };
+  const parameters = Object.entries(event.parameters).map(([key, value]) => [
+    key,
+    typeof value === "string" ? clip(value) : value,
+  ]);
+  return {
+    ...event,
+    label: clip(event.label),
+    parameters: Object.fromEntries(parameters),
+  };
 }
 
 const isTherapy = (role: Role) => role === "drug" || role === "procedure";
@@ -558,15 +575,21 @@ class ConceptSet {
   }
 }
 
+// shortcut: a heading with more narrower forms than this is a whole field, not a diagnosis
+// ("Neoplasms" has 702, "Infections" 785; every MeSH heading above 100 is such a category). It
+// is searched by its own ID only: with all its forms a match took seconds on 30,000 documents.
+const MAX_NARROWER = 100;
+
 /** The IDs a paper may have for a diagnosis: the concept, its other IDs and narrower forms. */
 function diagnosisIds(
   concept: Concept,
   excluded: ReadonlySet<string>,
 ): string[] {
+  const narrower = concept.narrower ?? [];
   return [
     concept.id,
     ...(concept.also ?? []),
-    ...(concept.narrower ?? []),
+    ...(narrower.length > MAX_NARROWER ? [] : narrower),
   ].filter((id) => !excluded.has(id));
 }
 
@@ -770,6 +793,7 @@ function readTimeline(context: JourneyEvent[], reading: Reading): void {
     found,
   } = reading;
   const events = [...context, focus]
+    .map(clipped)
     .flatMap((event) => {
       if (event.date > cutoff) return [];
       const label = patientText(event.label);
@@ -896,10 +920,13 @@ function readTimeline(context: JourneyEvent[], reading: Reading): void {
       const onlyPlan =
         !actions.includes("asserted") &&
         (PLANS.has(normalizeName(event.type)) || actions.includes("planned"));
-      if (!onlyPlan) {
-        for (const observation of stageObservations(text, terminology)) {
+      // A plan is no evidence of the state it would lead to. Surveillance is the exception:
+      // the decision for it puts the patient on it.
+      for (const observation of stageObservations(text, terminology)) {
+        if (!onlyPlan || observation.stage === "surveillance")
           staging.push({ ...observation, validAt: event.date });
-        }
+      }
+      if (!onlyPlan) {
         for (const concept of parameters.concepts)
           recordStage(concept.id, "asserted", event.date);
         for (const [key, value] of Object.entries(event.parameters ?? {}))
@@ -997,28 +1024,32 @@ function readTimeline(context: JourneyEvent[], reading: Reading): void {
     }
     if (status === "asserted" || status === "unknown") observed.add(item.stage);
   }
-  // A journey that names no diagnosis implies one: a Gleason grade, a prostatectomy or a
-  // disease-specific treatment supports it, an elevated PSA or PI-RADS makes it
-  // suspected (data/timeline.json, concepts.json `implies`).
+  // A journey that does not name the diagnosis implies it: a Gleason grade, a prostatectomy or
+  // a disease-specific treatment supports it, an elevated PSA or PI-RADS makes it suspected
+  // (data/timeline.json, concepts.json `implies`). Another disease does not stand in for it.
+  // Where the journey names it, or a form of it, the same evidence confirms it.
   const prostateWorkup = read.some((event) => event.prostateWorkup);
   const inferred = new Map<string, Status>();
   for (const { implied, event } of read)
-    for (const { id, status } of implied)
-      if (
-        !excluded.has(id) &&
-        diagnoses.size === 0 &&
-        prostateWorkup &&
-        inferred.get(id) !== "asserted"
-      ) {
-        inferred.set(id, status);
-        evidence.push({
-          ref: event.id,
-          date: event.date,
-          diagnosis: id,
-          status,
-          detail: "Inferred from a prostate workup",
-        });
-      }
+    for (const { id, status } of implied) {
+      if (excluded.has(id) || !prostateWorkup) continue;
+      const named = [...diagnoses.keys()].some(
+        (known) => known === id || broaderDiagnosis(known) === id,
+      );
+      if (named && (status !== "asserted" || therapy.diagnosed)) continue;
+      if (!named && inferred.get(id) === "asserted") continue;
+      if (named) therapy.diagnosed = true;
+      else inferred.set(id, status);
+      evidence.push({
+        ref: event.id,
+        date: event.date,
+        diagnosis: id,
+        status,
+        detail: named
+          ? "Confirmed by a prostate workup"
+          : "Inferred from a prostate workup",
+      });
+    }
   for (const [id, status] of inferred) {
     const concept = conceptOf(id);
     if (concept === undefined) continue;
@@ -1516,6 +1547,8 @@ function buildQuery(reading: Reading, fromGraph: boolean): GraphQuery {
     }
   }
   for (const id of excluded) diagnoses.delete(id);
+  const unspecific = new Set(unspecificDiagnoses([...diagnoses.keys()]));
+  for (const id of unspecific) diagnoses.delete(id);
 
   for (const link of latest(links, tripleKey, cutoff)) {
     const { subject, object, predicate, ref, validAt, status } = link;
@@ -1594,11 +1627,11 @@ function buildQuery(reading: Reading, fromGraph: boolean): GraphQuery {
     status,
   } of found) {
     if (excluded.has(concept.id)) continue;
+    if (role === "diagnosis" && unspecific.has(concept.id)) continue;
     if (
       role === "diagnosis" &&
       status === "suspected" &&
-      concept.id !== "mesh:D011471" &&
-      broaderDiagnosis(concept.id) !== "mesh:D011471"
+      !isProstateCancer(concept.id)
     ) {
       const qualifier = `${concept.id}Q000175`;
       concepts.byId.set(qualifier, {
@@ -1674,14 +1707,12 @@ function buildQuery(reading: Reading, fromGraph: boolean): GraphQuery {
     found.some(
       ({ concept, focus: isFocus }) => isFocus && concept.id === "ncbigene:354",
     );
-  const sexes = new Set([...diagnoses.keys()].map((id) => conceptOf(id)?.sex));
+  const sexes = new Set(
+    [...diagnoses.keys()].flatMap((id) => conceptOf(id)?.sex ?? []),
+  );
   const sex = sexes.size === 1 ? [...sexes][0] : undefined;
 
-  const prostateContext =
-    gate.has("mesh:D011471") &&
-    [...diagnoses.keys()].every(
-      (id) => id === "mesh:D011471" || broaderDiagnosis(id) === "mesh:D011471",
-    );
+  const prostateContext = [...gate.keys()].some(isProstateCancer);
   return {
     cutoff,
     prostateContext,

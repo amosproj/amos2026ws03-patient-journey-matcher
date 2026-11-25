@@ -62,11 +62,6 @@
         "true": ["mesh:D008207"]
       }
     },
-    "lymphadenectomy": {
-      "values": {
-        "true": ["mesh:D008197"]
-      }
-    },
     "pain_management": {
       "values": {
         "true": ["mesh:D059408"]

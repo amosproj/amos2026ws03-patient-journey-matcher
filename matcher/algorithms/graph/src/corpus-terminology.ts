@@ -4,7 +4,7 @@ import {
   createTerminology,
   type Terminology,
 } from "./resolve.ts";
-import { CORPUS_TERMS } from "./schema.ts";
+import { CONCEPT_NAMES } from "./schema.ts";
 
 const cache = new WeakMap<
   Queryable,
@@ -13,14 +13,14 @@ const cache = new WeakMap<
 
 async function readTerms(db: Queryable): Promise<Terminology> {
   const result = await db
-    .query<Concept>("SELECT * FROM graph.corpus_terms ORDER BY id, type")
+    .query<Concept>("SELECT * FROM graph.concept_names ORDER BY id, type")
     .catch((error: unknown) => {
       // An existing index can still serve queries until its next index run builds the view.
       if (
         !(error instanceof Error && "code" in error && error.code === "42P01")
       )
         throw error;
-      return db.query<Concept>(`${CORPUS_TERMS} ORDER BY id, type`);
+      return db.query<Concept>(`${CONCEPT_NAMES} ORDER BY id, type`);
     });
   return createTerminology(result.rows);
 }

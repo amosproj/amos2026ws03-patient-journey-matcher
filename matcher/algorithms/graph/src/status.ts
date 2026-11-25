@@ -74,7 +74,9 @@ function familyClause(clause: string): boolean {
 
 export function patientText(text: string): string {
   if (!familyClause(text)) return text;
+  // One space for each run: the split below would take time with the square of a long run.
   const parts = text
+    .replace(/\s+/g, " ")
     .replace(VERDACHT_AUF, "verdacht auf ")
     .split(
       /[;!?]|\.(?=\s|$)|,?\s+\b(?:but|aber|jedoch)\b\s+|(?:,\s*|\s+(?:and|und)\s+)(?=(?:(?:the|der|die)\s+)?patient\w*\b)/i,
@@ -121,8 +123,9 @@ export function treatmentClauses(text: string) {
     });
 }
 
-// "V. a." and "Vd. a." (Verdacht auf) would end a sentence at their dots.
-const VERDACHT_AUF = /\bv\s*d?\s*\.\s*a\s*\./gi;
+// "V. a." and "Vd. a." (Verdacht auf) would end a sentence at their dots. The spaces before the
+// "d" belong to it: two optional runs of spaces in a row would be tried in every split.
+const VERDACHT_AUF = /\bv(?:\s*d)?\s*\.\s*a\s*\./gi;
 
 /** Sentences, then clauses: split at `;`, `!`, `?`, a dot before a space and words like "but". */
 function clauses(text: string): string[][] {

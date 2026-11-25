@@ -22,14 +22,8 @@ export type Get = (
 export function paperFromAnnotations(input: unknown): Paper {
   const graph = normalizePubTatorDocument(input);
   const entities: Paper["entities"] = Object.create(null);
-  for (const { id, name, names, type, inTitle } of graph.entities) {
-    if (id !== null)
-      entities[id] = {
-        name: names[0] ?? name,
-        type,
-        inTitle,
-        ...(names.length > 1 && { names }),
-      };
+  for (const { id, name, type, inTitle } of graph.entities) {
+    if (id !== null) entities[id] = { type, inTitle, term: name };
   }
   const relations = graph.relations.filter(
     ({ subject, object }) =>
@@ -162,7 +156,7 @@ export function createGraphIndexer(db: Queryable, get: Get): Indexer {
         // Include removed papers as well as new or changed annotations. Readers can keep
         // using the previous list until the complete refresh becomes visible.
         await db.query(
-          "REFRESH MATERIALIZED VIEW CONCURRENTLY graph.corpus_terms",
+          "REFRESH MATERIALIZED VIEW CONCURRENTLY graph.concept_names",
         );
       } finally {
         clearInterval(progress);

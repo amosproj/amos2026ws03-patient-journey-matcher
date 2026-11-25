@@ -66,7 +66,13 @@ test("indexes the matching PMID, keeps entity-only papers and never requests ano
   expect(rows[0]).toMatchObject({
     id: documents[0].id,
     changed: changed.toISOString(),
-    entities: { "mesh:D011471": { type: "disease", inTitle: true } },
+    entities: {
+      "mesh:D011471": {
+        type: "disease",
+        inTitle: true,
+        term: "Prostatic Neoplasms",
+      },
+    },
     relations: expect.arrayContaining([
       expect.objectContaining({
         subject: "mesh:C531550",
@@ -75,6 +81,13 @@ test("indexes the matching PMID, keeps entity-only papers and never requests ano
       }),
     ]),
   });
+  // Only PubTator3's own name of a concept is kept, never how the paper spells it.
+  expect(JSON.stringify(rows[0].entities)).not.toContain("Prostate Cancer");
+  expect(Object.keys(rows[0].entities["mesh:D011471"]).sort()).toEqual([
+    "inTitle",
+    "term",
+    "type",
+  ]);
   expect(rows[1]).toMatchObject({
     entities: { "mesh:D011471": { inTitle: true } },
     relations: [],
@@ -163,7 +176,7 @@ test("asks PubTator3 for at most 50 papers at a time and stores each answer", as
     50, 50, 20,
   ]);
   expect(db.query).toHaveBeenLastCalledWith(
-    "REFRESH MATERIALIZED VIEW CONCURRENTLY graph.corpus_terms",
+    "REFRESH MATERIALIZED VIEW CONCURRENTLY graph.concept_names",
   );
 });
 
@@ -217,7 +230,7 @@ test("oversized combined exports retain every paper that fits individually", asy
   }
 });
 
-test("independent matcher processes read the prepared corpus vocabulary", async () => {
+test("independent matcher processes read the prepared concept names", async () => {
   const rows = [
     {
       id: "mesh:D008175",
@@ -234,7 +247,7 @@ test("independent matcher processes read the prepared corpus vocabulary", async 
     );
     expect(await loadCorpusTerminology(db)).toBe(terms);
     expect(db.query.mock.calls).toEqual([
-      ["SELECT * FROM graph.corpus_terms ORDER BY id, type"],
+      ["SELECT * FROM graph.concept_names ORDER BY id, type"],
     ]);
   }
 });
@@ -338,11 +351,11 @@ describe.skipIf(!databaseUrl)("graph annotation retries in PostgreSQL", () => {
     expect(updated.rows[0].entities).toHaveProperty("mesh:D011471");
   });
 
-  test("the persisted vocabulary follows changed, ambiguous and deleted annotations", async () => {
+  test("the persisted names follow changed, ambiguous and deleted annotations, and no spelling", async () => {
     const db = database.pool;
     const ids = ["9001", "9002"];
     await ensureGraphSchema(db);
-    const alias = "FixtureAnnotationSpelling";
+    const alias = "Fixture Concept Name";
     const concepts = ["mesh:D008175", "mesh:D001943"];
     for (const [i, id] of ids.entries()) {
       await db.query(
@@ -353,7 +366,7 @@ describe.skipIf(!databaseUrl)("graph annotation retries in PostgreSQL", () => {
         "INSERT INTO graph.documents(document_id, document_changed_at, entities, relations, retry_at, mesh) SELECT id,date_trunc('milliseconds',changed_at),$2::jsonb,'[]','infinity','{}' FROM documents WHERE id=$1",
         [
           `pubmed:${id}`,
-          JSON.stringify({ [concepts[i]]: { type: "disease", name: alias } }),
+          JSON.stringify({ [concepts[i]]: { type: "disease", term: alias } }),
         ],
       );
     }
@@ -372,6 +385,17 @@ describe.skipIf(!databaseUrl)("graph annotation retries in PostgreSQL", () => {
     expect(await lookup()).toEqual([concepts[0]]);
     await db.query(
       "UPDATE graph.documents SET entities = '{}' WHERE document_id = 'pubmed:9001'",
+    );
+    await index();
+    expect(await lookup()).toEqual([]);
+    // A row indexed before only the concept name was kept: its spellings teach nothing.
+    await db.query(
+      "UPDATE graph.documents SET entities = $1::jsonb WHERE document_id = 'pubmed:9001'",
+      [
+        JSON.stringify({
+          [concepts[0]]: { type: "disease", name: alias, names: [alias] },
+        }),
+      ],
     );
     await index();
     expect(await lookup()).toEqual([]);

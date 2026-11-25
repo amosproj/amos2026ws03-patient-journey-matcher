@@ -160,13 +160,13 @@ test("clinical labels and codes retrieve the same bilingual MeSH concept without
   }
 });
 
-test("stored mentions support new IDs and synonyms; conflicting and short spellings abstain", () => {
+test("learned names support new IDs and synonyms; conflicting and short names abstain", () => {
   const terms = createTerminology([
     {
       type: "disease",
       id: "mesh:C990001",
       name: "Fixture disease",
-      names: ["same label", "xyz", "post-"],
+      names: ["same label", "xyz"],
     },
     {
       type: "disease",
@@ -175,7 +175,7 @@ test("stored mentions support new IDs and synonyms; conflicting and short spelli
       names: ["same label"],
     },
   ]);
-  for (const text of ["XYZ", "Same label", "post-RPE"]) {
+  for (const text of ["XYZ", "Same label"]) {
     expect(terms.findDiseases(text)).toEqual([]);
     expect(resolve({ names: [text] }, terms.dictionaries)).toBeUndefined();
   }

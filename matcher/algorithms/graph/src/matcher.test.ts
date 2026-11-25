@@ -321,7 +321,7 @@ test("ties go to the older paper, then by ID", async () => {
   expect(hits.map((hit) => hit.score)).toEqual([1, 1]);
 });
 
-test("tuning sets ranking constants within their range; the trace lists settings, query and pool", async () => {
+test("tuning sets ranking constants within their range; the trace lists query and pool", async () => {
   const steps: string[] = [];
   const db = database([{ id: "a", evidence: { [cancer]: 1 } }]);
   const matcher = createGraphMatcher(db);
@@ -330,7 +330,7 @@ test("tuning sets ranking constants within their range; the trace lists settings
     tuning: { candidates: 50 },
     trace: (step) => steps.push(step),
   });
-  expect(steps).toEqual(["settings", "query", "pool"]);
+  expect(steps).toEqual(["query", "pool"]);
   expect(db.query.mock.calls[0][1]?.at(-1)).toBe(50);
   await expect(
     matcher.match(onOlaparib, { limit: 1, tuning: { candidates: 0.5 } }),
@@ -799,6 +799,49 @@ test("a drug for the current diagnosis beats the same drug for a comorbidity, ev
   expect(planned.find((hit) => hit.documentId === "a")?.explanation).toContain(
     "planned treatment",
   );
+});
+
+test("another diagnosis leaves the prostate rules on, for the papers on prostate cancer only", async () => {
+  const diabetes = "mesh:D003924";
+  const input: JourneyState = {
+    focus,
+    context: [],
+    graph: {
+      nodes: [
+        ...nodes,
+        { uuid: "dm", labels: ["Diagnosis"], name: "Diabetes mellitus Typ 2" },
+      ],
+      edges: [
+        diagnosis,
+        edge("HAS_DIAGNOSIS", "p", "dm", "Confirmed type 2 diabetes.", date),
+        edge("UNDERWENT", "p", "rp"),
+      ],
+    },
+  };
+  const hits = await rank(
+    [
+      {
+        id: "crpc",
+        title: "Prostatectomy in castration-resistant prostate cancer",
+        evidence: { [cancer]: 1, [prostatectomy]: 1 },
+      },
+      { id: "plain", evidence: { [cancer]: 1, [prostatectomy]: 1 } },
+      {
+        id: "diabetes",
+        title: "Screening for type 2 diabetes",
+        evidence: { [diabetes]: 1 },
+      },
+    ],
+    input,
+  );
+  const reason = (id: string) =>
+    hits.find((hit) => hit.documentId === id)?.explanation;
+  expect(order(hits).indexOf("plain")).toBeLessThan(
+    order(hits).indexOf("crpc"),
+  );
+  expect(reason("crpc")).toContain("another disease state");
+  expect(reason("diabetes")).toBeDefined();
+  expect(reason("diabetes")).not.toContain("disease state");
 });
 
 test("a paper-only lung subtype is not a documented patient indication", async () => {

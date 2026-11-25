@@ -1,5 +1,6 @@
 import { afterEach, expect, test, vi } from "vitest";
 import { createPool } from "./pool.ts";
+import { testDatabaseUrl } from "./testing.ts";
 
 afterEach(() => {
   vi.unstubAllEnvs();
@@ -21,3 +22,18 @@ test("creates a pool for DATABASE_URL without connecting", async () => {
   expect(pool.options.connectionString).toBe(url);
   await pool.end();
 });
+
+test.skipIf(!testDatabaseUrl())(
+  "a statement timeout ends a query that runs longer",
+  async () => {
+    const pool = createPool(testDatabaseUrl(), 50);
+    try {
+      await expect(pool.query("SELECT pg_sleep(2)")).rejects.toMatchObject({
+        code: "57014",
+      });
+      expect((await pool.query("SELECT 1 AS one")).rows).toEqual([{ one: 1 }]);
+    } finally {
+      await pool.end();
+    }
+  },
+);

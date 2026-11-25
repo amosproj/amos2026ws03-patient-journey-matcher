@@ -923,6 +923,49 @@ test("extracts mapped diagnoses from real synthetic timeline.json phrases", () =
   expect(queryFor("Patient-10").diagnoses.has(crpc)).toBe(true);
 });
 
+test("the synthetic timelines reach the states of their course", () => {
+  const stageAt = (patient: string, date: string) => {
+    const { events } = JSON.parse(
+      readFileSync(
+        new URL(
+          `../../../../patientdata/${patient}/timeline.json`,
+          import.meta.url,
+        ),
+        "utf8",
+      ),
+    ) as { events: JourneyState["context"] };
+    const past = events.filter((event) => event.date <= date);
+    const { stage } = patientQuery({
+      focus: past[past.length - 1],
+      context: past.slice(0, -1),
+    });
+    return { ...stage, states: [...stage.states] };
+  };
+  // Patient-1: the tumor board decides on active surveillance on 2027-01-23.
+  expect(stageAt("Patient-1", "2027-01-09").states).toEqual([]);
+  for (const followUp of ["2027-01-27", "2027-04-27", "2029-05-15"])
+    expect(stageAt("Patient-1", followUp)).toMatchObject({
+      states: ["surveillance"],
+      diagnosed: true,
+      localTherapy: false,
+      psaWorkup: false,
+    });
+  // Patient-5: prostatectomy in January 2027, a discharge letter that names the cancer without
+  // a word like "confirmed", and a recurrence in December 2028.
+  expect(stageAt("Patient-5", "2027-02-01")).toMatchObject({
+    states: [],
+    diagnosed: true,
+    prostatectomy: true,
+    psaWorkup: false,
+  });
+  expect(stageAt("Patient-5", "2029-12-31")).toMatchObject({
+    states: ["recurrence"],
+    diagnosed: true,
+    prostatectomy: true,
+    psaWorkup: false,
+  });
+});
+
 test("a family history, department or general treatment decision supplies no patient diagnosis", () => {
   const family = {
     ...focus,
@@ -1296,6 +1339,102 @@ test("a second malignancy and a multi-indication drug do not imply a prostate di
   ).toBe(0);
 });
 
+test("a general cancer word names no second diagnosis, and alone no whole field", () => {
+  const confirmed = {
+    ...focus,
+    id: "dx",
+    date: "2026-01-05",
+    type: "diagnosis",
+    label: "Prostatakarzinom bestätigt.",
+  };
+  for (const label of [
+    "Tumor im rechten Lappen, R0-Resektion",
+    "Adenokarzinom, Gleason 4+3",
+    "Karzinom histologisch gesichert",
+  ]) {
+    const q = patientQuery({
+      context: [confirmed],
+      focus: { ...focus, type: "pathology", label },
+    });
+    expect([...q.diagnoses.keys()].sort()).toEqual([cancer, crpc]);
+    expect(
+      q.concepts.filter((c) => c.role === "diagnosis").map((c) => c.ids[0]),
+    ).toEqual([cancer]);
+  }
+  // Alone it is all the journey says: searched by its own heading, not by 702 kinds of cancer.
+  const alone = patientQuery({
+    context: [],
+    focus: { ...focus, type: "diagnosis", label: "Tumor bestätigt." },
+  });
+  expect([...alone.diagnoses.keys()]).toEqual(["mesh:D009369"]);
+});
+
+test("another disease neither hides an implied prostate cancer nor switches its rules off", () => {
+  const q = patientQuery({
+    context: [
+      {
+        ...focus,
+        id: "diabetes",
+        date: "2026-01-05",
+        type: "diagnosis",
+        label: "Diabetes mellitus Typ 2",
+        parameters: { diagnosis: "Diabetes mellitus Typ 2", icd_code: "E11" },
+      },
+    ],
+    focus: {
+      ...focus,
+      type: "biopsy",
+      label: "Stanzbiopsie",
+      parameters: { gleason_primary: 3, gleason_secondary: 4 },
+    },
+  });
+  expect(q.diagnoses.has("mesh:D003924")).toBe(true);
+  expect(q.diagnoses.has(cancer)).toBe(true);
+  expect(q.prostateContext).toBe(true);
+  expect(q.stage.diagnosed).toBe(true);
+  expect(q.sex).toBe("male");
+});
+
+test("proof of the cancer confirms a diagnosis that the journey names without saying how sure it is", () => {
+  const discharge = (diagnosis: string) => ({
+    ...focus,
+    id: "discharge",
+    type: "hospital_discharge",
+    label: "Entlassung",
+    parameters: { diagnosis },
+  });
+  const biopsy = {
+    ...focus,
+    id: "biopsy",
+    date: "2026-11-01",
+    type: "biopsy",
+    label: "Stanzbiopsie",
+    parameters: { gleason_primary: 3 },
+  };
+  const psa = {
+    ...focus,
+    id: "psa",
+    type: "followup",
+    label: "PSA-Kontrolle",
+    parameters: { psa_value: 0.2 },
+  };
+  const named = discharge("pT2c R0 Prostatakarzinom");
+  const unproven = patientQuery({ context: [named], focus: psa });
+  expect(unproven.stage).toMatchObject({ diagnosed: false, psaWorkup: true });
+  const proven = patientQuery({ context: [biopsy, named], focus: psa });
+  expect(proven.stage).toMatchObject({ diagnosed: true, psaWorkup: false });
+  expect(proven.evidence.map((item) => item.detail)).toContain(
+    "Confirmed by a prostate workup",
+  );
+  // The castration-resistant form is prostate cancer too, and stays the one diagnosis named.
+  const resistant = patientQuery({
+    context: [biopsy, discharge("mCRPC unter Cabazitaxel")],
+    focus: psa,
+  });
+  expect(resistant.stage.diagnosed).toBe(true);
+  expect(conceptOf(resistant, crpc)?.role).toBe("stage");
+});
+
 test("family evidence on a graph diagnosis edge or in a note cannot update the patient", () => {
   const family = edge(
     "HAS_DIAGNOSIS",
@@ -1530,4 +1669,27 @@ test("planned and ongoing indications remain distinct in a patient with two dise
       false,
     );
   }
+});
+
+test("of an overlong text only the start is read", () => {
+  const filler = " lorem".repeat(1_000);
+  const q = patientQuery({
+    context: [
+      {
+        ...focus,
+        id: "dx",
+        type: "diagnosis",
+        label: `Prostatakarzinom bestätigt.${filler} Mammakarzinom bestätigt.`,
+      },
+    ],
+    focus: {
+      ...focus,
+      type: "imaging",
+      label: "Skelettszintigraphie",
+      parameters: { finding: `Knochenmetastasen.${filler} Lebermetastasen.` },
+    },
+  });
+  expect([...q.diagnoses.keys()].sort()).toEqual([cancer, crpc]);
+  expect(conceptOf(q, "mesh:D001859")).toBeDefined();
+  expect(conceptOf(q, liver)).toBeUndefined();
 });

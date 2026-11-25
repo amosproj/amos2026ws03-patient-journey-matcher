@@ -17,7 +17,7 @@ import {
   statusFromAttribute,
   statusFromText,
 } from "./status.ts";
-import { normalizeName, withoutLeadingCode } from "./text.ts";
+import { clip, normalizeName, withoutLeadingCode } from "./text.ts";
 import {
   type EntityType,
   type NormalizedEntity,
@@ -37,7 +37,7 @@ const graphSchema = z.object({
 
 const nodeSchema = z.object({
   uuid: z.string().min(1),
-  name: z.string(),
+  name: z.string().transform(clip),
   labels: z.array(z.string()),
   attributes: z.record(z.string(), z.unknown()).nullish(),
 });
@@ -47,7 +47,7 @@ const edgeSchema = z.object({
   name: z.string(),
   source_node_uuid: z.string(),
   target_node_uuid: z.string(),
-  fact: z.string().nullish(),
+  fact: z.string().transform(clip).nullish(),
   valid_at: z.unknown().optional(),
   invalid_at: z.unknown().optional(),
 });
