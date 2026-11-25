@@ -18,7 +18,8 @@ Terms: https://www.nlm.nih.gov/databases/download/terms_and_conditions_mesh.html
 German MeSH 2026, ZB MED – Information Centre for Life Sciences,
 https://repository.publisso.de/resource/frl:6529716, CC BY 4.0,
 https://creativecommons.org/licenses/by/4.0/. The matcher extracts English and
-German terms, disease descendants and the kind of a procedure, and adds German
-clinical name forms of neoplasms by site. It includes WHO code-to-MeSH retrieval
+German terms, disease descendants, the kind of a procedure and the kinds of
+carcinoma that name no site, and adds German clinical name forms of neoplasms by
+site. It includes WHO code-to-MeSH retrieval
 IDs derived from the Mondo 2026-11-03 exact mapping sets, CC0 1.0,
 https://github.com/monarch-initiative/mondo/tree/v2026-11-03/src/ontology/mappings.

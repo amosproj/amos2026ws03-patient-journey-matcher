@@ -251,3 +251,11 @@ test("German clinical names of a neoplasm by site find it", () => {
   expect(id("Nierentumor")).toBe("mesh:D007680");
   expect(id("Schilddrüsenkarzinom")).toBe("mesh:D013964");
 });
+
+test("a code below a category that Mondo maps to one disease takes that disease", () => {
+  expect(resolveIcd("E11.74")?.id).toBe("mesh:D003924");
+  expect(resolveIcd("N18.4")?.id).toBe("mesh:D007676");
+  expect(resolveIcd("G40.3")?.id).toBe("mesh:D004827");
+  // Categories Mondo does not map exactly stay unmapped.
+  expect(resolveIcd("M06.1")).toBeUndefined();
+});

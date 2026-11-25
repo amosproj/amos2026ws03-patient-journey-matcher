@@ -1852,3 +1852,59 @@ test("a general word before the diagnosis neither sets the filter nor blocks a l
   expect(query.diagnoses.has("mesh:D012004")).toBe(true);
   expect(query.diagnoses.has("mesh:D002277")).toBe(false);
 });
+
+test("a kind of carcinoma with an organ code finds the cancer, alone it sets no filter", () => {
+  const pathology = {
+    id: "path",
+    date: "2026-03-16",
+    type: "pathology",
+    label: "Histologie: Urothelkarzinom pT1 high grade, Carcinoma in situ",
+    parameters: { icd_code: "C67.2" },
+  };
+  const coded = patientQuery({ context: [], focus: pathology });
+  expect(coded.diagnoses.has("mesh:D001749")).toBe(true);
+  expect(coded.stage.diagnosed).toBe(true);
+  const alone = patientQuery({
+    context: [],
+    focus: { ...pathology, parameters: {} },
+  });
+  expect(alone.diagnoses.size).toBe(0);
+});
+
+test("after a named cancer a progression report's other finding is no diagnosis", () => {
+  const dx = {
+    id: "dx",
+    date: "2026-10-20",
+    type: "pathology",
+    label: "Adenokarzinom des Rektums",
+    parameters: { icd_code: "C20" },
+  };
+  const nodule = {
+    id: "ct",
+    date: "2029-02-01",
+    type: "progression",
+    label: "CEA-Anstieg und neuer Lungenrundherd: V. a. pulmonale Metastase",
+  };
+  const query = patientQuery({ context: [dx], focus: nodule });
+  expect([...query.diagnoses.keys()]).not.toContain("mesh:D003074");
+  expect(query.diagnoses.has("mesh:D012004")).toBe(true);
+});
+
+test("a complication or a further disease beside a code is no contradiction", () => {
+  const event = {
+    id: "discharge",
+    date: "2027-05-12",
+    type: "hospital_discharge",
+    label: "Entlassung nach kardialer Dekompensation",
+    parameters: {
+      diagnosis: "Akut dekompensierte Herzinsuffizienz bei Vorhofflimmern",
+      icd_code: "I50.14",
+    },
+  };
+  const query = patientQuery({ context: [], focus: event });
+  expect(query.evidence.map((item) => item.detail)).not.toContain(
+    "Diagnostic name and ICD code disagree",
+  );
+  expect(query.diagnoses.has("mesh:D006333")).toBe(true);
+  expect(query.diagnoses.has("mesh:D001281")).toBe(true);
+});

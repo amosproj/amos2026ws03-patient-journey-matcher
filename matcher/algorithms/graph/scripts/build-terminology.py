@@ -97,6 +97,32 @@ NEOPLASM_VARIANTS = (
 )
 
 
+# Kinds of carcinoma that name no site: "Urothelkarzinom" or "Carcinoma in situ" beside
+# an organ say what the tumour is, and alone they name no disease. The carcinomas whose
+# only tree numbers lie under Carcinoma (C04.557.470.200), less those that name a site
+# or a disease of their own.
+HISTOLOGY_TREE = "C04.557.470.200"
+NOT_HISTOLOGY = {
+    "D002285",  # Carcinoma, Intraductal, Noninfiltrating: the target of D05.1
+    "D018281",  # Cholangiocarcinoma: the target of C22.1
+    "D018285",  # Klatskin Tumor: bile ducts
+    "D007725",  # Krukenberg Tumor: ovary
+    "D008039",  # Linitis Plastica: stomach
+    "D008303",  # Malignant Carcinoid Syndrome: a syndrome
+    "D000069295",  # Mammary Analogue Secretory Carcinoma: salivary glands
+    "D010145",  # Paget Disease, Extramammary: skin
+    "D010144",  # Paget's Disease, Mammary: breast
+    "D011553",  # Pseudomyxoma Peritonei: peritoneum
+    "D065646",  # Thyroid Carcinoma, Anaplastic: thyroid
+    "D018263",  # Adenocarcinoma, Follicular: thyroid
+    "D018265",  # Carcinoma, Papillary, Follicular: thyroid
+    "D018280",  # Carcinoma, Skin Appendage: skin
+    "D018266",  # Adenocarcinoma, Sebaceous: skin
+    "D002281",  # Carcinoma, Basosquamous: skin
+    "D057090",  # Eccrine Porocarcinoma: skin
+}
+
+
 def normalize(text):
     """The name form of normalizeName in text.ts."""
     text = unicodedata.normalize("NFKD", text.replace("ß", "ss"))
@@ -147,6 +173,7 @@ def build(mesh_zip, mesh_map, icd_map, excluded=EXCLUDED):
     chemicals = {}
     procedures = {}
     sites = set()
+    histology = set()
     tree = {}
     with ZipFile(mesh_zip) as archive, archive.open("German_MeSH_2026.xml") as xml:
         for _, record in ET.iterparse(xml):
@@ -154,6 +181,16 @@ def build(mesh_zip, mesh_map, icd_map, excluded=EXCLUDED):
                 continue
             numbers = [p.text for p in record.findall("TreeNumberList/TreeNumber")]
             paths = [p for p in numbers if p.startswith(("C", "F03"))]
+            if (
+                numbers
+                and all(p.startswith("C04.557") for p in numbers)
+                and any(
+                    p == HISTOLOGY_TREE or p.startswith(HISTOLOGY_TREE + ".")
+                    for p in numbers
+                )
+                and record.findtext("DescriptorUI") not in NOT_HISTOLOGY
+            ):
+                histology.add(record.findtext("DescriptorUI"))
             medication = (
                 record.find("PharmacologicalActionList/PharmacologicalAction")
                 is not None
@@ -215,6 +252,7 @@ def build(mesh_zip, mesh_map, icd_map, excluded=EXCLUDED):
         "diseases": diseases,
         "chemicals": chemicals,
         "procedures": procedures,
+        "histology": sorted(histology),
         "icd": icd,
     }
 

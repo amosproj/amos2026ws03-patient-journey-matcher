@@ -2,6 +2,8 @@ import { expect, test } from "vitest";
 import { MESH_MAJOR, MESH_MINOR } from "./schema.ts";
 import {
   careContext,
+  isCancer,
+  isGenericNeoplasm,
   otherDisease,
   otherTreatment,
   type PatientStage,
@@ -380,4 +382,13 @@ test("recurring complaints are no relapse of the disease", () => {
   expect(cues("PSA-Anstieg – Biochemisches Rezidiv")).toEqual(
     new Set(["recurrence"]),
   );
+});
+
+test("a kind of carcinoma names no disease, a melanoma does", () => {
+  expect(isGenericNeoplasm("mesh:D002278")).toBe(true); // carcinoma in situ
+  expect(isGenericNeoplasm("mesh:D002295")).toBe(true); // transitional cell carcinoma
+  expect(isCancer("mesh:D002278")).toBe(false);
+  expect(isGenericNeoplasm("mesh:D008545")).toBe(false); // melanoma
+  expect(isCancer("mesh:D008545")).toBe(true);
+  expect(isGenericNeoplasm("mesh:D002292")).toBe(false); // renal cell carcinoma
 });

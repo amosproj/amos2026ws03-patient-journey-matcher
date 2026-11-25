@@ -3,7 +3,12 @@
 // patient's ranks lower; one about his current state ranks higher.
 import neoplasms from "../data/neoplasms.json" with { type: "json" };
 import data from "../data/stages.json" with { type: "json" };
-import { conceptOf, QUALIFIERS, type Terminology } from "./resolve.ts";
+import {
+  conceptOf,
+  HISTOLOGY,
+  QUALIFIERS,
+  type Terminology,
+} from "./resolve.ts";
 import { MESH_MAJOR } from "./schema.ts";
 import { statusFromText } from "./status.ts";
 import { normalizeName } from "./text.ts";
@@ -56,9 +61,14 @@ const ALTERNATIVES: readonly string[] = data.alternatives;
 const NEOPLASMS: ReadonlySet<string> = new Set(neoplasms.ids);
 const GENERIC_NEOPLASMS: ReadonlySet<string> = new Set(neoplasms.generic);
 
-/** A specific cancer, not a heading such as Neoplasms or Adenocarcinoma. */
+/** A neoplasm of tree C04, specific or not. */
+export function isNeoplasm(id: string): boolean {
+  return NEOPLASMS.has(id);
+}
+
+/** A specific cancer, not a heading such as Neoplasms or a kind of carcinoma such as carcinoma in situ. */
 export function isCancer(id: string): boolean {
-  return NEOPLASMS.has(id) && !GENERIC_NEOPLASMS.has(id);
+  return NEOPLASMS.has(id) && !isGenericNeoplasm(id);
 }
 
 // For any disease: what a paper does with the patient's diagnosis (Breast Neoplasms/surgery).
@@ -448,9 +458,13 @@ export function otherDisease(
   );
 }
 
-/** A general heading such as tumor, carcinoma or adenocarcinoma, which names no disease of its own. */
+/**
+ * A general heading such as tumor, carcinoma or adenocarcinoma, or a kind of carcinoma that names no
+ * site, such as carcinoma in situ: none names a disease of its own. Only for the patient's diagnoses;
+ * on a paper the curated headings of neoplasms.json decide what another cancer is.
+ */
 export function isGenericNeoplasm(id: string): boolean {
-  return GENERIC_NEOPLASMS.has(id);
+  return GENERIC_NEOPLASMS.has(id) || HISTOLOGY.has(id);
 }
 
 /**

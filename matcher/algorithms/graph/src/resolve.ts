@@ -64,6 +64,7 @@ type MeshData = {
     string,
     [name: string, aliases: string[], kind: ProcedureKind]
   >;
+  histology: string[];
   icd: Record<string, string>;
 };
 
@@ -156,6 +157,11 @@ for (const [owner, names] of alsoNames) {
     });
 }
 
+/** Kinds of carcinoma that name no site, such as carcinoma in situ (build-terminology.py). */
+export const HISTOLOGY: ReadonlySet<string> = new Set(
+  mesh.histology.map((descriptor) => `mesh:${descriptor}`),
+);
+
 export function conceptOf(id: string): Concept | undefined {
   return MESH_CONCEPTS.get(id) ?? CONCEPTS.get(id);
 }
@@ -220,8 +226,14 @@ const ICD_CODES = new Map<string, string>([
   ]),
   ...Object.entries(icd.codes),
 ]);
-// Reviewed categories whose codes all name one disease: C67.2 is a bladder cancer like C67.
-const ICD_CATEGORIES = new Map<string, string>(Object.entries(icd.categories));
+// Categories whose codes all name one disease: C67.2 is a bladder cancer like C67, E11.9 a type 2
+// diabetes like E11. The reviewed ones, and those Mondo maps exactly, which equal one disease.
+const ICD_CATEGORIES = new Map<string, string>([
+  ...Object.entries(mesh.icd)
+    .filter(([code]) => !code.includes("."))
+    .map(([code, id]): [string, string] => [code, `mesh:${id}`]),
+  ...Object.entries(icd.categories),
+]);
 const ICD_CODE = /^[A-Z]\d{2}(?:\.\d{1,2})?$/;
 const ICD_IN_TEXT =
   /\b[A-Z]\d{2}(?:\.\d+)?(?:\s*[-–—]\s*[A-Z]\d{2}(?:\.\d+)?)?(?!\w|\.\w)/gi;
@@ -368,9 +380,9 @@ export function createTerminology(
 export const defaultTerminology = createTerminology();
 
 /**
- * Tier 1: a mapped ICD-10 code as written, else its reviewed category (`categories` in icd10-mesh.json). A category
- * is never inferred from its children. A value that is not shaped like a code is ignored: the graph takes it from
- * an LLM, unchecked.
+ * Tier 1: a mapped ICD-10 code as written, else its category when that names one disease (reviewed in
+ * icd10-mesh.json, or mapped exactly by Mondo). A category is never inferred from its children. A value that is
+ * not shaped like a code is ignored: the graph takes it from an LLM, unchecked.
  */
 export function resolveIcd(code: unknown): Concept | undefined {
   if (typeof code !== "string") return undefined;

@@ -17,6 +17,7 @@ import {
   conceptStages,
   isCancer,
   isGenericNeoplasm,
+  isNeoplasm,
   type PatientStage,
   patientStage,
   STAGE_CONCEPTS,
@@ -297,17 +298,19 @@ function timelineConditions(
     const codeConflict =
       byCode && codes.some((item) => !compatibleDiagnoses(byCode, item));
     if (byCode?.type === "disease") codes.push(byCode);
-    // A general word such as "Adenokarzinom" says the kind of tumour, which fits any cancer code.
+    // A name contradicts a code when both name a cancer and neither is a form of the other (breast
+    // cancer and C34). A general word such as "Adenokarzinom" says the kind of tumour, which fits
+    // any cancer code, and a complication or a further disease beside the coded one is no
+    // contradiction (diabetic foot beside E11.74, atrial fibrillation beside I50.14).
     const nameConflict = [field, labelHits].some((hits) => {
-      const names = hits.filter(
-        (hit) => !hit.code && !isGenericNeoplasm(hit.concept.id),
-      );
+      const names = hits.filter((hit) => !hit.code && isCancer(hit.concept.id));
       const positive = names.filter((hit) => hit.status !== "negated");
       const diagnosticNames = positive.length ? positive : names;
       return (
         diagnosticNames.length > 0 &&
         codes.some(
           (id) =>
+            isCancer(id.id) &&
             !diagnosticNames.some((hit) =>
               compatibleDiagnoses(id, hit.concept),
             ),
@@ -323,9 +326,18 @@ function timelineConditions(
       conflicts.add(event);
       continue;
     }
+    // Once the journey names a cancer, a progression or pathology report that names something
+    // else in its label alone reports a finding, such as a pulmonary nodule or ascites, not a
+    // new disease.
+    const findingsOnly =
+      ["progression", "pathology"].includes(normalizeName(event.type)) &&
+      [...since.keys()].some(isCancer);
+    const labelDiagnoses = findingsOnly
+      ? label.filter((hit) => isNeoplasm(hit.concept.id))
+      : label;
     const introduced = new Set<string>();
     for (const hit of [
-      ...(field.length ? field : diagnostic ? label : []),
+      ...(field.length ? field : diagnostic ? labelDiagnoses : []),
       ...label.filter((hit) => hit.status === "negated"),
     ])
       introduced.add(hit.concept.id);
