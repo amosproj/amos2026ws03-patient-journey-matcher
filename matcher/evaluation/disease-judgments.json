@@ -1022,8 +1022,9 @@
       "as_of": "2027-05-04",
       "grades": {
         "3": "pubmed:22101115 pubmed:36853609",
-        "1": "pubmed:27457483 pubmed:33253641 pubmed:33457266 pubmed:40805257",
-        "0": "pubmed:17342490 pubmed:22405699 pubmed:26688133 pubmed:28766223 pubmed:29408568 pubmed:38053418"
+        "2": "pubmed:22757606 pubmed:29663062 pubmed:31019310",
+        "1": "pubmed:16879676 pubmed:17157629 pubmed:17280906 pubmed:22917985 pubmed:27457483 pubmed:28677000 pubmed:33253641 pubmed:33457266 pubmed:35489126 pubmed:40805257",
+        "0": "pubmed:17342490 pubmed:22405699 pubmed:26688133 pubmed:28766223 pubmed:29408568 pubmed:34352796 pubmed:38053418"
       }
     },
     "Bladder-e13": {
@@ -1046,10 +1047,10 @@
     "Bladder-e10": {
       "as_of": "2028-05-11",
       "grades": {
-        "3": "pubmed:22101115",
+        "3": "pubmed:22101115 pubmed:22757606 pubmed:28677000 pubmed:29663062 pubmed:31019310",
         "2": "pubmed:19176205",
-        "1": "pubmed:27457483 pubmed:33253641 pubmed:33457266 pubmed:40805257",
-        "0": "pubmed:17342490 pubmed:22405699 pubmed:26688133 pubmed:28766223 pubmed:38053418"
+        "1": "pubmed:16879676 pubmed:17157629 pubmed:17475965 pubmed:21231796 pubmed:27457483 pubmed:33253641 pubmed:33457266 pubmed:35489126 pubmed:40805257",
+        "0": "pubmed:17342490 pubmed:22405699 pubmed:26688133 pubmed:28766223 pubmed:34352796 pubmed:38053418"
       }
     },
     "Pancreas-e06": {
@@ -1067,6 +1068,48 @@
         "2": "pubmed:24929865 pubmed:30458340 pubmed:42192328",
         "1": "pubmed:31157963 pubmed:31375338 pubmed:31787751 pubmed:34392104 pubmed:36229752 pubmed:38030179",
         "0": "pubmed:20947488 pubmed:22643536 pubmed:23322206 pubmed:28758096 pubmed:29631810 pubmed:34019698 pubmed:37963317 pubmed:38457083 pubmed:40639383"
+      }
+    },
+    "Bladder-e02": {
+      "as_of": "2027-02-23",
+      "grades": {
+        "3": "pubmed:19176205",
+        "0": "pubmed:10793087 pubmed:13679454 pubmed:17342490 pubmed:28375947 pubmed:29297491 pubmed:36229464 pubmed:38053418 pubmed:7803731 pubmed:9388062"
+      }
+    },
+    "Diabetes-e11": {
+      "as_of": "2030-07-10",
+      "grades": {
+        "3": "pubmed:40156843",
+        "2": "pubmed:35266164 pubmed:40022078 pubmed:40839273",
+        "1": "pubmed:23634670 pubmed:24498905 pubmed:37344384 pubmed:37606429 pubmed:39858442 pubmed:40828947",
+        "0": "pubmed:14011100"
+      }
+    },
+    "HeartFailure-e09": {
+      "as_of": "2027-05-12",
+      "grades": {
+        "3": "pubmed:31475295",
+        "2": "pubmed:40047763",
+        "1": "pubmed:12678137 pubmed:15134800 pubmed:16703238 pubmed:24035166 pubmed:37225286 pubmed:38242507",
+        "0": "pubmed:30958721 pubmed:31035008"
+      }
+    },
+    "HeartFailure-e13": {
+      "as_of": "2030-02-12",
+      "grades": {
+        "3": "pubmed:36423214 pubmed:37225286 pubmed:38161537 pubmed:38242507 pubmed:40047763",
+        "2": "pubmed:23158527 pubmed:31475295",
+        "1": "pubmed:16703238 pubmed:24035166 pubmed:30910768"
+      }
+    },
+    "Stroke-e10": {
+      "as_of": "2027-09-14",
+      "grades": {
+        "3": "pubmed:23640971 pubmed:39567875",
+        "2": "pubmed:23642855",
+        "1": "pubmed:11274542 pubmed:30536140 pubmed:32956106 pubmed:34244703 pubmed:34269121 pubmed:40891051 pubmed:41287903",
+        "0": "pubmed:35124243"
       }
     }
   }

@@ -1,0 +1,342 @@
+{
+  "patient_id": "Melanoma",
+  "pathway_id": "me01",
+  "start_date": "2026-04-20",
+  "events": [
+    {
+      "id": "e01",
+      "type": "screening",
+      "label": "Hautkrebsscreening: dermatoskopisch suspekte Pigmentläsion skapulär li.",
+      "date": "2026-04-20",
+      "specialist": "dermatologie",
+      "parameters": {
+        "patient": "52 J., m; Hauttyp II nach Fitzpatrick, > 50 melanozytäre Nävi, mehrere Sonnenbrände in der Kindheit",
+        "history": "Läsion laut Ehefrau seit ca. 6 Monaten größenprogredient, gelegentlich Juckreiz",
+        "lesion": "unregelmäßig pigmentierte, leicht erhabene Läsion skapulär li., 14 × 9 mm",
+        "dermatoscopy": "Asymmetrie in 2 Achsen, 4 Farben (hellbraun, dunkelbraun, schwarz, blaugrau), atypisches Pigmentnetz, irreguläre Punkte und Schollen, blau-weißlicher Schleier, Regressionsstrukturen",
+        "tds": "7,0 (A 2, B 4, C 4, D 4)",
+        "suspected_diagnosis": "V.a. malignes Melanom",
+        "plan": "Exzisionsbiopsie in toto mit kleinem Sicherheitsabstand"
+      },
+      "documents": [
+        "dermatoskopiebefund"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e02",
+      "type": "biopsy",
+      "label": "Exzisionsbiopsie in toto (Sicherheitsabstand 2 mm)",
+      "date": "2026-04-29",
+      "specialist": "dermatologie",
+      "parameters": {
+        "procedure": "spindelförmige Exzision in Lokalanästhesie, Primärverschluss",
+        "margin_mm": 2,
+        "specimen": "Hautspindel 32 × 13 mm, Fadenmarkierung 12 Uhr"
+      },
+      "documents": [
+        "op_bericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e03",
+      "type": "pathology",
+      "label": "Histologie: superfiziell spreitendes Melanom, TD 2,4 mm, ulzeriert",
+      "date": "2026-05-06",
+      "specialist": "dermatopathologie",
+      "parameters": {
+        "histology": "superfiziell spreitendes Melanom (SSM)",
+        "breslow_mm": 2.4,
+        "clark_level": "IV",
+        "ulceration": "vorhanden",
+        "mitotic_rate": "5/mm²",
+        "regression": "fokal",
+        "microsatellites": "nicht nachweisbar",
+        "margins": "seitlich 2 mm, basal 1,5 mm tumorfrei",
+        "pt_stage": "pT3b",
+        "diagnosis": "Malignes Melanom (SSM) Rücken li.",
+        "icd_code": "C43.5"
+      },
+      "documents": [
+        "histologischer_befund"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e04",
+      "type": "surgery",
+      "label": "Nachexzision mit 2 cm Sicherheitsabstand und Wächterlymphknotenbiopsie axillär li.",
+      "date": "2026-05-19",
+      "specialist": "dermatologie",
+      "parameters": {
+        "stage_before_slnb": "IIB (pT3b cN0 cM0, AJCC 2017)",
+        "preoperative_workup": "LK-Sonographie zervikal, axillär und inguinal bds. unauffällig; S100B 0,06 µg/l, LDH 182 U/l",
+        "lymphoscintigraphy": "Tc-99m-Nanokolloid: Lymphabfluss ausschließlich in die li. Axilla, 2 Wächterlymphknoten markiert",
+        "procedure": "Nachexzision mit 2 cm Sicherheitsabstand bis auf die Muskelfaszie, Dehnungsplastik; gammasondengesteuerte SLNB axillär li. (2 LK)",
+        "anesthesia": "Allgemeinanästhesie"
+      },
+      "documents": [
+        "op_bericht",
+        "szintigraphiebefund"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e05",
+      "type": "pathology",
+      "label": "Histologie Nachexzisat und Sentinel-LK: Mikrometastase",
+      "date": "2026-05-27",
+      "specialist": "dermatopathologie",
+      "parameters": {
+        "re_excision": "kein Residualtumor",
+        "sentinel_nodes": "1 von 2 Wächterlymphknoten befallen; subkapsuläre Mikrometastase, max. Durchmesser 0,7 mm, keine Kapselüberschreitung",
+        "pn_stage": "pN1a(sn)",
+        "molecular_testing": "BRAF-Mutationsanalyse am Primärtumor veranlasst",
+        "diagnosis": "Malignes Melanom Rücken li. mit Mikrometastase im Wächterlymphknoten axillär li.",
+        "icd_code": "C43.5",
+        "secondary_diagnoses": [
+          "LK-Metastase axillär li. (C77.3)"
+        ]
+      },
+      "documents": [
+        "histologischer_befund"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e06",
+      "type": "imaging",
+      "label": "Ausbreitungsdiagnostik: CT Hals/Thorax/Abdomen/Becken und cMRT",
+      "date": "2026-06-03",
+      "specialist": "radiologie",
+      "parameters": {
+        "modality": "CT mit KM, cMRT mit KM",
+        "region": "Hals, Thorax, Abdomen, Becken, Schädel",
+        "finding": "kein Anhalt für Fernmetastasen; zerebral kein Metastasennachweis; postoperative Veränderungen axillär li.",
+        "staging": "cM0"
+      },
+      "documents": [
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e07",
+      "type": "tumor_board",
+      "label": "Interdisziplinäres Hauttumorboard: adjuvante Therapie im Stadium IIIC",
+      "date": "2026-06-10",
+      "specialist": "dermatologie",
+      "parameters": {
+        "stage": "IIIC (pT3b pN1a(sn) cM0, AJCC 2017)",
+        "braf_status": "BRAF-V600E-Mutation nachgewiesen",
+        "ecog": 0,
+        "decision": "adjuvante Therapie über 12 Monate empfohlen, Nivolumab 480 mg alle 4 Wochen oder Dabrafenib/Trametinib; Pat. entscheidet sich nach Aufklärung für Nivolumab. Keine komplettierende Lymphadenektomie, stattdessen sonographische Kontrollen der li. Axilla",
+        "participants": [
+          "dermatologie",
+          "onkologie",
+          "radiologie",
+          "strahlentherapie",
+          "chirurgie",
+          "dermatopathologie"
+        ]
+      },
+      "documents": [
+        "tumorboardprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e08",
+      "type": "systemic_therapy",
+      "label": "Beginn adjuvante Immuntherapie mit Nivolumab",
+      "date": "2026-06-24",
+      "specialist": "dermatologie",
+      "parameters": {
+        "drug": "Nivolumab 480 mg i.v.",
+        "interval_weeks": 4,
+        "duration_months": 12,
+        "intent": "adjuvant",
+        "baseline_labs": "TSH, fT4, Kortisol, Lipase, GOT/GPT, Kreatinin und BZ im Normbereich; S100B 0,05 µg/l",
+        "ecog": 0
+      },
+      "documents": [
+        "therapieplan"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e09",
+      "type": "followup",
+      "label": "Nachsorge Stadium III",
+      "date": "2027-06-16",
+      "specialist": "dermatologie",
+      "parameters": {
+        "status": "adjuvante Nivolumab-Therapie abgeschlossen, 13 Gaben, letzte Gabe am 26.05.2027",
+        "irae": "vitiligoartige Depigmentierungen an Händen und periorbital, Pruritus CTCAE Grad 1; keine Endokrinopathie",
+        "imaging": "CT Hals/Thorax/Abdomen/Becken und cMRT: kein Anhalt für Rezidiv",
+        "lymph_node_ultrasound": "Axilla li. und übrige LK-Stationen unauffällig",
+        "s100b_display": "0,05 µg/l",
+        "ldh_display": "176 U/l",
+        "plan": "Nachsorge alle 3 Monate mit LK-Sonographie und S100B, Schnittbildgebung alle 6 Monate"
+      },
+      "documents": [
+        "arztbrief",
+        "nachsorgebogen"
+      ],
+      "repeat_index": 0
+    },
+    {
+      "id": "e10",
+      "type": "followup",
+      "label": "Nachsorge Stadium III",
+      "date": "2028-05-10",
+      "specialist": "dermatologie",
+      "parameters": {
+        "previous_followups": "Nachsorgen 09/2027, 12/2027 und 03/2028 unauffällig, CT 12/2027 ohne Rezidiv",
+        "symptoms": "seit ca. 3 Wochen trockener Reizhusten und Leistungsknick",
+        "s100b_display": "0,38 µg/l (Norm < 0,10)",
+        "ldh_display": "312 U/l (Norm < 250)",
+        "lymph_node_ultrasound": "unauffällig",
+        "plan": "vorgezogenes Re-Staging mit CT und cMRT"
+      },
+      "documents": [
+        "arztbrief",
+        "laborbefund"
+      ],
+      "repeat_index": 1
+    },
+    {
+      "id": "e11",
+      "type": "imaging",
+      "label": "Re-Staging: pulmonale, hepatische und zerebrale Metastasen",
+      "date": "2028-05-17",
+      "specialist": "radiologie",
+      "parameters": {
+        "modality": "CT mit KM, cMRT mit KM",
+        "finding": "multiple pulmonale Rundherde bds. (größter 24 mm im li. Unterlappen); 2 Lebermetastasen (Segment IVa 32 mm, Segment VII 18 mm); cMRT: 2 Hirnmetastasen (frontal re. 9 mm, parietal li. 6 mm) ohne relevantes perifokales Ödem",
+        "staging": "M1d (Lunge, Leber, ZNS)"
+      },
+      "documents": [
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e12",
+      "type": "tumor_board",
+      "label": "Hauttumorboard: Fernmetastasierung im Stadium IV",
+      "date": "2028-05-23",
+      "specialist": "dermatologie",
+      "parameters": {
+        "stage": "IV, M1d(1) (AJCC 2017)",
+        "situation": "Fernmetastasierung knapp 12 Monate nach der letzten adjuvanten Nivolumab-Gabe (26.05.2027); Hirnmetastasen asymptomatisch, keine Steroide erforderlich; LDH erhöht; BRAF V600E",
+        "ecog": 1,
+        "decision": "Ipilimumab 3 mg/kg + Nivolumab 1 mg/kg alle 3 Wochen für 4 Zyklen, danach Nivolumab-Erhaltung; stereotaktische Radiochirurgie beider Hirnmetastasen; BRAF/MEK-Inhibition bei Progress",
+        "participants": [
+          "dermatologie",
+          "onkologie",
+          "strahlentherapie",
+          "neurochirurgie",
+          "radiologie"
+        ],
+        "diagnosis": "Malignes Melanom im Stadium IV mit pulmonalen, hepatischen und zerebralen Metastasen",
+        "icd_code": "C43.5",
+        "secondary_diagnoses": [
+          "Lungenmetastasen (C78.0)",
+          "Lebermetastasen (C78.7)",
+          "Hirnmetastasen (C79.3)"
+        ]
+      },
+      "documents": [
+        "tumorboardprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e13",
+      "type": "radiation",
+      "label": "Stereotaktische Radiochirurgie von 2 Hirnmetastasen",
+      "date": "2028-05-30",
+      "specialist": "strahlentherapie",
+      "parameters": {
+        "technique": "Radiochirurgie, Einzeitbestrahlung",
+        "target": "Hirnmetastasen frontal re. und parietal li.",
+        "dose": "je 20 Gy auf die umschließende 80-%-Isodose",
+        "total_dose_gy": 20,
+        "fractions": 1
+      },
+      "documents": [
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e14",
+      "type": "systemic_therapy",
+      "label": "Beginn Kombinationsimmuntherapie mit Ipilimumab und Nivolumab",
+      "date": "2028-06-01",
+      "specialist": "dermatologie",
+      "parameters": {
+        "drugs": [
+          "Ipilimumab 3 mg/kg (258 mg)",
+          "Nivolumab 1 mg/kg (86 mg)"
+        ],
+        "body_weight_kg": 86,
+        "interval_weeks": 3,
+        "induction_cycles": 4,
+        "maintenance": "Nivolumab 480 mg alle 4 Wochen",
+        "intent": "palliativ, 1. Linie im Stadium IV",
+        "ecog": 1
+      },
+      "documents": [
+        "therapieplan"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e15",
+      "type": "adverse_event",
+      "label": "Immunvermittelte Kolitis CTCAE Grad 3 – stationäre Behandlung",
+      "date": "2028-07-15",
+      "specialist": "dermatologie",
+      "parameters": {
+        "hospital_stay": "04.07.–15.07.2028",
+        "cycles_received": "2 Zyklen Ipilimumab/Nivolumab (01.06. und 22.06.2028)",
+        "symptoms": "8–10 wässrige Stühle/d, krampfartige Bauchschmerzen",
+        "ctcae_grade": 3,
+        "calprotectin_display": "1180 µg/g",
+        "infectious_workup": "Clostridioides difficile, Stuhlkulturen und CMV-PCR negativ",
+        "endoscopy": "Sigmoidoskopie: diffuse erosive Kolitis, histologisch vereinbar mit immunvermittelter Kolitis",
+        "management": "Methylprednisolon 2 mg/kg/d i.v.; nach 72 h ohne Besserung Infliximab 5 mg/kg (zweite Gabe nach 2 Wochen geplant); Ipilimumab dauerhaft beendet, Nivolumab pausiert",
+        "status_at_discharge": "Stuhlfrequenz 2–3/d, Umstellung auf Prednisolon p.o. mit Ausschleichen über 6 Wochen",
+        "diagnosis": "Immunvermittelte Kolitis Grad 3 unter Ipilimumab/Nivolumab",
+        "icd_code": "K52.1"
+      },
+      "documents": [
+        "entlassungsbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e16",
+      "type": "progression",
+      "label": "Progress nach Immuntherapie – Umstellung auf BRAF/MEK-Inhibition",
+      "date": "2028-08-29",
+      "specialist": "dermatologie",
+      "parameters": {
+        "imaging": "CT vom 24.08.2028: progrediente Lebermetastasen (Segment IVa 51 mm), neue ossäre Metastasen LWK 3 und Os ilium re., pulmonal gemischtes Ansprechen; cMRT: bestrahlte Hirnmetastasen regredient, keine neuen Herde",
+        "ldh_display": "468 U/l",
+        "steroids": "Prednisolon 5 mg/d, Ausschleichen fast abgeschlossen",
+        "colitis_status": "Stuhlfrequenz normalisiert",
+        "decision": "Encorafenib 450 mg 1×/d + Binimetinib 45 mg 2×/d; Nivolumab nicht wieder aufgenommen",
+        "ecog": 1
+      },
+      "documents": [
+        "arztbrief",
+        "befundbericht"
+      ],
+      "repeat_index": null
+    }
+  ]
+}

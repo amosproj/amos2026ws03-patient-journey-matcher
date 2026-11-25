@@ -32,28 +32,48 @@
     "points": ["e02", "e06", "e11", "e16"]
   },
   "Bladder": {
-    "holdout": true,
     "diagnosis": "mesh:D001749",
     "points": ["e02", "e08", "e10", "e13"]
   },
   "Pancreas": {
-    "holdout": true,
     "diagnosis": "mesh:D010190",
     "points": ["e02", "e06", "e12", "e14"]
   },
   "Myeloma": {
-    "holdout": true,
     "diagnosis": "mesh:D009101",
     "points": ["e03", "e06", "e11", "e13"]
   },
   "Diabetes": {
-    "holdout": true,
     "diagnosis": "mesh:D003924",
     "points": ["e01", "e04", "e06", "e11"]
   },
   "HeartFailure": {
-    "holdout": true,
     "diagnosis": "mesh:D006333",
     "points": ["e01", "e03", "e09", "e13"]
+  },
+  "Stomach": {
+    "holdout": true,
+    "diagnosis": "mesh:D013274",
+    "points": ["e02", "e08", "e13", "e16"]
+  },
+  "Kidney": {
+    "holdout": true,
+    "diagnosis": "mesh:D007680",
+    "points": ["e02", "e04", "e10", "e15"]
+  },
+  "Melanoma": {
+    "holdout": true,
+    "diagnosis": "mesh:D008545",
+    "points": ["e01", "e08", "e09", "e14"]
+  },
+  "Depression": {
+    "holdout": true,
+    "diagnosis": "mesh:D003866",
+    "points": ["e01", "e04", "e08", "e11"]
+  },
+  "Stroke": {
+    "holdout": true,
+    "diagnosis": "mesh:D020521",
+    "points": ["e02", "e07", "e10", "e14"]
   }
 }
