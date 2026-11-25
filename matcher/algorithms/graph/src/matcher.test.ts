@@ -967,11 +967,15 @@ test.each([
   },
 );
 
-test("a paper's prostate-specific care phase cannot penalize a breast cancer treatment", async () => {
+test("another cancer gets the disease states of every cancer, not the prostate care rules", async () => {
   const evidence = { "mesh:D001943": 1 };
   const hits = await rank(
     [
-      { id: "a", evidence, title: "Salvage treatment in breast cancer" },
+      {
+        id: "a",
+        evidence,
+        title: "Salvage radiotherapy after prostatectomy in breast cancer",
+      },
       { id: "b", evidence, title: "Treatment in breast cancer" },
     ],
     {
@@ -983,8 +987,12 @@ test("a paper's prostate-specific care phase cannot penalize a breast cancer tre
       context: [],
     },
   );
-  expect(hits).toHaveLength(2);
-  expect(hits[0].score).toEqual(hits[1].score);
+  expect(hits.map((hit) => hit.documentId)).toEqual(["b", "a"]);
+  // Salvage treatment follows a relapse, which a newly confirmed patient has not had.
+  expect(hits[1].explanation).toContain(
+    "About another disease state (recurrence)",
+  );
+  expect(hits[1].explanation).not.toContain("salvage radiotherapy");
 });
 
 test("a cancelled timeline plan gives no drug advantage after cancellation", async () => {

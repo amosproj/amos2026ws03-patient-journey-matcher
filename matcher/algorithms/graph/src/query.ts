@@ -9,6 +9,7 @@ import {
   conceptOf,
   defaultTerminology,
   isProstateCancer,
+  QUALIFIERS,
   resolveIcd,
   type Terminology,
 } from "./resolve.ts";
@@ -173,6 +174,7 @@ function latest<T extends DatedStatus>(
   keyOf: (statement: T) => string,
   cutoff: string,
   stageTexts?: string[],
+  findings = false,
 ): (T & { validAt: string })[] {
   const byKey = new Map<string, T[]>();
   for (const statement of statements) {
@@ -192,11 +194,15 @@ function latest<T extends DatedStatus>(
         STATUS_ORDER[a.status] - STATUS_ORDER[b.status],
     );
     // An un-cued follow-up (`unknown`) advances the date without erasing an established status.
+    // A finding is different: metastases named on a later day follow "keine Fernmetastasen".
     let current = list[0];
     for (let i = 1; i < list.length; i++) {
       const next = list[i];
+      const later = findings && (next.validAt ?? "") > (current.validAt ?? "");
       current =
-        next.status === "unknown" && EXPLICIT_STATUSES.has(current.status)
+        next.status === "unknown" &&
+        EXPLICIT_STATUSES.has(current.status) &&
+        !later
           ? { ...next, status: current.status }
           : next;
     }
@@ -268,6 +274,7 @@ function timelineConditions(
     text: string;
     statuses: Map<string, Status>;
     introduced: Set<string>;
+    confirms: boolean;
   }[] = [];
   const conflicts = new Set<JourneyEvent>();
   for (const event of events) {
@@ -318,6 +325,16 @@ function timelineConditions(
     ])
       introduced.add(hit.concept.id);
     if (byCode?.type === "disease") introduced.add(byCode.id);
+    // While the journey names no diagnosis, a suspicion written in any text of another event
+    // ("Verdacht auf Bronchialkarzinom" in a CT finding) makes the diagnosis suspected, as a
+    // diagnosis event would. Later, such a suspicion is a side finding (pneumonia on a CT).
+    const suspicions =
+      diagnostic || diagnosis || code || since.size
+        ? []
+        : diseaseMentions(eventText(event), terminology).filter(
+            (hit) => hit.status === "suspected" && !hit.code,
+          );
+    for (const hit of suspicions) introduced.add(hit.concept.id);
     if (
       typeof indication === "string" &&
       [...(courses.get(event)?.values() ?? [])].includes("asserted")
@@ -336,7 +353,7 @@ function timelineConditions(
       });
     for (const id of introduced) if (!since.has(id)) since.set(id, event.date);
     const statuses = new Map<string, Status>();
-    for (const hit of [...field, ...label]) {
+    for (const hit of [...field, ...label, ...suspicions]) {
       const prior = statuses.get(hit.concept.id) ?? "unknown";
       if (hit.status && STATUS_ORDER[hit.status] > STATUS_ORDER[prior])
         statuses.set(hit.concept.id, hit.status);
@@ -345,13 +362,21 @@ function timelineConditions(
       event,
       introduced,
       statuses,
-      text: [diagnosis, event.label, code, indication]
+      // A pathology report states the diagnoses it names as findings.
+      confirms: normalizeName(event.type) === "pathology",
+      text: [
+        diagnosis,
+        event.label,
+        code,
+        indication,
+        ...(suspicions.length ? [eventText(event)] : []),
+      ]
         .filter(Boolean)
         .join(". "),
     });
   }
   const statements: Statement[] = [];
-  for (const { event, introduced, statuses, text } of notes) {
+  for (const { event, introduced, statuses, confirms, text } of notes) {
     for (const entity of new Set([...introduced, ...statuses.keys()])) {
       const start = since.get(entity);
       if (!start || event.date < start) continue;
@@ -363,7 +388,7 @@ function timelineConditions(
         status:
           statuses.get(entity) ??
           statusFromAttribute(event.parameters?.diagnosis_status) ??
-          "unknown",
+          (confirms && introduced.has(entity) ? "asserted" : "unknown"),
       });
     }
   }
@@ -652,6 +677,20 @@ function parameterFacts(event: JourneyEvent): {
 
 const LOCAL_THERAPY =
   /prostatektom|prostatectom|\brpe\b|\brarp\b|radiotherap|bestrahl|strahlenther|\bimrt\b|brachyther/;
+
+/** An operation or a radiotherapy: by the kind of its procedure, or by a name it was written with. */
+function isLocalTherapy(
+  concept: Concept | undefined,
+  names: readonly string[],
+): boolean {
+  return (
+    (concept?.type === "procedure" &&
+      !concept.diagnostic &&
+      (concept.qualifier === QUALIFIERS.surgery ||
+        concept.qualifier === QUALIFIERS.radiotherapy)) ||
+    names.some((name) => LOCAL_THERAPY.test(normalizeName(name)))
+  );
+}
 const SYSTEMIC_THERAPY =
   /\badt\b|androgen|hormonther|hormone therap|leupro|gosere|degarel|relugol|bicalut|abirater|enzalut|apalut|darolut|docetax|cabazitax|olaparib|radium|chemother/;
 
@@ -1004,6 +1043,8 @@ function readTimeline(context: JourneyEvent[], reading: Reading): void {
     staging,
     (item) => `${item.stage}/${item.entity ?? ""}`,
     cutoff,
+    undefined,
+    true,
   );
   const stageStatus = new Map<string, Status>();
   for (const item of activeStages) {
@@ -1038,8 +1079,22 @@ function readTimeline(context: JourneyEvent[], reading: Reading): void {
       );
       if (named && (status !== "asserted" || therapy.diagnosed)) continue;
       if (!named && inferred.get(id) === "asserted") continue;
-      if (named) therapy.diagnosed = true;
-      else inferred.set(id, status);
+      if (named) {
+        therapy.diagnosed = true;
+        // The confirmation counts for the named diagnosis as a dated statement would.
+        const weight = weights.roles.diagnosis * factor(event.date, status);
+        for (const item of found)
+          if (
+            item.role === "diagnosis" &&
+            (item.concept.id === id ||
+              broaderDiagnosis(item.concept.id) === id) &&
+            item.weight < weight
+          ) {
+            item.weight = weight;
+            item.status = status;
+            diagnoses.set(item.concept.id, weight);
+          }
+      } else inferred.set(id, status);
       evidence.push({
         ref: event.id,
         date: event.date,
@@ -1089,7 +1144,7 @@ function readTimeline(context: JourneyEvent[], reading: Reading): void {
       const planned = course === "planned";
       if (planned) therapy.plannedTherapy = true;
       if (received) {
-        if (LOCAL_THERAPY.test(normalizeName(concept.name)))
+        if (isLocalTherapy(concept, [concept.name]))
           therapy.localTherapy = true;
         if (
           normalizeName(event.type) === "surgery" &&
@@ -1260,7 +1315,12 @@ function readGraph(
       fact.kind === "receives" &&
       (fact.status === "asserted" || fact.status === "unknown")
     ) {
-      if (names.some((name) => LOCAL_THERAPY.test(name)))
+      if (
+        isLocalTherapy(
+          entity.id === null ? undefined : conceptOf(entity.id),
+          names,
+        )
+      )
         therapy.localTherapy = true;
       if (entity.id === "mesh:D011468") therapy.prostatectomy = true;
       if (
@@ -1571,7 +1631,7 @@ function buildQuery(reading: Reading, fromGraph: boolean): GraphQuery {
       if (predicate === "treats" && concept) {
         if (plan) therapy.plannedTherapy = true;
         else if (concept.type === "chemical") therapy.systemicTherapy = true;
-        else if (LOCAL_THERAPY.test(normalizeName(concept.name)))
+        else if (isLocalTherapy(concept, [concept.name]))
           therapy.localTherapy = true;
       }
       if (
@@ -1617,6 +1677,17 @@ function buildQuery(reading: Reading, fromGraph: boolean): GraphQuery {
     ])
       gate.set(one, Math.max(weight, gate.get(one) ?? 0));
   }
+  // The aspects of a concept go to the patient's diagnosis when there is one disease: one
+  // diagnosis, or several that name it at different specificity (lung cancer and adenocarcinoma
+  // of the lung). Unrelated diagnoses, such as a cancer and anemia, need an explicit link.
+  const named = [...diagnoses.keys()];
+  const roots = named.filter(
+    (id) =>
+      !named.some(
+        (other) => other !== id && conceptOf(other)?.narrower?.includes(id),
+      ),
+  );
+  const family = roots.length === 1 ? named : [];
   const concepts = new ConceptSet(weights, excluded);
   for (const {
     concept,
@@ -1668,7 +1739,7 @@ function buildQuery(reading: Reading, fromGraph: boolean): GraphQuery {
             ...(plannedFor.length && { plannedFor }),
           }
         : {},
-      targets.length || diagnoses.size !== 1 ? targets : [...diagnoses.keys()],
+      targets.length ? targets : family,
     );
     if (received && role === "drug")
       for (const id of [concept.id, ...(concept.also ?? [])])

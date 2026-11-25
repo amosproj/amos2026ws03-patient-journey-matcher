@@ -46,14 +46,34 @@ const CONCEPTS: ReadonlyMap<string, Concept> = new Map<string, Concept>(
   concepts.concepts.map((concept) => [concept.id, concept as Concept]),
 );
 
+type ProcedureKind =
+  | "imaging"
+  | "diagnostic"
+  | "surgery"
+  | "radiotherapy"
+  | "drug"
+  | "therapy";
+
 type MeshData = {
   diseases: Record<
     string,
     [name: string, aliases: string[], narrower: string[]]
   >;
   chemicals: Record<string, [name: string, aliases: string[]]>;
+  procedures: Record<
+    string,
+    [name: string, aliases: string[], kind: ProcedureKind]
+  >;
   icd: Record<string, string>;
 };
+
+/** MeSH qualifiers of a diagnosis that papers on a procedure of this kind carry. */
+export const QUALIFIERS = {
+  surgery: "Q000601",
+  radiotherapy: "Q000532",
+  drug: "Q000188",
+  imaging: "Q000000981",
+} as const;
 
 const mesh: MeshData = JSON.parse(
   gunzipSync(
@@ -93,6 +113,47 @@ for (const [key, [name, names]] of Object.entries(mesh.chemicals)) {
     ...clinical,
     names: [...new Set([name, ...names, ...(clinical?.names ?? [])])],
   });
+}
+
+// A procedure that a curated concept lists as `also` is that concept: core needle biopsy is a
+// biopsy, a PET a PET/CT. Its names find the curated concept.
+const ALSO_OF = new Map(
+  [...CONCEPTS.values()].flatMap((concept) =>
+    (concept.also ?? [])
+      .filter((id) => !CONCEPTS.has(id))
+      .map((id): [string, string] => [id, concept.id]),
+  ),
+);
+const alsoNames: [string, string[]][] = [];
+for (const [key, [name, names, kind]] of Object.entries(mesh.procedures)) {
+  const id = `mesh:${key}`;
+  const owner = ALSO_OF.get(id);
+  if (owner !== undefined) {
+    alsoNames.push([owner, [name, ...names]]);
+    continue;
+  }
+  const clinical = CONCEPTS.get(id);
+  const qualifier =
+    kind in QUALIFIERS
+      ? QUALIFIERS[kind as keyof typeof QUALIFIERS]
+      : undefined;
+  MESH_CONCEPTS.set(id, {
+    id,
+    name,
+    type: "procedure",
+    ...((kind === "imaging" || kind === "diagnostic") && { diagnostic: true }),
+    ...(qualifier && { qualifier }),
+    ...clinical,
+    names: [...new Set([name, ...names, ...(clinical?.names ?? [])])],
+  });
+}
+for (const [owner, names] of alsoNames) {
+  const concept = MESH_CONCEPTS.get(owner) ?? CONCEPTS.get(owner);
+  if (concept)
+    MESH_CONCEPTS.set(owner, {
+      ...concept,
+      names: [...new Set([...concept.names, ...names])],
+    });
 }
 
 export function conceptOf(id: string): Concept | undefined {

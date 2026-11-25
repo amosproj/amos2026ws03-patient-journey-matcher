@@ -3,7 +3,7 @@
 // patient's ranks lower; one about his current state ranks higher.
 import neoplasms from "../data/neoplasms.json" with { type: "json" };
 import data from "../data/stages.json" with { type: "json" };
-import { conceptOf, type Terminology } from "./resolve.ts";
+import { conceptOf, QUALIFIERS, type Terminology } from "./resolve.ts";
 import { MESH_MAJOR } from "./schema.ts";
 import { statusFromText } from "./status.ts";
 import { normalizeName } from "./text.ts";
@@ -20,12 +20,20 @@ export const STAGES = [
 ] as const;
 export type Stage = (typeof STAGES)[number];
 
+/**
+ * Which rules a paper gets: all of them for a prostate cancer paper of a prostate cancer patient,
+ * the states every cancer has for a paper on another of his cancers.
+ */
+export type Scope = "prostate" | "cancer";
+
 type StageData = {
   id: Stage;
   title: RegExp;
   mesh: string[];
   concepts: string[];
   names: RegExp | undefined;
+  /** A state of prostate cancer only, such as castration-resistant. */
+  prostate: boolean;
 };
 
 const STAGE_DATA: readonly StageData[] = data.stages.map((stage) => ({
@@ -34,6 +42,7 @@ const STAGE_DATA: readonly StageData[] = data.stages.map((stage) => ({
   mesh: stage.mesh,
   concepts: stage.concepts,
   names: stage.names === "" ? undefined : new RegExp(stage.names),
+  prostate: "prostate" in stage && stage.prostate === true,
 }));
 
 /** Patient concepts that tell a state, such as bone metastases. */
@@ -46,6 +55,21 @@ const DIAGNOSIS_TOPICS: readonly string[] = data.diagnosis;
 const ALTERNATIVES: readonly string[] = data.alternatives;
 const NEOPLASMS: ReadonlySet<string> = new Set(neoplasms.ids);
 const GENERIC_NEOPLASMS: ReadonlySet<string> = new Set(neoplasms.generic);
+
+/** A specific cancer, not a heading such as Neoplasms or Adenocarcinoma. */
+export function isCancer(id: string): boolean {
+  return NEOPLASMS.has(id) && !GENERIC_NEOPLASMS.has(id);
+}
+
+// For any disease: what a paper does with the patient's diagnosis (Breast Neoplasms/surgery).
+const TREATMENT_QUALIFIERS = [
+  QUALIFIERS.surgery,
+  QUALIFIERS.radiotherapy,
+  QUALIFIERS.drug,
+  "Q000628", // therapy
+];
+const DIAGNOSIS_QUALIFIERS = ["Q000175", QUALIFIERS.imaging]; // diagnosis
+const ANTINEOPLASTIC_AGENTS = "mesh:D000970";
 
 /** Where the patient stands at the cutoff. */
 export interface PatientStage {
@@ -173,13 +197,12 @@ export function patientStage(
 export function paperStages(
   title: string,
   mesh: Readonly<Record<string, number>>,
+  scope: Scope,
 ): Set<Stage> {
   const states = new Set<Stage>();
   for (const stage of STAGE_DATA) {
-    if (
-      stage.title.test(title) ||
-      stage.mesh.some((id) => ((mesh[id] ?? 0) & MESH_MAJOR) !== 0)
-    )
+    if (stage.prostate && scope !== "prostate") continue;
+    if (stage.title.test(title) || stage.mesh.some((id) => isMajor(mesh, id)))
       states.add(stage.id);
   }
   return states;
@@ -210,6 +233,7 @@ function fits(stage: Stage, patient: PatientStage): boolean {
 function contradicts(
   stage: Stage,
   patient: PatientStage,
+  scope: Scope,
 ): Severity | undefined {
   const { states } = patient;
   const advanced =
@@ -225,7 +249,11 @@ function contradicts(
     case "localized":
       return advanced ? "strong" : undefined;
     case "recurrence":
-      return !patient.localTherapy || advanced ? "strong" : undefined;
+      // A biochemical recurrence of prostate cancer follows local therapy and is not metastatic.
+      // Elsewhere a relapse is often metastatic ("recurrent or metastatic breast cancer").
+      if (scope === "prostate")
+        return !patient.localTherapy || advanced ? "strong" : undefined;
+      return treated ? undefined : "strong";
     case "metastatic":
       return states.has("metastatic") ? undefined : "moderate";
     case "hormone_sensitive":
@@ -239,34 +267,69 @@ function contradicts(
   }
 }
 
-/** A paper about treating the disease, or only about finding it, by its major MeSH topics. */
-function paperPhase(
-  mesh: Readonly<Record<string, number>>,
-): "treatment" | "diagnosis" | undefined {
-  const major = (ids: readonly string[]) =>
-    ids.some((id) => ((mesh[id] ?? 0) & MESH_MAJOR) !== 0);
+type Phase = "treatment" | "diagnosis" | undefined;
+
+/** A prostate cancer paper about treating the disease, or only about finding it, by its major MeSH topics. */
+function prostatePhase(mesh: Readonly<Record<string, number>>): Phase {
+  const major = (ids: readonly string[]) => ids.some((id) => isMajor(mesh, id));
   if (major(TREATMENT_TOPICS)) return "treatment";
   if (major(DIAGNOSIS_TOPICS)) return "diagnosis";
   return undefined;
 }
 
 /**
+ * A paper about treating one of the patient's diagnoses or only about finding it, for any disease:
+ * by the qualifiers of his diagnosis (Breast Neoplasms/surgery, /diagnostic imaging) and by the
+ * kind of a procedure, both as a major topic.
+ */
+function diseasePhase(
+  mesh: Readonly<Record<string, number>>,
+  diagnoses: ReadonlySet<string>,
+): Phase {
+  let phase: Phase;
+  for (const id of Object.keys(mesh)) {
+    if (!isMajor(mesh, id)) continue;
+    const [, descriptor, qualifier] = /^(mesh:D\d+)(Q\d+)?$/.exec(id) ?? [];
+    if (descriptor === undefined) continue;
+    if (qualifier !== undefined) {
+      if (!diagnoses.has(descriptor)) continue;
+      if (TREATMENT_QUALIFIERS.includes(qualifier)) return "treatment";
+      if (DIAGNOSIS_QUALIFIERS.includes(qualifier)) phase = "diagnosis";
+      continue;
+    }
+    if (id === ANTINEOPLASTIC_AGENTS) return "treatment";
+    const concept = conceptOf(id);
+    if (concept?.type !== "procedure") continue;
+    if (!concept.diagnostic) return "treatment";
+    phase = "diagnosis";
+  }
+  return phase;
+}
+
+/**
  * Whether a paper's phase contradicts the patient's: treatment papers while he is still being
- * diagnosed (no treatment given, planned or watched), papers only on diagnosis once his treatment
- * began and the focus day is not about a test.
+ * diagnosed (no treatment given, planned or watched; for other diseases than prostate cancer also
+ * not yet confirmed, as treatment papers fit a confirmed diagnosis), papers only on diagnosis once
+ * his treatment began and the focus day is not about a test. Without `diagnoses` the prostate
+ * cancer topics decide the phase of a paper.
  */
 export function phaseConflict(
   mesh: Readonly<Record<string, number>>,
   patient: PatientStage,
+  diagnoses?: ReadonlySet<string>,
 ): Severity | undefined {
-  const phase = paperPhase(mesh);
+  const phase =
+    diagnoses === undefined
+      ? prostatePhase(mesh)
+      : diseasePhase(mesh, diagnoses);
   const treated = patient.localTherapy || patient.systemicTherapy;
   if (
     phase === "treatment" &&
     !treated &&
     !patient.plannedTherapy &&
     !patient.states.has("surveillance") &&
-    !patient.states.has("metastatic")
+    !patient.states.has("metastatic") &&
+    (diagnoses === undefined || !patient.diagnosed)
   )
     return "strong";
   if (phase === "diagnosis" && treated && !patient.diagnosticFocus)
@@ -335,6 +398,7 @@ export function stageFactor(
   paper: ReadonlySet<Stage>,
   patient: PatientStage,
   factors: { fit: number } & Record<Severity, number>,
+  scope: Scope,
 ): { factor: number; fitting: Stage[]; contradicting: Stage[] } {
   const states = [...paper].filter(
     (stage) =>
@@ -346,7 +410,7 @@ export function stageFactor(
   );
   const fitting = states.filter((stage) => fits(stage, patient));
   const severities = states.flatMap((stage) => {
-    const severity = contradicts(stage, patient);
+    const severity = contradicts(stage, patient, scope);
     return severity === undefined ? [] : [{ stage, severity }];
   });
   const factor =

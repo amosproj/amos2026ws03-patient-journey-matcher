@@ -1693,3 +1693,136 @@ test("of an overlong text only the start is read", () => {
   expect(conceptOf(q, "mesh:D001859")).toBeDefined();
   expect(conceptOf(q, liver)).toBeUndefined();
 });
+
+test("an operation of any disease is a procedure of the query and a local therapy", () => {
+  const dx = {
+    id: "dx",
+    date: "2026-01-10",
+    type: "diagnosis",
+    label: "Mammakarzinom bestätigt.",
+    parameters: { diagnosis: "Mammakarzinom", icd_code: "C50" },
+  };
+  const surgery = {
+    id: "op",
+    date: "2026-02-01",
+    type: "surgery",
+    label: "Mastektomie links.",
+  };
+  const query = patientQuery({ context: [dx], focus: surgery });
+  const ids = query.concepts.map((concept) => concept.ids[0]);
+  expect(ids).toContain("mesh:D008408");
+  expect(ids).toContain("mesh:D001943Q000601");
+  expect(
+    query.concepts.find((concept) => concept.ids[0] === "mesh:D008408"),
+  ).toMatchObject({ role: "procedure", focus: true });
+  expect(query.stage.localTherapy).toBe(true);
+  expect(query.prostateContext).toBe(false);
+});
+
+test("a suspicion in a finding, a pathology report and a later finding of spread set the timeline course", () => {
+  const ct = {
+    id: "ct",
+    date: "2026-03-09",
+    type: "imaging",
+    label: "CT Thorax",
+    parameters: { finding: "Rundherd, Verdacht auf Bronchialkarzinom" },
+  };
+  const pathology = {
+    id: "path",
+    date: "2026-03-24",
+    type: "pathology",
+    label: "Histologie",
+    parameters: { diagnosis: "Adenokarzinom der Lunge" },
+  };
+  const staging = {
+    id: "pet",
+    date: "2026-03-30",
+    type: "imaging",
+    label: "PET-CT: keine Fernmetastasen",
+  };
+  const relapse = {
+    id: "mri",
+    date: "2028-01-10",
+    type: "progression",
+    label: "Rezidiv mit zwei Hirnmetastasen",
+  };
+  const suspected = patientQuery({ context: [], focus: ct });
+  expect(suspected.diagnoses.has("mesh:D008175")).toBe(true);
+  expect(suspected.stage.diagnosed).toBe(false);
+  const confirmed = patientQuery({ context: [ct], focus: pathology });
+  expect(confirmed.stage.diagnosed).toBe(true);
+  const staged = patientQuery({ context: [ct, pathology], focus: staging });
+  expect(staged.stage.states.has("metastatic")).toBe(false);
+  // Metastases named on a later day follow the earlier "keine Fernmetastasen".
+  const later = patientQuery({
+    context: [ct, pathology, staging],
+    focus: relapse,
+  });
+  expect([...later.stage.states].sort()).toEqual(["metastatic", "recurrence"]);
+});
+
+test("a prostate workup confirms a diagnosis the journey named as suspected", () => {
+  const mri = {
+    id: "mri",
+    date: "2026-11-27",
+    type: "imaging",
+    label: "Multiparametrische MRT der Prostata",
+    parameters: {
+      finding: "PI-RADS 5 – hochgradiger Verdacht auf Prostatakarzinom",
+    },
+  };
+  const biopsy = {
+    id: "biopsy",
+    date: "2026-12-08",
+    type: "biopsy",
+    label: "Stanzbiopsie",
+    parameters: { gleason_primary: 4, gleason_secondary: 3 },
+  };
+  const before = patientQuery({ context: [], focus: mri });
+  const after = patientQuery({ context: [mri], focus: biopsy });
+  const weight = (query: typeof after) =>
+    query.concepts.find((concept) => concept.ids[0] === cancer)?.weight;
+  expect(before.stage.diagnosed).toBe(false);
+  expect(after.stage.diagnosed).toBe(true);
+  expect(weight(after)).toBeGreaterThan(weight(before) ?? 0);
+});
+
+test("after a named diagnosis a suspicion in a finding is a side finding", () => {
+  const dx = {
+    id: "dx",
+    date: "2026-03-24",
+    type: "pathology",
+    label: "Histologie",
+    parameters: { diagnosis: "Adenokarzinom der Lunge", icd_code: "C34.1" },
+  };
+  const ct = {
+    id: "ct",
+    date: "2026-09-20",
+    type: "imaging",
+    label: "CT Thorax",
+    parameters: { finding: "Infiltrat, Verdacht auf Pneumonie" },
+  };
+  const query = patientQuery({ context: [dx], focus: ct });
+  expect(query.diagnoses.has("mesh:D011014")).toBe(false);
+});
+
+test("diagnoses that name one disease at different specificity share the aspects", () => {
+  const dx = {
+    id: "dx",
+    date: "2026-03-24",
+    type: "pathology",
+    label: "Histologie",
+    parameters: { diagnosis: "Adenokarzinom der Lunge", icd_code: "C34.1" },
+  };
+  const surgery = {
+    id: "op",
+    date: "2026-04-20",
+    type: "surgery",
+    label: "Lymphadenektomie",
+  };
+  const ids = patientQuery({ context: [dx], focus: surgery }).concepts.map(
+    (concept) => concept.ids[0],
+  );
+  expect(ids).toContain("mesh:D008175Q000601");
+  expect(ids).toContain("mesh:D000077192Q000601");
+});

@@ -1,5 +1,5 @@
 {
-  "_comment": "Disease states for graph matching (Documentation/design/graph-normalization.md#ranking). A paper is about a state when its title matches `title` (case-insensitive, JavaScript) or one of `mesh` is a major topic. A patient is in a state when an active statement has one of `concepts`, or an entity name matches `names` (German and English, after normalizeName). Which states contradict each other is in stages.ts. `treatment` and `diagnosis` are MeSH IDs that, as a major topic, make a paper one about treating or about finding the disease; a paper on treatment ranks lower while the patient is still being diagnosed, one only on diagnosis ranks a little lower once his treatment has begun. `alternatives` are treatment options (brachytherapy, radiosurgery, HIFU, hypofractionation, orchiectomy and the like): after his treatment began, a paper with one of them as a major topic that the patient did not get ranks a little lower.",
+  "_comment": "Disease states for graph matching (Documentation/design/graph-normalization.md#ranking). They apply to a paper on one of the patient's cancers; `prostate` states only to a prostate cancer paper of a prostate cancer patient. A paper is about a state when its title matches `title` (case-insensitive, JavaScript) or one of `mesh` is a major topic. A patient is in a state when an active statement has one of `concepts`, or an entity name matches `names` (German and English, after normalizeName). Which states contradict each other is in stages.ts. `treatment` and `diagnosis` are the MeSH IDs that, as a major topic, make a prostate cancer paper one about treating or about finding the disease; for other diseases the qualifiers of the patient's diagnosis and the kind of a procedure decide (stages.ts). A paper on treatment ranks lower while the patient is still being diagnosed, one only on diagnosis ranks a little lower once his treatment has begun. `alternatives` are prostate cancer treatment options (brachytherapy, radiosurgery, HIFU, hypofractionation, orchiectomy and the like): after his treatment began, a paper with one of them as a major topic that the patient did not get ranks a little lower.",
   "stages": [
     {
       "id": "screening",
@@ -17,14 +17,14 @@
     },
     {
       "id": "localized",
-      "title": "locali[sz]ed|organ[- ]confined|low[- ]risk|intermediate[- ]risk|early[- ]stage",
+      "title": "locali[sz]ed|organ[- ]confined|low[- ]risk|intermediate[- ]risk|early[- ]stage|\\bearly (?:\\w+ )?(?:cancer|carcinoma)s?\\b|\\b(?<!non-)(?<!non )(?:operable|resectable)\\b",
       "mesh": [],
       "concepts": [],
       "names": ""
     },
     {
       "id": "recurrence",
-      "title": "biochemical(?:ly)? (?:recurren|relapse|failure|progression)|\\bbcr\\b|psa (?:recurren|relapse|failure|persistence)|recurrent prostate|salvage",
+      "title": "biochemical(?:ly)? (?:recurren|relapse|failure|progression)|\\bbcr\\b|psa (?:recurren|relapse|failure|persistence)|recurrent prostate|salvage|\\b(?:recurrent|relapsed|relapsing)\\b",
       "mesh": ["mesh:D009364"],
       "concepts": ["mesh:D009364"],
       "names": "rezidiv|recurren|relapse|psa anstieg nach"
@@ -34,21 +34,23 @@
       "title": "(?<!non[- ]?)(?<!lymph node[- ])(?<!nodal[- ])\\bmetasta(?!s[ie]s[- ]free)|\\b(?:oligometasta|m(?:crpc|hspc|cspc)\\b|[cp]?m1[abc]?\\b)",
       "mesh": ["mesh:D009362"],
       "concepts": ["mesh:D009362", "mesh:D001859", "mesh:D008113"],
-      "names": "(?<!non ?)(?<!lymph node )(?<!nodal )\\bmetasta|\\b(?:fernmetast|knochenmetast|lebermetast|oligometasta|m(?:crpc|hspc|cspc)\\b|[cp]?m1[abc]?\\b)"
+      "names": "(?<!non ?)(?<!lymph node )(?<!nodal )\\bmetasta|\\b(?:fernmetast|knochenmetast|lebermetast|hirnmetast|lungenmetast|peritonealmetast|oligometasta|m(?:crpc|hspc|cspc)\\b|[cp]?m1[abc]?\\b)"
     },
     {
       "id": "hormone_sensitive",
       "title": "hormone[- ]sensitive|castrat\\w*[- ]sensitive|\\bm?hspc\\b|\\bm?cspc\\b|hormone[- ]na[iï]ve",
       "mesh": [],
       "concepts": [],
-      "names": "hormonsensitiv|hormone sensitive|kastrationssensitiv|\\bm?(?:hspc|cspc)\\b"
+      "names": "hormonsensitiv|hormone sensitive|kastrationssensitiv|\\bm?(?:hspc|cspc)\\b",
+      "prostate": true
     },
     {
       "id": "castration_resistant",
       "title": "castrat\\w*[- ]resist|\\b(?:nm|m)?crpc\\b|hormone[- ](?:refractory|resistant|independent)|androgen[- ]independent",
       "mesh": ["mesh:D064129"],
       "concepts": ["mesh:D064129"],
-      "names": "kastrationsresist|castration resist|crpc|hormonrefraktar"
+      "names": "kastrationsresist|castration resist|crpc|hormonrefraktar",
+      "prostate": true
     }
   ],
   "treatment": [

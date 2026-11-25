@@ -193,3 +193,43 @@ test("learned names support new IDs and synonyms; conflicting and short names ab
     resolvedBy: "pubtator",
   });
 });
+
+test("procedures come from MeSH with their kind, role and the qualifier of their papers", () => {
+  const find = (text: string) =>
+    defaultTerminology.findConcepts(text).map(({ id }) => id);
+  const mastectomy = conceptOf("mesh:D008408");
+  expect(mastectomy).toMatchObject({ type: "procedure", qualifier: "Q000601" });
+  expect(mastectomy?.diagnostic).toBeUndefined();
+  expect(find("Mastektomie links, Sentinel Lymph Node Biopsy")).toEqual([
+    "mesh:D008408",
+    "mesh:D021701",
+  ]);
+  expect(conceptOf("mesh:D021701")?.diagnostic).toBe(true);
+  expect(conceptOf("mesh:D008327")).toMatchObject({
+    diagnostic: true,
+    qualifier: "Q000000981",
+  });
+  // Radiosurgery is a radiotherapy, though MeSH also lists it among operations, and an
+  // operation that MeSH also lists among endoscopies is an operation.
+  expect(conceptOf("mesh:D016634")?.qualifier).toBe("Q000532");
+  expect(conceptOf("mesh:D020775")?.qualifier).toBe("Q000601");
+  expect(conceptOf("mesh:D020775")?.diagnostic).toBeUndefined();
+  expect(conceptOf("mesh:D003113")?.diagnostic).toBe(true);
+  expect(find("Hemikolektomie rechts")).toEqual([]);
+  expect(find("Hemicolectomy")).toEqual(["mesh:D003082"]);
+});
+
+test("whole fields, care settings and ambiguous names are no procedures", () => {
+  const find = (text: string) =>
+    defaultTerminology.findConcepts(text).map(({ name }) => name);
+  expect(find("Behandlung und Nachsorge in der Ambulanz")).toEqual([]);
+  expect(find("metastatic castration-resistant")).not.toContain("Castration");
+  expect(find("Extension of survival with stem cells")).toEqual([]);
+});
+
+test("a MeSH procedure that a curated concept lists as `also` finds that concept", () => {
+  const find = (text: string) =>
+    defaultTerminology.findConcepts(text).map(({ id }) => id);
+  expect(find("Prostate core needle biopsies")).toEqual(["mesh:D001706"]);
+  expect(conceptOf("mesh:D062005")).toBeUndefined();
+});

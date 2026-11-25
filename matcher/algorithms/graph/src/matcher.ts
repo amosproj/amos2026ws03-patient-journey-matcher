@@ -15,6 +15,7 @@ import {
 import { MESH_MAJOR, MESH_MINOR } from "./schema.ts";
 import {
   careContext,
+  isCancer,
   otherDisease,
   otherTreatment,
   paperStages,
@@ -509,22 +510,42 @@ function rank(
       part: worth * strength,
     });
   });
-  // The prostate rules are for papers on prostate cancer, whatever else the patient has.
+  // The prostate rules are for papers on prostate cancer, whatever else the patient has. A paper
+  // on another of his cancers gets the states every cancer has. The phase rule holds for papers on
+  // his cancer, or on any of his diagnoses when he has none: his treatment is that of his cancer.
   const prostate =
     query.prostateContext && row.diagnoses.some(isProstateCancer);
-  const stages = prostate ? paperStages(row.title, row.mesh) : new Set<Stage>();
+  const scope = prostate
+    ? "prostate"
+    : row.diagnoses.some(isCancer)
+      ? "cancer"
+      : undefined;
+  const phased =
+    scope !== undefined || ![...query.diagnoses.keys()].some(isCancer);
+  const stages =
+    scope === undefined
+      ? new Set<Stage>()
+      : paperStages(row.title, row.mesh, scope);
   const severity = {
     strong: values.conflictStrong,
     moderate: values.conflictModerate,
     mild: values.conflictMild,
   };
-  const stage = stageFactor(stages, query.stage, {
-    fit: values.stageFit,
-    ...severity,
-  });
+  const stage = stageFactor(
+    stages,
+    query.stage,
+    { fit: values.stageFit, ...severity },
+    scope ?? "cancer",
+  );
   const care =
     prostate && careContext(query.stage, stages, row.title, row.mesh);
-  const phase = prostate ? phaseConflict(row.mesh, query.stage) : undefined;
+  const phase = phased
+    ? phaseConflict(
+        row.mesh,
+        query.stage,
+        prostate ? undefined : new Set(query.diagnoses.keys()),
+      )
+    : undefined;
   const own = ownIds(query);
   const foreign = otherDisease(row.mesh, own, query.diagnoses.keys());
   const alternative = prostate && otherTreatment(row.mesh, own, query.stage);
