@@ -12,7 +12,6 @@
     "controls": ["pubmed:12571869", "pubmed:12174922"]
   },
   "Crohn": {
-    "holdout": true,
     "diagnosis": "mesh:D003424",
     "controls": ["pubmed:20587545", "pubmed:21349113"]
   },
@@ -21,18 +20,40 @@
     "points": ["e02", "e07", "e10", "e12"]
   },
   "Holdout-Breast": {
-    "holdout": true,
     "diagnosis": "mesh:D001943",
     "points": ["e02", "e07", "e13", "e16"]
   },
   "Holdout-Ovarian": {
-    "holdout": true,
     "diagnosis": "mesh:D010051",
     "points": ["e02", "e05", "e12", "e14"]
   },
   "Holdout-Colorectal": {
-    "holdout": true,
     "diagnosis": "mesh:D012004",
     "points": ["e02", "e06", "e11", "e16"]
+  },
+  "Bladder": {
+    "holdout": true,
+    "diagnosis": "mesh:D001749",
+    "points": ["e02", "e08", "e10", "e13"]
+  },
+  "Pancreas": {
+    "holdout": true,
+    "diagnosis": "mesh:D010190",
+    "points": ["e02", "e06", "e12", "e14"]
+  },
+  "Myeloma": {
+    "holdout": true,
+    "diagnosis": "mesh:D009101",
+    "points": ["e03", "e06", "e11", "e13"]
+  },
+  "Diabetes": {
+    "holdout": true,
+    "diagnosis": "mesh:D003924",
+    "points": ["e01", "e04", "e06", "e11"]
+  },
+  "HeartFailure": {
+    "holdout": true,
+    "diagnosis": "mesh:D006333",
+    "points": ["e01", "e03", "e09", "e13"]
   }
 }

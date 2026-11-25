@@ -1,0 +1,349 @@
+{
+  "patient_id": "HeartFailure",
+  "pathway_id": "kar-05",
+  "start_date": "2026-06-08",
+  "events": [
+    {
+      "id": "e01",
+      "type": "referral",
+      "label": "Dringliche Überweisung zur Kardiologie: Belastungsdyspnoe und Beinödeme",
+      "date": "2026-06-08",
+      "specialist": "hausarzt",
+      "parameters": {
+        "age": 61,
+        "sex": "männlich",
+        "symptoms": "Seit ca. 2 Monaten zunehmende Belastungsdyspnoe (Pause nach 1 Stockwerk bzw. 100 m in der Ebene), Orthopnoe (schläft mit 2 Kissen), Knöchelödeme bds., Gewichtszunahme 4 kg",
+        "nyha_class": "III",
+        "nt_probnp_pg_ml": 3850,
+        "ecg": "Sinusrhythmus 94/min, Linksschenkelblock, QRS 156 ms",
+        "blood_pressure": "128/82 mmHg",
+        "creatinine_mg_dl": 1.05,
+        "risk_factors": "Arterielle Hypertonie seit 8 Jahren (Amlodipin 5 mg), Ex-Raucher (20 pack years, Rauchstopp vor 10 Jahren), Alkohol ca. 1 Glas Wein täglich",
+        "family_history": "Vater mit 58 J. an Herzschwäche verstorben",
+        "question": "Echokardiographie, Abklärung Herzinsuffizienz"
+      },
+      "documents": [
+        "ueberweisungsbrief",
+        "ekg",
+        "laborbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e02",
+      "type": "imaging",
+      "label": "Transthorakale Echokardiographie",
+      "date": "2026-06-15",
+      "specialist": "kardiologie",
+      "parameters": {
+        "lvef_percent": 27,
+        "lvef_method": "biplan",
+        "lvedd_mm": 68,
+        "wall_motion": "global hypokinetisch, keine regionalen Wandbewegungsstörungen",
+        "filling_pressure": "E/e' 16, erhöhter linksventrikulärer Füllungsdruck",
+        "mitral_valve": "mittelgradige sekundäre Mitralinsuffizienz",
+        "tapse_mm": 17,
+        "spap_mmhg": 42,
+        "ivc": "V. cava inferior 23 mm, inspiratorischer Kollaps < 50 %",
+        "assessment": "Dilatierter linker Ventrikel mit hochgradig eingeschränkter systolischer Funktion"
+      },
+      "documents": [
+        "echobefund"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e03",
+      "type": "medication_change",
+      "label": "Kardiologischer Befundbrief: HFrEF, Beginn der Herzinsuffizienztherapie",
+      "date": "2026-06-16",
+      "specialist": "kardiologie",
+      "parameters": {
+        "diagnosis": "Herzinsuffizienz mit reduzierter Ejektionsfraktion (LVEF 27 %), NYHA III, Ätiologie in Abklärung; Linksschenkelblock",
+        "icd_code": "I50.13",
+        "lab": "Kreatinin 1,05 mg/dl, eGFR 81 ml/min, Kalium 4,3 mmol/l, Natrium 137 mmol/l, Hb 13,4 g/dl, Ferritin 64 µg/l, Transferrinsättigung 13 %, TSH normal",
+        "medication_start": [
+          "Sacubitril/Valsartan 24/26 mg 1-0-1",
+          "Bisoprolol 1,25 mg 1-0-0",
+          "Spironolacton 12,5 mg 1-0-0",
+          "Dapagliflozin 10 mg 1-0-0",
+          "Torasemid 10 mg 1-0-0"
+        ],
+        "medication_stop": [
+          "Amlodipin 5 mg"
+        ],
+        "iron_deficiency": "Eisenmangel ohne Anämie: Eisencarboxymaltose 1000 mg i.v. am 22.06.2026 geplant",
+        "wcd": "Defibrillatorweste (WCD) für die Phase der Therapieoptimierung verordnet",
+        "plan": "Koronarangiographie, Kardio-MRT; wöchentliche Labor- und Blutdruckkontrollen mit schrittweiser Dosissteigerung; tägliche Gewichtskontrolle"
+      },
+      "documents": [
+        "arztbrief",
+        "medikationsplan"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e04",
+      "type": "procedure",
+      "label": "Koronarangiographie",
+      "date": "2026-06-25",
+      "specialist": "kardiologie",
+      "parameters": {
+        "access": "transradial rechts",
+        "finding": "Glattwandige Koronararterien ohne Stenosen, Rechtsversorgungstyp",
+        "lvedp_mmhg": 22,
+        "conclusion": "Ischämische Genese der Kardiomyopathie ausgeschlossen"
+      },
+      "documents": [
+        "herzkatheterbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e05",
+      "type": "imaging",
+      "label": "Kardio-MRT mit Kontrastmittel",
+      "date": "2026-07-07",
+      "specialist": "radiologie",
+      "parameters": {
+        "lvef_percent": 25,
+        "lvedvi_ml_m2": 138,
+        "lge": "Streifiges midmyokardiales Late Gadolinium Enhancement im basalen und mittventrikulären Septum (Mid-wall-Fibrose)",
+        "mapping": "T2-Mapping normal, kein Ödem; nativer T1 septal erhöht",
+        "conclusion": "Nicht-ischämische dilatative Kardiomyopathie; kein Anhalt für akute Myokarditis, Speichererkrankung oder Sarkoidose"
+      },
+      "documents": [
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e06",
+      "type": "followup",
+      "label": "Herzinsuffizienz-Ambulanz: Verlaufskontrolle",
+      "date": "2026-08-19",
+      "specialist": "kardiologie",
+      "parameters": {
+        "diagnosis": "Nicht-ischämische dilatative Kardiomyopathie mit HFrEF",
+        "icd_code": "I42.0",
+        "nyha_class": "II–III",
+        "weight_change": "−5 kg seit Therapiebeginn, keine Ödeme mehr",
+        "blood_pressure": "112/70 mmHg",
+        "heart_rate_bpm": 72,
+        "potassium_mmol_l": 4.8,
+        "egfr_ml_min": 72,
+        "medication": [
+          "Sacubitril/Valsartan 49/51 mg 1-0-1",
+          "Bisoprolol 3,75 mg 1-0-0",
+          "Spironolacton 25 mg 1-0-0",
+          "Dapagliflozin 10 mg 1-0-0",
+          "Torasemid 5 mg 1-0-0"
+        ],
+        "iron": "Eisencarboxymaltose 1000 mg i.v. am 22.06.2026 erhalten",
+        "wcd": "WCD wird ca. 23 h/Tag getragen, keine Schockabgabe",
+        "genetics": "Humangenetische Beratung und Multigen-Panel (Kardiomyopathie-Gene) veranlasst",
+        "plan": "Sacubitril/Valsartan auf 97/103 mg und Bisoprolol auf 5 mg steigern; Echokardiographie nach 3 Monaten optimierter Therapie"
+      },
+      "documents": [
+        "arztbrief",
+        "medikationsplan"
+      ],
+      "repeat_index": 0
+    },
+    {
+      "id": "e07",
+      "type": "followup",
+      "label": "Herzinsuffizienz-Ambulanz: Verlaufskontrolle",
+      "date": "2026-10-14",
+      "specialist": "kardiologie",
+      "parameters": {
+        "nyha_class": "II–III",
+        "echo": "LVEF 29 % (biplan), LVEDD 66 mm, leicht- bis mittelgradige sekundäre Mitralinsuffizienz",
+        "ecg": "Sinusrhythmus 64/min, Linksschenkelblock, QRS 158 ms",
+        "nt_probnp_pg_ml": 1840,
+        "blood_pressure": "98/62 mmHg",
+        "medication": [
+          "Sacubitril/Valsartan 97/103 mg 1-0-1",
+          "Bisoprolol 5 mg 1-0-0",
+          "Spironolacton 25 mg 1-0-0",
+          "Dapagliflozin 10 mg 1-0-0",
+          "Torasemid 5 mg bei Bedarf"
+        ],
+        "therapy_duration": "Optimierte medikamentöse Therapie seit 16.06.2026 (4 Monate); weitere Steigerung von Bisoprolol durch Hypotonie limitiert",
+        "assessment": "LVEF ≤ 35 % trotz > 3 Monaten optimaler Therapie, Linksschenkelblock mit QRS ≥ 150 ms, Sinusrhythmus: Indikation zur kardialen Resynchronisationstherapie; bei nicht-ischämischer DCM mit Mid-wall-Fibrose CRT-D"
+      },
+      "documents": [
+        "arztbrief",
+        "echobefund"
+      ],
+      "repeat_index": 1
+    },
+    {
+      "id": "e08",
+      "type": "procedure",
+      "label": "Implantation CRT-D",
+      "date": "2026-11-04",
+      "specialist": "kardiologie",
+      "parameters": {
+        "device": "CRT-D (biventrikulärer Defibrillator)",
+        "leads": "RA-Elektrode, RV-Schockelektrode, LV-Elektrode über den Koronarsinus in einen posterolateralen Seitenast",
+        "paced_qrs_ms": 124,
+        "programming": "DDD-CRT, VF-Zone ab 200/min, VT-Monitorzone ab 170/min",
+        "complications": "keine, kein Pneumothorax",
+        "telemonitoring": "Anbindung an Geräte-Fernnachsorge und Telemonitoring",
+        "wcd": "Defibrillatorweste beendet"
+      },
+      "documents": [
+        "op_bericht",
+        "implantatausweis"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e09",
+      "type": "followup",
+      "label": "Herzinsuffizienz-Ambulanz: Verlaufskontrolle",
+      "date": "2027-05-12",
+      "specialist": "kardiologie",
+      "parameters": {
+        "nyha_class": "I–II",
+        "echo": "LVEF 43 %, LVEDD 60 mm, leichtgradige Mitralinsuffizienz",
+        "nt_probnp_pg_ml": 640,
+        "biv_pacing_percent": 98,
+        "device_interrogation": "keine ventrikulären Arrhythmien, keine Therapieabgaben",
+        "genetics_result": "Humangenetischer Befund: heterozygote pathogene Verkürzungsvariante im Titin-Gen (TTN)",
+        "family_screening": "Kaskadenscreening erstgradiger Angehöriger (EKG, Echokardiographie, gezielte Testung) empfohlen",
+        "assessment": "CRT-Response, Herzinsuffizienz mit verbesserter EF (HFimpEF); medikamentöse Therapie unverändert fortführen",
+        "medication": [
+          "Sacubitril/Valsartan 97/103 mg 1-0-1",
+          "Bisoprolol 5 mg 1-0-0",
+          "Spironolacton 25 mg 1-0-0",
+          "Dapagliflozin 10 mg 1-0-0",
+          "Torasemid 5 mg bei Bedarf"
+        ]
+      },
+      "documents": [
+        "arztbrief",
+        "humangenetischer_befund"
+      ],
+      "repeat_index": 2
+    },
+    {
+      "id": "e10",
+      "type": "hospital_discharge",
+      "label": "Entlassung nach kardialer Dekompensation bei neu aufgetretenem Vorhofflimmern",
+      "date": "2028-11-23",
+      "specialist": "kardiologie",
+      "parameters": {
+        "admission_date": "2028-11-16",
+        "presentation": "Seit ca. 2 Wochen Palpitationen, zuletzt Ruhedyspnoe, Gewichtszunahme 6 kg; Telemonitoring-Alarm mit Vorhofflimmern und Abfall der biventrikulären Stimulation auf 81 %",
+        "ecg": "Tachykardes Vorhofflimmern 128/min",
+        "nt_probnp_pg_ml": 6200,
+        "echo": "LVEF 30 % unter Tachyarrhythmie",
+        "therapy": "Furosemid i.v. (Gewichtsabnahme 7 kg); Frequenzkontrolle mit Bisoprolol und Digitoxin; Apixaban; TEE-gesteuerte elektrische Kardioversion am 20.11.2028 in den Sinusrhythmus",
+        "cha2ds2_va": 2,
+        "diagnosis": "Akut dekompensierte Herzinsuffizienz (NYHA IV bei Aufnahme) bei persistierendem Vorhofflimmern; DCM mit TTN-Variante, CRT-D",
+        "icd_code": "I50.14",
+        "secondary_icd_codes": [
+          "I48.1",
+          "I42.0"
+        ],
+        "discharge_medication": [
+          "Sacubitril/Valsartan 97/103 mg 1-0-1",
+          "Bisoprolol 5 mg 1-0-0",
+          "Spironolacton 25 mg 1-0-0",
+          "Dapagliflozin 10 mg 1-0-0",
+          "Torasemid 10 mg 1-0-0",
+          "Apixaban 5 mg 1-0-1",
+          "Digitoxin 0,07 mg 1-0-0"
+        ],
+        "recommendation": "Elektive Pulmonalvenenisolation in 6–8 Wochen"
+      },
+      "documents": [
+        "entlassungsbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e11",
+      "type": "procedure",
+      "label": "Pulmonalvenenisolation mittels Pulsed-Field-Ablation",
+      "date": "2029-01-16",
+      "specialist": "kardiologie",
+      "parameters": {
+        "indication": "Persistierendes Vorhofflimmern bei HFrEF mit Dekompensation 11/2028",
+        "procedure": "Isolation aller 4 Pulmonalvenen mittels Pulsed-Field-Ablation, transseptaler Zugang, Analgosedierung",
+        "rhythm_at_end": "Sinusrhythmus",
+        "complications": "keine",
+        "anticoagulation": "Apixaban ununterbrochen fortgeführt"
+      },
+      "documents": [
+        "eingriffsbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e12",
+      "type": "followup",
+      "label": "Herzinsuffizienz-Ambulanz: Verlaufskontrolle",
+      "date": "2029-07-18",
+      "specialist": "kardiologie",
+      "parameters": {
+        "nyha_class": "II",
+        "rhythm": "stabiler Sinusrhythmus, AF-Burden laut Gerät < 1 %",
+        "biv_pacing_percent": 99,
+        "echo": "LVEF 38 %",
+        "nt_probnp_pg_ml": 980,
+        "medication_change": "Digitoxin abgesetzt"
+      },
+      "documents": [
+        "arztbrief"
+      ],
+      "repeat_index": 3
+    },
+    {
+      "id": "e13",
+      "type": "progression",
+      "label": "Progrediente Herzinsuffizienz trotz optimaler Therapie",
+      "date": "2030-02-12",
+      "specialist": "kardiologie",
+      "parameters": {
+        "nyha_class": "III",
+        "hospitalizations": "2 stationäre Aufenthalte mit i.v.-Diuretika (12/2029, 01/2030)",
+        "echo": "LVEF 22 %, LVEDD 72 mm, hochgradige sekundäre Mitralinsuffizienz, TAPSE 14 mm, sPAP 55 mmHg",
+        "nt_probnp_pg_ml": 7400,
+        "lab": "Natrium 131 mmol/l, Kreatinin 1,52 mg/dl, eGFR 51 ml/min, Kalium 5,1 mmol/l",
+        "blood_pressure": "102/66 mmHg",
+        "rhythm": "Sinusrhythmus, biventrikuläre Stimulation 98 %",
+        "diuretics": "Torasemid 40 mg/d, bei Bedarf Hydrochlorothiazid 12,5 mg",
+        "therapy_change": "Vericiguat 2,5 mg begonnen, Titration auf 10 mg geplant",
+        "diagnosis": "Fortgeschrittene Herzinsuffizienz bei DCM (TTN-Variante), NYHA III",
+        "icd_code": "I50.13",
+        "recommendation": "Vorstellung im Herztransplantationszentrum zur Evaluation HTx/LVAD; Heart-Team-Diskussion zur Transkatheter-Mitralklappenreparatur"
+      },
+      "documents": [
+        "arztbrief",
+        "echobefund"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e14",
+      "type": "consultation",
+      "label": "Evaluation im Herztransplantationszentrum",
+      "date": "2030-04-09",
+      "specialist": "kardiologie",
+      "parameters": {
+        "spiroergometry": "peak VO2 11,4 ml/kg/min (39 % des Sollwerts), RER 1,09",
+        "right_heart_catheter": "PCWP 26 mmHg, mPAP 36 mmHg, PVR 2,8 WE, HZV 3,6 l/min, Herzindex 1,7 l/min/m²",
+        "assessment": "Fortgeschrittene Herzinsuffizienz ohne Kontraindikationen gegen eine Herztransplantation; LVAD als Alternative bzw. Überbrückung besprochen",
+        "decision": "Listung zur Herztransplantation (Dringlichkeitsstufe T); Fortführung der Therapie, engmaschige Kontrollen und Telemonitoring",
+        "psychosocial": "psychosoziale Evaluation ohne Einwände, stabile familiäre Unterstützung"
+      },
+      "documents": [
+        "konsilbericht"
+      ],
+      "repeat_index": null
+    }
+  ]
+}

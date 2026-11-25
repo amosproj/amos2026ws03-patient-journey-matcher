@@ -1,0 +1,321 @@
+{
+  "patient_id": "Bladder",
+  "pathway_id": "uro-17",
+  "start_date": "2027-02-15",
+  "events": [
+    {
+      "id": "e01",
+      "type": "referral",
+      "label": "Überweisung zur Urologie: schmerzlose Makrohämaturie",
+      "date": "2027-02-15",
+      "specialist": "hausarzt",
+      "parameters": {
+        "patient": "66 J., männlich",
+        "reason": "Schmerzlose Makrohämaturie seit 10 Tagen, einmalig mit Koagelabgang; keine Dysurie, kein Fieber",
+        "urinalysis": "U-Stix: Blut +++, Leukozyten negativ, Nitrit negativ",
+        "smoking_status": "Raucher, ca. 45 pack years",
+        "occupation": "26 Jahre Tätigkeit in der Gummiherstellung",
+        "anticoagulation": "keine"
+      },
+      "documents": [
+        "ueberweisungsbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e02",
+      "type": "procedure",
+      "label": "Urologische Abklärung: Sonographie und flexible Zystoskopie",
+      "date": "2027-02-23",
+      "specialist": "urologie",
+      "parameters": {
+        "ultrasound": "Harnblase: ca. 2,5 cm große exophytische Raumforderung an der linken Seitenwand; Nieren bds. ohne Harnstau, kein Konkrement",
+        "cystoscopy": "Solitärer papillärer Tumor ca. 2,5 cm an der linken Seitenwand, ostiumfern; an der Hinterwand flächige, samtartige Rötung (V. a. Carcinoma in situ)",
+        "urine_cytology": "Spontanurin zur Zytologie entnommen, Befund ausstehend",
+        "creatinine_mg_dl": 0.94,
+        "assessment": "V. a. Urothelkarzinom der Harnblase",
+        "plan": "CT-Urographie mit CT Thorax, TUR-B mit PDD"
+      },
+      "documents": [
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e03",
+      "type": "imaging",
+      "label": "CT-Urographie und CT Thorax",
+      "date": "2027-03-02",
+      "specialist": "radiologie",
+      "parameters": {
+        "modality": "Mehrphasen-CT Abdomen/Becken (Urographie) und CT Thorax",
+        "finding": "KM-aufnehmende, wandständige Raumforderung der linken Harnblasenseitenwand (2,6 cm), perivesikales Fettgewebe unauffällig; oberer Harntrakt bds. ohne Füllungsdefekt; keine vergrößerten Lymphknoten; keine Lungen- oder Knochenmetastasen",
+        "egfr_ml_min": 89
+      },
+      "documents": [
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e04",
+      "type": "surgery",
+      "label": "TUR-B mit photodynamischer Diagnostik",
+      "date": "2027-03-11",
+      "specialist": "urologie",
+      "parameters": {
+        "procedure": "TUR-B in Spinalanästhesie mit PDD (Hexaminolävulinat); PDD-gesteuerte Biopsien von Hinterwand und Blasendach",
+        "tumor_count": 1,
+        "tumor_size_cm": 2.5,
+        "resection": "makroskopisch vollständig, Resektionsgrund mit Detrusormuskulatur",
+        "early_instillation": "keine Frühinstillation (tiefe Resektion, V. a. T1)",
+        "preop_cytology": "Urinzytologie vom 23.02.2027: high-grade Urothelkarzinom (HGUC)"
+      },
+      "documents": [
+        "op_bericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e05",
+      "type": "pathology",
+      "label": "Histologie TUR-B: Urothelkarzinom pT1 high grade, Carcinoma in situ",
+      "date": "2027-03-16",
+      "specialist": "pathologie",
+      "parameters": {
+        "histology": "Invasives papilläres Urothelkarzinom, konventioneller Typ",
+        "pt_stage": "pT1",
+        "grade": "high grade (WHO 2022), G3 (WHO 1973)",
+        "cis": "Carcinoma in situ in den PDD-Biopsien der Hinterwand",
+        "detrusor": "Detrusormuskulatur erfasst, tumorfrei",
+        "lvi": "L0 V0",
+        "diagnosis": "Urothelkarzinom der Harnblase, linke Seitenwand, pT1 high grade G3 mit begleitendem CIS, L0 V0",
+        "icd_code": "C67.2"
+      },
+      "documents": [
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e06",
+      "type": "surgery",
+      "label": "Nachresektion (Re-TUR-B)",
+      "date": "2027-04-15",
+      "specialist": "urologie",
+      "parameters": {
+        "indication": "pT1 high grade, Nachresektion 5 Wochen nach Erst-TUR-B",
+        "finding": "Reizlose Resektionsnarbe an der linken Seitenwand ohne makroskopischen Resttumor; tiefe Nachresektion des Narbenareals inkl. Detrusor",
+        "pdd": "diskrete Fluoreszenz an der Hinterwand, erneute Biopsie"
+      },
+      "documents": [
+        "op_bericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e07",
+      "type": "tumor_board",
+      "label": "Uroonkologische Tumorkonferenz: Therapieplanung NMIBC",
+      "date": "2027-04-21",
+      "specialist": "urologie",
+      "parameters": {
+        "re_turb_histology": "Nachresektat: Narbengewebe und Detrusor ohne Residualtumor (pT0); Biopsie Hinterwand: residuelles CIS",
+        "risk_group": "NMIBC mit hohem Risiko (EAU): pT1 HG mit CIS, solitär, < 3 cm, Alter ≤ 70 J.",
+        "decision": "Intravesikale BCG-Therapie: Induktion mit 6 wöchentlichen Instillationen, danach Erhaltungstherapie über 3 Jahre. Primäre radikale Zystektomie als Alternative besprochen; Patient wünscht Organerhalt.",
+        "participants": [
+          "urologie",
+          "onkologie",
+          "strahlentherapie",
+          "pathologie",
+          "radiologie"
+        ],
+        "occupational_disease": "Verdachtsanzeige auf Berufskrankheit Nr. 1301 (aromatische Amine) erstattet"
+      },
+      "documents": [
+        "tumorkonferenzprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e08",
+      "type": "intravesical_therapy",
+      "label": "BCG-Induktion: 1. Instillation",
+      "date": "2027-05-04",
+      "specialist": "urologie",
+      "parameters": {
+        "drug": "BCG intravesikal",
+        "schedule": "Induktion 6 × wöchentlich; Erhaltung je 3 × wöchentlich nach 3, 6, 12, 18, 24, 30 und 36 Monaten",
+        "dwell_time_h": 2,
+        "pre_check": "Urinstatus unauffällig, keine Makrohämaturie, knapp 3 Wochen nach Nachresektion"
+      },
+      "documents": [
+        "instillationsprotokoll",
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e09",
+      "type": "followup",
+      "label": "Nachsorge-Zystoskopie mit Urinzytologie",
+      "date": "2027-08-05",
+      "specialist": "urologie",
+      "parameters": {
+        "interval": "3 Monate nach Beginn der BCG-Therapie",
+        "cystoscopy": "kein Tumornachweis; Hinterwand mit unspezifischer, blasser Rötung nach BCG",
+        "urine_cytology": "Probe vom 29.07.2027: negativ (NHGUC)",
+        "bcg_induction": "6/6 Instillationen erhalten",
+        "toxicity": "BCG-Zystitis Grad 1 (Dysurie und Pollakisurie bis 48 h nach Instillation)",
+        "plan": "Beginn BCG-Erhaltung, 3 Instillationen im Wochenabstand"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "zytologiebefund"
+      ],
+      "repeat_index": 0
+    },
+    {
+      "id": "e10",
+      "type": "followup",
+      "label": "Nachsorge-Zystoskopie mit Urinzytologie",
+      "date": "2028-05-11",
+      "specialist": "urologie",
+      "parameters": {
+        "interval": "12 Monate nach Beginn der BCG-Therapie",
+        "cystoscopy": "kein Rezidiv",
+        "urine_cytology": "Probe vom 04.05.2028: negativ (NHGUC)",
+        "ct_urography": "CT-Urographie vom 04.05.2028: oberer Harntrakt bds. unauffällig, keine Lymphadenopathie",
+        "bcg_maintenance": "Erhaltungszyklen nach 3 und 6 Monaten vollständig (je 3/3); 3. Erhaltungszyklus beginnt heute",
+        "toxicity": "Pollakisurie Grad 1, keine systemischen Nebenwirkungen"
+      },
+      "documents": [
+        "verlaufsbericht"
+      ],
+      "repeat_index": 1
+    },
+    {
+      "id": "e11",
+      "type": "followup",
+      "label": "Nachsorge-Zystoskopie mit Urinzytologie",
+      "date": "2029-02-08",
+      "specialist": "urologie",
+      "parameters": {
+        "interval": "21 Monate nach Beginn der BCG-Therapie; letzte Instillation am 23.11.2028 (Erhaltung nach 18 Monaten)",
+        "cystoscopy": "Neuer papillärer Tumor ca. 1,5 cm am Blasendach; multiple samtartige Rötungen an Hinterwand und Trigonum",
+        "urine_cytology": "Probe vom 01.02.2029: positiv, high-grade Urothelkarzinom (HGUC)",
+        "assessment": "V. a. high-grade Rezidiv unter BCG-Erhaltungstherapie",
+        "plan": "TUR-B mit PDD und Biopsien inkl. prostatischer Harnröhre"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "zytologiebefund"
+      ],
+      "repeat_index": 2
+    },
+    {
+      "id": "e12",
+      "type": "pathology",
+      "label": "Histologie Rezidiv-TUR-B",
+      "date": "2029-02-26",
+      "specialist": "pathologie",
+      "parameters": {
+        "specimen": "TUR-B mit PDD vom 19.02.2029: Blasendach, Biopsien von Hinterwand, Trigonum und prostatischer Harnröhre",
+        "pt_stage": "pT1",
+        "grade": "high grade, G3",
+        "cis": "multifokal (Hinterwand, Trigonum); prostatische Harnröhre tumorfrei",
+        "detrusor": "erfasst, tumorfrei",
+        "lvi": "L1 V0",
+        "diagnosis": "Rezidiv eines Urothelkarzinoms der Harnblase, pT1 high grade G3, multifokales CIS, L1",
+        "icd_code": "C67.8"
+      },
+      "documents": [
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e13",
+      "type": "tumor_board",
+      "label": "Tumorkonferenz: Rezidiv nach BCG-Therapie",
+      "date": "2029-03-07",
+      "specialist": "urologie",
+      "parameters": {
+        "assessment": "BCG-unresponsives NMIBC: pT1-HG-Rezidiv mit multifokalem CIS und L1 ca. 11 Wochen nach letzter Instillation, nach adäquater BCG-Therapie (Induktion 6/6, Erhaltung 12/12)",
+        "staging": "CT Thorax/Abdomen vom 01.03.2029: kein Hinweis auf Lymphknoten- oder Fernmetastasen",
+        "decision": "Radikale Zystoprostatektomie mit erweiterter pelviner Lymphadenektomie; Harnableitung über orthotope Ileum-Neoblase (Harnröhre tumorfrei, gute Nierenfunktion, Patientenwunsch). Blasenerhaltende Alternativen besprochen, wegen L1 und multifokalem CIS nicht empfohlen.",
+        "participants": [
+          "urologie",
+          "onkologie",
+          "strahlentherapie",
+          "pathologie",
+          "radiologie"
+        ]
+      },
+      "documents": [
+        "tumorkonferenzprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e14",
+      "type": "surgery",
+      "label": "Radikale Zystoprostatektomie mit Ileum-Neoblase",
+      "date": "2029-04-10",
+      "specialist": "urologie",
+      "parameters": {
+        "procedure": "Roboterassistierte radikale Zystoprostatektomie mit erweiterter pelviner Lymphadenektomie bds. und orthotoper Ileum-Neoblase",
+        "frozen_section": "Harnröhrenabsetzungsrand und distale Ureterabsetzungsränder bds. tumorfrei",
+        "blood_loss_ml": 450,
+        "duration_min": 395
+      },
+      "documents": [
+        "op_bericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e15",
+      "type": "pathology",
+      "label": "Histologie Zystoprostatektomiepräparat",
+      "date": "2029-04-17",
+      "specialist": "pathologie",
+      "parameters": {
+        "pt_stage": "pT3a",
+        "pn_stage": "pN1 (1/27)",
+        "r_status": "R0",
+        "grade": "high grade, G3",
+        "lvi": "L1 V0",
+        "cis": "ausgedehntes CIS; Harnröhre und Ureteren tumorfrei",
+        "prostate": "kein Prostatakarzinom",
+        "pd_l1": "PD-L1 auf Tumorzellen 5 %",
+        "diagnosis": "Urothelkarzinom der Harnblase pT3a pN1 (1/27) L1 V0 R0 G3",
+        "icd_code": "C67.8"
+      },
+      "documents": [
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e16",
+      "type": "systemic_therapy",
+      "label": "Adjuvante Chemotherapie Gemcitabin/Cisplatin, Zyklus 1",
+      "date": "2029-05-29",
+      "specialist": "onkologie",
+      "parameters": {
+        "indication": "pT3a pN1 nach radikaler Zystektomie, keine neoadjuvante Chemotherapie",
+        "regimen": "Gemcitabin 1000 mg/m² an Tag 1 und 8, Cisplatin 70 mg/m² an Tag 1, alle 21 Tage",
+        "cycles_planned": 4,
+        "cisplatin_fitness": "eGFR 71 ml/min, kein Hörverlust, keine Polyneuropathie, Karnofsky 90 %",
+        "alternative_discussed": "Adjuvante Immuntherapie mit Nivolumab (PD-L1 TC 5 %) besprochen; Entscheidung für Chemotherapie",
+        "postoperative_course": "Neoblase tagsüber kontinent seit der 6. postoperativen Woche, nachts 1 Vorlage; milde metabolische Azidose (BE −2,1 mmol/l) unter Natriumhydrogencarbonat"
+      },
+      "documents": [
+        "arztbrief",
+        "chemotherapieprotokoll"
+      ],
+      "repeat_index": null
+    }
+  ]
+}

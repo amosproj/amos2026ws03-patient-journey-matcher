@@ -923,9 +923,10 @@
     "Holdout-Colorectal-e11": {
       "as_of": "2028-06-12",
       "grades": {
-        "3": "pubmed:24999460 pubmed:26219852 pubmed:37401305",
-        "2": "pubmed:17140901 pubmed:29967994 pubmed:30603861 pubmed:30837792",
-        "0": "pubmed:19092346 pubmed:20943612 pubmed:22119204 pubmed:23322206 pubmed:24412228 pubmed:27298411 pubmed:27467466 pubmed:28192641 pubmed:31157963 pubmed:31375338 pubmed:31982206 pubmed:32535711 pubmed:34019698 pubmed:34392104 pubmed:35032765 pubmed:38442886 pubmed:38457083 pubmed:39467871"
+        "3": "pubmed:24999460 pubmed:26219852 pubmed:32277612 pubmed:37401305",
+        "2": "pubmed:17140901 pubmed:26511803 pubmed:29967994 pubmed:30006429 pubmed:30603861 pubmed:30837792",
+        "1": "pubmed:12243814 pubmed:23478607 pubmed:32666388 pubmed:36825985 pubmed:40211676",
+        "0": "pubmed:19092346 pubmed:20943612 pubmed:22119204 pubmed:23322206 pubmed:24011233 pubmed:24412228 pubmed:26362228 pubmed:27298411 pubmed:27467466 pubmed:28192641 pubmed:31157963 pubmed:31375338 pubmed:31982206 pubmed:32535711 pubmed:34019698 pubmed:34392104 pubmed:35032765 pubmed:38442886 pubmed:38457083 pubmed:39467871"
       }
     },
     "Holdout-Ovarian-e12": {
@@ -951,8 +952,8 @@
       "grades": {
         "3": "pubmed:18316791 pubmed:21960311 pubmed:31912793",
         "2": "pubmed:24263065",
-        "1": "pubmed:24511107 pubmed:36410812",
-        "0": "pubmed:15753357 pubmed:21189380 pubmed:23322206 pubmed:23576486 pubmed:24562448 pubmed:24830619 pubmed:26282084 pubmed:29631810 pubmed:31375338 pubmed:31787751 pubmed:34019698 pubmed:34392104 pubmed:34626563 pubmed:37963317 pubmed:41795872"
+        "1": "pubmed:12243814 pubmed:24511107 pubmed:26511803 pubmed:27631775 pubmed:28685354 pubmed:30739838 pubmed:32666388 pubmed:36410812 pubmed:40845854",
+        "0": "pubmed:12095973 pubmed:15753357 pubmed:21189380 pubmed:23322206 pubmed:23576486 pubmed:24562448 pubmed:24604580 pubmed:24830619 pubmed:26282084 pubmed:29631810 pubmed:31375338 pubmed:31787751 pubmed:34019698 pubmed:34392104 pubmed:34626563 pubmed:37963317 pubmed:41795872"
       }
     },
     "Holdout-Ovarian-e14": {
@@ -975,8 +976,10 @@
     "Holdout-Colorectal-e02": {
       "as_of": "2026-10-14",
       "grades": {
-        "1": "pubmed:17140901",
-        "0": "pubmed:14559892 pubmed:15990624 pubmed:16631303 pubmed:16767709 pubmed:19367268 pubmed:21512807 pubmed:22027476 pubmed:24412228 pubmed:2514202 pubmed:28758096 pubmed:31944236 pubmed:35115177 pubmed:35489126 pubmed:36475814 pubmed:40639383 pubmed:8576295 pubmed:9118393 pubmed:9128304 zenodo:20065712"
+        "3": "pubmed:11926950 pubmed:20093520",
+        "2": "pubmed:17498902",
+        "1": "pubmed:17140901 pubmed:26290629 pubmed:35892341 pubmed:38442886 pubmed:9841970",
+        "0": "pubmed:14559892 pubmed:15990624 pubmed:16631303 pubmed:16767709 pubmed:19367268 pubmed:20379442 pubmed:21512807 pubmed:22027476 pubmed:24412228 pubmed:24922745 pubmed:2514202 pubmed:28758096 pubmed:31944236 pubmed:35115177 pubmed:35489126 pubmed:36475814 pubmed:38000889 pubmed:40639383 pubmed:8576295 pubmed:9118393 pubmed:9128304 zenodo:20065712"
       }
     },
     "Holdout-Ovarian-e02": {
@@ -1000,8 +1003,9 @@
     "Holdout-Colorectal-e06": {
       "as_of": "2026-11-16",
       "grades": {
-        "3": "pubmed:12243814 pubmed:27631775",
-        "2": "pubmed:15763604 pubmed:26511803",
+        "3": "pubmed:12243814 pubmed:20978768 pubmed:27631775 pubmed:30006429 pubmed:32277612",
+        "2": "pubmed:15763604 pubmed:24316942 pubmed:26511803 pubmed:30739838 pubmed:40616745",
+        "1": "pubmed:24604580",
         "0": "pubmed:10430790 pubmed:20728210 pubmed:22119204 pubmed:22380383 pubmed:22917985 pubmed:24412228 pubmed:24881730 pubmed:25702876 pubmed:25782685 pubmed:27356743 pubmed:28237181 pubmed:28758096 pubmed:30316827 pubmed:31157963 pubmed:31794928 pubmed:32945701 pubmed:34392104 pubmed:35032765 pubmed:35595780 pubmed:40639383 pubmed:42905721 pubmed:43067554 zenodo:11005206 zenodo:6580659"
       }
     },
@@ -1012,6 +1016,57 @@
         "2": "pubmed:35764743",
         "1": "pubmed:16631919 pubmed:19370622 pubmed:20555098 pubmed:22343227 pubmed:23885715 pubmed:24895230 pubmed:24962381 pubmed:25006190 pubmed:30180749 pubmed:30390762 pubmed:34620496 pubmed:34629168 pubmed:34639707 pubmed:37669829",
         "0": "pubmed:11161856 pubmed:11551132 pubmed:11555720 pubmed:12775280 pubmed:16167352 pubmed:21917606 pubmed:22182415 pubmed:22332815 pubmed:22746358 pubmed:24316306 pubmed:25011220 pubmed:29944030 pubmed:37603211"
+      }
+    },
+    "Bladder-e08": {
+      "as_of": "2027-05-04",
+      "grades": {
+        "3": "pubmed:22101115 pubmed:36853609",
+        "1": "pubmed:27457483 pubmed:33253641 pubmed:33457266 pubmed:40805257",
+        "0": "pubmed:17342490 pubmed:22405699 pubmed:26688133 pubmed:28766223 pubmed:29408568 pubmed:38053418"
+      }
+    },
+    "Bladder-e13": {
+      "as_of": "2029-03-07",
+      "grades": {
+        "3": "pubmed:22177416 pubmed:22515472 pubmed:22917985 pubmed:23880740 pubmed:36197698 pubmed:40683073",
+        "2": "pubmed:19176205 pubmed:22101115 pubmed:33253641 pubmed:34084119",
+        "1": "pubmed:16879676 pubmed:17157629 pubmed:27457483 pubmed:28677000 pubmed:30811784 pubmed:33457266 pubmed:36853609 pubmed:40805257",
+        "0": "pubmed:17342490 pubmed:38053418"
+      }
+    },
+    "Pancreas-e12": {
+      "as_of": "2027-10-14",
+      "grades": {
+        "2": "pubmed:31375338 pubmed:32314163",
+        "1": "pubmed:31542591 pubmed:31787751 pubmed:34392104 pubmed:36229752 pubmed:37791389 pubmed:38030179 pubmed:42192328",
+        "0": "pubmed:20947488 pubmed:22643536 pubmed:23322206 pubmed:27298411 pubmed:28758096 pubmed:34019698 pubmed:37963317 pubmed:38457083 pubmed:40639383"
+      }
+    },
+    "Bladder-e10": {
+      "as_of": "2028-05-11",
+      "grades": {
+        "3": "pubmed:22101115",
+        "2": "pubmed:19176205",
+        "1": "pubmed:27457483 pubmed:33253641 pubmed:33457266 pubmed:40805257",
+        "0": "pubmed:17342490 pubmed:22405699 pubmed:26688133 pubmed:28766223 pubmed:38053418"
+      }
+    },
+    "Pancreas-e06": {
+      "as_of": "2026-11-02",
+      "grades": {
+        "3": "pubmed:31375338 pubmed:32314163",
+        "2": "pubmed:34392104",
+        "1": "pubmed:30458340 pubmed:31787751 pubmed:36229752 pubmed:36670426 pubmed:37791389 pubmed:41795872 pubmed:42192328",
+        "0": "pubmed:21189380 pubmed:23322206 pubmed:29631810 pubmed:34019698 pubmed:37963317 pubmed:38457083"
+      }
+    },
+    "Pancreas-e14": {
+      "as_of": "2028-10-17",
+      "grades": {
+        "2": "pubmed:24929865 pubmed:30458340 pubmed:42192328",
+        "1": "pubmed:31157963 pubmed:31375338 pubmed:31787751 pubmed:34392104 pubmed:36229752 pubmed:38030179",
+        "0": "pubmed:20947488 pubmed:22643536 pubmed:23322206 pubmed:28758096 pubmed:29631810 pubmed:34019698 pubmed:37963317 pubmed:38457083 pubmed:40639383"
       }
     }
   }

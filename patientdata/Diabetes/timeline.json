@@ -1,0 +1,382 @@
+{
+  "patient_id": "Diabetes",
+  "pathway_id": "am-22",
+  "start_date": "2026-03-09",
+  "events": [
+    {
+      "id": "e01",
+      "type": "lab_test",
+      "label": "Gesundheitsuntersuchung: erhöhte Nüchternglukose und HbA1c",
+      "date": "2026-03-09",
+      "specialist": "hausarzt",
+      "parameters": {
+        "age": 57,
+        "sex": "weiblich",
+        "occasion": "Check-up (Gesundheitsuntersuchung)",
+        "symptoms": "seit einigen Monaten vermehrter Durst und Nykturie (2×/Nacht), Müdigkeit",
+        "height_cm": 165,
+        "weight_kg": 89.3,
+        "bmi": 32.8,
+        "waist_cm": 104,
+        "blood_pressure": "152/94 mmHg",
+        "fasting_glucose_mg_dl": 131,
+        "hba1c_percent": 6.9,
+        "hba1c_mmol_mol": 52,
+        "ldl_mg_dl": 164,
+        "triglycerides_mg_dl": 210,
+        "creatinine_mg_dl": 0.82,
+        "family_history": "Vater Typ-2-Diabetes, Herzinfarkt mit 61 J.",
+        "assessment": "V. a. Diabetes mellitus Typ 2; Kontrolle von HbA1c und Nüchternglukose, Langzeit-RR-Messung"
+      },
+      "documents": [
+        "laborbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e02",
+      "type": "diagnosis",
+      "label": "Erstdiagnose Diabetes mellitus Typ 2",
+      "date": "2026-03-24",
+      "specialist": "hausarzt",
+      "parameters": {
+        "hba1c_percent": 7.2,
+        "hba1c_mmol_mol": 55,
+        "fasting_glucose_mg_dl": 137,
+        "egfr_ml_min": 83,
+        "uacr_mg_g": 18,
+        "abpm": "Langzeit-RR: Tagesmittel 146/91 mmHg",
+        "diagnosis": "Diabetes mellitus Typ 2, Erstdiagnose",
+        "icd_code": "E11.90",
+        "comorbidities": [
+          "Essentielle Hypertonie (I10.00)",
+          "Hypercholesterinämie (E78.0)",
+          "Adipositas Grad I (BMI 32,8)"
+        ],
+        "hba1c_target": "6,5–7,0 %",
+        "plan": "Lebensstilintervention mit Ernährungsumstellung und Bewegung (150 min/Woche), strukturierte Diabetesschulung, Einschreibung ins DMP Diabetes mellitus Typ 2; Ramipril 5 mg und Atorvastatin 20 mg begonnen; HbA1c-Kontrolle in 3 Monaten"
+      },
+      "documents": [
+        "arztbrief",
+        "dmp_dokumentation"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e03",
+      "type": "consultation",
+      "label": "Augenärztliche Untersuchung bei Diabetes mellitus",
+      "date": "2026-04-22",
+      "specialist": "augenheilkunde",
+      "parameters": {
+        "examination": "Fundoskopie beidseits in Mydriasis",
+        "visual_acuity": "Visus bds. 1,0 cc",
+        "finding": "Keine diabetische Retinopathie, keine Makulopathie",
+        "next_exam": "in 2 Jahren"
+      },
+      "documents": [
+        "augenbefund"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e04",
+      "type": "medication_change",
+      "label": "Beginn Metformin nach 3 Monaten Lebensstilintervention",
+      "date": "2026-06-30",
+      "specialist": "hausarzt",
+      "parameters": {
+        "hba1c_percent": 7.1,
+        "hba1c_mmol_mol": 54,
+        "weight_kg": 87.2,
+        "training": "Diabetesschulung (4 Termine) abgeschlossen",
+        "reason": "HbA1c trotz Lebensstilintervention über dem vereinbarten Zielbereich",
+        "drug": "Metformin",
+        "dose": "500 mg 0-0-1, wöchentliche Steigerung bis 1000 mg 1-0-1",
+        "egfr_ml_min": 85
+      },
+      "documents": [
+        "medikationsplan",
+        "dmp_dokumentation"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e05",
+      "type": "followup",
+      "label": "DMP-Verlaufskontrolle Diabetes mellitus Typ 2",
+      "date": "2026-12-17",
+      "specialist": "hausarzt",
+      "parameters": {
+        "hba1c_percent": 6.5,
+        "hba1c_mmol_mol": 48,
+        "weight_kg": 84.7,
+        "bmi": 31.1,
+        "blood_pressure": "132/82 mmHg",
+        "ldl_mg_dl": 88,
+        "egfr_ml_min": 84,
+        "uacr_mg_g": 21,
+        "foot_exam": "Fußinspektion unauffällig, Monofilament und Stimmgabeltest normal, Fußpulse tastbar",
+        "medication": [
+          "Metformin 1000 mg 1-0-1",
+          "Ramipril 5 mg 1-0-0",
+          "Atorvastatin 20 mg 0-0-1"
+        ],
+        "comment": "Metformin nach anfänglicher Diarrhoe gut vertragen"
+      },
+      "documents": [
+        "dmp_dokumentation",
+        "laborbericht"
+      ],
+      "repeat_index": 0
+    },
+    {
+      "id": "e06",
+      "type": "followup",
+      "label": "DMP-Verlaufskontrolle Diabetes mellitus Typ 2",
+      "date": "2027-12-09",
+      "specialist": "hausarzt",
+      "parameters": {
+        "hba1c_percent": 7.5,
+        "hba1c_mmol_mol": 58,
+        "weight_kg": 88.0,
+        "bmi": 32.3,
+        "blood_pressure": "138/86 mmHg",
+        "ldl_mg_dl": 94,
+        "creatinine_mg_dl": 0.86,
+        "egfr_ml_min": 78,
+        "uacr_mg_g": 52,
+        "comment": "Gewichtszunahme bei beruflicher Belastung und weniger Bewegung",
+        "assessment": "HbA1c über dem Zielbereich; erstmals Albuminurie",
+        "plan": "UACR-Kontrolle in 4–6 Wochen, danach Therapieanpassung",
+        "medication": [
+          "Metformin 1000 mg 1-0-1",
+          "Ramipril 5 mg 1-0-0",
+          "Atorvastatin 20 mg 0-0-1"
+        ]
+      },
+      "documents": [
+        "dmp_dokumentation",
+        "laborbericht"
+      ],
+      "repeat_index": 1
+    },
+    {
+      "id": "e07",
+      "type": "medication_change",
+      "label": "Therapieerweiterung bei diabetischer Nephropathie: Empagliflozin",
+      "date": "2028-01-20",
+      "specialist": "hausarzt",
+      "parameters": {
+        "uacr_mg_g": 64,
+        "uacr_note": "Kontrolle vom 12.01.2028; Albuminurie damit in 2 Proben im Abstand von 5 Wochen bestätigt",
+        "egfr_ml_min": 77,
+        "ckd_stage": "G2 A2",
+        "diagnosis": "Diabetes mellitus Typ 2 mit diabetischer Nephropathie (CKD G2 A2)",
+        "icd_code": "E11.20",
+        "secondary_icd_code": "N08.3",
+        "drug": "Empagliflozin 10 mg 1-0-0 (neu)",
+        "other_changes": "Ramipril von 5 auf 10 mg gesteigert",
+        "patient_information": "Sick-Day-Regeln (Pausieren bei Erbrechen, Durchfall, Fieber und vor Operationen), Genitalhygiene, ausreichende Trinkmenge"
+      },
+      "documents": [
+        "medikationsplan",
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e08",
+      "type": "hospital_discharge",
+      "label": "Entlassung nach NSTEMI mit PCI des RIVA",
+      "date": "2028-09-25",
+      "specialist": "kardiologie",
+      "parameters": {
+        "admission_date": "2028-09-19",
+        "presentation": "Retrosternales Druckgefühl seit 6 Stunden; hs-Troponin T 186 ng/l mit Anstieg; EKG: ST-Senkungen in V4–V6",
+        "coronary_angiography": "Koronare 2-Gefäßerkrankung: 90 %ige proximale RIVA-Stenose (Culprit-Läsion), PCI mit 1 DES; 60 %ige Stenose des mittleren RCX, FFR 0,86 (nicht signifikant)",
+        "lvef_percent": 52,
+        "hba1c_percent": 7.6,
+        "hba1c_mmol_mol": 60,
+        "ldl_mg_dl": 96,
+        "diagnosis": "Akuter NSTEMI (Typ 1) bei koronarer 2-Gefäßerkrankung; Diabetes mellitus Typ 2 mit diabetischer Nephropathie",
+        "icd_code": "I21.40",
+        "secondary_icd_code": "I25.12",
+        "discharge_medication": [
+          "ASS 100 mg 1-0-0",
+          "Prasugrel 10 mg 1-0-0 für 12 Monate",
+          "Atorvastatin 80 mg 0-0-1",
+          "Ezetimib 10 mg 0-0-1",
+          "Ramipril 10 mg 1-0-0",
+          "Metformin 1000 mg 1-0-1 (Wiederbeginn 48 h nach Kontrastmittelgabe)",
+          "Empagliflozin 10 mg 1-0-0",
+          "Pantoprazol 20 mg 1-0-0"
+        ],
+        "recommendation": "Anschlussheilbehandlung; LDL-Ziel < 55 mg/dl; Vorstellung in diabetologischer Schwerpunktpraxis zur Ergänzung eines GLP-1-Rezeptoragonisten mit kardiovaskulärem Nutzen"
+      },
+      "documents": [
+        "entlassungsbrief",
+        "herzkatheterbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e09",
+      "type": "medication_change",
+      "label": "Diabetologische Schwerpunktpraxis: Ergänzung Semaglutid",
+      "date": "2028-11-08",
+      "specialist": "diabetologie",
+      "parameters": {
+        "reason": "KHK mit Z. n. NSTEMI 09/2028; HbA1c 7,4 % (57 mmol/mol) unter Metformin und Empagliflozin; BMI 32,5",
+        "weight_kg": 88.6,
+        "ldl_mg_dl": 61,
+        "rehabilitation": "AHB 10/2028 abgeschlossen",
+        "drug": "Semaglutid s.c. 1× wöchentlich: 0,25 mg für 4 Wochen, dann 0,5 mg, Zieldosis 1,0 mg",
+        "hba1c_target": "6,5–7,0 %",
+        "eye_exam": "Augenärztliche Kontrolle veranlasst (letzte Untersuchung 04/2026 ohne Retinopathie)"
+      },
+      "documents": [
+        "arztbrief",
+        "medikationsplan"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e10",
+      "type": "followup",
+      "label": "DMP-Verlaufskontrolle Diabetes mellitus Typ 2",
+      "date": "2029-06-14",
+      "specialist": "hausarzt",
+      "parameters": {
+        "hba1c_percent": 6.7,
+        "hba1c_mmol_mol": 50,
+        "weight_kg": 80.9,
+        "bmi": 29.7,
+        "blood_pressure": "128/78 mmHg",
+        "ldl_mg_dl": 52,
+        "creatinine_mg_dl": 0.93,
+        "egfr_ml_min": 70,
+        "uacr_mg_g": 41,
+        "eye_exam": "Augenärztlicher Befund 12/2028: milde nichtproliferative diabetische Retinopathie bds., kein Makulaödem; nächste Kontrolle 12/2029",
+        "foot_exam": "Monofilament an Großzehe und MFK I links nicht wahrgenommen, Vibrationsempfinden Großzehe bds. 4/8; Fußpulse tastbar; Schwiele plantar unter MFK I links",
+        "foot_risk": "erhöhtes Fußrisiko bei sensorischer Neuropathie: Fußkontrolle vierteljährlich, Podologie verordnet",
+        "medication": [
+          "Metformin 1000 mg 1-0-1",
+          "Empagliflozin 10 mg 1-0-0",
+          "Semaglutid 1,0 mg s.c. 1×/Woche",
+          "ASS 100 mg 1-0-0",
+          "Prasugrel 10 mg 1-0-0 (bis 09/2029)",
+          "Atorvastatin 80 mg 0-0-1",
+          "Ezetimib 10 mg 0-0-1",
+          "Ramipril 10 mg 1-0-0"
+        ]
+      },
+      "documents": [
+        "dmp_dokumentation",
+        "laborbericht"
+      ],
+      "repeat_index": 2
+    },
+    {
+      "id": "e11",
+      "type": "diagnosis",
+      "label": "Diabetische Fußambulanz: neuropathisches Ulkus plantar links",
+      "date": "2030-07-10",
+      "specialist": "diabetologie",
+      "parameters": {
+        "finding": "Schmerzloses Ulkus plantar unter MFK I links, 1,4 × 1,1 cm, bis in die Subkutis reichend, granulierender Wundgrund, Randkallus; keine Rötung, keine Sekretion; Sondierung ohne Knochenkontakt",
+        "classification": "Wagner-Armstrong 1A",
+        "neuropathy": "distal-symmetrische sensomotorische Polyneuropathie: Monofilament Vorfuß bds. 0/3, Vibrationsempfinden Großzehe bds. 3/8",
+        "perfusion": "Fußpulse bds. tastbar, ABI links 1,08, Zehendruck links 78 mmHg",
+        "xray": "Röntgen Vorfuß links in 2 Ebenen: kein Anhalt für Osteomyelitis",
+        "hba1c_percent": 7.9,
+        "hba1c_mmol_mol": 63,
+        "cause": "Druckulkus bei Schwiele und ungeeignetem Schuhwerk",
+        "treatment": "Debridement, nicht abnehmbare Entlastung mit Unterschenkel-Walker, feuchte Wundbehandlung, wöchentliche Wundkontrollen",
+        "diagnosis": "Diabetisches Fußsyndrom mit neuropathischem Ulkus plantar unter MFK I links bei diabetischer Polyneuropathie",
+        "icd_code": "E11.74"
+      },
+      "documents": [
+        "arztbrief",
+        "wunddokumentation"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e12",
+      "type": "consultation",
+      "label": "Diabetische Fußambulanz: Kontrolle nach Ulkusabheilung",
+      "date": "2030-10-16",
+      "specialist": "diabetologie",
+      "parameters": {
+        "wound": "Ulkus seit 09/2030 vollständig epithelisiert (Abheilung nach ca. 10 Wochen)",
+        "footwear": "Verordnung diabetesgerechter Maßschuhe mit diabetesadaptierter Fußbettung",
+        "podiatry": "podologische Behandlung alle 4–6 Wochen",
+        "hba1c_percent": 7.8,
+        "hba1c_mmol_mol": 62,
+        "recommendation": "Rezidivprophylaxe, Fußkontrolle alle 1–3 Monate; Intensivierung der antidiabetischen Therapie"
+      },
+      "documents": [
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e13",
+      "type": "medication_change",
+      "label": "Beginn basalunterstützte orale Therapie (BOT) mit Insulin glargin",
+      "date": "2030-11-05",
+      "specialist": "diabetologie",
+      "parameters": {
+        "reason": "HbA1c 7,8 % (62 mmol/mol) trotz Metformin, Empagliflozin und Semaglutid 1,0 mg; Z. n. diabetischem Fußulkus",
+        "drug": "Insulin glargin 10 IE s.c. zur Nacht, Selbsttitration um 2 IE alle 3 Tage bis Nüchternglukose 100–130 mg/dl",
+        "education": "Insulinschulung, Blutzuckerselbstmessung, Hypoglykämie-Aufklärung, Hinweise zur Fahreignung",
+        "egfr_ml_min": 56,
+        "medication": [
+          "Metformin 1000 mg 1-0-1",
+          "Empagliflozin 10 mg 1-0-0",
+          "Semaglutid 1,0 mg s.c. 1×/Woche",
+          "Insulin glargin 10 IE 0-0-0-1 (neu)",
+          "ASS 100 mg 1-0-0",
+          "Atorvastatin 80 mg 0-0-1",
+          "Ezetimib 10 mg 0-0-1",
+          "Ramipril 10 mg 1-0-0"
+        ]
+      },
+      "documents": [
+        "medikationsplan",
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e14",
+      "type": "followup",
+      "label": "DMP-Verlaufskontrolle Diabetes mellitus Typ 2",
+      "date": "2031-05-15",
+      "specialist": "hausarzt",
+      "parameters": {
+        "hba1c_percent": 7.1,
+        "hba1c_mmol_mol": 54,
+        "insulin_dose": "Insulin glargin 22 IE zur Nacht",
+        "hypoglycemia": "keine schweren Hypoglykämien; 2 leichte (62 und 65 mg/dl)",
+        "weight_kg": 82.0,
+        "bmi": 30.1,
+        "blood_pressure": "134/80 mmHg",
+        "creatinine_mg_dl": 1.18,
+        "egfr_ml_min": 52,
+        "uacr_mg_g": 210,
+        "potassium_mmol_l": 4.6,
+        "ckd_stage": "G3a A2",
+        "therapy_change": "Finerenon 10 mg 1-0-0 ergänzt bei persistierender Albuminurie unter Ramipril 10 mg und Empagliflozin; Kaliumkontrolle in 4 Wochen. Metformin bei eGFR 52 unverändert (Tageshöchstdosis 2000 mg).",
+        "diagnoses": "Diabetes mellitus Typ 2 mit diabetischer Nephropathie (CKD G3a A2), milder NPDR bds., diabetischer Polyneuropathie und Z. n. neuropathischem Fußulkus links; KHK mit Z. n. NSTEMI 09/2028"
+      },
+      "documents": [
+        "dmp_dokumentation",
+        "laborbericht",
+        "medikationsplan"
+      ],
+      "repeat_index": 3
+    }
+  ]
+}
