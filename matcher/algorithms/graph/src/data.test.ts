@@ -32,9 +32,13 @@ test("concepts: a known type, a well-formed ID, each ID once", () => {
   expect(CONCEPT_IDS.size).toBe(concepts.concepts.length);
 });
 
-test("every reviewed ICD code points to a disease", () => {
+test("every reviewed ICD code and category points to a disease", () => {
   for (const [code, id] of Object.entries(icd.codes)) {
     expect(code).toMatch(/^[A-Z]\d{2}(\.\d{1,2})?$/);
+    expect(conceptOf(id)?.type, `${code} → ${id}`).toBe("disease");
+  }
+  for (const [code, id] of Object.entries(icd.categories)) {
+    expect(code).toMatch(/^[A-Z]\d{2}$/);
     expect(conceptOf(id)?.type, `${code} → ${id}`).toBe("disease");
   }
 });

@@ -372,3 +372,12 @@ test("German compounds name distant spread to the brain, lung and peritoneum", (
   );
   expect(cues("Keine Lungenmetastasen")).toEqual(new Set());
 });
+
+test("recurring complaints are no relapse of the disease", () => {
+  const cues = (text: string) => stageCues(normalizeName(text));
+  expect(cues("Rezidivierender peranaler Blutabgang")).toEqual(new Set());
+  expect(cues("Lokalrezidiv im Becken")).toEqual(new Set(["recurrence"]));
+  expect(cues("PSA-Anstieg – Biochemisches Rezidiv")).toEqual(
+    new Set(["recurrence"]),
+  );
+});

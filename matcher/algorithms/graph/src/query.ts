@@ -15,6 +15,8 @@ import {
 } from "./resolve.ts";
 import {
   conceptStages,
+  isCancer,
+  isGenericNeoplasm,
   type PatientStage,
   patientStage,
   STAGE_CONCEPTS,
@@ -295,8 +297,11 @@ function timelineConditions(
     const codeConflict =
       byCode && codes.some((item) => !compatibleDiagnoses(byCode, item));
     if (byCode?.type === "disease") codes.push(byCode);
+    // A general word such as "Adenokarzinom" says the kind of tumour, which fits any cancer code.
     const nameConflict = [field, labelHits].some((hits) => {
-      const names = hits.filter((hit) => !hit.code);
+      const names = hits.filter(
+        (hit) => !hit.code && !isGenericNeoplasm(hit.concept.id),
+      );
       const positive = names.filter((hit) => hit.status !== "negated");
       const diagnosticNames = positive.length ? positive : names;
       return (
@@ -325,14 +330,29 @@ function timelineConditions(
     ])
       introduced.add(hit.concept.id);
     if (byCode?.type === "disease") introduced.add(byCode.id);
+    // A pathology report that names only the kind of tumour ("Adenokarzinom") confirms the one
+    // specific cancer the journey has named so far.
+    if (
+      normalizeName(event.type) === "pathology" &&
+      introduced.size &&
+      [...introduced].every(isGenericNeoplasm)
+    ) {
+      const cancers = [...since.keys()].filter(isCancer);
+      if (cancers.length === 1) introduced.add(cancers[0]);
+    }
     // While the journey names no diagnosis, a suspicion written in any text of another event
     // ("Verdacht auf Bronchialkarzinom" in a CT finding) makes the diagnosis suspected, as a
-    // diagnosis event would. Later, such a suspicion is a side finding (pneumonia on a CT).
+    // diagnosis event would. Later, such a suspicion is a side finding (pneumonia on a CT). A
+    // general heading such as carcinoma is no diagnosis of its own.
+    const named = [...since.keys()].some((id) => !isGenericNeoplasm(id));
     const suspicions =
-      diagnostic || diagnosis || code || since.size
+      diagnostic || diagnosis || code || named
         ? []
         : diseaseMentions(eventText(event), terminology).filter(
-            (hit) => hit.status === "suspected" && !hit.code,
+            (hit) =>
+              hit.status === "suspected" &&
+              !hit.code &&
+              !isGenericNeoplasm(hit.concept.id),
           );
     for (const hit of suspicions) introduced.add(hit.concept.id);
     if (
@@ -1609,6 +1629,12 @@ function buildQuery(reading: Reading, fromGraph: boolean): GraphQuery {
   for (const id of excluded) diagnoses.delete(id);
   const unspecific = new Set(unspecificDiagnoses([...diagnoses.keys()]));
   for (const id of unspecific) diagnoses.delete(id);
+  if (unspecific.size && !diagnoses.size)
+    evidence.push({
+      ref: focus.id,
+      date: cutoff,
+      detail: "Only a general heading such as carcinoma, no specific diagnosis",
+    });
 
   for (const link of latest(links, tripleKey, cutoff)) {
     const { subject, object, predicate, ref, validAt, status } = link;

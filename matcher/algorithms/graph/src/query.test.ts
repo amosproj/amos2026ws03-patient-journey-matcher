@@ -1339,7 +1339,7 @@ test("a second malignancy and a multi-indication drug do not imply a prostate di
   ).toBe(0);
 });
 
-test("a general cancer word names no second diagnosis, and alone no whole field", () => {
+test("a general cancer word names no second diagnosis, and alone no filter", () => {
   const confirmed = {
     ...focus,
     id: "dx",
@@ -1361,12 +1361,15 @@ test("a general cancer word names no second diagnosis, and alone no whole field"
       q.concepts.filter((c) => c.role === "diagnosis").map((c) => c.ids[0]),
     ).toEqual([cancer]);
   }
-  // Alone it is all the journey says: searched by its own heading, not by 702 kinds of cancer.
+  // Alone it would let in papers on any cancer, so it sets no filter and says why.
   const alone = patientQuery({
     context: [],
     focus: { ...focus, type: "diagnosis", label: "Tumor bestätigt." },
   });
-  expect([...alone.diagnoses.keys()]).toEqual(["mesh:D009369"]);
+  expect([...alone.diagnoses.keys()]).toEqual([]);
+  expect(alone.evidence.map((item) => item.detail)).toContain(
+    "Only a general heading such as carcinoma, no specific diagnosis",
+  );
 });
 
 test("another disease neither hides an implied prostate cancer nor switches its rules off", () => {
@@ -1825,4 +1828,27 @@ test("diagnoses that name one disease at different specificity share the aspects
   );
   expect(ids).toContain("mesh:D008175Q000601");
   expect(ids).toContain("mesh:D000077192Q000601");
+});
+
+test("a general word before the diagnosis neither sets the filter nor blocks a later suspicion", () => {
+  const referral = {
+    id: "ref",
+    date: "2026-10-05",
+    type: "referral",
+    label: "Überweisung",
+    parameters: { reason: "Blutabgang, Verdacht auf Karzinom" },
+  };
+  const endoscopy = {
+    id: "endo",
+    date: "2026-10-14",
+    type: "imaging",
+    label: "Koloskopie",
+    parameters: {
+      finding: "Exulzerierender Tumor, Verdacht auf Rektumkarzinom",
+    },
+  };
+  expect(patientQuery({ context: [], focus: referral }).diagnoses.size).toBe(0);
+  const query = patientQuery({ context: [referral], focus: endoscopy });
+  expect(query.diagnoses.has("mesh:D012004")).toBe(true);
+  expect(query.diagnoses.has("mesh:D002277")).toBe(false);
 });

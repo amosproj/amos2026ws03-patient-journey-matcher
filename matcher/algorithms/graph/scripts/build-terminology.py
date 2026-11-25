@@ -14,6 +14,7 @@ import hashlib
 import io
 import json
 import re
+import unicodedata
 import xml.etree.ElementTree as ET
 from collections import defaultdict
 from pathlib import Path
@@ -86,6 +87,43 @@ EXCLUDED = {
 }
 
 
+# German clinicians write "Rektumkarzinom" and "Rektumtumor"; German MeSH names a
+# neoplasm by site "Rektumkrebs", "Rektumtumoren" and "Krebs des Rektums". These forms
+# are added to the neoplasms by site (C04.588) when no other concept has the name.
+NEOPLASM_VARIANTS = (
+    (re.compile(r"^(\w+)krebs$"), ("{0}karzinom", "{0}tumor")),
+    (re.compile(r"^(\w+)tumoren$"), ("{0}tumor", "{0}karzinom")),
+    (re.compile(r"^Krebs (des|der) (.+)$"), ("Karzinom {0} {1}",)),
+)
+
+
+def normalize(text):
+    """The name form of normalizeName in text.ts."""
+    text = unicodedata.normalize("NFKD", text.replace("ß", "ss"))
+    text = "".join(c for c in text if not unicodedata.combining(c)).lower()
+    return re.sub(r"[^\w]+|_", " ", text).strip()
+
+
+def neoplasm_variants(diseases, sites, others):
+    taken = defaultdict(set)
+    for group in (diseases, *others):
+        for descriptor, (name, aliases, *_) in group.items():
+            for term in (name, *aliases):
+                taken[normalize(term)].add(descriptor)
+    proposed = defaultdict(set)
+    for descriptor in sites:
+        name, aliases, _ = diseases[descriptor]
+        for term in (name, *aliases):
+            for pattern, forms in NEOPLASM_VARIANTS:
+                match = pattern.match(term)
+                if match:
+                    for form in forms:
+                        proposed[form.format(*match.groups())].add(descriptor)
+    for variant, descriptors in proposed.items():
+        if len(descriptors) == 1 and normalize(variant) not in taken:
+            diseases[next(iter(descriptors))][1].append(variant)
+
+
 def procedure_kind(numbers, name):
     paths = [
         path
@@ -108,6 +146,7 @@ def build(mesh_zip, mesh_map, icd_map, excluded=EXCLUDED):
     diseases = {}
     chemicals = {}
     procedures = {}
+    sites = set()
     tree = {}
     with ZipFile(mesh_zip) as archive, archive.open("German_MeSH_2026.xml") as xml:
         for _, record in ET.iterparse(xml):
@@ -135,6 +174,8 @@ def build(mesh_zip, mesh_map, icd_map, excluded=EXCLUDED):
                 }
                 if paths:
                     diseases[descriptor] = [name, sorted(aliases - {name}), []]
+                    if any(p.startswith("C04.588") for p in paths):
+                        sites.add(descriptor)
                 elif medication:
                     chemicals[descriptor] = [name, sorted(aliases - {name})]
                 else:
@@ -149,6 +190,9 @@ def build(mesh_zip, mesh_map, icd_map, excluded=EXCLUDED):
                 diseases[tree[path]][2].append(descendant)
     for row in diseases.values():
         row[2] = sorted(set(row[2]))
+    neoplasm_variants(diseases, sites, (chemicals, procedures))
+    for row in diseases.values():
+        row[1] = sorted(set(row[1]))
 
     # Only compose two exact mappings through a unique Mondo identifier.
     mondo_mesh = exact_matches(mesh_map)

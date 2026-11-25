@@ -233,3 +233,21 @@ test("a MeSH procedure that a curated concept lists as `also` finds that concept
   expect(find("Prostate core needle biopsies")).toEqual(["mesh:D001706"]);
   expect(conceptOf("mesh:D062005")).toBeUndefined();
 });
+
+test("a code below a reviewed category takes its disease, unless it has its own", () => {
+  expect(resolveIcd("C20")?.id).toBe("mesh:D012004");
+  expect(resolveIcd("C16.3")?.id).toBe("mesh:D013274");
+  expect(resolveIcd("C22.0")?.id).toBe("mesh:D006528");
+  expect(resolveIcd("C22.9")?.id).toBe("mesh:D008113");
+  // Mixed categories and sites without a MeSH heading stay unmapped.
+  expect(resolveIcd("C78.0")).toBeUndefined();
+  expect(resolveIcd("C17.1")).toBeUndefined();
+});
+
+test("German clinical names of a neoplasm by site find it", () => {
+  const id = (name: string) => resolve({ names: [name] })?.concept.id;
+  expect(id("Rektumkarzinom")).toBe("mesh:D012004");
+  expect(id("Karzinom des Magens")).toBe("mesh:D013274");
+  expect(id("Nierentumor")).toBe("mesh:D007680");
+  expect(id("Schilddrüsenkarzinom")).toBe("mesh:D013964");
+});

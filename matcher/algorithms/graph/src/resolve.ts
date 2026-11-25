@@ -220,6 +220,8 @@ const ICD_CODES = new Map<string, string>([
   ]),
   ...Object.entries(icd.codes),
 ]);
+// Reviewed categories whose codes all name one disease: C67.2 is a bladder cancer like C67.
+const ICD_CATEGORIES = new Map<string, string>(Object.entries(icd.categories));
 const ICD_CODE = /^[A-Z]\d{2}(?:\.\d{1,2})?$/;
 const ICD_IN_TEXT =
   /\b[A-Z]\d{2}(?:\.\d+)?(?:\s*[-–—]\s*[A-Z]\d{2}(?:\.\d+)?)?(?!\w|\.\w)/gi;
@@ -366,14 +368,15 @@ export function createTerminology(
 export const defaultTerminology = createTerminology();
 
 /**
- * Tier 1: a mapped ICD-10 code as written. Categories are never inferred from their children. A value that is not
- * shaped like a code is ignored: the graph takes it from an LLM, unchecked.
+ * Tier 1: a mapped ICD-10 code as written, else its reviewed category (`categories` in icd10-mesh.json). A category
+ * is never inferred from its children. A value that is not shaped like a code is ignored: the graph takes it from
+ * an LLM, unchecked.
  */
 export function resolveIcd(code: unknown): Concept | undefined {
   if (typeof code !== "string") return undefined;
   const value = code.trim().toUpperCase();
   if (!ICD_CODE.test(value)) return undefined;
-  const id = ICD_CODES.get(value);
+  const id = ICD_CODES.get(value) ?? ICD_CATEGORIES.get(value.slice(0, 3));
   return id === undefined ? undefined : conceptOf(id);
 }
 

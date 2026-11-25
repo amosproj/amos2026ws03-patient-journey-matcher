@@ -448,15 +448,17 @@ export function otherDisease(
   );
 }
 
+/** A general heading such as tumor, carcinoma or adenocarcinoma, which names no disease of its own. */
+export function isGenericNeoplasm(id: string): boolean {
+  return GENERIC_NEOPLASMS.has(id);
+}
+
 /**
- * Diagnoses that name no disease of their own beside a specific cancer of the patient: "Tumor"
- * or "Adenokarzinom" in the pathology report of a prostate cancer say what kind it is.
+ * Diagnoses that name no disease of their own: "Tumor" or "Adenokarzinom" in the pathology report
+ * of a prostate cancer say what kind it is, and alone they would let in papers on any cancer.
  */
 export function unspecificDiagnoses(diagnoses: readonly string[]): string[] {
-  const specific = diagnoses.some(
-    (id) => NEOPLASMS.has(id) && !GENERIC_NEOPLASMS.has(id),
-  );
-  return specific ? diagnoses.filter((id) => GENERIC_NEOPLASMS.has(id)) : [];
+  return diagnoses.filter(isGenericNeoplasm);
 }
 
 /** After his treatment began: a paper about a treatment option the patient did not get. */

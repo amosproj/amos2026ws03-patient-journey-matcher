@@ -27,7 +27,7 @@
       "title": "biochemical(?:ly)? (?:recurren|relapse|failure|progression)|\\bbcr\\b|psa (?:recurren|relapse|failure|persistence)|recurrent prostate|salvage|\\b(?:recurrent|relapsed|relapsing)\\b",
       "mesh": ["mesh:D009364"],
       "concepts": ["mesh:D009364"],
-      "names": "rezidiv|recurren|relapse|psa anstieg nach"
+      "names": "rezidiv(?!ierend)|recurren|relapse|psa anstieg nach"
     },
     {
       "id": "metastatic",
