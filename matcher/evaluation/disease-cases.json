@@ -15,5 +15,24 @@
     "holdout": true,
     "diagnosis": "mesh:D003424",
     "controls": ["pubmed:20587545", "pubmed:21349113"]
+  },
+  "Lung-EGFR": {
+    "diagnosis": "mesh:D008175",
+    "points": ["e02", "e07", "e10", "e12"]
+  },
+  "Holdout-Breast": {
+    "holdout": true,
+    "diagnosis": "mesh:D001943",
+    "points": ["e02", "e07", "e13", "e16"]
+  },
+  "Holdout-Ovarian": {
+    "holdout": true,
+    "diagnosis": "mesh:D010051",
+    "points": ["e02", "e05", "e12", "e14"]
+  },
+  "Holdout-Colorectal": {
+    "holdout": true,
+    "diagnosis": "mesh:D012004",
+    "points": ["e02", "e06", "e11", "e16"]
   }
 }

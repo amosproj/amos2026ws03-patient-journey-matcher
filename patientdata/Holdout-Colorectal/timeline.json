@@ -1,0 +1,334 @@
+{
+  "patient_id": "Holdout-Colorectal",
+  "pathway_id": "hc01",
+  "start_date": "2026-10-05",
+  "events": [
+    {
+      "id": "e01",
+      "type": "referral",
+      "label": "Überweisung zur Koloskopie bei peranalem Blutabgang",
+      "date": "2026-10-05",
+      "specialist": "hausarzt",
+      "parameters": {
+        "reason": "64-jähriger Patient mit rezidivierendem peranalem Blutabgang, wechselnden Stuhlgewohnheiten und Tenesmen seit ca. 3 Monaten; digital-rektal kein sicherer Tastbefund",
+        "age_years": 64,
+        "hb_g_dl": 12.1,
+        "prior_screening": "Bislang keine Vorsorgekoloskopie, kein iFOBT",
+        "comorbidities": "Diabetes mellitus Typ 2 (Metformin), arterielle Hypertonie",
+        "suspected_diagnosis": "V. a. kolorektales Karzinom, DD Hämorrhoidalblutung"
+      },
+      "documents": [
+        "ueberweisungsbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e02",
+      "type": "endoscopy",
+      "label": "Koloskopie mit Biopsie: ulzerierter Tumor im mittleren Rektumdrittel",
+      "date": "2026-10-14",
+      "specialist": "gastroenterologie",
+      "parameters": {
+        "finding": "Ulzerierter, semizirkulärer, leicht stenosierender Tumor 7–12 cm ab ano, mit dem Koloskop passierbar; übriges Kolon bis zum Zökum einsehbar, 2 Polypen im Colon ascendens (5 und 8 mm) abgetragen",
+        "distance_from_anal_verge_cm": 7,
+        "biopsies": "6 Biopsien aus dem Tumorrand",
+        "bowel_preparation": "Boston Bowel Preparation Scale 8",
+        "assessment": "Makroskopisch hochgradiger V. a. Rektumkarzinom"
+      },
+      "documents": [
+        "endoskopiebefund"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e03",
+      "type": "pathology",
+      "label": "Histologie: Adenokarzinom des Rektums, G2, MMR-profizient",
+      "date": "2026-10-19",
+      "specialist": "pathologie",
+      "parameters": {
+        "diagnosis": "Adenokarzinom des Rektums, mäßig differenziert (G2)",
+        "icd_code": "C20",
+        "mmr_status": "MMR-profizient (MLH1, PMS2, MSH2, MSH6 nukleär exprimiert)",
+        "polyps": "2 tubuläre Adenome mit niedriggradiger intraepithelialer Neoplasie, Colon ascendens"
+      },
+      "documents": [
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e04",
+      "type": "imaging",
+      "label": "Staging: MRT Becken (Rektumprotokoll) und CT Thorax/Abdomen",
+      "date": "2026-10-22",
+      "specialist": "radiologie",
+      "parameters": {
+        "modality": "MRT Becken (Rektumprotokoll), CT Thorax/Abdomen mit KM",
+        "finding": "Tumor im mittleren Rektumdrittel, Unterrand 7 cm ab Anokutanlinie, Längsausdehnung 5 cm, extramurale Infiltrationstiefe 7 mm; minimaler Abstand zur mesorektalen Faszie 1 mm (MRF+), EMVI positiv; 3 suspekte mesorektale LK, keine suspekten lateralen LK; CT: kein Anhalt für Fernmetastasen",
+        "tnm": "cT3c cN1b cM0, MRF+, EMVI+",
+        "uicc_stage": "IIIB",
+        "cea_ng_ml": 6.8
+      },
+      "documents": [
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e05",
+      "type": "tumor_board",
+      "label": "Prätherapeutische Tumorkonferenz Darmzentrum",
+      "date": "2026-10-28",
+      "specialist": "viszeralchirurgie",
+      "parameters": {
+        "diagnosis": "Adenokarzinom des mittleren Rektumdrittels cT3c cN1b cM0, MRF+, EMVI+, G2, pMMR",
+        "icd_code": "C20",
+        "decision": "Totale neoadjuvante Therapie: Radiochemotherapie 50,4 Gy mit Capecitabin, anschließend konsolidierende Chemotherapie mit 4 Zyklen CAPOX; Re-Staging (MRT Becken, Endoskopie, CT) ca. 4–6 Wochen nach Abschluss; danach TME bzw. bei klinischer Komplettremission Organerhalt besprechen; DPD-Testung vor Fluoropyrimidinen",
+        "participants": [
+          "viszeralchirurgie",
+          "gastroenterologie",
+          "strahlentherapie",
+          "haematologie_onkologie",
+          "radiologie",
+          "pathologie"
+        ],
+        "ecog": 0
+      },
+      "documents": [
+        "tumorkonferenzprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e06",
+      "type": "radiation",
+      "label": "Neoadjuvante Radiochemotherapie des Rektums (50,4 Gy) mit Capecitabin",
+      "date": "2026-11-16",
+      "specialist": "strahlentherapie",
+      "parameters": {
+        "technique": "VMAT, bildgeführt (IGRT)",
+        "target": "Primärtumor, Mesorektum, präsakrale und iliakal-interne Lymphabflusswege sowie Obturatoriusregion",
+        "total_dose_gy": 50.4,
+        "fractions": 28,
+        "dose_detail": "45 Gy auf das elektive Volumen, sequentieller Boost auf Tumor und Mesorektum bis 50,4 Gy (ED 1,8 Gy)",
+        "concurrent_chemo": "Capecitabin 825 mg/m² 2× tgl. an Bestrahlungstagen",
+        "dpyd_status": "DPYD-Genotypisierung: keine relevante Variante nachgewiesen"
+      },
+      "documents": [
+        "bestrahlungsplan",
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e07",
+      "type": "systemic_therapy",
+      "label": "Konsolidierende Chemotherapie mit CAPOX (4 Zyklen)",
+      "date": "2027-01-11",
+      "specialist": "haematologie_onkologie",
+      "parameters": {
+        "setting": "Totale neoadjuvante Therapie, konsolidierend nach Radiochemotherapie",
+        "regimen": "Oxaliplatin 130 mg/m² d1 + Capecitabin 1000 mg/m² 2× tgl. d1–14, q21d ×4",
+        "rct_tolerance": "Radiochemotherapie planmäßig abgeschlossen, Diarrhö und Proktitis Grad 2",
+        "cea_ng_ml": 3.1
+      },
+      "documents": [
+        "chemotherapieprotokoll",
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e08",
+      "type": "tumor_board",
+      "label": "Re-Staging nach totaler neoadjuvanter Therapie: Tumorkonferenz",
+      "date": "2027-05-05",
+      "specialist": "viszeralchirurgie",
+      "parameters": {
+        "restaging": "MRT Becken: deutliche Größenregredienz, residuelle intermediäre Signalgebung mit Diffusionsrestriktion an der Tumorbasis (mrTRG 3), mesorektale LK nicht mehr suspekt; Rektoskopie: residueller ulzerierter Tumor ca. 1,5 cm; CT Thorax/Abdomen: kein Anhalt für Fernmetastasen",
+        "response": "Inkomplette klinische Remission (ycT2–3 ycN0)",
+        "cea_ng_ml": 2.2,
+        "toxicity": "Periphere Polyneuropathie Grad 1 nach Oxaliplatin",
+        "decision": "Laparoskopische tiefe anteriore Rektumresektion mit totaler mesorektaler Exzision und protektivem Ileostoma; kein Organerhalt bei sichtbarem Resttumor",
+        "participants": [
+          "viszeralchirurgie",
+          "gastroenterologie",
+          "strahlentherapie",
+          "haematologie_onkologie",
+          "radiologie",
+          "pathologie"
+        ]
+      },
+      "documents": [
+        "tumorkonferenzprotokoll",
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e09",
+      "type": "surgery",
+      "label": "Laparoskopische tiefe anteriore Rektumresektion mit TME und protektivem Ileostoma",
+      "date": "2027-05-26",
+      "specialist": "viszeralchirurgie",
+      "parameters": {
+        "procedure": "Laparoskopische tiefe anteriore Rektumresektion mit totaler mesorektaler Exzision, zentrale Ligatur der A. mesenterica inferior, Mobilisation der linken Flexur",
+        "anastomosis": "Klammernahtanastomose Seit-zu-End, 4 cm ab Anokutanlinie, Dichtigkeitsprobe negativ",
+        "nerve_preservation": "Autonome Beckennerven dargestellt und geschont",
+        "stoma": "Protektives doppelläufiges Ileostoma"
+      },
+      "documents": [
+        "op_bericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e10",
+      "type": "pathology",
+      "label": "Histologie Rektumresektat: ypT2 ypN0 (0/19), R0",
+      "date": "2027-06-02",
+      "specialist": "pathologie",
+      "parameters": {
+        "diagnosis": "Residuelles Adenokarzinom des Rektums nach totaler neoadjuvanter Therapie",
+        "icd_code": "C20",
+        "tnm": "ypT2 ypN0 (0/19) L0 V0 Pn0 R0",
+        "grading": "G2",
+        "regression": "Tumorregression nach Dworak Grad 2",
+        "crm_mm": 9,
+        "distal_margin_mm": 22,
+        "tme_quality": "Mesorektale Resektionsebene (Grad 1, gut)"
+      },
+      "documents": [
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e11",
+      "type": "followup",
+      "label": "Nachsorge 1 Jahr nach Rektumresektion",
+      "date": "2028-06-12",
+      "specialist": "gastroenterologie",
+      "parameters": {
+        "finding": "Koloskopie: Anastomose reizlos, kein Lokalrezidiv, keine Polypen; CT Thorax/Abdomen: kein Anhalt für Rezidiv oder Metastasen",
+        "cea_ng_ml": 1.9,
+        "course": "Postoperativ keine adjuvante Therapie (Chemotherapie vollständig neoadjuvant appliziert); Ileostoma-Rückverlagerung 08/2027 komplikationslos",
+        "functional_outcome": "Low-anterior-Resection-Syndrom (LARS-Score 31, major LARS): Stuhlfrequenz 5–6×/d, imperativer Stuhldrang",
+        "neuropathy": "Periphere Polyneuropathie Grad 1 (Füße), rückläufig",
+        "plan": "Beckenbodentraining, Loperamid bei Bedarf, Ernährungsberatung, transanale Irrigation erwägen; CEA und Abdomensonographie halbjährlich, CT Thorax/Abdomen jährlich, nächste Koloskopie in 5 Jahren"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "endoskopiebefund",
+        "laborbericht"
+      ],
+      "repeat_index": 0
+    },
+    {
+      "id": "e12",
+      "type": "progression",
+      "label": "CEA-Anstieg und neuer Lungenrundherd re.: V. a. pulmonale Metastase",
+      "date": "2029-02-19",
+      "specialist": "haematologie_onkologie",
+      "parameters": {
+        "cea_ng_ml": 7.9,
+        "cea_course": "1,9 ng/ml (06/2028), 3,4 ng/ml (12/2028), 7,9 ng/ml (02/2029)",
+        "imaging": "CT Thorax/Abdomen: neuer solitärer Rundherd 16 mm im rechten Unterlappen (Segment 6); FDG-PET/CT: isolierte Mehrspeicherung des Herdes (SUVmax 7,2), kein Lokalrezidiv, keine weiteren Herde",
+        "symptoms": "beschwerdefrei",
+        "ecog": 0
+      },
+      "documents": [
+        "arztbrief",
+        "befundbericht",
+        "laborbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e13",
+      "type": "tumor_board",
+      "label": "Tumorkonferenz: V. a. solitäre metachrone Lungenmetastase",
+      "date": "2029-02-27",
+      "specialist": "haematologie_onkologie",
+      "parameters": {
+        "diagnosis": "V. a. solitäre metachrone Lungenmetastase re. Unterlappen bei Rektumkarzinom (ED 10/2026, ypT2 ypN0 R0 nach totaler neoadjuvanter Therapie); krankheitsfreies Intervall ca. 21 Monate",
+        "icd_code": "C20",
+        "decision": "Lokale Therapie mit kurativem Ziel: VATS-Segmentresektion mit Schnellschnitt und systematischer mediastinaler LK-Dissektion; RAS/BRAF-, MSI- und HER2-Testung am Resektat; anschließend engmaschige Nachsorge",
+        "alternative": "Stereotaktische Bestrahlung bei funktioneller Inoperabilität",
+        "participants": [
+          "haematologie_onkologie",
+          "thoraxchirurgie",
+          "viszeralchirurgie",
+          "radiologie",
+          "nuklearmedizin",
+          "strahlentherapie",
+          "pathologie"
+        ]
+      },
+      "documents": [
+        "tumorkonferenzprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e14",
+      "type": "surgery",
+      "label": "VATS-Segmentresektion S6 re. mit mediastinaler Lymphknotendissektion",
+      "date": "2029-03-20",
+      "specialist": "thoraxchirurgie",
+      "parameters": {
+        "procedure": "Videoassistierte thorakoskopische Segmentresektion S6 re.; Schnellschnitt: Metastase eines Adenokarzinoms; systematische mediastinale und hiläre LK-Dissektion",
+        "histology": "Metastase des bekannten Rektumkarzinoms (CK20+, CDX2+, CK7–, TTF-1–), 15 mm, Resektionsabstand 12 mm, 0/11 LK",
+        "r_status": "R0"
+      },
+      "documents": [
+        "op_bericht",
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e15",
+      "type": "progression",
+      "label": "Progress: multiple pulmonale und hepatische Metastasen",
+      "date": "2030-01-28",
+      "specialist": "haematologie_onkologie",
+      "parameters": {
+        "cea_ng_ml": 28.4,
+        "imaging": "CT Thorax/Abdomen: neu mehr als 10 pulmonale Rundherde bds. (bis 14 mm), 3 Lebermetastasen (Segment II 22 mm, Segment VI 31 mm, Segment VIII 18 mm); kein Lokalrezidiv",
+        "assessment": "Disseminierte, nicht resektable Metastasierung; palliative Therapiesituation",
+        "symptoms": "Reizhusten, Gewichtsverlust 2 kg",
+        "ecog": 1
+      },
+      "documents": [
+        "arztbrief",
+        "befundbericht",
+        "laborbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e16",
+      "type": "systemic_therapy",
+      "label": "Palliative Erstlinientherapie: FOLFIRI plus Panitumumab",
+      "date": "2030-02-18",
+      "specialist": "haematologie_onkologie",
+      "parameters": {
+        "line": "1. Linie, palliativ",
+        "molecular": "Lungenmetastasen-Resektat 03/2029: KRAS und NRAS (Exon 2–4) Wildtyp, BRAF V600E negativ, mikrosatellitenstabil (pMMR), HER2 nicht amplifiziert",
+        "primary_tumor_side": "linksseitig (Rektum)",
+        "regimen": "Irinotecan 180 mg/m² d1, Folinsäure 400 mg/m² d1, 5-FU 400 mg/m² Bolus und 2400 mg/m² über 46 h, q14d; Panitumumab 6 mg/kg d1 q14d",
+        "rationale": "Linksseitiger RAS/BRAF-Wildtyp-Tumor; Irinotecan statt Oxaliplatin wegen persistierender Polyneuropathie Grad 1 nach Oxaliplatin",
+        "pharmacogenetics": "DPYD ohne relevante Variante (bekannt), UGT1A1 *1/*28 heterozygot: Standarddosis",
+        "supportive": "Doxycyclin-Prophylaxe und Hautpflege gegen akneiformes Exanthem, Magnesiumkontrollen; Port re. infraklavikulär neu angelegt"
+      },
+      "documents": [
+        "chemotherapieprotokoll",
+        "arztbrief",
+        "molekularpathologischer_befund"
+      ],
+      "repeat_index": null
+    }
+  ]
+}

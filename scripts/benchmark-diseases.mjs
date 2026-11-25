@@ -1,6 +1,6 @@
 // Run and pool local MCP calls. Reproduction commands are in research/matching-evaluation.md.
 import { createHash } from "node:crypto";
-import { mkdir, readdir, readFile, writeFile } from "node:fs/promises";
+import { access, mkdir, readdir, readFile, writeFile } from "node:fs/promises";
 import { createRequire } from "node:module";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
@@ -12,6 +12,11 @@ import { ndcgAt } from "../matcher/evaluation/src/metrics.ts";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const json = async (file) => JSON.parse(await readFile(file, "utf8"));
+const exists = (file) =>
+  access(file).then(
+    () => true,
+    () => false,
+  );
 const write = (file, data) =>
   writeFile(file, `${JSON.stringify(data, null, 2)}\n`);
 const evaluation = path.join(root, "matcher/evaluation");
@@ -24,18 +29,20 @@ const points = Object.entries(stored.points).map(([id, { as_of }]) => ({
   diagnosis: "mesh:D011471",
 }));
 const cases = await json(path.join(evaluation, "disease-cases.json"));
-for (const [patient, info] of Object.entries(cases)) {
+for (const [patient, { points: chosen, ...info }] of Object.entries(cases)) {
   const journey = await json(
     path.join(root, "patientdata", patient, "timeline.json"),
   );
+  // A case lists its evaluation points, or every event is one.
   for (const event of journey.events)
-    points.push({
-      patient,
-      group: patient,
-      id: `${patient}-${event.id}`,
-      as_of: event.date,
-      ...info,
-    });
+    if (!chosen || chosen.includes(event.id))
+      points.push({
+        patient,
+        group: patient,
+        id: `${patient}-${event.id}`,
+        as_of: event.date,
+        ...info,
+      });
 }
 const [command, directory, ...args] = process.argv.slice(2);
 if (!directory)
@@ -126,9 +133,15 @@ if (command === "run") {
         continue;
       for (const form of ["graph", "timeline"]) {
         const input = form === "timeline" ? "journey" : form;
-        const patient = await json(
-          path.join(root, "patientdata", point.patient, `${form}.json`),
+        const file = path.join(
+          root,
+          "patientdata",
+          point.patient,
+          `${form}.json`,
         );
+        // A case without a patient graph is matched by its timeline only.
+        if (form === "graph" && !(await exists(file))) continue;
+        const patient = await json(file);
         const request = {
           [input]: { ...patient, as_of: point.as_of },
           algorithm,

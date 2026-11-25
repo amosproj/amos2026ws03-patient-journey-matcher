@@ -1,0 +1,327 @@
+{
+  "patient_id": "Holdout-Ovarian",
+  "pathway_id": "ho01",
+  "start_date": "2026-06-02",
+  "events": [
+    {
+      "id": "e01",
+      "type": "referral",
+      "label": "Überweisung zur gynäkologischen Abklärung bei Aszites und Bauchumfangszunahme",
+      "date": "2026-06-02",
+      "specialist": "hausarzt",
+      "parameters": {
+        "reason": "Seit ca. 8 Wochen Völlegefühl, Zunahme des Bauchumfangs, Inappetenz und Gewichtsverlust von 3 kg; sonographisch freie Flüssigkeit im Abdomen",
+        "age_years": 61,
+        "comorbidities": "Hypothyreose (substituiert)",
+        "suspected_diagnosis": "V. a. Ovarialkarzinom, DD Peritonealkarzinose anderer Genese"
+      },
+      "documents": [
+        "ueberweisungsbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e02",
+      "type": "imaging",
+      "label": "Transvaginal- und Abdominalsonographie mit Tumormarkern",
+      "date": "2026-06-05",
+      "specialist": "gynaekologie",
+      "parameters": {
+        "modality": "Transvaginalsonographie, Abdominalsonographie",
+        "finding": "Adnexe bds. vergrößert (re. 82 mm, li. 51 mm), solide-zystisch mit papillären Anteilen und kräftiger Vaskularisation; mäßiger Aszites; V. a. Omental cake",
+        "o_rads": 5,
+        "ca125_u_ml": 1420,
+        "cea_ng_ml": 2.3,
+        "ca19_9_u_ml": 28,
+        "assessment": "Hochgradiger V. a. fortgeschrittenes Ovarialkarzinom"
+      },
+      "documents": [
+        "befundbericht",
+        "laborbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e03",
+      "type": "imaging",
+      "label": "CT Thorax/Abdomen/Becken mit KM",
+      "date": "2026-06-10",
+      "specialist": "radiologie",
+      "parameters": {
+        "modality": "CT",
+        "finding": "Bilaterale komplexe Adnexraumforderungen, Peritonealkarzinose mit Omental cake (bis 6 cm), Implantate an der rechten Zwerchfellkuppel (bis 3 cm) und perihepatisch, mäßiger Aszites; paraaortaler LK 14 mm, suspekt; kein Pleuraerguss, keine Lungen- oder Leberparenchymmetastasen",
+        "radiological_stage": "cT3c cN1 cM0 (FIGO IIIC)"
+      },
+      "documents": [
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e04",
+      "type": "tumor_board",
+      "label": "Prätherapeutische Tumorkonferenz: V. a. fortgeschrittenes Ovarialkarzinom",
+      "date": "2026-06-12",
+      "specialist": "gynaekologische_onkologie",
+      "parameters": {
+        "diagnosis": "V. a. Ovarialkarzinom bds. mit Peritonealkarzinose, radiologisch FIGO IIIC",
+        "resectability": "Makroskopische Komplettresektion nach Bildgebung erreichbar; ECOG 1, Albumin 36 g/l",
+        "recommendation": "Primäre Operation (Längsschnittlaparotomie) mit dem Ziel der makroskopischen Komplettresektion; Aufklärung über Darmresektion und mögliches Stoma; keine systematische Lymphonodektomie bei unauffälligen LK, Entfernung suspekter LK",
+        "participants": [
+          "gynaekologische_onkologie",
+          "radiologie",
+          "pathologie",
+          "viszeralchirurgie",
+          "haematologie_onkologie"
+        ],
+        "ecog": 1
+      },
+      "documents": [
+        "tumorkonferenzprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e05",
+      "type": "surgery",
+      "label": "Primäre Debulking-Operation mit Rektosigmoidresektion",
+      "date": "2026-06-23",
+      "specialist": "gynaekologische_onkologie",
+      "parameters": {
+        "procedure": "Längsschnittlaparotomie, Aszitesentnahme (2,1 l) zur Zytologie, Hysterektomie und Adnexektomie bds., infragastrische Omentektomie, Deperitonealisierung von Becken und rechter Zwerchfellkuppel, Rektosigmoidresektion mit Descendorektostomie (ohne Stoma), Resektion suspekter paraaortaler LK",
+        "intraop_findings": "Peritonealkarzinose in Becken, Mittel- und Oberbauch, Omental cake 8 cm, Zwerchfellimplantate re. bis 3 cm; PCI 18",
+        "residual_tumor": "Makroskopische Komplettresektion (kein sichtbarer Resttumor)",
+        "duration_min": 395,
+        "blood_loss_ml": 900
+      },
+      "documents": [
+        "op_bericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e06",
+      "type": "pathology",
+      "label": "Histologie: high-grade seröses Ovarialkarzinom bds., pT3c pN1b, FIGO IIIC",
+      "date": "2026-06-30",
+      "specialist": "pathologie",
+      "parameters": {
+        "diagnosis": "High-grade seröses Karzinom beider Ovarien mit Tubenbeteiligung, STIC der rechten Tube",
+        "icd_code": "C56 B",
+        "tnm": "pT3c pN1b (2/6) L1 V0 Pn0 R0",
+        "figo": "IIIC",
+        "immunohistochemistry": "p53 aberrant (diffuse Überexpression), WT1 positiv, PAX8 positiv",
+        "spread": "Omentum, Peritoneum von Becken und rechter Zwerchfellkuppel, Serosa des Rektosigmoids (Mukosa frei)",
+        "ascites_cytology": "Tumorzellen nachweisbar"
+      },
+      "documents": [
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e07",
+      "type": "hospital_discharge",
+      "label": "Entlassung nach primärer Debulking-Operation",
+      "date": "2026-07-04",
+      "specialist": "gynaekologische_onkologie",
+      "parameters": {
+        "diagnosis": "High-grade seröses Ovarialkarzinom bds. pT3c pN1b (2/6) cM0 L1 V0 R0, FIGO IIIC",
+        "icd_code": "C56 B",
+        "postoperative_course": "1 Tag Intensivstation, verzögerter Kostaufbau bei Darmatonie, Anastomose suffizient, primäre Wundheilung",
+        "thromboprophylaxis": "NMH für insgesamt 28 Tage postoperativ",
+        "ecog": 1,
+        "next_steps": "Vorstellung in der Tumorkonferenz zur Planung der Systemtherapie; humangenetische Beratung"
+      },
+      "documents": [
+        "entlassungsbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e08",
+      "type": "tumor_board",
+      "label": "Postoperative Tumorkonferenz",
+      "date": "2026-07-08",
+      "specialist": "gynaekologische_onkologie",
+      "parameters": {
+        "diagnosis": "High-grade seröses Ovarialkarzinom bds. pT3c pN1b (2/6) cM0, FIGO IIIC, makroskopisch tumorfrei operiert",
+        "icd_code": "C56 B",
+        "recommendation": "6 Zyklen Carboplatin AUC 5 / Paclitaxel 175 mg/m² q3w, Bevacizumab 15 mg/kg ab Zyklus 2; Festlegung der Erhaltungstherapie nach Vorliegen von BRCA- und HRD-Status; Keimbahntestung (Humangenetik) und tumorgenetische Testung (BRCA1/2, HRD) veranlasst",
+        "participants": [
+          "gynaekologische_onkologie",
+          "pathologie",
+          "radiologie",
+          "haematologie_onkologie",
+          "humangenetik"
+        ]
+      },
+      "documents": [
+        "tumorkonferenzprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e09",
+      "type": "systemic_therapy",
+      "label": "Beginn First-Line-Chemotherapie Carboplatin/Paclitaxel (Zyklus 1 von 6)",
+      "date": "2026-07-20",
+      "specialist": "gynaekologische_onkologie",
+      "parameters": {
+        "setting": "First-Line, postoperativ",
+        "regimen": "Carboplatin AUC 5 + Paclitaxel 175 mg/m² d1 q21d ×6",
+        "bevacizumab": "15 mg/kg q3w ab Zyklus 2 (Abstand zur Operation > 28 Tage)",
+        "ca125_u_ml": 212
+      },
+      "documents": [
+        "chemotherapieprotokoll",
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e10",
+      "type": "lab_test",
+      "label": "Molekulare Diagnostik: HRD positiv, BRCA1/2 ohne pathogene Variante (Tumor und Keimbahn)",
+      "date": "2026-08-17",
+      "specialist": "molekularpathologie",
+      "parameters": {
+        "test": "Tumorgenetische HRD-Analyse (BRCA1/2-Sequenzierung, genomischer Instabilitäts-Score) und Keimbahn-Multigenpanel",
+        "tumor_brca": "BRCA1/2 im Tumor ohne pathogene Variante",
+        "hrd_status": "positiv",
+        "gis_score": 58,
+        "gis_cutoff": 42,
+        "germline_result": "Keine pathogene Keimbahnvariante (BRCA1, BRCA2, RAD51C, RAD51D, BRIP1, PALB2, MLH1, MSH2, MSH6, PMS2)"
+      },
+      "documents": [
+        "molekularpathologischer_befund",
+        "humangenetischer_befund"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e11",
+      "type": "systemic_therapy",
+      "label": "Beginn Erhaltungstherapie mit Olaparib plus Bevacizumab",
+      "date": "2026-11-30",
+      "specialist": "gynaekologische_onkologie",
+      "parameters": {
+        "response": "Komplette Remission nach 6 Zyklen (CT Thorax/Abdomen/Becken: kein Tumornachweis, kein Aszites)",
+        "ca125_u_ml": 9,
+        "drug": "Olaparib 300 mg 2× tgl. p.o. für bis zu 24 Monate; Bevacizumab 15 mg/kg q3w bis insgesamt 15 Monate",
+        "biomarker_basis": "HRD-positiv, BRCA-Wildtyp",
+        "residual_toxicity": "Periphere Polyneuropathie Grad 1",
+        "hb_g_dl": 11.4
+      },
+      "documents": [
+        "arztbrief",
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e12",
+      "type": "followup",
+      "label": "Nachsorge unter Olaparib-Erhaltung",
+      "date": "2027-12-06",
+      "specialist": "gynaekologische_onkologie",
+      "parameters": {
+        "finding": "Klinisch und transvaginalsonographisch kein Anhalt für Rezidiv",
+        "ca125_u_ml": 7,
+        "therapy_status": "Bevacizumab nach 15 Monaten planmäßig beendet (letzte Gabe 10/2027); Olaparib seit 03/2027 mit 250 mg 2× tgl. nach Anämie Grad 3 (Hb 7,4 g/dl, Transfusion von 2 EK)",
+        "adverse_events": "Arterielle Hypertonie Grad 2 unter Bevacizumab, mit Ramipril eingestellt; Fatigue Grad 1",
+        "hb_g_dl": 11.2,
+        "plan": "Olaparib bis 11/2028, Nachsorge alle 3 Monate"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 0
+    },
+    {
+      "id": "e13",
+      "type": "progression",
+      "label": "Erstes Rezidiv: CA-125-Anstieg und peritoneale Herde",
+      "date": "2029-08-13",
+      "specialist": "gynaekologische_onkologie",
+      "parameters": {
+        "ca125_u_ml": 94,
+        "ca125_course": "Nadir 7 U/ml; 05/2029 38 U/ml, Kontrolle 08/2029 94 U/ml",
+        "imaging": "CT Thorax/Abdomen/Becken: 2 peritoneale Herde (Douglas-Raum 28 mm, linke Kolonflexur 21 mm), kein Aszites, keine parenchymatösen oder Lymphknotenmetastasen",
+        "symptoms": "beschwerdefrei",
+        "ecog": 0,
+        "platinum_free_interval_months": 33,
+        "prior_maintenance": "Olaparib 11/2026–11/2028 (24 Monate), Bevacizumab bis 10/2027"
+      },
+      "documents": [
+        "arztbrief",
+        "befundbericht",
+        "laborbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e14",
+      "type": "tumor_board",
+      "label": "Rezidiv-Tumorkonferenz: platinsensibles Rezidiv",
+      "date": "2029-08-21",
+      "specialist": "gynaekologische_onkologie",
+      "parameters": {
+        "diagnosis": "Erstes peritoneales Rezidiv eines high-grade serösen Ovarialkarzinoms (ED 06/2026, FIGO IIIC, HRD-positiv, BRCA-Wildtyp); platinfreies Intervall 33 Monate",
+        "icd_code": "C56 B",
+        "ago_score": "positiv (ECOG 0, kein Aszites, Komplettresektion bei der Primäroperation)",
+        "recommendation": "Sekundäre Zytoreduktion mit dem Ziel der Komplettresektion; anschließend platinhaltige Zweitlinientherapie mit Carboplatin/pegyliertem liposomalem Doxorubicin (6 Zyklen), keine erneute Bevacizumab-Therapie nach Vorbehandlung in der Erstlinie; erneute PARP-Inhibitor-Erhaltung nach Ansprechen im Verlauf besprechen",
+        "participants": [
+          "gynaekologische_onkologie",
+          "radiologie",
+          "pathologie",
+          "viszeralchirurgie",
+          "haematologie_onkologie",
+          "psychoonkologie"
+        ]
+      },
+      "documents": [
+        "tumorkonferenzprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e15",
+      "type": "surgery",
+      "label": "Sekundäre Zytoreduktion: Resektion Douglas-Herd und Peritonealherd linke Kolonflexur",
+      "date": "2029-09-10",
+      "specialist": "gynaekologische_onkologie",
+      "parameters": {
+        "procedure": "Relaparotomie, Adhäsiolyse, Resektion des Douglas-Herdes mit Deperitonealisierung des Beckenbodens, Exzision des Peritonealherdes an der linken Kolonflexur unter Erhalt des Darms",
+        "intraop_findings": "Keine weitere Peritonealkarzinose, PCI 4",
+        "residual_tumor": "Makroskopische Komplettresektion",
+        "histology": "Rezidiv des bekannten high-grade serösen Karzinoms"
+      },
+      "documents": [
+        "op_bericht",
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e16",
+      "type": "systemic_therapy",
+      "label": "Zweitlinien-Chemotherapie Carboplatin/PLD",
+      "date": "2029-10-15",
+      "specialist": "gynaekologische_onkologie",
+      "parameters": {
+        "line": "2. Linie, platinsensibles Rezidiv",
+        "regimen": "Carboplatin AUC 5 + pegyliertes liposomales Doxorubicin 30 mg/m² d1 q28d ×6",
+        "maintenance_plan": "Keine erneute Bevacizumab-Therapie (Vorbehandlung in der Erstlinie); PARP-Inhibitor-Rechallenge nach Ansprechen erneut besprechen",
+        "ca125_u_ml": 19,
+        "supportive": "Prophylaxe von Hand-Fuß-Syndrom und Mukositis"
+      },
+      "documents": [
+        "chemotherapieprotokoll",
+        "arztbrief"
+      ],
+      "repeat_index": null
+    }
+  ]
+}
