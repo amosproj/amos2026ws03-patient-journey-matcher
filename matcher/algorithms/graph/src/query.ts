@@ -264,6 +264,11 @@ function timelineTreatments(event: JourneyEvent, terminology: Terminology) {
   return courses;
 }
 
+/** A code of a secondary neoplasm, such as C78.7 for liver metastases. */
+function isSpread(code: unknown): boolean {
+  return typeof code === "string" && /^\s*C7[7-9](?![0-9])/i.test(code);
+}
+
 function timelineConditions(
   events: JourneyEvent[],
   terminology: Terminology,
@@ -292,12 +297,15 @@ function timelineConditions(
         : [];
     const byCode = resolveIcd(code);
     const labelHits = diagnostic || byCode?.type === "disease" ? label : [];
+    // A code of a metastasis (C77 to C79, liver metastases C78.7) says where a cancer has spread,
+    // not which cancer it is: it contradicts no name or code of the primary.
     const codes = [...field, ...labelHits]
-      .filter((hit) => hit.code)
+      .filter((hit) => hit.code && !isSpread(hit.code))
       .map((hit) => hit.concept);
+    const ownCode = isSpread(code) ? undefined : byCode;
     const codeConflict =
-      byCode && codes.some((item) => !compatibleDiagnoses(byCode, item));
-    if (byCode?.type === "disease") codes.push(byCode);
+      ownCode && codes.some((item) => !compatibleDiagnoses(ownCode, item));
+    if (ownCode?.type === "disease") codes.push(ownCode);
     // A name contradicts a code when both name a cancer and neither is a form of the other (breast
     // cancer and C34). A general word such as "Adenokarzinom" says the kind of tumour, which fits
     // any cancer code, and a complication or a further disease beside the coded one is no

@@ -3,7 +3,7 @@
 From the repository root run:
     python3 matcher/algorithms/graph/scripts/build-terminology.py
 
-The offline alternative takes the three unmodified release files via --source-dir.
+The offline alternative takes the four unmodified release files via --source-dir.
 See NOTICE for sources and attribution.
 """
 
@@ -24,16 +24,18 @@ from zipfile import ZipFile
 MESH = "https://repository.publisso.de/resource/frl:6529720/data"
 MONDO = "https://raw.githubusercontent.com/monarch-initiative/mondo/v2026-11-03/src/ontology/mappings/"
 DEST = Path(__file__).resolve().parents[1] / "data" / "mesh-terms.json.gz"
+REVIEWED = DEST.with_name("icd10-mesh.json")
 
 
 DIGESTS = {
     "German_MeSH_2026_XML.zip": "856e5df3cff734cbe74e76a06c4e72701e517c27ca69c3d3d695d28167e19bb6",
+    "mondo_exactmatch_icd10cm.sssom.tsv": "8368d57d416b182b1394e99342abe2b0caafa1e5c87193ca31a2044c5969f890",
     "mondo_exactmatch_icd10who.sssom.tsv": "a3ed268b37e7d59ece8678081338581666223c441771176106cdc109da18fa1d",
     "mondo_exactmatch_mesh.sssom.tsv": "31a75eeb0ac99d09136be389449e8041010f74d4ecc5b5d3f0deb41a81414044",
 }
 
 
-def exact_matches(stream):
+def exact_matches(stream, titles=None):
     rows = csv.DictReader(
         (line for line in stream if not line.startswith("#")), delimiter="\t"
     )
@@ -41,6 +43,8 @@ def exact_matches(stream):
     for row in rows:
         if row["predicate_id"] == "skos:exactMatch":
             result[row["subject_id"]].add(row["object_id"])
+            if titles is not None:
+                titles[row["object_id"]] = row["object_label"]
     return result
 
 
@@ -96,6 +100,11 @@ NEOPLASM_VARIANTS = (
     (re.compile(r"^Krebs (des|der) (.+)$"), ("Karzinom {0} {1}",)),
 )
 
+# The genitive of a one-word German name, as in "Rezidiv eines Magenkarzinoms" or "Folgen
+# des Schlaganfalls": nouns ending in -om, -kt, -all or -ult take -s. The form is added
+# to a disease when no other concept has the name.
+GENITIVE = re.compile(r"[^\s,]{3,}(?:om|kt|all|ult)")
+
 
 # Kinds of carcinoma that name no site: "Urothelkarzinom" or "Carcinoma in situ" beside
 # an organ say what the tumour is, and alone they name no disease. The carcinomas whose
@@ -123,6 +132,24 @@ NOT_HISTOLOGY = {
 }
 
 
+# Neoplastic processes such as lymphatic metastasis or a residual tumour: descriptors
+# whose neoplasm tree numbers all lie under C04.697. Beside a cancer they say how it
+# behaves, and alone they name no disease. A cancer of unknown primary is a diagnosis
+# of its own (C80).
+PROCESS_TREE = "C04.697"
+NOT_PROCESS = {"D009382"}  # Neoplasms, Unknown Primary
+
+# ICD-10-CM categories that Mondo maps exactly while the WHO mapping and icd10-mesh.json
+# lack them, for codes with a subcode: F32.1 is a depressive disorder. Left out are
+# symptoms (R) and factors (Z), and categories that gather several diseases: a residual
+# or combined title, a group of disorders, and those Mondo maps to a broader heading.
+CM_GROUP = re.compile(
+    r"\b(?:other|secondary|and|or|disorders|diseases)\b|elsewhere|unspecified|,",
+    re.I,
+)
+CM_BROADER = {"B56", "N21", "N84"}  # Trypanosomiasis, Urolithiasis, Polyps
+
+
 def normalize(text):
     """The name form of normalizeName in text.ts."""
     text = unicodedata.normalize("NFKD", text.replace("ß", "ss"))
@@ -130,21 +157,17 @@ def normalize(text):
     return re.sub(r"[^\w]+|_", " ", text).strip()
 
 
-def neoplasm_variants(diseases, sites, others):
+def add_variants(diseases, others, propose):
     taken = defaultdict(set)
     for group in (diseases, *others):
         for descriptor, (name, aliases, *_) in group.items():
             for term in (name, *aliases):
                 taken[normalize(term)].add(descriptor)
     proposed = defaultdict(set)
-    for descriptor in sites:
-        name, aliases, _ = diseases[descriptor]
+    for descriptor, (name, aliases, _) in diseases.items():
         for term in (name, *aliases):
-            for pattern, forms in NEOPLASM_VARIANTS:
-                match = pattern.match(term)
-                if match:
-                    for form in forms:
-                        proposed[form.format(*match.groups())].add(descriptor)
+            for form in propose(descriptor, term):
+                proposed[form].add(descriptor)
     for variant, descriptors in proposed.items():
         if len(descriptors) == 1 and normalize(variant) not in taken:
             diseases[next(iter(descriptors))][1].append(variant)
@@ -168,12 +191,13 @@ def procedure_kind(numbers, name):
     return kinds[0] if kinds else None
 
 
-def build(mesh_zip, mesh_map, icd_map, excluded=EXCLUDED):
+def build(mesh_zip, mesh_map, icd_map, cm_map, reviewed, excluded=EXCLUDED):
     diseases = {}
     chemicals = {}
     procedures = {}
     sites = set()
     histology = set()
+    processes = set()
     tree = {}
     with ZipFile(mesh_zip) as archive, archive.open("German_MeSH_2026.xml") as xml:
         for _, record in ET.iterparse(xml):
@@ -191,6 +215,13 @@ def build(mesh_zip, mesh_map, icd_map, excluded=EXCLUDED):
                 and record.findtext("DescriptorUI") not in NOT_HISTOLOGY
             ):
                 histology.add(record.findtext("DescriptorUI"))
+            neoplasm = [p for p in numbers if p.startswith("C04")]
+            if (
+                neoplasm
+                and all(p.startswith(PROCESS_TREE) for p in neoplasm)
+                and record.findtext("DescriptorUI") not in NOT_PROCESS
+            ):
+                processes.add(record.findtext("DescriptorUI"))
             medication = (
                 record.find("PharmacologicalActionList/PharmacologicalAction")
                 is not None
@@ -227,7 +258,18 @@ def build(mesh_zip, mesh_map, icd_map, excluded=EXCLUDED):
                 diseases[tree[path]][2].append(descendant)
     for row in diseases.values():
         row[2] = sorted(set(row[2]))
-    neoplasm_variants(diseases, sites, (chemicals, procedures))
+    def clinical_forms(descriptor, term):
+        for pattern, forms in NEOPLASM_VARIANTS if descriptor in sites else ():
+            match = pattern.match(term)
+            if match:
+                yield from (form.format(*match.groups()) for form in forms)
+
+    add_variants(diseases, (chemicals, procedures), clinical_forms)
+    add_variants(
+        diseases,
+        (chemicals, procedures),
+        lambda _, term: [term + "s"] if GENITIVE.fullmatch(term) else [],
+    )
     for row in diseases.values():
         row[1] = sorted(set(row[1]))
 
@@ -248,12 +290,37 @@ def build(mesh_zip, mesh_map, icd_map, excluded=EXCLUDED):
             target = next(iter(targets)).removeprefix("mesh:")
             if target in diseases:
                 icd[code] = target
+    titles = {}
+    by_category = defaultdict(set)
+    for mondo, codes in exact_matches(cm_map, titles).items():
+        for code in codes:
+            by_category[code].add(mondo)
+    icd_cm = {}
+    for code, subjects in by_category.items():
+        category = code.removeprefix("ICD10CM:")
+        if (
+            len(subjects) != 1
+            or not re.fullmatch(r"[A-Z][0-9]{2}", category)
+            or category[0] in "RZ"
+            or category in icd
+            or category in reviewed
+            or category in CM_BROADER
+            or CM_GROUP.search(titles[code])
+        ):
+            continue
+        targets = mondo_mesh.get(next(iter(subjects)), set())
+        if len(targets) == 1:
+            target = next(iter(targets)).removeprefix("mesh:")
+            if target in diseases:
+                icd_cm[category] = target
     return {
         "diseases": diseases,
         "chemicals": chemicals,
         "procedures": procedures,
         "histology": sorted(histology),
+        "processes": sorted(processes),
         "icd": icd,
+        "icd_cm": icd_cm,
     }
 
 
@@ -262,7 +329,7 @@ def main():
     parser.add_argument(
         "--source-dir",
         type=Path,
-        help="use local German_MeSH_2026_XML.zip and mondo_exactmatch_{mesh,icd10who}.sssom.tsv",
+        help="use local German_MeSH_2026_XML.zip and mondo_exactmatch_{mesh,icd10who,icd10cm}.sssom.tsv",
     )
     args = parser.parse_args()
 
@@ -280,10 +347,13 @@ def main():
         filename = f"mondo_exactmatch_{vocabulary}.sssom.tsv"
         return io.StringIO(read(filename, MONDO + filename).decode())
 
+    reviewed = json.loads(REVIEWED.read_text())
     data = build(
         io.BytesIO(read("German_MeSH_2026_XML.zip", MESH)),
         mapping("mesh"),
         mapping("icd10who"),
+        mapping("icd10cm"),
+        {code for group in ("codes", "categories") for code in reviewed[group]},
     )
     encoded = json.dumps(
         data, ensure_ascii=False, sort_keys=True, separators=(",", ":")
@@ -293,7 +363,8 @@ def main():
     DEST.write_bytes(compressed)
     print(
         f"{len(data['diseases'])} diseases, {len(data['procedures'])} procedures, "
-        f"{len(data['icd'])} exact WHO codes"
+        f"{len(data['icd'])} exact WHO codes, "
+        f"{len(data['icd_cm'])} ICD-10-CM categories"
     )
 
 

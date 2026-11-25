@@ -392,3 +392,9 @@ test("a kind of carcinoma names no disease, a melanoma does", () => {
   expect(isCancer("mesh:D008545")).toBe(true);
   expect(isGenericNeoplasm("mesh:D002292")).toBe(false); // renal cell carcinoma
 });
+
+test("what a tumour does names no disease, a cancer of unknown primary does", () => {
+  expect(isGenericNeoplasm("mesh:D008207")).toBe(true); // lymphatic metastasis
+  expect(isCancer("mesh:D061206")).toBe(false); // micrometastasis
+  expect(isCancer("mesh:D009382")).toBe(true); // unknown primary
+});

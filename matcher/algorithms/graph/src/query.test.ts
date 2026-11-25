@@ -1890,6 +1890,26 @@ test("after a named cancer a progression report's other finding is no diagnosis"
   expect(query.diagnoses.has("mesh:D012004")).toBe(true);
 });
 
+test("a metastasis beside the primary's code is no contradiction", () => {
+  const event = (diagnosis: string, icd_code: string) => ({
+    id: "path",
+    date: "2027-03-02",
+    type: "pathology",
+    label: "Histologie nach Gastrektomie",
+    parameters: { diagnosis, icd_code },
+  });
+  for (const [diagnosis, code] of [
+    ["Adenokarzinom des Magens mit Lymphknotenmetastasen", "C16.2"],
+    ["Lebermetastasen eines Melanoms", "C78.7"],
+  ]) {
+    const query = patientQuery({ context: [], focus: event(diagnosis, code) });
+    expect(
+      query.evidence.map((item) => item.detail),
+      diagnosis,
+    ).not.toContain("Diagnostic name and ICD code disagree");
+  }
+});
+
 test("a complication or a further disease beside a code is no contradiction", () => {
   const event = {
     id: "discharge",

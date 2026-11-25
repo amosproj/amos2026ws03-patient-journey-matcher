@@ -259,3 +259,43 @@ test("a code below a category that Mondo maps to one disease takes that disease"
   // Categories Mondo does not map exactly stay unmapped.
   expect(resolveIcd("M06.1")).toBeUndefined();
 });
+
+test("an ICD-10-CM category serves codes with a subcode, not a bare code", () => {
+  expect(resolveIcd("F32.1")?.id).toBe("mesh:D003866");
+  expect(resolveIcd("K50.0")?.id).toBe("mesh:D003424");
+  expect(resolveIcd("F32")).toBeUndefined();
+  expect(resolveIcd("P53")).toBeUndefined(); // more likely the gene
+  // A category that gathers several diseases is left out.
+  expect(resolveIcd("G47.31")).toBeUndefined();
+});
+
+test("a code with the side or the certainty of ICD-10-GM is the code", () => {
+  expect(resolveIcd("C50.4 L")?.id).toBe("mesh:D001943");
+  expect(resolveIcd("C56 B")?.id).toBe("mesh:D010051");
+  expect(resolveIcd("C61 G")?.id).toBe("mesh:D011471");
+  expect(resolveIcd("C61 V")).toBeUndefined();
+  expect(resolveIcd("C61 A")).toBeUndefined();
+});
+
+test("a code in a text is written in capitals and stands alone", () => {
+  const codes = (text: string) =>
+    defaultTerminology
+      .findDiseases(text)
+      .filter((hit) => hit.code)
+      .map((hit) => hit.code);
+  expect(codes("HLA-B27 positiv")).toEqual([]);
+  expect(codes("p53-Mutation, F18-FDG-PET")).toEqual([]);
+  expect(codes("Diagnose F32.1, Mammakarzinom (C50.4)")).toEqual([
+    "F32.1",
+    "C50.4",
+  ]);
+  expect(codes("Prostatakarzinom C61 A, C50.4 L")).toEqual(["C50.4"]);
+  expect(resolve({ names: ["p53 mutation"] })).toBeUndefined();
+});
+
+test("a German genitive finds the disease", () => {
+  const id = (text: string) =>
+    defaultTerminology.findDiseases(text).map(({ concept }) => concept.id);
+  expect(id("Rezidiv eines Magenkarzinoms")).toEqual(["mesh:D013274"]);
+  expect(id("Folgen des Schlaganfalls")).toEqual(["mesh:D020521"]);
+});

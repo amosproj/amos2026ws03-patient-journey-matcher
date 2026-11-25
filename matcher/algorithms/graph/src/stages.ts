@@ -6,6 +6,7 @@ import data from "../data/stages.json" with { type: "json" };
 import {
   conceptOf,
   HISTOLOGY,
+  PROCESSES,
   QUALIFIERS,
   type Terminology,
 } from "./resolve.ts";
@@ -459,12 +460,13 @@ export function otherDisease(
 }
 
 /**
- * A general heading such as tumor, carcinoma or adenocarcinoma, or a kind of carcinoma that names no
- * site, such as carcinoma in situ: none names a disease of its own. Only for the patient's diagnoses;
- * on a paper the curated headings of neoplasms.json decide what another cancer is.
+ * A general heading such as tumor, carcinoma or adenocarcinoma, a kind of carcinoma that names no
+ * site, such as carcinoma in situ, or what a tumour does, such as lymphatic metastasis: none names a
+ * disease of its own. Only for the patient's diagnoses; on a paper the curated headings of
+ * neoplasms.json decide what another cancer is.
  */
 export function isGenericNeoplasm(id: string): boolean {
-  return GENERIC_NEOPLASMS.has(id) || HISTOLOGY.has(id);
+  return GENERIC_NEOPLASMS.has(id) || HISTOLOGY.has(id) || PROCESSES.has(id);
 }
 
 /**

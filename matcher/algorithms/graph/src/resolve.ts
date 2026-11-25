@@ -65,7 +65,9 @@ type MeshData = {
     [name: string, aliases: string[], kind: ProcedureKind]
   >;
   histology: string[];
+  processes: string[];
   icd: Record<string, string>;
+  icd_cm: Record<string, string>;
 };
 
 /** MeSH qualifiers of a diagnosis that papers on a procedure of this kind carry. */
@@ -162,6 +164,11 @@ export const HISTOLOGY: ReadonlySet<string> = new Set(
   mesh.histology.map((descriptor) => `mesh:${descriptor}`),
 );
 
+/** What a tumour does, such as lymphatic metastasis or a residual tumour (build-terminology.py). */
+export const PROCESSES: ReadonlySet<string> = new Set(
+  mesh.processes.map((descriptor) => `mesh:${descriptor}`),
+);
+
 export function conceptOf(id: string): Concept | undefined {
   return MESH_CONCEPTS.get(id) ?? CONCEPTS.get(id);
 }
@@ -234,9 +241,16 @@ const ICD_CATEGORIES = new Map<string, string>([
     .map(([code, id]): [string, string] => [code, `mesh:${id}`]),
   ...Object.entries(icd.categories),
 ]);
+// Categories only ICD-10-CM maps (Mondo), for codes with a subcode: F32.1 is a depressive
+// disorder. Without one, P53 in a text is more likely the gene.
+const ICD_SUBCODE_CATEGORIES = new Map<string, string>(
+  Object.entries(mesh.icd_cm).map(([code, id]) => [code, `mesh:${id}`]),
+);
 const ICD_CODE = /^[A-Z]\d{2}(?:\.\d{1,2})?$/;
+// In a text a code is written in capitals and stands alone: HLA-B27, p53 and F18-FDG are names. As
+// in resolveIcd, a code marked suspected, excluded or past (C61 V, C61 A, C61 Z) is not read.
 const ICD_IN_TEXT =
-  /\b[A-Z]\d{2}(?:\.\d+)?(?:\s*[-–—]\s*[A-Z]\d{2}(?:\.\d+)?)?(?!\w|\.\w)/gi;
+  /(?<![\p{L}\p{N}-])[A-Z]\d{2}(?:\.\d+)?(?:\s*[-–—]\s*[A-Z]\d{2}(?:\.\d+)?)?(?![\p{L}\p{N}]|\.[\p{L}\p{N}]|-\p{L}|\s+[VAZ]\b)/gu;
 
 type Mention = {
   concept: Concept;
@@ -381,14 +395,25 @@ export const defaultTerminology = createTerminology();
 
 /**
  * Tier 1: a mapped ICD-10 code as written, else its category when that names one disease (reviewed in
- * icd10-mesh.json, or mapped exactly by Mondo). A category is never inferred from its children. A value that is
- * not shaped like a code is ignored: the graph takes it from an LLM, unchecked.
+ * icd10-mesh.json, or mapped exactly by Mondo, from ICD-10-CM only for a code with a subcode). A category is
+ * never inferred from its children. A value that is not shaped like a code is ignored: the graph takes it from
+ * an LLM, unchecked.
  */
 export function resolveIcd(code: unknown): Concept | undefined {
   if (typeof code !== "string") return undefined;
-  const value = code.trim().toUpperCase();
+  // ICD-10-GM may add the side (R, L, B) and "gesichert" (G): C50.4 L. A code marked suspected (V),
+  // excluded (A) or past (Z) is not read.
+  const value = code
+    .trim()
+    .toUpperCase()
+    .replace(/(?<=\d)\s*(?:[RLB]\s*)?G?$/, "");
   if (!ICD_CODE.test(value)) return undefined;
-  const id = ICD_CODES.get(value) ?? ICD_CATEGORIES.get(value.slice(0, 3));
+  const id =
+    ICD_CODES.get(value) ??
+    ICD_CATEGORIES.get(value.slice(0, 3)) ??
+    (value.includes(".")
+      ? ICD_SUBCODE_CATEGORIES.get(value.slice(0, 3))
+      : undefined);
   return id === undefined ? undefined : conceptOf(id);
 }
 
@@ -404,7 +429,7 @@ export function resolve(
   for (const name of entity.names) {
     // Graphiti writes a code at the beginning of the label or in parentheses.
     const codes = name.matchAll(
-      /(?:^\s*([A-Z]\d{2}(?:\.\d{1,2})?)(?=\s|$)|\(\s*([A-Z]\d{2}(?:\.\d{1,2})?)\s*\))/gi,
+      /(?:^\s*([A-Z]\d{2}(?:\.\d{1,2})?)(?=\s|$)|\(\s*([A-Z]\d{2}(?:\.\d{1,2})?)\s*\))/g,
     );
     for (const [, leading, bracketed] of codes) {
       const concept = resolveIcd(leading ?? bracketed);
