@@ -5,7 +5,7 @@
 const MT_DEFAULTS = { algorithm: "keyword", limit: 10 };
 const mt = {
   meta: null, args: null, dates: [], asOf: null, request: null, via: null, result: null,
-  model: "qwen", tuning: {}, settings: "", tab: "results", cache: new Map(), sources: new Map(), ticket: 0, loadTicket: 0, timer: 0,
+  model: "qwen", tuning: {}, settings: "", tab: "results", client: false, switching: null, switchTimer: 0, cache: new Map(), sources: new Map(), ticket: 0, loadTicket: 0, timer: 0,
 };
 
 // The data of a step of the match shown, e.g. "terms"; undefined through the MCP server.
@@ -14,6 +14,7 @@ const mtSetting = (name) => mtStep("settings")?.find((setting) => setting.name =
 
 async function mtShow() {
   mtSwitchTab(mt.tab);
+  mtSetClient(mt.client);
   try {
     const first = !mt.meta;
     mt.meta = await api("/api/match/meta");
@@ -44,15 +45,18 @@ async function mtLoadJourney(id, asOf) {
   clearTimeout(mt.timer);
   const ticket = ++mt.loadTicket;
   const graph = mt.meta.graphs.includes(id) && (mtAlgorithm() === "graph" || !mt.meta.journeys.includes(id));
+  const name = picker.selectedOptions[0]?.textContent || id;
+  mtSwitch(`Loading the ${graph ? "graph" : "journey"} of ${name} …`, true);
   try {
     const patient = await api(`/api/match/journey?${queryString({ id, kind: graph ? "graph" : "journey" })}`);
     if (ticket !== mt.loadTicket || picker.value !== id) return;
     picker.dataset.loaded = id;
+    mtSwitch(`Matching the ${graph ? "graph" : "journey"} of ${name} …`);
     mtSetJourney(asOf ? { ...patient, as_of: asOf } : patient);
   } catch (error) {
     if (ticket === mt.loadTicket && picker.value === id) {
       picker.value = "";
-      $("#mt-error").textContent = error.message;
+      mtFailed(error.message);
     }
   }
 }
@@ -63,6 +67,7 @@ function mtSetJourney(journey) {
   const input = Array.isArray(journey?.nodes) && Array.isArray(journey?.edges) ? { graph: journey } : { journey };
   $("#mt-json").value = JSON.stringify({ ...input, ...others }, null, 2);
   if (mtParse()) mtRun(true);
+  else mtFailed("The journey is no valid JSON object");
 }
 
 // Daily events from a graph, matching mcp-server/src/graph.ts, for the timeline and as-of slider.
@@ -168,6 +173,43 @@ function mtBusy(busy) {
   $("#mt-run").textContent = busy ? "Matching …" : "Match";
 }
 
+// Another patient: from the pick until their match is drawn, one note stands where the results go,
+// instead of the numbers and results of the patient before; their timeline fades until the new
+// one is loaded. All of this only after 200 ms, so a quick switch shows none of it.
+function mtSwitch(text, loadingJourney = false) {
+  const main = $(".match-main");
+  main.classList.toggle("journey-loading", loadingJourney);
+  $("#mt-loading").replaceChildren(loadingNote(text));
+  $("#mt-error").textContent = "";
+  if (mt.switching) return;
+  mt.switching = true;
+  mtBusy(true);
+  clearTimeout(mt.switchTimer);
+  mt.switchTimer = setTimeout(() => { if (mt.switching) main.classList.add("switching"); }, 200);
+}
+
+function mtSwitchEnd() {
+  clearTimeout(mt.switchTimer);
+  mt.switching = null;
+  $(".match-main").classList.remove("switching", "journey-loading");
+}
+
+// A failed request: during a switch the note becomes the error, as the results shown before
+// belong to another patient; else the error stands in the controls above the last result.
+function mtFailed(message) {
+  mtBusy(false);
+  if (mt.switching) {
+    clearTimeout(mt.switchTimer);
+    mt.switching = null;
+    $(".match-main").classList.remove("journey-loading");
+    $(".match-main").classList.add("switching");
+    $("#mt-loading").replaceChildren(h("div", { class: "notice" }, message));
+    $("#mt-error").textContent = message;
+    return;
+  }
+  $("#mt-error").textContent = mt.result ? `${message} (showing the previous result)` : message;
+}
+
 // `fresh`: ask the matcher again, e.g. after its code or the index changed; else an answer
 // seen for the same request is shown again, which keeps the as-of slider quick.
 async function mtRun(fresh) {
@@ -183,24 +225,26 @@ async function mtRun(fresh) {
   // The matcher would answer an out-of-range constant only with a failed search.
   const invalid = via === "direct" && mtAlgorithm() === "keyword" && [...document.querySelectorAll("#mt-tuning input")].find((input) => !input.checkValidity());
   if (invalid) {
-    $("#mt-error").textContent = `${invalid.dataset.name} must be ${invalid.step === "1" ? "a whole number" : "a number"} from ${invalid.min} to ${invalid.max}`;
-    mtBusy(false);
+    mtFailed(`${invalid.dataset.name} must be ${invalid.step === "1" ? "a whole number" : "a number"} from ${invalid.min} to ${invalid.max}`);
     return;
   }
   let result = mt.cache.get(key);
   if (!result) {
+    // After a failed switch its error stands where the results go: a new attempt shows the note again.
+    if (!mt.switching && $(".match-main").classList.contains("switching")) mtSwitch("Matching …");
     mtBusy(true);
+    // The answer, then what it does not say itself: the spinner stays until both are here.
+    const work = (async () => {
+      const answer = await api("/api/match", { method: "POST", body: JSON.stringify({ request, via, technique }) });
+      if (ticket === mt.ticket) await mtEnrich(answer);
+      return answer;
+    })();
     try {
-      result = await busyArea($("#match-view .content"), busyButton($("#mt-run"), api("/api/match", { method: "POST", body: JSON.stringify({ request, via, technique }) })));
-      if (ticket !== mt.ticket) return;
-      await mtEnrich(result);
+      result = await busyButton($("#mt-run"), mt.switching ? work : busyArea($("#match-view .content"), work));
       if (ticket !== mt.ticket) return;
       mt.cache.set(key, result);
     } catch (error) {
-      if (ticket === mt.ticket) {
-        $("#mt-error").textContent = mt.result ? `${error.message} (showing the previous result)` : error.message;
-        mtBusy(false);
-      }
+      if (ticket === mt.ticket) mtFailed(error.message);
       return;
     }
   }
@@ -208,6 +252,7 @@ async function mtRun(fresh) {
   mt.via = via;
   mt.result = result;
   mtRender();
+  mtSwitchEnd();
   mtBusy(false);
 }
 
@@ -792,13 +837,24 @@ function mtDocumentParts(id) {
 
 function mtSwitchTab(tab) {
   mt.tab = tab;
-  history.replaceState(null, "", tab === "results" ? "#match" : `#match-${tab}`);
+  if (!mt.client) history.replaceState(null, "", tab === "results" ? "#match" : `#match-${tab}`);
   for (const button of document.querySelectorAll("#mt-tabs button")) button.classList.toggle("active", button.dataset.mttab === tab);
   for (const section of document.querySelectorAll(".mttab")) section.classList.toggle("active", section.id === `mttab-${tab}`);
   dbCloseDetail();
 }
 
+// The example client instead of the steps of the match: the column shows only the answer, as an
+// app could show it (#match-client); switched off, the tab shown before comes back.
+function mtSetClient(on) {
+  mt.client = on;
+  $("#mt-client-switch").checked = on;
+  $(".match-main").classList.toggle("client-mode", on);
+  history.replaceState(null, "", on ? "#match-client" : mt.tab === "results" ? "#match" : `#match-${mt.tab}`);
+  dbCloseDetail();
+}
+
 for (const button of document.querySelectorAll("#mt-tabs button")) button.addEventListener("click", () => mtSwitchTab(button.dataset.mttab));
+$("#mt-client-switch").addEventListener("change", (event) => mtSetClient(event.target.checked));
 $("#mt-run").addEventListener("click", () => mtRun(true));
 $("#mt-journey").addEventListener("change", (event) => mtLoadJourney(event.target.value));
 $("#mt-open").addEventListener("click", () => $("#mt-file").click());
@@ -814,6 +870,7 @@ $("#mt-file").addEventListener("change", async (event) => {
     return;
   }
   $("#mt-journey").value = "";
+  mtSwitch(`Matching ${file.name} …`);
   mtSetJourney(journey);
 });
 $("#mt-json").addEventListener("input", () => {

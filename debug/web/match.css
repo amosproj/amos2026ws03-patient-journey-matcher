@@ -33,8 +33,17 @@ td.title { min-width: 260px; max-width: 460px; }
   animation: match-sweep 1.4s ease-in-out infinite;
 }
 @keyframes match-sweep { from { transform: translateX(-100%); } to { transform: translateX(230%); } }
-/* The results scroll with the column: the spinner of a match stands near their top (base.css). */
+/* The results scroll with the column: the spinner of a match stands near their top (base.css).
+   The numbers and search terms above them fade with them: they belong to the same answer. */
 .match-main > .content.reloading::after { top: 56px; margin-top: 0; }
+.match-main:has(> .content.reloading) > :is(.stats, .terms-disclosure) { opacity: .45; transition: opacity .2s ease; }
+/* Another patient (mtSwitch in match.js): a note where the results go, until their match is drawn. */
+.match-main > .mt-loading { display: none; grid-row: 4; padding: 0 16px 36px; }
+.match-main.switching > .mt-loading { display: block; }
+.match-main.switching > :is(.stats, .terms-disclosure, .tabs, .content, .mt-pending) { display: none; }
+.match-main.switching .mt-loading .loading { padding: 72px 16px; animation: appear .2s ease; }
+.match-main.switching .mt-loading .notice { margin: 16px 0 0; }
+.match-main.switching.journey-loading > .journey-panel { opacity: .4; transition: opacity .2s ease; }
 .journey-bar h2 { font-size: 16px; margin: 0 auto 0 0; letter-spacing: -.025em; }
 .journey-bar label, .journey-bar b { font-size: 12px; }
 .journey-bar input { width: clamp(64px, 10vw, 170px); }
@@ -145,7 +154,10 @@ td.rank-numbers { white-space: nowrap; font-size: 12px; font-variant-numeric: ta
 /* Example client: the answer as an app could show it, from the fields of the tools only. */
 .client { flex: 1; overflow: auto; padding: 0 16px 24px; }
 .client > * { max-width: 940px; margin-left: auto; margin-right: auto; }
-.match-main:has(#mttab-client.active) > :is(.stats, .terms-disclosure) { display: none; }
+/* The switch in the controls: the column shows only the answer, as an app could show it. */
+.match-main.client-mode > :is(.stats, .journey-panel, .terms-disclosure, .tabs) { display: none; }
+.match-main.client-mode .mttab { display: none; }
+.match-main.client-mode #mttab-client { display: flex; flex-direction: column; padding-top: 10px; }
 .client { background: var(--bg); display: flow-root; }
 .client .notice { margin-block: 12px; }
 .client-head { margin-top: 14px; margin-bottom: 10px; }

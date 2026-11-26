@@ -125,7 +125,8 @@ async function init() {
     if (screen === "graph" && ["entities", "statements", "skipped"].includes(tab)) gr.tab = tab;
     showScreen(screen);
   } else if (hash === "match" || hash.startsWith("match-")) {
-    if (["rankings", "answer", "client"].includes(hash.slice(6))) mt.tab = hash.slice(6);
+    if (hash === "match-client") mt.client = true;
+    else if (["rankings", "answer"].includes(hash.slice(6))) mt.tab = hash.slice(6);
     showScreen("match");
   } else if (hash === "info" || hash.startsWith("info-")) {
     if (["running", "topics"].includes(hash.slice(5))) info.tab = hash.slice(5);

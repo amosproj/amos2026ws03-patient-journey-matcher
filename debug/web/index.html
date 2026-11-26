@@ -353,6 +353,10 @@
 
 <div class="layout" id="match-view" hidden>
   <aside class="side" id="match-controls">
+    <label class="switch-row" title="Only what the tools return, as an app could show it; the steps of the match are hidden">
+      <span>Example client<small>The answer as an app could show it</small></span>
+      <input type="checkbox" class="switch" role="switch" id="mt-client-switch">
+    </label>
     <div class="side-head">
       <h2>Algorithm <i class="info" tabindex="0" data-tip="The algorithm argument of match_journey. Keyword searches terms. Graph matches diagnoses and relationships in annotated PubMed papers. AI (ai_summary) is semantic matching: it needs the local encoder and an index (make index-ai, then make debug-ai).">i</i></h2>
     </div>
@@ -412,7 +416,6 @@
       <button data-mttab="results" class="active">Results <span class="badge" id="mt-count">0</span></button>
       <button data-mttab="rankings" title="The best candidates of each index before rank fusion, and where each one ended">Index rankings</button>
       <button data-mttab="answer">Answer</button>
-      <button data-mttab="client" title="How an app could show the answer, with only what the tools return">Example client</button>
     </nav>
     <div class="content">
       <section class="mttab active" id="mttab-results">
@@ -436,6 +439,7 @@
       <aside class="detail" id="mt-detail"></aside>
     </div>
     <section class="mt-pending" id="mt-pending" aria-live="polite" hidden></section>
+    <section class="mt-loading" id="mt-loading" aria-live="polite"></section>
   </main>
 </div>
 
