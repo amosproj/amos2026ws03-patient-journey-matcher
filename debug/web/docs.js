@@ -89,7 +89,7 @@ function dcEntries(blocks) {
 async function dcShow() {
   const target = dcFromHash();
   if (!dc.docs) {
-    $("#doc-article").replaceChildren(h("div", { class: "dc-empty" }, "Loading the docs …"));
+    $("#doc-article").replaceChildren(loadingNote("Loading the docs …"));
     try {
       await dcLoad();
       dc.error = null;
@@ -112,7 +112,7 @@ async function dcShow() {
 
 async function dcRefresh() {
   try {
-    await dcLoad();
+    await busyButton($("#doc-refresh"), dcLoad());
     dc.error = null;
   } catch (error) {
     dc.error = error.message;
@@ -318,7 +318,7 @@ function dcFlash(node) {
 function dcRenderTree() {
   const nav = $("#doc-tree");
   if (dc.query.trim() && dc.docs) { dcRenderResults(); return; }
-  if (!dc.docs) { nav.replaceChildren(h("div", { class: "dc-empty" }, dc.error ? "No docs" : "Loading …")); return; }
+  if (!dc.docs) { nav.replaceChildren(dc.error ? h("div", { class: "dc-empty" }, "No docs") : loadingNote("Loading …")); return; }
   const root = { path: "", folders: new Map(), files: [] };
   for (const doc of dc.docs.values()) {
     let node = root;

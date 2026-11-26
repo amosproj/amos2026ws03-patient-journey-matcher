@@ -165,9 +165,9 @@
   <aside class="side" id="db-controls">
     <div class="side-head">
       <h2>Database</h2>
-      <button type="button" class="link-button" id="db-refresh" title="Load everything again">↻ Refresh</button>
+      <button type="button" class="link-button refresh" id="db-refresh" title="Load everything again">Refresh</button>
     </div>
-    <div class="db-conn" id="db-conn"><b>Connecting …</b></div>
+    <div class="db-conn loading" id="db-conn"><b>Connecting …</b></div>
     <label class="check"><input type="checkbox" id="db-auto" checked> Refresh every 5 s <small class="muted" id="db-updated"></small></label>
     <div class="db-notice" id="db-notice" hidden></div>
     <div class="side-head">
@@ -202,7 +202,7 @@
   </aside>
 
   <main aria-label="Document database">
-    <div class="stats overview" id="db-stats"></div>
+    <div class="stats overview" id="db-stats"><div class="loading" role="status"><span class="spinner" aria-hidden="true"></span><span>Loading the database …</span></div></div>
     <nav class="tabs" id="db-tabs">
       <button data-dbtab="documents" class="active">Documents <span class="badge" id="db-docs-count">0</span></button>
       <button data-dbtab="runs">Store runs <span class="badge" id="db-runs-count">0</span></button>
@@ -248,9 +248,9 @@
   <aside class="side" id="index-controls">
     <div class="side-head">
       <h2>Indexer <i class="info" tabindex="0" data-tip="The indexer job of make index: brings the index of every approach up to date with the stored documents, one approach after the other. It reads the full texts of new and changed documents and tries failed downloads again. Stopping is safe: the next run continues with the documents not read yet. The screen of an approach starts the job for that approach only.">i</i></h2>
-      <button type="button" class="link-button" id="ix-refresh" title="Load everything again">↻ Refresh</button>
+      <button type="button" class="link-button refresh" id="ix-refresh" title="Load everything again">Refresh</button>
     </div>
-    <div class="db-conn" id="ix-state"><b>Loading …</b></div>
+    <div class="db-conn loading" id="ix-state"><b>Loading …</b></div>
     <label class="check"><input type="checkbox" id="ix-auto" checked> Refresh every 5 s <small class="muted" id="ix-updated"></small></label>
     <div class="buttons">
       <button type="button" class="primary" id="ix-start">Index all</button>
@@ -261,7 +261,7 @@
     <div class="side-head">
       <h2>Transcription <i class="info" tabindex="0" data-tip="Speech-to-text for audio that has no transcript, mostly podcast episodes. The indexer skips them (audio, and speech-to-text is off); the transcription job reads them, newest first, and stores their transcripts for every index. The job runs on its own: as a service on the VM, with make transcribe elsewhere. Here you set how many files it reads at once, also while it runs: it follows within seconds. With fewer or Off, the files in work are read to their end and no new one starts. On the VM the job only gets processor time that nothing else wants.">i</i></h2>
     </div>
-    <div class="db-conn" id="tx-state"><b>Loading …</b></div>
+    <div class="db-conn loading" id="tx-state"><b>Loading …</b></div>
     <div class="field">
       <span>Audio files read at once</span>
       <div class="seg" id="tx-workers" role="group" aria-label="Audio files read at once"></div>
@@ -271,7 +271,7 @@
   </aside>
 
   <main aria-label="Index overview">
-    <div class="stats overview" id="ix-stats"></div>
+    <div class="stats overview" id="ix-stats"><div class="loading" role="status"><span class="spinner" aria-hidden="true"></span><span>Loading the indexes …</span></div></div>
     <nav class="tabs" id="ix-tabs">
       <button data-ixtab="log" class="active">Indexer log</button>
       <button data-ixtab="transcription" title="The job that reads audio without a transcript, and its workers">Transcription <span class="badge" id="tx-count">0</span></button>
@@ -281,7 +281,7 @@
         <div class="log-tools"><label><input type="checkbox" id="ix-follow" checked> Follow</label><span id="ix-run"></span></div>
         <div class="log" id="ix-log"><div class="empty">No indexer run since this server started. Use Index all in the controls.</div></div>
       </section>
-      <section class="ixtab" id="ixtab-transcription"><div class="panels" id="tx-panels"></div></section>
+      <section class="ixtab" id="ixtab-transcription"><div class="panels" id="tx-panels"><div class="loading" role="status"><span class="spinner" aria-hidden="true"></span><span>Loading the transcription job …</span></div></div></section>
       <div class="db-down" id="ix-down" hidden></div>
     </div>
   </main>
@@ -291,9 +291,9 @@
   <aside class="side" id="keyword-controls">
     <div class="side-head">
       <h2>Keyword index</h2>
-      <button type="button" class="link-button" id="kw-refresh" title="Load everything again">↻ Refresh</button>
+      <button type="button" class="link-button refresh" id="kw-refresh" title="Load everything again">Refresh</button>
     </div>
-    <div class="db-conn" id="kw-state"><b>Loading …</b></div>
+    <div class="db-conn loading" id="kw-state"><b>Loading …</b></div>
     <label class="check"><input type="checkbox" id="kw-auto" checked> Refresh every 5 s <small class="muted" id="kw-updated"></small></label>
     <div class="side-head">
       <h2>Indexer <i class="info" tabindex="0" data-tip="Runs the indexer job for the keyword index only; Index all on the Index overview runs it for every approach. Stopping is safe: the next run continues with the documents not read yet.">i</i></h2>
@@ -307,11 +307,11 @@
     <div class="side-head">
       <h2>Next run downloads <i class="info" tabindex="0" data-tip="The full texts the next run reads, by the host of the file it tries first, and how long that host takes at its pace: arxiv.org one request every 15 s, zenodo.org 1 s, the PMC bucket 0.1 s, others 3 s. A rough estimate: hosts are read in parallel, and second files and retries add to it.">i</i></h2>
     </div>
-    <ul class="db-tables" id="kw-hosts"></ul>
+    <ul class="db-tables" id="kw-hosts"><li class="plain"><div class="loading" role="status"><span class="spinner" aria-hidden="true"></span><span>Loading …</span></div></li></ul>
   </aside>
 
   <main aria-label="Keyword index">
-    <div class="stats" id="kw-stats"></div>
+    <div class="stats" id="kw-stats"><div class="loading" role="status"><span class="spinner" aria-hidden="true"></span><span>Loading the keyword index …</span></div></div>
     <nav class="tabs" id="kw-tabs">
       <button data-kwtab="coverage" class="active">Coverage</button>
       <button data-kwtab="log">Indexer log</button>
@@ -319,7 +319,7 @@
       <button data-kwtab="terms">Journey terms</button>
     </nav>
     <div class="content">
-      <section class="kwtab active" id="kwtab-coverage"><div class="panels" id="kw-coverage"></div></section>
+      <section class="kwtab active" id="kwtab-coverage"><div class="panels" id="kw-coverage"><div class="loading" role="status"><span class="spinner" aria-hidden="true"></span><span>Loading the coverage …</span></div></div></section>
       <section class="kwtab" id="kwtab-log">
         <div class="log-tools"><label><input type="checkbox" id="kw-follow" checked> Follow</label><span id="kw-run"></span></div>
         <div class="log" id="kw-log"><div class="empty">No indexer run since this server started. Use Index keyword in the controls.</div></div>
@@ -490,8 +490,8 @@
 
 <div class="layout" id="ai-view" hidden>
   <aside class="side" id="ai-controls">
-    <div class="side-head"><h2>Encoder <i class="info" tabindex="0" data-tip="The local program that turns texts into vectors, scripts/semantic.py. Indexing and the AI approach of the Matcher need it. It loads Qwen and BGE-M3 before it answers; the first start downloads them (about 3 GB). One started by make debug-ai shows here, and that command stops it.">i</i></h2><button type="button" class="link-button" id="ai-refresh">↻ Refresh</button></div>
-    <div class="db-conn" id="ai-encoder"><b>Loading …</b></div>
+    <div class="side-head"><h2>Encoder <i class="info" tabindex="0" data-tip="The local program that turns texts into vectors, scripts/semantic.py. Indexing and the AI approach of the Matcher need it. It loads Qwen and BGE-M3 before it answers; the first start downloads them (about 3 GB). One started by make debug-ai shows here, and that command stops it.">i</i></h2><button type="button" class="link-button refresh" id="ai-refresh">Refresh</button></div>
+    <div class="db-conn loading" id="ai-encoder"><b>Loading …</b></div>
     <div class="buttons"><button type="button" class="primary" id="ai-encoder-start" disabled>Start encoder</button><button type="button" id="ai-encoder-stop" disabled>Stop encoder</button></div>
     <code class="cmd" id="ai-encoder-lines" title="The last lines of the encoder" hidden></code>
     <div class="error" id="ai-encoder-error"></div>
@@ -502,16 +502,16 @@
       <option value="qwen">Qwen</option>
       <option value="bge">BGE-M3</option>
     </select>
-    <div class="db-conn" id="ai-state"><b>Loading …</b></div>
+    <div class="db-conn loading" id="ai-state"><b>Loading …</b></div>
     <label class="check"><input type="checkbox" id="ai-auto" checked> Refresh every 5 s</label>
     <div class="buttons"><button type="button" class="primary" id="ai-start" disabled>Start indexing</button><button type="button" id="ai-stop" disabled>Stop</button></div>
     <div class="error" id="ai-error"></div>
   </aside>
   <main aria-label="AI index">
-    <div class="stats" id="ai-stats"></div>
+    <div class="stats" id="ai-stats"><div class="loading" role="status"><span class="spinner" aria-hidden="true"></span><span>Loading the AI index …</span></div></div>
     <nav class="tabs" id="ai-tabs"><button data-aitab="coverage" class="active">Coverage</button><button data-aitab="log">Indexer log</button></nav>
     <div class="content">
-      <section id="aitab-coverage"><div class="panels" id="ai-coverage"></div></section>
+      <section id="aitab-coverage"><div class="panels" id="ai-coverage"><div class="loading" role="status"><span class="spinner" aria-hidden="true"></span><span>Loading the coverage …</span></div></div></section>
       <section id="aitab-log" hidden><div class="log-tools"><label><input type="checkbox" id="ai-follow" checked> Follow</label></div><div class="log" id="ai-log"><div class="empty">No run for the AI index since this server started.</div></div></section>
     </div>
   </main>
@@ -521,24 +521,24 @@
   <aside class="side" id="info-controls">
     <div class="side-head">
       <h2>This machine</h2>
-      <button type="button" class="link-button" id="info-refresh" title="Probe everything again">↻ Refresh</button>
+      <button type="button" class="link-button refresh" id="info-refresh" title="Probe everything again">Refresh</button>
     </div>
-    <div class="db-conn" id="info-host"><b>Loading …</b></div>
+    <div class="db-conn loading" id="info-host"><b>Loading …</b></div>
     <label class="check"><input type="checkbox" id="info-auto" checked> Refresh every 5 s <small class="muted" id="info-updated"></small></label>
     <div class="side-head"><h2>Code</h2></div>
     <dl class="info-facts" id="info-code"></dl>
   </aside>
 
   <main aria-label="System information">
-    <div class="stats overview" id="info-stats"></div>
+    <div class="stats overview" id="info-stats"><div class="loading" role="status"><span class="spinner" aria-hidden="true"></span><span>Probing this machine …</span></div></div>
     <nav class="tabs" id="info-tabs">
       <button data-infotab="schedule" class="active">Schedule</button>
       <button data-infotab="running">Running</button>
       <button data-infotab="topics">Topic files <span class="badge" id="info-topics-count">0</span></button>
     </nav>
     <div class="content">
-      <section class="infotab active" id="infotab-schedule"><div class="panels" id="info-schedule"></div></section>
-      <section class="infotab" id="infotab-running"><div class="panels" id="info-running"></div></section>
+      <section class="infotab active" id="infotab-schedule"><div class="panels" id="info-schedule"><div class="loading" role="status"><span class="spinner" aria-hidden="true"></span><span>Loading the timers …</span></div></div></section>
+      <section class="infotab" id="infotab-running"><div class="panels" id="info-running"><div class="loading" role="status"><span class="spinner" aria-hidden="true"></span><span>Loading what runs …</span></div></div></section>
       <section class="infotab" id="infotab-topics">
         <div class="topic-browser">
           <div class="topic-list">
@@ -556,7 +556,7 @@
   <aside class="side doc-side" id="doc-controls">
     <div class="side-head">
       <h2>Docs</h2>
-      <button type="button" class="link-button" id="doc-refresh" title="Read the files again">↻ Refresh</button>
+      <button type="button" class="link-button refresh" id="doc-refresh" title="Read the files again">Refresh</button>
     </div>
     <label class="dc-search">
       <input type="text" id="doc-search" placeholder="Search all docs" autocomplete="off" spellcheck="false" aria-label="Search all docs" aria-keyshortcuts="/ Control+K Meta+K">

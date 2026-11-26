@@ -13,28 +13,33 @@ async function ixRefresh() {
   if (ix.loading) return;
   ix.loading = true;
   try {
-    try {
-      ix.overview = await api("/api/index");
-      ix.error = null;
-    } catch (error) {
-      ix.overview = null;
-      ix.error = { message: error.message, hint: error.data?.hint, database: Boolean(error.data?.unavailable) };
-    }
-    renderIxButtons();
-    renderIxSide();
-    renderIxStats();
-    renderKwSide();
-    renderKwStats();
-    renderKwCoverage();
-    renderIxDown();
-    const updated = `(last ${fmtClock(new Date().toISOString())})`;
-    $("#ix-updated").textContent = updated;
-    $("#kw-updated").textContent = updated;
-    await aiRefresh();
-    await ixFollowRun();
+    const work = ixLoad();
+    await Promise.all([busyButton($("#ix-refresh"), work), busyButton($("#kw-refresh"), work)]);
   } finally {
     ix.loading = false;
   }
+}
+
+async function ixLoad() {
+  try {
+    ix.overview = await api("/api/index");
+    ix.error = null;
+  } catch (error) {
+    ix.overview = null;
+    ix.error = { message: error.message, hint: error.data?.hint, database: Boolean(error.data?.unavailable) };
+  }
+  renderIxButtons();
+  renderIxSide();
+  renderIxStats();
+  renderKwSide();
+  renderKwStats();
+  renderKwCoverage();
+  renderIxDown();
+  const updated = `(last ${fmtClock(new Date().toISOString())})`;
+  $("#ix-updated").textContent = updated;
+  $("#kw-updated").textContent = updated;
+  await aiRefresh();
+  await ixFollowRun();
 }
 
 // One job at a time: a run of every approach or of one blocks all Start buttons.
@@ -228,7 +233,7 @@ function txIdleReason() {
 function renderTxSide() {
   const box = $("#tx-state"), data = tx.data;
   if (!data) {
-    box.className = `db-conn${tx.error ? " down" : ""}`;
+    box.className = `db-conn${tx.error ? " down" : " loading"}`;
     box.replaceChildren(h("b", {}, tx.error ? "Not loaded" : "Loading …"), tx.error ? h("small", {}, tx.error) : null);
     $("#tx-workers").replaceChildren();
     $("#tx-note").textContent = "";
@@ -263,7 +268,7 @@ function renderTxSide() {
 
 function renderTxPanels() {
   const data = tx.data, box = $("#tx-panels");
-  if (!data) { box.replaceChildren(tx.error ? h("div", { class: "notice", style: "margin:0" }, tx.error) : h("div", { class: "muted" }, "Loading …")); return; }
+  if (!data) { box.replaceChildren(tx.error ? h("div", { class: "notice", style: "margin:0" }, tx.error) : loadingNote("Loading the transcription job …")); return; }
   const { job, running, wanted, active, reading } = txNow();
   const reason = txIdleReason();
   const workers = h("div", { class: "panel" },

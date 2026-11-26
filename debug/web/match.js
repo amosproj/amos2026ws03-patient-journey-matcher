@@ -191,7 +191,7 @@ async function mtRun(fresh) {
   if (!result) {
     mtBusy(true);
     try {
-      result = await api("/api/match", { method: "POST", body: JSON.stringify({ request, via, technique }) });
+      result = await busyArea($("#match-view .content"), busyButton($("#mt-run"), api("/api/match", { method: "POST", body: JSON.stringify({ request, via, technique }) })));
       if (ticket !== mt.ticket) return;
       await mtEnrich(result);
       if (ticket !== mt.ticket) return;
@@ -741,7 +741,7 @@ async function mtClientFiles(id, box, button) {
   const key = `${mt.via}:${id}`;
   button.disabled = true;
   try {
-    if (!mt.sources.has(key)) mt.sources.set(key, await api("/api/match/source", { method: "POST", body: JSON.stringify({ source_id: id, via: mt.via }) }));
+    if (!mt.sources.has(key)) mt.sources.set(key, await busyButton(button, api("/api/match/source", { method: "POST", body: JSON.stringify({ source_id: id, via: mt.via }) })));
     box.replaceChildren(...mtClientFileRows(mt.sources.get(key)));
     button.textContent = "Hide files";
   } catch (error) {

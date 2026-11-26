@@ -33,7 +33,8 @@ td.title { min-width: 260px; max-width: 460px; }
   animation: match-sweep 1.4s ease-in-out infinite;
 }
 @keyframes match-sweep { from { transform: translateX(-100%); } to { transform: translateX(230%); } }
-.match-main[aria-busy="true"] .mttab.active { opacity: .6; }
+/* The results scroll with the column: the spinner of a match stands near their top (base.css). */
+.match-main > .content.reloading::after { top: 56px; margin-top: 0; }
 .journey-bar h2 { font-size: 16px; margin: 0 auto 0 0; letter-spacing: -.025em; }
 .journey-bar label, .journey-bar b { font-size: 12px; }
 .journey-bar input { width: clamp(64px, 10vw, 170px); }

@@ -169,12 +169,18 @@ function renderKwCoverage() {
 // The figures, then their share of all documents as a bar on a fixed 0–100 % scale; for a right-aligned cell.
 const kwShare = (count, total) => [`${fmtCount(count)} (${fmtShare(count, total)})`, h("span", { class: "meter", style: "margin:0 0 0 7px" }, h("i", { style: `width:${total ? (100 * count) / total : 0}%` }))];
 
+// Counting runs over every full text: the first time a note in the table, later the list fades.
 async function kwLoadWords() {
   const ticket = ++kw.wordsTicket;
   const body = $("#kw-words");
-  $("#kw-words-shown").textContent = "Counting the keywords of every full text …";
+  const request = api(`/api/index/vocabulary?${queryString({ limit: $("#kw-words-limit").value, q: $("#kw-word").value.trim() })}`);
+  const first = !body.childElementCount;
+  if (first) {
+    body.replaceChildren(loadingRow(5, "Counting the keywords of every full text …"));
+    $("#kw-words-shown").textContent = "";
+  }
   try {
-    const data = await api(`/api/index/vocabulary?${queryString({ limit: $("#kw-words-limit").value, q: $("#kw-word").value.trim() })}`);
+    const data = await (first ? request : busyArea($("#keyword-view .content"), request));
     if (ticket !== kw.wordsTicket) return;
     const stems = (row) => !row.stems.length
       ? h("span", { class: "pill none", title: "An English stop word: stored, but not searched" }, "stop word, not searched")
@@ -196,8 +202,11 @@ async function kwLoadWords() {
 
 async function kwLoadTerms() {
   const body = $("#kw-terms");
+  const request = api("/api/index/journey-terms");
+  const first = !body.childElementCount;
+  if (first) body.replaceChildren(loadingRow(5, "Counting the documents each journey term finds …"));
   try {
-    const data = await api("/api/index/journey-terms");
+    const data = await (first ? request : busyArea($("#keyword-view .content"), request));
     const found = (term) => term.metadata + term.full_text;
     const flag = (term) => term.stop_words ? h("span", { class: "pill none", title: "Only English stop words: stored, but not searched" }, "stop words")
       : !found(term) ? h("span", { class: "pill failed", title: "No indexed document has this term" }, "finds nothing")

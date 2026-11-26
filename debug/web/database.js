@@ -5,9 +5,10 @@ const DOC_COLUMNS = [["Source", "source"], ["ID", "id"], ["Type"], ["Title", "ti
 const DOC_FILTERS = ["db-source", "db-type", "db-origin", "db-topic", "db-licence", "db-fulltext", "db-expiry"];
 const db = {
   overview: null, error: null, tab: "documents", table: null, runFilter: null, detailFilter: null, pending: null, selected: null, loading: false,
-  docs: { rows: [], total: 0, offset: 0, limit: 50, sort: "changed", order: "desc", ticket: 0 },
-  runs: { rows: [], total: 0, offset: 0, limit: 50, ticket: 0 },
-  generic: { rows: [], columns: [], total: 0, offset: 0, limit: 50, ticket: 0 },
+  docs: { rows: [], total: 0, offset: 0, limit: 50, sort: "changed", order: "desc", ticket: 0, loaded: false },
+  runs: { rows: [], total: 0, offset: 0, limit: 50, ticket: 0, loaded: false },
+  generic: { rows: [], columns: [], total: 0, offset: 0, limit: 50, ticket: 0, loaded: false },
+  schemaLoaded: false,
 };
 
 const publishedText = (row) => row.published_at ? row.published_at.slice(0, PRECISION_LENGTH[row.published_precision] || 10) : "";
@@ -30,69 +31,82 @@ function dbFilters() {
   };
 }
 
+// A refresh (every 5 s, a screen opened again, Refresh) keeps what is shown until the answer comes.
 async function dbRefresh() {
   if (db.loading) return;
   db.loading = true;
   try {
-    try {
-      db.overview = await api("/api/db");
-      db.error = null;
-    } catch (error) {
-      db.overview = null;
-      db.error = { message: error.message, hint: error.data?.hint };
-    }
-    renderDbSide();
-    renderDbStats();
-    renderDbDown();
-    if (db.pending) {
-      for (const [id, value] of Object.entries(db.pending)) $(`#${id}`).value = value;
-      db.pending = null;
-    }
-    if (dbReady()) await dbLoadTab();
+    await busyButton($("#db-refresh"), dbLoadAll());
     $("#db-updated").textContent = `(last ${fmtClock(new Date().toISOString())})`;
   } finally {
     db.loading = false;
   }
 }
 
-function dbLoadTab() {
-  if (db.tab === "documents") return dbLoadDocs();
-  if (db.tab === "runs") return dbLoadRuns();
-  if (db.tab === "schema") return dbLoadSchema();
-  if (db.tab === "table" && db.table) return dbLoadTable();
+async function dbLoadAll() {
+  try {
+    db.overview = await api("/api/db");
+    db.error = null;
+  } catch (error) {
+    db.overview = null;
+    db.error = { message: error.message, hint: error.data?.hint };
+  }
+  renderDbSide();
+  renderDbStats();
+  renderDbDown();
+  if (db.pending) {
+    for (const [id, value] of Object.entries(db.pending)) $(`#${id}`).value = value;
+    db.pending = null;
+  }
+  if (dbReady()) await dbLoadTab(true);
 }
 
-// Each list keeps a ticket, so a slow answer cannot overwrite a newer one.
-async function dbLoadList(list, url, render) {
+function dbLoadTab(quiet = false) {
+  if (db.tab === "documents") return dbLoadDocs(quiet);
+  if (db.tab === "runs") return dbLoadRuns(quiet);
+  if (db.tab === "schema") return dbLoadSchema(quiet);
+  if (db.tab === "table" && db.table) return dbLoadTable(quiet);
+}
+
+// Each list keeps a ticket, so a slow answer cannot overwrite a newer one. Its first load shows a
+// note in the table; a filter, sort or page fades the list under a spinner; a refresh is quiet.
+async function dbLoadList(list, url, render, quiet = false) {
   const ticket = ++list.ticket;
+  if (!list.loaded) render();
   try {
-    const data = await api(url);
+    const data = await (list.loaded && !quiet ? busyArea($("#db-view .content"), api(url)) : api(url));
     if (ticket !== list.ticket) return;
-    Object.assign(list, data, { error: null });
+    Object.assign(list, data, { error: null, loaded: true });
   } catch (error) {
     if (ticket !== list.ticket) return;
-    Object.assign(list, { rows: [], total: 0, error: error.message });
+    Object.assign(list, { rows: [], total: 0, error: error.message, loaded: true });
   }
   render();
 }
 
-function dbLoadDocs() {
+function dbLoadDocs(quiet = false) {
   const docs = db.docs;
-  return dbLoadList(docs, `/api/db/documents?${queryString({ ...dbFilters(), sort: docs.sort, order: docs.order, limit: docs.limit, offset: docs.offset })}`, renderDbDocs);
+  return dbLoadList(docs, `/api/db/documents?${queryString({ ...dbFilters(), sort: docs.sort, order: docs.order, limit: docs.limit, offset: docs.offset })}`, renderDbDocs, quiet);
 }
 
-function dbLoadRuns() {
-  return dbLoadList(db.runs, `/api/db/runs?${queryString({ limit: db.runs.limit, offset: db.runs.offset })}`, renderDbRuns);
+function dbLoadRuns(quiet = false) {
+  return dbLoadList(db.runs, `/api/db/runs?${queryString({ limit: db.runs.limit, offset: db.runs.offset })}`, renderDbRuns, quiet);
 }
 
-function dbLoadTable() {
+function dbLoadTable(quiet = false) {
   const table = db.generic;
-  return dbLoadList(table, `/api/db/table?${queryString({ name: db.table, limit: table.limit, offset: table.offset })}`, renderDbTable);
+  return dbLoadList(table, `/api/db/table?${queryString({ name: db.table, limit: table.limit, offset: table.offset })}`, renderDbTable, quiet);
 }
 
-async function dbLoadSchema() {
-  try { renderDbSchema(await api("/api/db/schema")); }
-  catch (error) { $("#db-schema").replaceChildren(h("div", { class: "empty" }, error.message)); }
+async function dbLoadSchema(quiet = false) {
+  if (!db.schemaLoaded) $("#db-schema").replaceChildren(loadingNote("Loading the schema …"));
+  try {
+    const schema = await (db.schemaLoaded && !quiet ? busyArea($("#db-view .content"), api("/api/db/schema")) : api("/api/db/schema"));
+    db.schemaLoaded = true;
+    renderDbSchema(schema);
+  } catch (error) {
+    $("#db-schema").replaceChildren(h("div", { class: "empty" }, error.message));
+  }
 }
 
 function renderDbSide() {
@@ -121,6 +135,7 @@ function renderDbTables() {
   const list = $("#db-tables");
   const tables = db.overview?.tables || [];
   $("#db-empty-all").hidden = !tables.length;
+  if (!db.overview && !db.error) { list.replaceChildren(h("li", { class: "plain" }, loadingNote("Loading the tables …"))); return; }
   if (!tables.length) { list.replaceChildren(h("li", { class: "empty" }, db.error ? "–" : "No tables")); return; }
   const active = { documents: "documents", runs: "crawl_runs", table: db.table }[db.tab];
   // A schema per matching approach (keyword) next to the crawler's tables.
@@ -130,17 +145,18 @@ function renderDbTables() {
     h("li", { class: table.name === active ? "active" : null, onclick: () => dbOpenTable(table.name) },
       h("code", {}, table.name),
       h("small", {}, `${plural(table.rows, "row")}, ${fmtBytes(table.bytes)}`),
-      h("button", { type: "button", class: "empty-table", title: `Delete every row of ${table.name}, after a confirmation`, onclick: (event) => { event.stopPropagation(); openEmptyDialog([table.name]); } }, "Empty …")),
+      h("button", { type: "button", class: "empty-table", title: `Delete every row of ${table.name}, after a confirmation`, onclick: (event) => { event.stopPropagation(); openEmptyDialog([table.name], event.currentTarget); } }, "Empty …")),
   ].filter(Boolean)));
 }
 
 // ── Emptying tables: a preview of what goes, then the database name typed ──────
 let emptying = null;
 
-async function openEmptyDialog(names) {
+// `button` shows a spinner while the rows are counted.
+async function openEmptyDialog(names, button) {
   let plan;
   try {
-    plan = await api(`/api/db/empty-plan?${names.map((name) => `table=${encodeURIComponent(name)}`).join("&")}`);
+    plan = await busyButton(button, api(`/api/db/empty-plan?${names.map((name) => `table=${encodeURIComponent(name)}`).join("&")}`));
   } catch (error) {
     showDbNotice(`Cannot empty: ${error.message}`, true);
     return;
@@ -196,12 +212,18 @@ $("#empty-form").addEventListener("submit", async (event) => {
     $("#empty-submit").disabled = false;
   }
 });
-$("#db-empty-all").addEventListener("click", () => openEmptyDialog((db.overview?.tables || []).map((table) => table.name)));
+$("#db-empty-all").addEventListener("click", (event) => openEmptyDialog((db.overview?.tables || []).map((table) => table.name), event.currentTarget));
 
 function dbOpenTable(name) {
   if (name === "documents") dbSwitchTab("documents");
   else if (name === "crawl_runs") dbSwitchTab("runs");
-  else { db.table = name; db.generic.offset = 0; dbSwitchTab("table"); }
+  else {
+    // Another table has other columns: until it comes, a note instead of the last one, faded.
+    if (db.table !== name) Object.assign(db.generic, { rows: [], columns: [], total: 0, loaded: false });
+    db.table = name;
+    db.generic.offset = 0;
+    dbSwitchTab("table");
+  }
 }
 
 function fillSelect(select, options) {
@@ -272,7 +294,7 @@ function renderDbDown() {
   if (db.error) [title, message, hint] = ["Database not reachable", db.error.message, db.error.hint];
   else if (db.overview?.missing.length) [title, message, hint] = ["Schema missing", `${db.overview.database} has no ${db.overview.missing.join(" or ")} table.`, "Apply db/init/ from the repository root: make db"];
   box.hidden = !title;
-  if (title) box.replaceChildren(h("div", { class: "db-down-box" }, h("h3", {}, title), h("p", {}, message), hint ? h("p", { class: "cmd" }, hint) : null, h("button", { type: "button", onclick: () => dbRefresh() }, "Try again")));
+  if (title) box.replaceChildren(h("div", { class: "db-down-box" }, h("h3", {}, title), h("p", {}, message), hint ? h("p", { class: "cmd" }, hint) : null, h("button", { type: "button", onclick: (event) => busyButton(event.currentTarget, dbRefresh()) }, "Try again")));
 }
 
 function pager(box, list, load) {
@@ -311,7 +333,8 @@ function renderDbDocs() {
   const empty = db.overview?.documents?.total === 0
     ? "No documents stored yet: run the crawler with --store, or tick “Store in the database” on the Runs screen."
     : "No documents match the filters.";
-  if (docs.error) body.replaceChildren(messageRow(DOC_COLUMNS.length, docs.error, "small error"));
+  if (!docs.loaded) body.replaceChildren(loadingRow(DOC_COLUMNS.length, "Loading documents …"));
+  else if (docs.error) body.replaceChildren(messageRow(DOC_COLUMNS.length, docs.error, "small error"));
   else if (!docs.rows.length) body.replaceChildren(messageRow(DOC_COLUMNS.length, empty));
   else body.replaceChildren(...docs.rows.map((row) => h("tr", { class: db.selected?.id === row.id ? "selected" : null, onclick: () => dbOpenDocument(row.id) },
     h("td", {}, sourcePill(row.source)),
@@ -326,7 +349,7 @@ function renderDbDocs() {
     h("td", { class: "when", title: fmtDateTime(row.retrieved_at) }, fmtAgo(row.retrieved_at)),
     h("td", { class: "small" }, expiryText(row.expires_at) || "–"),
   )));
-  $("#db-docs-shown").textContent = docs.error ? "" : `${docs.total} ${docs.total === 1 ? "match" : "matches"}`;
+  $("#db-docs-shown").textContent = docs.error || !docs.loaded ? "" : `${docs.total} ${docs.total === 1 ? "match" : "matches"}`;
   pager($("#db-docs-pager"), docs, dbLoadDocs);
   const chip = $("#db-run-chip");
   chip.hidden = !db.runFilter;
@@ -393,11 +416,13 @@ async function dbOpenDocument(id) {
   db.selected = { id };
   if (db.tab === "documents") renderDbDocs();
   if (state.screen === "match") mtRenderResults();
+  // The panel opens at once: a document with many citations takes a moment to come.
+  dbShowDetail([h("h3", {}, id), loadingNote("Loading the document …")]);
   try {
     const data = await api(`/api/db/document?${queryString({ id })}`);
     if (db.selected?.id === id) renderDbDocument(data);
   } catch (error) {
-    dbShowDetail([h("h3", {}, id), h("div", { class: "note" }, error.message)]);
+    if (db.selected?.id === id) dbShowDetail([h("h3", {}, id), h("div", { class: "note" }, error.message)]);
   }
 }
 
@@ -412,8 +437,9 @@ function termTest(id) {
     timer = setTimeout(async () => {
       const q = input.value.trim();
       if (!q) { result.replaceChildren(hint); return; }
+      const slow = setTimeout(() => { if (input.value.trim() === q) result.replaceChildren(spinner(), " Searching …"); }, 200);
       try {
-        const test = await api(`/api/db/term-test?${queryString({ id, q })}`);
+        const test = await api(`/api/db/term-test?${queryString({ id, q })}`).finally(() => clearTimeout(slow));
         if (input.value.trim() !== q) return;
         if (!test.stems.length) result.replaceChildren("Only stop words: finds nothing anywhere.");
         else result.replaceChildren(`Searched as ${test.stems.join(" + ")}: metadata `, found(test.metadata), ", full text ", found(test.full_text));
@@ -492,7 +518,8 @@ function renderDbRuns() {
   // A crawl over several topics stores one run per topic, all with the same command.
   const topic = (run) => run.topics.length === 1 ? h("td", { class: "small" }, run.topics[0])
     : h("td", { class: "small muted", title: run.topics.join(", ") || null }, run.topics.length ? plural(run.topics.length, "topic") : "–");
-  if (runs.error) body.replaceChildren(messageRow(13, runs.error, "small error"));
+  if (!runs.loaded) body.replaceChildren(loadingRow(13, "Loading store runs …"));
+  else if (runs.error) body.replaceChildren(messageRow(13, runs.error, "small error"));
   else if (!runs.rows.length) body.replaceChildren(messageRow(13, "No store runs yet: run the crawler with --store, or tick “Store in the database” on the Runs screen."));
   else body.replaceChildren(...runs.rows.map((run) => h("tr", { class: db.selected?.run === run.id ? "selected" : null, onclick: () => dbOpenRun(run) },
     h("td", { class: "id" }, `#${run.id}`),
@@ -504,7 +531,7 @@ function renderDbRuns() {
     h("td", {}, h("span", { class: `pill ${run.ok ? "ok" : "failed"}`, title: run.run_error || "" }, run.ok ? "ok" : "failed")),
     number(run.inserted), number(run.changed), number(run.unchanged), number(run.cited), number(run.expired), number(run.failures.length, "red"),
   )));
-  $("#db-runs-shown").textContent = runs.error ? "" : plural(runs.total, "store run");
+  $("#db-runs-shown").textContent = runs.error || !runs.loaded ? "" : plural(runs.total, "store run");
   pager($("#db-runs-pager"), runs, dbLoadRuns);
 }
 
@@ -577,11 +604,12 @@ function renderDbTable() {
   $("#db-table-head").replaceChildren(...table.columns.map((column) => h("th", {}, column)));
   const body = $("#db-table-rows");
   const width = table.columns.length || 1;
-  if (table.error) body.replaceChildren(messageRow(width, table.error, "small error"));
+  if (!table.loaded) body.replaceChildren(loadingRow(width, `Loading ${db.table} …`));
+  else if (table.error) body.replaceChildren(messageRow(width, table.error, "small error"));
   else if (!table.rows.length) body.replaceChildren(messageRow(width, "Empty table"));
   else body.replaceChildren(...table.rows.map((row) => h("tr", { onclick: () => dbShowDetail([h("h3", {}, `Row of ${db.table}`), h("pre", {}, JSON.stringify(row, null, 2))]) },
     ...table.columns.map((column) => cellValue(row[column])))));
-  $("#db-table-shown").textContent = table.error ? "" : plural(table.total, "row");
+  $("#db-table-shown").textContent = table.error || !table.loaded ? "" : plural(table.total, "row");
   pager($("#db-table-pager"), table, dbLoadTable);
 }
 
@@ -623,3 +651,6 @@ $("#db-reset").addEventListener("click", () => {
 });
 $("#db-refresh").addEventListener("click", () => dbRefresh());
 setInterval(() => { if (state.screen === "db" && $("#db-auto").checked && document.visibilityState === "visible") dbRefresh(); }, 5000);
+// The lists wait for the overview before they load: until then they say that they load.
+renderDbDocs();
+renderDbRuns();

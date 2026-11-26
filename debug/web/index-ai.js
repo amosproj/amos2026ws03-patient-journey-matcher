@@ -15,6 +15,15 @@ async function aiRefresh() {
   if (ai.loading) return;
   ai.loading = true;
   try {
+    await busyButton($("#ai-refresh"), aiLoad());
+  } finally {
+    ai.loading = false;
+    renderIxButtons();
+  }
+}
+
+async function aiLoad() {
+  try {
     await aiEncoderRefresh();
     ai.data = await api("/api/index?technique=semantic");
     if (ix.overview) ix.overview.indexer = ai.data.indexer;
@@ -27,9 +36,10 @@ async function aiRefresh() {
     ai.data = null;
     $("#ai-error").textContent = error.message;
     $("#ai-start").disabled = true;
-  } finally {
-    ai.loading = false;
-    renderIxButtons();
+    $("#ai-state").className = "db-conn down";
+    $("#ai-state").replaceChildren(h("b", {}, "Not loaded"));
+    $("#ai-stats").replaceChildren(card("Documents", "–", "muted"));
+    $("#ai-coverage").replaceChildren(h("div", { class: "notice", style: "margin:0" }, error.message));
   }
 }
 
@@ -39,6 +49,7 @@ function renderAi() {
   const models = ai.data.models.filter((model) => aiTechnique() === "semantic" || model.model === aiTechnique());
   $("#ai-technique").disabled = ai.data.indexer.run?.status === "running";
   const ready = models.every((model) => model.ready && !model.pending);
+  $("#ai-state").className = "db-conn";
   $("#ai-state").replaceChildren(h("b", {}, ready ? "Up to date" : "Index build needed"),
     ...models.map((model) => h("small", {}, `${aiName(model.model)}: ${fmtCount(model.indexed)} embedded, ${fmtCount(model.pending)} new or changed`)),
     ...(ai.encoder && ai.encoder.status !== "running" ? [h("span", { class: "hint" }, "Indexing needs the encoder: start it above.")] : []));
@@ -95,7 +106,7 @@ async function aiEncoderRefresh() {
 function renderAiEncoder() {
   const box = $("#ai-encoder"), encoder = ai.encoder, lines = $("#ai-encoder-lines");
   if (!encoder) {
-    box.className = `db-conn${ai.encoderError ? " down" : ""}`;
+    box.className = `db-conn${ai.encoderError ? " down" : " loading"}`;
     box.replaceChildren(h("b", {}, ai.encoderError ? "Not loaded" : "Loading …"), ...(ai.encoderError ? [h("small", {}, ai.encoderError)] : []));
     for (const id of ["#ai-encoder-start", "#ai-encoder-stop"]) $(id).disabled = true;
     lines.hidden = true;

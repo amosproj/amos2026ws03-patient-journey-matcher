@@ -23,7 +23,7 @@ async function infoRefresh(fresh = false) {
   if (info.loading) return;
   info.loading = true;
   try {
-    info.data = await api(`/api/info${fresh ? "?fresh=1" : ""}`);
+    info.data = await busyButton($("#info-refresh"), api(`/api/info${fresh ? "?fresh=1" : ""}`));
     info.error = null;
   } catch (error) {
     info.error = error.message;
@@ -68,7 +68,7 @@ function infoShowRun(id) {
 function renderInfoSide() {
   const data = info.data, box = $("#info-host");
   if (!data) {
-    box.className = `db-conn${info.error ? " down" : ""}`;
+    box.className = `db-conn${info.error ? " down" : " loading"}`;
     box.replaceChildren(h("b", {}, info.error ? "Not loaded" : "Loading …"), info.error ? h("small", {}, info.error) : null);
     return;
   }
@@ -259,7 +259,7 @@ async function infoOpenTopic(id) {
   renderInfoTopicList();
   let topic = info.topics.get(id);
   if (!topic) {
-    $("#info-topic").replaceChildren(h("div", { class: "muted" }, "Loading …"));
+    $("#info-topic").replaceChildren(loadingNote("Loading the topic file …"));
     try {
       topic = await api(`/api/topics/${encodeURIComponent(id)}`);
       info.topics.set(id, topic);

@@ -184,7 +184,7 @@ async function viewRun(id, live) {
     openStream(id, 0);
     return;
   }
-  const data = await api(`/api/runs/${id}`);
+  const data = await busyArea($("#runs-view .content"), api(`/api/runs/${id}`));
   if (state.view !== id) return;
   state.run = data;
   for (const event of data.events) applyEvent(event);

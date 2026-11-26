@@ -127,9 +127,9 @@ async function grLoad() {
   $("#gr-facts-field").hidden = kind !== "patient";
   const query = new URLSearchParams({ kind, name, min_score: kind === "paper" ? $("#gr-score").value : "0" });
   const ticket = ++gr.loading;
-  $("#gr-stats").replaceChildren(h("div", { class: "card muted" }, h("b", {}, "…"), h("span", {}, `Normalizing ${name}`)));
+  $("#gr-stats").replaceChildren(h("div", { class: "card muted" }, h("b", {}, spinner()), h("span", {}, `Normalizing ${name} …`)));
   try {
-    const data = await api(`/api/graph/normalize?${query}`);
+    const data = await busyArea($("#graph-view .content"), api(`/api/graph/normalize?${query}`));
     if (ticket !== gr.loading) return;
     gr.data = data;
     gr.data.originalGraph = data.original ? grOriginalGraph(data.original) : null;
