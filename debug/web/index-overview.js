@@ -27,7 +27,7 @@ async function ixRefresh() {
     renderKwStats();
     renderKwCoverage();
     renderIxDown();
-    const updated = `· ${fmtClock(new Date().toISOString())}`;
+    const updated = `(last ${fmtClock(new Date().toISOString())})`;
     $("#ix-updated").textContent = updated;
     $("#kw-updated").textContent = updated;
     await aiRefresh();
@@ -78,7 +78,7 @@ function renderIxStats() {
     g ? ovList([
       ovShare("With entities", g.with_entities, g.pubmed, { color: "--good", tip: "PubMed papers with at least one mapped PubTator3 entity", onclick: () => showScreen("graph") }),
       ovShare("With relations", g.with_relations, g.pubmed, { color: "--accent", tip: "PubMed papers with at least one normalized PubTator3 relation", onclick: () => showScreen("graph") }),
-      ovShare("Waiting for retry", g.retrying, g.pubmed, { color: "--warn", tip: "PubMed papers missing from PubTator3, checked again after 2 days", onclick: () => showScreen("graph") }),
+      ovShare("Retry PubTator3", g.retrying, g.pubmed, { color: "--warn", tip: "PubMed papers PubTator3 did not return, asked again after 2 days; meanwhile their MeSH headings still match", onclick: () => showScreen("graph") }),
     ]) : null,
     g ? h("small", { class: "ov-note" }, `of ${fmtCount(g.pubmed)} PubMed papers, not expired`) : null);
   // One approach with an index per model: its part is wide enough for both next to each other.
@@ -258,7 +258,7 @@ function renderTxSide() {
   }
   const state = data.state, cores = data.cpus;
   $("#tx-note").textContent = !state ? "Each file takes up to 4 threads."
-    : `${wanted ? `${wanted} × ${state.threads} threads: ${wanted * state.threads} of ${cores} cores` : `${state.threads} threads per file, ${data.max_workers} files fill the ${cores} cores`} · model ${state.model}`;
+    : `${wanted ? `${wanted} × ${state.threads} threads: ${wanted * state.threads} of ${cores} cores` : `${state.threads} threads per file, ${data.max_workers} files fill the ${cores} cores`}; model ${state.model}`;
 }
 
 function renderTxPanels() {
@@ -272,7 +272,7 @@ function renderTxPanels() {
     reading.length ? h("table", {},
       h("thead", {}, h("tr", {}, h("th", {}, "Audio"), h("th", { class: "num" }, "Length"), h("th", {}, "Step"), h("th", {}, "For"))),
       h("tbody", {}, ...reading.map((item) => h("tr", {},
-        h("td", {}, item.title, h("div", { class: "small muted" }, [item.venue, item.id].filter(Boolean).join(" · "))),
+        h("td", {}, item.title, h("div", { class: "small muted" }, [item.venue, item.id].filter(Boolean).join(", "))),
         h("td", { class: "num" }, fmtLength(item.duration_seconds)),
         h("td", {}, h("span", { class: "pill plain" }, item.step)),
         h("td", { class: "when" }, fmtSpan(Date.now() - new Date(item.since)))))))
@@ -296,15 +296,15 @@ function renderTxPanels() {
       ], true), files ? h("button", { type: "button", class: "link-button", style: "margin-top:6px", onclick: () => dbShowDocuments({ "db-fulltext": "skipped" }, data.waiting_detail) }, "Show these documents") : null),
       ovSection("Read from audio so far", ovList([
         ovShare("Transcribed", read.ok, total, { unit: "files", color: "--good", tip: "Stored for the indexes; the text goes once every index has read it" }),
-        ovShare("Skipped", read.skipped, total, { unit: "files", color: "--dropped", tip: "No speech, an unreadable file, or larger than 150 MB" }),
-        ovShare("Failed", read.failed, total, { unit: "files", color: "--critical", tip: "The download or speech-to-text failed; tried again a day later" }),
+        ovShare("No transcript", read.skipped, total, { unit: "files", color: "--dropped", tip: "No speech, an unreadable file, or larger than 150 MB; the episode is matched by its metadata" }),
+        ovShare("Retry", read.failed, total, { unit: "files", color: "--critical", tip: "The download or speech-to-text failed; tried again a day later" }),
       ])),
       ovSection("Pace", ovList([
         ovFigure(speed ? `${speed.toFixed(1)} ×` : "–", "real time per worker", { cls: speed ? "" : "zero", title: "Seconds of audio one worker reads in a second, download included, over the 30 files read last" }),
         ovFigure(speed && left ? fmtSpan((left / (speed * pace)) * 1000) : "–", `left with ${plural(pace, "worker")}`, { cls: speed && left ? "" : "zero", title: "The waiting audio at this pace; a rough estimate" }),
       ], true))));
 
-  const pill = { ok: "ok", skipped: "plain", failed: "failed" };
+  const pill = { ok: ["ok", "transcribed"], skipped: ["plain", "no transcript"], failed: ["failed", "retry"] };
   const recent = data.state?.recent || [];
   const last = recent.length ? h("div", { class: "panel" },
     h("h3", {}, "Read last", h("small", {}, running ? "by the running job" : "by the job that ran last")),
@@ -313,7 +313,7 @@ function renderTxPanels() {
       h("tbody", {}, ...recent.map((item) => h("tr", {},
         h("td", { class: "when", title: fmtDateTime(item.at) }, fmtAgo(item.at)),
         h("td", {}, item.title, h("div", { class: "small muted mono" }, item.id)),
-        h("td", {}, h("span", { class: `pill ${pill[item.status] || "plain"}` }, item.status),
+        h("td", {}, h("span", { class: `pill ${pill[item.status]?.[0] || "plain"}` }, pill[item.status]?.[1] || item.status),
           item.detail ? h("div", { class: "small muted" }, item.detail) : null),
         h("td", { class: "num" }, fmtLength(item.duration_seconds)),
         h("td", { class: "num" }, fmtSpan(item.seconds * 1000))))))) : null;

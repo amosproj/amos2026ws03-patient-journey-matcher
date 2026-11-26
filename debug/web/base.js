@@ -116,18 +116,18 @@ const fmtCount = (value) => Number(value).toLocaleString("en-GB");
 const fmtCompact = (value) => new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 }).format(value);
 const fmtShare = (count, total) => total ? `${Math.round((100 * count) / total)} %` : "–";
 // What the keyword indexer did with a document's full text (`full_text_state` in server.py):
-// the first two are done, the next run reads the others.
+// the first two are done, the next run reads the others. [pill class, tip, label]
 const FULL_TEXT_STATES = {
-  indexed: ["ok", "Done: its keywords are in the index"],
-  skipped: ["plain", "Done: no usable full text, so at most its metadata is matched"],
-  failed: ["failed", "Open: the download failed; the next run tries again"],
-  new: ["none", "Open: not read yet; the next run reads it"],
-  changed: ["none", "Open: changed since it was read; the next run reads it again"],
+  indexed: ["ok", "Done: the keywords of its full text are in the index, beside its metadata", "fully indexed"],
+  skipped: ["plain", "Done: no usable full text, so at most its metadata is matched", "metadata only"],
+  failed: ["failed", "Open: the download failed, so at most its metadata is matched until the next run tries again", "retry download"],
+  new: ["none", "Open: not read yet; the next run reads it", "new"],
+  changed: ["none", "Open: changed since it was read; the next run reads it again", "changed"],
 };
 
 function fullTextPill(state) {
-  const [cls, tip] = FULL_TEXT_STATES[state] || ["plain", ""];
-  return h("span", { class: `pill ${cls}`, title: tip }, state);
+  const [cls, tip, label = state] = FULL_TEXT_STATES[state] || ["plain", ""];
+  return h("span", { class: `pill ${cls}`, title: tip }, label);
 }
 
 // Named bars with their figure at the end. Rows: { name, value, label, title, onclick }.

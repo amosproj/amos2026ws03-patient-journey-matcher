@@ -40,13 +40,11 @@ function renderAi() {
   $("#ai-technique").disabled = ai.data.indexer.run?.status === "running";
   const ready = models.every((model) => model.ready && !model.pending);
   $("#ai-state").replaceChildren(h("b", {}, ready ? "Up to date" : "Index build needed"),
-    ...models.map((model) => h("small", {}, `${aiName(model.model)}: ${fmtCount(model.indexed)} embedded, ${fmtCount(model.pending)} pending`)),
+    ...models.map((model) => h("small", {}, `${aiName(model.model)}: ${fmtCount(model.indexed)} embedded, ${fmtCount(model.pending)} new or changed`)),
     ...(ai.encoder && ai.encoder.status !== "running" ? [h("span", { class: "hint" }, "Indexing needs the encoder: start it above.")] : []));
   $("#ai-stats").replaceChildren(card("Documents", fmtCount(models[0]?.documents ?? 0)),
     ...models.flatMap((model) => [
-      card(`${aiName(model.model)} embedded`, fmtCount(model.indexed)),
-      card(`${aiName(model.model)} pending`, fmtCount(model.pending)),
-      card(`${aiName(model.model)} empty metadata`, fmtCount(model.empty)),
+      ...AI_STATES.map(([key, label]) => card(`${aiName(model.model)} ${label.toLowerCase()}`, fmtCount(model[key]))),
       card(`${aiName(model.model)} index`, model.ready ? "Ready" : "Building"),
     ]));
   $("#ai-coverage").replaceChildren(...models.map(aiCoveragePanel));
@@ -64,13 +62,13 @@ function aiOverviewPart(model) {
 }
 
 function aiCoveragePanel(model) {
-  const headings = ["Source", "Content type", "Documents", "Embedded", "Pending", "Empty metadata"];
   const rows = model.coverage.map((row) => h("tr", {},
-    h("td", {}, row.source), h("td", {}, row.content_type),
-    ...["documents", "indexed", "pending", "empty"].map((key) => h("td", { class: "num" }, fmtCount(row[key])))));
+    h("td", {}, sourcePill(row.source)), h("td", {}, typeLabel(row.content_type)),
+    ...["documents", ...AI_STATES.map(([key]) => key)].map((key) => h("td", { class: "num" }, fmtCount(row[key])))));
   return h("div", { class: "panel" },
     h("h3", {}, aiName(model.model), h("small", {}, model.repository)),
-    h("table", {}, h("thead", {}, h("tr", {}, ...headings.map((label) => h("th", {}, label)))), h("tbody", {}, ...rows)));
+    h("table", {}, h("thead", {}, h("tr", {}, h("th", {}, "Source"), h("th", {}, "Content type"), h("th", { class: "num" }, "Documents"),
+      ...AI_STATES.map(([, label, , tip]) => h("th", { class: "num", title: tip }, label)))), h("tbody", {}, ...rows)));
 }
 
 // ── The encoder: the one this server started, or one of another command such as make debug-ai ──
@@ -107,7 +105,7 @@ function renderAiEncoder() {
   box.className = `db-conn${cls}`;
   box.replaceChildren(...[
     h("b", {}, label),
-    h("small", { class: "mono" }, `${encoder.url} · ${encoder.device}`),
+    h("small", { class: "mono" }, `${encoder.url}, ${encoder.device}`),
     status === "starting" ? h("small", {}, `Started ${fmtAgo(encoder.started_at)}. Loading both models; the first start downloads them.`) : null,
     status === "running" && own ? h("small", {}, `Started here ${fmtAgo(encoder.started_at)}; stops with this server.`) : null,
     status === "running" && !own ? h("small", {}, "Started by another command, such as make debug-ai, which stops it.") : null,

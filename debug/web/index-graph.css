@@ -61,7 +61,6 @@
 .gr-legend { display: flex; flex-direction: column; gap: 5px; font-size: 12.5px; }
 .gr-legend span { display: flex; align-items: center; gap: 8px; }
 .gr-legend svg { flex: none; }
-.gr-note { font-size: 12px; margin: 0; }
 .pill.gr-pill { --pill: var(--status, var(--dropped)); }
 .gr-summary { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; }
 .gr-stmts { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }

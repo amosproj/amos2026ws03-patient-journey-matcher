@@ -39,7 +39,7 @@ async function infoRefresh(fresh = false) {
     renderInfoSchedule();
     renderInfoRunning();
   }
-  $("#info-updated").textContent = `· ${fmtClock(new Date().toISOString())}`;
+  $("#info-updated").textContent = `(last ${fmtClock(new Date().toISOString())})`;
 }
 
 function infoShow() {
@@ -76,12 +76,12 @@ function renderInfoSide() {
   box.className = "db-conn";
   box.replaceChildren(
     h("b", {}, m.host ?? data.machine.error ?? "–"),
-    h("small", {}, [m.os, m.cpus ? `${m.cpus} cores` : null, m.memory ? `${fmtGB(m.memory.total)} GB memory` : null].filter(Boolean).join(" · ")),
+    h("small", {}, [m.os, m.cpus ? `${m.cpus} cores` : null, m.memory ? `${fmtGB(m.memory.total)} GB memory` : null].filter(Boolean).join(", ")),
     m.uptime != null ? h("small", {}, `Running for ${fmtSpan(m.uptime * 1000)}`) : null);
   const code = data.code;
   $("#info-code").replaceChildren(...(code && !code.error ? [
     h("dt", {}, "Branch"), h("dd", { class: "mono" }, code.branch),
-    h("dt", {}, "Commit"), h("dd", { title: code.subject }, h("span", { class: "mono" }, code.commit), ` · ${fmtAgo(code.date)}`),
+    h("dt", {}, "Commit"), h("dd", { title: code.subject }, h("span", { class: "mono" }, code.commit), `, ${fmtAgo(code.date)}`),
     h("dt", {}, "Changed"), h("dd", { class: code.changed ? "expiring" : "muted", title: "Tracked files that differ from the commit" }, code.changed == null ? "–" : code.changed ? plural(code.changed, "file") : "none"),
   ] : [h("dd", { class: "muted" }, code?.error || "Not a git checkout")]));
 }
@@ -207,13 +207,13 @@ function renderInfoRunning() {
     h("div", { class: "notice quiet", style: "margin:0" }, "This page sees the runs started here, the timers of this machine, Docker containers and processes. A crawl or make index started in a terminal shows only as a process."),
     panel("Started from this page", null, ...(started.length ? started : [h("span", { class: "muted" }, "Nothing started from this page runs.")])),
     panel("Timers", null, ...(!live ? [h("span", { class: "muted" }, "This machine runs no timers.")]
-      : timers.length ? timers.map((job) => line(job.label, `for ${fmtAgo(job.last_start).replace(/ ago$/, "")} · ${job.unit}`))
+      : timers.length ? timers.map((job) => line(job.label, `for ${fmtAgo(job.last_start).replace(/ ago$/, "")}, ${job.unit}`))
       : [h("span", { class: "muted" }, "No timer job runs right now.")])),
     panel("Services", null,
-      line("MCP server", `${data.mcp.url} · ${data.mcp.running ? "up" : "down"}${data.schedule?.mcp_service ? ` · systemd ${data.schedule.mcp_service}` : ""}`),
-      line("Transcription job", `${database?.transcription?.running ? `reads ${plural(database.transcription.workers, "file")} at once, ${database.transcription.wanted} set` : "not running"}${data.schedule?.transcribe_service ? ` · systemd ${data.schedule.transcribe_service}` : ""}`,
+      line("MCP server", `${data.mcp.url}, ${data.mcp.running ? "up" : "down"}${data.schedule?.mcp_service ? `, systemd ${data.schedule.mcp_service}` : ""}`),
+      line("Transcription job", `${database?.transcription?.running ? `reads ${plural(database.transcription.workers, "file")} at once, ${database.transcription.wanted} set` : "not running"}${data.schedule?.transcribe_service ? `, systemd ${data.schedule.transcribe_service}` : ""}`,
         show(() => { ix.tab = "transcription"; showScreen("index"); })),
-      line("Database", database?.up ? `${database.target} · ${fmtSize(database.size)} · ${plural(database.connections, "session")}` : database?.error || "down")),
+      line("Database", database?.up ? `${database.target}, ${fmtSize(database.size)}, ${plural(database.connections, "session")}` : database?.error || "down")),
     panel("Docker containers", null, ...(Array.isArray(containers) ? (containers.length
       ? [h("table", {}, h("thead", {}, h("tr", {}, h("th", {}, "Container"), h("th", {}, "Status"))), h("tbody", {}, ...containers.map((item) => h("tr", {}, h("td", { class: "mono" }, item.name), h("td", { class: "small" }, item.status)))))]
       : [h("span", { class: "muted" }, "No container runs.")])

@@ -123,7 +123,7 @@ function mtShowAsOf() {
   $("#mt-asof-date").textContent = typeof asOf === "string" ? asOf : mt.asOf || "–";
   const ahead = mtEvents(mt.args).filter((event) => mt.asOf && event?.date > mt.asOf).length;
   const where = mt.asOf ? `date ${mt.dates.indexOf(mt.asOf) + 1} of ${mt.dates.length}` : "before the first event";
-  $("#mt-asof-note").textContent = mt.dates.length > 1 ? `${typeof asOf === "string" ? "" : "the latest event is the focus · "}${where}${ahead ? ` · ${plural(ahead, "later event")} left out` : ""} · drag, or click an event` : "";
+  $("#mt-asof-note").textContent = mt.dates.length > 1 ? `${typeof asOf === "string" ? "" : "the latest event is the focus; "}${where}${ahead ? `, ${plural(ahead, "later event")} left out` : ""}; drag, or click an event` : "";
   mtRenderTimeline();
 }
 
@@ -198,7 +198,7 @@ async function mtRun(fresh) {
       mt.cache.set(key, result);
     } catch (error) {
       if (ticket === mt.ticket) {
-        $("#mt-error").textContent = mt.result ? `${error.message} · showing the previous result` : error.message;
+        $("#mt-error").textContent = mt.result ? `${error.message} (showing the previous result)` : error.message;
         mtBusy(false);
       }
       return;
@@ -324,7 +324,7 @@ function mtRenderTimeline() {
       h("span", { class: "when" }, date(event) || "no date"),
       h("span", { class: "dot" }),
       h("span", { class: "label" }, event.label || ""),
-      h("span", { class: "what" }, [role ? { focus: "Focus", context: "Context", future: "Later" }[role] : null, event.id, event.type].filter(Boolean).join(" · ")));
+      h("span", { class: "what" }, [role ? { focus: "Focus", context: "Context", future: "Later" }[role] : null, event.id, event.type].filter(Boolean).join(", ")));
   }));
   const shown = box.querySelector(".ev.focus") || [...box.querySelectorAll(".ev:not(.future)")].at(-1);
   if (shown) box.scrollLeft = Math.max(0, shown.offsetLeft - box.offsetLeft - box.clientWidth / 2 + shown.offsetWidth / 2);
@@ -376,10 +376,10 @@ function mtRenderTerms() {
     const left = [
       skipped.size && `Skipped: ${[...skipped].join(" ")}`,
       negated.size && `Negated, left out: ${[...negated].join(" ")}`,
-    ].filter(Boolean).join(" · ");
+    ].filter(Boolean).join("; ");
     return h("div", { class: `ev-terms${isFocus ? " focus" : ""}` },
       h("div", { class: "head", title: "Terms come from the label, the text parameters and the names of true flags" },
-        h("b", {}, id), [isFocus ? "focus" : "older event", source.date, source.type].filter(Boolean).join(" · ")),
+        h("b", {}, id), [isFocus ? "focus" : "older event", source.date, source.type].filter(Boolean).join(", ")),
       h("div", {}, source.label || ""),
       h("div", { class: "chips" }, pairs.size ? [...pairs.values()].map(termChip) : h("span", { class: "muted" }, "no search term")),
       left ? h("div", { class: "left", title: "Numbers and the skip list of german-terms.json (function words, units, time spans …) are skipped; so are the words of a negated finding" }, left) : null);
@@ -388,7 +388,7 @@ function mtRenderTerms() {
     row(`Focus ${focusEvent.id}`, `×${mtSetting("focusWeight") ?? 1} in the query`, "The medical terms of the focus event, repeated this often in the query, so that the sources on the focus rank first.", terms.focus.map((term) => chip(term))),
     row("Context", "older events, ×1", `Up to ${mtSetting("contextTerms") ?? terms.context.length} terms that the most older events name, each once in the query; of two named equally often, the more recent first. Generic terms of older events are left out.`, terms.context.map((term) => chip(term, `Named by ${named(term)} of ${older.length} older events`))),
     row("Generic", "once, never a hit alone", "The generic terms of the focus event (german-terms.json): each once in the query, and a source with only these is no hit.", generic.map((term) => chip(term))),
-    h("div", { class: "term-key" }, "Documents with the term", h("i", { class: "sq m" }), "in their metadata", h("i", { class: "sq f" }), "in their full text · ∅ finds nothing · ⚠ in more than half of them"),
+    h("div", { class: "term-key" }, "Documents with the term", h("i", { class: "sq m" }), "in their metadata", h("i", { class: "sq f" }), "in their full text; ∅ finds nothing; ⚠ in more than half of them"),
     // Stays open from one match to the next, e.g. while the as-of date moves.
     h("details", { open: box.querySelector("details")?.open },
       h("summary", {}, "How each event became search terms"),
@@ -472,7 +472,7 @@ function mtRankStrip(candidate, last) {
   ].join("\n");
   return [
     h("td", { title: says }, h("div", { class: "ranks" }, ...marks)),
-    h("td", { class: "rank-numbers", title: says }, `${metaCounts ? meta : "–"} · ${hasFullText ? (fullCounts ? full : "–") : "none"}`),
+    h("td", { class: "rank-numbers", title: says }, `${metaCounts ? meta : "–"}, ${hasFullText ? (fullCounts ? full : "–") : "none"}`),
   ];
 }
 
@@ -522,7 +522,7 @@ function mtRenderResults() {
     traced && h("th", { title: `Where the document stands among the best ${last} candidates of each index, by BM25: rank 1 on the left, on a log scale. Blue: metadata, orange: full text; no dot: not among them, or none of the terms there.` },
       "Rank in each index", h("small", {}, axis)),
     traced && h("th", { title: "The two ranks as numbers. –: not among the candidates, or none of the terms there; none: the document has no full text, so its metadata rank counts for both." },
-      "Ranks", h("small", {}, "metadata · full text")),
+      "Ranks", h("small", {}, "metadata, full text")),
     h("th", { title: traced ? "The focus terms in bold, then the context terms that most results hold. A cell: left half found in the metadata, right half in the full text. Hover a name for the whole term." : "The terms each result holds (matched_terms). A grey cell: found. Hover a name for the whole term." },
       h("div", { class: "heat-head" }, ...columns.flatMap((column, index) => [gap(index), h("span", { class: column.focus ? "focus" : null, title: column.term }, column.term)]))),
   ].filter(Boolean));
@@ -539,51 +539,117 @@ function mtRenderResults() {
         ? mtFusion(candidates.get(result.source_id), ranked[0]?.score)
         : h("td", { class: "rank-numbers" }, result.score == null ? "–" : [h("span", { class: "meter" }, h("i", { style: `width:${100 * result.score}%` })), ` ${result.score.toFixed(2)}`]),
       h("td", {}, sourcePill(result.source)),
-      h("td", { class: "title" }, result.title, h("div", { class: "muted", style: "font-size:12px" }, [typeLabel(result.content_type), result.published_date, result.source_id].filter(Boolean).join(" · "))),
+      h("td", { class: "title" }, result.title, h("div", { class: "muted", style: "font-size:12px" }, [typeLabel(result.content_type), result.published_date, result.source_id].filter(Boolean).join(", "))),
       !traced && hasExplanation && h("td", { class: "small" }, result.explanation || "–"),
       traced && mtRankStrip(candidates.get(result.source_id), last),
       h("td", {}, h("div", { class: "heat" }, ...columns.flatMap((column, index) => [gap(index), where(column)]))));
   }));
 }
 
-// The two rankings the result is fused from, with the place each candidate ended on.
+// Graph: the query the matcher built from the patient, in the order the match uses it.
+const MESH_QUALIFIERS = { Q000009: "adverse effects", Q000175: "diagnosis", Q000188: "drug therapy", Q000473: "pathology", Q000532: "radiotherapy", Q000601: "surgery", Q000628: "therapy", Q000000981: "diagnostic imaging" };
+const GQ_ROLES = { stage: "disease state", aspect: "subheading" };
+const GQ_COURSE = { diagnosed: "diagnosis confirmed", localTherapy: "local therapy", prostatectomy: "prostatectomy", systemicTherapy: "drug therapy", plannedTherapy: "treatment planned", psaWorkup: "PSA workup", diagnosticFocus: "test on the focus day" };
+const GQ_HISTOLOGY = { "mesh:D002289": "non-small-cell", "mesh:D055752": "small-cell" };
+
+function mtGraphQuery(query) {
+  // A concept's own ID names it before the other IDs it goes by (narrower forms, other vocabularies).
+  const names = new Map();
+  for (const all of [false, true]) for (const concept of query.concepts) for (const id of all ? concept.ids : concept.ids.slice(0, 1)) if (!names.has(id)) names.set(id, concept.name);
+  const nameOf = (id) => names.get(id) ?? id;
+  const unique = (ids) => [...new Set(ids.map(nameOf))];
+  const chips = (items, cls = "term") => items.length ? h("div", { class: "chips" }, items.map((item) => h("span", { class: cls }, item))) : h("span", { class: "muted" }, "none");
+  const row = (label, value, title) => h("div", { class: "term-row" }, h("span", { class: "row-label", title }, label), value);
+  const panel = (title, note, ...body) => h("div", { class: "panel" }, h("h3", {}, title, h("small", {}, note)), ...body);
+  const pool = mtStep("pool");
+
+  const searched = Object.keys(query.diagnoses || {});
+  const groups = query.concepts.filter((concept) => concept.role === "diagnosis")
+    .map((concept) => ({ name: concept.name, ids: concept.ids.filter((id) => searched.includes(id)) }))
+    .filter((group) => group.ids.length);
+  const grouped = new Set(groups.flatMap((group) => group.ids));
+  for (const id of searched.filter((one) => !grouped.has(one))) groups.push({ name: nameOf(id), ids: [id] });
+  const candidates = panel("Candidates", "only papers whose PubTator3 annotations or MeSH headings name one of these diagnoses",
+    h("div", { class: "panel-body" }, groups.length ? groups.map((group) => row(group.name, chips(group.ids, "term mono")))
+      : h("div", { class: "muted" }, "No diagnosis could be mapped, so no paper was searched. The evidence below says why.")));
+
+  const idf = pool?.idf || {};
+  const rows = query.concepts.map((concept) => {
+    const rarity = idf[concept.ids[0]];
+    return { concept, rarity, worth: rarity == null ? null : concept.weight * rarity };
+  }).sort((a, b) => (b.worth ?? b.concept.weight) - (a.worth ?? a.concept.weight));
+  const top = Math.max(0, ...rows.map((one) => one.worth ?? 0)) || 1;
+  const conceptCell = ({ ids, name, role, focus, diagnoses, plannedFor }) => {
+    // A subheading (aspect) is a heading with a MeSH qualifier: Prostatic Neoplasms/drug therapy.
+    const [, descriptor, qualifier] = /^(.*?)(Q\d+)$/.exec(ids[0]) || [];
+    const aspect = role === "aspect" && descriptor;
+    const label = aspect ? `${nameOf(descriptor)} / ${MESH_QUALIFIERS[qualifier] ?? qualifier}` : name;
+    const source = aspect ? name.replace(/ \((?:aspect|adverse effects|diagnosis)\)$/, "") : null;
+    const notes = [
+      source && source !== nameOf(descriptor) ? `from ${source}` : null,
+      diagnoses?.length ? `linked to ${unique(diagnoses).join(", ")}` : null,
+      plannedFor?.length ? `planned for ${unique(plannedFor).join(", ")}` : null,
+    ].filter(Boolean).join("; ");
+    return h("td", {}, focus ? h("b", { title: "From the focus day: counts more" }, "★ ", label) : label,
+      notes ? h("div", { class: "small muted" }, notes) : null,
+      h("div", { class: "mono muted" }, ids.join(" ")));
+  };
+  const scores = panel("Score", "each concept a paper has adds its worth once: all of it in the title or as a MeSH major topic, less in other headings or the abstract only",
+    h("table", {},
+      h("thead", {}, h("tr", {},
+        h("th", {}, "Concept"), h("th", {}, "Kind"),
+        h("th", { class: "num", title: "The weight of its role, by how certain the statement is; the focus day counts more" }, "Weight"),
+        h("th", { class: "num", title: "How rare it is among the candidates (inverse document frequency): 0 when every candidate has it" }, "Rarity"),
+        h("th", { title: "Weight × rarity: what it adds to a paper that has it in its title" }, "Worth"))),
+      h("tbody", {}, rows.map(({ concept, rarity, worth }) => h("tr", {},
+        conceptCell(concept),
+        h("td", {}, h("span", { class: "pill plain", title: concept.role === "aspect" ? "A MeSH subheading: papers indexed under the heading with this qualifier" : null }, GQ_ROLES[concept.role] ?? concept.role)),
+        h("td", { class: "num" }, concept.weight.toFixed(2)),
+        h("td", { class: "num" }, rarity == null ? "–" : rarity.toFixed(2)),
+        h("td", { class: "rank-numbers" }, worth == null ? "–" : [h("span", { class: "meter" }, h("i", { style: `width:${(100 * worth) / top}%` })), worth.toFixed(2)]))))));
+
+  const { states = [], ...course } = query.stage || {};
+  const histology = query.histology;
+  const situation = panel("Re-rank", `the best${pool ? ` ${fmtCount(pool.reranked)}` : ""} by score: up when a paper is about this situation, down when it is about another state or phase of care, another disease, lab research or the other sex`,
+    h("div", { class: "panel-body" },
+      row("Disease state", chips(states.map((one) => one.replaceAll("_", " ")))),
+      row("Course so far", chips(Object.entries(course).filter(([, on]) => on === true).map(([key]) => GQ_COURSE[key] ?? key))),
+      histology ? row("Lung histology", h("span", {}, `${GQ_HISTOLOGY[histology.observed] ?? nameOf(histology.observed)}: papers only on ${GQ_HISTOLOGY[histology.conflicting] ?? nameOf(histology.conflicting)} rank lower`)) : null,
+      row("Drugs received", chips(unique(Object.keys(query.treatments || {}))), "A paper that links one of them to the patient's diagnosis (PubTator3) gains extra; one that links it only to another disease gains nothing for it")));
+
+  const evidence = [...(query.evidence || [])].sort((a, b) => String(b.date ?? "").localeCompare(String(a.date ?? "")));
+  const read = panel("Evidence", `what the matcher read from the journey up to ${query.cutoff}, and what it could not map`,
+    evidence.length ? h("table", {},
+      h("thead", {}, h("tr", {}, h("th", {}, "Date"), h("th", {}, "Statement"), h("th", {}, "Concept"), h("th", {}, "Diagnosis"), h("th", {}, "Status"), h("th", {}, "From"))),
+      h("tbody", {}, evidence.map(({ date, detail, concept, diagnosis, status, ref }) => h("tr", {},
+        h("td", { class: "when" }, date || "–"),
+        h("td", {}, detail || "–"),
+        h("td", {}, concept ? nameOf(concept) : "–"),
+        h("td", {}, diagnosis ? nameOf(diagnosis) : "–"),
+        h("td", {}, status ? h("span", { class: `pill gr-pill s-${status}` }, status) : "–"),
+        h("td", { class: "mono muted", title: ref }, ref?.length > 12 ? `${ref.slice(0, 8)}…` : ref || "–")))))
+      : h("div", { class: "panel-body muted" }, "Nothing recorded."));
+
+  return [
+    h("p", { class: "muted", style: "margin:0" }, `How the graph matcher searched as of ${query.cutoff}: it takes the papers on the patient's diagnoses, scores them by the patient's concepts and re-ranks the best by the patient's situation. Results says why each hit matched.`),
+    candidates, scores, situation, read,
+  ];
+}
+
+// The two rankings the result is fused from, with the place each candidate ended on. Graph has no
+// index rankings: it shows the query it built from the patient instead.
 function mtRenderRankings() {
   const box = $("#mt-rankings");
   const rankings = mtStep("rankings");
   const query = mtStep("query");
-  if (!rankings && (mt.request?.algorithm === "graph" || query)) {
-    const note = h("p", { class: "muted", style: "grid-column:1 / 3; margin:10px 0 0" },
-      "Graph matching weighs the patient's concepts by role, focus and rarity. It uses paper titles, PubTator3 annotations and MeSH headings, then adjusts for disease state and treatment history.");
-    if (!query) {
-      box.replaceChildren(note, h("div", { class: "empty", style: "grid-column:1 / 3" },
-        mt.via === "mcp" ? "The MCP server answers without the steps of the match." : "No graph query trace available."));
-      return;
-    }
-    const section = (label, map) => {
-      const entries = Object.entries(map || {});
-      return h("div", {},
-        h("h3", {}, `${label} (${entries.length})`),
-        ...(entries.length
-          ? entries.map(([key, weight]) => h("div", { class: "rank-item" }, h("span", { class: "mono" }, key), h("span", { class: "n" }, Number(weight).toFixed(2))))
-          : [h("div", { class: "empty" }, "None")]));
-    };
-    const concepts = Object.fromEntries((query.concepts || []).map((concept) =>
-      [`${concept.focus ? "★ " : ""}${concept.name} (${concept.role}) ${concept.ids.join(" ")}`, concept.weight]));
-    const { states, ...course } = query.stage || { states: [] };
-    const state = Object.fromEntries([
-      ...states.map((one) => [one.replaceAll("_", " "), 1]),
-      ...Object.entries(course).filter(([, value]) => value).map(([key]) => [key, 1]),
-    ]);
-    box.replaceChildren(
-      note,
-      section(`Diagnosis IDs for retrieval (cutoff ${query.cutoff}${query.conceptOnly ? ", timeline only" : ""})`, query.diagnoses),
-      section("Concepts by weight, ★ focus", Object.fromEntries(Object.entries(concepts).sort(([, a], [, b]) => b - a))),
-      section("Disease state and course", state),
-      section("Treatments used for drug–diagnosis links", query.treatments),
-      ...(query.evidence?.length ? [h("div", {}, h("h3", {}, "Clinical evidence at cutoff"),
-        ...query.evidence.map(({ date, detail, concept, diagnosis, status, ref }) =>
-          h("div", { class: "rank-item" }, [date, detail, concept, diagnosis, status, ref].filter(Boolean).join(" · "))))] : []),
-    );
+  const graph = !rankings && (mt.request?.algorithm === "graph" || Boolean(query));
+  const tab = $('#mt-tabs button[data-mttab="rankings"]');
+  tab.textContent = graph ? "Patient query" : "Index rankings";
+  tab.title = graph ? "What the graph matcher searched for: the patient's diagnoses, concepts and situation" : "The best candidates of each index before rank fusion, and where each one ended";
+  box.className = graph ? "panels" : "rank-lists";
+  if (graph) {
+    box.replaceChildren(...(query ? mtGraphQuery(query)
+      : [h("div", { class: "empty" }, mt.via === "mcp" ? "The MCP server answers without the steps of the match." : "No graph query trace available.")]));
     return;
   }
   const intro = h("p", { class: "muted", style: "grid-column:1 / 3; margin:10px 0 0" }, "Before rank fusion: the best candidates of each index in its own order, and where each one ended. Rank fusion merges the two lists into the results.");
@@ -640,7 +706,7 @@ function mtRenderClient() {
     : answer.results.length ? null : h("div", { class: "notice quiet" }, "Nothing relevant for this event.");
   box.replaceChildren(...[
     h("div", { class: "client-head" },
-      h("small", {}, [plural(answer.results.length, "source"), focus?.date].filter(Boolean).join(" · ")),
+      h("small", {}, [plural(answer.results.length, "source"), focus?.date].filter(Boolean).join(", ")),
       h("h3", {}, focus?.label || answer.focus_event_id)),
     state, ...answer.results.map(mtClientCard)].filter(Boolean));
 }
@@ -654,7 +720,7 @@ function mtClientCard(result) {
     h("div", {},
       h("div", { class: "src-meta" },
         sourcePill(result.source),
-        h("span", {}, [typeLabel(result.content_type), result.published_date].filter(Boolean).join(" · ")),
+        h("span", {}, [typeLabel(result.content_type), result.published_date].filter(Boolean).join(", ")),
         h("span", { class: "rank", title: result.score == null ? null : `score ${result.score}: relative to the best source of this list` }, `#${result.rank}`,
           result.score == null ? null : h("span", { class: "meter" }, h("i", { style: `width:${100 * result.score}%` })))),
       h("h4", {}, h("a", { href: result.url, target: "_blank", rel: "noopener noreferrer" }, result.title)),
@@ -702,9 +768,9 @@ function mtClientFileRows(source) {
     downloads.length ? null : h("div", { class: "muted" }, "No file to download. ", h("a", { href: url, ...open }, "Open the page"), " instead."),
     ...downloads.slice(0, CLIENT_FILES).map((file) => h("div", { class: "file" },
       h("a", { href: file.url, ...open }, name(file.url)),
-      h("span", { class: "muted" }, [file.kind, file.media_type, file.size == null ? null : fmtBytes(file.size)].filter(Boolean).join(" · ")))),
+      h("span", { class: "muted" }, [file.kind, file.media_type, file.size == null ? null : fmtBytes(file.size)].filter(Boolean).join(", ")))),
     downloads.length > CLIENT_FILES ? h("div", { class: "muted" }, `and ${fmtCount(downloads.length - CLIENT_FILES)} more`) : null,
-    h("details", {}, h("summary", {}, `Answer of get_source · ${source.seconds.toFixed(2)} s`), h("pre", {}, JSON.stringify(source.answer, null, 2))),
+    h("details", {}, h("summary", {}, `Answer of get_source (${source.seconds.toFixed(2)} s)`), h("pre", {}, JSON.stringify(source.answer, null, 2))),
   ].filter(Boolean);
 }
 
@@ -717,8 +783,8 @@ function mtDocumentParts(id) {
   const rows = [["Result", result ? `rank ${result.rank}` : candidate.score == null ? "dropped: none of the medical terms is in it" : "ranked, but below the limit"]];
   if (candidate?.score != null) rows.push(["Rank fusion", `${candidate.metadataScore.toFixed(4)} metadata + ${candidate.fullTextScore.toFixed(4)} full text = ${candidate.score.toFixed(4)}`]);
   if (candidate) rows.push(
-    ["Metadata", `${candidate.metadataRank ? `rank ${candidate.metadataRank}, BM25 ${mtBm25(candidate.metadataBm25)}` : `not among the best ${last}`}${candidate.metadataTerms.length ? ` · ${candidate.metadataTerms.join(", ")}` : " · no term"}`],
-    ["Full text", !candidate.hasFullText ? "none indexed: the metadata rank stands in for it" : `${candidate.fullTextRank ? `rank ${candidate.fullTextRank}, BM25 ${mtBm25(candidate.fullTextBm25)}` : `not among the best ${last}`}${candidate.fullTextTerms.length ? ` · ${candidate.fullTextTerms.join(", ")}` : " · no term"}`]);
+    ["Metadata", `${candidate.metadataRank ? `rank ${candidate.metadataRank}, BM25 ${mtBm25(candidate.metadataBm25)}` : `not among the best ${last}`}${candidate.metadataTerms.length ? `; ${candidate.metadataTerms.join(", ")}` : "; no term"}`],
+    ["Full text", !candidate.hasFullText ? "none indexed: the metadata rank stands in for it" : `${candidate.fullTextRank ? `rank ${candidate.fullTextRank}, BM25 ${mtBm25(candidate.fullTextBm25)}` : `not among the best ${last}`}${candidate.fullTextTerms.length ? `; ${candidate.fullTextTerms.join(", ")}` : "; no term"}`]);
   else if (result.matched_terms?.length) rows.push(["Terms", result.matched_terms.join(", ")]);
   if (result?.explanation) rows.push(["Why it matches", result.explanation]);
   return [h("div", { class: "label" }, "In this match"), h("dl", {}, ...rows.flatMap(([label, value]) => [h("dt", {}, label), h("dd", {}, value)]))];

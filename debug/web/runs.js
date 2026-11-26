@@ -292,7 +292,7 @@ function renderBadges() {
 function foundBySummary(doc) {
   const queries = doc.found_by.filter((entry) => "query" in entry).map((entry) => entry.topic ? `${entry.query} [${entry.topic}]` : entry.query);
   const cited = doc.found_by.filter((entry) => entry.cited_by).length;
-  return [queries.length ? `${seedKind(doc.source)}: ${queries.join(", ")}` : null, cited ? `cited by ${cited}` : null].filter(Boolean).join(" · ");
+  return [queries.length ? `${seedKind(doc.source)}: ${queries.join(", ")}` : null, cited ? `cited by ${cited}` : null].filter(Boolean).join("; ");
 }
 
 function docRows() {
@@ -398,7 +398,7 @@ function selectDoc(id) {
     if (doc.channel_id) rows.push(["Channel", doc.channel_id]);
     const ids = Object.entries(doc.external_ids || {});
     if (ids.length) rows.push(["External IDs", h("div", { class: "links" }, ...ids.map(([key, value]) => h("span", {}, `${key}: `, externalLink(key, value))))]);
-    if (doc.full_text?.length) rows.push([`Full text (${doc.full_text.length})`, h("div", { class: "links" }, ...doc.full_text.map((locator) => h("a", { href: locator.url, target: "_blank", rel: "noopener" }, [locator.kind, locator.media_type, locator.size ? fmtBytes(locator.size) : null, locator.language].filter(Boolean).join(" · "))))]);
+    if (doc.full_text?.length) rows.push([`Full text (${doc.full_text.length})`, h("div", { class: "links" }, ...doc.full_text.map((locator) => h("a", { href: locator.url, target: "_blank", rel: "noopener" }, [locator.kind, locator.media_type, locator.size ? fmtBytes(locator.size) : null, locator.language].filter(Boolean).join(", "))))]);
     const queries = doc.found_by.filter((entry) => "query" in entry);
     if (queries.length) rows.push(["Found by", h("div", { class: "links" }, ...queries.map((entry) => h("span", {}, `${seedKind(doc.source)} “${entry.query}”${entry.topic ? ` (topic ${entry.topic})` : ""}`)))]);
   }
@@ -564,7 +564,7 @@ canvas.addEventListener("mousemove", (event) => {
   const tooltip = $("#tooltip");
   if ((node?.id || null) !== graph.hover) { graph.hover = node?.id || null; graph.dirty = true; }
   if (node) {
-    tooltip.replaceChildren(h("b", {}, ORIGIN_LABEL[node.kind]), " · ", node.id, h("br"), node.title || "");
+    tooltip.replaceChildren(h("b", {}, ORIGIN_LABEL[node.kind]), " ", node.id, h("br"), node.title || "");
     tooltip.style.display = "block";
     tooltip.style.left = `${Math.min(point.sx + 14, graph.width - 300)}px`;
     tooltip.style.top = `${point.sy + 14}px`;
@@ -588,7 +588,7 @@ function frame() {
     const hidden = graph.nodes.size - visibleNodes().length;
     $("#graph-note").textContent = hidden > 0
       ? `${plural(hidden, "node")} hidden (limit ${NODE_LIMIT})`
-      : "Scroll = zoom · Drag = pan · Click = details";
+      : "Scroll to zoom, drag to pan, click for details";
   }
   requestAnimationFrame(frame);
 }
@@ -687,7 +687,7 @@ async function refreshRuns() {
   if (!state.runs.length) { list.replaceChildren(h("li", { class: "empty" }, "No runs yet")); return; }
   list.replaceChildren(...state.runs.map((run) => {
     const running = run.status === "running";
-    const count = running ? "running" : run.documents != null ? `${plural(run.documents, "doc")}${run.stored ? " · stored" : ""}` : run.status;
+    const count = running ? "running" : run.documents != null ? `${plural(run.documents, "doc")}${run.stored ? ", stored" : ""}` : run.status;
     const remove = running ? h("span") : h("button", {
       class: "del", type: "button", title: "Delete this run",
       onclick: (event) => { event.stopPropagation(); armOrRun(event.currentTarget, "Delete?", () => deleteRun(run.id)); },

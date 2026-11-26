@@ -49,7 +49,7 @@ async function dbRefresh() {
       db.pending = null;
     }
     if (dbReady()) await dbLoadTab();
-    $("#db-updated").textContent = `· ${fmtClock(new Date().toISOString())}`;
+    $("#db-updated").textContent = `(last ${fmtClock(new Date().toISOString())})`;
   } finally {
     db.loading = false;
   }
@@ -107,7 +107,7 @@ function renderDbSide() {
     box.className = `db-conn${overview.missing.length ? " warn" : ""}`;
     box.replaceChildren(...lines(
       h("b", {}, overview.database),
-      h("small", {}, `${overview.target} · PostgreSQL ${overview.version.split(" ")[0]} · user ${overview.user}`),
+      h("small", {}, `${overview.target}, PostgreSQL ${overview.version.split(" ")[0]}, user ${overview.user}`),
       overview.missing.length && h("span", { class: "hint" }, `No ${overview.missing.join(" or ")} table: run make db`),
       h("small", {}, "Only reads; emptying tables asks for the database name."),
     ));
@@ -129,7 +129,7 @@ function renderDbTables() {
     schemas.size > 1 && table.schema !== tables[index - 1]?.schema ? h("li", { class: "schema-name" }, `Schema ${table.schema}`) : null,
     h("li", { class: table.name === active ? "active" : null, onclick: () => dbOpenTable(table.name) },
       h("code", {}, table.name),
-      h("small", {}, `${plural(table.rows, "row")} · ${fmtBytes(table.bytes)}`),
+      h("small", {}, `${plural(table.rows, "row")}, ${fmtBytes(table.bytes)}`),
       h("button", { type: "button", class: "empty-table", title: `Delete every row of ${table.name}, after a confirmation`, onclick: (event) => { event.stopPropagation(); openEmptyDialog([table.name]); } }, "Empty …")),
   ].filter(Boolean)));
 }
@@ -153,7 +153,7 @@ async function openEmptyDialog(names) {
   $("#empty-name").textContent = plan.database;
   $("#empty-list").replaceChildren(...plan.tables.map((table) => h("li", {},
     h("code", {}, table.name),
-    h("small", {}, `${plural(table.rows, "row")}${table.requested ? "" : " · references it"}`))));
+    h("small", {}, `${plural(table.rows, "row")}${table.requested ? "" : ", references it"}`))));
   $("#empty-note").textContent = [
     added.length ? `${added.join(", ")} ${added.length === 1 ? "references" : "reference"} the table, so ${added.length === 1 ? "it is" : "they are"} emptied too.` : "",
     plan.tables.some((table) => table.name === "crawl_runs") ? "Store runs start again at #1." : "",
@@ -299,7 +299,7 @@ function foundByText(row) {
     row.queries.length ? `${seedKind(row.source)}: ${row.queries.join(", ")}` : null,
     row.topics.length ? `topic ${row.topics.join(", ")}` : null,
     row.cited_by ? `cited by ${row.cited_by}` : null,
-  ].filter(Boolean).join(" · ");
+  ].filter(Boolean).join("; ");
 }
 
 function renderDbDocs() {
@@ -337,7 +337,7 @@ function renderDbDocs() {
   const reason = $("#db-detail-chip");
   reason.hidden = !db.detailFilter;
   if (db.detailFilter) reason.replaceChildren(
-    h("span", { title: "The reason the keyword index gives for a skipped or failed full text" }, `Full text: ${db.detailFilter}`),
+    h("span", { title: "Why the keyword index has only the metadata of these documents, or retries their download" }, `Full text: ${db.detailFilter}`),
     h("button", { type: "button", title: "Remove this filter", onclick: () => { db.detailFilter = null; db.docs.offset = 0; dbLoadDocs(); } }, "×"),
   );
 }
@@ -416,7 +416,7 @@ function termTest(id) {
         const test = await api(`/api/db/term-test?${queryString({ id, q })}`);
         if (input.value.trim() !== q) return;
         if (!test.stems.length) result.replaceChildren("Only stop words: finds nothing anywhere.");
-        else result.replaceChildren(`Searched as ${test.stems.join(" + ")} · metadata `, found(test.metadata), " · full text ", found(test.full_text));
+        else result.replaceChildren(`Searched as ${test.stems.join(" + ")}: metadata `, found(test.metadata), ", full text ", found(test.full_text));
       } catch (error) { result.replaceChildren(error.message); }
     }, 250);
   } });
@@ -427,7 +427,7 @@ function indexParts(doc, index) {
   const parts = [h("div", { class: "label" }, "Keyword index")];
   if (!index) return [...parts, h("div", { class: "note" }, "No keyword index yet: start the indexer on Index › Keyword, or run make index.")];
   const { metadata, full_text: fullText } = index;
-  const outdated = (row) => row.current ? null : h("span", { class: "expiring", title: "The document changed since it was indexed; the next indexer run reads it again." }, " · outdated");
+  const outdated = (row) => row.current ? null : h("span", { class: "expiring", title: "The document changed since it was indexed; the next indexer run reads it again." }, ", outdated");
   const rows = [
     ["Metadata", metadata ? h("span", {}, metadata.content ? "indexed" : "indexed, empty (not English)", outdated(metadata)) : h("span", { class: "muted" }, "not indexed yet")],
     ["Full text", fullText ? h("span", {}, fullTextPill(fullText.status), fullText.detail ? ` ${fullText.detail}` : "", outdated(fullText)) : h("span", { class: "muted" }, "not read yet")],
@@ -462,7 +462,7 @@ function renderDbDocument({ document: doc, cited_by: citedBy, cites, index }) {
   if (doc.doi) rows.push(["DOI", link(`https://doi.org/${doc.doi}`, doc.doi)]);
   const ids = Object.entries(doc.external_ids);
   if (ids.length) rows.push(["External IDs", h("div", { class: "links" }, ...ids.map(([key, value]) => h("span", {}, `${key}: `, externalLink(key, value))))]);
-  if (doc.full_text.length) rows.push([`Full text (${doc.full_text.length})`, h("div", { class: "links" }, ...doc.full_text.map((locator) => link(locator.url, [locator.kind, locator.media_type, locator.size ? fmtBytes(locator.size) : null, locator.language].filter(Boolean).join(" · "))))]);
+  if (doc.full_text.length) rows.push([`Full text (${doc.full_text.length})`, h("div", { class: "links" }, ...doc.full_text.map((locator) => link(locator.url, [locator.kind, locator.media_type, locator.size ? fmtBytes(locator.size) : null, locator.language].filter(Boolean).join(", "))))]);
   const queries = doc.found_by.filter((entry) => "query" in entry);
   if (queries.length) rows.push(["Found by", h("div", { class: "links" }, ...queries.map((entry) => h("span", {}, `${seedKind(doc.source)} “${entry.query}”${entry.topic ? ` (topic ${entry.topic})` : ""}`)))]);
   if (citedBy.length) rows.push([`Cited by (${citedBy.length})`, h("div", { class: "links" }, ...citedBy.map(dbDocLink))]);
@@ -551,7 +551,7 @@ function renderDbSchema(schema) {
   const tables = db.overview?.tables || [];
   const extensions = schema.extensions.map((item) => `${item.name} ${item.version}`).join(", ");
   $("#db-schema").replaceChildren(h("div", { class: "muted" }, `Extensions: ${extensions || "none"}`), ...tables.map((table) => h("div", { class: "schema-card" },
-    h("h3", {}, h("code", {}, table.name), h("small", {}, `${plural(table.rows, "row")} · ${fmtBytes(table.bytes)}`)),
+    h("h3", {}, h("code", {}, table.name), h("small", {}, `${plural(table.rows, "row")}, ${fmtBytes(table.bytes)}`)),
     h("table", {},
       h("thead", {}, h("tr", {}, h("th", {}, "Column"), h("th", {}, "Type"), h("th", {}, "Null"), h("th", {}, "Default"))),
       h("tbody", {}, ...(columns.get(table.name) || []).map((column) => h("tr", {},
@@ -561,7 +561,7 @@ function renderDbSchema(schema) {
         h("td", { class: "small mono" }, column.default || ""))))),
     h("div", { class: "defs" },
       ...(constraints.get(table.name) || []).map((item) => h("div", {}, h("b", {}, item.name), " ", item.definition)),
-      ...(indexes.get(table.name) || []).map((item) => h("div", {}, h("b", {}, item.name), " ", item.definition.replace(/^CREATE (UNIQUE )?INDEX \S+ ON \S+ /, "$1"), ` · ${fmtBytes(item.bytes)}`))),
+      ...(indexes.get(table.name) || []).map((item) => h("div", {}, h("b", {}, item.name), " ", item.definition.replace(/^CREATE (UNIQUE )?INDEX \S+ ON \S+ /, "$1"), `, ${fmtBytes(item.bytes)}`))),
   )));
 }
 

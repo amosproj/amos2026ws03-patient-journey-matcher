@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Journey Matcher · Debug console</title>
+<title>Journey Matcher – Debug console</title>
 <link rel="icon" href="data:,">
 <script>
   // Before the first paint, so a dark theme does not flash light: the stored choice, else the system's.
@@ -138,7 +138,7 @@
           <span><i style="background:var(--cited)"></i>Cited</span>
           <span><i style="background:var(--dropped)"></i>Dropped (off-topic)</span>
         </div>
-        <div class="graph-note" id="graph-note">Scroll = zoom · Drag = pan · Click = details</div>
+        <div class="graph-note" id="graph-note">Scroll to zoom, drag to pan, click for details</div>
         <div class="tooltip" id="tooltip"></div>
       </section>
       <section class="tab" id="tab-failures">
@@ -185,7 +185,7 @@
         <label class="field"><span>Topic</span><select id="db-topic"><option value="">All topics</option></select></label>
         <label class="field"><span>Licence</span><select id="db-licence"><option value="">All licences</option></select></label>
         <label class="field"><span>Full text <i class="info" tabindex="0" data-tip="What the keyword indexer did with a document's full text, as on Index › Keyword. Leaves out expired documents. Needs make index.">i</i></span>
-          <select id="db-fulltext"><option value="">All</option><option value="indexed">Indexed</option><option value="skipped">Skipped</option><option value="failed">Failed</option><option value="unread">New or changed</option></select>
+          <select id="db-fulltext"><option value="">All</option><option value="indexed">Fully indexed</option><option value="skipped">Metadata only</option><option value="failed">Retry download</option><option value="unread">New or changed</option></select>
         </label>
         <label class="field"><span>Expiry <i class="info" tabindex="0" data-tip="Only YouTube rows expire, 30 days after they were retrieved. The next store run deletes expired rows; until then readers such as @matcher/db ignore them.">i</i></span>
           <select id="db-expiry"><option value="">All</option></select>
@@ -325,7 +325,7 @@
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th class="num">#</th><th>Keyword</th><th>Occurrences</th><th class="num">Full texts</th><th>Indexed as</th></tr></thead>
+            <thead><tr><th class="num">#</th><th>Keyword</th><th class="num" title="How often the word occurs in all indexed full texts, repeats included">Occurrences</th><th class="num" title="In how many indexed full texts the word occurs, and their share; a word in most of them hardly tells documents apart">In full texts</th><th style="width:100%" title="The stem the search matches (PostgreSQL English stemmer): patients and patient both become patient">Indexed as (word stem)</th></tr></thead>
             <tbody id="kw-words"></tbody>
           </table>
         </div>
@@ -334,7 +334,7 @@
         <div class="toolbar"><span class="muted" id="kw-terms-shown"></span></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>English term</th><th>German journey words</th><th>In metadata</th><th>In full texts</th><th></th></tr></thead>
+            <thead><tr><th>English term</th><th>German journey words</th><th class="num">In metadata</th><th class="num">In full texts</th><th>Note</th></tr></thead>
             <tbody id="kw-terms"></tbody>
           </table>
         </div>
@@ -363,8 +363,8 @@
       <small class="muted" id="mt-model-note"></small>
     </div>
     <div class="side-head">
-      <h2>Journey <i class="info" tabindex="0" data-tip="Choose a synthetic patient or open a local file. Graph loads the patient's graph when available. Keyword loads the timeline.">i</i></h2>
-      <button type="button" class="link-button" id="mt-open" title="Open a synthetic timeline.json or graph.json">Open file …</button>
+      <h2>Journey <i class="info" tabindex="0" data-tip="Choose a synthetic patient or import a timeline.json or graph.json from this computer. Graph loads the patient's graph when available. Keyword loads the timeline.">i</i></h2>
+      <button type="button" class="link-button" id="mt-open" title="Import a timeline.json or graph.json from this computer; it is read here, not uploaded"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5v7M5 6.5l3 3 3-3M2.5 10v2.5a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V10"/></svg>Import journey</button>
     </div>
     <select id="mt-journey" aria-label="Patient journey"></select>
     <input type="file" id="mt-file" accept=".json,application/json" hidden>
@@ -441,10 +441,9 @@
     </div>
     <code class="cmd" title="Index PubMed annotations">make index APPROACHES=graph</code>
     <div class="error" id="gr-index-error"></div>
-    <div class="side-head"><h2>Normalization</h2></div>
+    <div class="side-head"><h2>Normalization <i class="info" tabindex="0" data-tip="What the graph matcher makes of the file. Every name gets a shared ID (MeSH, NCBI Gene): only an entity with one can match a paper. A spoke from the patient is one entity, with a line per status; a repeated relation is drawn once, with its count.">i</i></h2><a class="link-button" href="https://github.com/amosproj/amos2026ws03-patient-journey-matcher/blob/main/Documentation/design/graph-normalization.md" target="_blank" rel="noopener">Docs</a></div>
     <label class="field"><span>Graph</span><select id="gr-source" aria-label="Graph to show"></select></label>
-    <label class="field"><span>View</span><select id="gr-view" aria-label="Graph representation"><option value="normalized">Normalized</option><option value="original">Original (patient graph)</option></select></label>
-    <p id="gr-original-note" class="muted gr-note" hidden>Original nodes and directed edges, including providers and appointments. Click a node to inspect its original attributes. Switch to Normalized to compare merged concepts and omitted edges.</p>
+    <label class="field"><span>View <i class="info" tabindex="0" data-tip="Normalized: what the matcher uses. Original: the patient graph as it is, with providers and appointments; click a node for its attributes.">i</i></span><select id="gr-view" aria-label="Graph representation"><option value="normalized">Normalized</option><option value="original">Original (patient graph)</option></select></label>
     <label class="field" id="gr-score-field" hidden><span>PubTator3 minimum score</span>
       <input type="number" id="gr-score" min="0" max="1" step="0.05" value="0"></label>
     <label class="check"><input type="checkbox" id="gr-unresolved" checked> Entities without an ID</label>
@@ -454,7 +453,6 @@
     <div class="gr-legend" id="gr-type-legend"></div>
     <div class="side-head"><h2>Status</h2></div>
     <div class="gr-legend" id="gr-status-legend"></div>
-    <p class="muted gr-note">What <span class="mono">matcher/algorithms/graph</span> makes of the file (<a href="https://github.com/amosproj/amos2026ws03-patient-journey-matcher/blob/main/Documentation/design/graph-normalization.md" target="_blank" rel="noopener">graph normalization</a>). A hollow node has no shared ID: it is kept by its name but never meets a paper. The facts of one entity are one spoke from the patient, with a line per status; relations with the same ends, predicate and status are drawn once, with their count.</p>
   </aside>
 
   <main aria-label="Graph normalization">
@@ -473,7 +471,7 @@
           <button type="button" id="gr-zoom-out" title="Zoom out" aria-label="Zoom out"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10"/></svg></button>
           <button type="button" id="gr-fit" title="Fit the graph into the view" aria-label="Fit the graph into the view"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10"/></svg></button>
         </div>
-        <div class="gr-hint">Scroll to zoom · drag to pan · double-click to fit · click for details</div>
+        <div class="gr-hint">Scroll to zoom, drag to pan, double-click to fit, click for details</div>
       </section>
       <section class="grtab" id="grtab-entities"><div class="table-wrap"><table id="gr-entities"></table></div></section>
       <section class="grtab" id="grtab-statements"><div class="table-wrap"><table id="gr-statements"></table></div></section>

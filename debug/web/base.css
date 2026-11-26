@@ -278,6 +278,7 @@ td.found { min-width: 190px; }
 .db-tables li.empty { cursor: default; color: var(--muted); }
 .db-tables small { color: var(--muted); white-space: nowrap; }
 td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+td.num { white-space: nowrap; }
 td.zero { color: var(--muted); }
 td.when { white-space: nowrap; color: var(--muted); font-size: 12px; }
 .db-down { position: absolute; inset: 0; z-index: 20; background: var(--bg); display: grid; place-items: center; padding: 20px; }

@@ -153,7 +153,7 @@ function grLegends() {
   const dot = (style, dashed) => sv("svg", { width: 14, height: 14, "aria-hidden": "true" }, sv("circle", { cx: 7, cy: 7, r: 5.5, style, "stroke-width": 2, "stroke-dasharray": dashed ? "3 2" : null }));
   $("#gr-type-legend").replaceChildren(
     ...GR_TYPES.map((type) => h("span", {}, dot(`fill: var(--t-${type}); stroke: var(--t-${type})`), type)),
-    h("span", {}, dot("fill: var(--panel); stroke: var(--muted)", true), "no ID (kept by name)"),
+    h("span", {}, dot("fill: var(--panel); stroke: var(--muted)", true), "no ID: never matches a paper"),
   );
   $("#gr-status-legend").replaceChildren(
     ...GR_STATUSES.map((status) =>
@@ -167,8 +167,6 @@ function grRender() {
   const original = grOriginal();
   const graph = grGraph();
   $("#gr-view").querySelector('[value="original"]').disabled = kind !== "patient";
-  $("#gr-original-note").hidden = !original;
-  $("#graph-controls .gr-note:not(#gr-original-note)").hidden = original;
   $("#gr-unresolved").closest("label").hidden = original;
   $("#gr-facts-field").hidden = original || kind !== "patient";
   for (const id of ["#gr-type-legend", "#gr-status-legend"]) {
@@ -397,12 +395,12 @@ function grPersonGlyph(x, y, r) {
 function grNodeTitle(node, model) {
   const statements = plural(model.load.get(node.key), "statement");
   if (!node.entity) return `The patient: start of every patient fact\n${statements}`;
-  return `${node.entity.names.join(" / ")}\n${node.sub} · ${node.type}\n${statements}`;
+  return `${node.entity.names.join(" / ")}\n${node.sub}, ${node.type}\n${statements}`;
 }
 
 function grSpokeTitle(spoke) {
   const counts = spoke.statuses.map((status) => `${spoke.statements.filter((statement) => statement.status === status).length} ${status}`);
-  return `${grName(spoke.from)} → ${grName(spoke.to)}\n${spoke.predicate}${grOriginal() ? ` · ${plural(spoke.statements.length, "edge")}` : `: ${counts.join(", ")}`}`;
+  return `${grName(spoke.from)} → ${grName(spoke.to)}\n${spoke.predicate}${grOriginal() ? `, ${plural(spoke.statements.length, "edge")}` : `: ${counts.join(", ")}`}`;
 }
 
 /** Draws the graph: spokes and relations, then the nodes, their labels and the edge labels. */
@@ -471,7 +469,7 @@ function grDraw(fit = false) {
     const arrow = original || !GR_SYMMETRIC.has(relation.predicate) ? `url(#gr-arrow-${relation.status})` : null;
     const path = sv("path", { d, class: `gr-edge s-${relation.status}`, "marker-end": arrow });
     relationLayer.append(sv("g", { class: `gr-link${selected(relation.key) ? " selected" : ""}`, "data-edge": relation.key, "data-ends": `${relation.from} ${relation.to}`, onclick: () => grSelectEdge(relation), onmouseenter: () => grFocus(null, relation), onmouseleave: () => grFocus() },
-      sv("title", {}, `${grName(relation.from)} ${relation.predicate} ${grName(relation.to)} · ${relation.status} · ${plural(count, "statement")}`),
+      sv("title", {}, `${grName(relation.from)} ${relation.predicate} ${grName(relation.to)} (${relation.status}, ${plural(count, "statement")})`),
       path,
       sv("path", { d, class: "gr-hit" })));
     pills.push({ relation, path, text: count > 1 ? `${relation.predicate} ×${count}` : relation.predicate });
@@ -601,8 +599,8 @@ function grStatementItem(statement) {
     ),
     h("div", { class: "muted", style: "font-size:12px" },
       `${statement.origin.type}`,
-      statement.cue ? ` · cue “${statement.cue}”` : "",
-      ` · ${statement.origin.ref}`),
+      statement.cue ? `, cue “${statement.cue}”` : "",
+      `, ${statement.origin.ref}`),
     statement.text ? h("q", {}, statement.text) : null,
     grOriginal() ? h("details", {}, h("summary", {}, "Original edge"), h("pre", { style: "white-space:pre-wrap;overflow-wrap:anywhere" }, JSON.stringify(statement.raw, null, 2))) : null,
   );
@@ -649,7 +647,7 @@ function grSelectEdge(edge) {
     : [grStatusPill(edge.status)];
   grDetail(
     h("h3", {}, edge.spoke ? `${grName(edge.from)} → ${grName(edge.to)}` : `${grName(edge.from)} ${edge.predicate} ${grName(edge.to)}`),
-    h("p", { class: "gr-summary" }, ...summary, h("span", { class: "muted" }, edge.spoke ? `${edge.predicate} · ${plural(statements.length, "statement")}` : plural(statements.length, "statement"))),
+    h("p", { class: "gr-summary" }, ...summary, h("span", { class: "muted" }, edge.spoke ? `${edge.predicate}, ${plural(statements.length, "statement")}` : plural(statements.length, "statement"))),
     h("ul", { class: "gr-stmts" }, statements.map(grStatementItem)),
   );
   grDraw();
