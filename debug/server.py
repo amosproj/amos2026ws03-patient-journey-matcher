@@ -2576,6 +2576,55 @@ def topic_detail(topic_id: str) -> dict[str, Any]:
     }
 
 
+# ── Docs screen: the Markdown files of the checkout, and the files they show ──────
+DOC_FILE_TYPES = {
+    ".png": "image/png",
+    ".jpg": "image/jpeg",
+    ".jpeg": "image/jpeg",
+    ".gif": "image/gif",
+    ".webp": "image/webp",
+    ".svg": "image/svg+xml",
+    ".pdf": "application/pdf",
+}
+"""What a doc may show or link to besides other docs: images, and PDFs that open in a tab."""
+
+
+def checkout_files(suffixes: tuple[str, ...]) -> list[str]:
+    """The files of the checkout with these suffixes that git tracks or would add, so none it
+    ignores (`.env`, `node_modules/`, `out/`) and none in a dot directory; relative to ROOT."""
+    listed = probe(
+        ["git", "-C", str(ROOT), "ls-files", "-z", "--cached", "--others", "--exclude-standard"]
+    )
+    if listed is None:
+        raise RuntimeError("The Docs screen needs git and a git checkout")
+    return sorted(
+        name
+        for name in listed.split("\0")
+        if name.lower().endswith(suffixes)
+        and not any(part.startswith(".") for part in name.split("/"))
+        and (ROOT / name).is_file()
+    )
+
+
+def docs() -> dict[str, Any]:
+    """Every Markdown file with its text: the screen renders and searches them itself."""
+    return {
+        "docs": [
+            {"path": name, "text": (ROOT / name).read_text(encoding="utf-8", errors="replace")}
+            for name in checkout_files((".md",))
+        ]
+    }
+
+
+def doc_file(name: str) -> tuple[bytes, str]:
+    """An image or PDF of the checkout, looked up among the files git lists and never opened
+    by a path from the URL."""
+    suffix = Path(name).suffix.lower()
+    if suffix not in DOC_FILE_TYPES or name not in checkout_files(tuple(DOC_FILE_TYPES)):
+        raise LookupError(f"No image or PDF {name} in this checkout")
+    return (ROOT / name).read_bytes(), DOC_FILE_TYPES[suffix]
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = "CrawlerDebug/1.0"
 
@@ -2637,6 +2686,25 @@ class Handler(BaseHTTPRequestHandler):
             self.send_json({"error": str(error)}, 400)
         except RuntimeError as error:
             self.send_json({"error": str(error)}, 409)
+
+    def send_doc_file(self, name: str) -> None:
+        try:
+            body, content_type = doc_file(name)
+        except LookupError as error:
+            self.send_json({"error": str(error).strip("'\"")}, 404)
+            return
+        except RuntimeError as error:
+            self.send_json({"error": str(error)}, 409)
+            return
+        self.send_response(200)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(len(body)))
+        self.send_header("Cache-Control", "no-cache")
+        self.send_header("X-Content-Type-Options", "nosniff")
+        if content_type == "image/svg+xml":  # opened on its own, an SVG could run a script
+            self.send_header("Content-Security-Policy", "script-src 'none'")
+        self.end_headers()
+        self.wfile.write(body)
 
     def route_db(self, path: str, params: dict[str, list[str]]) -> None:
         if path == "/api/db":
@@ -2733,6 +2801,10 @@ class Handler(BaseHTTPRequestHandler):
             self.send_json(info(fresh="fresh" in parse_qs(url.query)))
         elif path.startswith("/api/topics/"):
             self.send_result(lambda: topic_detail(path.removeprefix("/api/topics/")))
+        elif path == "/api/docs":
+            self.send_result(docs)
+        elif path == "/api/docs/file":
+            self.send_doc_file(first(parse_qs(url.query), "path"))
         elif path == "/api/match/journey":
             params = parse_qs(url.query)
             self.send_result(

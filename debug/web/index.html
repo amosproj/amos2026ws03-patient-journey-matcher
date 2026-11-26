@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="match.css">
 <link rel="stylesheet" href="info.css">
 <link rel="stylesheet" href="index-graph.css">
+<link rel="stylesheet" href="docs.css">
 </head>
 <body>
 <header>
@@ -39,6 +40,7 @@
     </div>
     <button type="button" data-screen="match">Matcher</button>
     <button type="button" data-screen="info">Info</button>
+    <button type="button" data-screen="doc" title="Every Markdown file of the checkout, rendered and searchable">Docs</button>
   </nav>
   <details class="environment"><summary>Environment</summary><div class="chips" id="env"></div></details>
   <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch theme"></button>
@@ -441,7 +443,7 @@
     </div>
     <code class="cmd" title="Index PubMed annotations">make index APPROACHES=graph</code>
     <div class="error" id="gr-index-error"></div>
-    <div class="side-head"><h2>Normalization <i class="info" tabindex="0" data-tip="What the graph matcher makes of the file. Every name gets a shared ID (MeSH, NCBI Gene): only an entity with one can match a paper. A spoke from the patient is one entity, with a line per status; a repeated relation is drawn once, with its count.">i</i></h2><a class="link-button" href="https://github.com/amosproj/amos2026ws03-patient-journey-matcher/blob/main/Documentation/design/graph-normalization.md" target="_blank" rel="noopener">Docs</a></div>
+    <div class="side-head"><h2>Normalization <i class="info" tabindex="0" data-tip="What the graph matcher makes of the file. Every name gets a shared ID (MeSH, NCBI Gene): only an entity with one can match a paper. A spoke from the patient is one entity, with a line per status; a repeated relation is drawn once, with its count.">i</i></h2><a class="link-button" href="#doc/Documentation/design/graph-normalization.md">Docs</a></div>
     <label class="field"><span>Graph</span><select id="gr-source" aria-label="Graph to show"></select></label>
     <label class="field"><span>View <i class="info" tabindex="0" data-tip="Normalized: what the matcher uses. Original: the patient graph as it is, with providers and appointments; click a node for its attributes.">i</i></span><select id="gr-view" aria-label="Graph representation"><option value="normalized">Normalized</option><option value="original">Original (patient graph)</option></select></label>
     <label class="field" id="gr-score-field" hidden><span>PubTator3 minimum score</span>
@@ -545,6 +547,37 @@
   </main>
 </div>
 
+<div class="layout" id="doc-view" hidden>
+  <aside class="side doc-side" id="doc-controls">
+    <div class="side-head">
+      <h2>Docs</h2>
+      <button type="button" class="link-button" id="doc-refresh" title="Read the files again">↻ Refresh</button>
+    </div>
+    <label class="dc-search">
+      <input type="text" id="doc-search" placeholder="Search all docs" autocomplete="off" spellcheck="false" aria-label="Search all docs" aria-keyshortcuts="/ Control+K Meta+K">
+      <kbd title="Press / or Ctrl+K to search">/</kbd>
+    </label>
+    <div class="dc-tools">
+      <small class="muted" id="doc-count"></small>
+      <div class="mini-seg" id="doc-labels" role="group" aria-label="Name the docs by">
+        <button type="button" data-value="titles" title="The first heading of each doc">Titles</button>
+        <button type="button" data-value="files" title="The file names">Files</button>
+      </div>
+    </div>
+    <nav class="dc-nav" id="doc-tree" aria-label="Docs"></nav>
+  </aside>
+
+  <main aria-label="Documentation">
+    <div class="dc-bar" id="doc-bar"></div>
+    <div class="dc-scroll" id="doc-scroll">
+      <div class="dc-page">
+        <article class="md" id="doc-article"></article>
+        <nav class="dc-outline" id="doc-outline" aria-label="On this page"></nav>
+      </div>
+    </div>
+  </main>
+</div>
+
 <dialog class="confirm" id="empty-dialog">
   <form id="empty-form">
     <h3 id="empty-title">Empty tables?</h3>
@@ -572,6 +605,8 @@
 <script src="index-ai.js"></script>
 <script src="match.js"></script>
 <script src="info.js"></script>
+<script src="markdown.js"></script>
+<script src="docs.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

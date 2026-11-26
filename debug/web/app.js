@@ -20,7 +20,7 @@ function renderEnv() {
   updateCommand();
 }
 
-document.addEventListener("keydown", (event) => { if (event.key === "Escape") { if (state.screen === "runs") closeDetail(); else if (state.screen === "graph") grCloseDetail(); else dbCloseDetail(); } });
+document.addEventListener("keydown", (event) => { if (event.key === "Escape") { if (state.screen === "runs") closeDetail(); else if (state.screen === "graph") grCloseDetail(); else if (state.screen === "doc") dcEscape(); else dbCloseDetail(); } });
 // Info icons: one fixed tooltip, so the side panel's scroll area cannot clip it.
 function showTip(icon) {
   const tip = $("#tip");
@@ -41,7 +41,7 @@ for (const icon of document.querySelectorAll(".info")) {
 }
 
 // The Index screens: the overview, then one per approach (hash #index, #index-keyword, …).
-const SCREENS = { runs: "#runs-view", db: "#db-view", index: "#index-view", keyword: "#keyword-view", graph: "#graph-view", ai: "#ai-view", match: "#match-view", info: "#info-view" };
+const SCREENS = { runs: "#runs-view", db: "#db-view", index: "#index-view", keyword: "#keyword-view", graph: "#graph-view", ai: "#ai-view", match: "#match-view", info: "#info-view", doc: "#doc-view" };
 
 const narrowScreen = window.matchMedia("(max-width: 760px)");
 const controlsToggle = $("#controls-toggle");
@@ -99,6 +99,7 @@ function showScreen(screen) {
   else if (screen === "ai") { history.replaceState(null, "", "#index-ai"); aiRefresh(); }
   else if (screen === "match") mtShow();
   else if (screen === "info") infoShow();
+  else if (screen === "doc") dcShow();
   else switchTab(state.tab);
 }
 
@@ -129,6 +130,8 @@ async function init() {
   } else if (hash === "info" || hash.startsWith("info-")) {
     if (["running", "topics"].includes(hash.slice(5))) info.tab = hash.slice(5);
     showScreen("info");
+  } else if (hash === "doc" || hash.startsWith("doc/")) {
+    showScreen("doc"); // the Docs screen reads the doc and section from the hash itself
   } else if (["live", "docs", "graph", "failures"].includes(hash)) switchTab(hash);
   requestAnimationFrame(frame);
 }

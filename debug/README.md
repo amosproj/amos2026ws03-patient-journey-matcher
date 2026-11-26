@@ -12,6 +12,7 @@ Local web UI with one screen per step of the pipeline, the best way to explore w
 | **Index › AI** | Starts and stops the local encoder; indexes Qwen, BGE-M3 or both, with model-specific coverage and progress |
 | **Matcher** | `match_journey` for a synthetic journey, cut at any of its dates, with the steps of the match. For Keyword: how each event became search terms and which of them the query uses, the rank of each hit in both indexes, the part each index adds in rank fusion, and the terms found where; its ranking constants can be tried without changing code. For Graph, the patient query: the diagnoses that pick the candidate papers, the concepts that score them and the situation that re-ranks them. The **Example client** tab shows the answer as an app could: one card per source from the fields of `match_journey`, and its files from `get_source` |
 | **Info** | Load, memory and disk of the machine; the timers of the VM with their next and last runs (live from systemd on the VM, from `deploy/vm-setup.sh` elsewhere); what runs right now; the topic files |
+| **Docs** | Every Markdown file of the checkout as a file tree, rendered as on GitHub, with a search of all of them |
 
 ```sh
 make debug             # then open http://127.0.0.1:8765
