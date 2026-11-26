@@ -108,6 +108,19 @@ The last run per data source: `SELECT DISTINCT ON (source) * FROM crawl_runs ORD
 - Stored cited papers are not refreshed; search results are.
 - YouTube rows have no `venue`, and a few rows have no `title` (shown as `Untitled`).
 
+## Graph index
+
+The graph approach keeps its index in the schema `graph` ([`schema.ts`](../../matcher/algorithms/graph/src/schema.ts)):
+
+| Table or view | Holds |
+|---|---|
+| `graph.documents` | Per paper its normalized PubTator3 entities and relations, and its MeSH headings with their flags |
+| `graph.evidence` | One row per concept of a paper and how the paper has it (title, abstract, MeSH major topic …); what a match reads |
+| `graph.treats` | The `treats` relations of each paper |
+| `graph.concept_names` | The names PubTator3 gives the concepts of the indexed papers, for the dictionary |
+
+A trigger keeps `graph.evidence` and `graph.treats` in step with `graph.documents`. Raising `SCHEMA_VERSION` in `schema.ts` makes the next index run build them and the views again from `graph.documents`, without asking PubTator3; until it has, graph searches answer degraded. Raising `NORMALIZATION_VERSION` makes the index runs fetch every paper again; each keeps its old annotations until then.
+
 ## Schema changes
 
 `db/init/` runs when an empty volume starts; `make db` applies it again, so the files must stay idempotent. Put a change into a new numbered file, e.g. `04-….sql` with `ALTER TABLE … ADD COLUMN IF NOT EXISTS`.

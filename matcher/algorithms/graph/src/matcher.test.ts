@@ -321,6 +321,41 @@ test("ties go to the older paper, then by ID", async () => {
   expect(hits.map((hit) => hit.score)).toEqual([1, 1]);
 });
 
+test("without cancer, a paper about another disease ranks lower", async () => {
+  const type2 = "mesh:D003924";
+  const diabetes: JourneyState = {
+    focus,
+    context: [],
+    graph: {
+      nodes: [
+        nodes[0],
+        { uuid: "dx", labels: ["Diagnosis"], name: "Diabetes mellitus type 2" },
+      ],
+      edges: [
+        edge(
+          "HAS_DIAGNOSIS",
+          "p",
+          "dx",
+          "Confirmed type 2 diabetes.",
+          "2026-10-01",
+        ),
+      ],
+    },
+  };
+  const hits = await rank(
+    [
+      {
+        id: "asthma",
+        evidence: { [type2]: 1 },
+        mesh: { "mesh:D001249": MESH_MAJOR },
+      },
+      { id: "diabetes", evidence: { [type2]: 1 } },
+    ],
+    diabetes,
+  );
+  expect(order(hits)).toEqual(["diabetes", "asthma"]);
+});
+
 test("tuning sets ranking constants within their range; the trace lists query and pool", async () => {
   const steps: string[] = [];
   const db = database([{ id: "a", evidence: { [cancer]: 1 } }]);

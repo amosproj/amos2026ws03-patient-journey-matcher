@@ -459,6 +459,40 @@ export function otherDisease(
   );
 }
 
+// Symptoms, complications and courses of a disease: papers on any disease have them as topics.
+const SIGNS_AND_CONDITIONS = "mesh:D013568"; // Pathological Conditions, Signs and Symptoms
+const signsAndConditions = new WeakMap<Terminology, ReadonlySet<string>>();
+
+/**
+ * For a patient without cancer: a paper about another disease, a disease of the terminology as
+ * major topic that is neither his own concept, a broader heading of a diagnosis nor a symptom or
+ * complication, while none of his diagnoses is.
+ */
+export function otherCondition(
+  mesh: Readonly<Record<string, number>>,
+  own: ReadonlySet<string>,
+  diagnoses: ReadonlySet<string>,
+  terms: Terminology,
+): boolean {
+  if ([...diagnoses].some((id) => isMajor(mesh, id))) return false;
+  let signs = signsAndConditions.get(terms);
+  if (!signs) {
+    signs = new Set([
+      SIGNS_AND_CONDITIONS,
+      ...(terms.conceptOf(SIGNS_AND_CONDITIONS)?.narrower ?? []),
+    ]);
+    signsAndConditions.set(terms, signs);
+  }
+  return Object.keys(mesh).some((id) => {
+    if (!isMajor(mesh, id) || own.has(id) || signs.has(id)) return false;
+    const concept = terms.conceptOf(id);
+    return (
+      concept?.type === "disease" &&
+      !concept.narrower?.some((narrower) => diagnoses.has(narrower))
+    );
+  });
+}
+
 /**
  * A general heading such as tumor, carcinoma or adenocarcinoma, a kind of carcinoma that names no
  * site, such as carcinoma in situ, or what a tumour does, such as lymphatic metastasis: none names a

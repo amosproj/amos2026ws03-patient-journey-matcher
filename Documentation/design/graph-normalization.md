@@ -58,21 +58,21 @@ Each patient statement is `asserted`, `suspected`, `negated`, `planned` or `unkn
 
 ## Ranking
 
-Steps 1 and 2 are one SQL query. Step 3 runs in the matcher on the best papers only, because its rules need the matcher's dictionaries ([`matcher.ts`](../../matcher/algorithms/graph/src/matcher.ts)).
+Steps 1 and 2 are one SQL query ([`retrieval.ts`](../../matcher/algorithms/graph/src/retrieval.ts)) over the tables of the [graph index](storage.md#graph-index). Step 3 runs in the matcher on the best papers only, because its rules need the matcher's dictionaries ([`rerank.ts`](../../matcher/algorithms/graph/src/rerank.ts)).
 
-1. **Candidates:** the papers whose PubTator3 concepts or MeSH headings name one of the patient's diagnoses, or a narrower form such as castration-resistant prostate cancer. A general word such as tumor or carcinoma is no diagnosis of its own. Without a diagnosis there are no hits.
+1. **Candidates:** the papers whose PubTator3 concepts or MeSH headings name one of the patient's diagnoses, or a narrower form such as castration-resistant prostate cancer. A general word such as tumor or carcinoma is no diagnosis of its own. Without a diagnosis there are no hits. For a diagnosis that very many papers name, only the newest of them are candidates (`pool`).
 2. **Score:** the sum of evidence × IDF × weight over the patient's concepts that the paper has; each concept counts once.
    - **Evidence:** the concept's strongest mention in the paper: title or MeSH major topic, then the substance list, another MeSH heading, the abstract alone.
    - **IDF** (inverse document frequency, as in BM25): how rare the concept is among the candidates of this query. A concept that nearly every candidate has, such as the diagnosis, hardly tells them apart; a rare one, such as a specific drug, does. Diagnoses keep an IDF of at least 1, so their title and major-topic evidence still counts; prostate cancer, whose constants were tuned without this floor, is the exception.
    - **Weight:** the concept's role (a drug or procedure counts more than a finding) × the certainty of its status × focus: the news of the focus day and the current therapy count more.
-3. **Re-rank:** the matcher scores the best papers again with what the SQL query cannot check, and explains each hit by its main reasons:
+3. **Re-rank:** the matcher scores the best papers (`candidates`; on a tie the newer paper) again with what the SQL query cannot check, and explains each hit by its main reasons:
    - concepts in the title count, also procedures, which PubTator3 does not annotate;
    - a paper that links the patient's drug to the patient's diagnosis gains; one that links it only to another disease does not count the drug;
    - a paper on the patient's disease state, such as metastatic or castration-resistant, gains; one on another state or phase of care loses;
-   - a paper mainly about something else loses: the diagnosis only in its abstract, lab or animal research, the other sex, another cancer or histology;
+   - a paper mainly about something else loses: the diagnosis only in its abstract, lab or animal research, the other sex, another cancer or histology, and for a patient without cancer another disease, which costs less than another cancer;
    - guidelines and reviews gain a little, case reports lose a little.
 
-The constants are `SETTINGS` in `matcher.ts`; in the debug UI, a `tuning` object overrides them. How they were set and what they achieve: [results](../../research/graph-based-matching.md#7-results).
+The constants are `SETTINGS` in [`settings.ts`](../../matcher/algorithms/graph/src/settings.ts); in the debug UI, a `tuning` object overrides them. How they were set and what they achieve: [results](../../research/graph-based-matching.md#7-results).
 
 ## Known limitations
 

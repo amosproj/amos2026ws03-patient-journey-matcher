@@ -6,7 +6,11 @@ import {
 } from "@matcher/db";
 import { ZodError } from "zod";
 import { normalizePubTatorDocument, pubTatorDocuments } from "./pubtator.ts";
-import { ensureGraphSchema, type Paper } from "./schema.ts";
+import {
+  ensureGraphSchema,
+  NORMALIZATION_VERSION,
+  type Paper,
+} from "./schema.ts";
 
 const EXPORT =
   "https://www.ncbi.nlm.nih.gov/research/pubtator3-api/publications/export/biocjson";
@@ -126,10 +130,10 @@ export function createGraphIndexer(db: Queryable, get: Get): Indexer {
         // The MeSH headings come from the stored document, so they never wait for PubTator3.
         await db.query(
           `INSERT INTO graph.documents AS previous
-          (document_id, document_changed_at, entities, relations, retry_at, mesh)
+          (document_id, document_changed_at, entities, relations, retry_at, mesh, normalized)
           SELECT d.id, r.changed, r.entities, r.relations,
                  CASE WHEN r.retry THEN now() + interval '2 days' ELSE 'infinity'::timestamptz END,
-                 graph.mesh_flags(d.source, d.subjects)
+                 graph.mesh_flags(d.source, d.subjects), ${NORMALIZATION_VERSION}
           FROM jsonb_to_recordset($1::jsonb) AS r(id text, changed timestamptz, entities jsonb, relations jsonb, retry boolean)
           JOIN public.documents d ON d.id = r.id AND date_trunc('milliseconds', d.changed_at) <= r.changed
           ON CONFLICT (document_id) DO UPDATE SET
@@ -137,9 +141,11 @@ export function createGraphIndexer(db: Queryable, get: Get): Indexer {
             retry_at = EXCLUDED.retry_at,
             entities = CASE WHEN EXCLUDED.retry_at = 'infinity' THEN EXCLUDED.entities ELSE previous.entities END,
             relations = CASE WHEN EXCLUDED.retry_at = 'infinity' THEN EXCLUDED.relations ELSE previous.relations END,
+            normalized = CASE WHEN EXCLUDED.retry_at = 'infinity' THEN EXCLUDED.normalized ELSE previous.normalized END,
             mesh = EXCLUDED.mesh
           WHERE previous.document_changed_at <> EXCLUDED.document_changed_at
-             OR previous.retry_at <> 'infinity'::timestamptz`,
+             OR previous.retry_at <> 'infinity'::timestamptz
+             OR previous.normalized <> EXCLUDED.normalized`,
           [JSON.stringify(rows)],
         );
       };

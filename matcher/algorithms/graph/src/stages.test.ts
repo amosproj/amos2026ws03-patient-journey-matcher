@@ -1,9 +1,11 @@
 import { expect, test } from "vitest";
+import { defaultTerminology } from "./resolve.ts";
 import { MESH_MAJOR, MESH_MINOR } from "./schema.ts";
 import {
   careContext,
   isCancer,
   isGenericNeoplasm,
+  otherCondition,
   otherDisease,
   otherTreatment,
   type PatientStage,
@@ -234,6 +236,24 @@ test("a patient's own neoplasm and treatment are exempt from alternative-topic p
   expect(
     otherTreatment(brachy, new Set([...own, "mesh:D001918"]), treated),
   ).toBe(false);
+});
+
+test("without cancer, another disease as major topic makes a paper about another disease", () => {
+  const type2 = "mesh:D003924";
+  const other = (mesh: Record<string, number>) =>
+    otherCondition(
+      mesh,
+      new Set([type2]),
+      new Set([type2]),
+      defaultTerminology,
+    );
+  const asthma = "mesh:D001249";
+  expect(other({ [asthma]: MESH_MAJOR })).toBe(true);
+  expect(other({ [asthma]: MESH_MINOR })).toBe(false);
+  expect(other({ [asthma]: MESH_MAJOR, [type2]: MESH_MAJOR })).toBe(false);
+  // Diabetes in general includes type 2; fatigue comes with any disease.
+  expect(other({ "mesh:D003920": MESH_MAJOR })).toBe(false);
+  expect(other({ "mesh:D005221": MESH_MAJOR })).toBe(false);
 });
 
 test("surveillance follow-up needs evidence of monitoring or treatment decisions", () => {

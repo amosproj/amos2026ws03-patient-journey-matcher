@@ -6,9 +6,10 @@ import {
 } from "./resolve.ts";
 import { CONCEPT_NAMES } from "./schema.ts";
 
+const TTL_MS = 300_000;
 const cache = new WeakMap<
   Queryable,
-  { expires: number; terms: Promise<Terminology> }
+  { expires: number; terms: Promise<Terminology>; refreshing?: Promise<void> }
 >();
 
 async function readTerms(db: Queryable): Promise<Terminology> {
@@ -25,14 +26,30 @@ async function readTerms(db: Queryable): Promise<Terminology> {
   return createTerminology(result.rows);
 }
 
-/** A completed index run becomes visible in a running server within five minutes. */
+/**
+ * A completed index run becomes visible in a running server within five minutes. Requests keep the
+ * old dictionary while the new one loads.
+ */
 export function loadCorpusTerminology(db: Queryable): Promise<Terminology> {
   const current = cache.get(db);
-  if (current && current.expires > Date.now()) return current.terms;
+  if (current && (current.expires > Date.now() || current.refreshing))
+    return current.terms;
   const terms = readTerms(db);
-  cache.set(db, { expires: Date.now() + 300_000, terms });
-  terms.catch(() => {
-    if (cache.get(db)?.terms === terms) cache.delete(db);
-  });
-  return terms;
+  if (!current) {
+    cache.set(db, { expires: Date.now() + TTL_MS, terms });
+    terms.catch(() => {
+      if (cache.get(db)?.terms === terms) cache.delete(db);
+    });
+    return terms;
+  }
+  current.refreshing = terms.then(
+    () => {
+      cache.set(db, { expires: Date.now() + TTL_MS, terms });
+    },
+    () => {
+      // Keeps the old dictionary; the next request tries again.
+      current.refreshing = undefined;
+    },
+  );
+  return current.terms;
 }
