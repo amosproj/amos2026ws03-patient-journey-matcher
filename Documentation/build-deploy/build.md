@@ -18,7 +18,7 @@ Run the commands from the repository root. Each `make` target runs the `uv`, `pn
 | Command | What it does |
 |---|---|
 | `make build` | Installs the locked dependencies of `crawler/` and `matcher/`, and type-checks `matcher/` |
-| `make test` | Builds, then runs the same checks as [CI](#ci); with the root `.env`, the database tests use the database from `make db` |
+| `make test` | Builds, then runs the crawler and matcher checks of [CI](#ci); with the root `.env`, the database tests use the database from `make db` |
 | `make test-integration` | Builds, then runs only the [end-to-end tests](#end-to-end-tests) |
 | `make db` | Starts the [database](database.md) and applies `db/init/`; needs the root `.env` |
 | `make seed` | Runs `make db`, then stores a sample crawl of every source ([`scripts/seed.py`](../../scripts/seed.py)) |
@@ -68,7 +68,7 @@ The Python crawler and the TypeScript matcher are separate projects with their o
 
 **Matcher (`matcher/`, TypeScript, Node.js 24, pnpm workspace).** `pnpm install --frozen-lockfile` installs all packages. Checks: `pnpm typecheck`, `pnpm test`, `pnpm lint`, `pnpm test:integration`. Add a dependency to one package with `pnpm --filter @matcher/indexer add <package>`, a shared dev tool with `pnpm add -w -D <package>`. Package rules: [matcher](../../matcher/README.md).
 
-**Database tests.** The store tests of the crawler, the database tests of `@matcher/db` and `@matcher/keyword`, and the end-to-end tests are skipped unless `TEST_DATABASE_URL` points to a PostgreSQL database; the root `.env` sets it for `make`.
+**Database tests.** The store tests of the crawler, the database tests of the matcher packages and the end-to-end tests are skipped unless `TEST_DATABASE_URL` points to a PostgreSQL database; the root `.env` sets it for `make`.
 
 ### End-to-end tests
 

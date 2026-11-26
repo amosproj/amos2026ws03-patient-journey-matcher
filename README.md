@@ -54,7 +54,7 @@ For semantic matching, run `make index-ai` once, then `make debug-ai` to start t
 
 ```sh
 make build              # installs crawler/ with uv and matcher/ with pnpm, type-checks matcher/
-make test               # everything CI checks: lint, formatting, types, unit and integration tests
+make test               # the crawler and matcher checks of CI: lint, formatting, types, unit and integration tests
 make test-integration   # only the matcher's integration tests
 ```
 

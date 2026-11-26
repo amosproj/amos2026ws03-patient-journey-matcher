@@ -64,7 +64,7 @@ Lists and objects are `[]` or `{}`, never null. The crawler's JSON Lines use oth
 The crawler detects the language of each document's title and summary offline with [py3langid](https://github.com/adbar/py3langid) ([`crawler/src/crawler/language.py`](../../crawler/src/crawler/language.py)) and stores it as `extra.metadata_language` (BCP 47, e.g. `en`). A source's `language` can name something else: PubMed gives the article's language, and a German article often has an English abstract. So `language` keeps the source's value.
 
 - Missing `metadata_language` means unknown, not "not English": short titles such as `PSA` are too short to tell, and stored cited papers keep their old row until a run fetches them again. An indexer that skips non-English metadata should treat unknown as matchable.
-- Ordinary runs do not fetch stored cited papers again. Backfill their language markers and [OpenAlex](../../research/sources/openalex.md) links with `cd crawler && uv run crawler refresh`; no database reset is needed.
+- Backfill the language markers and [OpenAlex](../../research/sources/openalex.md) links of stored cited papers with [`crawler refresh`](#refresh-stored-enrichment).
 - Non-English documents are stored like the others, so they stay findable and their citations stay complete.
 
 ### Refresh stored enrichment
@@ -123,4 +123,4 @@ A trigger keeps `graph.evidence` and `graph.treats` in step with `graph.document
 
 ## Schema changes
 
-`db/init/` runs when an empty volume starts; `make db` applies it again, so the files must stay idempotent. Put a change into a new numbered file, e.g. `04-….sql` with `ALTER TABLE … ADD COLUMN IF NOT EXISTS`.
+`db/init/` runs when an empty volume starts; `make db` applies it again, so the files must stay idempotent. Put a change into a new numbered file, e.g. `05-….sql` with `ALTER TABLE … ADD COLUMN IF NOT EXISTS`.
