@@ -1,5 +1,5 @@
 import { text } from "node:stream/consumers";
-import { createApproaches } from "@matcher/approaches";
+import { createApproaches, createFusions } from "@matcher/approaches";
 import { createDocumentStore, createPool } from "@matcher/db";
 import { createDownloader } from "@matcher/download";
 import { explain, explainSource } from "./explain.ts";
@@ -8,12 +8,16 @@ import { createMatchService } from "./match.ts";
 
 const port = Number(process.env.MCP_PORT ?? 3000);
 // A search that runs longer is answered as degraded, instead of holding the database.
-const SEARCH_TIMEOUT_MS = 30_000;
+const SEARCH_TIMEOUT_MS = 10_000;
 const pool = createPool(undefined, SEARCH_TIMEOUT_MS);
 // The approaches come with all their dependencies; at query time the matchers only read the
 // database, the downloader serves the indexers.
+const approaches = createApproaches({
+  db: pool,
+  downloader: createDownloader(),
+});
 const service = createMatchService(
-  createApproaches({ db: pool, downloader: createDownloader() }),
+  [...approaches, ...createFusions(approaches)],
   createDocumentStore(pool),
 );
 

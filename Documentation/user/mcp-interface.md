@@ -63,7 +63,7 @@ Set `algorithm` to choose an approach. It defaults to `keyword`.
 |---|---|---|---|
 | `journey` | object | one of the two | The patient as a list of events, see below |
 | `graph` | object | one of the two | The patient as the patient graph, see [graph input](#graph-input) |
-| `algorithm` | `keyword`, `graph`, `ai_summary` | no | One approach; without it the server chooses, today `keyword` |
+| `algorithm` | `keyword`, `graph`, `ai_summary`, `graph_keyword` | no | One approach, or graph and keyword merged by rank fusion; without it the server chooses, today `keyword` |
 | `limit` | integer, 1 to 50 | no | Default 10 |
 | `content_types` | list of `content_type` values, at least one, see [output](#match_journey-output) | no | Default: all types |
 
@@ -108,8 +108,8 @@ The server derives daily events for focus and context. With `algorithm` set to `
 | `algorithm` | string | yes | The approach that produced the list |
 | `focus_event_id` | string | yes | The event treated as most recent |
 | `results` | list | yes | Best match first. Empty if nothing fits |
-| `degraded` | boolean | yes | `true` if a search could not run, so an empty list does not mean "nothing relevant" |
-| `degraded_reason` | string | no | |
+| `degraded` | boolean | yes | `true` if a search failed or timed out, so an empty list does not mean "nothing relevant"; with `graph_keyword` also if one part failed, and `results` hold the other's |
+| `degraded_reason` | string | no | Why, such as `The graph search took longer than allowed.` |
 
 Each result holds the source reference and optional relevance information:
 
@@ -200,7 +200,7 @@ The SDK checks the input before a tool runs and the output after it. When a chec
 
 ## Health data
 
-The server does not store or log the journey. It also does not log the message of an unexpected failure, because the message can contain journey data. Development uses synthetic journeys only.
+The server does not store or log the journey; it keeps an answer in memory for five minutes, to answer the same request again without a search. It also does not log the message of an unexpected failure, because the message can contain journey data. Development uses synthetic journeys only.
 
 ## Patient graph
 

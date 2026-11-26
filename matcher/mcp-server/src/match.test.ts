@@ -94,7 +94,11 @@ test("answers with the stored documents of the matcher's hits, in its order", as
 
   expect(approach.matcher.match).toHaveBeenCalledWith(
     { focus: journey.events[1], context: [journey.events[0]] },
-    { limit: 10, contentTypes: ["journal_article"] },
+    {
+      limit: 10,
+      contentTypes: ["journal_article"],
+      partFailed: expect.any(Function),
+    },
   );
   expect(result).toMatchObject({
     algorithm: "keyword",
@@ -140,6 +144,67 @@ test("answers degraded when the matcher fails, and logs only the SQLSTATE", asyn
   expect(log).toHaveBeenCalledWith("keyword search failed: 42P01");
 });
 
+test("says when the search took too long", async () => {
+  vi.spyOn(console, "error").mockImplementation(() => {});
+  const timeout = Object.assign(
+    new Error("canceling statement due to statement timeout"),
+    {
+      code: "57014",
+    },
+  );
+  const result = await createMatchService(
+    [keyword(timeout)],
+    store([]),
+  ).matchJourney({
+    journey,
+    algorithm: "keyword",
+    limit: 10,
+  });
+  expect(result.degraded_reason).toBe(
+    "The keyword search took longer than allowed.",
+  );
+});
+
+test("answers degraded with the results of the parts that worked when one part of a fusion fails", async () => {
+  vi.spyOn(console, "error").mockImplementation(() => {});
+  const fused = {
+    name: "graph_keyword",
+    matcher: {
+      match: vi.fn<Matcher["match"]>(async (_state, { partFailed }) => {
+        partFailed?.(
+          "graph",
+          Object.assign(new Error("timeout"), { code: "57014" }),
+        );
+        return [{ documentId: "pubmed:1", score: 1 }];
+      }),
+    },
+  };
+  const service = createMatchService([fused], store(["pubmed:1"]));
+  const request = { journey, algorithm: "graph_keyword" as const, limit: 10 };
+  const result = await service.matchJourney(request);
+  expect(result).toMatchObject({
+    results: [{ source_id: "pubmed:1" }],
+    degraded: true,
+    degraded_reason:
+      "The graph search took longer than allowed; the results are without it.",
+  });
+  // A degraded answer is not kept.
+  await service.matchJourney(request);
+  expect(fused.matcher.match).toHaveBeenCalledTimes(2);
+});
+
+test("answers a repeated request from memory, but searches again for a traced one", async () => {
+  const approach = keyword([{ documentId: "pubmed:1", score: 1 }]);
+  const service = createMatchService([approach], store(["pubmed:1"]));
+  const request = { journey, algorithm: "keyword" as const, limit: 10 };
+  const first = await service.matchJourney(request);
+  expect(await service.matchJourney({ ...request })).toBe(first);
+  expect(approach.matcher.match).toHaveBeenCalledTimes(1);
+  await service.matchJourney({ ...request, limit: 5 });
+  await service.matchJourney(request, { trace: () => {} });
+  expect(approach.matcher.match).toHaveBeenCalledTimes(3);
+});
+
 test("passes a trace and tuning on, and traces the journey and why a search failed", async () => {
   vi.spyOn(console, "error").mockImplementation(() => {});
   const approach = keyword(new Error("relation does not exist"));
@@ -156,6 +221,7 @@ test("passes a trace and tuning on, and traces the journey and why a search fail
     limit: 10,
     trace,
     tuning,
+    partFailed: expect.any(Function),
   });
   expect(steps).toEqual([
     ["journey", { focus: "e2", context: ["e1"] }],

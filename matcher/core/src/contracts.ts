@@ -45,6 +45,8 @@ export interface MatchOptions {
   tuning?: Readonly<Record<string, number>>;
   /** Gets what the matcher works out on the way; only the debug UI passes one. */
   trace?: Trace;
+  /** Told when a matcher made of others answers without the part `part`, which failed. */
+  partFailed?: (part: string, error: unknown) => void;
 }
 
 /** Receives the steps of a match: a name and its data, which must be JSON values. */
@@ -83,4 +85,8 @@ export interface Approach {
   readonly matcher: Matcher;
 }
 
-export { RANK_CONSTANT, reciprocalRankFusion } from "./fusion.ts";
+export {
+  createFusedMatcher,
+  RANK_CONSTANT,
+  reciprocalRankFusion,
+} from "./fusion.ts";

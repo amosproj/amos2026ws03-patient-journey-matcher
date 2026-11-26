@@ -41,6 +41,7 @@
         <button type="button" data-screen="ai" title="Semantic indexing with Qwen and BGE-M3">AI</button>
       </div>
       <button type="button" data-screen="match">Matcher</button>
+      <button type="button" data-screen="fusion" title="Approaches fused into one ranking">Fusion</button>
     </div>
     <div class="view-set" role="group" aria-label="Tools">
       <button type="button" data-screen="info">Info</button>
@@ -443,6 +444,26 @@
   </main>
 </div>
 
+<div class="layout" id="fusion-view" hidden>
+  <aside class="side" id="fusion-controls">
+    <div class="side-head">
+      <h2>Graph + keyword <i class="info" tabindex="0" data-tip="The graph_keyword algorithm of match_journey: the graph and the keyword matcher each rank at least 30 papers, and rank fusion merges the two lists with equal weights. A paper both rank high comes first. If one part fails, the answer is degraded and holds the other part's papers.">i</i></h2>
+    </div>
+    <div class="side-head">
+      <h2>Journey <i class="info" tabindex="0" data-tip="A synthetic patient. One with a graph.json goes as its graph: the graph part reads its relationships, the keyword part the journey made from it.">i</i></h2>
+    </div>
+    <select id="fu-journey" aria-label="Patient journey"></select>
+    <div class="buttons"><button type="button" class="primary" id="fu-run">Match</button></div>
+    <div class="error" id="fu-error"></div>
+  </aside>
+
+  <main class="fusion-main" aria-label="Fused matching">
+    <div class="stats" id="fu-stats"></div>
+    <div class="notice" id="fu-notice" hidden></div>
+    <div class="table-wrap"><table><thead><tr id="fu-head"></tr></thead><tbody id="fu-results"></tbody></table></div>
+  </main>
+</div>
+
 <div class="layout" id="graph-view" hidden>
   <aside class="side" id="graph-controls">
     <div class="side-head"><h2>Graph index</h2></div>
@@ -617,6 +638,7 @@
 <script src="match-graph.js"></script>
 <script src="match-client.js"></script>
 <script src="match.js"></script>
+<script src="fusion.js"></script>
 <script src="info.js"></script>
 <script src="markdown.js"></script>
 <script src="docs.js"></script>

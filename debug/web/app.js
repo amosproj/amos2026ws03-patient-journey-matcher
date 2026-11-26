@@ -41,7 +41,7 @@ for (const icon of document.querySelectorAll(".info")) {
 }
 
 // The Index screens: the overview, then one per approach (hash #index, #index-keyword, …).
-const SCREENS = { runs: "#runs-view", db: "#db-view", index: "#index-view", keyword: "#keyword-view", graph: "#graph-view", ai: "#ai-view", match: "#match-view", info: "#info-view", doc: "#doc-view" };
+const SCREENS = { runs: "#runs-view", db: "#db-view", index: "#index-view", keyword: "#keyword-view", graph: "#graph-view", ai: "#ai-view", match: "#match-view", fusion: "#fusion-view", info: "#info-view", doc: "#doc-view" };
 
 const narrowScreen = window.matchMedia("(max-width: 760px)");
 const controlsToggle = $("#controls-toggle");
@@ -98,6 +98,7 @@ function showScreen(screen) {
   else if (screen === "graph") { grShow(); ixRefresh(); }
   else if (screen === "ai") { history.replaceState(null, "", "#index-ai"); aiRefresh(); }
   else if (screen === "match") mtShow();
+  else if (screen === "fusion") fuShow();
   else if (screen === "info") infoShow();
   else if (screen === "doc") dcShow();
   else switchTab(state.tab);

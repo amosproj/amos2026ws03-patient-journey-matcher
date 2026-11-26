@@ -29,8 +29,9 @@ From [`@matcher/core`](../core/src/contracts.ts):
 | `Indexer.index(log)`             | Indexes the new and changed documents; `log` gets progress lines                         |
 | `Matcher.match(state, options)`  | The best hits for a `JourneyState`, best first; `score` from 0 to 1 relative to the best |
 | `reciprocalRankFusion(rankings)` | Merges rankings whose scores are not comparable, e.g. two indexes or two approaches      |
+| `createFusedMatcher(parts)`      | A matcher that merges the rankings of other matchers by rank fusion                      |
 
-The options of `match` also hold `trace` and `tuning`, for the [debug UI](../../debug/README.md): `trace(step, data)` gets what the matcher works out on the way, `tuning` other values for its ranking constants. A matcher that ignores both still works there.
+The options of `match` also hold `trace` and `tuning`, for the [debug UI](../../debug/README.md): `trace(step, data)` gets what the matcher works out on the way, `tuning` other values for its ranking constants. A matcher that ignores both still works there. A fused matcher reports a failed part to `partFailed(part, error)`, and the server answers degraded.
 
 ## Shared parts
 

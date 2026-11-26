@@ -1,5 +1,5 @@
 import { createSemanticApproach, parseModel } from "@matcher/ai-summary";
-import type { Approach } from "@matcher/core";
+import { type Approach, createFusedMatcher } from "@matcher/core";
 import type { Queryable } from "@matcher/db";
 import type { Downloader } from "@matcher/download";
 import { createGraphApproach } from "@matcher/graph";
@@ -34,6 +34,21 @@ export function createApproaches(dependencies: Dependencies): Approach[] {
     );
   }
   return approaches;
+}
+
+/**
+ * Matchers that fuse the rankings of approaches, chosen by `algorithm` like an approach; they
+ * have no index of their own. `graph_keyword` merges graph and keyword.
+ */
+export function createFusions(
+  approaches: readonly Approach[],
+): Pick<Approach, "name" | "matcher">[] {
+  const parts = ["graph", "keyword"].flatMap(
+    (name) => approaches.find((approach) => approach.name === name) ?? [],
+  );
+  return parts.length === 2
+    ? [{ name: "graph_keyword", matcher: createFusedMatcher(parts) }]
+    : [];
 }
 
 /** The approaches with these names, in the order of the list; all of them for no names. */

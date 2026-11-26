@@ -28,7 +28,12 @@ const patientJourneySchema = z
     },
   );
 
-const algorithmSchema = z.enum(["keyword", "graph", "ai_summary"]);
+const algorithmSchema = z.enum([
+  "keyword",
+  "graph",
+  "ai_summary",
+  "graph_keyword",
+]);
 
 const contentTypeSchema = z.enum([
   "journal_article",
