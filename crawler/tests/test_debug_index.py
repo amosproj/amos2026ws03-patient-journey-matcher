@@ -1,6 +1,7 @@
 """Index screen dispatch uses the selected technique even when both encoders are enabled, and
 the Index › AI screen starts and stops the local encoder."""
 
+import asyncio
 import importlib.util
 import signal
 import socket
@@ -13,10 +14,18 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
 HEALTH = {"service": "patient-journey-semantic", "device": "cpu"}
+PARTS = ("common", "db_view", "encoder", "indexing", "info", "matching", "runs")
+
+
+def part(name):
+    """A module of the server the fixture loaded; its functions look up names there."""
+    return sys.modules[name]
 
 
 @pytest.fixture
 def module(monkeypatch):
+    for name in PARTS:  # fresh modules, so no state of one test reaches the next
+        monkeypatch.delitem(sys.modules, name, raising=False)
     spec = importlib.util.spec_from_file_location(
         "debug_index_test_server", ROOT / "debug/server.py"
     )
@@ -31,11 +40,11 @@ def module(monkeypatch):
 @pytest.fixture
 def server(module, monkeypatch):
     monkeypatch.setattr(
-        module,
+        part("indexing"),
         "matcher_environment",
         lambda: {"SEMANTIC_MODEL": "qwen", "SEMANTIC_MODELS": "qwen,bge"},
     )
-    monkeypatch.setattr(module, "encoder_health", lambda url: HEALTH)
+    monkeypatch.setattr(part("encoder"), "encoder_health", lambda url: HEALTH)
     return module
 
 
@@ -54,8 +63,8 @@ def test_selected_index_process(server, monkeypatch, technique, arguments, model
     run = server.start_indexer(technique)
     environment = thread.call_args.kwargs["args"][1]
     process = Mock(return_value=SimpleNamespace(stdout=[], wait=lambda: 0))
-    monkeypatch.setattr(server.subprocess, "Popen", process)
-    server.run_indexer(run, environment)
+    monkeypatch.setattr(part("indexing").subprocess, "Popen", process)
+    part("indexing").run_indexer(run, environment)
     assert process.call_args.args[0] == ["node", "src/main.ts", *arguments]
     assert process.call_args.kwargs["env"]["SEMANTIC_MODELS"] == models
     assert run.status == "finished"
@@ -72,7 +81,7 @@ def test_semantic_overview_uses_only_selected_models(server, monkeypatch, techni
         {"model": "qwen", "table": "ai_summary.qwen_fixture"},
         {"model": "bge", "table": "ai_summary.bge_fixture"},
     ]
-    monkeypatch.setattr(server, "semantic_profiles", lambda: profiles)
+    monkeypatch.setattr(part("indexing"), "semantic_profiles", lambda: profiles)
 
     class Connection:
         async def fetchval(self, sql, *args):
@@ -92,8 +101,8 @@ def test_semantic_overview_uses_only_selected_models(server, monkeypatch, techni
             }
         ]
 
-    monkeypatch.setattr(server, "fetch_json", rows)
-    result = server.asyncio.run(server.index_overview(Connection(), technique))
+    monkeypatch.setattr(part("indexing"), "fetch_json", rows)
+    result = asyncio.run(server.index_overview(Connection(), technique))
     expected = ["qwen", "bge"] if technique == "semantic" else [technique]
     assert [model["model"] for model in result["models"]] == expected
     assert all(model["indexed"] == 3 and model["pending"] == 1 for model in result["models"])
@@ -101,7 +110,7 @@ def test_semantic_overview_uses_only_selected_models(server, monkeypatch, techni
 
 
 def test_ai_indexing_needs_the_encoder(server, monkeypatch):
-    monkeypatch.setattr(server, "encoder_health", lambda url: None)
+    monkeypatch.setattr(part("encoder"), "encoder_health", lambda url: None)
     monkeypatch.setattr(server.threading, "Thread", Mock())
     with pytest.raises(RuntimeError, match="needs the encoder"):
         server.start_indexer("qwen")
@@ -146,12 +155,12 @@ class Thread:
 @pytest.fixture
 def encoder(module, monkeypatch):
     """`start_encoder` with the configured port taken, nothing answering and no real process."""
-    monkeypatch.setattr(module.subprocess, "Popen", Process)
+    monkeypatch.setattr(part("encoder").subprocess, "Popen", Process)
     monkeypatch.setattr(module.threading, "Thread", Thread)
-    monkeypatch.setattr(module, "encoder_health", lambda url: None)
+    monkeypatch.setattr(part("encoder"), "encoder_health", lambda url: None)
     monkeypatch.setenv("VIRTUAL_ENV", "/the/crawler/.venv")
     stopped = []
-    monkeypatch.setattr(module.os, "killpg", lambda pid, sent: stopped.append((pid, sent)))
+    monkeypatch.setattr(part("encoder").os, "killpg", lambda pid, sent: stopped.append((pid, sent)))
     with socket.socket() as taken:
         taken.bind(("127.0.0.1", 0))
         port = taken.getsockname()[1]
@@ -161,7 +170,7 @@ def encoder(module, monkeypatch):
 
 
 def test_the_encoder_starts_on_a_free_port_and_reaches_the_matcher(module, encoder):
-    process = module.ENCODER.process
+    process = part("encoder").ENCODER.process
     port = int(process.arguments[-1])
     assert process.arguments == [
         "uv", "run", "--locked", "scripts/semantic.py", "--prepare",
@@ -174,7 +183,7 @@ def test_the_encoder_starts_on_a_free_port_and_reaches_the_matcher(module, encod
     assert encoder.state["status"] == "starting" and encoder.state["own"] is True
     # A progress bar keeps one line per file.
     assert encoder.state["lines"] == ["model.safetensors:  50%|#####     | 5/10", "Loaded"]
-    assert module.with_encoder({"DATABASE_URL": "postgresql://x"}) == {
+    assert part("encoder").with_encoder({"DATABASE_URL": "postgresql://x"}) == {
         "DATABASE_URL": "postgresql://x",
         "SEMANTIC_URL": f"http://127.0.0.1:{port}",
         "SEMANTIC_DEVICE": "cpu",
@@ -184,26 +193,26 @@ def test_the_encoder_starts_on_a_free_port_and_reaches_the_matcher(module, encod
 
 
 def test_a_stop_ends_the_process_group_but_not_during_an_ai_index_run(module, encoder):
-    module.INDEXING = SimpleNamespace(status="running", approach="ai_summary")
+    part("common").INDEXING = SimpleNamespace(status="running", approach="ai_summary")
     with pytest.raises(RuntimeError, match="stop the indexer first"):
         module.stop_encoder()
-    module.INDEXING = SimpleNamespace(status="running", approach="keyword")
+    part("common").INDEXING = SimpleNamespace(status="running", approach="keyword")
     assert module.stop_encoder()["status"] == "stopped"
     assert encoder.stopped == [(Process.pid, signal.SIGTERM)]
-    assert module.ENCODER is None
-    assert "SEMANTIC_URL" not in module.with_encoder({})
+    assert part("encoder").ENCODER is None
+    assert "SEMANTIC_URL" not in part("encoder").with_encoder({})
 
 
 def test_an_encoder_that_ended_shows_why(module, encoder):
-    module.ENCODER.process.code = 1
+    part("encoder").ENCODER.process.code = 1
     state = module.encoder_state()
     assert (state["status"], state["code"]) == ("failed", 1)
     assert state["lines"][-1] == "Loaded"
-    assert module.with_encoder({}) == {}
+    assert part("encoder").with_encoder({}) == {}
 
 
 def test_the_encoder_of_another_command_shows_but_stays(module, monkeypatch):
-    monkeypatch.setattr(module, "encoder_health", lambda url: {**HEALTH, "device": "mps"})
+    monkeypatch.setattr(part("encoder"), "encoder_health", lambda url: {**HEALTH, "device": "mps"})
     state = module.encoder_state()
     assert (state["status"], state["own"], state["device"]) == ("running", False, "mps")
     assert state["url"] == "http://127.0.0.1:8766"
