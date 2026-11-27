@@ -701,3 +701,86 @@ def test_measure_without_a_model_reports_the_rules(prefilter, url, study):
     result = json.loads(prefilter.RESULTS.read_text())
     assert result["approaches"]["rules+model"] is None and result["model"] is None
     assert result["rules"]["no_summary"]["checked"] == 0
+
+
+def label_on_disk(prefilter, document_id: str, label: str) -> None:
+    """What the Pre-filter screen does while a subcommand runs: a person saves a label."""
+    data = prefilter.load_labels(prefilter.LABELS)
+    for item in data["documents"]:
+        if item["id"] == document_id:
+            item |= {"label": label, "note": "saved in the UI"}
+    prefilter.save_labels(prefilter.LABELS, data)
+
+
+@pytest.mark.postgres
+def test_propose_keeps_labels_saved_while_it_runs(prefilter, url, tmp_path, monkeypatch):
+    monkeypatch.setattr(prefilter, "LABELS", tmp_path / "labels.json")
+    insert(url, doc("pubmed:1"), doc("pubmed:2"))
+    data = prefilter.load_labels(prefilter.LABELS)
+    prefilter.add_documents(data, ["pubmed:1", "pubmed:2"], "train")
+    prefilter.save_labels(prefilter.LABELS, data)
+
+    def generate(prompt: str) -> str:
+        label_on_disk(prefilter, "pubmed:1", "keep")
+        return '{"label": "keep", "group": null, "reason": "trial"}'
+
+    asyncio.run(prefilter.propose(url, None, None, generate))
+    entries = {e["id"]: e for e in prefilter.load_labels(prefilter.LABELS)["documents"]}
+    assert (entries["pubmed:1"]["label"], entries["pubmed:1"]["note"]) == (
+        "keep",
+        "saved in the UI",
+    )
+    assert entries["pubmed:2"]["proposal"]["reason"] == "trial"
+
+
+@pytest.mark.postgres
+def test_measure_keeps_labels_saved_while_it_runs(prefilter, url, study, monkeypatch):
+    asyncio.run(prefilter.measure(url, study))
+    first_id = prefilter.load_labels(prefilter.LABELS)["documents"][0]["id"]
+    original = prefilter.rule_counts
+
+    async def counting(connection):
+        label_on_disk(prefilter, first_id, "keep")
+        return await original(connection)
+
+    monkeypatch.setattr(prefilter, "rule_counts", counting)
+    asyncio.run(prefilter.measure(url, study))
+    entries = {e["id"]: e for e in prefilter.load_labels(prefilter.LABELS)["documents"]}
+    assert entries[first_id]["label"] == "keep"
+
+
+@pytest.mark.postgres
+def test_sample_keeps_labels_saved_while_it_runs(prefilter, url, tmp_path, monkeypatch):
+    monkeypatch.setattr(prefilter, "LABELS", tmp_path / "labels.json")
+    insert(url, *[doc(f"pubmed:{i}") for i in range(10)])
+    prefilter.main(["--database-url", url, "sample", "--set", "random", "--n", "3"])
+    first_id = prefilter.load_labels(prefilter.LABELS)["documents"][0]["id"]
+    original = prefilter.sample_train
+
+    async def sampling(connection, n, **kwargs):
+        label_on_disk(prefilter, first_id, "keep")
+        return await original(connection, n, **kwargs)
+
+    monkeypatch.setattr(prefilter, "sample_train", sampling)
+    prefilter.main(["--database-url", url, "sample", "--set", "train", "--n", "3"])
+    entries = {e["id"]: e for e in prefilter.load_labels(prefilter.LABELS)["documents"]}
+    assert entries[first_id]["label"] == "keep"
+
+
+def test_update_labels_waits_for_the_lock(prefilter, tmp_path):
+    import fcntl
+    import threading
+
+    path = tmp_path / "labels.json"
+    prefilter.save_labels(path, prefilter.load_labels(path))
+    lock = open(prefilter.lock_path(path), "a")  # noqa: SIM115
+    fcntl.flock(lock, fcntl.LOCK_EX)
+    done = threading.Event()
+    thread = threading.Thread(
+        target=lambda: (prefilter.update_labels(path, lambda data: None), done.set())
+    )
+    thread.start()
+    assert not done.wait(0.2)
+    fcntl.flock(lock, fcntl.LOCK_UN)
+    lock.close()
+    assert done.wait(2)

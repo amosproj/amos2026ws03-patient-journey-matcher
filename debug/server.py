@@ -20,6 +20,7 @@ logged.
 import argparse
 import asyncio
 import contextlib
+import fcntl
 import http.client
 import importlib
 import io
@@ -2617,7 +2618,9 @@ def save_prefilter_label(body: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(note, str) or len(note) > 500:
         raise ValueError("note must be text of at most 500 characters")
     path = PREFILTER_DIR / "labels.json"
-    with PREFILTER_LOCK:
+    # The thread lock for this server's own requests; the file lock for scripts/prefilter.py.
+    with PREFILTER_LOCK, open(PREFILTER_DIR / ".labels.lock", "a") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
         if not path.exists():
             raise LookupError("No labels file yet: run scripts/prefilter.py sample first")
         data = json.loads(path.read_text(encoding="utf-8"))

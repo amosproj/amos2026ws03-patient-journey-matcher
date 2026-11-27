@@ -50,3 +50,6 @@ bin/
 
 # MacOS
 .DS_Store
+
+# Lock shared by scripts/prefilter.py and the debug UI
+research/prefilter/.labels.lock

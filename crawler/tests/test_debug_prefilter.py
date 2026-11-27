@@ -116,7 +116,7 @@ def test_save_label_keeps_the_proposal(server, labels_file):
     assert saved["status"] == "changed" and saved["checked_at"]
     entry = stored(labels_file)["pubmed:2"]
     assert (entry["label"], entry["note"], entry["proposal"]) == ("keep", "trial", PROPOSAL)
-    assert [p.name for p in labels_file.parent.iterdir()] == ["labels.json"]
+    assert not [p.name for p in labels_file.parent.iterdir() if p.suffix == ".tmp"]
 
 
 def test_parallel_saves_keep_both_labels(server, labels_file):
@@ -146,3 +146,19 @@ def test_results_come_from_the_results_file(server, tmp_path):
     assert server.prefilter_results() == {"missing": True}
     (tmp_path / "results.json").write_text(json.dumps({"total": 3}))
     assert server.prefilter_results() == {"total": 3}
+
+
+def test_save_waits_for_the_lock_the_script_holds(server, labels_file):
+    import fcntl
+
+    lock = open(labels_file.parent / ".labels.lock", "a")  # noqa: SIM115 — the script's lock
+    fcntl.flock(lock, fcntl.LOCK_EX)
+    done = threading.Event()
+    body = {"id": "pubmed:2", "label": "keep", "group": None}
+    thread = threading.Thread(target=lambda: (server.save_prefilter_label(body), done.set()))
+    thread.start()
+    assert not done.wait(0.2)
+    fcntl.flock(lock, fcntl.LOCK_UN)
+    lock.close()
+    assert done.wait(2)
+    assert stored(labels_file)["pubmed:2"]["label"] == "keep"

@@ -259,6 +259,28 @@ def save_labels(path: Path, data: dict[str, Any]) -> None:
     os.replace(file.name, path)
 
 
+def lock_path(path: Path) -> Path:
+    """The lock that this script and the Pre-filter screen of the debug UI both take."""
+    return path.with_name(f".{path.stem}.lock")
+
+
+def update_labels[T](path: Path, change: Callable[[dict[str, Any]], T]) -> T:
+    """Apply `change` to the labels file as it is on disk now, under the shared lock, so a label
+    a person saved in the debug UI meanwhile is never written over."""
+    import fcntl
+
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with open(lock_path(path), "a") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        try:
+            data = load_labels(path)
+            result = change(data)
+            save_labels(path, data)
+        finally:
+            fcntl.flock(lock, fcntl.LOCK_UN)
+    return result
+
+
 def add_documents(data: dict[str, Any], ids: Iterable[str], set_name: str) -> int:
     """Put `ids` into `set_name`; labels, notes and proposals of known ids stay as they are."""
     known = {entry["id"]: entry for entry in data["documents"]}
@@ -369,9 +391,7 @@ async def sample(url: str, set_name: str, n: int | None) -> None:
             ids = await sample_random(connection, n or 300)
     finally:
         await connection.close()
-    data = load_labels(LABELS)
-    added = add_documents(data, ids, set_name)
-    save_labels(LABELS, data)
+    added = update_labels(LABELS, lambda data: add_documents(data, ids, set_name))
     print(f"{set_name}: {added} new documents, {len(ids)} in this sample")
 
 
@@ -676,7 +696,7 @@ async def measure(url: str, table: str = EMBEDDINGS) -> None:
         if "drops-rules" not in known:
             await connection.execute("SELECT setseed($1)", 0.45)
             rule_drops = await random_ids(connection, ANY_RULE, DROP_SAMPLE, [])
-        add_drop_samples(data, rule_drops, model_drops, {})
+        add_drop_samples(data, rule_drops, model_drops, {})  # on the snapshot, to plan
         sampled = [e["id"] for e in data["documents"] if "drops-rules" in e["sets"]]
         sampled_hits = await hits_of(connection, sampled)
         per_rule = {}
@@ -694,7 +714,12 @@ async def measure(url: str, table: str = EMBEDDINGS) -> None:
         hits = await hits_of(connection, in_drops)
     finally:
         await connection.close()
-    save_labels(LABELS, data)
+
+    def merge(fresh: dict[str, Any]) -> dict[str, Any]:
+        add_drop_samples(fresh, rule_drops, model_drops, per_rule)
+        return fresh
+
+    data = update_labels(LABELS, merge)
     timing = {"rules_seconds": counts["_seconds"]["_all"], "model_ms_per_document": milliseconds}
     result = summarize(data, counts, model, scored, timing, hits)
     RESULTS.parent.mkdir(parents=True, exist_ok=True)
@@ -757,6 +782,16 @@ async def propose(
         await connection.close()
     documents = {row["id"]: dict(row) for row in rows}
     model = "{}@{}".format(*PROPOSER)
+    answers: dict[str, dict[str, Any]] = {}
+
+    def merge(fresh: dict[str, Any]) -> None:
+        """Only the proposals change; labels people saved meanwhile stay as they are."""
+        for entry in fresh["documents"]:
+            answer = answers.get(entry["id"])
+            if answer and entry["proposal"] is None and entry["proposal_raw"] is None:
+                entry |= answer
+        answers.clear()
+
     done = 0
     for entry in todo:
         document = documents.get(entry["id"])
@@ -764,14 +799,15 @@ async def propose(
             continue  # no longer stored here; a person can still label it
         answer = generate(build_prompt(document, data["guide"]))
         proposal = parse_answer(answer)
-        if proposal is None:
-            entry["proposal_raw"] = answer
-        else:
-            entry["proposal"] = proposal | {"model": model}
+        answers[entry["id"]] = (
+            {"proposal_raw": answer}
+            if proposal is None
+            else {"proposal": proposal | {"model": model}}
+        )
         done += 1
         if done % 10 == 0:
-            save_labels(LABELS, data)
-    save_labels(LABELS, data)
+            update_labels(LABELS, merge)
+    update_labels(LABELS, merge)
     print(f"proposed {done}, not stored here {len(todo) - len(documents)}")
 
 
