@@ -140,3 +140,9 @@ def test_parallel_saves_keep_both_labels(server, labels_file):
         thread.join()
     entries = stored(labels_file)
     assert entries["pubmed:2"]["label"] == entries["pubmed:3"]["label"] == "keep"
+
+
+def test_results_come_from_the_results_file(server, tmp_path):
+    assert server.prefilter_results() == {"missing": True}
+    (tmp_path / "results.json").write_text(json.dumps({"total": 3}))
+    assert server.prefilter_results() == {"total": 3}

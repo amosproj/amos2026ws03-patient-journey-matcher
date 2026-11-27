@@ -5,7 +5,8 @@ crawler's uv environment and only uses the crawler's public Python API (`run_req
 with its factory and sleep hooks, `crawler.store` for `--store`), asyncpg and the standard
 library, so the crawler needs nothing extra for it. The database view only reads, except when
 the user empties tables and types the database name to confirm, and when the Index overview sets
-how many audio files the transcription job reads at once.
+how many audio files the transcription job reads at once. The Pre-filter screen saves labels to
+research/prefilter/labels.json, never to the database.
 
 The matcher is TypeScript, so its logic stays there: the Index screens start the indexer job
 (`matcher/indexer`) as a child process, for every approach or one, and read its tables, and the
@@ -2586,6 +2587,14 @@ def prefilter_labels(params: dict[str, list[str]]) -> dict[str, Any]:
     }
 
 
+def prefilter_results() -> dict[str, Any]:
+    path = PREFILTER_DIR / "results.json"
+    if not path.exists():
+        return {"missing": True}
+    data: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
+    return data
+
+
 PREFILTER_LOCK = threading.Lock()
 """One save at a time: two browser tabs must not overwrite each other's labels."""
 
@@ -2776,6 +2785,8 @@ class Handler(BaseHTTPRequestHandler):
             params = parse_qs(url.query)
             kind, name, score = (first(params, key) for key in ("kind", "name", "min_score"))
             self.send_result(lambda: graph_normalize(kind, name, score))
+        elif path == "/api/prefilter/results":
+            self.send_result(prefilter_results)
         elif path == "/api/prefilter/labels":
             self.send_result(lambda: prefilter_labels(parse_qs(url.query)))
         elif path == "/api/match/meta":
