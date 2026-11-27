@@ -2,7 +2,10 @@
 // ── Pre-filter: check the LLM's proposed labels of the document pre-filter study (#92) ──
 // The labels live in research/prefilter/labels.json; a document's fields come from the database,
 // read only. A document that is no longer stored can still be labeled.
-const pf = { tab: "label", data: null, index: 0, document: null, documentId: null, saving: false };
+// `offset` is where the loaded page of the filter starts; `rendered` the id whose document is on
+// screen and ready, the only one a button or key may label.
+const PF_PAGE = 500;
+const pf = { tab: "label", data: null, offset: 0, index: 0, document: null, rendered: null, loading: false, saving: false };
 const PF_SET_LABEL = { train: "Training", random: "Random test", "drops-rules": "Rule drops", "drops-model": "Model drops" };
 const pfSetLabel = (name) => PF_SET_LABEL[name] || (name.startsWith("drops-rule:") ? `Drops of ${name.slice(11)}` : name.startsWith("drops-model:") ? `Model drops ${name.slice(12)}`.trim() : name);
 
@@ -23,7 +26,7 @@ function pfSwitchTab(tab) {
 
 async function pfRefresh() {
   try {
-    pf.data = await api(`/api/prefilter/labels?${queryString({ set: $("#pf-set").value, status: $("#pf-status").value, limit: 500 })}`);
+    pf.data = await api(`/api/prefilter/labels?${queryString({ set: $("#pf-set").value, status: $("#pf-status").value, limit: PF_PAGE, offset: pf.offset })}`);
     $("#pf-error").textContent = "";
   } catch (error) {
     pf.data = null;
@@ -53,15 +56,21 @@ function pfCurrent() { return pf.data?.items?.[pf.index] || null; }
 async function pfLoadDocument() {
   const item = pfCurrent();
   pf.document = null;
-  pf.documentId = item?.id || null;
-  if (item) {
-    try {
-      pf.document = (await api(`/api/db/document?id=${encodeURIComponent(item.id)}`)).document;
-    } catch (error) {
-      pf.document = { missing: error.message };
-    }
+  pf.rendered = null;
+  pf.loading = Boolean(item);
+  pfRenderLabel(); // at once: no button stays on screen for the previous document
+  if (!item) return;
+  let document;
+  try {
+    document = (await api(`/api/db/document?id=${encodeURIComponent(item.id)}`)).document;
+  } catch (error) {
+    document = { missing: error.message };
   }
-  if (pf.documentId === (item?.id || null)) pfRenderLabel();
+  if (pfCurrent()?.id !== item.id) return; // moved on meanwhile
+  pf.document = document;
+  pf.loading = false;
+  pf.rendered = item.id;
+  pfRenderLabel();
 }
 
 function pfRenderLabel() {
@@ -69,10 +78,11 @@ function pfRenderLabel() {
   const target = $("#pf-label");
   if (!pf.data || pf.data.missing) { target.replaceChildren(h("div", { class: "empty" }, "No labels file yet.")); return; }
   if (!item) { target.replaceChildren(h("div", { class: "empty" }, "Nothing left with this filter.")); return; }
+  if (pf.loading) { target.replaceChildren(h("div", { class: "empty" }, `Loading ${item.id} …`)); return; }
   const doc = pf.document || {};
   const proposal = item.proposal;
   const link = doc.canonical_url || urlFor(item.id);
-  const head = h("h3", {}, h("span", {}, `${pf.index + 1} of ${fmtCount(pf.data.items.length)}`), h("small", {}, item.sets.map(pfSetLabel).join(" · ")), h("span", { class: "spacer" }),
+  const head = h("h3", {}, h("span", {}, `${fmtCount(pf.offset + pf.index + 1)} of ${fmtCount(pf.data.total)}`), h("small", {}, item.sets.map(pfSetLabel).join(" · ")), h("span", { class: "spacer" }),
     h("span", { class: `pill ${item.status === "unchecked" ? "none" : item.status === "accepted" ? "ok" : "plain"}` }, item.status));
   const body = doc.missing
     ? [h("p", { class: "hint" }, "No longer stored in this database. You can still label it from its source page."), h("p", {}, h("b", {}, item.id))]
@@ -87,27 +97,41 @@ function pfRenderLabel() {
     : h("div", { class: "pf-proposal none" }, h("b", {}, "No proposal"), item.proposal_raw ? h("details", {}, h("summary", {}, "Raw answer"), h("pre", {}, item.proposal_raw)) : null);
   const note = h("input", { id: "pf-note", type: "text", maxlength: "500", placeholder: "Note (optional)", value: item.note || "" });
   const buttons = h("div", { class: "buttons" },
-    h("button", { type: "button", class: "primary", disabled: !proposal || pf.saving, onclick: () => pfSave(proposal.label, proposal.group) }, "Accept"),
-    h("button", { type: "button", disabled: pf.saving, onclick: () => pfSave("keep", null) }, "Keep"),
-    h("button", { type: "button", disabled: pf.saving, onclick: () => pfSave("unhelpful", 1) }, "Unhelpful (1)"),
-    h("button", { type: "button", disabled: pf.saving, onclick: () => pfSave("unhelpful", 2) }, "Unhelpful (2)"));
+    h("button", { type: "button", class: "primary", disabled: !proposal || pf.saving, onclick: () => pfSave(item.id, proposal.label, proposal.group) }, "Accept"),
+    h("button", { type: "button", disabled: pf.saving, onclick: () => pfSave(item.id, "keep", null) }, "Keep"),
+    h("button", { type: "button", disabled: pf.saving, onclick: () => pfSave(item.id, "unhelpful", 1) }, "Unhelpful (1)"),
+    h("button", { type: "button", disabled: pf.saving, onclick: () => pfSave(item.id, "unhelpful", 2) }, "Unhelpful (2)"));
   const nav = h("div", { class: "pf-nav" },
-    h("button", { type: "button", class: "link-button", disabled: pf.index === 0, onclick: () => pfMove(-1) }, "← Previous"),
+    h("button", { type: "button", class: "link-button", disabled: pf.offset + pf.index === 0, onclick: () => pfMove(-1) }, "← Previous"),
     link ? h("a", { href: link, target: "_blank", rel: "noopener" }, "Source page ↗") : null,
-    h("button", { type: "button", class: "link-button", disabled: pf.index >= pf.data.items.length - 1, onclick: () => pfMove(1) }, "Next →"));
+    h("button", { type: "button", class: "link-button", disabled: pf.offset + pf.index >= pf.data.total - 1, onclick: () => pfMove(1) }, "Next →"));
   const guide = h("details", { class: "panel pf-guide" }, h("summary", {}, "Labeling guide"),
     h("table", {}, h("tbody", {}, ...pf.data.guide.map((row) => h("tr", {}, h("td", {}, row.kind), h("td", {}, h("b", {}, row.label)), h("td", { class: "small" }, row.example))))));
   target.replaceChildren(guide, h("div", { class: "panel" }, head, h("div", { class: "panel-body" }, ...body, said, note, buttons, nav)));
 }
 
+// Past the loaded page, the next or previous page of the filter is fetched.
 function pfMove(step) {
-  pf.index = Math.max(0, Math.min(pf.index + step, (pf.data?.items?.length || 1) - 1));
-  pfLoadDocument();
+  if (!pf.data?.items) return;
+  const target = pf.index + step;
+  if (target >= pf.data.items.length && pf.offset + pf.data.items.length < pf.data.total) {
+    pf.offset += pf.data.items.length;
+    pf.index = 0;
+    pfRefresh();
+  } else if (target < 0 && pf.offset > 0) {
+    pf.offset = Math.max(0, pf.offset - PF_PAGE);
+    pf.index = PF_PAGE - 1;
+    pfRefresh();
+  } else {
+    pf.index = Math.max(0, Math.min(target, pf.data.items.length - 1));
+    pfLoadDocument();
+  }
 }
 
-async function pfSave(label, group) {
+async function pfSave(id, label, group) {
   const item = pfCurrent();
-  if (!item || pf.saving) return;
+  // Only the document on screen: never one still loading or reached by a click meanwhile.
+  if (!item || item.id !== id || pf.rendered !== id || pf.loading || pf.saving) return;
   pf.saving = true;
   try {
     const saved = await api("/api/prefilter/label", { method: "POST", body: JSON.stringify({ id: item.id, label, group, note: $("#pf-note")?.value || "" }) });
@@ -116,6 +140,14 @@ async function pfSave(label, group) {
     if ($("#pf-status").value === "unchecked") { pf.data.items.splice(pf.index, 1); pf.data.total -= 1; }
     else { pf.data.items[pf.index] = saved; pf.index += 1; }
     for (const name of item.sets) if (item.label == null) pf.data.progress[name].checked += 1;
+    pf.saving = false;
+    // The loaded page is used up but the filter has more: fetch the next ones.
+    if (pf.index >= pf.data.items.length && pf.offset + pf.data.items.length < pf.data.total) {
+      if ($("#pf-status").value !== "unchecked") pf.offset += pf.data.items.length;
+      pf.index = 0;
+      await pfRefresh();
+      return;
+    }
     pf.index = Math.min(pf.index, Math.max(0, pf.data.items.length - 1));
     pfRenderControls();
   } catch (error) {
@@ -128,14 +160,18 @@ async function pfSave(label, group) {
 
 document.addEventListener("keydown", (event) => {
   if (state.screen !== "prefilter" || pf.tab !== "label" || event.target.closest("input, select, textarea")) return;
-  const proposal = pfCurrent()?.proposal;
-  const actions = { a: () => proposal && pfSave(proposal.label, proposal.group), k: () => pfSave("keep", null), 1: () => pfSave("unhelpful", 1), 2: () => pfSave("unhelpful", 2), n: () => pfMove(1) };
+  // Not with a modifier (Cmd+A, Ctrl+1 …) and not while a key is held down.
+  if (event.metaKey || event.ctrlKey || event.altKey || event.repeat) return;
+  const item = pfCurrent();
+  if (!item || item.id !== pf.rendered) return;
+  const proposal = item.proposal;
+  const actions = { a: () => proposal && pfSave(item.id, proposal.label, proposal.group), k: () => pfSave(item.id, "keep", null), 1: () => pfSave(item.id, "unhelpful", 1), 2: () => pfSave(item.id, "unhelpful", 2), n: () => pfMove(1) };
   if (actions[event.key]) { event.preventDefault(); actions[event.key](); }
 });
 for (const button of document.querySelectorAll("#pf-tabs button")) button.addEventListener("click", () => pfSwitchTab(button.dataset.pftab));
 $("#pf-refresh").addEventListener("click", pfRefresh);
-$("#pf-set").addEventListener("change", () => { pf.index = 0; pfRefresh(); });
-$("#pf-status").addEventListener("change", () => { pf.index = 0; pfRefresh(); });
+$("#pf-set").addEventListener("change", () => { pf.offset = 0; pf.index = 0; pfRefresh(); });
+$("#pf-status").addEventListener("change", () => { pf.offset = 0; pf.index = 0; pfRefresh(); });
 
 // ── Results: what scripts/prefilter.py measure wrote, against the success criteria of #92 ──
 const PF_APPROACH = { rules: "Rules", "rules+model": "Rules + classifier" };
