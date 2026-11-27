@@ -38,7 +38,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "This is a practice guideline on portal hypertensive bleeding in cirrhosis, which is relevant to patients and provides clinical guidance.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -50,7 +55,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "It is pure clinical guideline work, not relevant to patients' understanding or use of research papers, videos, or podcasts.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -62,7 +72,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "It is a letter or comment with no summary provided, falling under little information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -74,7 +89,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short summary available",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -86,7 +106,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "The document has no summary and is likely a report with limited patient-relevant information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -98,7 +123,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short summary, and it is a comment which provides little direct information for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -110,7 +140,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short summary, and it is a letter which is considered little information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -122,7 +157,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "The document is a letter or comment with no or very short summary, making it little information for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -134,7 +174,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short summary, making it difficult to determine if it is helpful for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -146,7 +191,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short summary, lacks useful content for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -158,7 +208,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document is a systematic review and meta-analysis on a clinical topic relevant to patients with acromegaly, providing prevalence and clinical context information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -170,7 +225,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The title suggests a clinical case report related to a specific gastrointestinal condition in the context of Crohn's disease, which could be relevant to some patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -182,7 +242,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short summary available",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -194,7 +259,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short summary available",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -206,7 +276,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "The document has no or very short summary and is classified as an editorial or comment, which is considered little information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -218,7 +293,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short summary available",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -230,7 +310,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short summary, and it is a case report which may not provide enough information for general patient use.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -242,7 +327,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "It is a letter and may be pure methods or statistics, or written for clinicians only.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -254,7 +344,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short summary, making it difficult to determine if it is useful for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -266,7 +361,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "The document has no summary and is therefore not useful for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -278,7 +378,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "The document is a letter with no or very short summary, making it little information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -290,7 +395,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document provides a review of new diagnostic guidelines relevant to patient management for irritable bowel syndrome.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -302,7 +412,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "It is a corrigendum, which is a correction or erratum, falling under group 2 as it provides little or no new information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -314,7 +429,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "The document has no summary and is therefore not useful for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -326,7 +446,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short summary, and it is a comment/editorial which may not provide direct patient-relevant information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -338,7 +463,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Provides a meaningful event for patients and staff related to Remembrance Day.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -350,7 +480,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The video provides practical advice on managing thoughts and feelings related to migraines, which is helpful for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -362,7 +497,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The video provides practical advice on communication strategies for patients with eating disorders, which is relevant and helpful for some patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -374,7 +514,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short summary available",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -386,7 +531,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document provides experiences with CT use in diagnosing and following up on COVID-19 pneumonia, which is relevant to patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -398,7 +548,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Pure methods or statistics papers are unhelpful for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -410,7 +565,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The video provides information about RTH Beta by a medical professional, which could be helpful for patients seeking understanding about this condition.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -422,7 +582,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "The document is about chronic interstitial otitis and otosclerosis, which are medical conditions, but the summary is not available, making it unclear if the content is relevant or useful for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -434,7 +599,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Cataract Extraction is pure lab or animal work and not relevant to patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -446,7 +616,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The podcast discusses the role of a pharmacist in diabetes care, which is relevant to patients managing diabetes.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -458,7 +633,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The podcast interview provides accessible information that could be helpful for patients seeking personal insights or real-world perspectives on health topics.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -470,7 +650,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The podcast discusses healthcare policy trends, which is relevant to patients seeking information about potential changes affecting their care.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -482,7 +667,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The video provides a general overview of treatment for inflammatory breast cancer, which is helpful for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -494,7 +684,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Provides autopsy findings relevant to understanding COVID-19 pathology and patient outcomes.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -506,7 +701,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Provides practical, patient-friendly instructions on a common and important topic for parents and caregivers.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -518,7 +718,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The video provides relevant information about the cardiovascular risks of doping, which is useful for patients interested in athletic health.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -530,7 +735,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The webinar provides a nurse's perspective on managing thyroid disease, which is relevant to patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -542,7 +752,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The video promotes a conference on sleep medicine trends, which could be relevant to patients seeking information on sleep-related research and advancements.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -554,7 +769,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The podcast interview provides clinical insight into valve hemodynamics relevant to patients with aortic valve disease.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -566,7 +786,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The title suggests a clinical study on rheumatoid arthritis treatment outcomes, which could be helpful for patients seeking information on treatment strategies.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -578,7 +803,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The video provides a general overview of hormonal research related to aging, which may be relevant to some patients interested in health span and anti-aging strategies.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -590,7 +820,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document provides a comprehensive classification of endometriosis relevant to diagnostic approaches, which can be useful for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -602,7 +837,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The video provides an outlook on thyroid cancer for young people, which is relevant and helpful for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -614,7 +854,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short abstract or description",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -626,7 +871,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "A patient story podcast is relevant and helpful for patients with Multiple Myeloma.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -638,7 +888,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "It is a correction or erratum, which falls under group 2 as it provides little information for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -650,7 +905,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "It is a correction or erratum, which falls under group 2 as it provides little information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -662,7 +922,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "It is an erratum, which is considered little information",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -674,7 +939,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "It is a corrigendum (correction) with no or very short description",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -686,7 +956,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "It is an erratum with no or very short description",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -698,7 +973,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "It is a correction or erratum, which falls under group 2 as it provides no or very short information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -710,7 +990,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "It is a correction or erratum, which falls under group 2 as it provides no or very short information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -722,7 +1007,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short summary, and it is a published erratum",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -734,7 +1024,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "It is a correction or erratum, which falls under group 2 as it provides no or very short information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -746,7 +1041,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "It is a correction or erratum with no or very short description and no patient-related content.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -758,7 +1058,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "It is a corrigendum, which is a correction or erratum, indicating it contains little or no new information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -770,7 +1075,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "It is a correction to an article with a very short abstract or description.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -782,7 +1092,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "It is an erratum with no substantive content for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -794,7 +1109,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short summary, and it is a published erratum",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -806,7 +1126,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "It is a corrigendum (correction) and has no or very short description.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -818,7 +1143,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "It is a corrigendum with no or very short description",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -830,7 +1160,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "It is a corrigendum, which is a type of correction or erratum, falling under group 2 as it provides little or no new information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -842,7 +1177,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "It is a correction or erratum, which falls under group 2 as it provides little information for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -854,7 +1194,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "It is an erratum, which is considered little information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -866,7 +1211,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "It is an erratum with no or very short description, making it little information for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -878,7 +1228,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short abstract or description",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -890,7 +1245,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "The document is a published erratum with no abstract or description provided.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -902,7 +1262,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "It is a correction or erratum with no or very short description",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -914,7 +1279,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "It is a correction or erratum, which falls under group 2 as it provides no or very short information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -926,7 +1296,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document provides integrative genomic analysis and molecular classification of cholangiocarcinoma, which is relevant to patients seeking understanding of the disease's molecular profiles and potential therapies.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -938,7 +1313,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "It is a clinical trial phase III study, which is considered unhelpful for most patients as it focuses on research rather than patient-facing information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -950,7 +1330,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "It is pure lab research or molecular mechanisms related to a drug, not patient-focused information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -962,7 +1347,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short summary, and it is an editorial or comment which provides little direct information for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -974,7 +1364,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "It is a letter or comment with no or very short summary",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -986,7 +1381,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short summary, and it is an editorial/comment, which is considered little information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -998,7 +1398,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "The document is a letter with no or very short summary, making it little information for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1010,7 +1415,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short summary, and it is an editorial which may not provide useful information for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1022,7 +1432,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short summary, and it is a comment or letter, which provides little information for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1034,7 +1449,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short abstract or description",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1046,7 +1466,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "The document is a letter or comment with no abstract or description provided.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1058,7 +1483,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "The document is a letter or comment with no or very short summary, making it little information for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1070,7 +1500,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "The document has no or very short summary, and is classified as a letter, which is considered little information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1082,7 +1517,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short summary, and the publication types include Comment and Editorial, which are considered little information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1094,7 +1534,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "The document has no summary and is classified as an editorial or comment, which is considered little information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1106,7 +1551,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short summary, and it is an editorial/comment which provides little direct information for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1118,7 +1568,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "An editorial on endothelial function in peripheral artery disease provides general information that may be helpful for some patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1130,7 +1585,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short abstract or description",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1142,7 +1602,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short summary, and it is a case report or letter which provides little direct information for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1154,7 +1619,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short abstract or description",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1166,7 +1636,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short abstract or description",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1178,7 +1653,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short abstract or description, and it is an editorial or comment.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1190,7 +1670,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "The document is a letter or comment with no abstract or description provided.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1202,7 +1687,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "The document is a letter with no or very short abstract or description.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1214,7 +1704,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short abstract or description",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1226,7 +1721,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No or very short summary, and it is an editorial/comment, which is considered little information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1238,7 +1738,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document provides relevant information on the treatment of metachronous oligometastatic prostate cancer, which is useful for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1250,7 +1755,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document provides a systematic review on management options for node-positive prostate cancer, which is relevant to patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1262,7 +1772,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document provides relevant clinical information on the use of adjuvant radiotherapy for muscle-invasive bladder cancer, which is helpful for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1274,7 +1789,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document provides relevant clinical data on salvage brachytherapy for prostate cancer, which is useful for patients and clinicians.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1286,7 +1806,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document provides a systematic review and meta-analysis on the effectiveness of pioglitazone for NAFLD patients with prediabetes or T2DM, which is relevant to patients seeking medical information on treatment options.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1298,7 +1823,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document provides relevant clinical information about darolutamide for prostate cancer patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1310,7 +1840,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document provides relevant clinical information on salvage radiotherapy for recurrent prostate cancer after HIFU, including patient outcomes and treatment details.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1322,7 +1857,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document provides relevant biological mechanisms and clinical associations related to prostate cancer progression.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1334,7 +1874,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document discusses the role of the CCL2-CCR2 axis in cabazitaxel-resistant prostate cancer, which is relevant to patients with castration-resistant prostate cancer.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1346,7 +1891,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document discusses new molecular biomarkers for prostate cancer prognosis and management, which is relevant to patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1358,7 +1908,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Provides a summary of evidence-based guidelines on underactive bladder for healthcare providers.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1370,7 +1925,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document discusses intracrine hormone formation in prostate cancer, which is relevant to patients seeking information on hormone-related cancers and treatment responses.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1382,7 +1942,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document provides a meta-analysis on the efficacy and safety of PARP inhibitors in advanced breast cancer, which is relevant to patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1394,7 +1959,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document provides a systematic review and meta-analysis comparing different salvage therapies for prostate cancer, offering relevant information for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1406,7 +1976,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document proposes a standardized scoring system for evaluating prostate MRI after focal ablation, which is relevant for patients and clinicians involved in follow-up care.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1418,7 +1993,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document provides relevant mechanistic insights into BRCA2-mutated prostate cancer and potential therapeutic strategies.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1430,7 +2010,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Pure lab or animal work: focuses on SPECT method and simulation studies, not patient-related information.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1442,7 +2027,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document provides consensus recommendations for molecular testing in NSCLC, which is relevant to patients seeking information on treatment options.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1454,7 +2044,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document provides a systematic review on the relationship between ADC and Gleason score in prostate cancer, which is relevant for patients seeking information on imaging and cancer prognosis.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1466,7 +2061,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document provides a model for predicting Gleason scores using radiomic features from ultrasound images, which is relevant for prostate cancer patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1478,7 +2078,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document provides a systematic review and meta-analysis comparing two surgical treatments for BPH, which is relevant to patients seeking information on treatment options.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1490,7 +2095,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document provides relevant clinical information on active surveillance for intermediate risk prostate cancer, including trends and associated factors.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -1502,7 +2112,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "The document provides relevant epidemiological data linking BPH to cardiovascular disease risk, which is useful for patients.",
+        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
