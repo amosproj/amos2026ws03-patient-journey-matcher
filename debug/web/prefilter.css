@@ -1,0 +1,14 @@
+/* Pre-filter screen: one document to label, and the results of the study. */
+#pf-label { max-width: 920px; }
+.pf-title { font-size: 16px; font-weight: 650; line-height: 1.35; }
+.pf-meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; color: var(--muted); font-size: 12px; }
+.pf-abstract { margin: 0; max-height: 40vh; overflow: auto; line-height: 1.5; white-space: pre-line; }
+.pf-proposal { display: grid; gap: 4px; padding: 10px 12px; border-radius: 7px; background: var(--code); box-shadow: inset 3px 0 var(--meta); }
+.pf-proposal.none { box-shadow: inset 3px 0 var(--dropped); }
+.pf-proposal pre { white-space: pre-wrap; margin: 6px 0 0; font-size: 12px; }
+#pf-note { padding: 7px 9px; border: 1px solid var(--line-strong); border-radius: 7px; background: var(--panel); color: var(--text); }
+.pf-nav { display: flex; justify-content: space-between; align-items: center; }
+.pf-guide > summary { padding: 9px 12px; cursor: pointer; font-weight: 600; font-size: 13px; }
+.pf-guide table { margin: 0 12px 12px; }
+.pf-guide td { padding: 4px 8px; vertical-align: top; }
+@media (max-width: 760px) { #pf-label .buttons { flex-wrap: wrap; } }
