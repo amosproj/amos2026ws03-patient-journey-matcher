@@ -415,7 +415,7 @@ function mtRenderTerms() {
     }
     const termChip = ({ word, term }) => {
       const inQuery = terms.focus.includes(term) || terms.context.includes(term) || (isFocus && generic.includes(term));
-      const how = word === term ? "Searched as it is: no translation in german-terms.json" : "Translated by german-terms.json";
+      const how = word === term ? "Searched as it is: neither german-terms.json nor the German MeSH translates it" : "Translated by german-terms.json or the German MeSH";
       return h("span", { class: `term${inQuery ? "" : " unused"}`, title: `${how}\n${role(term, isFocus)}` }, word, word === term ? null : h("small", {}, `→ ${term}`));
     };
     const left = [

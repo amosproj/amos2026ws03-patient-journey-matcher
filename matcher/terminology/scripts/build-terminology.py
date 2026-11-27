@@ -157,20 +157,26 @@ def normalize(text):
     return re.sub(r"[^\w]+|_", " ", text).strip()
 
 
-def add_variants(diseases, others, propose):
+def add_variants(diseases, others, propose, german):
     taken = defaultdict(set)
     for group in (diseases, *others):
         for descriptor, (name, aliases, *_) in group.items():
             for term in (name, *aliases):
                 taken[normalize(term)].add(descriptor)
     proposed = defaultdict(set)
+    from_german = set()
     for descriptor, (name, aliases, _) in diseases.items():
         for term in (name, *aliases):
             for form in propose(descriptor, term):
                 proposed[form].add(descriptor)
+                if term in german.get(descriptor, ()):
+                    from_german.add(form)
     for variant, descriptors in proposed.items():
         if len(descriptors) == 1 and normalize(variant) not in taken:
-            diseases[next(iter(descriptors))][1].append(variant)
+            descriptor = next(iter(descriptors))
+            diseases[descriptor][1].append(variant)
+            if variant in from_german:
+                german[descriptor].add(variant)
 
 
 def procedure_kind(numbers, name):
@@ -198,6 +204,7 @@ def build(mesh_zip, mesh_map, icd_map, cm_map, reviewed, excluded=EXCLUDED):
     sites = set()
     histology = set()
     processes = set()
+    german = defaultdict(set)
     tree = {}
     with ZipFile(mesh_zip) as archive, archive.open("German_MeSH_2026.xml") as xml:
         for _, record in ET.iterparse(xml):
@@ -240,6 +247,12 @@ def build(mesh_zip, mesh_map, icd_map, cm_map, reviewed, excluded=EXCLUDED):
                     for t in record.findall("ConceptList/Concept/TermList/Term/String")
                     if t.text
                 }
+                # ZB MED's own terms: TermUI ger…; NLM's English ones: T…
+                german[descriptor] = {
+                    t.findtext("String")
+                    for t in record.findall("ConceptList/Concept/TermList/Term")
+                    if t.findtext("TermUI", "").startswith("ger") and t.findtext("String")
+                }
                 if paths:
                     diseases[descriptor] = [name, sorted(aliases - {name}), []]
                     if any(p.startswith("C04.588") for p in paths):
@@ -264,11 +277,12 @@ def build(mesh_zip, mesh_map, icd_map, cm_map, reviewed, excluded=EXCLUDED):
             if match:
                 yield from (form.format(*match.groups()) for form in forms)
 
-    add_variants(diseases, (chemicals, procedures), clinical_forms)
+    add_variants(diseases, (chemicals, procedures), clinical_forms, german)
     add_variants(
         diseases,
         (chemicals, procedures),
         lambda _, term: [term + "s"] if GENITIVE.fullmatch(term) else [],
+        german,
     )
     for row in diseases.values():
         row[1] = sorted(set(row[1]))
@@ -321,6 +335,7 @@ def build(mesh_zip, mesh_map, icd_map, cm_map, reviewed, excluded=EXCLUDED):
         "processes": sorted(processes),
         "icd": icd,
         "icd_cm": icd_cm,
+        "german": {d: sorted(names) for d, names in german.items() if names},
     }
 
 

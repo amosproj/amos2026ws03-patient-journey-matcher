@@ -24,6 +24,8 @@ export type MeshData = {
   processes: string[];
   icd: Record<string, string>;
   icd_cm: Record<string, string>;
+  /** The German names of a descriptor: ZB MED's terms and the clinical forms built from them. */
+  german: Record<string, string[]>;
 };
 
 export const mesh: MeshData = JSON.parse(

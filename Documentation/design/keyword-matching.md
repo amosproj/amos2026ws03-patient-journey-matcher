@@ -22,7 +22,7 @@ Deleting a document deletes its index rows.
 | `negations` | Words and phrases that negate a finding: `following` up to the end of its clause, `clause` the whole clause, `next` the next searched word | "Lokalrezidiv, keine Fernmetastasen" → local recurrence; "Lymphknoten unauffällig" and "Lymphknoten nicht befallen" → nothing; "PSA nicht mehr nachweisbar" → PSA |
 | `generic` | English terms that say little about a patient | initial, follow up, urology |
 
-Drug names and other words without an entry pass unchanged (Olaparib, PSA); numbers are dropped. No LLM or outside service sees the journey.
+Words without an entry are looked up in the German MeSH ([`@matcher/terminology`](../../matcher/terminology/src/), credits in [NOTICE](../../NOTICE)). A German name, single word or phrase, becomes its English heading: `Herzinsuffizienz` → heart failure, `rheumatoide Arthritis` → arthritis rheumatoid. Names in capitals such as COPD are not used: papers write them the same way. Other words pass unchanged (Olaparib, PSA); numbers are dropped. No LLM or outside service sees the journey.
 
 The query holds the medical focus terms twelve times, the generic focus terms once and the 10 context terms that weigh most once. A context term weighs more the more events name it; of two that weigh the same, the one named more recently comes first. Generic terms of older events are left out.
 
@@ -38,7 +38,7 @@ A document that is first in both indexes scores 2/61, one that is 30th in both 2
 - Without a full text (videos, and papers or episodes without a readable one), the metadata rank is used for the full-text part too, so such a document does not rank below those that have one.
 - `score` in the answer is relative to the best hit (1). `matched_terms` lists the query terms found in a document; one without a medical term is not returned.
 
-**New journey data.** A word outside the lists is searched as it is, so a German one finds nothing. The Matcher screen of the [debug UI](../../debug/README.md) shows what became of each word of a journey. [`terms.test.ts`](../../matcher/algorithms/keyword/src/terms.test.ts) lists the words of the synthetic journeys that pass unchanged and fails for a new one: translate or skip it, or add an English word to the test.
+**New journey data.** A word that neither the lists nor the German MeSH know is searched as it is, so a German one finds nothing. The Matcher screen of the [debug UI](../../debug/README.md) shows what became of each word of a journey. [`terms.test.ts`](../../matcher/algorithms/keyword/src/terms.test.ts) lists the words of the synthetic prostate cancer journeys that pass unchanged and fails for a new one: translate or skip it, or add an English word to the test. To replace a MeSH heading that papers do not use, add the word to `translations`.
 
 ## Full texts
 
@@ -77,7 +77,7 @@ The indexer reads podcast audio as its transcript. An episode without a transcri
 
 ## Keywords
 
-Full texts keep their medical words, even those named once; numbers and basic words go. Basic words are the 5,000 most frequent English words of [wordfreq](https://github.com/rspeer/wordfreq), except single-word MeSH terms in branches A–H, M and N (surgery, patients), words of longer MeSH terms in branches A, C, D and E outside the top 1,000 (failure, survival), two- and three-letter words outside the top 2,000 (PSA, DRE), and the words of the journey terms with a plural "s".
+Full texts keep their medical words, even those named once; numbers and basic words go. Basic words are the 5,000 most frequent English words of [wordfreq](https://github.com/rspeer/wordfreq), except single-word MeSH terms in branches A–H, M and N (surgery, patients), words of longer MeSH terms in branches A, C, D and E outside the top 1,000 (failure, survival), two- and three-letter words outside the top 2,000 (PSA, DRE), and the words of the English terms in `german-terms.json` with a plural "s".
 
 [`basic-words.ts`](../../matcher/algorithms/keyword/scripts/basic-words.ts) builds [`basic-words.json`](../../matcher/algorithms/keyword/data/basic-words.json) from wordfreq and the MeSH descriptors (`desc2026.gz` from [NLM](https://nlmpubs.nlm.nih.gov/projects/mesh/MESH_FILES/xmlmesh/)). For a new MeSH year: `node matcher/algorithms/keyword/scripts/basic-words.ts desc2026.gz`. A new list applies to changed documents; for all, [rebuild the index](../build-deploy/build.md#limitations).
 
@@ -100,7 +100,7 @@ Full texts keep their medical words, even those named once; numbers and basic wo
 
 **This version**
 
-- **Hand-made term lists.** They cover the 20 synthetic journeys. An unknown German word finds nothing, and an unknown generic word counts as medical. To be extended for AIlixir's data.
+- **Hand-made term lists.** They cover the 20 synthetic prostate cancer journeys. Other German words are found only if the German MeSH names them (diseases, drugs and procedures), and then become its heading, which papers do not always write: `Stenose` → constriction pathologic, `Kortisol` → hydrocortisone. A German word outside both finds nothing, and an unknown generic word counts as medical. To be extended for AIlixir's data.
 - **Negation by listed words, not grammar.** How far a negation reaches is a rule per word or phrase. Not covered:
   - a finding negated in an unlisted way ("o. B.", "noch nie") is searched as if present;
   - a finding named before "nicht" is dropped only in a listed phrase: "Lymphknoten nicht befallen" yes, "Lymphknoten nicht tastbar" no, and inflected forms ("nicht befallenen") no;
