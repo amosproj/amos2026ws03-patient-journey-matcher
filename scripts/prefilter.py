@@ -605,6 +605,19 @@ def approach(
     }
 
 
+def agreement(proposed: list[dict[str, Any]]) -> dict[str, Any]:
+    """How often a person kept the proposed label, overall and per model that proposed it."""
+
+    def count(entries: list[dict[str, Any]]) -> dict[str, int]:
+        agreed = sum(entry["proposal"]["label"] == entry["label"] for entry in entries)
+        return {"checked": len(entries), "agreed": agreed}
+
+    models: dict[str, list[dict[str, Any]]] = {}
+    for entry in proposed:
+        models.setdefault(entry["proposal"].get("model", "?"), []).append(entry)
+    return count(proposed) | {"by_model": {name: count(group) for name, group in models.items()}}
+
+
 def summarize(
     labels: dict[str, Any],
     counts: dict[str, Any],
@@ -677,10 +690,7 @@ def summarize(
             "below_threshold": model.get("below_threshold"),
             "stale": labels_hash(checked(labels, "train")) != model.get("labels_hash"),
         },
-        "llm_agreement": {
-            "checked": len(proposed),
-            "agreed": sum(entry["proposal"]["label"] == entry["label"] for entry in proposed),
-        },
+        "llm_agreement": agreement(proposed),
         "random": {
             "checked": len(random_checked),
             "unhelpful": len(unhelpful),

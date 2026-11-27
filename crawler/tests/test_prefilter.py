@@ -611,7 +611,11 @@ def test_summarize_reports_llm_agreement_and_the_random_sample(prefilter):
         ]
     }
     result = prefilter.summarize(labels, counts(), None, {}, {})
-    assert result["llm_agreement"] == {"checked": 2, "agreed": 1}
+    assert result["llm_agreement"] | {"by_model": None} == {
+        "checked": 2,
+        "agreed": 1,
+        "by_model": None,
+    }
     assert result["random"] == {"checked": 2, "unhelpful": 1, "by_group": {"1": 0, "2": 1}}
 
 
@@ -904,3 +908,27 @@ def test_import_proposals_command(prefilter, tmp_path, monkeypatch, capsys):
     )
     prefilter.main(["import-proposals", str(source), "--model", "codex"])
     assert "merged 1" in capsys.readouterr().out
+
+
+def test_summarize_reports_llm_agreement_per_model(prefilter):
+    def proposed(label, model):
+        return {
+            "label": label,
+            "group": 1 if label == "unhelpful" else None,
+            "reason": "x",
+            "model": model,
+        }
+
+    labels = {
+        "documents": [
+            entry("pubmed:1", ["train"], "keep", proposal=proposed("keep", "qwen")),
+            entry("pubmed:2", ["train"], "keep", proposal=proposed("unhelpful", "qwen")),
+            entry("pubmed:3", ["train"], "keep", proposal=proposed("keep", "codex")),
+        ]
+    }
+    agreement = prefilter.summarize(labels, counts(), None, {}, {})["llm_agreement"]
+    assert agreement["checked"] == 3 and agreement["agreed"] == 2
+    assert agreement["by_model"] == {
+        "qwen": {"checked": 2, "agreed": 1},
+        "codex": {"checked": 1, "agreed": 1},
+    }

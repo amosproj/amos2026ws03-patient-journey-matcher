@@ -222,7 +222,8 @@ async function pfResults() {
       h("div", { class: "stats pf-cards" },
         card("Threshold (probability of keep)", model?.threshold == null ? "–" : model.threshold.toFixed(3), model ? "" : "muted"),
         card("Trained on", model ? fmtCount(model.trained_on) : "–", model ? "" : "muted"),
-        card("LLM agreed with people", `${fmtCount(result.llm_agreement.agreed)} / ${fmtCount(result.llm_agreement.checked)}`),
+        ...Object.entries(result.llm_agreement.by_model || { all: result.llm_agreement }).map(([name, counts]) =>
+          card(`${name.split("@")[0]} agreed with people`, `${fmtCount(counts.agreed)} / ${fmtCount(counts.checked)}`)),
         card("Unhelpful in the random sample", `${fmtCount(result.random.unhelpful)} / ${fmtCount(result.random.checked)}`),
         card("Rules, whole table", fmtSeconds(result.timing.rules_seconds)),
         card("Classifier per document", result.timing.model_ms_per_document == null ? "–" : `${result.timing.model_ms_per_document.toFixed(3)} ms`)),
