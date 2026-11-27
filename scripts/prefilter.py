@@ -79,6 +79,39 @@ GUIDE = [
 ]
 
 
+SHORT_SUMMARY = 200
+NO_SUMMARY = "(d.summary IS NULL OR btrim(d.summary) = '')"
+SHORT = f"length(btrim(d.summary)) BETWEEN 1 AND {SHORT_SUMMARY - 1}"
+NO_FULL_TEXT = "jsonb_array_length(d.full_text) = 0"
+# Each rule is an SQL condition on `documents d`; a document is dropped when one of RULE_SET holds.
+RULES = {
+    "no_summary": NO_SUMMARY,
+    "short_summary": SHORT,
+    "erratum": (
+        "(d.publication_types && ARRAY['Erratum', 'Published Erratum']"
+        r" OR d.title ~* '^(correction to|erratum|corrigendum)\M')"
+    ),
+    "reaction_without_abstract": (
+        "(d.publication_types && ARRAY['Editorial', 'Comment', 'Letter']"
+        f" AND (d.summary IS NULL OR length(btrim(d.summary)) < {SHORT_SUMMARY}))"
+    ),
+    # Variants, only reported: the keyword index may still read a full text of these.
+    "no_summary_no_full_text": f"({NO_SUMMARY} AND {NO_FULL_TEXT})",
+    "short_summary_no_full_text": f"({SHORT} AND {NO_FULL_TEXT})",
+}
+RULE_SET = ["no_summary", "short_summary", "erratum", "reaction_without_abstract"]
+ANY_RULE = "(" + " OR ".join(RULES[rule] for rule in RULE_SET) + ")"
+
+
+async def rule_hits(connection: Any, rule: str, limit: int, seed: float) -> list[str]:
+    """Up to `limit` random ids of documents that `rule` drops; the same `seed`, the same ids."""
+    await connection.execute("SELECT setseed($1)", seed)
+    rows = await connection.fetch(
+        f"SELECT d.id FROM documents d WHERE {RULES[rule]} ORDER BY random() LIMIT $1", limit
+    )
+    return [row["id"] for row in rows]
+
+
 def load_labels(path: Path) -> dict[str, Any]:
     if not path.exists():
         return {"version": 1, "guide": GUIDE, "documents": []}

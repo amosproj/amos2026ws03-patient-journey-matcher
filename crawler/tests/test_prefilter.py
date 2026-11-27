@@ -1,10 +1,17 @@
 """The document pre-filter study (scripts/prefilter.py, #92) without its heavy dependencies:
 the labels file, the safety statistics, the rules, the samples and the summary of the results."""
 
+import asyncio
 import importlib.util
+import json
+import os
 import sys
+from collections.abc import Iterator
 from pathlib import Path
+from typing import Any
+from uuid import uuid4
 
+import asyncpg
 import pytest
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -17,6 +24,92 @@ def prefilter(monkeypatch):
     monkeypatch.setitem(sys.modules, spec.name, module)
     spec.loader.exec_module(module)
     return module
+
+
+async def execute(url: str, sql: str, *args: Any) -> None:
+    connection = await asyncpg.connect(url)
+    try:
+        await connection.execute(sql, *args)
+    finally:
+        await connection.close()
+
+
+def run(query: Any, url: str) -> Any:
+    """`query(connection)` on a read-only connection, as the script opens them."""
+
+    async def main() -> Any:
+        connection = await asyncpg.connect(
+            url, server_settings={"default_transaction_read_only": "on"}
+        )
+        try:
+            return await query(connection)
+        finally:
+            await connection.close()
+
+    return asyncio.run(main())
+
+
+@pytest.fixture
+def url() -> Iterator[str]:
+    """A fresh schema with `db/init/` applied at `TEST_DATABASE_URL`; dropped at the end."""
+    database = os.environ.get("TEST_DATABASE_URL", "").strip()
+    if not database:
+        if os.environ.get("CI"):
+            pytest.fail("TEST_DATABASE_URL must be set on CI")
+        pytest.skip("TEST_DATABASE_URL is not set")
+    asyncio.run(execute(database, "CREATE EXTENSION IF NOT EXISTS vector"))
+    schema = f"test_{uuid4().hex[:12]}"
+    asyncio.run(execute(database, f"CREATE SCHEMA {schema}"))
+    scoped = f"{database}{'&' if '?' in database else '?'}search_path={schema}"
+    try:
+        for path in sorted((ROOT / "db/init").glob("*.sql")):
+            asyncio.run(execute(scoped, path.read_text(encoding="utf-8")))
+        yield scoped
+    finally:
+        asyncio.run(execute(database, f"DROP SCHEMA {schema} CASCADE"))
+
+
+CONTENT_TYPES = {"pubmed": "journal_article", "youtube": "video", "zenodo": "report"}
+
+
+def doc(document_id: str, **fields: Any) -> dict[str, Any]:
+    source, native_id = document_id.split(":")
+    return {
+        "id": document_id,
+        "source": source,
+        "native_id": native_id,
+        "content_type": CONTENT_TYPES[source],
+        "title": f"Title {document_id}",
+        "summary": "x" * 500,
+        "publication_types": [],
+        "full_text": [],
+        "canonical_url": f"https://example.org/{native_id}",
+    } | fields
+
+
+def insert(url: str, *documents: dict[str, Any]) -> None:
+    async def main() -> None:
+        connection = await asyncpg.connect(url)
+        try:
+            for document in documents:
+                await connection.execute(
+                    "INSERT INTO documents (id, source, native_id, content_type, title, summary,"
+                    " publication_types, full_text, canonical_url, retrieved_at)"
+                    " VALUES ($1, $2, $3, $4, $5, $6, $7, $8::jsonb, $9, now())",
+                    document["id"],
+                    document["source"],
+                    document["native_id"],
+                    document["content_type"],
+                    document["title"],
+                    document["summary"],
+                    document["publication_types"],
+                    json.dumps(document["full_text"]),
+                    document["canonical_url"],
+                )
+        finally:
+            await connection.close()
+
+    asyncio.run(main())
 
 
 def test_cli_has_the_four_subcommands(prefilter, capsys):
@@ -98,3 +191,56 @@ def test_choose_threshold_keeps_wrong_drops_under_one_percent(prefilter):
 def test_choose_threshold_needs_100_documents_below(prefilter):
     scores = [(i / 1000, "unhelpful") for i in range(50)] + [(0.9, "keep")]
     assert prefilter.choose_threshold(scores) is None
+
+
+RULE_ROWS = [
+    doc("pubmed:1", summary=None),
+    doc("pubmed:2", summary="x" * 150),
+    doc("pubmed:3", publication_types=["Published Erratum"]),
+    doc("pubmed:4", summary=None, publication_types=["Letter"]),
+    doc("pubmed:5", full_text=[{"url": "https://example.org/5.pdf"}]),
+    doc("pubmed:6", title="Correction to: PSA after surgery"),
+    doc("pubmed:7", summary="   "),
+    doc("pubmed:8", publication_types=["Editorial"]),
+    doc("youtube:9", summary="short"),
+]
+
+
+@pytest.mark.postgres
+@pytest.mark.parametrize(
+    "rule, expected",
+    [
+        ("no_summary", {"pubmed:1", "pubmed:4", "pubmed:7"}),
+        ("short_summary", {"pubmed:2", "youtube:9"}),
+        ("erratum", {"pubmed:3", "pubmed:6"}),
+        ("reaction_without_abstract", {"pubmed:4"}),
+    ],
+)
+def test_rules_match_their_documents(prefilter, url, rule, expected):
+    insert(url, *RULE_ROWS)
+    hits = run(lambda connection: prefilter.rule_hits(connection, rule, 100, 0.5), url)
+    assert set(hits) == expected
+
+
+@pytest.mark.postgres
+def test_full_text_variant_spares_documents_with_a_link(prefilter, url):
+    insert(
+        url,
+        doc("pubmed:1", summary=None, full_text=[{"url": "https://example.org/1.pdf"}]),
+        doc("pubmed:2", summary=None),
+    )
+    hits = run(lambda c: prefilter.rule_hits(c, "no_summary_no_full_text", 100, 0.5), url)
+    assert hits == ["pubmed:2"]
+
+
+def test_rule_set_holds_the_four_rules_without_variants(prefilter):
+    assert prefilter.RULE_SET == [
+        "no_summary",
+        "short_summary",
+        "erratum",
+        "reaction_without_abstract",
+    ]
+    assert set(prefilter.RULES) == set(prefilter.RULE_SET) | {
+        "no_summary_no_full_text",
+        "short_summary_no_full_text",
+    }
