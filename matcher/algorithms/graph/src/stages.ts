@@ -1,6 +1,8 @@
 // Disease states (Documentation/design/graph-normalization.md#ranking): which states a
 // paper is about and which the patient is in. A paper about states that all contradict the
 // patient's ranks lower; one about his current state ranks higher.
+
+import { normalizeName } from "@matcher/terminology";
 import neoplasms from "../data/neoplasms.json" with { type: "json" };
 import data from "../data/stages.json" with { type: "json" };
 import {
@@ -12,7 +14,6 @@ import {
 } from "./resolve.ts";
 import { MESH_MAJOR } from "./schema.ts";
 import { statusFromText } from "./status.ts";
-import { normalizeName } from "./text.ts";
 import type { Status } from "./types.ts";
 
 export const STAGES = [

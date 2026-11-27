@@ -2,10 +2,11 @@
 // (Documentation/design/graph-normalization.md). Reads the BioC JSON of
 // `publications/export/biocjson`: the entity annotations and the relations. The passage text
 // is not read, so nothing of the abstract is kept.
+
+import { normalizeName } from "@matcher/terminology";
 import { z } from "zod";
 import outcomes from "../data/outcomes.json" with { type: "json" };
 import { DROPPED_PUBTATOR_TYPES, mapPubTatorRelation } from "./relations.ts";
-import { normalizeName } from "./text.ts";
 import {
   type EntityType,
   type NormalizedEntity,

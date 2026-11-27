@@ -1,9 +1,9 @@
 import type { JourneyState } from "@matcher/core";
+import { normalizeName } from "@matcher/terminology";
 import { LUNG, lungHistology, NSCLC, SCLC } from "./histology.ts";
 import type { QueryWeights } from "./query.ts";
 import { type Concept, QUALIFIERS, type Terminology } from "./resolve.ts";
 import { STAGE_CONCEPTS, type Stage } from "./stages.ts";
-import { normalizeName } from "./text.ts";
 import type { EntityType, Status, Triple } from "./types.ts";
 
 /** What a concept is for the patient; the matcher weighs each role on its own. */

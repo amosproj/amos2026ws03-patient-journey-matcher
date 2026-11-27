@@ -12,7 +12,7 @@ the same licence as this repository (see LICENSE). The copied files that are sti
 under `tools/patient-graph/workers/`, and the adapted source-ingestion code is
 under `crawler/`. Their README files describe the changes against the original.
 
-matcher/algorithms/graph/data/mesh-terms.json.gz contains an adapted subset of
+matcher/terminology/data/mesh-terms.json.gz contains an adapted subset of
 Medical Subject Headings (MeSH), 2026, U.S. National Library of Medicine.
 Terms: https://www.nlm.nih.gov/databases/download/terms_and_conditions_mesh.html
 German MeSH 2026, ZB MED – Information Centre for Life Sciences,

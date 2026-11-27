@@ -5,12 +5,12 @@ The TypeScript side: MCP server, indexer job, transcription job and matching app
 ## Dependencies
 
 ```text
-mcp-server, indexer  →  approaches  →  algorithms/*  →  core, db, download
+mcp-server, indexer  →  approaches  →  algorithms/*  →  core, db, download, terminology
 transcriber          →  db, download
 evaluation           (no matcher package)
 ```
 
-Programs reach the approaches only through `approaches` and the contracts in `core`; they also use `db` and `download` directly. Approaches import neither each other nor the programs; `core`, `db` and `download` import no other matcher package. A package can only import what its `package.json` lists.
+Programs reach the approaches only through `approaches` and the contracts in `core`; they also use `db` and `download` directly. Approaches import neither each other nor the programs; `core`, `db`, `download` and `terminology` import no other matcher package. A package can only import what its `package.json` lists.
 
 ## Rules
 

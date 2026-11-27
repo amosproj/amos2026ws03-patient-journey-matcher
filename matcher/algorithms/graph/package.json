@@ -10,6 +10,7 @@
   "dependencies": {
     "@matcher/core": "workspace:*",
     "@matcher/db": "workspace:*",
+    "@matcher/terminology": "workspace:*",
     "zod": "^4.6.7"
   }
 }

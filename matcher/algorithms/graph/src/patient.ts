@@ -1,6 +1,8 @@
 // Patient graph → NormalizedGraph (Documentation/design/graph-normalization.md).
 // Reads the graph.json of the SS26 pipeline in Graphiti's field names, like the journey reader
 // in mcp-server/src/graph.ts. A node or edge that cannot be normalized is skipped and reported.
+
+import { normalizeName, withoutLeadingCode } from "@matcher/terminology";
 import { z } from "zod";
 import { DROPPED_PATIENT_LABELS, mapPatientEdge } from "./relations.ts";
 import {
@@ -17,7 +19,7 @@ import {
   statusFromAttribute,
   statusFromText,
 } from "./status.ts";
-import { clip, normalizeName, withoutLeadingCode } from "./text.ts";
+import { clip } from "./text.ts";
 import {
   type EntityType,
   type NormalizedEntity,

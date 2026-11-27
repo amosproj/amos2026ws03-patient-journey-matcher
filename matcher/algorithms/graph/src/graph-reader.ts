@@ -1,4 +1,5 @@
 import type { JourneyState } from "@matcher/core";
+import { normalizeName } from "@matcher/terminology";
 import { normalizePatientGraph, parseDay } from "./patient.ts";
 import {
   CERTAINTY,
@@ -13,7 +14,6 @@ import {
 } from "./reading.ts";
 import { broaderDiagnosis, type Concept } from "./resolve.ts";
 import { STAGE_CONCEPTS } from "./stages.ts";
-import { normalizeName } from "./text.ts";
 
 /** Roles whose statements are new measurements each time, such as a PSA value. */
 const MEASUREMENTS: ReadonlySet<Role> = new Set(["test", "gene", "finding"]);

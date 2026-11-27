@@ -1,8 +1,9 @@
 // The data files are cast to their types, not parsed, so a typo would pass silently. These
 // tests check them against each other and against the lists the types are made from.
+
+import { normalizeName } from "@matcher/terminology";
 import { expect, test } from "vitest";
 import concepts from "../data/concepts.json" with { type: "json" };
-import icd from "../data/icd10-mesh.json" with { type: "json" };
 import outcomes from "../data/outcomes.json" with { type: "json" };
 import patient from "../data/patient-relations.json" with { type: "json" };
 import pubtator from "../data/pubtator-relations.json" with { type: "json" };
@@ -10,10 +11,8 @@ import stages from "../data/stages.json" with { type: "json" };
 import cues from "../data/status-cues.json" with { type: "json" };
 import timeline from "../data/timeline.json" with { type: "json" };
 import { ROLES } from "./query.ts";
-import { conceptOf } from "./resolve.ts";
 import { STAGES } from "./stages.ts";
 import { CUE_STATUSES } from "./status.ts";
-import { normalizeName } from "./text.ts";
 import { ENTITY_TYPES, FACT_KINDS, PREDICATES, STATUSES } from "./types.ts";
 
 type Row = { type: string } & Record<string, unknown>;
@@ -30,17 +29,6 @@ test("concepts: a known type, a well-formed ID, each ID once", () => {
     expect(concept.name.trim(), concept.id).not.toBe("");
   }
   expect(CONCEPT_IDS.size).toBe(concepts.concepts.length);
-});
-
-test("every reviewed ICD code and category points to a disease", () => {
-  for (const [code, id] of Object.entries(icd.codes)) {
-    expect(code).toMatch(/^[A-Z]\d{2}(\.\d{1,2})?$/);
-    expect(conceptOf(id)?.type, `${code} → ${id}`).toBe("disease");
-  }
-  for (const [code, id] of Object.entries(icd.categories)) {
-    expect(code).toMatch(/^[A-Z]\d{2}$/);
-    expect(conceptOf(id)?.type, `${code} → ${id}`).toBe("disease");
-  }
 });
 
 test("outcome IDs are well-formed", () => {

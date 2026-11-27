@@ -1,6 +1,6 @@
+import { normalizeName } from "@matcher/terminology";
 import { conceptOf } from "./resolve.ts";
 import { statusFromText } from "./status.ts";
-import { normalizeName } from "./text.ts";
 
 export const LUNG = "mesh:D008175";
 export const NSCLC = "mesh:D002289";

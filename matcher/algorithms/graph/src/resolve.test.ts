@@ -1,3 +1,4 @@
+import { normalizeName } from "@matcher/terminology";
 import { expect, test } from "vitest";
 import {
   conceptOf,
@@ -8,7 +9,6 @@ import {
   resolve,
   resolveIcd,
 } from "./resolve.ts";
-import { normalizeName } from "./text.ts";
 
 test.each([
   // A leading code stays; only the resolver tries the name without it.

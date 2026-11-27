@@ -1,7 +1,7 @@
 """Regenerate data/mesh-terms.json.gz from checksummed ZB MED 2026 and Mondo mappings.
 
 From the repository root run:
-    python3 matcher/algorithms/graph/scripts/build-terminology.py
+    python3 matcher/terminology/scripts/build-terminology.py
 
 The offline alternative takes the four unmodified release files via --source-dir.
 See NOTICE for sources and attribution.

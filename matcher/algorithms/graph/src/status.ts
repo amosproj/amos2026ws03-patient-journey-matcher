@@ -3,9 +3,10 @@
 // statement at its time, not to the concept: prostate cancer is suspected in November and
 // confirmed in December. Without a cue near the entity the sentence says nothing, and the
 // caller falls back.
+
+import { normalizeName, words } from "@matcher/terminology";
 import cues from "../data/status-cues.json" with { type: "json" };
 import type { Terminology } from "./resolve.ts";
-import { normalizeName, words } from "./text.ts";
 import type { Status } from "./types.ts";
 
 /** What a cue can say; a `pseudo` cue only blocks shorter ones (`no change` is not `no`). */

@@ -1,9 +1,14 @@
 // Patient and paper concepts share stable MeSH identifiers. All patient lookups are local.
-import { readFileSync } from "node:fs";
-import { gunzipSync } from "node:zlib";
+import {
+  icdToMesh,
+  mesh,
+  nameIndex,
+  normalizeName,
+  phraseLookup,
+  withoutLeadingCode,
+  words,
+} from "@matcher/terminology";
 import concepts from "../data/concepts.json" with { type: "json" };
-import icd from "../data/icd10-mesh.json" with { type: "json" };
-import { normalizeName, withoutLeadingCode, words } from "./text.ts";
 import type { EntityType, ResolvedBy } from "./types.ts";
 
 export type Concept = {
@@ -46,30 +51,6 @@ const CONCEPTS: ReadonlyMap<string, Concept> = new Map<string, Concept>(
   concepts.concepts.map((concept) => [concept.id, concept as Concept]),
 );
 
-type ProcedureKind =
-  | "imaging"
-  | "diagnostic"
-  | "surgery"
-  | "radiotherapy"
-  | "drug"
-  | "therapy";
-
-type MeshData = {
-  diseases: Record<
-    string,
-    [name: string, aliases: string[], narrower: string[]]
-  >;
-  chemicals: Record<string, [name: string, aliases: string[]]>;
-  procedures: Record<
-    string,
-    [name: string, aliases: string[], kind: ProcedureKind]
-  >;
-  histology: string[];
-  processes: string[];
-  icd: Record<string, string>;
-  icd_cm: Record<string, string>;
-};
-
 /** MeSH qualifiers of a diagnosis that papers on a procedure of this kind carry. */
 export const QUALIFIERS = {
   surgery: "Q000601",
@@ -77,12 +58,6 @@ export const QUALIFIERS = {
   drug: "Q000188",
   imaging: "Q000000981",
 } as const;
-
-const mesh: MeshData = JSON.parse(
-  gunzipSync(
-    readFileSync(new URL("../data/mesh-terms.json.gz", import.meta.url)),
-  ).toString("utf8"),
-);
 
 const MESH_CONCEPTS = new Map<string, Concept>(
   Object.entries(mesh.diseases).map(
@@ -226,27 +201,6 @@ export const curated: Dictionary = nameDictionary(
   "curated",
 );
 
-const ICD_CODES = new Map<string, string>([
-  ...Object.entries(mesh.icd).map(([code, id]): [string, string] => [
-    code,
-    `mesh:${id}`,
-  ]),
-  ...Object.entries(icd.codes),
-]);
-// Categories whose codes all name one disease: C67.2 is a bladder cancer like C67, E11.9 a type 2
-// diabetes like E11. The reviewed ones, and those Mondo maps exactly, which equal one disease.
-const ICD_CATEGORIES = new Map<string, string>([
-  ...Object.entries(mesh.icd)
-    .filter(([code]) => !code.includes("."))
-    .map(([code, id]): [string, string] => [code, `mesh:${id}`]),
-  ...Object.entries(icd.categories),
-]);
-// Categories only ICD-10-CM maps (Mondo), for codes with a subcode: F32.1 is a depressive
-// disorder. Without one, P53 in a text is more likely the gene.
-const ICD_SUBCODE_CATEGORIES = new Map<string, string>(
-  Object.entries(mesh.icd_cm).map(([code, id]) => [code, `mesh:${id}`]),
-);
-const ICD_CODE = /^[A-Z]\d{2}(?:\.\d{1,2})?$/;
 // In a text a code is written in capitals and stands alone: HLA-B27, p53 and F18-FDG are names. As
 // in resolveIcd, a code marked suspected, excluded or past (C61 V, C61 A, C61 Z) is not read.
 const ICD_IN_TEXT =
@@ -268,60 +222,32 @@ export type Terminology = {
   findDiseases(text: string): DiseaseHit[];
 };
 
-type Phrase = { concept: Concept; phrase: string[] };
-function phraseLookup(names: ReadonlyMap<string, Concept>) {
-  const grouped = Map.groupBy(
-    [...names]
-      .map(([name, concept]): Phrase => ({ concept, phrase: name.split(" ") }))
-      .sort((a, b) => b.phrase.length - a.phrase.length),
-    ({ phrase }) => phrase[0],
-  );
+/** Longest matched names and their character offsets in the normalized text. */
+function mentionLookup(names: ReadonlyMap<string, Concept>) {
+  const find = phraseLookup(names);
   return (text: string, diseasesOnly = false): Mention[] => {
-    const result: Mention[] = [];
-    let offset = 0;
     const tokens = words(text);
-    for (let i = 0; i < tokens.length; i++) {
-      const match = grouped
-        .get(tokens[i])
-        ?.find(
-          ({ concept, phrase }) =>
-            (!diseasesOnly || concept.type === "disease") &&
-            phrase.every((word, offset) => word === tokens[i + offset]),
-        );
-      if (match) {
-        const mention = match.phrase.join(" ");
-        result.push({
-          concept: match.concept,
-          mention,
-          start: offset,
-          end: offset + mention.length,
-        });
-        offset += mention.length + 1;
-        i += match.phrase.length - 1;
-      } else offset += tokens[i].length + 1;
-    }
-    return result;
+    const offsets = [0];
+    for (const token of tokens)
+      offsets.push((offsets.at(-1) ?? 0) + token.length + 1);
+    return find(
+      tokens,
+      diseasesOnly ? (concept) => concept.type === "disease" : undefined,
+    ).map(({ value, start, end }) => {
+      const mention = tokens.slice(start, end).join(" ");
+      return {
+        concept: value,
+        mention,
+        start: offsets[start],
+        end: offsets[start] + mention.length,
+      };
+    });
   };
 }
 
-/** Single-ID aliases after normalization. A short abbreviation needs a reviewed clinical meaning. */
-function indexedNames(list: Iterable<Concept>): Map<string, Concept | null> {
-  const result = new Map<string, Concept | null>();
-  for (const concept of list) {
-    for (const name of [concept.name, ...concept.names]) {
-      const key = normalizeName(name);
-      if (key.length < 4 || !/\p{L}/u.test(key)) continue;
-      const known = result.get(key);
-      result.set(
-        key,
-        known === undefined || known?.id === concept.id ? concept : null,
-      );
-    }
-  }
-  return result;
-}
+const conceptNames = (concept: Concept) => [concept.name, ...concept.names];
 
-const staticNames = indexedNames(MESH_CONCEPTS.values());
+const staticNames = nameIndex(MESH_CONCEPTS.values(), conceptNames);
 const clinicalNames = new Map<string, Concept>();
 for (const row of CONCEPTS.values()) {
   const concept = conceptOf(row.id) ?? row;
@@ -333,7 +259,7 @@ export function createTerminology(
   corpus: readonly Concept[] = [],
 ): Terminology {
   const corpusById = new Map<string, Concept>();
-  const corpusNames = indexedNames(corpus);
+  const corpusNames = nameIndex(corpus, conceptNames);
   // Published names (including collisions) and reviewed overrides take precedence over annotations.
   const combined = new Map([...corpusNames, ...staticNames, ...clinicalNames]);
   const names = new Map<string, Concept>();
@@ -358,7 +284,7 @@ export function createTerminology(
   for (const [alias, concept] of combined) {
     if (concept) names.set(alias, byId(concept.id) ?? concept);
   }
-  const find = phraseLookup(names);
+  const find = mentionLookup(names);
   const dictionaries: Dictionary[] = [
     {
       resolvedBy: "curated",
@@ -400,20 +326,7 @@ export const defaultTerminology = createTerminology();
  * an LLM, unchecked.
  */
 export function resolveIcd(code: unknown): Concept | undefined {
-  if (typeof code !== "string") return undefined;
-  // ICD-10-GM may add the side (R, L, B) and "gesichert" (G): C50.4 L. A code marked suspected (V),
-  // excluded (A) or past (Z) is not read.
-  const value = code
-    .trim()
-    .toUpperCase()
-    .replace(/(?<=\d)\s*(?:[RLB]\s*)?G?$/, "");
-  if (!ICD_CODE.test(value)) return undefined;
-  const id =
-    ICD_CODES.get(value) ??
-    ICD_CATEGORIES.get(value.slice(0, 3)) ??
-    (value.includes(".")
-      ? ICD_SUBCODE_CATEGORIES.get(value.slice(0, 3))
-      : undefined);
+  const id = icdToMesh(code);
   return id === undefined ? undefined : conceptOf(id);
 }
 

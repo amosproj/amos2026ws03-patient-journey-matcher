@@ -1,4 +1,5 @@
 import type { JourneyEvent } from "@matcher/core";
+import { normalizeName } from "@matcher/terminology";
 import timeline from "../data/timeline.json" with { type: "json" };
 import {
   CERTAINTY,
@@ -38,7 +39,7 @@ import {
   treatmentClauses,
   treatmentStatus,
 } from "./status.ts";
-import { clip, normalizeName } from "./text.ts";
+import { clip } from "./text.ts";
 import type { Status } from "./types.ts";
 
 function timelineTreatments(event: JourneyEvent, terminology: Terminology) {

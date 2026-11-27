@@ -1,3 +1,4 @@
+import { normalizeName } from "@matcher/terminology";
 import { expect, test } from "vitest";
 import { defaultTerminology } from "./resolve.ts";
 import { MESH_MAJOR, MESH_MINOR } from "./schema.ts";
@@ -15,7 +16,6 @@ import {
   stageCues,
   stageFactor,
 } from "./stages.ts";
-import { normalizeName } from "./text.ts";
 
 const none = { diagnosed: true, localTherapy: false, systemicTherapy: false };
 const factors = { fit: 2, strong: 0.1, moderate: 0.5, mild: 0.8 };
