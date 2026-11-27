@@ -26,7 +26,7 @@ How the code is split into packages, as a UML package diagram. The crawler is on
 
 ## 3 Technology stack
 
-Only what the code uses today. Versions are pinned in `crawler/uv.lock` and `matcher/pnpm-lock.yaml`; `scripts/dependencies.py` writes the full list with versions and licences ([build](../build-deploy/build.md)).
+Only what the code uses today. Versions are pinned in `crawler/uv.lock` and `matcher/pnpm-lock.yaml`; the [SBOM](../build-deploy/build.md#sbom) lists every package with its version and licence.
 
 | Area | Technology | Used for | Licence |
 |---|---|---|---|

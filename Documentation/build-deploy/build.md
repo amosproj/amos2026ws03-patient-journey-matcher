@@ -93,14 +93,6 @@ Not covered: the live data sources, the quality of the ranking, reading a valid 
 - PostgreSQL has only its major version: the image tag in `db/Dockerfile` names no minor version.
 - Licences that the package metadata leaves unclear are set by hand in `scripts/sbom.py`; `make sbom` names every package that still has no SPDX licence ID.
 
-The list of direct dependencies, after installing both projects:
-
-```sh
-uv run --project crawler python scripts/dependencies.py
-```
-
-It writes the direct dependencies of `crawler/` and `matcher/` with version, licence and scope to `out/dependencies.tsv`; those of the [patient graph tool](../../tools/patient-graph/README.md#development) are added by hand. The `Context` and `Comment` columns stay empty; fill them in afterwards.
-
 ## Limitations
 
 - **Index before you query.** Without `make index`, `match_journey` answers `degraded: true` with no results.
