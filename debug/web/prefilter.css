@@ -12,3 +12,11 @@
 .pf-guide table { margin: 0 12px 12px; }
 .pf-guide td { padding: 4px 8px; vertical-align: top; }
 @media (max-width: 760px) { #pf-label .buttons { flex-wrap: wrap; } }
+.pf-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
+.pf-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+#pf-results table { width: 100%; border-collapse: collapse; font-size: 13px; }
+#pf-results th, #pf-results td { padding: 6px 12px; text-align: left; border-top: 1px solid var(--line); }
+#pf-results td.num { text-align: right; font-variant-numeric: tabular-nums; }
+#pf-results td.bad { color: var(--error); font-weight: 650; }
+#pf-results .pf-variant td { color: var(--muted); }
+#pftab-label:not([hidden]), #pftab-results:not([hidden]) { position: absolute; inset: 0; display: flex; flex-direction: column; }

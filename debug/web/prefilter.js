@@ -136,3 +136,60 @@ for (const button of document.querySelectorAll("#pf-tabs button")) button.addEve
 $("#pf-refresh").addEventListener("click", pfRefresh);
 $("#pf-set").addEventListener("change", () => { pf.index = 0; pfRefresh(); });
 $("#pf-status").addEventListener("change", () => { pf.index = 0; pfRefresh(); });
+
+// ── Results: what scripts/prefilter.py measure wrote, against the success criteria of #92 ──
+const PF_APPROACH = { rules: "Rules", "rules+model": "Rules + classifier" };
+const pfPercent = (share) => share == null ? "–" : `${(100 * share).toFixed(1)} %`;
+const pfBadge = (ok, label, tip) => h("span", { class: `pill ${ok ? "ok" : "failed"}`, title: tip }, `${ok ? "✓" : "✗"} ${label}`);
+
+async function pfResults() {
+  const target = $("#pf-results");
+  let result;
+  try {
+    result = await api("/api/prefilter/results");
+  } catch (error) {
+    target.replaceChildren(h("div", { class: "error" }, error.message));
+    return;
+  }
+  if (result.missing) {
+    target.replaceChildren(h("div", { class: "empty" }, "No results yet. Run uv run --locked scripts/prefilter.py measure first."));
+    return;
+  }
+  const approaches = Object.entries(result.approaches).map(([name, data]) => data
+    ? h("div", { class: "panel" }, h("h3", {}, PF_APPROACH[name] || name, data.extrapolated ? h("small", { title: "Classifier drops are counted on the embedded documents and scaled per source" }, "estimate") : null),
+      h("div", { class: "panel-body" },
+        h("div", { class: "stats pf-cards" },
+          card("Dropped", `${fmtCount(data.dropped)} · ${pfPercent(data.share)}`),
+          card("Checked drops", fmtCount(data.checked)),
+          card("Wrong drops", fmtCount(data.wrong), data.wrong > 1 ? "bad" : ""),
+          card("Upper bound (95 %)", pfPercent(data.upper_bound)),
+          data.cannot_judge != null ? card("Cannot judge (no embedding)", fmtCount(data.cannot_judge), "muted") : null),
+        h("div", { class: "pf-badges" },
+          pfBadge(data.passes.safety, "Safety", "At least 300 checked drops, at most 1 of them wrong"),
+          pfBadge(data.passes.usefulness_2, "≥ 2 % dropped"),
+          pfBadge(data.passes.usefulness_3, "≥ 3 % dropped")),
+        barList(Object.entries(data.by_source).map(([source, n]) => ({ name: SOURCE_LABEL[source] || source, value: n })))))
+    : h("div", { class: "panel" }, h("h3", {}, PF_APPROACH[name] || name), h("div", { class: "panel-body" }, h("span", { class: "hint" }, "No classifier with a threshold yet: run train."))));
+  const rules = h("div", { class: "panel" }, h("h3", {}, "Each rule", h("small", {}, "a variant is only reported, not part of the rules")),
+    h("table", {}, h("thead", {}, h("tr", {}, ...["Rule", "Dropped", "By source", "Checked", "Wrong", "Query"].map((title) => h("th", {}, title)))),
+      h("tbody", {}, ...Object.entries(result.rules).map(([name, rule]) => h("tr", { class: rule.variant ? "pf-variant" : "" },
+        h("td", {}, name.replaceAll("_", " "), rule.variant ? h("small", {}, " variant") : null),
+        h("td", { class: "num" }, fmtCount(rule.dropped)),
+        h("td", { class: "small" }, Object.entries(rule.by_source).map(([source, n]) => `${SOURCE_LABEL[source] || source} ${fmtCount(n)}`).join(" · ") || "–"),
+        h("td", { class: "num" }, rule.variant ? "–" : fmtCount(rule.checked)),
+        h("td", { class: `num${rule.wrong > 0 ? " bad" : ""}` }, rule.variant ? "–" : fmtCount(rule.wrong)),
+        h("td", { class: "num" }, fmtSeconds(rule.seconds)))))));
+  const model = result.model;
+  const facts = h("div", { class: "panel" }, h("h3", {}, "Classifier, labels and speed"),
+    h("div", { class: "panel-body" },
+      model?.stale ? h("span", { class: "hint" }, "The training labels changed since the classifier was trained: run train, then measure.") : null,
+      h("div", { class: "stats pf-cards" },
+        card("Threshold (probability of keep)", model?.threshold == null ? "–" : model.threshold.toFixed(3), model ? "" : "muted"),
+        card("Trained on", model ? fmtCount(model.trained_on) : "–", model ? "" : "muted"),
+        card("LLM agreed with people", `${fmtCount(result.llm_agreement.agreed)} / ${fmtCount(result.llm_agreement.checked)}`),
+        card("Unhelpful in the random sample", `${fmtCount(result.random.unhelpful)} / ${fmtCount(result.random.checked)}`),
+        card("Rules, whole table", fmtSeconds(result.timing.rules_seconds)),
+        card("Classifier per document", result.timing.model_ms_per_document == null ? "–" : `${result.timing.model_ms_per_document.toFixed(3)} ms`)),
+      h("small", { class: "muted" }, `Measured ${fmtDateTime(result.generated_at)} on ${fmtCount(result.total)} documents. Random sample: group 1 ${result.random.by_group["1"]}, group 2 ${result.random.by_group["2"]}.`)));
+  target.replaceChildren(...approaches, rules, facts);
+}
