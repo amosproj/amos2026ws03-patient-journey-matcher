@@ -36,6 +36,7 @@ import hashlib
 import json
 import math
 import os
+import random
 import tempfile
 import time
 from collections.abc import Callable, Iterable, Iterator
@@ -604,6 +605,104 @@ def summarize(
     }
 
 
+DROP_SAMPLE = 300
+RULE_SAMPLE = 30
+
+
+async def hits_of(connection: Any, ids: list[str]) -> dict[str, list[str]]:
+    """Which rules drop each of `ids`."""
+    cases = ", ".join(
+        f"CASE WHEN {condition} THEN '{name}' END" for name, condition in RULES.items()
+    )
+    rows = await connection.fetch(
+        f"SELECT d.id, array_remove(ARRAY[{cases}], NULL) AS rules FROM documents d"
+        " WHERE d.id = ANY($1::text[])",
+        ids,
+    )
+    return {row["id"]: list(row["rules"]) for row in rows}
+
+
+async def score_table(
+    connection: Any, model: dict[str, Any], table: str, seed: int = 44
+) -> tuple[dict[str, Any], list[str], float]:
+    """Score every embedded document the rules keep. Returns the counts per source (embedded,
+    dropped), a random sample of the drops and the milliseconds per document of the scoring."""
+    await check_table(connection, table)
+    embedded: dict[str, int] = {}
+    dropped: dict[str, int] = {}
+    sample: list[str] = []
+    chance = random.Random(seed)
+    seconds = 0.0
+    n = 0
+    async with connection.transaction():
+        cursor = connection.cursor(
+            f"SELECT d.id, d.source, e.embedding::text AS vector FROM {table} e"
+            f" JOIN documents d ON d.id = e.document_id"
+            f" WHERE e.embedding IS NOT NULL AND NOT {ANY_RULE}",
+            prefetch=5000,
+        )
+        async for row in cursor:
+            vector = json.loads(row["vector"])
+            started = time.perf_counter()
+            probability = keep_probability(model["weights"], model["bias"], vector)
+            seconds += time.perf_counter() - started
+            source = row["source"]
+            embedded[source] = embedded.get(source, 0) + 1
+            n += 1
+            if probability < model["threshold"]:
+                dropped[source] = dropped.get(source, 0) + 1
+                drops = sum(dropped.values())
+                if len(sample) < DROP_SAMPLE:  # reservoir sampling: each drop equally likely
+                    sample.append(row["id"])
+                elif (slot := chance.randrange(drops)) < DROP_SAMPLE:
+                    sample[slot] = row["id"]
+    return {"embedded": embedded, "dropped": dropped}, sample, seconds * 1000 / n if n else 0.0
+
+
+async def measure(url: str, table: str = EMBEDDINGS) -> None:
+    """Count the drops on the whole table, add the samples of drops to check, write RESULTS."""
+    model = json.loads(MODEL.read_text(encoding="utf-8")) if MODEL.exists() else None
+    data = load_labels(LABELS)
+    known = {name for entry in data["documents"] for name in entry["sets"]}
+    connection = await connect(url)
+    try:
+        counts = await rule_counts(connection)
+        scored: dict[str, Any] = {}
+        model_drops: list[str] = []
+        milliseconds = None
+        if model is not None and model.get("threshold") is not None:
+            scored, model_drops, milliseconds = await score_table(connection, model, table)
+        rule_drops: list[str] = []
+        if "drops-rules" not in known:
+            await connection.execute("SELECT setseed($1)", 0.45)
+            rule_drops = await random_ids(connection, ANY_RULE, DROP_SAMPLE, [])
+        add_drop_samples(data, rule_drops, model_drops, {})
+        sampled = [e["id"] for e in data["documents"] if "drops-rules" in e["sets"]]
+        sampled_hits = await hits_of(connection, sampled)
+        per_rule = {}
+        for rule in RULE_SET:
+            have = sum(rule in rules for rules in sampled_hits.values())
+            if have < RULE_SAMPLE and f"drops-rule:{rule}" not in known:
+                exclude = [entry["id"] for entry in data["documents"]]
+                per_rule[rule] = await random_ids(
+                    connection, RULES[rule], RULE_SAMPLE - have, exclude
+                )
+        add_drop_samples(data, [], [], per_rule)
+        in_drops = [
+            e["id"] for e in data["documents"] if any(s.startswith("drops-") for s in e["sets"])
+        ]
+        hits = await hits_of(connection, in_drops)
+    finally:
+        await connection.close()
+    save_labels(LABELS, data)
+    timing = {"rules_seconds": counts["_seconds"]["_all"], "model_ms_per_document": milliseconds}
+    result = summarize(data, counts, model, scored, timing, hits)
+    RESULTS.parent.mkdir(parents=True, exist_ok=True)
+    RESULTS.write_text(json.dumps(result, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    rules = result["approaches"]["rules"]
+    print(f"rules drop {rules['dropped']} of {result['total']} ({rules['share']:.1%})")
+
+
 PROPOSER = ("Qwen/Qwen3-4B", "1cfa9a7208912126459214e8b04321603b3df60c")
 
 
@@ -686,6 +785,8 @@ def main(argv: list[str] | None = None) -> None:
         asyncio.run(propose(args.database_url, args.set, args.limit, qwen_generator()))
     elif args.command == "train":
         asyncio.run(train(args.database_url, args.embeddings))
+    elif args.command == "measure":
+        asyncio.run(measure(args.database_url, args.embeddings))
     else:
         raise SystemExit(f"{args.command}: not implemented")
 

@@ -636,3 +636,68 @@ def test_drop_samples_keep_labels_of_documents_already_known(prefilter):
     data = {"version": 1, "guide": [], "documents": [entry("pubmed:1", ["train"], "keep")]}
     prefilter.add_drop_samples(data, ["pubmed:1"], [], {})
     assert data["documents"] == [entry("pubmed:1", ["train", "drops-rules"], "keep")]
+
+
+@pytest.fixture
+def study(prefilter, url, tmp_path, monkeypatch):
+    """10 documents the rules drop, 10 the model drops, 10 it keeps, 2 without an embedding."""
+    for name in ("LABELS", "MODEL", "RESULTS"):
+        monkeypatch.setattr(prefilter, name, tmp_path / f"{name.lower()}.json")
+    low = [f"pubmed:{i}" for i in range(10, 20)]
+    high = [f"pubmed:{i}" for i in range(20, 30)]
+    insert(
+        url,
+        *[doc(f"pubmed:{i}", summary=None) for i in range(10)],
+        *[doc(i) for i in low + high],
+        doc("pubmed:30"),
+        doc("pubmed:31"),
+    )
+    vectors = {i: [0.0, 1.0] for i in low} | {i: [1.0, 0.0] for i in high} | {"pubmed:31": None}
+    table = embedded(url, vectors)
+    model = {
+        "weights": [5.0, -5.0],
+        "bias": 0.0,
+        "threshold": 0.5,
+        "trained_on": 500,
+        "below_threshold": 120,
+        "labels_hash": "",
+        "embeddings": table,
+    }
+    prefilter.MODEL.write_text(json.dumps(model))
+    return table
+
+
+@pytest.mark.postgres
+def test_measure_writes_results_and_drop_samples(prefilter, url, study):
+    asyncio.run(prefilter.measure(url, study))
+    result = json.loads(prefilter.RESULTS.read_text())
+    assert result["total"] == 32
+    assert result["approaches"]["rules"]["dropped"] == 10
+    combined = result["approaches"]["rules+model"]
+    # 10 of 20 embedded are dropped, scaled to the 22 the rules keep: 11.
+    assert (combined["dropped"], combined["cannot_judge"]) == (21, 2)
+    assert result["timing"]["model_ms_per_document"] >= 0
+    sets = {e["id"]: e["sets"] for e in prefilter.load_labels(prefilter.LABELS)["documents"]}
+    assert sorted(i for i, s in sets.items() if "drops-rules" in s) == [
+        f"pubmed:{i}" for i in range(10)
+    ]
+    assert len([i for i, s in sets.items() if "drops-model" in s]) == 10
+
+
+@pytest.mark.postgres
+def test_measure_again_keeps_samples_and_labels(prefilter, url, study):
+    asyncio.run(prefilter.measure(url, study))
+    data = prefilter.load_labels(prefilter.LABELS)
+    data["documents"][0] |= {"label": "keep", "note": "a person checked this"}
+    prefilter.save_labels(prefilter.LABELS, data)
+    asyncio.run(prefilter.measure(url, study))
+    assert prefilter.load_labels(prefilter.LABELS) == data
+
+
+@pytest.mark.postgres
+def test_measure_without_a_model_reports_the_rules(prefilter, url, study):
+    prefilter.MODEL.unlink()
+    asyncio.run(prefilter.measure(url, study))
+    result = json.loads(prefilter.RESULTS.read_text())
+    assert result["approaches"]["rules+model"] is None and result["model"] is None
+    assert result["rules"]["no_summary"]["checked"] == 0
