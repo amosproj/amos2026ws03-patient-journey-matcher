@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg viewBox="0 0 1056 540" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="graph-matching-title graph-matching-desc" id="graph-matching-root">
+<svg viewBox="0 0 1056 676" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="graph-matching-title graph-matching-desc" id="graph-matching-root">
         <title id="graph-matching-title">Graph matching</title>
-        <desc id="graph-matching-desc">UML activity diagram of graph matching. Ahead of time, the indexer fetches the PubTator3 annotations of new papers and stores their concepts and relations in graph.documents, beside the MeSH headings. Per request, the matcher normalizes the patient into weighted concepts; PostgreSQL keeps the papers that name one of the patient's diagnoses and scores them by evidence, inverse document frequency and weight; the matcher re-ranks the best by their fit to the patient. Disease profiles add the rules of one disease on top of the generic ones: the reading rules of all profiles when the patient is normalized, the ranking rules of the patient's diseases in the re-rank.</desc>
+        <desc id="graph-matching-desc">UML activity diagram of graph matching. Ahead of time, the indexer fetches the PubTator3 annotations of new papers and stores their concepts and relations in graph.documents, beside the MeSH headings. Per request, the matcher normalizes the patient into weighted concepts; PostgreSQL keeps the papers that name one of the patient's diagnoses and scores them by evidence, inverse document frequency and weight; the matcher re-ranks the best by their fit to the patient. Disease profiles plug into these generic steps, one per disease in PROFILES: prostate cancer, lung cancer, and a next disease as a JSON file in data/profiles and a module in src/profiles. The reading rules of all profiles go into normalizing the patient, the patient's diagnoses pick his profiles, and their ranking rules go into the re-rank, for each paper those of the profile of its disease.</desc>
 <defs>
       <style>#graph-matching-root { --color-paper:   #fafafa;
       --color-ink:     #1f2328;
@@ -19,18 +19,23 @@
   <marker id="graph-matching-open-solid" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1,1 L 9,5 L 1,9" fill="none" stroke="#57606a" stroke-width="1.2"/></marker>
 </defs>
 <rect width="100%" height="100%" fill="#fafafa"/>
-<rect x="16" y="16" width="1024" height="448" fill="none" stroke="#1f2328" stroke-width="1"/>
+<rect x="16" y="16" width="1024" height="584" fill="none" stroke="#1f2328" stroke-width="1"/>
 <path d="M 16,16 H 156 V 30 L 146,40 H 16 Z" fill="#fafafa" stroke="#1f2328" stroke-width="1"/>
 <text x="24" y="32" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="start">act Graph matching</text>
-<rect x="40" y="56" width="976" height="392" fill="none" stroke="#1f2328" stroke-width="1"/>
+<rect x="40" y="56" width="976" height="528" fill="none" stroke="#1f2328" stroke-width="1"/>
 <line x1="40" y1="152" x2="1016" y2="152" stroke="#1f2328" stroke-width="1"/>
 <line x1="40" y1="264" x2="1016" y2="264" stroke="#1f2328" stroke-width="1"/>
-<line x1="120" y1="56" x2="120" y2="448" stroke="#1f2328" stroke-width="1"/>
+<line x1="40" y1="352" x2="1016" y2="352" stroke="#1f2328" stroke-width="1"/>
+<line x1="120" y1="56" x2="120" y2="584" stroke="#1f2328" stroke-width="1"/>
 <text x="80" y="102" fill="#1f2328" font-size="11" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Indexer</text>
 <text x="80" y="116" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">ahead of time</text>
 <text x="80" y="212" fill="#1f2328" font-size="11" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">PostgreSQL</text>
-<text x="80" y="350" fill="#1f2328" font-size="11" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Matcher</text>
-<text x="80" y="364" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">per request</text>
+<text x="80" y="302" fill="#1f2328" font-size="11" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Matcher</text>
+<text x="80" y="316" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">per request</text>
+<text x="80" y="448" fill="#1f2328" font-size="11" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Disease</text>
+<text x="80" y="462" fill="#1f2328" font-size="11" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">profiles</text>
+<text x="80" y="478" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">plug-ins on the</text>
+<text x="80" y="490" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">generic steps</text>
 <path d="M 160,104 H 184" fill="none" stroke="#57606a" stroke-width="1.2" marker-end="url(#graph-matching-open-solid)"/>
 <path d="M 336,104 H 444 Q 452,104 452,112 V 172" fill="none" stroke="#57606a" stroke-width="1.2" marker-end="url(#graph-matching-open-solid)"/>
 <path d="M 528,208 H 568" fill="none" stroke="#57606a" stroke-width="1.2" marker-end="url(#graph-matching-open-solid)"/>
@@ -39,10 +44,14 @@
 <path d="M 912,308 H 952" fill="none" stroke="#57606a" stroke-width="1.2" marker-end="url(#graph-matching-open-solid)"/>
 <path d="M 160,308 H 184" fill="none" stroke="#57606a" stroke-width="1.2" marker-end="url(#graph-matching-open-solid)"/>
 <path d="M 336,308 H 636 Q 644,308 644,300 V 232" fill="none" stroke="#57606a" stroke-width="1.2" marker-end="url(#graph-matching-open-solid)"/>
-<path d="M 448,402 H 268 Q 260,402 260,394 V 332" fill="none" stroke="#57606a" stroke-width="1.2" marker-end="url(#graph-matching-open-solid)"/>
-<path d="M 640,402 H 828 Q 836,402 836,394 V 332" fill="none" stroke="#57606a" stroke-width="1.2" marker-end="url(#graph-matching-open-solid)"/>
-<rect x="292" y="382" width="132" height="12" fill="#fafafa"/><text x="358.0" y="391" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">reading rules of all profiles</text>
-<rect x="646" y="382" width="176" height="12" fill="#fafafa"/><text x="734.0" y="391" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">ranking rules of the patient's diseases</text>
+<path d="M 216,464 V 340" fill="none" stroke="#57606a" stroke-width="1.2" marker-end="url(#graph-matching-open-solid)"/>
+<path d="M 320,340 V 392" fill="none" stroke="#57606a" stroke-width="1.2" marker-end="url(#graph-matching-open-solid)"/>
+<path d="M 400,464 V 440" fill="none" stroke="#57606a" stroke-width="1.2" marker-end="url(#graph-matching-open-solid)"/>
+<path d="M 464,416 H 828 Q 836,416 836,408 V 340" fill="none" stroke="#57606a" stroke-width="1.2" marker-end="url(#graph-matching-open-solid)"/>
+<text x="226" y="386" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">reading rules</text>
+<text x="226" y="398" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">of all profiles</text>
+<text x="328" y="375" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">the patient's diagnoses</text>
+<rect x="526" y="396" width="240" height="12" fill="#fafafa"/><text x="646.0" y="405" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">ranking rules: per paper, the profile of its disease</text>
 <circle cx="152" cy="104" r="8" fill="#1f2328"/>
 <rect x="184" y="80" width="152" height="48" rx="10" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
 <text x="260.0" y="101.0" fill="#1f2328" font-size="10" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Fetch the PubTator3</text>
@@ -65,24 +74,44 @@
 <rect x="760" y="284" width="152" height="48" rx="10" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
 <text x="836.0" y="305.0" fill="#1f2328" font-size="10" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Re-rank the best by</text>
 <text x="836.0" y="318.0" fill="#1f2328" font-size="10" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">fit to the patient</text>
-<rect x="448" y="372" width="192" height="60" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<text x="544.0" y="392" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Disease profiles</text>
-<text x="544.0" y="408" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">rules of one disease on top</text>
-<text x="544.0" y="420" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">of the generic ones</text>
 <circle cx="962" cy="308" r="10" fill="#ffffff" stroke="#1f2328" stroke-width="1.2"/>
 <circle cx="962" cy="308" r="6" fill="#1f2328"/>
-<line x1="40" y1="480" x2="1016" y2="480" stroke="#1f2328" stroke-width="0.8" stroke-opacity="0.10"/>
-<text x="40" y="496" fill="#57606a" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.18em">LEGEND</text>
-<circle cx="48" cy="510" r="6" fill="#1f2328"/>
-<text x="64" y="516" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Start</text>
-<rect x="120" y="503" width="18" height="14" rx="5" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<text x="144" y="516" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Action</text>
-<rect x="208" y="503" width="18" height="14" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<text x="232" y="516" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Object node</text>
-<path d="M 312,510 H 330" fill="none" stroke="#57606a" stroke-width="1.2" marker-end="url(#graph-matching-open-solid)"/>
-<text x="336" y="516" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Control or object flow</text>
-<circle cx="489" cy="510" r="7" fill="#ffffff" stroke="#1f2328" stroke-width="1.2"/><circle cx="489" cy="510" r="4" fill="#1f2328"/>
-<text x="504" y="516" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">End</text>
-<rect x="552" y="503" width="18" height="14" fill="none" stroke="#1f2328" stroke-width="1"/><line x1="558" y1="503" x2="558" y2="517" stroke="#1f2328" stroke-width="1"/>
-<text x="576" y="516" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Partition</text>
+<rect x="212" y="332" width="8" height="8" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="316" y="332" width="8" height="8" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="832" y="332" width="8" height="8" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<rect x="304" y="392" width="160" height="48" rx="10" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<text x="384.0" y="413.0" fill="#1f2328" font-size="10" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">Pick the profiles of</text>
+<text x="384.0" y="426.0" fill="#1f2328" font-size="10" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">the patient's diseases</text>
+<rect x="160" y="464" width="592" height="104" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<text x="456" y="481" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">PROFILES</text>
+<rect x="176" y="492" width="176" height="64" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<text x="264.0" y="508" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">prostate cancer</text>
+<text x="264.0" y="523" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">reads PSA, PI-RADS, Gleason</text>
+<text x="264.0" y="535" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">ranks by its states, phases,</text>
+<text x="264.0" y="547" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">treatment options, care questions</text>
+<rect x="368" y="492" width="176" height="64" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<text x="456.0" y="508" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">lung cancer</text>
+<text x="456.0" y="523" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">reads a histology field</text>
+<text x="456.0" y="535" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">ranks by its two histologies</text>
+<rect x="560" y="492" width="176" height="64" fill="#ffffff" stroke="#1f2328" stroke-width="1" stroke-dasharray="4,3"/>
+<text x="648.0" y="508" fill="#57606a" font-size="10" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">next disease</text>
+<text x="648.0" y="523" fill="#57606a" font-size="8.5" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">data/profiles/*.json</text>
+<text x="648.0" y="535" fill="#57606a" font-size="8.5" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">src/profiles/*.ts</text>
+<text x="648.0" y="547" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">listed in PROFILES</text>
+<line x1="40" y1="616" x2="1016" y2="616" stroke="#1f2328" stroke-width="0.8" stroke-opacity="0.10"/>
+<text x="40" y="632" fill="#57606a" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.18em">LEGEND</text>
+<circle cx="48" cy="646" r="6" fill="#1f2328"/>
+<text x="64" y="652" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Start</text>
+<rect x="120" y="639" width="18" height="14" rx="5" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<text x="144" y="652" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Action</text>
+<rect x="208" y="639" width="18" height="14" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<text x="232" y="652" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Object node</text>
+<rect x="317" y="642" width="8" height="8" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<text x="336" y="652" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Pin: where a profile plugs in</text>
+<path d="M 496,646 H 514" fill="none" stroke="#57606a" stroke-width="1.2" marker-end="url(#graph-matching-open-solid)"/>
+<text x="520" y="652" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Control or object flow</text>
+<circle cx="673" cy="646" r="7" fill="#ffffff" stroke="#1f2328" stroke-width="1.2"/><circle cx="673" cy="646" r="4" fill="#1f2328"/>
+<text x="688" y="652" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">End</text>
+<rect x="736" y="639" width="18" height="14" fill="none" stroke="#1f2328" stroke-width="1"/><line x1="742" y1="639" x2="742" y2="653" stroke="#1f2328" stroke-width="1"/>
+<text x="760" y="652" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Partition</text>
       </svg>
