@@ -456,3 +456,46 @@ def test_score_rows_skips_null_vectors(prefilter):
     rows = [("pubmed:1", [1.0]), ("pubmed:2", None), ("pubmed:3", [-1.0])]
     scored = list(prefilter.score_rows(rows, [1.0], 0.0))
     assert [document_id for document_id, _ in scored] == ["pubmed:1", "pubmed:3"]
+
+
+def test_fit_separates_two_clusters(prefilter):
+    pytest.importorskip("sklearn")
+    vectors = [[1.0, 0.0]] * 30 + [[0.0, 1.0]] * 30
+    labels = ["keep"] * 30 + ["unhelpful"] * 30
+    weights, bias, out_of_fold = prefilter.fit(vectors, labels)
+    assert prefilter.keep_probability(weights, bias, [1.0, 0.0]) > 0.9
+    assert prefilter.keep_probability(weights, bias, [0.0, 1.0]) < 0.1
+    assert len(out_of_fold) == 60
+
+
+def test_labels_hash_changes_with_a_label(prefilter):
+    entries = [{"id": "pubmed:1", "label": "keep"}, {"id": "pubmed:2", "label": "unhelpful"}]
+    first = prefilter.labels_hash(entries)
+    assert prefilter.labels_hash(list(reversed(entries))) == first
+    entries[0]["label"] = "unhelpful"
+    assert prefilter.labels_hash(entries) != first
+
+
+@pytest.mark.postgres
+def test_train_uses_checked_labels_the_rules_keep(prefilter, url, tmp_path, monkeypatch):
+    pytest.importorskip("sklearn")
+    monkeypatch.setattr(prefilter, "LABELS", tmp_path / "labels.json")
+    monkeypatch.setattr(prefilter, "MODEL", tmp_path / "model.json")
+    keep = [f"pubmed:{i}" for i in range(30)]
+    unhelpful = [f"pubmed:{i}" for i in range(30, 60)]
+    insert(url, *[doc(i) for i in keep + unhelpful], doc("pubmed:99", summary=None))
+    vectors = {i: [1.0, 0.0] for i in keep} | {i: [0.0, 1.0] for i in unhelpful}
+    table = embedded(url, vectors | {"pubmed:99": [0.0, 1.0]})
+    data = prefilter.load_labels(prefilter.LABELS)
+    prefilter.add_documents(data, [*keep, *unhelpful, "pubmed:99", "pubmed:98"], "train")
+    for entry in data["documents"]:
+        if entry["id"] != "pubmed:98":  # pubmed:98 stays unchecked
+            entry["label"] = "keep" if entry["id"] in keep else "unhelpful"
+            entry["group"] = None if entry["id"] in keep else 1
+    prefilter.save_labels(prefilter.LABELS, data)
+    asyncio.run(prefilter.train(url, table))
+    model = json.loads((tmp_path / "model.json").read_text())
+    assert model["trained_on"] == 60  # pubmed:99 is dropped by a rule, pubmed:98 unchecked
+    assert model["threshold"] is None  # fewer than 100 below any cut-off
+    assert len(model["weights"]) == 2 and model["embeddings"] == table
+    assert model["labels_hash"] == prefilter.labels_hash(prefilter.checked(data, "train"))

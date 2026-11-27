@@ -32,6 +32,7 @@ labels in the Pre-filter screen of the debug UI. Method and results: research/do
 
 import argparse
 import asyncio
+import hashlib
 import json
 import math
 import os
@@ -350,8 +351,10 @@ def parser() -> argparse.ArgumentParser:
     propose = commands.add_parser("propose", help="let a local LLM propose labels")
     propose.add_argument("--set")
     propose.add_argument("--limit", type=int)
-    commands.add_parser("train", help="train the classifier on the checked training labels")
-    commands.add_parser("measure", help="measure drops, safety and speed into the results file")
+    train = commands.add_parser("train", help="train the classifier on the checked training labels")
+    measure = commands.add_parser("measure", help="measure drops, safety and speed")
+    for command in (train, measure):
+        command.add_argument("--embeddings", default=EMBEDDINGS, help="table of the AI index")
     return cli
 
 
@@ -408,6 +411,68 @@ def score_rows(
     for document_id, vector in rows:
         if vector is not None:
             yield document_id, keep_probability(weights, bias, vector)
+
+
+def fit(vectors: list[list[float]], labels: list[str]) -> tuple[list[float], float, list[float]]:
+    """Logistic regression for `keep`: weights, bias, and the out-of-fold probability of keep of
+    every input (5 stratified folds), which the threshold is chosen on."""
+    from sklearn.linear_model import LogisticRegression
+    from sklearn.model_selection import StratifiedKFold, cross_val_predict
+
+    targets = [label == "keep" for label in labels]
+    classifier = LogisticRegression(class_weight="balanced", max_iter=2000)
+    folds = StratifiedKFold(n_splits=5, shuffle=True, random_state=0)
+    out_of_fold = cross_val_predict(classifier, vectors, targets, cv=folds, method="predict_proba")
+    classifier.fit(vectors, targets)
+    # The classes are [False, True], so coef_ and the second column are those of keep.
+    return (
+        [float(w) for w in classifier.coef_[0]],
+        float(classifier.intercept_[0]),
+        [float(row[1]) for row in out_of_fold],
+    )
+
+
+def labels_hash(entries: Iterable[dict[str, Any]]) -> str:
+    """Which checked labels a classifier was trained on; a change makes the model stale."""
+    pairs = sorted((entry["id"], entry["label"]) for entry in entries)
+    return hashlib.sha256(json.dumps(pairs).encode()).hexdigest()
+
+
+async def rule_dropped(connection: Any, ids: list[str]) -> set[str]:
+    rows = await connection.fetch(
+        f"SELECT d.id FROM documents d WHERE d.id = ANY($1::text[]) AND {ANY_RULE}", ids
+    )
+    return {row["id"] for row in rows}
+
+
+async def train(url: str, table: str = EMBEDDINGS) -> None:
+    """Fit on the checked training labels of documents the rules keep, and fix the threshold."""
+    entries = checked(load_labels(LABELS), "train")
+    ids = [entry["id"] for entry in entries]
+    connection = await connect(url)
+    try:
+        dropped = await rule_dropped(connection, ids)
+        vectors = await embeddings(connection, ids, table)
+    finally:
+        await connection.close()
+    used = [e for e in entries if e["id"] not in dropped and e["id"] in vectors]
+    weights, bias, out_of_fold = fit([vectors[e["id"]] for e in used], [e["label"] for e in used])
+    threshold = choose_threshold(list(zip(out_of_fold, [e["label"] for e in used], strict=True)))
+    below = 0 if threshold is None else sum(score < threshold for score in out_of_fold)
+    model = {
+        "weights": weights,
+        "bias": bias,
+        "threshold": threshold,
+        "trained_on": len(used),
+        "below_threshold": below,
+        "labels_hash": labels_hash(entries),
+        "embeddings": table,
+    }
+    MODEL.parent.mkdir(parents=True, exist_ok=True)
+    MODEL.write_text(json.dumps(model, indent=2) + "\n", encoding="utf-8")
+    print(f"trained on {len(used)}; threshold {threshold}, {below} training documents below it")
+    if threshold is None:
+        print("No safe threshold yet: label more candidates with low scores, then train again")
 
 
 PROPOSER = ("Qwen/Qwen3-4B", "1cfa9a7208912126459214e8b04321603b3df60c")
@@ -490,6 +555,8 @@ def main(argv: list[str] | None = None) -> None:
         asyncio.run(sample(args.database_url, args.set, args.n))
     elif args.command == "propose":
         asyncio.run(propose(args.database_url, args.set, args.limit, qwen_generator()))
+    elif args.command == "train":
+        asyncio.run(train(args.database_url, args.embeddings))
     else:
         raise SystemExit(f"{args.command}: not implemented")
 
