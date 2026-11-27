@@ -39,6 +39,7 @@ import os
 import tempfile
 import time
 from collections.abc import Callable, Iterable, Iterator
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -473,6 +474,118 @@ async def train(url: str, table: str = EMBEDDINGS) -> None:
     print(f"trained on {len(used)}; threshold {threshold}, {below} training documents below it")
     if threshold is None:
         print("No safe threshold yet: label more candidates with low scores, then train again")
+
+
+def drop_checks(entries: Iterable[dict[str, Any]]) -> dict[str, Any]:
+    """Checked drops, the wrong ones among them (labeled keep) and the safety bar."""
+    labels = [entry["label"] for entry in entries if entry["label"] is not None]
+    wrong = labels.count("keep")
+    return {
+        "checked": len(labels),
+        "wrong": wrong,
+        "upper_bound": upper_bound(wrong, len(labels)),
+        "safe": passes_safety(wrong, len(labels)),
+    }
+
+
+def approach(
+    dropped: int, by_source: dict[str, int], total: int, checks: dict[str, Any], safe: bool
+) -> dict[str, Any]:
+    share = dropped / total if total else 0.0
+    return {
+        "dropped": dropped,
+        "share": share,
+        "by_source": by_source,
+        "checked": checks["checked"],
+        "wrong": checks["wrong"],
+        "upper_bound": checks["upper_bound"],
+        "passes": {"safety": safe, "usefulness_2": share >= 0.02, "usefulness_3": share >= 0.03},
+    }
+
+
+def summarize(
+    labels: dict[str, Any],
+    counts: dict[str, Any],
+    model: dict[str, Any] | None,
+    scored: dict[str, Any],
+    timing: dict[str, Any],
+    hits: dict[str, list[str]] | None = None,
+) -> dict[str, Any]:
+    """The results file: drops per approach and rule, their checked samples, the model, the
+    LLM's agreement with people and the share of unhelpful documents in the random sample."""
+    hits = hits or {}
+    documents = labels["documents"]
+
+    def in_set(name: str) -> list[dict[str, Any]]:
+        return [entry for entry in documents if name in entry["sets"]]
+
+    totals, all_rules = counts.get("_total", {}), counts.get("_all", {})
+    total = sum(totals.values())
+    rule_checks = drop_checks(in_set("drops-rules"))
+    rules = approach(sum(all_rules.values()), all_rules, total, rule_checks, rule_checks["safe"])
+
+    combined = None
+    if model is not None and model.get("threshold") is not None:
+        embedded, model_dropped = scored.get("embedded", {}), scored.get("dropped", {})
+        by_source = dict(all_rules)
+        cannot_judge = 0
+        for source, n in totals.items():
+            kept = n - all_rules.get(source, 0)
+            seen = embedded.get(source, 0)
+            cannot_judge += kept - seen
+            extra = round(model_dropped.get(source, 0) * kept / seen) if seen else 0
+            by_source[source] = by_source.get(source, 0) + extra
+        model_checks = drop_checks(in_set("drops-model"))
+        safe = rule_checks["safe"] and model_checks["safe"]
+        combined = approach(sum(by_source.values()), by_source, total, model_checks, safe)
+        combined |= {"cannot_judge": cannot_judge, "extrapolated": True}
+
+    per_rule = {}
+    for name in RULES:
+        mine = [
+            entry
+            for entry in in_set("drops-rules") + in_set(f"drops-rule:{name}")
+            if name in hits.get(entry["id"], [])
+        ]
+        checks = drop_checks({entry["id"]: entry for entry in mine}.values())
+        per_rule[name] = {
+            "dropped": sum(counts.get(name, {}).values()),
+            "by_source": counts.get(name, {}),
+            "checked": checks["checked"],
+            "wrong": checks["wrong"],
+            "seconds": counts.get("_seconds", {}).get(name),
+            "variant": name not in RULE_SET,
+        }
+
+    labeled = [entry for entry in documents if entry["label"] is not None]
+    proposed = [entry for entry in labeled if entry["proposal"] is not None]
+    random_checked = [entry for entry in in_set("random") if entry["label"] is not None]
+    unhelpful = [entry for entry in random_checked if entry["label"] == "unhelpful"]
+    return {
+        "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
+        "labels_hash": labels_hash(labeled),
+        "total": total,
+        "approaches": {"rules": rules, "rules+model": combined},
+        "rules": per_rule,
+        "model": None
+        if model is None
+        else {
+            "threshold": model.get("threshold"),
+            "trained_on": model.get("trained_on"),
+            "below_threshold": model.get("below_threshold"),
+            "stale": labels_hash(checked(labels, "train")) != model.get("labels_hash"),
+        },
+        "llm_agreement": {
+            "checked": len(proposed),
+            "agreed": sum(entry["proposal"]["label"] == entry["label"] for entry in proposed),
+        },
+        "random": {
+            "checked": len(random_checked),
+            "unhelpful": len(unhelpful),
+            "by_group": {g: sum(str(e["group"]) == g for e in unhelpful) for g in ("1", "2")},
+        },
+        "timing": timing,
+    }
 
 
 PROPOSER = ("Qwen/Qwen3-4B", "1cfa9a7208912126459214e8b04321603b3df60c")

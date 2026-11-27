@@ -499,3 +499,117 @@ def test_train_uses_checked_labels_the_rules_keep(prefilter, url, tmp_path, monk
     assert model["threshold"] is None  # fewer than 100 below any cut-off
     assert len(model["weights"]) == 2 and model["embeddings"] == table
     assert model["labels_hash"] == prefilter.labels_hash(prefilter.checked(data, "train"))
+
+
+def entry(document_id: str, sets: list[str], label: str | None, **fields: Any) -> dict[str, Any]:
+    group = 1 if label == "unhelpful" else None
+    return {
+        "id": document_id,
+        "sets": sets,
+        "proposal": None,
+        "proposal_raw": None,
+        "label": label,
+        "group": group,
+        "note": "",
+        "checked_at": None,
+    } | fields
+
+
+def counts(total: int = 1000, rules_all: int = 0, **rules: int) -> dict[str, Any]:
+    base: dict[str, Any] = {"_total": {"pubmed": total}, "_all": {"pubmed": rules_all}}
+    return base | {"_seconds": {"_all": 0.5}} | {rule: {"pubmed": n} for rule, n in rules.items()}
+
+
+def model(threshold: float | None = 0.1, labels_hash: str = "", **fields: Any) -> dict[str, Any]:
+    return {
+        "weights": [1.0],
+        "bias": 0.0,
+        "threshold": threshold,
+        "trained_on": 500,
+        "below_threshold": 120,
+        "labels_hash": labels_hash,
+        "embeddings": "emb",
+    } | fields
+
+
+def scored(embedded: int = 0, dropped: int = 0) -> dict[str, Any]:
+    return {"embedded": {"pubmed": embedded}, "dropped": {"pubmed": dropped}}
+
+
+def test_summarize_counts_wrong_drops_and_safety(prefilter):
+    drops = [entry(f"pubmed:{i}", ["drops-rules"], "unhelpful") for i in range(299)]
+    labels = {"documents": [*drops, entry("pubmed:x", ["drops-rules"], "keep")]}
+    result = prefilter.summarize(labels, counts(total=1000, rules_all=30), None, {}, {})
+    rules = result["approaches"]["rules"]
+    assert (rules["dropped"], rules["share"]) == (30, 0.03)
+    assert (rules["checked"], rules["wrong"]) == (300, 1)
+    assert rules["upper_bound"] == pytest.approx(0.0157, abs=2e-4)
+    assert rules["passes"] == {"safety": True, "usefulness_2": True, "usefulness_3": True}
+    assert result["approaches"]["rules+model"] is None  # no model yet
+
+
+def test_summarize_counts_documents_without_embedding_as_cannot_judge(prefilter):
+    result = prefilter.summarize(
+        {"documents": []}, counts(total=100), model(), scored(embedded=40, dropped=4), {}
+    )
+    combined = result["approaches"]["rules+model"]
+    assert combined["cannot_judge"] == 60
+    assert combined["dropped"] == 10  # 4 of 40 embedded, scaled to the 100 the rules keep
+    assert combined["extrapolated"] is True
+
+
+def test_summarize_model_safety_needs_both_samples(prefilter):
+    rule_drops = [entry(f"pubmed:r{i}", ["drops-rules"], "unhelpful") for i in range(300)]
+    model_drops = [entry(f"pubmed:m{i}", ["drops-model"], "keep") for i in range(2)]
+    model_drops += [entry(f"pubmed:n{i}", ["drops-model"], "unhelpful") for i in range(298)]
+    labels = {"documents": rule_drops + model_drops}
+    result = prefilter.summarize(labels, counts(), model(), scored(embedded=10), {})
+    assert result["approaches"]["rules"]["passes"]["safety"]
+    combined = result["approaches"]["rules+model"]
+    assert (combined["checked"], combined["wrong"]) == (300, 2)
+    assert not combined["passes"]["safety"]
+
+
+def test_summarize_reports_each_rule_with_its_own_checks(prefilter):
+    labels = {
+        "documents": [
+            entry("pubmed:1", ["drops-rules"], "unhelpful"),
+            entry("pubmed:2", ["drops-rule:erratum"], "keep"),
+            entry("pubmed:3", ["drops-rules"], None),
+        ]
+    }
+    hits = {"pubmed:1": ["no_summary", "erratum"], "pubmed:2": ["erratum"], "pubmed:3": ["erratum"]}
+    result = prefilter.summarize(labels, counts(erratum=7, no_summary=3), None, {}, {}, hits)
+    assert result["rules"]["erratum"] | {"by_source": None} == {
+        "dropped": 7,
+        "by_source": None,
+        "checked": 2,
+        "wrong": 1,
+        "seconds": None,
+        "variant": False,
+    }
+    assert result["rules"]["no_summary"]["checked"] == 1
+
+
+def test_summarize_marks_model_stale_when_train_labels_changed(prefilter):
+    labels = {"documents": [entry("pubmed:1", ["train"], "keep")]}
+    result = prefilter.summarize(labels, counts(), model(labels_hash="old"), scored(), {})
+    assert result["model"]["stale"]
+    fresh = prefilter.labels_hash(labels["documents"])
+    assert not prefilter.summarize(labels, counts(), model(labels_hash=fresh), scored(), {})[
+        "model"
+    ]["stale"]
+
+
+def test_summarize_reports_llm_agreement_and_the_random_sample(prefilter):
+    proposal = {"label": "unhelpful", "group": 2, "reason": "x", "model": "m"}
+    labels = {
+        "documents": [
+            entry("pubmed:1", ["random"], "unhelpful", group=2, proposal=proposal),
+            entry("pubmed:2", ["random"], "keep", proposal=proposal),
+            entry("pubmed:3", ["random"], None, proposal=proposal),
+        ]
+    }
+    result = prefilter.summarize(labels, counts(), None, {}, {})
+    assert result["llm_agreement"] == {"checked": 2, "agreed": 1}
+    assert result["random"] == {"checked": 2, "unhelpful": 1, "by_group": {"1": 0, "2": 1}}
