@@ -613,3 +613,26 @@ def test_summarize_reports_llm_agreement_and_the_random_sample(prefilter):
     result = prefilter.summarize(labels, counts(), None, {}, {})
     assert result["llm_agreement"] == {"checked": 2, "agreed": 1}
     assert result["random"] == {"checked": 2, "unhelpful": 1, "by_group": {"1": 0, "2": 1}}
+
+
+def test_drop_samples_are_added_once(prefilter):
+    data = {"version": 1, "guide": [], "documents": []}
+    prefilter.add_drop_samples(
+        data, ["pubmed:1", "pubmed:2"], ["pubmed:3"], {"erratum": ["pubmed:4"]}
+    )
+    before = json.dumps(data, sort_keys=True)
+    prefilter.add_drop_samples(data, ["pubmed:9"], ["pubmed:8"], {"erratum": ["pubmed:7"]})
+    assert json.dumps(data, sort_keys=True) == before
+    sets = {e["id"]: e["sets"] for e in data["documents"]}
+    assert sets == {
+        "pubmed:1": ["drops-rules"],
+        "pubmed:2": ["drops-rules"],
+        "pubmed:3": ["drops-model"],
+        "pubmed:4": ["drops-rule:erratum"],
+    }
+
+
+def test_drop_samples_keep_labels_of_documents_already_known(prefilter):
+    data = {"version": 1, "guide": [], "documents": [entry("pubmed:1", ["train"], "keep")]}
+    prefilter.add_drop_samples(data, ["pubmed:1"], [], {})
+    assert data["documents"] == [entry("pubmed:1", ["train", "drops-rules"], "keep")]

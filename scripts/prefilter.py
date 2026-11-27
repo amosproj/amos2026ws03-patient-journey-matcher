@@ -476,6 +476,22 @@ async def train(url: str, table: str = EMBEDDINGS) -> None:
         print("No safe threshold yet: label more candidates with low scores, then train again")
 
 
+def add_drop_samples(
+    data: dict[str, Any],
+    rule_drops: list[str],
+    model_drops: list[str],
+    per_rule: dict[str, list[str]],
+) -> None:
+    """Add the samples of drops to check, each set only once: a later run must not change a
+    sample that people already checked."""
+    filled = {name for entry in data["documents"] for name in entry["sets"]}
+    samples = {"drops-rules": rule_drops, "drops-model": model_drops}
+    samples |= {f"drops-rule:{rule}": ids for rule, ids in per_rule.items()}
+    for name, ids in samples.items():
+        if name not in filled and ids:
+            add_documents(data, ids, name)
+
+
 def drop_checks(entries: Iterable[dict[str, Any]]) -> dict[str, Any]:
     """Checked drops, the wrong ones among them (labeled keep) and the safety bar."""
     labels = [entry["label"] for entry in entries if entry["label"] is not None]
