@@ -1,6 +1,6 @@
 import type { JourneyState } from "@matcher/core";
 import { readGraph } from "./graph-reader.ts";
-import { LUNG, NSCLC, SCLC } from "./histology.ts";
+import { HISTOLOGIES } from "./histology.ts";
 import { type DiseaseProfile, profileOf } from "./profile.ts";
 import {
   type ClinicalEvidence,
@@ -218,12 +218,16 @@ function buildQuery(reading: Reading, fromGraph: boolean): GraphQuery {
   };
   const treatments = new Map<string, number>();
   const relations = new Map<string, number>();
-  const lungHistologies = new Set<string>();
-  if ([LUNG, NSCLC, SCLC].some((id) => diagnoses.has(id))) {
-    // A subtype may be documented as a diagnosis in its own right or in a pathology field.
+  const documented = new Set<string>();
+  const patientHistology = HISTOLOGIES.find(({ profile, kinds }) =>
+    [profile.diagnosis, ...kinds].some((id) => diagnoses.has(id)),
+  );
+  if (patientHistology) {
+    const { kinds, profile, name } = patientHistology;
+    // A kind may be documented as a diagnosis in its own right or in a pathology field.
     for (const fact of diagnosticHistory)
       if (
-        (fact.entity === NSCLC || fact.entity === SCLC) &&
+        kinds.includes(fact.entity) &&
         fact.validAt &&
         !(fact.invalidAt && fact.invalidAt <= cutoff)
       )
@@ -233,36 +237,41 @@ function buildQuery(reading: Reading, fromGraph: boolean): GraphQuery {
           subtype: fact.entity,
           status: fact.status,
         });
-    const last = histologyNotes
+    const notes = histologyNotes.filter((note) => kinds.includes(note.subtype));
+    const last = notes
       .filter((note) => note.status === "asserted")
       .map((note) => note.validAt)
       .sort()
       .at(-1);
-    for (const note of latest(histologyNotes, (note) => note.subtype, cutoff)) {
+    for (const note of latest(notes, (note) => note.subtype, cutoff)) {
       diagnosisDates.set(note.subtype, note.validAt);
       if (note.status === "negated") {
         excluded.add(note.subtype);
         diagnoses.delete(note.subtype);
       } else if (note.status === "asserted") excluded.delete(note.subtype);
       if (!last || note.validAt < last || note.status !== "asserted") continue;
-      lungHistologies.add(note.subtype);
+      documented.add(note.subtype);
       evidence.push({
         date: note.validAt,
         ref: note.ref,
         concept: note.subtype,
-        diagnosis: LUNG,
+        diagnosis: profile.diagnosis,
         status: "asserted",
-        detail: "Documented lung histology",
+        detail: `Documented ${name}`,
       });
     }
   }
-  const histology = [
-    { observed: NSCLC, conflicting: SCLC },
-    { observed: SCLC, conflicting: NSCLC },
-  ].find(
-    ({ observed, conflicting }) =>
-      lungHistologies.has(observed) && !lungHistologies.has(conflicting),
-  );
+  const [first, second] = patientHistology?.kinds ?? [];
+  const histology =
+    first && second
+      ? [
+          { observed: first, conflicting: second },
+          { observed: second, conflicting: first },
+        ].find(
+          ({ observed, conflicting }) =>
+            documented.has(observed) && !documented.has(conflicting),
+        )
+      : undefined;
 
   // A ruled-out subtype also excludes its descendants unless a later diagnosis names one.
   for (const id of [...excluded]) {

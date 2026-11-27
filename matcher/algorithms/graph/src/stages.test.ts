@@ -196,6 +196,17 @@ test("treatment papers wait for a treatment decision, diagnosis papers for a tes
   ).toBeUndefined();
 });
 
+test("a profile's patterns for a general state hold only for papers on its disease", () => {
+  // BCR-ABL is a leukemia gene, not a biochemical recurrence
+  expect(
+    paperStages("BCR-ABL inhibitors in chronic myeloid leukemia", {}),
+  ).toEqual(new Set());
+  const bcr = "Imaging at biochemical recurrence";
+  expect(paperStages(bcr, {}).has("recurrence")).toBe(false);
+  expect(paperStages(bcr, {}, prostate).has("recurrence")).toBe(true);
+  expect(paperStages("Outcomes in mCRPC", {}).has("metastatic")).toBe(false);
+});
+
 test("resistance, regional nodes and a metastasis-free endpoint do not establish distant disease", () => {
   for (const title of [
     "Treatment of non-metastatic CRPC",

@@ -1,5 +1,6 @@
 // Disease profiles: one disease's rules on top of the generic ones (graph-normalization.md#ranking)
 
+import { lung } from "./profiles/lung.ts";
 import { prostate } from "./profiles/prostate.ts";
 import type { Reading } from "./reading.ts";
 import { broaderDiagnosis } from "./resolve.ts";
@@ -42,7 +43,7 @@ export type DiseaseProfile = {
   /** Course flags its rules read; every patient has those of every profile */
   flags?: Readonly<Record<string, Flag>>;
   // ranking rules: only for a patient with the disease and papers on it
-  /** Own disease states, as in data/stages.json */
+  /** Own disease states, or patterns for a general one under its id; as in data/stages.json */
   stages?: readonly StageRow[];
   /** States a concept implies for a patient with the disease */
   impliedStages?: Readonly<Record<string, readonly Stage[]>>;
@@ -59,12 +60,18 @@ export type DiseaseProfile = {
     title: string,
     mesh: Readonly<Record<string, number>>,
   ): string | undefined;
+  /** Two kinds that rule each other out, with the short names of a labelled histology field */
+  histology?: {
+    /** In the evidence */
+    name: string;
+    kinds: Readonly<Record<string, readonly string[]>>;
+  };
   /** Generic rules for diseases without a profile that it does without */
   skips?: readonly ("idfFloor" | "diagnosisAspect")[];
 };
 
 /** One per disease; a patient with two gets the first */
-export const PROFILES: readonly DiseaseProfile[] = [prostate];
+export const PROFILES: readonly DiseaseProfile[] = [prostate, lung];
 
 /** The profile's diagnosis or a narrower form (concepts.json) */
 export function isProfileDisease(profile: DiseaseProfile, id: string): boolean {

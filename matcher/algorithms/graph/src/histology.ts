@@ -1,23 +1,39 @@
 import { normalizeName } from "@matcher/terminology";
+import { type DiseaseProfile, PROFILES } from "./profile.ts";
 import { conceptOf } from "./resolve.ts";
 import { statusFromText } from "./status.ts";
 
-export const LUNG = "mesh:D008175";
-export const NSCLC = "mesh:D002289";
-export const SCLC = "mesh:D055752";
+/** The histology kinds of a profile and the names that find them */
+export type Histology = {
+  profile: DiseaseProfile;
+  name: string;
+  kinds: readonly string[];
+  names: ReadonlyMap<string, string>;
+};
 
-// These short histology values only identify a lung subtype in a lung cancer record.
-const subtypes = new Map<string, string>();
-for (const [id, ...shortNames] of [
-  [NSCLC, "NSCLC", "non-small cell", "nichtkleinzellig"],
-  [SCLC, "SCLC", "small cell", "kleinzellig"],
-]) {
-  for (const name of [...(conceptOf(id)?.names ?? []), ...shortNames])
-    subtypes.set(normalizeName(name), id);
-}
+// Short values only identify a kind in a record of the profile's disease.
+export const HISTOLOGIES: readonly Histology[] = PROFILES.flatMap((profile) => {
+  if (!profile.histology) return [];
+  const names = new Map<string, string>();
+  for (const [id, short] of Object.entries(profile.histology.kinds))
+    for (const name of [...(conceptOf(id)?.names ?? []), ...short])
+      names.set(normalizeName(name), id);
+  return [
+    {
+      profile,
+      name: profile.histology.name,
+      kinds: Object.keys(profile.histology.kinds),
+      names,
+    },
+  ];
+});
 
-/** A short value only counts in a labelled field. Keep an explicit exclusion with its subtype. */
-export function lungHistology(text: string, field?: unknown) {
+/** A short value only counts in a labelled field. Keep an explicit exclusion with its kind. */
+export function histologyOf(
+  { kinds, names }: Histology,
+  text: string,
+  field?: unknown,
+) {
   const value =
     typeof field === "string"
       ? field
@@ -25,17 +41,17 @@ export function lungHistology(text: string, field?: unknown) {
           text,
         )?.[1];
   if (!value || value.includes("?")) return;
-  const id = subtypes.get(normalizeName(value));
+  const id = names.get(normalizeName(value));
   if (id) {
     const status = statusFromText(text, [value])?.status ?? "asserted";
     return { id, status };
   }
-  for (const subtype of [NSCLC, SCLC]) {
-    const names = [...subtypes]
-      .filter(([, id]) => id === subtype)
+  for (const kind of kinds) {
+    const kindNames = [...names]
+      .filter(([, id]) => id === kind)
       .map(([name]) => name);
-    const status = statusFromText(value, names)?.status;
+    const status = statusFromText(value, kindNames)?.status;
     if (status === "negated" || status === "suspected")
-      return { id: subtype, status };
+      return { id: kind, status };
   }
 }

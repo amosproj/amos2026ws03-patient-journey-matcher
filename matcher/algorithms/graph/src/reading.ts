@@ -1,6 +1,6 @@
 import type { JourneyState } from "@matcher/core";
 import { normalizeName } from "@matcher/terminology";
-import { LUNG, lungHistology, NSCLC, SCLC } from "./histology.ts";
+import { HISTOLOGIES, histologyOf } from "./histology.ts";
 import { PROFILES } from "./profile.ts";
 import type { QueryWeights } from "./query.ts";
 import { type Concept, QUALIFIERS, type Terminology } from "./resolve.ts";
@@ -231,36 +231,41 @@ export function startReading(
     field?: unknown,
     statementStatus?: Status,
   ) {
-    const result = lungHistology(text, field);
-    if (
-      !result ||
-      (result.status === "asserted" &&
-        statementStatus &&
-        !["asserted", "unknown"].includes(statementStatus))
-    )
-      return;
-    const sites = site?.startsWith("mesh:")
-      ? [site]
-      : terminology.findDiseases(site || text).map(({ concept }) => concept.id);
-    // A standalone pathology value can refer to a single already documented diagnosis.
-    if (!sites.length && !site)
-      for (const condition of latest(
-        reading.diagnosticHistory,
-        (c) => c.entity,
-        date,
-      ))
-        if (condition.status !== "negated" && condition.status !== "planned")
-          sites.push(condition.entity);
-    if (
-      sites.length &&
-      sites.every((id) => id === LUNG || id === NSCLC || id === SCLC)
-    )
-      histologyNotes.push({
-        validAt: date,
-        ref,
-        subtype: result.id,
-        status: result.status,
-      });
+    for (const histology of HISTOLOGIES) {
+      const result = histologyOf(histology, text, field);
+      if (
+        !result ||
+        (result.status === "asserted" &&
+          statementStatus &&
+          !["asserted", "unknown"].includes(statementStatus))
+      )
+        continue;
+      const sites = site?.startsWith("mesh:")
+        ? [site]
+        : terminology
+            .findDiseases(site || text)
+            .map(({ concept }) => concept.id);
+      // A standalone pathology value can refer to a single already documented diagnosis.
+      if (!sites.length && !site)
+        for (const condition of latest(
+          reading.diagnosticHistory,
+          (c) => c.entity,
+          date,
+        ))
+          if (condition.status !== "negated" && condition.status !== "planned")
+            sites.push(condition.entity);
+      const { diagnosis } = histology.profile;
+      if (
+        sites.length &&
+        sites.every((id) => id === diagnosis || histology.kinds.includes(id))
+      )
+        histologyNotes.push({
+          validAt: date,
+          ref,
+          subtype: result.id,
+          status: result.status,
+        });
+    }
   }
   // For the disease state: concept IDs of the active statements, texts of all so far.
   const stageIds: string[] = [];

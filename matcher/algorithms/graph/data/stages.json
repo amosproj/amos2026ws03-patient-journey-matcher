@@ -1,5 +1,5 @@
 {
-  "_comment": "Disease states for graph matching (Documentation/design/graph-normalization.md#ranking). They apply to a paper on one of the patient's cancers; a disease profile adds the states of its disease (data/profiles). A paper is about a state when its title matches `title` (case-insensitive, JavaScript) or one of `mesh` is a major topic. A patient is in a state when an active statement has one of `concepts`, or an entity name matches `names` (German and English, after normalizeName). An `advanced` state puts screening, surveillance and localized disease behind the patient. Which states contradict each other is in stages.ts.",
+  "_comment": "Disease states for graph matching (Documentation/design/graph-normalization.md#ranking). They apply to a paper on one of the patient's cancers; a disease profile adds the states of its disease, and patterns for one of these states under its id (data/profiles). A paper is about a state when its title matches `title` (case-insensitive, JavaScript) or one of `mesh` is a major topic. A patient is in a state when an active statement has one of `concepts`, or an entity name matches `names` (German and English, after normalizeName). An `advanced` state puts screening, surveillance and localized disease behind the patient. Which states contradict each other is in stages.ts.",
   "stages": [
     {
       "id": "screening",
@@ -24,17 +24,17 @@
     },
     {
       "id": "recurrence",
-      "title": "biochemical(?:ly)? (?:recurren|relapse|failure|progression)|\\bbcr\\b|psa (?:recurren|relapse|failure|persistence)|recurrent prostate|salvage|\\b(?:recurrent|relapsed|relapsing)\\b",
+      "title": "salvage|\\b(?:recurrent|relapsed|relapsing)\\b",
       "mesh": ["mesh:D009364"],
       "concepts": ["mesh:D009364"],
-      "names": "rezidiv(?!ierend)|recurren|relapse|psa anstieg nach"
+      "names": "rezidiv(?!ierend)|recurren|relapse"
     },
     {
       "id": "metastatic",
-      "title": "(?<!non[- ]?)(?<!lymph node[- ])(?<!nodal[- ])\\bmetasta(?!s[ie]s[- ]free)|\\b(?:oligometasta|m(?:crpc|hspc|cspc)\\b|[cp]?m1[abc]?\\b)",
+      "title": "(?<!non[- ]?)(?<!lymph node[- ])(?<!nodal[- ])\\bmetasta(?!s[ie]s[- ]free)|\\b(?:oligometasta|[cp]?m1[abc]?\\b)",
       "mesh": ["mesh:D009362"],
       "concepts": ["mesh:D009362", "mesh:D001859", "mesh:D008113"],
-      "names": "(?<!non ?)(?<!lymph node )(?<!nodal )\\bmetasta|\\b(?:fernmetast|knochenmetast|lebermetast|hirnmetast|lungenmetast|peritonealmetast|oligometasta|m(?:crpc|hspc|cspc)\\b|[cp]?m1[abc]?\\b)",
+      "names": "(?<!non ?)(?<!lymph node )(?<!nodal )\\bmetasta|\\b(?:fernmetast|knochenmetast|lebermetast|hirnmetast|lungenmetast|peritonealmetast|oligometasta|[cp]?m1[abc]?\\b)",
       "advanced": true
     }
   ]

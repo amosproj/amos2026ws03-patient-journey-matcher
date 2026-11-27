@@ -12,6 +12,7 @@ import cues from "../data/status-cues.json" with { type: "json" };
 import timeline from "../data/timeline.json" with { type: "json" };
 import { PROFILES } from "./profile.ts";
 import { ROLES } from "./query.ts";
+import { conceptOf } from "./resolve.ts";
 import { STAGES, type StageRow } from "./stages.ts";
 import { CUE_STATUSES } from "./status.ts";
 import type { ParameterRule } from "./timeline-reader.ts";
@@ -101,13 +102,20 @@ test("the stage and timeline tables reference curated patient concepts", () => {
       expect(CONCEPT_IDS).toContain(id);
     if (row.implies) expect(CONCEPT_IDS).toContain(row.implies);
   }
-  expect(new Set(STAGES).size, "each state once").toBe(STAGES.length);
+  for (const table of [
+    stages.stages,
+    ...PROFILES.map((profile) => profile.stages ?? []),
+  ]) {
+    const ids = table.map(({ id }) => id);
+    expect(new Set(ids).size, "each state once per table").toBe(ids.length);
+  }
   const rows: StageRow[] = [
     ...stages.stages,
     ...PROFILES.flatMap((profile) => profile.stages ?? []),
   ];
   for (const stage of rows) {
     expect(STAGES).toContain(stage.id);
+    expect(stage.title, stage.id).not.toBe("");
     for (const id of stage.concepts) expect(CONCEPT_IDS).toContain(id);
     for (const id of stage.ends ?? []) expect(STAGES).toContain(id);
   }
@@ -129,6 +137,12 @@ test("the stage and timeline tables reference curated patient concepts", () => {
 test("a disease profile references curated concepts, known states and MeSH topics", () => {
   for (const profile of PROFILES) {
     expect(CONCEPT_IDS).toContain(profile.diagnosis);
+    const kinds = Object.entries(profile.histology?.kinds ?? {});
+    if (profile.histology) expect(kinds).toHaveLength(2);
+    for (const [id, names] of kinds) {
+      expect(conceptOf(id)?.type, id).toBe("disease");
+      expect(names.length, id).toBeGreaterThan(0);
+    }
     for (const [id, states] of Object.entries(profile.impliedStages ?? {})) {
       expect(CONCEPT_IDS).toContain(id);
       for (const stage of states) expect(STAGES).toContain(stage);

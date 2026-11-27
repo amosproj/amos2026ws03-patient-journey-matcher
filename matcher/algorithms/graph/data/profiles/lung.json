@@ -1,0 +1,11 @@
+{
+  "_comment": "The lung cancer profile (Documentation/design/graph-normalization.md#ranking): its two histologies, which rule each other out, with the short names a labelled histology field may use beside their MeSH names.",
+  "diagnosis": "mesh:D008175",
+  "histology": {
+    "name": "lung histology",
+    "kinds": {
+      "mesh:D002289": ["NSCLC", "non-small cell", "nichtkleinzellig"],
+      "mesh:D055752": ["SCLC", "small cell", "kleinzellig"]
+    }
+  }
+}

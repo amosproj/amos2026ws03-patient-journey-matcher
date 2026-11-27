@@ -29,7 +29,15 @@ export function createGraphMatcher(
         focusDate: state.focus.date,
         conceptOnly: query.conceptOnly,
         diagnoses: Object.fromEntries(query.diagnoses),
-        histology: query.histology,
+        // with names, as the conflicting kind is no patient concept
+        histology: query.histology && {
+          ...query.histology,
+          names: Object.fromEntries(
+            [query.histology.observed, query.histology.conflicting].map(
+              (id) => [id, terms.conceptOf(id)?.name ?? id],
+            ),
+          ),
+        },
         concepts: query.concepts,
         stage: { ...course, ...flags, states: [...states] },
         treatments: Object.fromEntries(query.treatments),

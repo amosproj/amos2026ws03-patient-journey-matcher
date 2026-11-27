@@ -56,14 +56,34 @@ const stageData = (stage: StageRow, profile?: DiseaseProfile): StageData => ({
   ...(profile && { profile }),
 });
 
+const GENERAL: ReadonlySet<Stage> = new Set(data.stages.map(({ id }) => id));
+// A profile row with a general state's id adds to it: names for every journey, as reading rules,
+// the title only for papers on the profile's disease.
+const extensions = (id: Stage) =>
+  PROFILES.flatMap((profile) =>
+    (profile.stages ?? [])
+      .filter((stage) => stage.id === id)
+      .map((stage) => ({ profile, stage })),
+  );
 const STAGE_DATA: readonly StageData[] = [
-  ...data.stages.map((stage) => stageData(stage)),
+  ...data.stages.flatMap((stage) => {
+    const more = extensions(stage.id);
+    const names = [stage, ...more.map((one) => one.stage)].map((s) => s.names);
+    return [
+      stageData({ ...stage, names: names.filter(Boolean).join("|") }),
+      ...more.map((one) => stageData({ ...one.stage, names: "" }, one.profile)),
+    ];
+  }),
   ...PROFILES.flatMap((profile) =>
-    (profile.stages ?? []).map((stage) => stageData(stage, profile)),
+    (profile.stages ?? [])
+      .filter((stage) => !GENERAL.has(stage.id))
+      .map((stage) => stageData(stage, profile)),
   ),
 ];
 
-export const STAGES: readonly Stage[] = STAGE_DATA.map((stage) => stage.id);
+export const STAGES: readonly Stage[] = [
+  ...new Set(STAGE_DATA.map((stage) => stage.id)),
+];
 
 /** Patient concepts that tell a state, such as bone metastases. */
 export const STAGE_CONCEPTS: ReadonlySet<string> = new Set(
@@ -204,7 +224,11 @@ export function patientStage(
   for (const text of texts)
     for (const stage of stageCues(text)) states.add(stage);
   for (const stage of STAGE_DATA)
-    if (stage.profile !== undefined && stage.profile !== profile)
+    if (
+      stage.profile !== undefined &&
+      stage.profile !== profile &&
+      !GENERAL.has(stage.id)
+    )
       states.delete(stage.id);
   for (const stage of STAGE_DATA)
     if (states.has(stage.id)) for (const id of stage.ends) states.delete(id);
