@@ -260,3 +260,70 @@ def test_rule_counts_per_rule_and_source(prefilter, url):
     assert counts["_total"] == {"pubmed": 8, "youtube": 1}
     assert set(counts["_seconds"]) == set(prefilter.RULES) | {"_all"}
     assert all(seconds >= 0 for seconds in counts["_seconds"].values())
+
+
+def test_never_above_one_reads_the_llm_grades(prefilter, tmp_path):
+    path = tmp_path / "grades.json"
+    points = {
+        "p1": {"grades": {"3": "pubmed:1", "1": "pubmed:2 pubmed:3", "0": "pubmed:4"}},
+        "p2": {"grades": {"1": "pubmed:1", "0": "pubmed:3"}},
+    }
+    path.write_text(json.dumps({"points": points}))
+    assert prefilter.never_above_one(path) == ["pubmed:2", "pubmed:3", "pubmed:4"]
+
+
+@pytest.mark.postgres
+def test_sample_train_has_no_duplicates_and_fills_short_groups(prefilter, url):
+    insert(url, *[doc(f"pubmed:{i}") for i in range(40)])
+    ids = run(lambda c: prefilter.sample_train(c, n=20), url)
+    assert len(ids) == len(set(ids)) == 20
+
+
+@pytest.mark.postgres
+def test_sample_train_takes_rule_hits_and_lab_titles(prefilter, url):
+    insert(
+        url,
+        *[doc(f"pubmed:{i}") for i in range(200)],
+        doc("pubmed:900", summary=None),
+        doc("pubmed:901", title="Enzalutamide resistance in a mouse xenograft model"),
+    )
+    ids = run(lambda c: prefilter.sample_train(c, n=20), url)
+    assert {"pubmed:900", "pubmed:901"} <= set(ids)
+
+
+@pytest.mark.postgres
+def test_sample_train_stops_when_the_table_is_smaller(prefilter, url):
+    insert(url, *[doc(f"pubmed:{i}") for i in range(5)])
+    assert len(run(lambda c: prefilter.sample_train(c, n=20), url)) == 5
+
+
+@pytest.mark.postgres
+def test_sample_random_is_repeatable(prefilter, url):
+    insert(url, *[doc(f"pubmed:{i}") for i in range(50)])
+    first = run(lambda c: prefilter.sample_random(c, n=10), url)
+    assert len(set(first)) == 10
+    assert run(lambda c: prefilter.sample_random(c, n=10), url) == first
+
+
+@pytest.mark.postgres
+def test_connect_refuses_writes(prefilter, url):
+    async def write() -> None:
+        connection = await prefilter.connect(url)
+        try:
+            await connection.execute("DELETE FROM documents")
+        finally:
+            await connection.close()
+
+    with pytest.raises(asyncpg.ReadOnlySQLTransactionError):
+        asyncio.run(write())
+
+
+@pytest.mark.postgres
+def test_sample_command_adds_to_the_labels_file(prefilter, url, tmp_path, monkeypatch):
+    monkeypatch.setattr(prefilter, "LABELS", tmp_path / "labels.json")
+    insert(url, *[doc(f"pubmed:{i}") for i in range(10)])
+    prefilter.main(["--database-url", url, "sample", "--set", "random", "--n", "4"])
+    prefilter.main(["--database-url", url, "sample", "--set", "random", "--n", "4"])
+    data = prefilter.load_labels(tmp_path / "labels.json")
+    assert len(data["documents"]) == 4
+    assert all(entry["sets"] == ["random"] for entry in data["documents"])

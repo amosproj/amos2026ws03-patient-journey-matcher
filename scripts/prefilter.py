@@ -31,6 +31,7 @@ labels in the Pre-filter screen of the debug UI. Method and results: research/do
 """
 
 import argparse
+import asyncio
 import json
 import math
 import os
@@ -130,6 +131,64 @@ async def rule_counts(connection: Any) -> dict[str, Any]:
         counts[name], counts["_seconds"][name] = await per_source(condition)
     counts["_total"], _ = await per_source("true")
     return counts
+
+
+JUDGMENTS = ROOT / "matcher/evaluation/keyword-llm-judgments.json"
+LAB_TITLE = r"\m(mice|mouse|murine|rat|rats|cell line|cell lines|in vitro|xenograft)\M"
+
+
+async def connect(url: str) -> Any:
+    """A connection that cannot write: the study only reads, also on the VM."""
+    import asyncpg
+
+    return await asyncpg.connect(url, server_settings={"default_transaction_read_only": "on"})
+
+
+def never_above_one(path: Path = JUDGMENTS) -> list[str]:
+    """The documents that the LLM grades of #58 never put above 1, for any point."""
+    best: dict[str, int] = {}
+    for point in json.loads(path.read_text(encoding="utf-8"))["points"].values():
+        for grade, ids in point["grades"].items():
+            for document_id in ids.split():
+                best[document_id] = max(best.get(document_id, 0), int(grade))
+    return sorted(document_id for document_id, grade in best.items() if grade <= 1)
+
+
+async def random_ids(
+    connection: Any, condition: str, limit: int, exclude: list[str], *args: Any
+) -> list[str]:
+    """Random ids of documents that meet `condition` and are not in `exclude`."""
+    if limit <= 0:
+        return []
+    rows = await connection.fetch(
+        f"SELECT d.id FROM documents d WHERE ({condition}) AND NOT d.id = ANY($1::text[])"
+        f" ORDER BY random() LIMIT $2",
+        exclude,
+        limit,
+        *args,
+    )
+    return [row["id"] for row in rows]
+
+
+async def sample_train(connection: Any, n: int = 500, seed: float = 0.42) -> list[str]:
+    """Training candidates, enriched for unhelpful documents: 40% random, 20% rule hits spread
+    over RULE_SET, 25% never above 1 in #58, 15% lab titles; a short group is filled at random."""
+    await connection.execute("SELECT setseed($1)", seed)
+    chosen: list[str] = []
+    per_rule = round(n * 0.20) // len(RULE_SET)
+    for rule in RULE_SET:
+        chosen += await random_ids(connection, RULES[rule], per_rule, chosen)
+    weak = [i for i in never_above_one() if i not in chosen]
+    chosen += await random_ids(connection, "d.id = ANY($3::text[])", round(n * 0.25), chosen, weak)
+    chosen += await random_ids(connection, "d.title ~* $3", round(n * 0.15), chosen, LAB_TITLE)
+    chosen += await random_ids(connection, "true", n - len(chosen), chosen)
+    return chosen[:n]
+
+
+async def sample_random(connection: Any, n: int = 300, seed: float = 0.43) -> list[str]:
+    """A uniform random sample of the whole table, for the share of unhelpful documents."""
+    await connection.execute("SELECT setseed($1)", seed)
+    return await random_ids(connection, "true", n, [])
 
 
 def load_labels(path: Path) -> dict[str, Any]:
@@ -249,9 +308,29 @@ def parser() -> argparse.ArgumentParser:
     return cli
 
 
+async def sample(url: str, set_name: str, n: int | None) -> None:
+    connection = await connect(url)
+    try:
+        if set_name == "train":
+            ids = await sample_train(connection, n or 500)
+        else:
+            ids = await sample_random(connection, n or 300)
+    finally:
+        await connection.close()
+    data = load_labels(LABELS)
+    added = add_documents(data, ids, set_name)
+    save_labels(LABELS, data)
+    print(f"{set_name}: {added} new documents, {len(ids)} in this sample")
+
+
 def main(argv: list[str] | None = None) -> None:
     args = parser().parse_args(argv)
-    raise SystemExit(f"{args.command}: not implemented")
+    if not args.database_url:
+        raise SystemExit("Set DATABASE_URL or pass --database-url")
+    if args.command == "sample":
+        asyncio.run(sample(args.database_url, args.set, args.n))
+    else:
+        raise SystemExit(f"{args.command}: not implemented")
 
 
 if __name__ == "__main__":
