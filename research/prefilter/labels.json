@@ -1,0 +1,6037 @@
+{
+  "version": 1,
+  "guide": [
+    {
+      "kind": "Pure lab or animal work: cell lines, mice, molecular mechanisms",
+      "label": "unhelpful",
+      "example": "Altered glycosylation in prostate cancer"
+    },
+    {
+      "kind": "Pure methods or statistics papers",
+      "label": "unhelpful",
+      "example": "a new scoring algorithm"
+    },
+    {
+      "kind": "Clinician work topics",
+      "label": "unhelpful",
+      "example": "Intraoperative workload of the surgeon in robot-assisted prostatectomy"
+    },
+    {
+      "kind": "Regional statistics",
+      "label": "keep",
+      "example": "Radical prostatectomy trends 2010-2020 in Ehime, Japan"
+    },
+    {
+      "kind": "Rare patient subgroups",
+      "label": "keep",
+      "example": "Radical prostatectomy outcomes in renal transplant recipients"
+    },
+    {
+      "kind": "Lab work about a drug patients take",
+      "label": "keep",
+      "example": "Non-coding RNAs in enzalutamide resistance"
+    }
+  ],
+  "documents": [
+    {
+      "id": "pubmed:27786365",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:bsh_guidelines:bshguidelines.podbean.com/713b5fb2-f40e-33ea-9aea-c12a56799887",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39326887",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:23297321",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30798791",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:7905042",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31221811",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33864745",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:10628454",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35076664",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:23424712",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30565326",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:3642164",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24548519",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34044485",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43086226",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31215726",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26045598",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:13799062",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:5662937",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29966704",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28276814",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43073156",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:13304518",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:10815123",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:B6OZv4YByvQ",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:3aUq2etULcs",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:LZ7RubRJfYI",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:1879472",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:4548356",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:asn_podcast:https://dts.podtrac.com/redirect.mp3/www.asn-online.org/media/podcast/ASN/2023_06_21_06.15PolicyPodcast.mp3",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:9zFbfyEQtXw",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:2144909",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:1930041",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:diabetes_canada_healthcare_huddle:http://www.blubrry.com/diabeteshealthcarehuddle/91639244/the-role-of-the-pharmacist-with-esmond-wong/",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:enableme_podcast:tag:soundcloud,2010:tracks/915121156",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:asn_podcast:https://dts.podtrac.com/redirect.mp3/www.asn-online.org/media/podcast/ASN/2024_01_11_01.11.24_Policy_Pod.mp3",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:Ya3hy2n1oIE",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32437497",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:EYBClOGNwr8",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:12s791l8Jtc",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:bBcABsgvrAo",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:kU1d9IRlHr4",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:jama_cardiology:1b7076eb4220e6bf13f67bc901a0da39",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:14300277",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:BHQFyZqplgY",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:7790224",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:ywFGpoVG8Ss",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:2lRn_IvIZLU",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:myeloma_voices:tag:soundcloud,2010:tracks/1054730953",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43053752",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43048140",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:14461320",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36464532",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37159880",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36959436",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43079158",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27118195",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43070046",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43066742",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43068927",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34086549",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30681074",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32315626",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34718438",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33678468",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43057057",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:14464985",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43075331",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:14353129",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28605531",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26151328",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43097106",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43076391",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28658632",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33657786",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33235372",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:19851031",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39400060",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38944546",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38100634",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:2885643",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:8332168",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30985222",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27605511",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30827347",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29378762",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:8084966",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28850393",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36517986",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39279658",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37661497",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31251970",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26823328",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38289589",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32266803",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36759090",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43064140",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35670080",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31102404",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34734294",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32933887",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33358467",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:41038281",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33995271",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31695432",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39681174",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28006818",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37247914",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:19661347",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38644139",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31614208",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33784822",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33309278",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37210343",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37934606",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "arxiv:2305.17117",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38904502",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31412009",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38308030",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37289405",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32658588",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38246651",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34081848",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38363231",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:18457155",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35582542",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:3345554",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27344294",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:19395894",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35956069",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37142824",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36822388",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29099380",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33813397",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26178336",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24910288",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27776423",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36591714",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28589400",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:12732578",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37922910",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32588203",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28767733",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28410987",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29998354",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30521067",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33543650",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26548101",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35349074",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:40473460",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32532514",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38551314",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34623572",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36994854",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38212264",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36397405",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36214146",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34246791",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32216246",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:8172710",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:10968294",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36305671",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:41985783",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37059334",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35037527",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34471256",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37328938",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38570246",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:41824265",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:18602742",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30227222",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:41310810",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33914101",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25192626",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:15180440",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35778579",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:41094662",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15625524",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32897169",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32088155",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39547977",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39466244",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "arxiv:2511.13825",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32562805",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31653712",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "arxiv:2503.08927",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32077006",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36941084",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34014342",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34479565",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35381866",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:13988544",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30390762",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "arxiv:2609.15150",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:17685384",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35255716",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31705198",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:22772432",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33965893",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:23980819",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31757401",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35406564",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29755006",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38446353",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37528487",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33542230",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:14571412",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35866190",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:40639765",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:4138838",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32415394",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28754483",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36913399",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23743823",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29644440",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38151326",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38226931",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36484513",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35001161",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36229939",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39521884",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:40949733",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26054411",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27377157",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24317792",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28321124",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26417088",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:17914112",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:6286749",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:40480364",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23637966",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27637015",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:22722865",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21311207",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24907463",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26496771",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:14343760",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21068004",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:22637005",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24079740",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43056765",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21233280",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28453555",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21247501",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:20179352",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27259068",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:20107432",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37127183",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24675663",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33718066",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43069832",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43055836",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24296712",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23666465",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36718978",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28188218",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:12914768",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:9744550",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:2155555",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29970676",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:20600342",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:18568033",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21791085",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24050400",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35461369",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:19755388",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35588334",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23223636",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:10416834",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:19565476",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:13049",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25805830",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:10756029",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:17006938",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35410148",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31608802",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:3545453",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30532990",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21452284",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:17631142",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32321532",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:1312628",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:8730801",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36272975",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27569204",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:12239226",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:20972533",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:22155815",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:16143432",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:17828524",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:17966399",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:40956625",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21627335",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24829217",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30035810",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36509314",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28049513",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:12051548",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24310561",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23651629",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:16251986",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37002830",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:11201887",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31466948",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33395601",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43091560",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:3300325",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34328591",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25034303",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:8072803",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27354432",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37143833",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24952744",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:22917740",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:17939130",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43094799",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30658278",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:12509606",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:7783705",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:17008163",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:42843400",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31855487",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15986370",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28342404",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30476125",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:-FHmVwAeKgM",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:11198096",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25413249",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34896916",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:8503751",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:15365118",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28350748",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29634704",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:41129068",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28670405",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:xJwefc_gBME",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32134029",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32916550",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15925844",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43066006",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21490341",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:22247743",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:10859081",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34982455",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36603693",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33121082",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:18493144",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:7919738",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21541884",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30353319",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23660484",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32299269",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27629952",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35973187",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29892054",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43042610",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28390860",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25269432",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29528749",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28444337",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25815231",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:ufUU61Huuf8",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32593043",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15749245",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:T1QNqIGj9m0",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:GaIonoTc5JM",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37832756",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33334063",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28447250",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29108353",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26201942",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24424713",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:19368752",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:22361019",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26537133",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:9496523",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:16286254",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34597416",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30920637",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35766939",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33673213",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24918866",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:44lkOxCWsII",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28298550",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:NMcMYGivM8U",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33291143",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24351072",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33762453",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:oM_zAqgqfKs",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:4317102",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32747419",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:855676",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23729478",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:chest_journal_podcasts:chestjournal.podbean.com/fdb1eb04-bf74-3070-8bf9-de7130f620a2",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:12523872",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:40486951",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32078493",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:n-ybBPzzHGw",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24158049",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25096615",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:1920855",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28498244",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:psi_i_am_one:Buzzsprout-17463241",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:20970127",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28169964",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38685167",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31309578",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:16603635",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:16329712",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:7472704",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:19589009",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32881325",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:7992030",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39537183",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:1827799",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39115392",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:16094003",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:42576366",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:2006804",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:bmj_adc_podcast:https://soundcloud.com/bmjpodcasts/clots-and-complications-adc-archimedes-may-2023",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30782341",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35644083",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21211641",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31203194",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26663814",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24129129",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:16220314",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39508216",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:17222838",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:41250962",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:656475",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32474533",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:11085964",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33560606",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:chop_primary_care_perspectives:marketingn4.podbean.com/266bab3b-badf-3dbf-95b8-bcbf2bd6f869",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38483432",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:20646011",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31324117",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:1894174",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "arxiv:2610.00553",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27816923",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43061183",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29486589",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31519507",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:14297125",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32494763",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29487083",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29446198",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39030449",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30473062",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:42349868",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27245981",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:22957088",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:7428478",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:avXyu-r-_Dc",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:40464358",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:22245327",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27148404",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:41486258",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:7685427",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29728096",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:20220840",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36842342",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34638722",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29415819",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23666417",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43082471",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31383717",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:lets_win_pancchat:fc9c1330-8b62-4867-8772-a415726a1198",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:22141390",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28976790",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:11054153",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:8433669",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43056907",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23139428",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:9797491",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30307465",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:19933515",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30259123",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30066183",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26317465",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27676689",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32446408",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30896894",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:20888271",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:20222111",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31166801",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21135273",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35923359",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:8026409",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29182037",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:20014360",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:17611958",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34246561",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30953233",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25313065",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:9557716",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:10420956",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34691001",
+      "sets": [
+        "train"
+      ],
+      "proposal": null,
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    }
+  ]
+}
