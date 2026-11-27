@@ -191,6 +191,53 @@ async def sample_random(connection: Any, n: int = 300, seed: float = 0.43) -> li
     return await random_ids(connection, "true", n, [])
 
 
+PROMPT_SUMMARY = 4000
+DEFINITION = """\
+You sort documents for an app that shows patients research papers, videos and podcasts that fit
+their situation. Decide if a document is UNHELPFUL for every patient, with any disease:
+
+Group 1, not usable for patients: lab research (cell lines, molecular mechanisms only), animal
+studies, pure methods or statistics papers, work written only for clinicians or researchers.
+Group 2, little information: no or a very short abstract or description, errata, corrections,
+letters, comments, editorials.
+
+A good document for some patients is not unhelpful, even if it fits few of them.
+In doubt, keep."""
+
+
+def build_prompt(document: dict[str, Any], guide: list[dict[str, str]]) -> str:
+    rows = "\n".join(f"- {row['kind']}: {row['label']} (e.g. {row['example']})" for row in guide)
+    summary = (document.get("summary") or "").strip()[:PROMPT_SUMMARY] or "(none)"
+    types = ", ".join(document.get("publication_types") or []) or "(none)"
+    return (
+        f"{DEFINITION}\n\nExamples:\n{rows}\n\n"
+        f"Title: {document.get('title')}\n"
+        f"Source: {document.get('source')}, {document.get('content_type')}\n"
+        f"Publication types: {types}\n"
+        f"Summary: {summary}\n\n"
+        'Answer with one JSON object only: {"label": "unhelpful" or "keep",'
+        ' "group": 1 or 2 when unhelpful, else null, "reason": "<one sentence>"}'
+    )
+
+
+def parse_answer(text: str) -> dict[str, Any] | None:
+    """The first JSON object of a model answer, if it is a valid label; else None."""
+    start = text.find("{")
+    if start < 0:
+        return None
+    try:
+        answer, _ = json.JSONDecoder().raw_decode(text[start:])
+    except json.JSONDecodeError:
+        return None
+    if not isinstance(answer, dict):
+        return None
+    label, group, reason = answer.get("label"), answer.get("group"), answer.get("reason")
+    valid = (label == "unhelpful" and group in (1, 2)) or (label == "keep" and group is None)
+    if not valid or not isinstance(reason, str) or not reason.strip():
+        return None
+    return {"label": label, "group": group, "reason": reason.strip()}
+
+
 def load_labels(path: Path) -> dict[str, Any]:
     if not path.exists():
         return {"version": 1, "guide": GUIDE, "documents": []}

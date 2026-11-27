@@ -327,3 +327,46 @@ def test_sample_command_adds_to_the_labels_file(prefilter, url, tmp_path, monkey
     data = prefilter.load_labels(tmp_path / "labels.json")
     assert len(data["documents"]) == 4
     assert all(entry["sets"] == ["random"] for entry in data["documents"])
+
+
+def test_build_prompt_has_the_guide_and_cuts_long_summaries(prefilter):
+    document = {
+        "title": "T",
+        "source": "pubmed",
+        "content_type": "journal_article",
+        "publication_types": ["Review"],
+        "summary": "a" * 9000,
+    }
+    prompt = prefilter.build_prompt(document, prefilter.GUIDE)
+    assert "In doubt, keep" in prompt
+    assert "Altered glycosylation in prostate cancer" in prompt
+    assert "a" * 4000 in prompt and "a" * 4001 not in prompt
+    assert "Review" in prompt
+
+
+def test_build_prompt_says_when_there_is_no_summary(prefilter):
+    document = {"title": "T", "source": "youtube", "content_type": "video", "summary": None}
+    assert "(none)" in prefilter.build_prompt(document, prefilter.GUIDE)
+
+
+@pytest.mark.parametrize(
+    "text, expected",
+    [
+        (
+            '{"label": "unhelpful", "group": 1, "reason": "cell lines only"}',
+            {"label": "unhelpful", "group": 1, "reason": "cell lines only"},
+        ),
+        (
+            'Sure! {"label": "keep", "group": null, "reason": "trial"} done',
+            {"label": "keep", "group": None, "reason": "trial"},
+        ),
+        ('{"label": "unhelpful", "group": null, "reason": "x"}', None),
+        ('{"label": "keep", "group": 2, "reason": "x"}', None),
+        ('{"label": "maybe", "group": 1, "reason": "x"}', None),
+        ('{"label": "keep", "group": null, "reason": ""}', None),
+        ('{"label": "keep", "group": null', None),
+        ("no json here", None),
+    ],
+)
+def test_parse_answer(prefilter, text, expected):
+    assert prefilter.parse_answer(text) == expected
