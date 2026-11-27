@@ -2129,7 +2129,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Phase III trial reports adjuvant olaparib outcomes and quality of life in patients with BRCA-mutated breast cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2141,7 +2146,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Two patient cases describe PSMA PET/CT staging and subsequent treatment for ductal prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2153,7 +2163,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but the title concerns apalutamide-associated heart disease in patients with metastatic prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2165,7 +2180,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Review focuses on molecular kinase mechanisms of prostate cancer progression and resistance.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2177,7 +2197,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Supplementary data describe docetaxel- and cabazitaxel-resistant prostate cancer cell lines.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2189,7 +2214,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient summary reports STAT3 and IL6R findings in prostate cancer metastases as potential drug targets.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2201,7 +2231,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Describes a theoretical framework for clinical nurse specialist practice and intervention development.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2213,7 +2248,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Retrospective study reports survival and urinary toxicity after salvage radiotherapy and hormone therapy for prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2225,7 +2265,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Systematic review assesses MRI-based methods for predicting prostate cancer extension before surgery.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2237,7 +2282,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Experiments use drug-resistant prostate cancer cell lines to study molecular mechanisms of chemotherapy resistance.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2249,7 +2299,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Consensus provides clinical recommendations for imaging and treatment sequencing in castration-resistant prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2261,7 +2316,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Small clinical study reports PSA changes in two patients taking oral methioninase for advanced prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2273,7 +2333,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review summarizes radium-223 benefits and adverse effects in patients with bone-metastatic prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2285,7 +2350,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review covers salvage cryotherapy outcomes, complications, and patient selection for recurrent prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2297,7 +2367,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review discusses MRI-guided focal treatment options and tradeoffs for localized prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2309,7 +2384,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Compares biopsy costs and cancer detection rates relevant to diagnostic choices.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2321,7 +2401,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review discusses surgery outcomes and quality of life for high-risk or node-positive prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2333,7 +2418,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical study finds diabetes may affect PSA levels and interpretation of prostate cancer screening tests.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2345,7 +2435,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient-derived study examines immune changes during combined immunotherapy and hormone treatment for metastatic prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2357,7 +2452,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review summarizes evidence for local treatment strategies in metastatic hormone-sensitive prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2369,7 +2469,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Observational study relates blood enzyme levels to metastases and survival in people with lung cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2381,7 +2486,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical cohort evaluates an enzyme trend as a predictor of survival and bone metastasis in prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2393,7 +2503,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review compares symptoms, outcomes, and complications of two BPH surgical approaches.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2405,7 +2520,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review discusses prognosis, imaging, and treatment research for oligometastatic prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2417,7 +2537,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Meta-analysis compares survival, safety, and quality of life for three prostate cancer medicines.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2429,7 +2554,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review describes PSA and emerging blood tests used in prostate cancer diagnosis and biopsy decisions.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2441,7 +2571,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Systematic review evaluates patient-specific models for surgical planning and patient engagement in prostatectomy.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2453,7 +2588,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review explains PSMA PET imaging for treatment response assessment in prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2465,7 +2605,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Prospective study estimates prostate cancer risk by BRCA2 mutation location and includes patient summary.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2477,7 +2622,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review covers clinical applications of blood-based biopsies for prostate cancer diagnosis and treatment decisions.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2489,7 +2639,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review summarizes approved olaparib maintenance options, trial outcomes, and tolerability for advanced ovarian cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2501,7 +2656,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Phase II study reports efficacy and safety of a drug combination in metastatic prostate cancer patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2513,7 +2673,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Case series reports surgical outcomes and continence recovery after salvage prostatectomy.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2525,7 +2690,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review discusses BRCA2 mutations across cancers and their relevance to tumor progression and therapy.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2537,7 +2707,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical case series reports outcomes of salvage prostatectomy in nonmetastatic castration-resistant disease.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2549,7 +2724,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Consensus statement explains liquid biopsy use in treatment decisions for advanced lung cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2561,7 +2741,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Review focuses on androgen biosynthesis pathways and molecular mechanisms of drug resistance.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2573,7 +2758,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Meta-analysis reviews clinical survival outcomes from maximal androgen blockade for advanced prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2585,7 +2775,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical study reports fatty liver prevalence and associated health factors among people with type 2 diabetes.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2597,7 +2792,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient cohort compares diagnostic and recurrence outcomes after different lymph node dissection approaches.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2609,7 +2809,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient cohort develops and validates a blood protein model for predicting prostate cancer recurrence.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2621,7 +2826,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "International consensus outlines selection and technical considerations for salvage brachytherapy.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2633,7 +2843,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review summarizes clinical trial evidence and treatment options for prostate cancer immunotherapy.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2645,7 +2860,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Cell and animal experiments test apalutamide, a patient-used prostate cancer drug, with radiotherapy.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2657,7 +2877,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Systematic review discusses symptoms and management options for transient bone osteoporosis.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2669,7 +2894,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Network meta-analysis compares survival outcomes from treatment strategies for low-volume metastatic prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2681,7 +2911,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical trial pharmacokinetic analysis supports fixed leuprolide dosing for children with early puberty.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2693,7 +2928,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review reports trial outcomes and toxicity of postoperative radiotherapy for locally advanced prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2705,7 +2945,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review discusses resistance and adverse effects associated with antiandrogen medicines used by patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2717,7 +2962,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial finds online interventions reduced cancer recurrence fear and pain in patients with breast or ovarian cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2729,7 +2979,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review and expert recommendations compare radiotherapy options for recurrent prostate cancer in lymph nodes.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2741,7 +2996,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review explains imaging and salvage radiation options for prostate cancer recurring after radiotherapy.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2753,7 +3013,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review examines potential combinations with cabazitaxel, a medicine used for hormone-resistant prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2765,7 +3030,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Large clinical study reports long-term symptom, quality-of-life, and retreatment outcomes after prostate artery embolization.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2777,7 +3047,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient imaging study evaluates adaptive radiation planning for prostate cancer treatment.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2789,7 +3064,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review summarizes treatment options, survival evidence, and bone complication prevention for advanced prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2801,7 +3081,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Phase I patient study reports symptom relief and safety after palliative ultrasound ablation.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2813,7 +3098,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study evaluates PSMA PET detection of recurrent prostate cancer before standard PSA criteria are met.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2825,7 +3115,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Meta-analysis summarizes symptom improvement and complications after prostate surgery for urinary symptoms.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2837,7 +3132,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Population study relates palliative care timing to end-of-life care for patients with ovarian cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2849,7 +3149,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Evaluates an autonomous AI system and gene-expression hypotheses using research datasets and statistical benchmarks.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2861,7 +3166,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Develops a targeted delivery formulation for cabazitaxel, a medicine used to treat advanced prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2873,7 +3183,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical cohort studies markers that may predict response to PSMA radioligand therapy in prostate cancer patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2885,7 +3200,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Uses mathematical control models and simulations to propose cancer drug dosing strategies.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2897,7 +3217,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study reports cancer control and toxicity after salvage radiotherapy for recurrent prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2909,7 +3234,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Regional study reports prostatectomy trends by age and disease risk in Ehime, Japan.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2921,7 +3251,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review applies bladder cancer treatment recommendations to a patient case and discusses treatment choices.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2933,7 +3268,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Cost-effectiveness analysis compares diagnostic biopsy strategies for suspected prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2945,7 +3285,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review describes follow-up and monitoring recommendations for bladder cancer patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2957,7 +3302,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but the title addresses a radiation treatment option for prostate cancer patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2969,7 +3319,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review describes palliative symptom management options for women with advanced ovarian cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2981,7 +3336,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Develops and evaluates a machine-learning method for ultrasound and pathology grading.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -2993,7 +3353,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review compares salvage treatment options and outcomes for recurrent prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3005,7 +3370,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical series reports recurrence detection and follow-up imaging after prostate cryoablation.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3017,7 +3387,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial has no summary and provides no patient-focused information in the supplied record.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3029,7 +3404,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Meta-analysis reviews curative-intent treatments, cancer control, and complications for local prostate cancer recurrence.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3041,7 +3421,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Expert consensus outlines patient selection and treatment considerations for salvage prostate radiotherapy.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3053,7 +3438,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial analysis compares quality of life after two treatments for recurrent prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3065,7 +3455,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Multicenter patient study reports urinary symptoms and quality of life after prostate artery embolization.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3077,7 +3472,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review compares approved antiandrogen treatments and evidence for nonmetastatic prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3089,7 +3489,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review proposes a standardized MRI scoring system to assess bladder cancer invasion.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3101,7 +3506,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Real-world patient study reports treatment toxicity and outcomes for a PSMA-targeted cancer therapy.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3113,7 +3523,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Long-term patient study reports cancer control and treatment patterns after radiation for oligometastatic prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3125,7 +3540,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical review summarizes prostate cancer diagnosis, treatment options, and outcomes.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3137,7 +3557,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review describes immunotherapy approaches and clinical evidence for prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3149,7 +3574,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study compares imaging accuracy for detecting prostate cancer lymph node metastases.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3161,7 +3591,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Expert review summarizes salvage brachytherapy selection, outcomes, and risks for recurrent prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3173,7 +3608,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but the title identifies a prostate cancer paper that may contain patient-relevant information.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3185,7 +3625,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review traces the development of prostate cancer diagnostic methods, including PSA and MRI-guided biopsy.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3197,7 +3642,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Phase III trial evaluates olaparib maintenance therapy in patients with recurrent BRCA-mutated ovarian cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3209,7 +3659,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Meta-analysis evaluates interventions for anxiety and depression among lung cancer caregivers.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3221,7 +3676,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Review focuses on cellular autophagy mechanisms in prostate cancer and androgen suppression.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3233,7 +3693,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review explains liquid biopsy applications for selecting targeted treatment in lung cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3245,7 +3710,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review discusses hereditary cancer testing and risk assessment for breast and ovarian cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3257,7 +3727,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical trial reports patient quality-of-life outcomes during bladder cancer treatment.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3269,7 +3744,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Meta-analysis summarizes olaparib benefits and adverse events in advanced ovarian cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3281,7 +3761,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Prospective patient study evaluates ultrasound prediction of prostate cancer extension before surgery.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3293,7 +3778,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study examines abiraterone levels and PSA response during treatment for metastatic prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3305,7 +3795,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Phase 1b trial reports safety and tumor responses to bladder cancer immunotherapy.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3317,7 +3812,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Network meta-analysis compares supplements for bone health in postmenopausal women.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3329,7 +3829,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review explains biomarkers and genomic tests that inform prostate cancer diagnosis and treatment decisions.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3341,7 +3846,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but the title concerns radiotherapy safety and effectiveness for prostate cancer patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3353,7 +3863,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tests gene therapy mechanisms for diabetic kidney disease in mice and cultured podocytes.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3365,7 +3880,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Studies nilotinib, a patient-used leukemia drug, combined with a new agent against treatment-resistant leukemia.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3377,7 +3897,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tests adiponectin supplementation effects in obese pregnant mice and placental tissues.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3389,7 +3914,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Cell-line study tests valproic acid with paclitaxel, a patient-used cancer drug, for thyroid cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3401,7 +3931,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Uses cultured rat thyroid cells to study an assay response to Graves' disease immunoglobulins.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3413,7 +3948,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tests escitalopram and bladder treatments in a rat model of depression and overactive bladder.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3425,7 +3965,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tests an inflammation inhibitor in diabetic mice and cultured kidney cells.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3437,7 +3982,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Studies autophagy mechanisms in liver cell lines and mice with fatty liver disease.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3449,7 +3999,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Studies diet-driven microbiome and colitis mechanisms in genetically modified mice.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3461,7 +4016,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tests vitamin E treatment in an experimental rat model of pancreatitis.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3473,7 +4033,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tests a nanomaterial treatment in a rat model of brain hemorrhage.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3485,7 +4050,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Develops a mouse diet model for liver injury and progenitor cell research.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3497,7 +4067,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Title and brief record describe a mouse study of lupus kidney disease treatment.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3509,7 +4084,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tests effects of gene deletion on metabolism and fatty liver in mice.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3521,7 +4101,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Evaluates a proposed probiotic beverage with bacterial survival and antimicrobial findings relevant to digestive health.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3533,7 +4118,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Measures itch behavior after interleukin injection in mice with an atopic dermatitis model.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3545,7 +4135,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tests exercise-related tumor immune mechanisms in a mouse colorectal cancer model.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3557,7 +4152,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Studies inflammatory pathways and liver fibrosis in genetically modified mice.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3569,7 +4169,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Evaluates vaccine immunogenicity and protection only in mouse and guinea pig tuberculosis models.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3581,7 +4186,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical study relates testosterone levels to ovarian response and pregnancy outcomes after IVF.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3593,7 +4203,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Studies tumor regrowth mechanisms and pathway inhibition in mouse glioblastoma models.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3605,7 +4220,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tests seizure-related sudden death prevention in a mouse epilepsy model.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3617,7 +4237,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Investigates immune responses to gonorrhea in a mouse infection model and cultured cells.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3629,7 +4254,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tests medication effects on behavior and molecular pathways in a rat PCOS model.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3641,7 +4271,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Studies cardiac signaling mechanisms in mice with pressure-overload heart disease.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3653,7 +4288,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tests dietary sodium effects on kidney stones in rats.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3665,7 +4305,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Evaluates culture conditions for human fetal testicular tissue in vitro.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3677,7 +4322,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tests spexin effects on fatty liver and cell-death mechanisms in rats.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3689,7 +4339,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Maps receptor-expressing cells in genetically modified mice to study GLP-1 biology.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3701,7 +4356,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Tests sertraline, a patient-used medicine, for reducing seizure-related respiratory arrest in an epilepsy mouse model.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3713,7 +4373,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tests a candidate treatment and brain mechanisms in a lupus mouse model.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3725,7 +4390,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Studies glymphatic function after experimentally induced brain microinfarcts in mice.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3737,7 +4407,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Measures thyroid hormone effects on ion channels in rat heart tissue and cells.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3749,7 +4424,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tests genistein effects on chemically induced skin tumors in mice.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3761,7 +4441,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Tests patient-used rifamycin antibiotics against tuberculosis and patient-derived Mycobacterium strains.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3773,7 +4458,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Studies hormone signaling and cell proliferation in cultured uterine fibroid cells.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3785,7 +4475,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Tests caffeine and methylphenidate, patient-used treatments, in a rat model of ADHD-related cognitive deficits.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3797,7 +4492,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Studies learning mechanisms and rapamycin response in a tuberous sclerosis mouse model.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3809,7 +4509,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tests ketogenic diet effects using glioma cell lines and a mouse tumor model.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3821,7 +4526,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Includes clinical PET imaging in Alzheimer patients to visualize tau pathology.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3833,7 +4543,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Tests a candidate metabolic medicine alongside patient-used semaglutide in a fatty liver model.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3845,7 +4560,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Uses engineered pancreatic cancer cells and mouse tumors to study ZIP4 gene silencing.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3857,7 +4577,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Studies liver fibrosis mechanisms and an experimental antagonist in mouse and cell models.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3869,7 +4594,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Validates echocardiography measurements in patients with functional mitral valve leakage.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3881,7 +4611,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Rat study addresses fracture healing in osteoporosis, a condition affecting patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3893,7 +4628,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Includes human lupus kidney biopsy findings and evaluates mycophenolate treatment in lupus mice.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3905,7 +4645,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Tests methenamine-related antiseptic activity against bacteria that cause urinary infections.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3917,7 +4662,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Studies liver immune mechanisms and gene silencing in obese mice.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3929,7 +4679,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Studies interferon effects on viral replication in hepatitis B transgenic mice.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3941,7 +4696,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Investigates liver fibrosis and cancer mechanisms in rat disease models.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3953,7 +4713,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical study reports remission and survival after humanized CAR-T therapy in leukemia patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3965,7 +4730,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tests a dietary supplement for anemia recovery in rats.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3977,7 +4747,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Studies how BCG attaches and triggers immune responses in murine bladder tumors.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -3989,7 +4764,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tests a pathway inhibitor and kidney inflammation in obese mice.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4001,7 +4781,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Examines brain inflammation in human patients with liver-related encephalopathy as well as rat models.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4013,7 +4798,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tests effects of patient sera on cultured neuroblast cells to study disease mechanisms.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4025,7 +4815,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Studies exosome mechanisms and depression-like behaviors in mice.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4037,7 +4832,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Maps hepatitis A virus antibody escape mutations using laboratory virus mutants.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4049,7 +4849,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Studies L-DOPA, a standard Parkinson's treatment, and its effects in dopamine neuron cultures.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4061,7 +4866,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Investigates migraine sensitivity mechanisms in mice and cultured cells.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4073,7 +4883,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Reviews carcinogenic risk evidence for romosozumab, a treatment for osteoporosis.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4085,7 +4900,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Surveillance study reports geographic antibiotic resistance patterns in pneumococcal isolates.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4097,7 +4917,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Studies metformin, a patient-used diabetes medicine, and its mechanisms in mice and cell models.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4109,7 +4934,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Studies pharmacology of an anti-tuberculosis drug candidate in an infected mouse model.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4121,7 +4951,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tests influenza vaccine particle immunogenicity and protection in mice.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4133,7 +4968,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Tests aliskiren, a patient-used renin inhibitor, for diabetic kidney disease in rats.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4145,7 +4985,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review includes clinical evidence on denosumab and bone health in postmenopausal women.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4157,7 +5002,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Studies regulatory T-cell mechanisms for lung repair in mice with viral pneumonia.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4169,7 +5019,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Tests practical feeding-tube administration of pancrelipase, a patient-used digestive enzyme treatment.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4181,7 +5036,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Studies hormone signaling in prenatally androgen-exposed rats as a PCOS model.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4193,7 +5053,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tests allergy-prevention nanoparticles in a humanized mouse model and cell assays.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4205,7 +5070,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Studies retinal cell-death mechanisms in mice with inherited retinal disease models.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4217,7 +5087,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Studies anxiety and neuronal mechanisms in rats chronically given pain medicines.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4229,7 +5104,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Reviews safety findings for PTH treatment relevant to osteoporosis patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4241,7 +5121,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Compares immune mechanisms in animal models of type 1 diabetes and human tissue.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4253,7 +5138,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Case report and review describe a rare cervical cancer subtype in a patient.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4265,7 +5155,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Review focuses on molecular mechanisms of addiction rather than patient care information.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4277,7 +5172,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Editorial statement addresses language and weight stigma affecting children with obesity.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4289,7 +5189,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Measures antioxidant and antibacterial properties of a plant extract in laboratory assays.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4301,7 +5206,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study characterizes esophageal microbiome changes across precancerous disease and cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4313,7 +5223,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Real-world study reports anxiety and depression outcomes after cognitive behavioral therapy.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4325,7 +5240,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient cohort examines muscle changes and clinical outcomes after stem cell transplantation.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4337,7 +5257,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial compares antibiotic treatment with observation for asymptomatic urinary infection in older women.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4349,7 +5274,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Meta-analysis compares fluid treatment outcomes for patients with acute pancreatitis.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4361,7 +5291,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study finds oral care may reduce pneumonia among tube-fed elderly patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4373,7 +5308,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Hospital study reports infant anemia prevalence and recommends screening and nutrition measures.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4385,7 +5325,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Child study examines sleep patterns, anxiety, and bedtime routines in autism.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4397,7 +5342,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Cohort study reports long-term outcomes and quality of life after lung screening findings.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4409,7 +5359,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient biopsy study identifies mutations and a potential non-endoscopic test for high-risk Barrett's esophagus.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4421,7 +5376,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Meta-analysis summarizes working memory difficulties in children with ADHD.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4433,7 +5393,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient follow-up study relates abdominal pain in diverticulosis to psychological and disease factors.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4445,7 +5410,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Studies macrophage behavior using engineered breast cancer-associated matrix in laboratory models.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4457,7 +5427,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Systematic review finds cognitive behavioral therapy reduces depression symptoms in young people.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4469,7 +5444,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Systematic review compares medicines that prevent joint damage in rheumatoid arthritis patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4481,7 +5461,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review explains cystinuria diagnosis and treatment goals for preventing kidney stones.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4493,7 +5478,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review discusses gluten-free food production approaches relevant to people with celiac disease.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4505,7 +5495,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review summarizes diagnosis and management of Hashimoto's thyroiditis.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4517,7 +5512,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "National treatment-entry survey describes changing opioid and other drug use patterns among patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4529,7 +5529,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Population study quantifies tuberculosis risk among rheumatoid arthritis patients treated with TNF medicines.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4541,7 +5546,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study compares therapies for anxiety and depression in adults with autism.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4553,7 +5563,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review explains how undernutrition affects tuberculosis risk, severity, and treatment outcomes.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4565,7 +5580,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Video shares a blood cancer patient's experience and explains treatment terminology through a quiz.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4577,7 +5597,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial compares two patient-used medicines for ankylosing spondylitis.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4589,7 +5614,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical guideline gives diagnosis and treatment recommendations for diverticular disease.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4601,7 +5631,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial evaluates an educational app for patients deciding anticoagulation duration after blood clots.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4613,7 +5648,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized pilot trial evaluates gait-focused physical therapy after stroke.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4625,7 +5665,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Summary describes a seizure medicine and its uses and side effects for patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4637,7 +5682,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient cohort describes causes and mortality for intestinal villous atrophy without celiac antibodies.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4649,7 +5699,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study reports vision outcomes and lens complications after cataract surgery.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4661,7 +5716,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review summarizes progress in leukemia treatments and patient outcomes.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4673,7 +5733,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Preliminary clinical trial evaluates safety and pain outcomes after spinal disc injection.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4685,7 +5750,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Podcast provides expert and caregiver guidance about systemic mastocytosis and anaphylaxis.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4697,7 +5767,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study reports anxiety and depression prevalence among people with glaucoma.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4709,7 +5784,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study identifies cardiac biomarker differences across eating disorder groups.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4721,7 +5801,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review explains serologic and biopsy approaches to celiac disease diagnosis.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4733,7 +5818,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Case series discusses missed colon cancers and implications for screening diagnosis.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4745,7 +5835,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Long-term patient study compares transplant strategies and survival in multiple myeloma.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4757,7 +5852,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review summarizes clinical outcomes and toxicity of T-cell engager therapy in leukemia.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4769,7 +5869,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Presents a computer vision method for liver tumor detection rather than patient care evidence.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4781,7 +5886,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Systematic review examines warfarin adherence and clinical outcomes in atrial fibrillation patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4793,7 +5903,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study measures digestive changes after common bariatric surgeries.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4805,7 +5920,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Meta-analysis evaluates traditional exercise for knee osteoarthritis symptoms.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4817,7 +5937,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review explains imaging approaches for diagnosing and managing thyroid problems in children.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4829,7 +5954,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Case report describes a rare vascular cause of limb shortening and its successful treatment in an infant.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4841,7 +5971,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review covers diagnosis and thyroid hormone treatment for congenital hypothyroidism in dogs and cats.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4853,7 +5988,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review summarizes screening and treatment considerations for osteoporosis in chronic kidney disease.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4865,7 +6005,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Evaluates HIV subtype classification tools using sequences from patients and surveillance databases.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4877,7 +6022,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Compares clinical skin improvement after biologic medicines used for moderate-to-severe psoriasis.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4889,7 +6039,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Case series and review describe acute intestinal endometriosis presentations relevant to diagnosis.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4901,7 +6056,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient cohort tracks anemia and nutrient recovery after a gluten-free diet for celiac disease.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4913,7 +6073,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review summarizes genetic findings relevant to ADHD and future treatment research.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4925,7 +6090,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review explains hormonal and metabolic features of polycystic ovary syndrome and diagnostic considerations.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4937,7 +6107,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Studies immune mechanisms of food allergy using mouse and cell models.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4949,7 +6124,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review summarizes causes, risks, and treatment options for triglyceride-related pancreatitis.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4961,7 +6141,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review discusses biomarker-guided decisions about antibiotic duration in sepsis.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4973,7 +6158,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical cohort examines repeat kidney biopsies and treatment changes in lupus nephritis.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4985,7 +6175,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Case report describes steroid treatment and recovery in a child with severe pneumonia.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -4997,7 +6192,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Mental health charity video provides crisis support contact information.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5009,7 +6209,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study relates Parkinson's symptoms to dopamine imaging findings.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5021,7 +6226,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review discusses early developmental factors and clinical features associated with autism.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5033,7 +6243,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Video is continuing medical education on a surgical procedure for spine specialists.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5045,7 +6260,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Family story describes children's experiences with genetic pancreatitis and its impact.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5057,7 +6277,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review provides clinical definitions and treatment options for resistant hypertension.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5069,7 +6294,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study identifies candidate blood biomarkers related to pancreatic cancer cachexia.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5081,7 +6311,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Study evaluates parent-reported cognitive screening in children treated for brain tumors.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5093,7 +6328,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "European registry reports real-world chemotherapy outcomes for metastatic Merkel cell cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5105,7 +6345,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Prospective cohort reports patient pain and quality-of-life outcomes after gallbladder surgery.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5117,7 +6362,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Meta-analysis compares surgical outcomes for rectal cancer after chemoradiotherapy.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5129,7 +6379,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Large nursing-home study describes psychotropic medication use among patients with dementia.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5141,7 +6396,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Population study examines autism risk patterns among children of migrant parents.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5153,7 +6413,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Study explores when healthcare teams consider palliative care appropriate for people with dementia.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5165,7 +6430,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Large patient study evaluates CA 19-9 levels for pancreatic cancer diagnosis and prognosis.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5177,7 +6447,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review covers causes, symptoms, diagnosis, and management of portal vein thrombosis.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5189,7 +6464,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Commentary has no summary or patient guidance in the supplied record.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5201,7 +6481,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review covers diagnosis, surgery, and perioperative risks for children with sleep apnea.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5213,7 +6498,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review explains ultrasound monitoring and treatment targets for inflammatory bowel disease.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5225,7 +6515,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review summarizes glioblastoma treatment targets and current targeted therapies.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5237,7 +6532,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Meta-analysis compares chemotherapy response across cervical cancer types.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5249,7 +6549,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient education video explains prostate MRI reports, cancer appearance, and PI-RADS scores.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5261,7 +6566,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient cohort examines survival with extended temozolomide treatment for glioblastoma.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5273,7 +6583,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Video explains childhood pituitary conditions, treatments, and adrenal crisis preparation.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5285,7 +6600,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Evidence review compares surgical artery harvesting outcomes for heart bypass patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5297,7 +6617,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial compares two supplements for ovarian and metabolic outcomes in women with PCOS.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5309,7 +6634,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Describes MRI findings that can help distinguish hypoglycemia from stroke in patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5321,7 +6651,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but the title identifies a patient-focused talk about diet after esophageal surgery.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5333,7 +6668,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review discusses pramipexole, a patient-used Parkinson's medicine, and quality-of-life outcomes.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5345,7 +6685,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Studies amivantamab, a cancer treatment, and its activity against lung tumor models.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5357,7 +6702,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "No summary, and the title describes a psychiatric assessment scale without patient guidance.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5369,7 +6719,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Study identifies a resistance mechanism and treatment option in patients receiving colorectal cancer therapy.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5381,7 +6736,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Podcast highlights research on oxygen targets and shared decision-making in lung cancer screening.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5393,7 +6753,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical study describes symptoms, treatment, and outcomes in patients with obsessive-compulsive and bipolar disorders.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5405,7 +6770,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Prospective study evaluates software and radiologist accuracy for tuberculosis case finding.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5417,7 +6787,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study examines blood pressure targets and outcomes after stroke thrombectomy.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5429,7 +6804,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Short message thanks professional society members without disease or care information.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5441,7 +6821,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study measures sleep breathing changes after surgery in people with sleep apnea.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5453,7 +6838,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Studies BAN2401, an Alzheimer's treatment candidate, and its effects in disease models.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5465,7 +6855,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but the title identifies a review about heart transplantation for patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5477,7 +6872,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study evaluates screening for inherited cancer syndrome in young women with endometrial cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5489,7 +6889,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Podcast explains a free psychiatric consultation resource for perinatal mental health providers.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5501,7 +6906,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study reports symptom relief and pain outcomes after focused ultrasound for adenomyosis.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5513,7 +6923,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review describes bladder cancer symptoms, diagnosis, and management.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5525,7 +6940,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tests an herbal extract and disease mechanisms in a rat metabolic disorder model.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5537,7 +6957,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review discusses treatment considerations for non-type-2 asthma.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5549,7 +6974,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Comparative patient study examines gastritis differences that may relate to regional gastric cancer risk.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5561,7 +6991,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review summarizes options and safety considerations for menopausal symptoms after breast cancer treatment.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5573,7 +7008,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient cohort reports alcohol use patterns among people living with HIV.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5585,7 +7025,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial analysis evaluates education and adherence to osteoporosis medicines.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5597,7 +7042,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Regional surveillance describes seasonal influenza patterns among young children.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5609,7 +7059,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical microbiology study examines urinary bacteria and antibiotic prophylaxis in urology patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5621,7 +7076,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Scoping review documents sexual health concerns among lymphoma survivors.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5633,7 +7093,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial compares acitretin and UVB treatments for psoriasis.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5645,7 +7110,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review assesses PAP device data accuracy for sleep apnea treatment decisions.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5657,7 +7127,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Focuses on radiation exposure risks to urology operating staff.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5669,7 +7144,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study assesses fluorescence imaging use and outcomes during gallbladder surgery.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5681,7 +7161,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but the title concerns famotidine treatment for reflux symptoms.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5693,7 +7178,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Podcast discusses neonatal blood clots and diagnostic testing questions relevant to care.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5705,7 +7195,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Meta-analysis estimates how long knee replacements last for patients with osteoarthritis.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5717,7 +7212,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Qualitative study identifies factors affecting veterans' completion of PTSD therapies.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5729,7 +7229,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized clinical trial compares duration of allergy immunotherapy and patient symptom outcomes.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5741,7 +7246,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Meta-analysis examines quality of life as a survival indicator in patients with glioma.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5753,7 +7263,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Large cohort study assesses diabetes risk with glucocorticoid use in rheumatoid arthritis.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5765,7 +7280,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review discusses benefits and risks of low-dose steroids for rheumatoid arthritis.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5777,7 +7297,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review describes intraocular lens surgery options and complications for vision correction.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5789,7 +7314,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical guideline gives diagnosis and treatment recommendations for peripheral spondyloarthritis.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5801,7 +7331,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Develops a cell culture biomarker method for laboratory research on uterine fibroids.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5813,7 +7348,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Large survey identifies eating disorder diagnosis disparities among East Asian young adults.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5825,7 +7365,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Long-term patient study reports survival, eye retention, and vision after proton therapy for juvenile melanoma.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5837,7 +7382,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Analyzes antibiotic resistance mutations in clinical tuberculosis isolates from Peru.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5849,7 +7399,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical study examines vascular function in patients with obstructive sleep apnea.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5861,7 +7416,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review discusses benefits and discontinuation considerations for beta-blockers after heart attack.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5873,7 +7433,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Pediatric gastroenterologist explains cyclic vomiting diagnosis, treatments, and prevention.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5885,7 +7450,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter has no summary or useful content in the supplied record.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5897,7 +7467,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study identifies symptoms and factors linked to complicated diverticulitis in younger adults.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5909,7 +7484,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review covers symptoms, diagnosis, fertility effects, and treatment for uterine adenomyosis.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5921,7 +7501,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study compares chemotherapy and surgery strategies for advanced ovarian cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5933,7 +7518,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Develops machine-learning methods for MRI lesion segmentation in stroke and vascular disease.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5945,7 +7535,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Large cohort examines fertility preservation and puberty development in girls after cancer treatment.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5957,7 +7552,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study relates inflammatory blood markers to immune status among people living with HIV.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5969,7 +7569,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Study includes fibrotic patient findings and evaluates treatment mechanisms in lung fibrosis models.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5981,7 +7586,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Umbrella review summarizes long-term health outcomes associated with childhood sexual abuse.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -5993,7 +7603,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Phase III trial compares chemotherapy regimens and outcomes in metastatic colorectal cancer patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6005,7 +7620,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial evaluates counseling effects on self-esteem and body image in women with PCOS.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6017,7 +7637,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review discusses clinical medicines and evidence for treating insomnia.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6029,7 +7654,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Worldwide family study documents BRCA mutations relevant to genetic testing and cancer risk.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6041,7 +7671,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Meta-analysis reports long-term vitamin deficiencies after bariatric surgery.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6053,7 +7688,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review summarizes diagnosis and management of common metabolic complications in chronic kidney disease.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6065,7 +7705,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study identifies factors associated with burden and quality of life in liver cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6077,7 +7722,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical study reports long-term quality-of-life outcomes with lurasidone in schizophrenia.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6089,7 +7739,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Meta-analysis identifies migrant groups with higher hepatitis B prevalence to guide screening.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6101,7 +7756,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient case series compares diagnostic tests for rare fatal familial insomnia.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6113,7 +7773,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Video explains fecal incontinence for patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6125,7 +7790,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient-based study evaluates radiation dose planning for lung cancer treatment.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6137,7 +7807,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Prospective study compares quality of life after kidney tumor surgery approaches.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6149,7 +7824,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Studies fibrosis mechanisms in non-human primate tuberculosis lesions.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6161,7 +7841,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review proposes diagnostic criteria for atypical anorexia nervosa.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6173,7 +7858,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Population survey reports urinary symptom prevalence among men across ages.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6185,7 +7875,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study evaluates pancreatic enzyme replacement and survival in unresectable pancreatic cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6197,7 +7892,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review discusses prevention strategies for HIV transmission and early infection.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6209,7 +7909,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review summarizes reported cardiovascular complications after COVID-19 vaccination.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6221,7 +7926,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review covers atopic dermatitis treatments from skin care to biologic medicines.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6233,7 +7943,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review discusses cardiovascular and kidney benefits of SGLT2 medicines for patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6245,7 +7960,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review summarizes diagnosis, monitoring, and treatment options for cystinuria.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6257,7 +7977,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Pilot clinical study tracks tumor DNA and imaging during experimental colorectal cancer therapy.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6269,7 +7994,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "International criteria guide classification and diagnosis of systemic lupus erythematosus.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6281,7 +8011,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Podcast explains recent pancreatic cancer treatment advances and their implications for patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6293,7 +8028,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review summarizes entecavir treatment evidence for hepatitis B with advanced liver disease.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6305,7 +8045,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Phase II trial reports response, survival, and adverse effects of lymphoma treatment.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6317,7 +8062,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review discusses clinical use and safety of dopamine agonists for Parkinson's disease.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6329,7 +8079,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study measures blood markers in people experiencing chemotherapy-related tumor lysis syndrome.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6341,7 +8096,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Study compares children's self-reported sleepiness and sleep patterns with and without ADHD.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6353,7 +8113,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study relates therapist alliance to pain and functional outcomes in chronic back pain.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6365,7 +8130,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Consensus review offers prevention guidance for osteoporosis caused by glucocorticoid treatment.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6377,7 +8147,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review describes biomarker-guided treatment strategies for head and neck cancer patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6389,7 +8164,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Population study links body fat and cardiometabolic risks to cardiovascular mortality.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6401,7 +8181,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review covers bladder cancer biomarkers for detection, prognosis, and treatment response.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6413,7 +8198,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Uses engineered cancer cell lines to identify molecular vulnerabilities in laboratory experiments.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6425,7 +8215,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Studies demethylating cancer medicines and potential mechanisms relevant to treatment.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6437,7 +8232,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Systematic review examines lumbar muscle changes in people with low back pain.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6449,7 +8249,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review explains urinary infection types, diagnosis, and treatment in children.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6461,7 +8266,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Consensus provides safety and patient-care recommendations for PFO closure after stroke.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6473,7 +8283,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical trial analysis relates alkaline phosphatase changes to survival during chemotherapy for prostate cancer.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6485,7 +8300,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Examines inflammatory markers in surgically obtained disc tissue and laboratory controls.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6497,7 +8317,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient series reports glucose control and safety with automated insulin delivery in young children.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6509,7 +8334,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient cohort evaluates lymphoma classification methods against treatment outcomes.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6521,7 +8351,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Trial analysis describes oxygen therapy outcomes and progression risk in COPD patients.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6533,7 +8368,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical trial reports safety and side effects of vagus nerve stimulation for epilepsy.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6545,7 +8385,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial examines methylphenidate response in children with ADHD by genotype.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6557,7 +8402,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Consensus defines ultrasound terms that may help evaluate uterine conditions.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6569,7 +8419,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review describes treatment access, information, and support needs among rural breast cancer survivors.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6581,7 +8436,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial has no summary or patient-focused details in the supplied record.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6593,7 +8453,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study evaluates persistent sleepiness despite PAP treatment for sleep apnea.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6605,7 +8470,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial evaluates sulforaphane effects on behavioral symptoms in young people with autism.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6617,7 +8487,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tests antiretroviral timing in macaques infected with simian immunodeficiency virus.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6629,7 +8504,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review explains vision effects, risk factors, and treatment research for age-related macular degeneration.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
@@ -6641,7 +8521,12 @@
       "sets": [
         "train"
       ],
-      "proposal": null,
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review summarizes tuberculosis vaccine history and current vaccine development.",
+        "model": "codex"
+      },
       "proposal_raw": null,
       "label": null,
       "group": null,
