@@ -1,5 +1,5 @@
 {
-  "_comment": "What the events of a journey without a patient graph say (timeline.json of the synthetic journeys; Documentation/design/graph-normalization.md#ranking). Event types: `plans` decide the therapies they name (tumor board), `gives` give them; in other events a named therapy is history or context. `parameters`: a parameter key gives `concepts` when present, `values` per value, or makes a diagnosis asserted or suspected (`implies`), also only from a number up (`atLeast`) and only in some event types (`events`).",
+  "_comment": "What the events of a journey without a patient graph say (timeline.json of the synthetic journeys; Documentation/design/graph-normalization.md#ranking). Event types: `plans` decide the therapies they name (tumor board), `gives` give them; in other events a named therapy is history or context. `parameters`: a parameter key gives `concepts` when present, `values` per value, or makes a diagnosis asserted or suspected (`implies`), also only from a number up (`atLeast`) and only in some event types (`events`). A disease profile adds the parameters of its disease (data/profiles).",
   "plans": ["tumor_board", "treatment_decision", "hospital_admission"],
   "gives": [
     "therapy",
@@ -11,40 +11,9 @@
     "palliative"
   ],
   "parameters": {
-    "gleason_primary": {
-      "concepts": ["mesh:D060787"],
-      "implies": {
-        "mesh:D011471": "asserted"
-      }
-    },
-    "gleason_secondary": {
-      "concepts": ["mesh:D060787"],
-      "implies": {
-        "mesh:D011471": "asserted"
-      }
-    },
     "r_status": {
       "values": {
         "R1": ["mesh:D000072662"]
-      }
-    },
-    "pi_rads": {
-      "atLeast": 3,
-      "implies": {
-        "mesh:D011471": "suspected"
-      }
-    },
-    "psa_value": {
-      "atLeast": 4,
-      "events": ["referral", "lab_test"],
-      "implies": {
-        "mesh:D011471": "suspected"
-      }
-    },
-    "psa_event": {
-      "values": {
-        "biochemical_recurrence": ["mesh:D009364", "ncbigene:354"],
-        "castration_resistance": ["mesh:D064129", "ncbigene:354"]
       }
     },
     "bone_mets": {

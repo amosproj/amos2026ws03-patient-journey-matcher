@@ -1,6 +1,6 @@
 import type { Queryable } from "@matcher/db";
+import { profileOf } from "./profile.ts";
 import type { GraphQuery } from "./query.ts";
-import { isProstateCancer } from "./resolve.ts";
 import {
   ENTITY,
   ENTITY_TITLE,
@@ -151,10 +151,12 @@ export async function shortlist(
     values.substance,
     JSON.stringify(bindings),
     // An anchor shared by every candidate has near-zero IDF. Preserve the strength
-    // of title/major-topic evidence when ranking a new clinical population; prostate
-    // cancer keeps its calibrated IDF.
+    // of title/major-topic evidence when ranking a new clinical population; a disease
+    // profile can keep its calibrated IDF.
     query.concepts.flatMap((c, i) =>
-      c.role === "diagnosis" && !c.ids.some(isProstateCancer) ? [i] : [],
+      c.role === "diagnosis" && !profileOf(c.ids)?.skips?.includes("idfFloor")
+        ? [i]
+        : [],
     ),
     patterns.map(({ object }) => object),
     patterns.map(({ subject }) => subject),

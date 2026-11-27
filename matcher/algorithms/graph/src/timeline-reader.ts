@@ -1,6 +1,7 @@
 import type { JourneyEvent } from "@matcher/core";
 import { normalizeName } from "@matcher/terminology";
 import timeline from "../data/timeline.json" with { type: "json" };
+import { PROFILES, profileOf } from "./profile.ts";
 import {
   CERTAINTY,
   type ClinicalEvidence,
@@ -10,6 +11,7 @@ import {
   isLocalTherapy,
   isTherapy,
   latest,
+  OPERATION_FLAGS,
   type Reading,
   roleOf,
   STATUS_ORDER,
@@ -349,16 +351,32 @@ function* timelineRelations(
 }
 
 type Implied = { id: string; status: Status };
-type ParameterRule = {
-  concepts?: string[];
-  values?: Record<string, string[]>;
-  implies?: Record<string, string>;
+/** A rule of data/timeline.json or of a profile */
+export type ParameterRule = {
+  concepts?: readonly string[];
+  values?: Readonly<Record<string, readonly string[]>>;
+  implies?: Readonly<Record<string, string>>;
   atLeast?: number;
-  events?: string[];
+  events?: readonly string[];
 };
 const PLANS = new Set(timeline.plans.map(normalizeName));
 const GIVES = new Set(timeline.gives.map(normalizeName));
-const PARAMETERS: Record<string, ParameterRule> = timeline.parameters;
+const PARAMETERS: Readonly<Record<string, ParameterRule>> = {
+  ...timeline.parameters,
+  ...Object.fromEntries(
+    PROFILES.flatMap((profile) => Object.entries(profile.parameters ?? {})),
+  ),
+};
+const MEASUREMENTS = PROFILES.flatMap((profile) =>
+  Object.entries(profile.measurements ?? {}),
+);
+const IMPLIES_WHEN = new Map(
+  PROFILES.flatMap((profile) =>
+    Object.entries(profile.impliesWhen ?? {}).map(
+      ([id, pattern]): [string, RegExp] => [id, new RegExp(pattern)],
+    ),
+  ),
+);
 
 /** What the parameters of an event say: concepts, and diagnoses they assert or make suspected. */
 function parameterFacts(event: JourneyEvent): {
@@ -368,17 +386,19 @@ function parameterFacts(event: JourneyEvent): {
   const concepts: Concept[] = [];
   const implied: Implied[] = [];
   const type = normalizeName(event.type);
-  // A measured PSA is a search concept even below the diagnostic threshold. The
-  // synthetic journeys also copy PSA onto unrelated events, such as admissions.
-  const psa = event.parameters?.psa_value;
-  if (
-    (type === "lab test" || type === "followup") &&
-    typeof psa === "number" &&
-    Number.isFinite(psa) &&
-    psa >= 0
-  ) {
-    const marker = conceptOf("ncbigene:354");
-    if (marker) concepts.push(marker);
+  // A measured value is a search concept even below the threshold of a rule. The synthetic
+  // journeys also copy values onto unrelated events, such as admissions.
+  for (const [key, measurement] of MEASUREMENTS) {
+    const value = event.parameters?.[key];
+    if (
+      measurement.events.map(normalizeName).includes(type) &&
+      typeof value === "number" &&
+      Number.isFinite(value) &&
+      value >= 0
+    ) {
+      const test = conceptOf(measurement.concept);
+      if (test) concepts.push(test);
+    }
   }
   for (const [key, value] of Object.entries(event.parameters ?? {})) {
     const rule = PARAMETERS[key];
@@ -591,22 +611,25 @@ export function readTimeline(context: JourneyEvent[], reading: Reading): void {
         if (
           concept.implies !== undefined &&
           treatments.get(concept.id) === "asserted" &&
-          (concept.id !== "mesh:D011468" ||
-            /\bradical|\bradikal|\brpe\b|\brarp\b|\bralp\b/.test(
-              normalizeName(text),
-            ))
+          (IMPLIES_WHEN.get(concept.id)?.test(normalizeName(text)) ?? true)
         )
           implied.push({ id: concept.implies, status: "asserted" });
-      const prostateWorkup =
-        parameters.implied.length > 0 ||
-        treatments.get("mesh:D011468") === "asserted";
+      // diagnoses it works up: implied by its parameters, or a profile's workup procedure given
+      const workups = new Set(parameters.implied.map(({ id }) => id));
+      for (const profile of PROFILES)
+        if (
+          profile.workup?.procedures.some(
+            (id) => treatments.get(id) === "asserted",
+          )
+        )
+          workups.add(profile.diagnosis);
       return {
         event,
         text,
         concepts,
         treatments,
         implied,
-        prostateWorkup,
+        workups,
       };
     });
   // A cancellation withdraws earlier plans for the named intervention. Past administrations
@@ -659,15 +682,15 @@ export function readTimeline(context: JourneyEvent[], reading: Reading): void {
     }
     if (status === "asserted" || status === "unknown") observed.add(item.stage);
   }
-  // A journey that does not name the diagnosis implies it: a Gleason grade, a prostatectomy or
-  // a disease-specific treatment supports it, an elevated PSA or PI-RADS makes it suspected
-  // (data/timeline.json, concepts.json `implies`). Another disease does not stand in for it.
-  // Where the journey names it, or a form of it, the same evidence confirms it.
-  const prostateWorkup = read.some((event) => event.prostateWorkup);
+  // A journey that does not name a diagnosis implies it once it has a workup of it: a parameter
+  // or a disease-specific treatment supports it or makes it suspected (data/profiles,
+  // concepts.json `implies`). Another disease does not stand in for it. Where the journey names
+  // it, or a form of it, the same evidence confirms it.
+  const workups = new Set(read.flatMap((event) => [...event.workups]));
   const inferred = new Map<string, Status>();
   for (const { implied, event } of read)
     for (const { id, status } of implied) {
-      if (excluded.has(id) || !prostateWorkup) continue;
+      if (excluded.has(id) || !workups.has(id)) continue;
       const named = [...diagnoses.keys()].some(
         (known) => known === id || broaderDiagnosis(known) === id,
       );
@@ -689,14 +712,15 @@ export function readTimeline(context: JourneyEvent[], reading: Reading): void {
             diagnoses.set(item.concept.id, weight);
           }
       } else inferred.set(id, status);
+      const workup = profileOf([id])?.workup?.name ?? "workup";
       evidence.push({
         ref: event.id,
         date: event.date,
         diagnosis: id,
         status,
         detail: named
-          ? "Confirmed by a prostate workup"
-          : "Inferred from a prostate workup",
+          ? `Confirmed by a ${workup}`
+          : `Inferred from a ${workup}`,
       });
     }
   for (const [id, status] of inferred) {
@@ -740,11 +764,9 @@ export function readTimeline(context: JourneyEvent[], reading: Reading): void {
       if (received) {
         if (isLocalTherapy(concept, [concept.name]))
           therapy.localTherapy = true;
-        if (
-          normalizeName(event.type) === "surgery" &&
-          concept.id === "mesh:D011468"
-        )
-          therapy.prostatectomy = true;
+        const flag = OPERATION_FLAGS.get(concept.id);
+        if (flag !== undefined && normalizeName(event.type) === "surgery")
+          therapy.flags[flag] = true;
         if (role === "drug") therapy.systemicTherapy = true;
       }
       const current = index === lastTherapy && (received || planned);

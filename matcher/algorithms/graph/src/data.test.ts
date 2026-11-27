@@ -10,9 +10,11 @@ import pubtator from "../data/pubtator-relations.json" with { type: "json" };
 import stages from "../data/stages.json" with { type: "json" };
 import cues from "../data/status-cues.json" with { type: "json" };
 import timeline from "../data/timeline.json" with { type: "json" };
+import { PROFILES } from "./profile.ts";
 import { ROLES } from "./query.ts";
-import { STAGES } from "./stages.ts";
+import { STAGES, type StageRow } from "./stages.ts";
 import { CUE_STATUSES } from "./status.ts";
+import type { ParameterRule } from "./timeline-reader.ts";
 import { ENTITY_TYPES, FACT_KINDS, PREDICATES, STATUSES } from "./types.ts";
 
 type Row = { type: string } & Record<string, unknown>;
@@ -95,25 +97,60 @@ test("attribute values give a status", () => {
 test("the stage and timeline tables reference curated patient concepts", () => {
   for (const row of concepts.concepts) {
     if ("role" in row) expect(ROLES).toContain(row.role);
-    for (const stage of row.stages ?? []) expect(STAGES).toContain(stage);
     for (const id of [...(row.broader ?? []), ...(row.narrower ?? [])])
       expect(CONCEPT_IDS).toContain(id);
     if (row.implies) expect(CONCEPT_IDS).toContain(row.implies);
   }
-  for (const stage of stages.stages) {
+  expect(new Set(STAGES).size, "each state once").toBe(STAGES.length);
+  const rows: StageRow[] = [
+    ...stages.stages,
+    ...PROFILES.flatMap((profile) => profile.stages ?? []),
+  ];
+  for (const stage of rows) {
     expect(STAGES).toContain(stage.id);
     for (const id of stage.concepts) expect(CONCEPT_IDS).toContain(id);
+    for (const id of stage.ends ?? []) expect(STAGES).toContain(id);
   }
-  for (const rule of Object.values(timeline.parameters)) {
-    if ("values" in rule)
-      for (const ids of Object.values(rule.values))
-        for (const id of ids) expect(CONCEPT_IDS).toContain(id);
-    if ("concepts" in rule)
-      for (const id of rule.concepts) expect(CONCEPT_IDS).toContain(id);
-    if ("implies" in rule)
-      for (const [id, status] of Object.entries(rule.implies)) {
-        expect(CONCEPT_IDS).toContain(id);
-        expect(STATUSES).toContain(status);
-      }
+  const rules: ParameterRule[] = [
+    timeline.parameters,
+    ...PROFILES.map((profile) => profile.parameters ?? {}),
+  ].flatMap((parameters) => Object.values(parameters));
+  for (const rule of rules) {
+    for (const ids of Object.values(rule.values ?? {}))
+      for (const id of ids) expect(CONCEPT_IDS).toContain(id);
+    for (const id of rule.concepts ?? []) expect(CONCEPT_IDS).toContain(id);
+    for (const [id, status] of Object.entries(rule.implies ?? {})) {
+      expect(CONCEPT_IDS).toContain(id);
+      expect(STATUSES).toContain(status);
+    }
+  }
+});
+
+test("a disease profile references curated concepts, known states and MeSH topics", () => {
+  for (const profile of PROFILES) {
+    expect(CONCEPT_IDS).toContain(profile.diagnosis);
+    for (const [id, states] of Object.entries(profile.impliedStages ?? {})) {
+      expect(CONCEPT_IDS).toContain(id);
+      for (const stage of states) expect(STAGES).toContain(stage);
+    }
+    for (const stage of Object.keys(profile.stateRules ?? {}))
+      expect(STAGES).toContain(stage);
+    for (const id of [
+      ...Object.values(profile.measurements ?? {}).map(
+        ({ concept }) => concept,
+      ),
+      ...Object.keys(profile.impliesWhen ?? {}),
+      ...(profile.workup?.procedures ?? []),
+      ...Object.values(profile.flags ?? {}).flatMap((flag) =>
+        "operation" in flag ? [flag.operation] : [],
+      ),
+    ])
+      expect(CONCEPT_IDS).toContain(id);
+    for (const id of [
+      ...(profile.phase?.treatment ?? []),
+      ...(profile.phase?.diagnosis ?? []),
+      ...(profile.alternatives ?? []),
+    ])
+      expect(id).toMatch(/^mesh:D\d+(Q\d+)?$/);
   }
 });

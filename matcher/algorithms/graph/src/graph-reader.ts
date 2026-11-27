@@ -1,12 +1,14 @@
 import type { JourneyState } from "@matcher/core";
 import { normalizeName } from "@matcher/terminology";
 import { normalizePatientGraph, parseDay } from "./patient.ts";
+import { PROFILES } from "./profile.ts";
 import {
   CERTAINTY,
   diagnosisRole,
   isLocalTherapy,
   isTherapy,
   latest,
+  OPERATION_FLAGS,
   type Reading,
   type Role,
   roleOf,
@@ -18,8 +20,13 @@ import { STAGE_CONCEPTS } from "./stages.ts";
 /** Roles whose statements are new measurements each time, such as a PSA value. */
 const MEASUREMENTS: ReadonlySet<Role> = new Set(["test", "gene", "finding"]);
 
-const SYSTEMIC_THERAPY =
-  /\badt\b|androgen|hormonther|hormone therap|leupro|gosere|degarel|relugol|bicalut|abirater|enzalut|apalut|darolut|docetax|cabazitax|olaparib|radium|chemother/;
+// drug therapies by name, plus the profiles'
+const SYSTEMIC_THERAPY = new RegExp(
+  [
+    /hormonther|hormone therap|docetax|olaparib|chemother/.source,
+    ...PROFILES.flatMap((profile) => profile.therapyNames?.systemic ?? []),
+  ].join("|"),
+);
 
 /** Reads a patient graph: the statements that are valid at the cutoff. */
 export function readGraph(
@@ -170,7 +177,9 @@ export function readGraph(
         )
       )
         therapy.localTherapy = true;
-      if (entity.id === "mesh:D011468") therapy.prostatectomy = true;
+      const flag =
+        entity.id === null ? undefined : OPERATION_FLAGS.get(entity.id);
+      if (flag !== undefined) therapy.flags[flag] = true;
       if (
         entity.type === "chemical" ||
         names.some((name) => SYSTEMIC_THERAPY.test(name))

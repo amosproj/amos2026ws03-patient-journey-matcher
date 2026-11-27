@@ -1,6 +1,7 @@
 import type { JourneyState } from "@matcher/core";
 import { readGraph } from "./graph-reader.ts";
 import { LUNG, NSCLC, SCLC } from "./histology.ts";
+import { type DiseaseProfile, profileOf } from "./profile.ts";
 import {
   type ClinicalEvidence,
   isLocalTherapy,
@@ -17,7 +18,6 @@ import {
   type Concept,
   conceptOf,
   defaultTerminology,
-  isProstateCancer,
   type Terminology,
 } from "./resolve.ts";
 import {
@@ -49,8 +49,8 @@ export interface QueryConcept {
 }
 
 export interface GraphQuery {
-  /** The patient has prostate cancer: its stage and care rules apply to the papers on it. */
-  prostateContext: boolean;
+  /** The profile of the patient's disease: its rules apply to the papers on it. */
+  profile?: DiseaseProfile;
   histology?: { observed: string; conflicting: string };
   evidence: ClinicalEvidence[];
   cutoff: string;
@@ -375,7 +375,7 @@ function buildQuery(reading: Reading, fromGraph: boolean): GraphQuery {
     if (
       role === "diagnosis" &&
       status === "suspected" &&
-      !isProstateCancer(concept.id)
+      !profileOf([concept.id])?.skips?.includes("diagnosisAspect")
     ) {
       const qualifier = `${concept.id}Q000175`;
       concepts.byId.set(qualifier, {
@@ -445,21 +445,17 @@ function buildQuery(reading: Reading, fromGraph: boolean): GraphQuery {
   therapy.diagnosticFocus = found.some(
     ({ role, focus: isFocus }) => role === "test" && isFocus,
   );
-  therapy.psaWorkup =
-    !therapy.diagnosed &&
-    diagnoses.has("mesh:D011471") &&
-    found.some(
-      ({ concept, focus: isFocus }) => isFocus && concept.id === "ncbigene:354",
-    );
+  const profile = profileOf(gate.keys());
+  for (const [name, flag] of Object.entries(profile?.flags ?? {}))
+    if ("read" in flag) therapy.flags[name] = flag.read(reading);
   const sexes = new Set(
     [...diagnoses.keys()].flatMap((id) => conceptOf(id)?.sex ?? []),
   );
   const sex = sexes.size === 1 ? [...sexes][0] : undefined;
 
-  const prostateContext = [...gate.keys()].some(isProstateCancer);
   return {
     cutoff,
-    prostateContext,
+    profile,
     histology,
     evidence,
     diagnoses: gate,
@@ -468,7 +464,7 @@ function buildQuery(reading: Reading, fromGraph: boolean): GraphQuery {
       [...stageIds, ...treatments.keys()],
       stageTexts,
       therapy,
-      prostateContext,
+      profile,
       observed,
     ),
     treatments,

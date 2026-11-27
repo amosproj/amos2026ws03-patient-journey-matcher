@@ -1,9 +1,9 @@
+import { isProfileDisease } from "./profile.ts";
 import type { GraphQuery, QueryConcept } from "./query.ts";
-import { isProstateCancer, type Terminology } from "./resolve.ts";
+import type { Terminology } from "./resolve.ts";
 import type { Candidate } from "./retrieval.ts";
 import type { Values } from "./settings.ts";
 import {
-  careContext,
   isCancer,
   otherCondition,
   otherDisease,
@@ -217,22 +217,20 @@ function rank(
       part: worth * strength,
     });
   });
-  // The prostate rules are for papers on prostate cancer, whatever else the patient has. A paper
-  // on another of his cancers gets the states every cancer has. The phase rule holds for papers on
+  // A profile's rules are for papers on its disease, whatever else the patient has. A paper on
+  // another of his cancers gets the states every cancer has. The phase rule holds for papers on
   // his cancer, or on any of his diagnoses when he has none: his treatment is that of his cancer.
-  const prostate =
-    query.prostateContext && row.diagnoses.some(isProstateCancer);
-  const scope = prostate
-    ? "prostate"
-    : row.diagnoses.some(isCancer)
-      ? "cancer"
+  const patientProfile = query.profile;
+  const profile =
+    patientProfile &&
+    row.diagnoses.some((id) => isProfileDisease(patientProfile, id))
+      ? patientProfile
       : undefined;
-  const phased =
-    scope !== undefined || ![...query.diagnoses.keys()].some(isCancer);
-  const stages =
-    scope === undefined
-      ? new Set<Stage>()
-      : paperStages(row.title, row.mesh, scope);
+  const staged = profile !== undefined || row.diagnoses.some(isCancer);
+  const phased = staged || ![...query.diagnoses.keys()].some(isCancer);
+  const stages = staged
+    ? paperStages(row.title, row.mesh, profile)
+    : new Set<Stage>();
   const severity = {
     strong: values.conflictStrong,
     moderate: values.conflictModerate,
@@ -242,15 +240,14 @@ function rank(
     stages,
     query.stage,
     { fit: values.stageFit, ...severity },
-    scope ?? "cancer",
+    profile,
   );
-  const care =
-    prostate && careContext(query.stage, stages, row.title, row.mesh);
+  const care = profile?.careContext?.(query.stage, stages, row.title, row.mesh);
   const phase = phased
     ? phaseConflict(
         row.mesh,
         query.stage,
-        prostate ? undefined : new Set(query.diagnoses.keys()),
+        profile?.phase ?? new Set(query.diagnoses.keys()),
       )
     : undefined;
   const own = ownIds(query);
@@ -259,7 +256,12 @@ function rank(
     !foreign &&
     ![...query.diagnoses.keys()].some(isCancer) &&
     otherCondition(row.mesh, own, new Set(query.diagnoses.keys()), terms);
-  const alternative = prostate && otherTreatment(row.mesh, own, query.stage);
+  const alternative = otherTreatment(
+    row.mesh,
+    own,
+    query.stage,
+    profile?.alternatives ?? [],
+  );
   const lab = isLabResearch(row.mesh);
   const otherSex = otherSexOnly(row.mesh, query.sex);
   const topic =

@@ -26,8 +26,6 @@ export type Concept = {
   diagnostic?: boolean;
   /** The MeSH qualifier of a diagnosis that papers about this concept carry, e.g. surgery. */
   qualifier?: string;
-  /** Disease states the concept implies for a patient, e.g. radium-223: castration-resistant. */
-  stages?: string[];
   /** The role the matcher gives it instead of the one of its type, e.g. `stage`. */
   role?: string;
   /** A diagnosis only one sex can have, such as prostate cancer. */
@@ -157,13 +155,6 @@ const BROADER_DIAGNOSIS: ReadonlyMap<string, string> = new Map(
 /** The diagnosis a narrower one is a form of: prostate cancer for castration-resistant. */
 export function broaderDiagnosis(id: string): string | undefined {
   return BROADER_DIAGNOSIS.get(id);
-}
-
-const PROSTATE_CANCER = "mesh:D011471";
-
-/** Prostate cancer or one of its forms, such as castration-resistant. */
-export function isProstateCancer(id: string): boolean {
-  return id === PROSTATE_CANCER || broaderDiagnosis(id) === PROSTATE_CANCER;
 }
 
 /** A diagnostic name and a code may describe the same disease at different specificity. */

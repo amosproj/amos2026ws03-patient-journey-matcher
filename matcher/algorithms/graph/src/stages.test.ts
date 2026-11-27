@@ -1,9 +1,9 @@
 import { normalizeName } from "@matcher/terminology";
 import { expect, test } from "vitest";
+import { prostate } from "./profiles/prostate.ts";
 import { defaultTerminology } from "./resolve.ts";
 import { MESH_MAJOR, MESH_MINOR } from "./schema.ts";
 import {
-  careContext,
   isCancer,
   isGenericNeoplasm,
   otherCondition,
@@ -17,7 +17,12 @@ import {
   stageFactor,
 } from "./stages.ts";
 
-const none = { diagnosed: true, localTherapy: false, systemicTherapy: false };
+const none = {
+  diagnosed: true,
+  localTherapy: false,
+  systemicTherapy: false,
+  flags: {},
+};
 const factors = { fit: 2, strong: 0.1, moderate: 0.5, mild: 0.8 };
 
 test("a paper's states come from its title or a major MeSH topic, not a minor one", () => {
@@ -25,24 +30,24 @@ test("a paper's states come from its title or a major MeSH topic, not a minor on
     paperStages(
       "Enzalutamide in metastatic castration-resistant prostate cancer",
       {},
-      "prostate",
+      prostate,
     ),
   ).toEqual(new Set(["metastatic", "castration_resistant"]));
+  expect(paperStages("Outcomes of active surveillance", {}, prostate)).toEqual(
+    new Set(["surveillance"]),
+  );
   expect(
-    paperStages("Outcomes of active surveillance", {}, "prostate"),
-  ).toEqual(new Set(["surveillance"]));
-  expect(
-    paperStages("Radiotherapy for locally advanced disease", {}, "prostate"),
+    paperStages("Radiotherapy for locally advanced disease", {}, prostate),
   ).toEqual(new Set());
   expect(
     paperStages(
       "A cohort",
       { "mesh:D064129": MESH_MAJOR | MESH_MINOR },
-      "prostate",
+      prostate,
     ),
   ).toEqual(new Set(["castration_resistant"]));
   expect(
-    paperStages("A cohort", { "mesh:D064129": MESH_MINOR }, "prostate"),
+    paperStages("A cohort", { "mesh:D064129": MESH_MINOR }, prostate),
   ).toEqual(new Set());
 });
 
@@ -57,15 +62,16 @@ test("negated or 'free' cues name no state", () => {
 });
 
 test("a patient's states come from concepts, the states they imply and cues", () => {
-  expect(patientStage(["mesh:D001859"], [], none).states).toEqual(
+  expect(patientStage(["mesh:D001859"], [], none, prostate).states).toEqual(
     new Set(["metastatic"]),
   );
   // Radium-223 is given in castration-resistant disease, which is metastatic here.
-  expect(patientStage(["mesh:C000615150"], [], none).states).toEqual(
+  expect(patientStage(["mesh:C000615150"], [], none, prostate).states).toEqual(
     new Set(["metastatic", "castration_resistant"]),
   );
   expect(
-    patientStage([], ["hormonsensitiv", "kastrationsresistent"], none).states,
+    patientStage([], ["hormonsensitiv", "kastrationsresistent"], none, prostate)
+      .states,
   ).toEqual(new Set(["castration_resistant"]));
 });
 
@@ -78,10 +84,10 @@ const patient = (states: string[], therapy: Partial<PatientStage> = {}) =>
 
 test("one contradicting state demotes a paper as strongly as it contradicts, a fitting one promotes it", () => {
   const crpc = new Set(["metastatic", "castration_resistant"] as const);
-  expect(stageFactor(crpc, patient([]), factors, "prostate").factor).toBe(0.5);
+  expect(stageFactor(crpc, patient([]), factors, prostate).factor).toBe(0.5);
   // Castration resistance is the likely next phase of a metastatic patient on hormone therapy.
   expect(
-    stageFactor(crpc, patient(["metastatic"]), factors, "prostate"),
+    stageFactor(crpc, patient(["metastatic"]), factors, prostate),
   ).toMatchObject({
     factor: 0.8,
     contradicting: ["castration_resistant"],
@@ -91,7 +97,7 @@ test("one contradicting state demotes a paper as strongly as it contradicts, a f
       new Set(["hormone_sensitive"] as const),
       patient(["metastatic", "castration_resistant"]),
       factors,
-      "prostate",
+      prostate,
     ).factor,
   ).toBe(0.1);
   expect(
@@ -99,18 +105,16 @@ test("one contradicting state demotes a paper as strongly as it contradicts, a f
       crpc,
       patient(["metastatic", "castration_resistant"]),
       factors,
-      "prostate",
+      prostate,
     ).factor,
   ).toBe(2);
-  expect(stageFactor(new Set(), patient([]), factors, "prostate").factor).toBe(
-    1,
-  );
+  expect(stageFactor(new Set(), patient([]), factors, prostate).factor).toBe(1);
 });
 
 test("surveillance and recurrence papers depend on the patient's course", () => {
   const surveillance = new Set(["surveillance"] as const);
   expect(
-    stageFactor(surveillance, patient(["surveillance"]), factors, "prostate")
+    stageFactor(surveillance, patient(["surveillance"]), factors, prostate)
       .factor,
   ).toBe(2);
   expect(
@@ -118,7 +122,7 @@ test("surveillance and recurrence papers depend on the patient's course", () => 
       surveillance,
       patient(["surveillance"], { localTherapy: true }),
       factors,
-      "prostate",
+      prostate,
     ).factor,
   ).toBe(0.1);
   // A recurrence paper is context after surgery or radiotherapy, wrong before them.
@@ -128,10 +132,10 @@ test("surveillance and recurrence papers depend on the patient's course", () => 
       recurrence,
       patient([], { localTherapy: true }),
       factors,
-      "prostate",
+      prostate,
     ).factor,
   ).toBe(1);
-  expect(stageFactor(recurrence, patient([]), factors, "prostate").factor).toBe(
+  expect(stageFactor(recurrence, patient([]), factors, prostate).factor).toBe(
     0.1,
   );
   expect(
@@ -139,23 +143,23 @@ test("surveillance and recurrence papers depend on the patient's course", () => 
       recurrence,
       patient(["recurrence"], { localTherapy: true }),
       factors,
-      "prostate",
+      prostate,
     ).factor,
   ).toBe(2);
 });
 
 test("localized and metastatic together span the disease and count as neither", () => {
   const both = new Set(["localized", "metastatic"] as const);
-  expect(stageFactor(both, patient([]), factors, "prostate").factor).toBe(1);
+  expect(stageFactor(both, patient([]), factors, prostate).factor).toBe(1);
   expect(
-    stageFactor(both, patient(["metastatic"]), factors, "prostate").factor,
+    stageFactor(both, patient(["metastatic"]), factors, prostate).factor,
   ).toBe(1);
   expect(
     stageFactor(
       new Set(["localized"] as const),
       patient(["metastatic"]),
       factors,
-      "prostate",
+      prostate,
     ).factor,
   ).toBe(0.1);
 });
@@ -163,23 +167,32 @@ test("localized and metastatic together span the disease and count as neither", 
 test("treatment papers wait for a treatment decision, diagnosis papers for a test", () => {
   const treatment = { "mesh:D011468": MESH_MAJOR };
   const diagnosis = { "mesh:D001706": MESH_MAJOR };
-  expect(phaseConflict(treatment, patient([], { diagnosed: false }))).toBe(
-    "strong",
-  );
   expect(
-    phaseConflict(treatment, patient([], { plannedTherapy: true })),
+    phaseConflict(treatment, patient([], { diagnosed: false }), prostate.phase),
+  ).toBe("strong");
+  expect(
+    phaseConflict(
+      treatment,
+      patient([], { plannedTherapy: true }),
+      prostate.phase,
+    ),
   ).toBeUndefined();
-  expect(phaseConflict(diagnosis, patient([], { localTherapy: true }))).toBe(
-    "mild",
-  );
+  expect(
+    phaseConflict(
+      diagnosis,
+      patient([], { localTherapy: true }),
+      prostate.phase,
+    ),
+  ).toBe("mild");
   expect(
     phaseConflict(
       diagnosis,
       patient([], { localTherapy: true, diagnosticFocus: true }),
+      prostate.phase,
     ),
   ).toBeUndefined();
   expect(
-    phaseConflict({ "mesh:D011468": MESH_MINOR }, patient([])),
+    phaseConflict({ "mesh:D011468": MESH_MINOR }, patient([]), prostate.phase),
   ).toBeUndefined();
 });
 
@@ -190,7 +203,7 @@ test("resistance, regional nodes and a metastasis-free endpoint do not establish
     "Locally advanced N1 M0 prostate cancer",
     "Regional lymph node metastases",
   ]) {
-    expect(paperStages(title, {}, "prostate").has("metastatic"), title).toBe(
+    expect(paperStages(title, {}, prostate).has("metastatic"), title).toBe(
       false,
     );
     expect(stageCues(normalizeName(title)).has("metastatic"), title).toBe(
@@ -202,15 +215,15 @@ test("resistance, regional nodes and a metastasis-free endpoint do not establish
     "Distant nodal disease (M1a)",
     "Bone metastases",
   ]) {
-    expect(paperStages(title, {}, "prostate").has("metastatic"), title).toBe(
+    expect(paperStages(title, {}, prostate).has("metastatic"), title).toBe(
       true,
     );
     expect(stageCues(normalizeName(title)).has("metastatic"), title).toBe(true);
   }
-  expect(patientStage(["mesh:C531550"], ["mhspc"], none).states).toEqual(
-    new Set(["metastatic", "hormone_sensitive"]),
-  );
-  expect(patientStage(["mesh:D064129"], [], none).states).toEqual(
+  expect(
+    patientStage(["mesh:C531550"], ["mhspc"], none, prostate).states,
+  ).toEqual(new Set(["metastatic", "hormone_sensitive"]));
+  expect(patientStage(["mesh:D064129"], [], none, prostate).states).toEqual(
     new Set(["castration_resistant"]),
   );
 });
@@ -232,9 +245,16 @@ test("a patient's own neoplasm and treatment are exempt from alternative-topic p
   ).toBe(false);
   const brachy = { "mesh:D001918": MESH_MAJOR };
   const treated = patient([], { localTherapy: true });
-  expect(otherTreatment(brachy, own, treated)).toBe(true);
+  expect(otherTreatment(brachy, own, treated, prostate.alternatives)).toBe(
+    true,
+  );
   expect(
-    otherTreatment(brachy, new Set([...own, "mesh:D001918"]), treated),
+    otherTreatment(
+      brachy,
+      new Set([...own, "mesh:D001918"]),
+      treated,
+      prostate.alternatives,
+    ),
   ).toBe(false);
 });
 
@@ -258,20 +278,20 @@ test("without cancer, another disease as major topic makes a paper about another
 
 test("surveillance follow-up needs evidence of monitoring or treatment decisions", () => {
   const active = patient(["surveillance"]);
-  const surveillance = paperStages("Active surveillance", {}, "prostate");
+  const surveillance = paperStages("Active surveillance", {}, prostate);
   const outcome = { "mesh:D005500": MESH_MINOR, "mesh:D016896": MESH_MINOR };
   const title = "Conversion to active treatment during active surveillance";
-  expect(careContext(active, surveillance, title, {})).toBe(
+  expect(prostate.careContext(active, surveillance, title, {})).toBe(
     "surveillance follow-up",
   );
-  expect(careContext(active, surveillance, "Outcomes", outcome)).toBe(
+  expect(prostate.careContext(active, surveillance, "Outcomes", outcome)).toBe(
     "surveillance follow-up",
   );
   expect(
-    careContext(active, surveillance, "Biopsy technique", {}),
+    prostate.careContext(active, surveillance, "Biopsy technique", {}),
   ).toBeUndefined();
   expect(
-    careContext(
+    prostate.careContext(
       { ...active, diagnosticFocus: true },
       surveillance,
       title,
@@ -279,39 +299,46 @@ test("surveillance follow-up needs evidence of monitoring or treatment decisions
     ),
   ).toBeUndefined();
   expect(
-    careContext(
+    prostate.careContext(
       { ...active, localTherapy: true },
       surveillance,
       title,
       outcome,
     ),
   ).toBeUndefined();
-  expect(careContext(active, new Set(), title, outcome)).toBeUndefined();
+  expect(
+    prostate.careContext(active, new Set(), title, outcome),
+  ).toBeUndefined();
 });
 
 test("salvage radiotherapy after surgery is a different pathway from salvage prostatectomy", () => {
   const recurrent = patient(["recurrence"], {
     localTherapy: true,
-    prostatectomy: true,
+    flags: { prostatectomy: true },
   });
-  const papers = paperStages("", {}, "prostate");
+  const papers = paperStages("", {}, prostate);
   const after = "Salvage radiotherapy following radical prostatectomy";
   expect(
-    careContext(
+    prostate.careContext(
       recurrent,
       papers,
       "Salvage radiation prior to radical prostatectomy",
       {},
     ),
   ).toBeUndefined();
-  expect(careContext(recurrent, papers, after, {})).toBe(
+  expect(prostate.careContext(recurrent, papers, after, {})).toBe(
     "postoperative salvage radiotherapy",
   );
   expect(
-    careContext({ ...recurrent, prostatectomy: false }, papers, after, {}),
+    prostate.careContext(
+      { ...recurrent, flags: { prostatectomy: false } },
+      papers,
+      after,
+      {},
+    ),
   ).toBeUndefined();
   expect(
-    careContext(
+    prostate.careContext(
       recurrent,
       papers,
       "Salvage prostatectomy after radiotherapy",
@@ -319,7 +346,7 @@ test("salvage radiotherapy after surgery is a different pathway from salvage pro
     ),
   ).toBeUndefined();
   expect(
-    careContext(
+    prostate.careContext(
       recurrent,
       papers,
       "Salvage radiotherapy after primary radiotherapy",
@@ -329,8 +356,7 @@ test("salvage radiotherapy after surgery is a different pathway from salvage pro
 });
 
 test("another cancer has the states every cancer has, not those of prostate cancer", () => {
-  const states = (title: string, mesh = {}) =>
-    paperStages(title, mesh, "cancer");
+  const states = (title: string, mesh = {}) => paperStages(title, mesh);
   expect(states("Hormone-sensitive breast cancer")).toEqual(new Set());
   expect(
     states("Olaparib in platinum-sensitive relapsed ovarian cancer"),
@@ -347,13 +373,11 @@ test("another cancer has the states every cancer has, not those of prostate canc
 test("a relapse of another cancer can be metastatic and follows any treatment", () => {
   const recurrence = new Set(["recurrence"] as const);
   const metastatic = patient(["metastatic"], { systemicTherapy: true });
-  expect(stageFactor(recurrence, metastatic, factors, "cancer").factor).toBe(1);
-  expect(stageFactor(recurrence, metastatic, factors, "prostate").factor).toBe(
+  expect(stageFactor(recurrence, metastatic, factors).factor).toBe(1);
+  expect(stageFactor(recurrence, metastatic, factors, prostate).factor).toBe(
     0.1,
   );
-  expect(stageFactor(recurrence, patient([]), factors, "cancer").factor).toBe(
-    0.1,
-  );
+  expect(stageFactor(recurrence, patient([]), factors).factor).toBe(0.1);
 });
 
 test("for any disease the qualifiers of the diagnosis and the kind of a procedure give a paper's phase", () => {

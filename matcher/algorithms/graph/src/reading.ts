@@ -1,6 +1,7 @@
 import type { JourneyState } from "@matcher/core";
 import { normalizeName } from "@matcher/terminology";
 import { LUNG, lungHistology, NSCLC, SCLC } from "./histology.ts";
+import { PROFILES } from "./profile.ts";
 import type { QueryWeights } from "./query.ts";
 import { type Concept, QUALIFIERS, type Terminology } from "./resolve.ts";
 import { STAGE_CONCEPTS, type Stage } from "./stages.ts";
@@ -160,8 +161,23 @@ export function diagnosisRole(concept: Concept, text: string): Role {
   return role;
 }
 
-const LOCAL_THERAPY =
-  /prostatektom|prostatectom|\brpe\b|\brarp\b|radiotherap|bestrahl|strahlenther|\bimrt\b|brachyther/;
+// radiotherapy, plus the profiles' operations
+const LOCAL_THERAPY = new RegExp(
+  [
+    /radiotherap|bestrahl|strahlenther|\bimrt\b|brachyther/.source,
+    ...PROFILES.flatMap((profile) => profile.therapyNames?.local ?? []),
+  ].join("|"),
+);
+
+/** Operation concept ID → the profile flag it sets */
+export const OPERATION_FLAGS: ReadonlyMap<string, string> = new Map(
+  PROFILES.flatMap((profile) =>
+    Object.entries(profile.flags ?? {}).flatMap(
+      ([name, flag]): [string, string][] =>
+        "operation" in flag ? [[flag.operation, name]] : [],
+    ),
+  ),
+);
 
 /** An operation or a radiotherapy: by the kind of its procedure, or by a name it was written with. */
 export function isLocalTherapy(
@@ -253,11 +269,14 @@ export function startReading(
   const therapy = {
     diagnosed: false,
     localTherapy: false,
-    prostatectomy: false,
-    psaWorkup: false,
     systemicTherapy: false,
     plannedTherapy: false,
     diagnosticFocus: false,
+    flags: Object.fromEntries(
+      PROFILES.flatMap((profile) => Object.keys(profile.flags ?? {})).map(
+        (name): [string, boolean] => [name, false],
+      ),
+    ),
   };
   // Concepts come in two passes: the diagnoses first, so aspects know them.
   const found: {

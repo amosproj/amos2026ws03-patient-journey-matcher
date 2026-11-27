@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import type { JourneyState } from "@matcher/core";
 import { expect, test } from "vitest";
+import { prostate } from "./profiles/prostate.ts";
 import { patientQuery } from "./query.ts";
 
 const cancer = "mesh:D011471";
@@ -322,7 +323,7 @@ test("the synthetic timelines reach the states of their course", () => {
       focus: past[past.length - 1],
       context: past.slice(0, -1),
     });
-    return { ...stage, states: [...stage.states] };
+    return { ...stage, ...stage.flags, states: [...stage.states] };
   };
   // Patient-1: the tumor board decides on active surveillance on 2027-01-23.
   expect(stageAt("Patient-1", "2027-01-09").states).toEqual([]);
@@ -620,7 +621,7 @@ test("a second malignancy and a multi-indication drug do not imply a prostate di
     },
   });
   expect(query.diagnoses.has(cancer)).toBe(false);
-  expect(query.stage.psaWorkup).toBe(false);
+  expect(query.stage.flags.psaWorkup).toBe(false);
   expect(query.diagnoses.has("mesh:D001943")).toBe(true);
   expect(
     patientQuery({
@@ -651,7 +652,7 @@ test("another disease neither hides an implied prostate cancer nor switches its 
   });
   expect(q.diagnoses.has("mesh:D003924")).toBe(true);
   expect(q.diagnoses.has(cancer)).toBe(true);
-  expect(q.prostateContext).toBe(true);
+  expect(q.profile).toBe(prostate);
   expect(q.stage.diagnosed).toBe(true);
   expect(q.sex).toBe("male");
 });
@@ -681,9 +682,15 @@ test("proof of the cancer confirms a diagnosis that the journey names without sa
   };
   const named = discharge("pT2c R0 Prostatakarzinom");
   const unproven = patientQuery({ context: [named], focus: psa });
-  expect(unproven.stage).toMatchObject({ diagnosed: false, psaWorkup: true });
+  expect(unproven.stage).toMatchObject({
+    diagnosed: false,
+    flags: { psaWorkup: true },
+  });
   const proven = patientQuery({ context: [biopsy, named], focus: psa });
-  expect(proven.stage).toMatchObject({ diagnosed: true, psaWorkup: false });
+  expect(proven.stage).toMatchObject({
+    diagnosed: true,
+    flags: { psaWorkup: false },
+  });
   expect(proven.evidence.map((item) => item.detail)).toContain(
     "Confirmed by a prostate workup",
   );
@@ -728,7 +735,7 @@ test("a non-prostate journey cannot acquire a prostate disease state from the dr
       label: "Hormone-sensitive. Radium-223.",
     },
   });
-  expect(q.prostateContext).toBe(false);
+  expect(q.profile).toBeUndefined();
   expect(q.stage.states.size).toBe(0);
 });
 
@@ -777,7 +784,7 @@ test("an operation of any disease is a procedure of the query and a local therap
     query.concepts.find((concept) => concept.ids[0] === "mesh:D008408"),
   ).toMatchObject({ role: "procedure", focus: true });
   expect(query.stage.localTherapy).toBe(true);
-  expect(query.prostateContext).toBe(false);
+  expect(query.profile).toBeUndefined();
 });
 
 test("a suspicion in a finding, a pathology report and a later finding of spread set the timeline course", () => {

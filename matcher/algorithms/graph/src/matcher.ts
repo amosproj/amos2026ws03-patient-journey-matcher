@@ -23,6 +23,7 @@ export function createGraphMatcher(
           (c) => c.role !== "diagnosis" && c.role !== "aspect" && c.focus,
         ) &&
         !query.treatments.size;
+      const { states, flags, ...course } = query.stage;
       trace?.("query", {
         cutoff: query.cutoff,
         focusDate: state.focus.date,
@@ -30,7 +31,7 @@ export function createGraphMatcher(
         diagnoses: Object.fromEntries(query.diagnoses),
         histology: query.histology,
         concepts: query.concepts,
-        stage: { ...query.stage, states: [...query.stage.states] },
+        stage: { ...course, ...flags, states: [...states] },
         treatments: Object.fromEntries(query.treatments),
         relations: Object.fromEntries(query.relations),
         evidence: query.evidence,
