@@ -60,7 +60,7 @@ def url() -> Iterator[str]:
     asyncio.run(execute(database, "CREATE EXTENSION IF NOT EXISTS vector"))
     schema = f"test_{uuid4().hex[:12]}"
     asyncio.run(execute(database, f"CREATE SCHEMA {schema}"))
-    scoped = f"{database}{'&' if '?' in database else '?'}search_path={schema}"
+    scoped = f"{database}{'&' if '?' in database else '?'}search_path={schema},public"
     try:
         for path in sorted((ROOT / "db/init").glob("*.sql")):
             asyncio.run(execute(scoped, path.read_text(encoding="utf-8")))
@@ -407,3 +407,40 @@ def test_propose_keeps_an_unparsable_answer_for_checking(prefilter, url, tmp_pat
     assert entry["proposal"] is None and entry["proposal_raw"] == "I am not sure."
     # A raw answer counts as tried: a second run does not ask again.
     asyncio.run(prefilter.propose(url, None, None, lambda prompt: pytest.fail("asked again")))
+
+
+def embedded(url: str, vectors: dict[str, list[float] | None]) -> str:
+    """A table shaped like the AI index's, in the test schema; returns its name."""
+
+    async def main() -> None:
+        connection = await asyncpg.connect(url)
+        try:
+            await connection.execute(
+                "CREATE TABLE emb (document_id text PRIMARY KEY REFERENCES documents (id),"
+                " document_changed_at timestamptz NOT NULL DEFAULT now(), embedding vector(2))"
+            )
+            for document_id, vector in vectors.items():
+                await connection.execute(
+                    "INSERT INTO emb (document_id, embedding) VALUES ($1, $2::text::vector)",
+                    document_id,
+                    None if vector is None else json.dumps(vector),
+                )
+        finally:
+            await connection.close()
+
+    asyncio.run(main())
+    return "emb"
+
+
+@pytest.mark.postgres
+def test_embeddings_skip_missing_and_null_vectors(prefilter, url):
+    insert(url, doc("pubmed:1"), doc("pubmed:2"), doc("pubmed:3"))
+    table = embedded(url, {"pubmed:1": [0.5, -1.0], "pubmed:2": None})
+    found = run(lambda c: prefilter.embeddings(c, ["pubmed:1", "pubmed:2", "pubmed:3"], table), url)
+    assert found == {"pubmed:1": [0.5, -1.0]}
+
+
+@pytest.mark.postgres
+def test_embeddings_refuse_a_missing_table(prefilter, url):
+    with pytest.raises(SystemExit, match="no_such_table"):
+        run(lambda c: prefilter.embeddings(c, ["pubmed:1"], "no_such_table"), url)

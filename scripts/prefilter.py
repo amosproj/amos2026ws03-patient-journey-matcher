@@ -370,6 +370,29 @@ async def sample(url: str, set_name: str, n: int | None) -> None:
     print(f"{set_name}: {added} new documents, {len(ids)} in this sample")
 
 
+# The Qwen index of the AI approach on the VM; the name holds a hash of its settings, so it can
+# differ on another machine (--embeddings).
+EMBEDDINGS = "ai_summary.qwen_c090b2ac8c6c4a46"
+
+
+async def check_table(connection: Any, table: str) -> None:
+    if await connection.fetchval("SELECT to_regclass($1)", table) is None:
+        raise SystemExit(f"No table {table}: build the AI index first, or pass --embeddings")
+
+
+async def embeddings(
+    connection: Any, ids: list[str], table: str = EMBEDDINGS
+) -> dict[str, list[float]]:
+    """The stored vectors of `ids`; documents without one, or with a NULL one, are left out."""
+    await check_table(connection, table)
+    rows = await connection.fetch(
+        f"SELECT document_id, embedding::text AS vector FROM {table}"
+        " WHERE document_id = ANY($1::text[]) AND embedding IS NOT NULL",
+        ids,
+    )
+    return {row["document_id"]: json.loads(row["vector"]) for row in rows}
+
+
 PROPOSER = ("Qwen/Qwen3-4B", "1cfa9a7208912126459214e8b04321603b3df60c")
 
 
