@@ -839,3 +839,15 @@ def test_sample_command_low_score_needs_a_model(prefilter, url, study):
     prefilter.MODEL.unlink()
     with pytest.raises(SystemExit, match="train"):
         prefilter.main(["--database-url", url, "sample", "--set", "train", "--low-score"])
+
+
+@pytest.mark.postgres
+def test_propose_does_not_store_an_empty_answer(prefilter, url, tmp_path, monkeypatch):
+    monkeypatch.setattr(prefilter, "LABELS", tmp_path / "labels.json")
+    insert(url, doc("pubmed:1"))
+    data = prefilter.load_labels(prefilter.LABELS)
+    prefilter.add_documents(data, ["pubmed:1"], "train")
+    prefilter.save_labels(prefilter.LABELS, data)
+    asyncio.run(prefilter.propose(url, None, None, lambda prompt: "  \n"))
+    entry = prefilter.load_labels(prefilter.LABELS)["documents"][0]
+    assert entry["proposal"] is None and entry["proposal_raw"] is None  # asked again next run

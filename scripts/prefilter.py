@@ -793,7 +793,9 @@ PROPOSER = ("Qwen/Qwen3-4B", "1cfa9a7208912126459214e8b04321603b3df60c")
 
 
 def qwen_generator() -> Callable[[str], str]:
-    """The local proposer: non-thinking mode, greedy, at most 128 new tokens; mps if there."""
+    """The local proposer: non-thinking mode, greedy, at most 128 new tokens; mps if there.
+
+    Eager attention: with the default (SDPA) attention on mps, Qwen3 writes garbage."""
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer
 
@@ -801,7 +803,7 @@ def qwen_generator() -> Callable[[str], str]:
     device = "mps" if torch.backends.mps.is_available() else "cpu"
     tokenizer = AutoTokenizer.from_pretrained(repository, revision=revision)
     model = AutoModelForCausalLM.from_pretrained(
-        repository, revision=revision, torch_dtype=torch.bfloat16
+        repository, revision=revision, dtype=torch.bfloat16, attn_implementation="eager"
     ).to(device)
 
     def generate(prompt: str) -> str:
@@ -853,12 +855,15 @@ async def propose(
                 entry |= answer
         answers.clear()
 
-    done = 0
+    done = empty = 0
     for entry in todo:
         document = documents.get(entry["id"])
         if document is None:
             continue  # no longer stored here; a person can still label it
         answer = generate(build_prompt(document, data["guide"]))
+        if not answer.strip():
+            empty += 1
+            continue  # nothing to check; the next run asks again
         proposal = parse_answer(answer)
         answers[entry["id"]] = (
             {"proposal_raw": answer}
@@ -869,7 +874,7 @@ async def propose(
         if done % 10 == 0:
             update_labels(LABELS, merge)
     update_labels(LABELS, merge)
-    print(f"proposed {done}, not stored here {len(todo) - len(documents)}")
+    print(f"proposed {done}, empty answers {empty}, not stored here {len(todo) - len(documents)}")
 
 
 def main(argv: list[str] | None = None) -> None:
