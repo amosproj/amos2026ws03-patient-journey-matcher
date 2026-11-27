@@ -144,7 +144,7 @@ function shellQuote(value) { return /^[\w@%+=:,./-]+$/.test(value) ? value : `'$
 const fmtCount = (value) => Number(value).toLocaleString("en-GB");
 const fmtCompact = (value) => new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 }).format(value);
 const fmtShare = (count, total) => total ? `${Math.round((100 * count) / total)} %` : "–";
-// What the keyword indexer did with a document's full text (`full_text_state` in server.py):
+// What the keyword indexer did with a document's full text (`full_text_state` in common.py):
 // the first two are done, the next run reads the others. [pill class, tip, label]
 const FULL_TEXT_STATES = {
   indexed: ["ok", "Done: the keywords of its full text are in the index, beside its metadata", "fully indexed"],

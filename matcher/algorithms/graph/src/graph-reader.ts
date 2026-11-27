@@ -14,7 +14,7 @@ import {
   roleOf,
   tripleKey,
 } from "./reading.ts";
-import { broaderDiagnosis, type Concept } from "./resolve.ts";
+import { broaderDiagnosis, type Concept, isSpread } from "./resolve.ts";
 import { STAGE_CONCEPTS } from "./stages.ts";
 
 /** Roles whose statements are new measurements each time, such as a PSA value. */
@@ -74,11 +74,8 @@ export function readGraph(
   const secondarySites = new Set(
     activeNodes
       .filter((node) =>
-        /^C7[789]\b/i.test(
-          String(
-            (node.attributes as { icd_code?: unknown } | undefined)?.icd_code ??
-              "",
-          ),
+        isSpread(
+          (node.attributes as { icd_code?: unknown } | undefined)?.icd_code,
         ),
       )
       .map((node) => node.uuid),

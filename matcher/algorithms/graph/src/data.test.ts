@@ -34,6 +34,16 @@ test("concepts: a known type, a well-formed ID, each ID once", () => {
   expect(CONCEPT_IDS.size).toBe(concepts.concepts.length);
 });
 
+test("concepts: no name belongs to two concepts", () => {
+  const owner = new Map<string, string>();
+  for (const { id, name, names } of concepts.concepts) {
+    for (const key of [name, ...names].map(normalizeName)) {
+      expect(owner.get(key) ?? id, `"${key}"`).toBe(id);
+      owner.set(key, id);
+    }
+  }
+});
+
 test("outcome IDs are well-formed", () => {
   for (const id of outcomes.ids) expect(id).toMatch(ID);
 });

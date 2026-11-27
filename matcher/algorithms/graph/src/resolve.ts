@@ -165,33 +165,6 @@ export function compatibleDiagnoses(a: Concept, b: Concept): boolean {
   );
 }
 
-/** A dictionary of whole normalized names. A name listed for two concepts is an error. */
-export function nameDictionary(
-  list: readonly Concept[],
-  resolvedBy: Exclude<ResolvedBy, null>,
-): Dictionary {
-  const byName = new Map<string, Concept>();
-  for (const concept of list) {
-    for (const name of [concept.name, ...concept.names]) {
-      const key = normalizeName(name);
-      const known = byName.get(key);
-      if (known !== undefined && known.id !== concept.id) {
-        throw new Error(
-          `"${name}" is a name of ${known.id} and of ${concept.id}.`,
-        );
-      }
-      byName.set(key, concept);
-    }
-  }
-  return { resolvedBy, lookup: (name) => byName.get(name) };
-}
-
-/** Tier 2: data/concepts.json. */
-export const curated: Dictionary = nameDictionary(
-  [...CONCEPTS.values()],
-  "curated",
-);
-
 // In a text a code is written in capitals and stands alone: HLA-B27, p53 and F18-FDG are names. As
 // in resolveIcd, a code marked suspected, excluded or past (C61 V, C61 A, C61 Z) is not read.
 const ICD_IN_TEXT =
@@ -309,6 +282,11 @@ export function createTerminology(
 }
 
 export const defaultTerminology = createTerminology();
+
+/** A code of a secondary neoplasm, such as C78.7 for liver metastases. */
+export function isSpread(code: unknown): boolean {
+  return typeof code === "string" && /^\s*C7[7-9](?![0-9])/i.test(code);
+}
 
 /**
  * Tier 1: a mapped ICD-10 code as written, else its category when that names one disease (reviewed in

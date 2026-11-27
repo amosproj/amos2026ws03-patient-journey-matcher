@@ -459,6 +459,24 @@ test("a dated graph treatment relation scopes the drug even without a prescripti
   expect(planned.treatments.has(drug)).toBe(false);
 });
 
+test.each(["C78.7", " C78.7"])(
+  "a node coded as a metastasis (%j) is a spread of the primary, not a second diagnosis",
+  (icd_code) => {
+    const liver = {
+      uuid: "liver",
+      name: "Raumforderung Leber",
+      labels: ["Diagnosis"],
+      attributes: { icd_code },
+    };
+    const query = graphQuery(
+      [diagnosis, edge("HAS_DIAGNOSIS", "p", "liver")],
+      [liver],
+    );
+    expect(query.diagnoses.has("mesh:D008113")).toBe(false);
+    expect(query.stage.states).toContain("metastatic");
+  },
+);
+
 test("an ICD code added at confirmation cannot identify an earlier unspecified graph lesion", () => {
   const lesion = {
     uuid: "lesion",

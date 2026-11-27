@@ -3,9 +3,7 @@ import { expect, test } from "vitest";
 import {
   conceptOf,
   createTerminology,
-  curated,
   defaultTerminology,
-  nameDictionary,
   resolve,
   resolveIcd,
 } from "./resolve.ts";
@@ -76,17 +74,17 @@ test("the concept table decides the type, not the patient label", () => {
 });
 
 test("more dictionaries come after the curated one, in order", () => {
-  const corpus = nameDictionary(
-    [
-      {
-        id: "mesh:D000000",
-        type: "chemical",
-        name: "Somedrug",
-        names: ["somedrug"],
-      },
-    ],
-    "pubtator",
-  );
+  const somedrug = {
+    id: "mesh:D000000",
+    type: "chemical" as const,
+    name: "Somedrug",
+    names: ["somedrug"],
+  };
+  const corpus = {
+    resolvedBy: "pubtator" as const,
+    lookup: (name: string) => (name === "somedrug" ? somedrug : undefined),
+  };
+  const [curated] = defaultTerminology.dictionaries;
   expect(resolve({ names: ["somedrug"] }, [curated, corpus])).toMatchObject({
     concept: { id: "mesh:D000000" },
     resolvedBy: "pubtator",
@@ -94,18 +92,6 @@ test("more dictionaries come after the curated one, in order", () => {
   expect(
     resolve({ names: ["leuprorelin"] }, [curated, corpus])?.resolvedBy,
   ).toBe("curated");
-});
-
-test("a name of two concepts is an error", () => {
-  expect(() =>
-    nameDictionary(
-      [
-        { id: "mesh:A", type: "disease", name: "a", names: ["same"] },
-        { id: "mesh:B", type: "disease", name: "b", names: ["same"] },
-      ],
-      "curated",
-    ),
-  ).toThrow(/"same" is a name of mesh:A and of mesh:B/);
 });
 
 test("a leading code is tried away only for the lookup", () => {

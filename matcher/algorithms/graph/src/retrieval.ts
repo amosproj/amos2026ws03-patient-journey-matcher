@@ -70,23 +70,28 @@ const SQL = `WITH q AS (
     WHERE e.concept = ANY ($4::text[] || ARRAY(SELECT unnest(scope) FROM q))
     GROUP BY e.document_id
   ),
+  -- One index scan per concept; OFFSET 0 keeps the planner from scanning all of graph.evidence.
+  -- Materialized, else the planner repeats the scan for every paper of named.
+  hits AS MATERIALIZED (
+    SELECT q.grp, q.weight, q.scope, e.document_id, e.flags
+    FROM q
+    CROSS JOIN LATERAL (
+      SELECT document_id, flags FROM graph.evidence WHERE concept = q.id OFFSET 0
+    ) AS e
+  ),
   evidence AS (
-    SELECT e.document_id, q.grp, max(q.weight) AS weight,
+    SELECT e.document_id, e.grp, max(e.weight) AS weight,
            max(greatest(
              CASE WHEN (e.flags & ${ENTITY_TITLE}) <> 0 THEN $6::float8
                   WHEN (e.flags & ${ENTITY}) <> 0 THEN $7::float8 ELSE 0 END,
              CASE WHEN (e.flags & ${MESH_MAJOR}) <> 0 THEN $8::float8
                   WHEN (e.flags & ${MESH_MINOR}) <> 0 THEN $9::float8
                   WHEN (e.flags & ${MESH_SUBSTANCE}) <> 0 THEN $10::float8 ELSE 0 END)) AS strength
-    -- One index scan per concept; OFFSET 0 keeps the planner from scanning all of graph.evidence.
-    FROM q
-    CROSS JOIN LATERAL (
-      SELECT document_id, flags FROM graph.evidence WHERE concept = q.id OFFSET 0
-    ) AS e
+    FROM hits e
     JOIN named n ON n.document_id = e.document_id
     -- A scoped concept counts only on a paper that also names one of its diagnoses.
-    WHERE q.scope IS NULL OR n.ids && q.scope
-    GROUP BY e.document_id, q.grp
+    WHERE e.scope IS NULL OR n.ids && e.scope
+    GROUP BY e.document_id, e.grp
   ),
   -- Rare among the papers on the diagnosis means telling: inverse frequency as in BM25.
   idf AS (

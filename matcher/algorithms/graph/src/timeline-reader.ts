@@ -21,6 +21,7 @@ import {
   type Concept,
   compatibleDiagnoses,
   conceptOf,
+  isSpread,
   resolveIcd,
   type Terminology,
 } from "./resolve.ts";
@@ -78,11 +79,6 @@ function timelineTreatments(event: JourneyEvent, terminology: Terminology) {
     if (!courses.has(concept.id)) courses.set(concept.id, unnamed ?? fallback);
   }
   return courses;
-}
-
-/** A code of a secondary neoplasm, such as C78.7 for liver metastases. */
-function isSpread(code: unknown): boolean {
-  return typeof code === "string" && /^\s*C7[7-9](?![0-9])/i.test(code);
 }
 
 function timelineConditions(
