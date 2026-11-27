@@ -244,3 +244,19 @@ def test_rule_set_holds_the_four_rules_without_variants(prefilter):
         "no_summary_no_full_text",
         "short_summary_no_full_text",
     }
+
+
+@pytest.mark.postgres
+def test_rule_counts_per_rule_and_source(prefilter, url):
+    insert(url, *RULE_ROWS)
+    counts = run(prefilter.rule_counts, url)
+    assert counts["no_summary"] == {"pubmed": 3}
+    assert counts["short_summary"] == {"pubmed": 1, "youtube": 1}
+    assert counts["erratum"] == {"pubmed": 2}
+    assert counts["reaction_without_abstract"] == {"pubmed": 1}
+    assert counts["no_summary_no_full_text"] == {"pubmed": 3}
+    # pubmed:1, 2, 3, 4, 6, 7 and youtube:9 are dropped; pubmed:5 and 8 are kept.
+    assert counts["_all"] == {"pubmed": 6, "youtube": 1}
+    assert counts["_total"] == {"pubmed": 8, "youtube": 1}
+    assert set(counts["_seconds"]) == set(prefilter.RULES) | {"_all"}
+    assert all(seconds >= 0 for seconds in counts["_seconds"].values())

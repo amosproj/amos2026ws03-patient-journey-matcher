@@ -35,6 +35,7 @@ import json
 import math
 import os
 import tempfile
+import time
 from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
@@ -110,6 +111,25 @@ async def rule_hits(connection: Any, rule: str, limit: int, seed: float) -> list
         f"SELECT d.id FROM documents d WHERE {RULES[rule]} ORDER BY random() LIMIT $1", limit
     )
     return [row["id"] for row in rows]
+
+
+async def rule_counts(connection: Any) -> dict[str, Any]:
+    """Per rule, then per source, how many documents it drops; `_all` is any rule of RULE_SET,
+    `_total` every document, and `_seconds` how long each query took."""
+
+    async def per_source(condition: str) -> tuple[dict[str, int], float]:
+        started = time.perf_counter()
+        rows = await connection.fetch(
+            f"SELECT d.source, count(*) AS n FROM documents d WHERE {condition}"
+            " GROUP BY d.source ORDER BY d.source"
+        )
+        return {row["source"]: row["n"] for row in rows}, time.perf_counter() - started
+
+    counts: dict[str, Any] = {"_seconds": {}}
+    for name, condition in [*RULES.items(), ("_all", ANY_RULE)]:
+        counts[name], counts["_seconds"][name] = await per_source(condition)
+    counts["_total"], _ = await per_source("true")
+    return counts
 
 
 def load_labels(path: Path) -> dict[str, Any]:
