@@ -80,7 +80,8 @@ export async function createHarness(url: string) {
     });
     const approaches = createApproaches({ db: db.pool, downloader });
     const server = createMcpHttpServer(
-      createMatchService(approaches, createDocumentStore(db.pool)),
+      // No answer cache: the tests match the same journey again after each index change.
+      createMatchService(approaches, createDocumentStore(db.pool), 0),
     );
     cleanup.push(async () => {
       server.closeAllConnections();

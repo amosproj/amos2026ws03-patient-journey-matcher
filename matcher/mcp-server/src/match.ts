@@ -26,6 +26,7 @@ function failure(name: string, error: unknown): string {
 export function createMatchService(
   approaches: readonly Pick<Approach, "name" | "matcher">[],
   store: DocumentStore,
+  cacheMs = CACHE_MS,
 ): MatchService {
   const byAlgorithm = new Map(
     approaches.map(({ name, matcher }) => [name, matcher]),
@@ -96,7 +97,7 @@ export function createMatchService(
         };
         if (key !== undefined && !result.degraded) {
           cache.delete(key);
-          cache.set(key, { expires: Date.now() + CACHE_MS, answer: result });
+          cache.set(key, { expires: Date.now() + cacheMs, answer: result });
           if (cache.size > CACHE_SIZE)
             cache.delete(cache.keys().next().value as string);
         }
