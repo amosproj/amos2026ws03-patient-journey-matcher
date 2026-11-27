@@ -48,6 +48,9 @@ ROOT = Path(__file__).resolve().parent.parent
 LABELS = ROOT / "research/prefilter/labels.json"
 MODEL = ROOT / "research/prefilter/model.json"
 RESULTS = ROOT / "research/prefilter/results.json"
+# The Qwen index of the AI approach on the VM; the name holds a hash of its settings, so it can
+# differ on another machine (--embeddings).
+EMBEDDINGS = "ai_summary.qwen_c090b2ac8c6c4a46"
 
 # Where the line for group 1 ("not usable for patients") is; agreed on #92. In doubt, keep.
 GUIDE = [
@@ -173,19 +176,55 @@ async def random_ids(
     return [row["id"] for row in rows]
 
 
-async def sample_train(connection: Any, n: int = 500, seed: float = 0.42) -> list[str]:
+async def sample_train(
+    connection: Any, n: int = 500, seed: float = 0.42, exclude: Iterable[str] = ()
+) -> list[str]:
     """Training candidates, enriched for unhelpful documents: 40% random, 20% rule hits spread
-    over RULE_SET, 25% never above 1 in #58, 15% lab titles; a short group is filled at random."""
+    over RULE_SET, 25% never above 1 in #58, 15% lab titles; a short group is filled at random.
+    Documents in `exclude` (those already in the labels file) are never picked again."""
     await connection.execute("SELECT setseed($1)", seed)
+    known = list(exclude)
     chosen: list[str] = []
     per_rule = round(n * 0.20) // len(RULE_SET)
     for rule in RULE_SET:
-        chosen += await random_ids(connection, RULES[rule], per_rule, chosen)
-    weak = [i for i in never_above_one() if i not in chosen]
-    chosen += await random_ids(connection, "d.id = ANY($3::text[])", round(n * 0.25), chosen, weak)
-    chosen += await random_ids(connection, "d.title ~* $3", round(n * 0.15), chosen, LAB_TITLE)
-    chosen += await random_ids(connection, "true", n - len(chosen), chosen)
+        chosen += await random_ids(connection, RULES[rule], per_rule, known + chosen)
+    taken = set(known + chosen)
+    weak = [i for i in never_above_one() if i not in taken]
+    chosen += await random_ids(
+        connection, "d.id = ANY($3::text[])", round(n * 0.25), known + chosen, weak
+    )
+    chosen += await random_ids(
+        connection, "d.title ~* $3", round(n * 0.15), known + chosen, LAB_TITLE
+    )
+    chosen += await random_ids(connection, "true", n - len(chosen), known + chosen)
     return chosen[:n]
+
+
+async def sample_low_score(
+    connection: Any,
+    model: dict[str, Any],
+    table: str,
+    n: int,
+    exclude: Iterable[str],
+    seed: float = 0.46,
+    pool: int = 20,
+) -> list[str]:
+    """The `n` documents the classifier is surest to drop, out of a random pool of `pool` times
+    as many embedded documents that the rules keep and nobody has labeled yet: more labels where
+    the threshold is decided."""
+    await check_table(connection, table)
+    await connection.execute("SELECT setseed($1)", seed)
+    rows = await connection.fetch(
+        f"SELECT d.id, e.embedding::text AS vector FROM {table} e"
+        f" JOIN documents d ON d.id = e.document_id"
+        f" WHERE e.embedding IS NOT NULL AND NOT {ANY_RULE} AND NOT d.id = ANY($1::text[])"
+        " ORDER BY random() LIMIT $2",
+        list(exclude),
+        n * pool,
+    )
+    vectors = ((row["id"], json.loads(row["vector"])) for row in rows)
+    scored = sorted(score_rows(vectors, model["weights"], model["bias"]), key=lambda x: x[1])
+    return [document_id for document_id, _ in scored[:n]]
 
 
 async def sample_random(connection: Any, n: int = 300, seed: float = 0.43) -> list[str]:
@@ -372,6 +411,13 @@ def parser() -> argparse.ArgumentParser:
     sample = commands.add_parser("sample", help="add a sample of documents to the labels file")
     sample.add_argument("--set", choices=["train", "random"], required=True)
     sample.add_argument("--n", type=int)
+    sample.add_argument("--seed", type=float, help="between -1 and 1; another seed, another sample")
+    sample.add_argument(
+        "--low-score",
+        action="store_true",
+        help="documents the classifier is surest to drop, to label more near its threshold",
+    )
+    sample.add_argument("--embeddings", default=EMBEDDINGS, help="table of the AI index")
     propose = commands.add_parser("propose", help="let a local LLM propose labels")
     propose.add_argument("--set")
     propose.add_argument("--limit", type=int)
@@ -382,22 +428,30 @@ def parser() -> argparse.ArgumentParser:
     return cli
 
 
-async def sample(url: str, set_name: str, n: int | None) -> None:
+async def sample(
+    url: str,
+    set_name: str,
+    n: int | None,
+    seed: float | None = None,
+    low_score: bool = False,
+    table: str = EMBEDDINGS,
+) -> None:
+    known = [entry["id"] for entry in load_labels(LABELS)["documents"]]
+    model = json.loads(MODEL.read_text(encoding="utf-8")) if MODEL.exists() else None
+    if low_score and model is None:
+        raise SystemExit("--low-score needs a classifier: run train first")
     connection = await connect(url)
     try:
-        if set_name == "train":
-            ids = await sample_train(connection, n or 500)
+        if low_score:
+            ids = await sample_low_score(connection, model or {}, table, n or 200, known)
+        elif set_name == "train":
+            ids = await sample_train(connection, n or 500, seed or 0.42, known)
         else:
-            ids = await sample_random(connection, n or 300)
+            ids = await sample_random(connection, n or 300, seed or 0.43)
     finally:
         await connection.close()
     added = update_labels(LABELS, lambda data: add_documents(data, ids, set_name))
     print(f"{set_name}: {added} new documents, {len(ids)} in this sample")
-
-
-# The Qwen index of the AI approach on the VM; the name holds a hash of its settings, so it can
-# differ on another machine (--embeddings).
-EMBEDDINGS = "ai_summary.qwen_c090b2ac8c6c4a46"
 
 
 async def check_table(connection: Any, table: str) -> None:
@@ -823,7 +877,9 @@ def main(argv: list[str] | None = None) -> None:
     if not args.database_url:
         raise SystemExit("Set DATABASE_URL or pass --database-url")
     if args.command == "sample":
-        asyncio.run(sample(args.database_url, args.set, args.n))
+        asyncio.run(
+            sample(args.database_url, args.set, args.n, args.seed, args.low_score, args.embeddings)
+        )
     elif args.command == "propose":
         asyncio.run(propose(args.database_url, args.set, args.limit, qwen_generator()))
     elif args.command == "train":

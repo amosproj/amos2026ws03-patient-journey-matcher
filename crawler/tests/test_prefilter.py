@@ -757,9 +757,9 @@ def test_sample_keeps_labels_saved_while_it_runs(prefilter, url, tmp_path, monke
     first_id = prefilter.load_labels(prefilter.LABELS)["documents"][0]["id"]
     original = prefilter.sample_train
 
-    async def sampling(connection, n, **kwargs):
+    async def sampling(connection, *args, **kwargs):
         label_on_disk(prefilter, first_id, "keep")
-        return await original(connection, n, **kwargs)
+        return await original(connection, *args, **kwargs)
 
     monkeypatch.setattr(prefilter, "sample_train", sampling)
     prefilter.main(["--database-url", url, "sample", "--set", "train", "--n", "3"])
@@ -807,3 +807,35 @@ def test_measure_after_retraining_draws_a_new_model_sample(prefilter, url, study
     asyncio.run(prefilter.measure(url, study))
     sets = {s for e in prefilter.load_labels(prefilter.LABELS)["documents"] for s in e["sets"]}
     assert {"drops-model:", "drops-model:retraine"} <= sets
+
+
+@pytest.mark.postgres
+def test_sample_train_skips_documents_already_in_the_file(prefilter, url):
+    insert(url, *[doc(f"pubmed:{i}") for i in range(40)])
+    known = [f"pubmed:{i}" for i in range(20)]
+    ids = run(lambda c: prefilter.sample_train(c, n=10, exclude=known), url)
+    assert len(ids) == 10 and not set(ids) & set(known)
+
+
+@pytest.mark.postgres
+def test_a_second_training_sample_adds_new_documents(prefilter, url, tmp_path, monkeypatch):
+    monkeypatch.setattr(prefilter, "LABELS", tmp_path / "labels.json")
+    insert(url, *[doc(f"pubmed:{i}") for i in range(20)])
+    for _ in range(2):
+        prefilter.main(["--database-url", url, "sample", "--set", "train", "--n", "5"])
+    assert len(prefilter.load_labels(prefilter.LABELS)["documents"]) == 10
+
+
+@pytest.mark.postgres
+def test_low_score_sample_takes_documents_the_classifier_scores_low(prefilter, url, study):
+    model = json.loads(prefilter.MODEL.read_text())
+    low = {f"pubmed:{i}" for i in range(10, 20)}
+    ids = run(lambda c: prefilter.sample_low_score(c, model, study, 5, ["pubmed:10"]), url)
+    assert len(ids) == 5 and set(ids) <= low - {"pubmed:10"}
+
+
+@pytest.mark.postgres
+def test_sample_command_low_score_needs_a_model(prefilter, url, study):
+    prefilter.MODEL.unlink()
+    with pytest.raises(SystemExit, match="train"):
+        prefilter.main(["--database-url", url, "sample", "--set", "train", "--low-score"])
