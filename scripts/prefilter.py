@@ -497,16 +497,22 @@ async def train(url: str, table: str = EMBEDDINGS) -> None:
         print("No safe threshold yet: label more candidates with low scores, then train again")
 
 
+def model_drop_set(model: dict[str, Any]) -> str:
+    """The set of checked drops of one classifier: a retrained one gets a sample of its own."""
+    return f"drops-model:{model.get('labels_hash', '')[:8]}"
+
+
 def add_drop_samples(
     data: dict[str, Any],
     rule_drops: list[str],
     model_drops: list[str],
     per_rule: dict[str, list[str]],
+    model_set: str = "drops-model",
 ) -> None:
     """Add the samples of drops to check, each set only once: a later run must not change a
     sample that people already checked."""
     filled = {name for entry in data["documents"] for name in entry["sets"]}
-    samples = {"drops-rules": rule_drops, "drops-model": model_drops}
+    samples = {"drops-rules": rule_drops, model_set: model_drops}
     samples |= {f"drops-rule:{rule}": ids for rule, ids in per_rule.items()}
     for name, ids in samples.items():
         if name not in filled and ids:
@@ -572,7 +578,7 @@ def summarize(
             cannot_judge += kept - seen
             extra = round(model_dropped.get(source, 0) * kept / seen) if seen else 0
             by_source[source] = by_source.get(source, 0) + extra
-        model_checks = drop_checks(in_set("drops-model"))
+        model_checks = drop_checks(in_set(model_drop_set(model)))
         safe = rule_checks["safe"] and model_checks["safe"]
         combined = approach(sum(by_source.values()), by_source, total, model_checks, safe)
         combined |= {"cannot_judge": cannot_judge, "extrapolated": True}
@@ -696,7 +702,8 @@ async def measure(url: str, table: str = EMBEDDINGS) -> None:
         if "drops-rules" not in known:
             await connection.execute("SELECT setseed($1)", 0.45)
             rule_drops = await random_ids(connection, ANY_RULE, DROP_SAMPLE, [])
-        add_drop_samples(data, rule_drops, model_drops, {})  # on the snapshot, to plan
+        model_set = model_drop_set(model) if model else "drops-model"
+        add_drop_samples(data, rule_drops, model_drops, {}, model_set)  # on the snapshot, to plan
         sampled = [e["id"] for e in data["documents"] if "drops-rules" in e["sets"]]
         sampled_hits = await hits_of(connection, sampled)
         per_rule = {}
@@ -716,7 +723,7 @@ async def measure(url: str, table: str = EMBEDDINGS) -> None:
         await connection.close()
 
     def merge(fresh: dict[str, Any]) -> dict[str, Any]:
-        add_drop_samples(fresh, rule_drops, model_drops, per_rule)
+        add_drop_samples(fresh, rule_drops, model_drops, per_rule, model_set)
         return fresh
 
     data = update_labels(LABELS, merge)

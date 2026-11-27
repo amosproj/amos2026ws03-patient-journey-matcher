@@ -560,8 +560,8 @@ def test_summarize_counts_documents_without_embedding_as_cannot_judge(prefilter)
 
 def test_summarize_model_safety_needs_both_samples(prefilter):
     rule_drops = [entry(f"pubmed:r{i}", ["drops-rules"], "unhelpful") for i in range(300)]
-    model_drops = [entry(f"pubmed:m{i}", ["drops-model"], "keep") for i in range(2)]
-    model_drops += [entry(f"pubmed:n{i}", ["drops-model"], "unhelpful") for i in range(298)]
+    model_drops = [entry(f"pubmed:m{i}", ["drops-model:"], "keep") for i in range(2)]
+    model_drops += [entry(f"pubmed:n{i}", ["drops-model:"], "unhelpful") for i in range(298)]
     labels = {"documents": rule_drops + model_drops}
     result = prefilter.summarize(labels, counts(), model(), scored(embedded=10), {})
     assert result["approaches"]["rules"]["passes"]["safety"]
@@ -681,7 +681,7 @@ def test_measure_writes_results_and_drop_samples(prefilter, url, study):
     assert sorted(i for i, s in sets.items() if "drops-rules" in s) == [
         f"pubmed:{i}" for i in range(10)
     ]
-    assert len([i for i, s in sets.items() if "drops-model" in s]) == 10
+    assert len([i for i, s in sets.items() if "drops-model:" in s]) == 10
 
 
 @pytest.mark.postgres
@@ -784,3 +784,26 @@ def test_update_labels_waits_for_the_lock(prefilter, tmp_path):
     fcntl.flock(lock, fcntl.LOCK_UN)
     lock.close()
     assert done.wait(2)
+
+
+def test_model_drop_sample_belongs_to_its_model(prefilter):
+    assert prefilter.model_drop_set(model(labels_hash="abcdef0123")) == "drops-model:abcdef01"
+
+
+def test_summarize_ignores_the_drop_sample_of_an_older_model(prefilter):
+    old = [entry(f"pubmed:o{i}", ["drops-model:oldoldol"], "unhelpful") for i in range(300)]
+    current = [entry("pubmed:n1", ["drops-model:newnewne"], "keep")]
+    labels = {"documents": old + current}
+    result = prefilter.summarize(labels, counts(), model(labels_hash="newnewnew"), scored(), {})
+    combined = result["approaches"]["rules+model"]
+    assert (combined["checked"], combined["wrong"]) == (1, 1)
+
+
+@pytest.mark.postgres
+def test_measure_after_retraining_draws_a_new_model_sample(prefilter, url, study):
+    asyncio.run(prefilter.measure(url, study))
+    current = json.loads(prefilter.MODEL.read_text())
+    prefilter.MODEL.write_text(json.dumps(current | {"labels_hash": "retrained"}))
+    asyncio.run(prefilter.measure(url, study))
+    sets = {s for e in prefilter.load_labels(prefilter.LABELS)["documents"] for s in e["sets"]}
+    assert {"drops-model:", "drops-model:retraine"} <= sets

@@ -4,7 +4,7 @@
 // read only. A document that is no longer stored can still be labeled.
 const pf = { tab: "label", data: null, index: 0, document: null, documentId: null, saving: false };
 const PF_SET_LABEL = { train: "Training", random: "Random test", "drops-rules": "Rule drops", "drops-model": "Model drops" };
-const pfSetLabel = (name) => PF_SET_LABEL[name] || (name.startsWith("drops-rule:") ? `Drops of ${name.slice(11)}` : name);
+const pfSetLabel = (name) => PF_SET_LABEL[name] || (name.startsWith("drops-rule:") ? `Drops of ${name.slice(11)}` : name.startsWith("drops-model:") ? `Model drops ${name.slice(12)}`.trim() : name);
 
 function pfShow() {
   history.replaceState(null, "", pf.tab === "results" ? "#prefilter-results" : "#prefilter");
