@@ -1,7 +1,7 @@
 import type { JourneyState } from "@matcher/core";
 import { readGraph } from "./graph-reader.ts";
 import { HISTOLOGIES } from "./histology.ts";
-import { type DiseaseProfile, profileOf } from "./profile.ts";
+import { type DiseaseProfile, profileOf, profilesOf } from "./profile.ts";
 import {
   type ClinicalEvidence,
   isLocalTherapy,
@@ -49,9 +49,10 @@ export interface QueryConcept {
 }
 
 export interface GraphQuery {
-  /** The profile of the patient's disease: its rules apply to the papers on it. */
-  profile?: DiseaseProfile;
-  histology?: { observed: string; conflicting: string };
+  /** The profiles of the patient's diseases: each one's rules apply to the papers on its disease. */
+  profiles: readonly DiseaseProfile[];
+  /** Per profile with histologies: the documented kind and the one it rules out */
+  histologies: readonly { observed: string; conflicting: string }[];
   evidence: ClinicalEvidence[];
   cutoff: string;
   /** A paper needs one of these to be a candidate: the diagnoses and their narrower forms. */
@@ -218,12 +219,10 @@ function buildQuery(reading: Reading, fromGraph: boolean): GraphQuery {
   };
   const treatments = new Map<string, number>();
   const relations = new Map<string, number>();
-  const documented = new Set<string>();
-  const patientHistology = HISTOLOGIES.find(({ profile, kinds }) =>
-    [profile.diagnosis, ...kinds].some((id) => diagnoses.has(id)),
-  );
-  if (patientHistology) {
-    const { kinds, profile, name } = patientHistology;
+  const histologies: { observed: string; conflicting: string }[] = [];
+  for (const { kinds, profile, name } of HISTOLOGIES) {
+    if (![profile.diagnosis, ...kinds].some((id) => diagnoses.has(id)))
+      continue;
     // A kind may be documented as a diagnosis in its own right or in a pathology field.
     for (const fact of diagnosticHistory)
       if (
@@ -243,6 +242,7 @@ function buildQuery(reading: Reading, fromGraph: boolean): GraphQuery {
       .map((note) => note.validAt)
       .sort()
       .at(-1);
+    const documented = new Set<string>();
     for (const note of latest(notes, (note) => note.subtype, cutoff)) {
       diagnosisDates.set(note.subtype, note.validAt);
       if (note.status === "negated") {
@@ -260,18 +260,19 @@ function buildQuery(reading: Reading, fromGraph: boolean): GraphQuery {
         detail: `Documented ${name}`,
       });
     }
+    const [first, second] = kinds;
+    const histology =
+      first && second
+        ? [
+            { observed: first, conflicting: second },
+            { observed: second, conflicting: first },
+          ].find(
+            ({ observed, conflicting }) =>
+              documented.has(observed) && !documented.has(conflicting),
+          )
+        : undefined;
+    if (histology) histologies.push(histology);
   }
-  const [first, second] = patientHistology?.kinds ?? [];
-  const histology =
-    first && second
-      ? [
-          { observed: first, conflicting: second },
-          { observed: second, conflicting: first },
-        ].find(
-          ({ observed, conflicting }) =>
-            documented.has(observed) && !documented.has(conflicting),
-        )
-      : undefined;
 
   // A ruled-out subtype also excludes its descendants unless a later diagnosis names one.
   for (const id of [...excluded]) {
@@ -416,7 +417,10 @@ function buildQuery(reading: Reading, fromGraph: boolean): GraphQuery {
         ? {
             diagnoses: targets
               .flatMap(expand)
-              .filter((id) => id !== histology?.conflicting),
+              .filter(
+                (id) =>
+                  !histologies.some(({ conflicting }) => conflicting === id),
+              ),
             documentedTargets: { active, planned },
             ...(plannedFor.length && { plannedFor }),
           }
@@ -454,9 +458,10 @@ function buildQuery(reading: Reading, fromGraph: boolean): GraphQuery {
   therapy.diagnosticFocus = found.some(
     ({ role, focus: isFocus }) => role === "test" && isFocus,
   );
-  const profile = profileOf(gate.keys());
-  for (const [name, flag] of Object.entries(profile?.flags ?? {}))
-    if ("read" in flag) therapy.flags[name] = flag.read(reading);
+  const profiles = profilesOf(gate.keys());
+  for (const profile of profiles)
+    for (const [name, flag] of Object.entries(profile.flags ?? {}))
+      if ("read" in flag) therapy.flags[name] = flag.read(reading);
   const sexes = new Set(
     [...diagnoses.keys()].flatMap((id) => conceptOf(id)?.sex ?? []),
   );
@@ -464,8 +469,8 @@ function buildQuery(reading: Reading, fromGraph: boolean): GraphQuery {
 
   return {
     cutoff,
-    profile,
-    histology,
+    profiles,
+    histologies,
     evidence,
     diagnoses: gate,
     concepts: [...concepts.byId.values()],
@@ -473,7 +478,7 @@ function buildQuery(reading: Reading, fromGraph: boolean): GraphQuery {
       [...stageIds, ...treatments.keys()],
       stageTexts,
       therapy,
-      profile,
+      profiles,
       observed,
     ),
     treatments,

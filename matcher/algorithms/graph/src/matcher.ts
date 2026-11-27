@@ -29,15 +29,19 @@ export function createGraphMatcher(
         focusDate: state.focus.date,
         conceptOnly: query.conceptOnly,
         diagnoses: Object.fromEntries(query.diagnoses),
-        // with names, as the conflicting kind is no patient concept
-        histology: query.histology && {
-          ...query.histology,
+        profiles: query.profiles.map(
+          ({ diagnosis }) => terms.conceptOf(diagnosis)?.name ?? diagnosis,
+        ),
+        // with names, as a ruled-out kind is no patient concept
+        histologies: query.histologies.map((histology) => ({
+          ...histology,
           names: Object.fromEntries(
-            [query.histology.observed, query.histology.conflicting].map(
-              (id) => [id, terms.conceptOf(id)?.name ?? id],
-            ),
+            [histology.observed, histology.conflicting].map((id) => [
+              id,
+              terms.conceptOf(id)?.name ?? id,
+            ]),
           ),
-        },
+        })),
         concepts: query.concepts,
         stage: { ...course, ...flags, states: [...states] },
         treatments: Object.fromEntries(query.treatments),

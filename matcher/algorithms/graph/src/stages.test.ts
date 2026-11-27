@@ -1,5 +1,6 @@
 import { normalizeName } from "@matcher/terminology";
 import { expect, test } from "vitest";
+import { lung } from "./profiles/lung.ts";
 import { prostate } from "./profiles/prostate.ts";
 import { defaultTerminology } from "./resolve.ts";
 import { MESH_MAJOR, MESH_MINOR } from "./schema.ts";
@@ -62,16 +63,17 @@ test("negated or 'free' cues name no state", () => {
 });
 
 test("a patient's states come from concepts, the states they imply and cues", () => {
-  expect(patientStage(["mesh:D001859"], [], none, prostate).states).toEqual(
+  expect(patientStage(["mesh:D001859"], [], none, [prostate]).states).toEqual(
     new Set(["metastatic"]),
   );
   // Radium-223 is given in castration-resistant disease, which is metastatic here.
-  expect(patientStage(["mesh:C000615150"], [], none, prostate).states).toEqual(
-    new Set(["metastatic", "castration_resistant"]),
-  );
   expect(
-    patientStage([], ["hormonsensitiv", "kastrationsresistent"], none, prostate)
-      .states,
+    patientStage(["mesh:C000615150"], [], none, [prostate]).states,
+  ).toEqual(new Set(["metastatic", "castration_resistant"]));
+  expect(
+    patientStage([], ["hormonsensitiv", "kastrationsresistent"], none, [
+      prostate,
+    ]).states,
   ).toEqual(new Set(["castration_resistant"]));
 });
 
@@ -196,6 +198,16 @@ test("treatment papers wait for a treatment decision, diagnosis papers for a tes
   ).toBeUndefined();
 });
 
+test("a patient keeps the states of each of his profiles, not those of another", () => {
+  // castration-resistant prostate cancer beside lung cancer
+  expect(
+    patientStage(["mesh:D064129"], [], none, [lung, prostate]).states,
+  ).toEqual(new Set(["castration_resistant"]));
+  expect(patientStage(["mesh:D064129"], [], none, [lung]).states).toEqual(
+    new Set(),
+  );
+});
+
 test("a profile's patterns for a general state hold only for papers on its disease", () => {
   // BCR-ABL is a leukemia gene, not a biochemical recurrence
   expect(
@@ -232,9 +244,9 @@ test("resistance, regional nodes and a metastasis-free endpoint do not establish
     expect(stageCues(normalizeName(title)).has("metastatic"), title).toBe(true);
   }
   expect(
-    patientStage(["mesh:C531550"], ["mhspc"], none, prostate).states,
+    patientStage(["mesh:C531550"], ["mhspc"], none, [prostate]).states,
   ).toEqual(new Set(["metastatic", "hormone_sensitive"]));
-  expect(patientStage(["mesh:D064129"], [], none, prostate).states).toEqual(
+  expect(patientStage(["mesh:D064129"], [], none, [prostate]).states).toEqual(
     new Set(["castration_resistant"]),
   );
 });

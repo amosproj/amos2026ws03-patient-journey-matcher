@@ -108,7 +108,7 @@ test("histology follows the dated pathology and its site in both formats", () =>
       focus: { ...focus, date: cutoff },
     });
     const graph = graphQuery(facts, [lung, breast, report], cutoff);
-    return [timeline.histology?.observed, graph.histology?.observed];
+    return [timeline.histologies[0]?.observed, graph.histologies[0]?.observed];
   };
   const nsclc = "mesh:D002289";
   expect(subtypes(history, "2026-01-01")).toEqual([undefined, undefined]);
@@ -117,11 +117,11 @@ test("histology follows the dated pathology and its site in both formats", () =>
   expect(subtypes(history, "2026-01-04")).toEqual([undefined, undefined]);
   const expiring = [dx, { ...biopsy, invalid_at: "2026-01-03" }];
   expect(
-    graphQuery(expiring, [lung, report], "2026-01-02").histology?.observed,
+    graphQuery(expiring, [lung, report], "2026-01-02").histologies[0]?.observed,
   ).toBe(nsclc);
   expect(
-    graphQuery(expiring, [lung, report], "2026-01-03").histology,
-  ).toBeUndefined();
+    graphQuery(expiring, [lung, report], "2026-01-03").histologies,
+  ).toEqual([]);
 
   const secondCancer = edge(
     "HAS_DIAGNOSIS",
@@ -238,7 +238,7 @@ test.each([
       },
     });
     expect(restored.diagnoses.has(small)).toBe(true);
-    expect(restored.histology?.observed).toBe(small);
+    expect(restored.histologies[0]?.observed).toBe(small);
   },
 );
 

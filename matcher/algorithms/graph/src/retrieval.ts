@@ -33,7 +33,10 @@ function treatmentPatterns(
 ): { subject: string | null; object: string }[] {
   if (diagnosisOnly)
     return [...query.diagnoses.keys()]
-      .filter((id) => id !== query.histology?.conflicting)
+      .filter(
+        (id) =>
+          !query.histologies.some(({ conflicting }) => conflicting === id),
+      )
       .map((object) => ({ subject: null, object }));
   return query.concepts.flatMap(({ ids, role, diagnoses, plannedFor }) =>
     (role === "drug" || role === "procedure") && diagnoses

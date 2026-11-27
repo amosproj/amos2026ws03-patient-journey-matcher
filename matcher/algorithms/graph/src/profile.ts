@@ -70,7 +70,7 @@ export type DiseaseProfile = {
   skips?: readonly ("idfFloor" | "diagnosisAspect")[];
 };
 
-/** One per disease; a patient with two gets the first */
+/** One per disease; a patient with several gets each one, for the papers on its disease */
 export const PROFILES: readonly DiseaseProfile[] = [prostate, lung];
 
 /** The profile's diagnosis or a narrower form (concepts.json) */
@@ -78,12 +78,17 @@ export function isProfileDisease(profile: DiseaseProfile, id: string): boolean {
   return id === profile.diagnosis || broaderDiagnosis(id) === profile.diagnosis;
 }
 
-/** First profile whose disease is among the diagnoses */
+/** The profiles of the diseases among the diagnoses */
+export function profilesOf(diagnoses: Iterable<string>): DiseaseProfile[] {
+  const ids = [...diagnoses];
+  return PROFILES.filter((profile) =>
+    ids.some((id) => isProfileDisease(profile, id)),
+  );
+}
+
+/** The profile of one diagnosis, given as its IDs */
 export function profileOf(
   diagnoses: Iterable<string>,
 ): DiseaseProfile | undefined {
-  const ids = [...diagnoses];
-  return PROFILES.find((profile) =>
-    ids.some((id) => isProfileDisease(profile, id)),
-  );
+  return profilesOf(diagnoses)[0];
 }

@@ -101,7 +101,7 @@ test.each([
         parameters: { icd_code: "C34" },
       },
     });
-    expect(compatible.histology?.observed).toBe("mesh:D055752");
+    expect(compatible.histologies[0]?.observed).toBe("mesh:D055752");
   },
 );
 
@@ -652,7 +652,7 @@ test("another disease neither hides an implied prostate cancer nor switches its 
   });
   expect(q.diagnoses.has("mesh:D003924")).toBe(true);
   expect(q.diagnoses.has(cancer)).toBe(true);
-  expect(q.profile).toBe(prostate);
+  expect(q.profiles).toEqual([prostate]);
   expect(q.stage.diagnosed).toBe(true);
   expect(q.sex).toBe("male");
 });
@@ -735,7 +735,7 @@ test("a non-prostate journey cannot acquire a prostate disease state from the dr
       label: "Hormone-sensitive. Radium-223.",
     },
   });
-  expect(q.profile).toBeUndefined();
+  expect(q.profiles).toEqual([]);
   expect(q.stage.states.size).toBe(0);
 });
 
@@ -784,7 +784,7 @@ test("an operation of any disease is a procedure of the query and a local therap
     query.concepts.find((concept) => concept.ids[0] === "mesh:D008408"),
   ).toMatchObject({ role: "procedure", focus: true });
   expect(query.stage.localTherapy).toBe(true);
-  expect(query.profile).toBeUndefined();
+  expect(query.profiles).toEqual([]);
 });
 
 test("a suspicion in a finding, a pathology report and a later finding of spread set the timeline course", () => {

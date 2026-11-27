@@ -204,32 +204,30 @@ export function stageCues(text: string): Set<Stage> {
  * The states of a patient: from the concept IDs of his active statements (bone metastases), the
  * states their concepts imply for his disease profile (radium-223: metastatic and
  * castration-resistant) and the cues in the normalized names and sentences of his statements so
- * far; none of another profile's states.
+ * far; none of the own states of a profile he does not have.
  */
 export function patientStage(
   ids: readonly string[],
   texts: readonly string[],
   therapy: Omit<PatientStage, "states">,
-  profile?: DiseaseProfile,
+  profiles: readonly DiseaseProfile[] = [],
   observed: Iterable<Stage> = [],
 ): PatientStage {
   const states = new Set<Stage>(observed);
   for (const stage of STAGE_DATA) {
     if (ids.some((id) => stage.concepts.includes(id))) states.add(stage.id);
   }
-  if (profile) {
+  for (const profile of profiles)
     for (const id of ids)
       for (const stage of profile.impliedStages?.[id] ?? []) states.add(stage);
-  }
   for (const text of texts)
     for (const stage of stageCues(text)) states.add(stage);
-  for (const stage of STAGE_DATA)
-    if (
-      stage.profile !== undefined &&
-      stage.profile !== profile &&
-      !GENERAL.has(stage.id)
-    )
-      states.delete(stage.id);
+  const known = new Set(
+    STAGE_DATA.filter(
+      (stage) => !stage.profile || profiles.includes(stage.profile),
+    ).map((stage) => stage.id),
+  );
+  for (const id of [...states]) if (!known.has(id)) states.delete(id);
   for (const stage of STAGE_DATA)
     if (states.has(stage.id)) for (const id of stage.ends) states.delete(id);
   return { states, ...therapy };

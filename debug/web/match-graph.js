@@ -9,7 +9,7 @@ function mtGraphQuery(query) {
   // A concept's own ID names it before the other IDs it goes by (narrower forms, other vocabularies).
   const names = new Map();
   for (const all of [false, true]) for (const concept of query.concepts) for (const id of all ? concept.ids : concept.ids.slice(0, 1)) if (!names.has(id)) names.set(id, concept.name);
-  for (const [id, name] of Object.entries(query.histology?.names ?? {})) if (!names.has(id)) names.set(id, name);
+  for (const histology of query.histologies ?? []) for (const [id, name] of Object.entries(histology.names ?? {})) if (!names.has(id)) names.set(id, name);
   const nameOf = (id) => names.get(id) ?? id;
   const unique = (ids) => [...new Set(ids.map(nameOf))];
   const chips = (items, cls = "term") => items.length ? h("div", { class: "chips" }, items.map((item) => h("span", { class: cls }, item))) : h("span", { class: "muted" }, "none");
@@ -63,12 +63,12 @@ function mtGraphQuery(query) {
         h("td", { class: "rank-numbers" }, worth == null ? "–" : [h("span", { class: "meter" }, h("i", { style: `width:${(100 * worth) / top}%` })), worth.toFixed(2)]))))));
 
   const { states = [], ...course } = query.stage || {};
-  const histology = query.histology;
   const situation = panel("Re-rank", `the best${pool ? ` ${fmtCount(pool.reranked)}` : ""} by score: up when a paper is about this situation, down when it is about another state or phase of care, another disease, lab research or the other sex`,
     h("div", { class: "panel-body" },
+      row("Disease profiles", chips(query.profiles ?? []), "Rules of these diseases on top of the generic ones, each for the papers on its disease"),
       row("Disease state", chips(states.map((one) => one.replaceAll("_", " ")))),
       row("Course so far", chips(Object.entries(course).filter(([, on]) => on === true).map(([key]) => GQ_COURSE[key] ?? key.replace(/([a-z])([A-Z])/g, "$1 $2").toLowerCase()))),
-      histology ? row("Histology", h("span", {}, `${nameOf(histology.observed)}: papers only on ${nameOf(histology.conflicting)} rank lower`)) : null,
+      (query.histologies ?? []).map((one) => row("Histology", h("span", {}, `${nameOf(one.observed)}: papers only on ${nameOf(one.conflicting)} rank lower`))),
       row("Drugs received", chips(unique(Object.keys(query.treatments || {}))), "A paper that links one of them to the patient's diagnosis (PubTator3) gains extra; one that links it only to another disease gains nothing for it")));
 
   const evidence = [...(query.evidence || [])].sort((a, b) => String(b.date ?? "").localeCompare(String(a.date ?? "")));

@@ -129,10 +129,12 @@ function rank(
     row.relations.some(
       ({ predicate, object }) => predicate === "treats" && object === id,
     );
-  const conflictingHistology =
-    query.histology &&
-    paperNames(query.histology.conflicting) &&
-    !paperNames(query.histology.observed);
+  const conflictingHistology = query.histologies.some(
+    ({ observed, conflicting }) =>
+      paperNames(conflicting) && !paperNames(observed),
+  );
+  const ruledOut = (id: string) =>
+    query.histologies.some(({ conflicting }) => conflicting === id);
   let titleScore = 0;
   let mainTopic = 0;
   const linked: string[] = [];
@@ -146,7 +148,7 @@ function rank(
       ({ predicate, object }) =>
         predicate === "treats" &&
         query.diagnoses.has(object) &&
-        object !== query.histology?.conflicting,
+        !ruledOut(object),
     );
   query.concepts.forEach((concept, index) => {
     if (
@@ -171,8 +173,7 @@ function rank(
       const compatible = indications.filter(({ object }) =>
         concept.diagnoses
           ? concept.diagnoses.includes(object)
-          : query.diagnoses.has(object) &&
-            object !== query.histology?.conflicting,
+          : query.diagnoses.has(object) && !ruledOut(object),
       );
       if (indications.length && !compatible.length) return;
       const given = compatible.filter(
@@ -217,15 +218,13 @@ function rank(
       part: worth * strength,
     });
   });
-  // A profile's rules are for papers on its disease, whatever else the patient has. A paper on
-  // another of his cancers gets the states every cancer has. The phase rule holds for papers on
-  // his cancer, or on any of his diagnoses when he has none: his treatment is that of his cancer.
-  const patientProfile = query.profile;
-  const profile =
-    patientProfile &&
-    row.diagnoses.some((id) => isProfileDisease(patientProfile, id))
-      ? patientProfile
-      : undefined;
+  // Each of the patient's profiles has rules for the papers on its disease (a paper on two of
+  // them gets the first's). A paper on another of his cancers gets the states every cancer has.
+  // The phase rule holds for papers on his cancer, or on any of his diagnoses when he has none:
+  // his treatment is that of his cancer.
+  const profile = query.profiles.find((one) =>
+    row.diagnoses.some((id) => isProfileDisease(one, id)),
+  );
   const staged = profile !== undefined || row.diagnoses.some(isCancer);
   const phased = staged || ![...query.diagnoses.keys()].some(isCancer);
   const stages = staged
