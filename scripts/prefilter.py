@@ -37,7 +37,7 @@ import math
 import os
 import tempfile
 import time
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
 from pathlib import Path
 from typing import Any
 
@@ -370,12 +370,86 @@ async def sample(url: str, set_name: str, n: int | None) -> None:
     print(f"{set_name}: {added} new documents, {len(ids)} in this sample")
 
 
+PROPOSER = ("Qwen/Qwen3-4B", "1cfa9a7208912126459214e8b04321603b3df60c")
+
+
+def qwen_generator() -> Callable[[str], str]:
+    """The local proposer: non-thinking mode, greedy, at most 128 new tokens; mps if there."""
+    import torch
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+
+    repository, revision = PROPOSER
+    device = "mps" if torch.backends.mps.is_available() else "cpu"
+    tokenizer = AutoTokenizer.from_pretrained(repository, revision=revision)
+    model = AutoModelForCausalLM.from_pretrained(
+        repository, revision=revision, torch_dtype=torch.bfloat16
+    ).to(device)
+
+    def generate(prompt: str) -> str:
+        text = tokenizer.apply_chat_template(
+            [{"role": "user", "content": prompt}],
+            tokenize=False,
+            add_generation_prompt=True,
+            enable_thinking=False,
+        )
+        inputs = tokenizer([text], return_tensors="pt").to(device)
+        with torch.no_grad():
+            output = model.generate(**inputs, max_new_tokens=128, do_sample=False)
+        answer = output[0][inputs["input_ids"].shape[1] :]
+        return str(tokenizer.decode(answer, skip_special_tokens=True))
+
+    return generate
+
+
+async def propose(
+    url: str, set_name: str | None, limit: int | None, generate: Callable[[str], str]
+) -> None:
+    """Ask the model about every entry without a proposal or raw answer yet."""
+    data = load_labels(LABELS)
+    todo = [
+        entry
+        for entry in data["documents"]
+        if entry["proposal"] is None
+        and entry["proposal_raw"] is None
+        and (set_name is None or set_name in entry["sets"])
+    ][:limit]
+    connection = await connect(url)
+    try:
+        rows = await connection.fetch(
+            "SELECT id, title, source, content_type, publication_types, summary"
+            " FROM documents WHERE id = ANY($1::text[])",
+            [entry["id"] for entry in todo],
+        )
+    finally:
+        await connection.close()
+    documents = {row["id"]: dict(row) for row in rows}
+    model = "{}@{}".format(*PROPOSER)
+    done = 0
+    for entry in todo:
+        document = documents.get(entry["id"])
+        if document is None:
+            continue  # no longer stored here; a person can still label it
+        answer = generate(build_prompt(document, data["guide"]))
+        proposal = parse_answer(answer)
+        if proposal is None:
+            entry["proposal_raw"] = answer
+        else:
+            entry["proposal"] = proposal | {"model": model}
+        done += 1
+        if done % 10 == 0:
+            save_labels(LABELS, data)
+    save_labels(LABELS, data)
+    print(f"proposed {done}, not stored here {len(todo) - len(documents)}")
+
+
 def main(argv: list[str] | None = None) -> None:
     args = parser().parse_args(argv)
     if not args.database_url:
         raise SystemExit("Set DATABASE_URL or pass --database-url")
     if args.command == "sample":
         asyncio.run(sample(args.database_url, args.set, args.n))
+    elif args.command == "propose":
+        asyncio.run(propose(args.database_url, args.set, args.limit, qwen_generator()))
     else:
         raise SystemExit(f"{args.command}: not implemented")
 

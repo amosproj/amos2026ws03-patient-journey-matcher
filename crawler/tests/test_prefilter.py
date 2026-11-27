@@ -370,3 +370,40 @@ def test_build_prompt_says_when_there_is_no_summary(prefilter):
 )
 def test_parse_answer(prefilter, text, expected):
     assert prefilter.parse_answer(text) == expected
+
+
+@pytest.mark.postgres
+def test_propose_stores_proposals_and_raw_answers(prefilter, url, tmp_path, monkeypatch):
+    monkeypatch.setattr(prefilter, "LABELS", tmp_path / "labels.json")
+    insert(url, doc("pubmed:1", title="Mice"), doc("pubmed:2", title="Trial"))
+    data = prefilter.load_labels(prefilter.LABELS)
+    prefilter.add_documents(data, ["pubmed:1", "pubmed:2", "pubmed:404"], "train")
+    data["documents"][1]["proposal"] = {"label": "keep", "group": None, "reason": "old"}
+    prefilter.save_labels(prefilter.LABELS, data)
+    prompts: list[str] = []
+
+    def generate(prompt: str) -> str:
+        prompts.append(prompt)
+        return '{"label": "unhelpful", "group": 1, "reason": "mice"}' if "Mice" in prompt else "?"
+
+    asyncio.run(prefilter.propose(url, "train", None, generate))
+    entries = {e["id"]: e for e in prefilter.load_labels(prefilter.LABELS)["documents"]}
+    assert len(prompts) == 1  # pubmed:2 already has a proposal; pubmed:404 is not stored
+    assert entries["pubmed:1"]["proposal"]["label"] == "unhelpful"
+    assert entries["pubmed:1"]["proposal"]["model"] == "{}@{}".format(*prefilter.PROPOSER)
+    assert entries["pubmed:2"]["proposal"]["reason"] == "old"
+    assert entries["pubmed:404"]["proposal"] is None
+
+
+@pytest.mark.postgres
+def test_propose_keeps_an_unparsable_answer_for_checking(prefilter, url, tmp_path, monkeypatch):
+    monkeypatch.setattr(prefilter, "LABELS", tmp_path / "labels.json")
+    insert(url, doc("pubmed:1"))
+    data = prefilter.load_labels(prefilter.LABELS)
+    prefilter.add_documents(data, ["pubmed:1"], "train")
+    prefilter.save_labels(prefilter.LABELS, data)
+    asyncio.run(prefilter.propose(url, None, None, lambda prompt: "I am not sure."))
+    entry = prefilter.load_labels(prefilter.LABELS)["documents"][0]
+    assert entry["proposal"] is None and entry["proposal_raw"] == "I am not sure."
+    # A raw answer counts as tried: a second run does not ask again.
+    asyncio.run(prefilter.propose(url, None, None, lambda prompt: pytest.fail("asked again")))
