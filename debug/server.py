@@ -2541,6 +2541,51 @@ def topic_detail(topic_id: str) -> dict[str, Any]:
     }
 
 
+# The Pre-filter screen: the labels and results of the document pre-filter study (#92), which
+# scripts/prefilter.py writes. Only these files are read and written; documents come from
+# /api/db/document, read only.
+PREFILTER_DIR = ROOT / "research/prefilter"
+PREFILTER_STATUSES = ("unchecked", "accepted", "changed")
+
+
+def prefilter_status(entry: dict[str, Any]) -> str:
+    """Unchecked, accepted (the same label and group as the proposal) or changed."""
+    if entry.get("label") is None:
+        return "unchecked"
+    proposal = entry.get("proposal") or {}
+    same = proposal.get("label") == entry["label"] and proposal.get("group") == entry.get("group")
+    return "accepted" if same else "changed"
+
+
+def prefilter_labels(params: dict[str, list[str]]) -> dict[str, Any]:
+    path = PREFILTER_DIR / "labels.json"
+    if not path.exists():
+        return {"missing": True}
+    data = json.loads(path.read_text(encoding="utf-8"))
+    set_name, status = first(params, "set"), first(params, "status")
+    if status and status not in PREFILTER_STATUSES:
+        raise ValueError(f"status must be one of {', '.join(PREFILTER_STATUSES)}")
+    limit, offset = page(params)
+    progress: dict[str, dict[str, int]] = {}
+    for entry in data["documents"]:
+        for name in entry["sets"]:
+            counts = progress.setdefault(name, {"checked": 0, "total": 0})
+            counts["total"] += 1
+            counts["checked"] += entry.get("label") is not None
+    items = [
+        entry | {"status": prefilter_status(entry)}
+        for entry in data["documents"]
+        if (not set_name or set_name in entry["sets"])
+        and (not status or prefilter_status(entry) == status)
+    ]
+    return {
+        "items": items[offset : offset + limit],
+        "total": len(items),
+        "progress": progress,
+        "guide": data.get("guide", []),
+    }
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = "CrawlerDebug/1.0"
 
@@ -2692,6 +2737,8 @@ class Handler(BaseHTTPRequestHandler):
             params = parse_qs(url.query)
             kind, name, score = (first(params, key) for key in ("kind", "name", "min_score"))
             self.send_result(lambda: graph_normalize(kind, name, score))
+        elif path == "/api/prefilter/labels":
+            self.send_result(lambda: prefilter_labels(parse_qs(url.query)))
         elif path == "/api/match/meta":
             self.send_json(match_meta())
         elif path == "/api/info":
