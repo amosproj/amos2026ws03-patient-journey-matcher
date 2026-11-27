@@ -274,7 +274,8 @@ def parse_answer(text: str) -> dict[str, Any] | None:
     if not isinstance(answer, dict):
         return None
     label, group, reason = answer.get("label"), answer.get("group"), answer.get("reason")
-    valid = (label == "unhelpful" and group in (1, 2)) or (label == "keep" and group is None)
+    whole = type(group) is int and group in (1, 2)  # not true or 1.0, which JSON also allows
+    valid = (label == "unhelpful" and whole) or (label == "keep" and group is None)
     if not valid or not isinstance(reason, str) or not reason.strip():
         return None
     return {"label": label, "group": group, "reason": reason.strip()}

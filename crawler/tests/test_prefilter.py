@@ -932,3 +932,9 @@ def test_summarize_reports_llm_agreement_per_model(prefilter):
         "qwen": {"checked": 2, "agreed": 1},
         "codex": {"checked": 1, "agreed": 1},
     }
+
+
+@pytest.mark.parametrize("group", ["true", "1.0", '"1"'])
+def test_parse_answer_takes_only_whole_number_groups(prefilter, group):
+    text = '{"label": "unhelpful", "group": ' + group + ', "reason": "x"}'
+    assert prefilter.parse_answer(text) is None

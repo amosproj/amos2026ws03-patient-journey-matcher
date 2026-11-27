@@ -64,12 +64,13 @@ async function pfLoadDocument() {
   try {
     document = (await api(`/api/db/document?id=${encodeURIComponent(item.id)}`)).document;
   } catch (error) {
-    document = { missing: error.message };
+    // A 404 means the document is gone; anything else (tunnel down, no database) is an error.
+    document = error.data?.unavailable || !/^No document/.test(error.message) ? { failed: `${error.message}${error.data?.hint ? ` ${error.data.hint}` : ""}` } : { missing: error.message };
   }
   if (pfCurrent()?.id !== item.id) return; // moved on meanwhile
   pf.document = document;
   pf.loading = false;
-  pf.rendered = item.id;
+  pf.rendered = document.failed ? null : item.id; // nothing to label that nobody could see
   pfRenderLabel();
 }
 
@@ -80,6 +81,12 @@ function pfRenderLabel() {
   if (!item) { target.replaceChildren(h("div", { class: "empty" }, "Nothing left with this filter.")); return; }
   if (pf.loading) { target.replaceChildren(h("div", { class: "empty" }, `Loading ${item.id} …`)); return; }
   const doc = pf.document || {};
+  if (doc.failed) {
+    target.replaceChildren(h("div", { class: "panel" }, h("div", { class: "panel-body" },
+      h("p", { class: "error" }, `Could not load ${item.id}: ${doc.failed}`),
+      h("div", { class: "buttons" }, h("button", { type: "button", onclick: pfLoadDocument }, "Retry")))));
+    return;
+  }
   const proposal = item.proposal;
   const link = doc.canonical_url || urlFor(item.id);
   const head = h("h3", {}, h("span", {}, `${fmtCount(pf.offset + pf.index + 1)} of ${fmtCount(pf.data.total)}`), h("small", {}, item.sets.map(pfSetLabel).join(" · ")), h("span", { class: "spacer" }),
@@ -222,6 +229,7 @@ async function pfResults() {
       h("div", { class: "stats pf-cards" },
         card("Threshold (probability of keep)", model?.threshold == null ? "–" : model.threshold.toFixed(3), model ? "" : "muted"),
         card("Trained on", model ? fmtCount(model.trained_on) : "–", model ? "" : "muted"),
+        card("Training labels below threshold", model ? fmtCount(model.below_threshold) : "–", model ? "" : "muted"),
         ...Object.entries(result.llm_agreement.by_model || { all: result.llm_agreement }).map(([name, counts]) =>
           card(`${name.split("@")[0]} agreed with people`, `${fmtCount(counts.agreed)} / ${fmtCount(counts.checked)}`)),
         card("Unhelpful in the random sample", `${fmtCount(result.random.unhelpful)} / ${fmtCount(result.random.checked)}`),

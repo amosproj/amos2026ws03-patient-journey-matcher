@@ -2613,7 +2613,8 @@ def save_prefilter_label(body: dict[str, Any]) -> dict[str, Any]:
     note = body.get("note", "")
     if label not in ("unhelpful", "keep"):
         raise ValueError("label must be unhelpful or keep")
-    if (label == "unhelpful") != (group in (1, 2)) or (label == "keep" and group is not None):
+    whole = type(group) is int and group in (1, 2)  # not true or 1.0, which JSON also allows
+    if (label == "unhelpful") != whole or (label == "keep" and group is not None):
         raise ValueError("group must be 1 or 2 for unhelpful and empty for keep")
     if not isinstance(note, str) or len(note) > 500:
         raise ValueError("note must be text of at most 500 characters")

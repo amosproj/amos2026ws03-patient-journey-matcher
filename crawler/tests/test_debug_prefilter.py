@@ -162,3 +162,9 @@ def test_save_waits_for_the_lock_the_script_holds(server, labels_file):
     lock.close()
     assert done.wait(2)
     assert stored(labels_file)["pubmed:2"]["label"] == "keep"
+
+
+@pytest.mark.parametrize("group", [True, 1.0, "1"])
+def test_save_label_takes_only_whole_number_groups(server, labels_file, group):
+    with pytest.raises(ValueError):
+        server.save_prefilter_label({"id": "pubmed:2", "label": "unhelpful", "group": group})
