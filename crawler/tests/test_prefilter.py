@@ -74,3 +74,27 @@ def test_save_labels_round_trips_and_leaves_no_temp_file(prefilter, tmp_path):
     prefilter.save_labels(path, data)
     assert prefilter.load_labels(path) == data
     assert [p.name for p in tmp_path.iterdir()] == ["labels.json"]
+
+
+def test_upper_bound_matches_the_safety_bar(prefilter):
+    assert prefilter.upper_bound(0, 300) == pytest.approx(0.00994, abs=1e-4)
+    assert prefilter.upper_bound(1, 300) == pytest.approx(0.0157, abs=2e-4)
+    assert prefilter.upper_bound(0, 0) == 1.0
+
+
+def test_passes_safety_needs_300_checked_and_at_most_one_wrong(prefilter):
+    assert prefilter.passes_safety(1, 300)
+    assert not prefilter.passes_safety(2, 300)
+    assert not prefilter.passes_safety(0, 299)
+
+
+def test_choose_threshold_keeps_wrong_drops_under_one_percent(prefilter):
+    unhelpful = [(i / 1000, "unhelpful") for i in range(150)]
+    scores = unhelpful + [(0.149, "keep")] * 3 + [(0.9, "keep")] * 50
+    # Below 0.149: 149 unhelpful, no keep. Below 0.9: 3 keep of 153, more than 1%.
+    assert prefilter.choose_threshold(scores) == pytest.approx(0.149)
+
+
+def test_choose_threshold_needs_100_documents_below(prefilter):
+    scores = [(i / 1000, "unhelpful") for i in range(50)] + [(0.9, "keep")]
+    assert prefilter.choose_threshold(scores) is None

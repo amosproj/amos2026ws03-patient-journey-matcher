@@ -32,6 +32,7 @@ labels in the Pre-filter screen of the debug UI. Method and results: research/do
 
 import argparse
 import json
+import math
 import os
 import tempfile
 from collections.abc import Iterable
@@ -128,6 +129,56 @@ def checked(data: dict[str, Any], set_name: str) -> list[dict[str, Any]]:
         for entry in data["documents"]
         if set_name in entry["sets"] and entry["label"] is not None
     ]
+
+
+def upper_bound(wrong: int, checked: int, confidence: float = 0.95) -> float:
+    """One-sided Clopper-Pearson upper bound of the share of wrong drops."""
+    if checked == 0:
+        return 1.0
+    if wrong >= checked:
+        return 1.0
+
+    def at_most_wrong(p: float) -> float:
+        return sum(
+            math.comb(checked, k) * p**k * (1 - p) ** (checked - k) for k in range(wrong + 1)
+        )
+
+    low, high = wrong / checked, 1.0
+    for _ in range(100):
+        middle = (low + high) / 2
+        if at_most_wrong(middle) > 1 - confidence:
+            low = middle
+        else:
+            high = middle
+    return high
+
+
+def passes_safety(wrong: int, checked: int, minimum: int = 300) -> bool:
+    """The safety bar of #92: enough checked drops and at most 1 wrong one."""
+    return checked >= minimum and wrong <= 1
+
+
+def choose_threshold(
+    scores: list[tuple[float, str]], max_wrong: float = 0.01, min_below: int = 100
+) -> float | None:
+    """The largest cut-off on the probability of `keep` that drops safely.
+
+    `scores` are (out-of-fold probability of keep, label). Documents with a score below the
+    cut-off are dropped; at least `min_below` must be, and at most `max_wrong` of them `keep`.
+    """
+    ordered = sorted(scores)
+    best = None
+    keep = 0
+    for index, (score, label) in enumerate(ordered):
+        below = index  # with the tie check below, every earlier document scores lower
+        if (
+            below >= min_below
+            and keep / below <= max_wrong
+            and (index == 0 or ordered[index - 1][0] < score)
+        ):
+            best = score
+        keep += label == "keep"
+    return best
 
 
 def parser() -> argparse.ArgumentParser:
