@@ -74,7 +74,7 @@ Steps 1 and 2 are one SQL query ([`retrieval.ts`](../../matcher/algorithms/graph
 
 The rules of one disease live in its disease profile ([`profile.ts`](../../matcher/algorithms/graph/src/profile.ts)): how a journey shows the disease without naming it, such as PSA, PI-RADS and Gleason for prostate cancer, its own disease states and its words for the general ones (biochemical recurrence, mCRPC), the MeSH topics that tell a paper on treating the disease from one on finding it, its treatment options, its care questions and two histologies that rule each other out. Its data is in [`data/profiles/`](../../matcher/algorithms/graph/data/profiles/), the rest in [`src/profiles/`](../../matcher/algorithms/graph/src/profiles/). The rules for reading a journey apply to every journey, because they find the disease; the others apply to a patient with the disease and to the papers on it. A patient with several such diseases gets the rules of each, every one for the papers on its disease. Prostate cancer has a profile with all of these, lung cancer one with its histologies (non-small cell, small cell). Profiles are where the matcher is fine-tuned for a disease: a new disease is one more profile in `PROFILES`, without changes to the general code.
 
-The constants are `SETTINGS` in [`settings.ts`](../../matcher/algorithms/graph/src/settings.ts); in the debug UI, a `tuning` object overrides them. How they were set and what they achieve: [results](../../research/graph-based-matching.md#7-results).
+The constants are `SETTINGS` in [`settings.ts`](../../matcher/algorithms/graph/src/settings.ts); in the debug UI, a `tuning` object overrides them. How they were set and what they achieve: [results](../../research/graph-based-matching.md#4-results).
 
 ## Known limitations
 

@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "about": "LLM relevance grades for the graph approach (#69), pooled from the first 10 results of keyword, graph and their rank fusion on the VM slice of 2026-11-24. Graders saw the patient context and source without the ranking or rank. Scale and rules: research/matching-evaluation.md. 697 point–source pairs also occur in keyword-llm-judgments.json. A point patient-<n>-<event> uses patientdata/Patient-<n> up to as_of. Results: research/graph-based-matching.md#7-results.",
+  "about": "LLM relevance grades for the graph approach (#69), pooled from the first 10 results of keyword, graph and their rank fusion on the VM slice of 2026-11-24. Graders saw the patient context and source without the ranking or rank. Scale and rules: research/matching-evaluation.md. 697 point–source pairs also occur in keyword-llm-judgments.json. A point patient-<n>-<event> uses patientdata/Patient-<n> up to as_of. Results: research/graph-based-matching.md#4-results.",
   "points": {
     "patient-1-e01": {
       "set": "sample",

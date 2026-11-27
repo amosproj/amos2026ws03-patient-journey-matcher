@@ -271,7 +271,7 @@ function fits(
 /**
  * How strongly a paper about this state is meant for patients in another situation; the rule of
  * the paper's profile replaces the generic one. The strengths follow the LLM grades of the sample
- * journeys (research/graph-based-matching.md#7-results): papers on an earlier phase or on the
+ * journeys (research/graph-based-matching.md#4-results): papers on an earlier phase or on the
  * opposite situation are almost never relevant, a paper on the likely next phase often is.
  */
 function contradicts(

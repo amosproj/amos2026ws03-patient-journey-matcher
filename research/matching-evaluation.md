@@ -122,7 +122,7 @@ The first 58 judgments (5 to 7 per point) were graded from the PubMed titles and
 
 **LLM grades for the keyword approach (#58)** are in a file of their own, [`keyword-llm-judgments.json`](../matcher/evaluation/keyword-llm-judgments.json): 9,028 grades for 129 points, only for sources that the keyword ranking found. They are not part of `judgments.json`; see [keyword tuning](keyword-tuning.md#checking-a-change).
 
-The [graph judgments for #69](../matcher/evaluation/graph-llm-judgments.json) cover 6,860 point–source pairs from the top ten of graph, keyword and fused rankings on the VM slice. The earlier keyword judgments cover 697 of the same pairs. Pass the graph judgments first to reproduce the [graph comparison](graph-based-matching.md#7-results). The evaluation uses the first available grade for each pair.
+The [graph judgments for #69](../matcher/evaluation/graph-llm-judgments.json) cover 6,860 point–source pairs from the top ten of graph, keyword and fused rankings on the VM slice. The earlier keyword judgments cover 697 of the same pairs. Pass the graph judgments first to reproduce the [graph comparison](graph-based-matching.md#4-results). The evaluation uses the first available grade for each pair.
 
 ```sh
 cd matcher
