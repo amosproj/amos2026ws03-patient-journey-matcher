@@ -421,6 +421,11 @@ def parser() -> argparse.ArgumentParser:
     propose = commands.add_parser("propose", help="let a local LLM propose labels")
     propose.add_argument("--set")
     propose.add_argument("--limit", type=int)
+    imports = commands.add_parser(
+        "import-proposals", help="merge proposals another labeler wrote, one JSON per line"
+    )
+    imports.add_argument("file", type=Path)
+    imports.add_argument("--model", required=True, help="who proposed them, e.g. codex")
     train = commands.add_parser("train", help="train the classifier on the checked training labels")
     measure = commands.add_parser("measure", help="measure drops, safety and speed")
     for command in (train, measure):
@@ -877,8 +882,49 @@ async def propose(
     print(f"proposed {done}, empty answers {empty}, not stored here {len(todo) - len(documents)}")
 
 
+def import_proposals(path: Path, model: str) -> dict[str, int]:
+    """Merge proposals another labeler wrote (JSON lines of id, label, group, reason) into the
+    labels file, under the lock. Only entries without a proposal get one; labels people saved
+    stay untouched. Lines that are not a valid label are counted, not merged."""
+    report = {"merged": 0, "invalid": 0, "unknown": 0, "already": 0}
+    answers: dict[str, dict[str, Any]] = {}
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        try:
+            item = json.loads(line)
+        except json.JSONDecodeError:
+            report["invalid"] += 1
+            continue
+        proposal = parse_answer(line) if isinstance(item, dict) else None
+        if proposal is None or not isinstance(item.get("id"), str):
+            report["invalid"] += 1
+            continue
+        answers[item["id"]] = proposal | {"model": model}
+
+    def merge(data: dict[str, Any]) -> None:
+        known = {entry["id"]: entry for entry in data["documents"]}
+        for document_id, proposal in answers.items():
+            entry = known.get(document_id)
+            if entry is None:
+                report["unknown"] += 1
+            elif entry["proposal"] is not None:
+                report["already"] += 1
+            else:
+                entry["proposal"] = proposal
+                entry["proposal_raw"] = None
+                report["merged"] += 1
+
+    update_labels(LABELS, merge)
+    return report
+
+
 def main(argv: list[str] | None = None) -> None:
     args = parser().parse_args(argv)
+    if args.command == "import-proposals":
+        report = import_proposals(args.file, args.model)
+        print(", ".join(f"{name} {count}" for name, count in report.items()))
+        return
     if not args.database_url:
         raise SystemExit("Set DATABASE_URL or pass --database-url")
     if args.command == "sample":

@@ -851,3 +851,56 @@ def test_propose_does_not_store_an_empty_answer(prefilter, url, tmp_path, monkey
     asyncio.run(prefilter.propose(url, None, None, lambda prompt: "  \n"))
     entry = prefilter.load_labels(prefilter.LABELS)["documents"][0]
     assert entry["proposal"] is None and entry["proposal_raw"] is None  # asked again next run
+
+
+def write_lines(path: Path, *lines: str) -> Path:
+    path.write_text("".join(line + "\n" for line in lines))
+    return path
+
+
+def test_import_proposals_merges_valid_lines_only(prefilter, tmp_path, monkeypatch):
+    monkeypatch.setattr(prefilter, "LABELS", tmp_path / "labels.json")
+    data = prefilter.load_labels(prefilter.LABELS)
+    prefilter.add_documents(data, ["pubmed:1", "pubmed:2", "pubmed:3", "pubmed:4"], "train")
+    data["documents"][2]["proposal"] = {
+        "label": "keep",
+        "group": None,
+        "reason": "qwen",
+        "model": "q",
+    }
+    data["documents"][3] |= {"label": "keep", "note": "a person checked this"}
+    prefilter.save_labels(prefilter.LABELS, data)
+    source = write_lines(
+        tmp_path / "proposals.jsonl",
+        '{"id": "pubmed:1", "label": "unhelpful", "group": 1, "reason": "Mouse model."}',
+        '{"id": "pubmed:2", "label": "unhelpful", "group": null, "reason": "bad group"}',
+        '{"id": "pubmed:3", "label": "unhelpful", "group": 2, "reason": "already proposed"}',
+        '{"id": "pubmed:4", "label": "unhelpful", "group": 2, "reason": "Letter."}',
+        '{"id": "pubmed:404", "label": "keep", "group": null, "reason": "unknown id"}',
+        "not json",
+    )
+    report = prefilter.import_proposals(source, "codex")
+    entries = {e["id"]: e for e in prefilter.load_labels(prefilter.LABELS)["documents"]}
+    assert entries["pubmed:1"]["proposal"] == {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Mouse model.",
+        "model": "codex",
+    }
+    assert entries["pubmed:2"]["proposal"] is None
+    assert entries["pubmed:3"]["proposal"]["reason"] == "qwen"
+    assert entries["pubmed:4"]["label"] == "keep" and entries["pubmed:4"]["note"]
+    assert report == {"merged": 2, "invalid": 2, "unknown": 1, "already": 1}
+
+
+def test_import_proposals_command(prefilter, tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(prefilter, "LABELS", tmp_path / "labels.json")
+    data = prefilter.load_labels(prefilter.LABELS)
+    prefilter.add_documents(data, ["pubmed:1"], "train")
+    prefilter.save_labels(prefilter.LABELS, data)
+    source = write_lines(
+        tmp_path / "p.jsonl",
+        '{"id": "pubmed:1", "label": "keep", "group": null, "reason": "Trial."}',
+    )
+    prefilter.main(["import-proposals", str(source), "--model", "codex"])
+    assert "merged 1" in capsys.readouterr().out
