@@ -4,6 +4,8 @@ pre-filter study (#92). It only touches the JSON files in research/prefilter/.""
 import importlib.util
 import json
 import sys
+import threading
+import time
 from pathlib import Path
 
 import pytest
@@ -81,3 +83,60 @@ def test_labels_refuse_an_unknown_status(server, labels_file):
 
 def test_missing_labels_file_answers_missing(server):
     assert server.prefilter_labels({}) == {"missing": True}
+
+
+def stored(path):
+    return {item["id"]: item for item in json.loads(path.read_text())["documents"]}
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        {"id": "pubmed:2", "label": "unhelpful", "group": None},
+        {"id": "pubmed:2", "label": "keep", "group": 1},
+        {"id": "pubmed:2", "label": "maybe", "group": None},
+        {"id": "pubmed:2", "label": "keep", "group": None, "note": "x" * 501},
+        {"id": "pubmed:2", "label": "keep", "group": None, "note": 5},
+    ],
+)
+def test_save_label_validates(server, labels_file, body):
+    with pytest.raises(ValueError):
+        server.save_prefilter_label(body)
+    assert stored(labels_file)["pubmed:2"]["label"] is None
+
+
+def test_save_label_refuses_an_unknown_document(server, labels_file):
+    with pytest.raises(LookupError):
+        server.save_prefilter_label({"id": "pubmed:404", "label": "keep", "group": None})
+
+
+def test_save_label_keeps_the_proposal(server, labels_file):
+    body = {"id": "pubmed:2", "label": "keep", "group": None, "note": "trial"}
+    saved = server.save_prefilter_label(body)
+    assert saved["status"] == "changed" and saved["checked_at"]
+    entry = stored(labels_file)["pubmed:2"]
+    assert (entry["label"], entry["note"], entry["proposal"]) == ("keep", "trial", PROPOSAL)
+    assert [p.name for p in labels_file.parent.iterdir()] == ["labels.json"]
+
+
+def test_parallel_saves_keep_both_labels(server, labels_file):
+    original = server.prefilter_write
+
+    def slow_write(path, data):  # widen the window between reading and writing
+        time.sleep(0.05)
+        original(path, data)
+
+    server.prefilter_write = slow_write
+    threads = [
+        threading.Thread(
+            target=server.save_prefilter_label,
+            args=({"id": document_id, "label": "keep", "group": None},),
+        )
+        for document_id in ("pubmed:2", "pubmed:3")
+    ]
+    for thread in threads:
+        thread.start()
+    for thread in threads:
+        thread.join()
+    entries = stored(labels_file)
+    assert entries["pubmed:2"]["label"] == entries["pubmed:3"]["label"] == "keep"

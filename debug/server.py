@@ -2586,6 +2586,45 @@ def prefilter_labels(params: dict[str, list[str]]) -> dict[str, Any]:
     }
 
 
+PREFILTER_LOCK = threading.Lock()
+"""One save at a time: two browser tabs must not overwrite each other's labels."""
+
+
+def prefilter_write(path: Path, data: dict[str, Any]) -> None:
+    """Write through a temporary file next to it, so the labels file is never half written."""
+    temporary = path.with_name(f".{path.name}.{uuid.uuid4().hex}.tmp")
+    temporary.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    os.replace(temporary, path)
+
+
+def save_prefilter_label(body: dict[str, Any]) -> dict[str, Any]:
+    """A person's label for one document; the LLM's proposal stays next to it."""
+    document_id, label, group = body.get("id"), body.get("label"), body.get("group")
+    note = body.get("note", "")
+    if label not in ("unhelpful", "keep"):
+        raise ValueError("label must be unhelpful or keep")
+    if (label == "unhelpful") != (group in (1, 2)) or (label == "keep" and group is not None):
+        raise ValueError("group must be 1 or 2 for unhelpful and empty for keep")
+    if not isinstance(note, str) or len(note) > 500:
+        raise ValueError("note must be text of at most 500 characters")
+    path = PREFILTER_DIR / "labels.json"
+    with PREFILTER_LOCK:
+        if not path.exists():
+            raise LookupError("No labels file yet: run scripts/prefilter.py sample first")
+        data = json.loads(path.read_text(encoding="utf-8"))
+        entry = next((item for item in data["documents"] if item["id"] == document_id), None)
+        if entry is None:
+            raise LookupError(f"{document_id} is not in the labels file")
+        entry |= {
+            "label": label,
+            "group": group,
+            "note": note.strip(),
+            "checked_at": datetime.now(UTC).isoformat(timespec="seconds"),
+        }
+        prefilter_write(path, data)
+    return entry | {"status": prefilter_status(entry)}
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = "CrawlerDebug/1.0"
 
@@ -2788,6 +2827,7 @@ class Handler(BaseHTTPRequestHandler):
             "/api/db/titles",
             "/api/match",
             "/api/match/source",
+            "/api/prefilter/label",
         ):
             try:
                 body = self.read_json()
@@ -2805,6 +2845,8 @@ class Handler(BaseHTTPRequestHandler):
                 )
             elif path == "/api/match/source":
                 self.send_result(lambda: source(body))
+            elif path == "/api/prefilter/label":
+                self.send_result(lambda: save_prefilter_label(body))
             elif path == "/api/db/titles":
                 self.send_db(
                     lambda connection: db_titles(connection, string_list(body, "ids", 5000))
