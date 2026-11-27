@@ -444,3 +444,15 @@ def test_embeddings_skip_missing_and_null_vectors(prefilter, url):
 def test_embeddings_refuse_a_missing_table(prefilter, url):
     with pytest.raises(SystemExit, match="no_such_table"):
         run(lambda c: prefilter.embeddings(c, ["pubmed:1"], "no_such_table"), url)
+
+
+def test_keep_probability_is_the_logistic_of_the_score(prefilter):
+    assert prefilter.keep_probability([1.0, -1.0], 0.0, [2.0, 2.0]) == pytest.approx(0.5)
+    assert prefilter.keep_probability([1.0], 0.0, [10.0]) > 0.99
+    assert prefilter.keep_probability([1.0], 0.0, [-1000.0]) == pytest.approx(0.0)
+
+
+def test_score_rows_skips_null_vectors(prefilter):
+    rows = [("pubmed:1", [1.0]), ("pubmed:2", None), ("pubmed:3", [-1.0])]
+    scored = list(prefilter.score_rows(rows, [1.0], 0.0))
+    assert [document_id for document_id, _ in scored] == ["pubmed:1", "pubmed:3"]

@@ -37,7 +37,7 @@ import math
 import os
 import tempfile
 import time
-from collections.abc import Callable, Iterable
+from collections.abc import Callable, Iterable, Iterator
 from pathlib import Path
 from typing import Any
 
@@ -391,6 +391,23 @@ async def embeddings(
         ids,
     )
     return {row["document_id"]: json.loads(row["vector"]) for row in rows}
+
+
+def keep_probability(weights: list[float], bias: float, vector: list[float]) -> float:
+    """The classifier's probability that a document should be kept; plain Python, no numpy."""
+    score = bias + sum(w * x for w, x in zip(weights, vector, strict=True))
+    if score < -700:
+        return 0.0
+    return 1 / (1 + math.exp(-score))
+
+
+def score_rows(
+    rows: Iterable[tuple[str, list[float] | None]], weights: list[float], bias: float
+) -> Iterator[tuple[str, float]]:
+    """(id, probability of keep) for rows with a vector; the others cannot be judged."""
+    for document_id, vector in rows:
+        if vector is not None:
+            yield document_id, keep_probability(weights, bias, vector)
 
 
 PROPOSER = ("Qwen/Qwen3-4B", "1cfa9a7208912126459214e8b04321603b3df60c")
