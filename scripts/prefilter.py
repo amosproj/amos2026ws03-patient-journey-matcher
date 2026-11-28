@@ -85,6 +85,11 @@ GUIDE = [
         "label": "keep",
         "example": "Non-coding RNAs in enzalutamide resistance",
     },
+    {
+        "kind": "No abstract, but the title shows a useful paper",
+        "label": "keep",
+        "example": "Metformin and lifestyle modification in polycystic ovary syndrome: review",
+    },
 ]
 
 
@@ -104,11 +109,12 @@ RULES = {
         "(d.publication_types && ARRAY['Editorial', 'Comment', 'Letter']"
         f" AND (d.summary IS NULL OR length(btrim(d.summary)) < {SHORT_SUMMARY}))"
     ),
-    # Variants, only reported: the keyword index may still read a full text of these.
+    # Variants, only reported. A missing or short summary alone drops too many documents people
+    # keep (#92); the keyword index may still read a full text of these.
     "no_summary_no_full_text": f"({NO_SUMMARY} AND {NO_FULL_TEXT})",
     "short_summary_no_full_text": f"({SHORT} AND {NO_FULL_TEXT})",
 }
-RULE_SET = ["no_summary", "short_summary", "erratum", "reaction_without_abstract"]
+RULE_SET = ["erratum", "reaction_without_abstract"]
 ANY_RULE = "(" + " OR ".join(RULES[rule] for rule in RULE_SET) + ")"
 
 
@@ -241,10 +247,11 @@ their situation. Decide if a document is UNHELPFUL for every patient, with any d
 
 Group 1, not usable for patients: lab research (cell lines, molecular mechanisms only), animal
 studies, pure methods or statistics papers, work written only for clinicians or researchers.
-Group 2, little information: no or a very short abstract or description, errata, corrections,
-letters, comments, editorials.
+Group 2, little information: errata, corrections, letters, comments and editorials that only
+react to another paper, and documents whose title and summary say nothing usable.
 
-A good document for some patients is not unhelpful, even if it fits few of them.
+A good document for some patients is not unhelpful, even if it fits few of them. A missing
+summary alone does not make a document unhelpful.
 In doubt, keep."""
 
 

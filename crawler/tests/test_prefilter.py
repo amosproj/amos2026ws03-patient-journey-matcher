@@ -123,7 +123,7 @@ def test_cli_has_the_four_subcommands(prefilter, capsys):
 def test_load_labels_starts_with_the_guide_when_missing(prefilter, tmp_path):
     data = prefilter.load_labels(tmp_path / "labels.json")
     assert data == {"version": 1, "guide": prefilter.GUIDE, "documents": []}
-    assert len(prefilter.GUIDE) == 6
+    assert len(prefilter.GUIDE) == 7
 
 
 def test_add_documents_keeps_labels_on_rerun(prefilter, tmp_path):
@@ -243,14 +243,11 @@ def test_full_text_variant_spares_documents_with_a_link(prefilter, url):
     assert hits == ["pubmed:2"]
 
 
-def test_rule_set_holds_the_four_rules_without_variants(prefilter):
-    assert prefilter.RULE_SET == [
+def test_rule_set_holds_the_two_rules_without_variants(prefilter):
+    assert prefilter.RULE_SET == ["erratum", "reaction_without_abstract"]
+    assert set(prefilter.RULES) == set(prefilter.RULE_SET) | {
         "no_summary",
         "short_summary",
-        "erratum",
-        "reaction_without_abstract",
-    ]
-    assert set(prefilter.RULES) == set(prefilter.RULE_SET) | {
         "no_summary_no_full_text",
         "short_summary_no_full_text",
     }
