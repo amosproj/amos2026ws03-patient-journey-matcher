@@ -8532,6 +8532,3406 @@
       "group": null,
       "note": "",
       "checked_at": null
+    },
+    {
+      "id": "pubmed:19549522",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Knockout mouse study of JNK1 in diet-induced steatohepatitis, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31758647",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Mouse NASH model study of NK cell recruitment, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15738389",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Liver-specific Nrf1 knockout mouse model, molecular mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28481357",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tmbim1 mechanism in mice and monkeys, no treatment patients can use.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:20596733",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "iNKT-deficient mouse study of liver inflammation, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:40099400",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Mouse and human tissue study of cannabidiol, an anti-seizure drug patients take.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:42589447",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Rat study of atorvastatin, a widely used drug, and its effect on the brain.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30309020",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of sterile inflammatory liver diseases including NASH and alcoholic liver disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32105829",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Rat and cell study of estradiol, a hormone patients take, in NAFLD insulin resistance.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29144460",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Immune mechanism of IgA+ cells in liver cancer, mainly mouse work.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:18460922",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of triglyceride synthesis and progression in NAFLD.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34824208",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Rodent study of lithium plus ketamine, drugs patients take for treatment-resistant depression.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:16456012",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Murine macrophage study of gliadin signaling in celiac disease, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36581059",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Mouse and cell study of empagliflozin, a drug patients take, in diabetic kidney disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23049776",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Caco-2 cell line study of gliadin peptides, molecular mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43059117",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Mouse study of rTMS, a treatment used in stroke rehabilitation, on recovery.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21050945",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Keratinocyte culture study of S. aureus TLR pathway in atopic dermatitis, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32300166",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Hepatocyte Ppara knockout mouse study, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34805266",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Bladder cancer cell line and mouse study of PD-L1 regulation, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:40995363",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of immunotherapy strategies for metastatic liver cancer including early trials.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27221338",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "db/db mouse study of CRP signaling in diabetic nephropathy, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26498609",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Methods chapter on generating transgenic mouse models of celiac disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27766038",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Cell and rat study of Klotho methylation in CKD vascular calcification, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27099587",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Article on clinical implications and lifestyle prevention of hepatic steatosis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32702499",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of STAT3 in liver fibrosis aimed at treating liver diseases.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:11520987",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Transgenic tau/APP mouse study of tangle pathology, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27639801",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of the gut microbiota-FXR axis in obesity, insulin resistance and NAFLD.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27158393",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Mouse study of silymarin, a milk thistle remedy patients take, in NAFLD.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34333021",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Cell and animal study of Sirt1 in kidney stone formation, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39490615",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Renal tubular cell study of annexin A6 in kidney stones, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28539664",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "miRNA-29c mechanism study in podocytes and patient samples, no patient-usable findings.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:14480221",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Rat thyroid cell line study of 90K gene promoter regulation.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:17531973",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of Mallory-Denk bodies as histological markers in liver diseases.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15661929",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Biochemical study of transglutaminase and histamine-gliadin complexes, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28624101",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of liver fibrosis reversibility and clinical trials in NASH patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39604996",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Mouse study of the ketogenic diet, used clinically for women with PCOS.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37061196",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of treatment targets and drugs such as resmetirom and semaglutide for NASH.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23147003",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Rodent study of experimental optogenetic and gene therapy for focal epilepsy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32358041",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Mouse study showing dietary fiber protects against diabetic nephropathy, a diet patients can use.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:22311417",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "db/db mouse study of coenzyme Q10, a supplement patients take, in diabetic kidneys.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:3593015",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Mouse study of atorvastatin, a common drug, preventing hearing loss in hyperlipidemia.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34370596",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Mouse study of white adipose tissue browning in sepsis, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:18832465",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "New transgenic mouse model of frontotemporal dementia, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15213629",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Mouse bone marrow progenitor study of norepinephrine after burn and sepsis, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "arxiv:2202.03512",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Computational tissue simulator methods paper for liver regeneration modeling.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:22925884",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Idh1 knock-in mouse study of D2HG and collagen maturation, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35234334",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Hypothesis paper on an experimental compound in Alzheimer mouse model.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29843746",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Glioblastoma cell line and xenograft study of miR-519a, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:18485912",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Molecular study of gliadin binding CXCR3 in cells and mice, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:19504208",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Theoretical systems model of astrocyte-vascular interface, no patient-usable content.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:9712018",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Lab study of how tissue transglutaminase deamidates gluten peptides and boosts T cell reactivity.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35989481",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of cell death pathways in diabetic nephropathy that also covers their effects on the disease, may inform patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31592832",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of Nrf2 activators tested in clinical trials for CKD, Alport syndrome and ADPKD.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31235962",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Food allergy study with infant microbiota data and bacteriotherapy as a possible treatment.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:8054146",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Fish feed study on insect meal in gilthead sea bream, no relation to patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27094540",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Review of molecular signaling pathways in diabetic nephropathy, mechanisms only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39136789",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Mostly cell and mouse work on mitochondrial dysfunction in kidney stones with an experimental ROS scavenger.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:8841666",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Neuropathology hypothesis linking Alzheimer neurofibrillary changes to cortical myelination.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28428634",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of lipid droplets in NAFLD and viral hepatitis with clinical implications.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30093458",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Rat study of ferric citrate, a phosphate binder CKD patients take, on anemia and kidney function.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32717871",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of gut microbiota in NAFLD with treatments like probiotics, FMT and fasting-mimicking diet.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30633902",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Mechanism study of neutrophil exosomes degrading lung matrix in COPD, mostly in mice.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:8616712",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Rat study of allergen-gene immunization against IgE and airway hyperresponsiveness.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33777047",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Mostly in vitro and animal work on mast cells in COVID-19 and an experimental anti-Siglec-8 antibody.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31563893",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Drosophila model of HLA-B27 signalling in spondyloarthritis, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:40867535",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of therapeutic strategies for kidney stones by targeting macrophages.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:10694577",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Transgenic mouse study of apoE isoforms and amyloid deposition in Alzheimer's.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29456246",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Review of mitochondrial mechanisms in diabetic kidney disease without treatment content.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35404426",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Cell and animal study of CD47 blockade on macrophages in endometriosis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:23648641",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Unusual self-reported case of a flaxseed oil diet adapted for gallbladder micro-stones; could still inform such patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:22634723",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Mouse sepsis model study of HMGB1 and cognitive impairment.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32105727",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Metabolite discovery in fatty liver with mechanism work in mice.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:12670536",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Chemistry design of peptide inhibitors of tissue transglutaminase in biochemical assays.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27898581",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of dyslipidemia in abdominal obesity with outlook on prevention and treatment.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24117616",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Postmortem tissue study of microglial activation patterns in FTLD subtypes.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43052498",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Murine bladder cancer cell line study of nSMase inhibition and NK cells.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:16848710",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of hepcidin in iron disorders such as hemochromatosis and anemia of inflammation.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35426370",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment reacting to a JCI paper on Tumor Treating Fields in glioblastoma.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:10889174",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of celiac disease covering clinical spectrum, autoimmune risk and screening.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "arxiv:0806.3738",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Mathematical model of single-neuron ion dynamics and seizures.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:41266019",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of alcohol-related liver disease mechanisms naming new treatment targets.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:19932734",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Cell signaling study of estradiol and PTEN in endometriotic cells.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39992353",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of neuroinflammation in drug-resistant epilepsy aimed at clinical application.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33160044",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Computational study of targets of hydroxychloroquine, a drug RA patients take.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29157392",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of multiple sclerosis and strategies for myelin and axonal repair.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:3088567",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Antibody lab study of tau phosphorylation in Alzheimer brain tissue.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:10481651",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Plant biology paper on oxalate metabolism for crop quality, no patient relevance.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:10916091",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Measured urinary MCP-1 in 54 diabetic patients in relation to albuminuria.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36087507",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of NK cell metabolism as a target for liver cancer therapy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "arxiv:2610.39316",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Machine learning methods paper on a gut microbiome foundation model.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28531167",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Review of molecular biology of HBV cccDNA formation and DNA repair.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30529000",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Lab analysis of IL-17A signaling in neutrophils from autistic children, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:16540683",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Immunology lab study of regulatory T cells in glioma patients' blood and mice.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:24377109",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Nanoparticle formulation of EGCG tested in liver cell lines.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38629181",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of complement in lupus with implications for complement therapy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:easl_podcasts:Buzzsprout-16266143",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Expert podcast on the liver in ageing and possible therapies for healthy ageing.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:20634301",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Characterizes a mouse model of diabetic nephropathy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23469922",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of astrocytes in depression including effects of antidepressant medications.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:22871543",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Review of axon degeneration mechanisms in glaucoma, largely from animal models.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15001333",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Explains why corticosteroids work poorly in COPD and points to new treatments.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39107446",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Review of autophagy-lysosome molecular mechanisms in neurodegeneration, with no clinical content.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26077761",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "S. aureus toxin study in keratinocyte cultures and a mouse colonization model.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34971020",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Lab study of cannabidiol combined with imatinib, a drug CML patients take, including imatinib-resistant cells.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33654213",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "T-cell receptor sequencing of celiac pathogenesis mechanisms, nothing usable for patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36291557",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Lab and rat study of TTFields, an approved glioblastoma therapy, improving chemotherapy delivery.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:40874993",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Melanoma review covering BRAF/MEK inhibitor resistance and emerging therapies.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23616151",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Short-term aerobic exercise improved liver lipids and insulin sensitivity in NAFLD patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39019784",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Establishing a vole animal model of spontaneous cataract.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31076571",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Study of cisplatin resistance in bladder cancer, a drug patients take, using patient tissue and cells.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31238088",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of 4R-tauopathies including clinical spectrum, diagnostics and investigational therapies.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:42656754",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Gout review explaining recurring flares and links to cardiovascular and kidney disease, ending with therapy evaluation.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31332342",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Novel phage-guided nanoparticles tested in colorectal cancer mouse models.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28366738",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of how depression worsens myocardial infarction outcomes and possible therapeutic targets.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:42939635",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Review of organelle ROS mechanisms in kidney stone pathogenesis only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28465358",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Mouse model of mutant IDH1 glioma immune mechanisms.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32512739",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Review of molecular immunopathogenesis mechanisms of ACPAs in rheumatoid arthritis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:19435893",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Lab study of resistance to tamoxifen and fulvestrant, drugs breast cancer patients take, with primary tumor data.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30289053",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Mouse study of vortioxetine, an approved antidepressant, for neuropathic pain.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23566365",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Cultured fibroblasts from celiac biopsies examined for matrix proteins, lab work only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26648451",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Xenograft study of exenatide, a diabetes drug patients take, on endometrial cancer growth.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:22828895",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Knock-in mouse models of RyR2 calcium leak and atrial fibrillation.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35427476",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "New lipid-lowering compound with Phase I trial results, option for statin intolerance.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30893090",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of sarcopenic obesity in fatty liver with management by diet, exercise and surgery.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:10127481",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Integrative review on type 1 diabetes including hereditary risk among relatives.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:40603760",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of exclusive enteral nutrition, a first-line therapy for pediatric Crohn's disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33676416",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review covering PD-1 immunotherapy-induced kidney damage and biomarkers for patients on these drugs.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34923853",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical trial of CD34+ cell therapy for angina with nonobstructive coronary arteries.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33446239",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "HCC study linking STOML2 to survival and recurrence and to sensitivity to lenvatinib, a drug patients take.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:8304810",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Expression of hepatitis B antigen in transgenic plants, lab vaccine production work.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:40076465",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of radiotherapy resistance in HCC with treatment implications.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33999334",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Uterine fibroid review including hormone effects and targeting opportunities.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30175250",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Scn2a knockout mouse study of seizure mechanisms.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31242068",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Preclinical characterization of a new anti-LAG-3 antibody in cells, mice and monkeys.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37748715",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Embryo toxicity of molnupiravir's metabolite at clinical concentrations, relevant to pregnancy safety.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30911136",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Immunophenotyping of gluten-specific T cells, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37299482",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of faster liver disease progression in type 2 diabetes and the role of diet and drugs.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35387878",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Mouse study of cigarette smoke and gut microbiota mechanisms in colorectal cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27578526",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of CD44 in glioblastoma including therapy resistance and ongoing clinical trials.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28224378",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Rat model of chronic migraine to build animal depression and anxiety scales.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:2704183",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "General review of oxidative stress mechanisms in infections.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:3386259",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Mouse study of tamoxifen, a drug patients take, supporting indefinite therapy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26850495",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Human cohort study showing a genetic variant raises NAFLD and fibrosis risk.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31423933",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study showing systemic inflammation reversibly changes atrial electrical activity.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "arxiv:2608.00752",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Deep learning method for cardiac MR segmentation, a pure methods paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21222599",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of familial FTD from CHMP2B mutations including clinical features and imaging.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21047631",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Lab study of nerve growth factor in endometriosis peritoneal fluid using neuron cultures.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:41147077",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Stem cell and rat study of salvianolic acid B molecular pathway in fracture healing.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32469225",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "COVID-19 immune response review including CRP, IL-6 and antibody dynamics relevant to disease course.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38363270",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Atopic dermatitis itch review discussing sweat, microbiome and new targets for itch relief.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:19575684",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Review of cytokine and chemokine immunobiology of asthma, mechanisms only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33995278",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of mesenchymal stem cell exosomes as a treatment for diabetes complications.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39993779",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of post-stroke dysphagia with recovery and treatment strategies.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33928587",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Production and in vitro characterization of siRNA nanoparticles, pure lab work.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:10127558",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Rat study of melatonin and alcohol effects on liver histology.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "arxiv:2508.12201",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Mathematical transmission model of avian influenza in cattle and wild birds.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27571409",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Mouse and cell work, but tests FDA-approved drugs tigecycline and sulfasalazine for RB1-deficient triple-negative breast cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:10615396",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Patch clamp study of ionic currents in atrial myocytes, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38957794",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of uterine fibroid pathobiology that discusses therapeutic options.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28656009",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of microbial causes of pulmonary fibrosis and antimicrobial treatment use.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37424786",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of immune response and treatment strategies in chronic hepatitis B.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:20931407",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "How quetiapine, a drug patients take, works in bipolar depression.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15013935",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of montelukast efficacy and safety for asthma and allergic rhinitis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:12514227",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Mouse model of maternal influenza infection and offspring behavior.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21743469",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Genetic association study of ankylosing spondylitis susceptibility loci, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26177098",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Discussion of myo- and d-chiro-inositol therapy for PCOS.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:42653184",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Hypothesis review on IBS and fibromyalgia that also addresses patient characteristics.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33691139",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Mouse and hamster study of antibody Fc effector mechanisms against SARS-CoV-2.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33082294",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Crystallography and cell culture study of neuropilin-1 as a SARS-CoV-2 host factor.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:17897027",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Review of in vitro cell models of EGFR signaling in breast cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "arxiv:2606.31935",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Economics paper on AI agent delegation rights, nothing medical.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32896016",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of NK cell immunity in endometriosis including future treatment.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37433768",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of neuroinflammation in neurodegenerative diseases with therapies in clinical trials.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24758900",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Cell line and xenograft study of lncRNA HOTAIR knockdown in endometrial cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:13937979",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Protein interaction network analysis of F. nucleatum in cancer, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:22743606",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Rat study of adenosine receptor agonists on food intake.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:41316431",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of nervous system and lung cancer with clinical treatment implications.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:16502756",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Theoretical field-projection computation of HIV protease binding energy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:10276874",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Rat study of biofield energy treated formulation on tissue biomarkers.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33668632",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of uremic toxins in CKD and cardiovascular disease with therapeutic targets.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:endocrine_news_podcast:https://www.endocrine.org/-/media/d9b2387f69e64142aec31dba3671eb3d.m4a",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Podcast about a mouse study of growth hormone receptor disruption and lifespan.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "arxiv:2304.10073",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Machine learning method for action recognition, autism only as a demo dataset.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27591936",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Bladder cancer cell line study of lncRNA UCA1 chemoresistance mechanism.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27013255",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of RNAi strategies for HIV treatment and prevention.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30618168",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of hypoxia in endometriosis including potential therapeutic approaches.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34618582",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Gut microbiota and castration-resistant prostate cancer, includes patient data.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:19404933",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Prospective cohort of etanercept effects on lipids in ankylosing spondylitis patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:22612393",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Mouse xenograft study, but about gefitinib with medroxyprogesterone, drugs patients take.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39692938",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of metformin as a potential therapy for fibromyalgia.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:acr_journals_on_air:3805cb2c-7365-42cc-a2cc-ee8d7b995e5c",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Podcast on a patient study of immune cell biomarkers in systemic sclerosis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43041891",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Mechanistic review of extracellular DNA in nasopharyngeal carcinoma, a working model.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38847477",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Cell line study of RAC3 in cisplatin-resistant bladder cancer cells.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:8276006",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Overview of liver cirrhosis complications and treatments.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26418275",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Children with autism treated with a luteolin formulation, cytokine markers of response.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:14722061",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Mouse study of high-fat diet and cocaine place preference.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32111015",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of human studies on oxidative stress in atopic dermatitis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:3902972",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Lupus nephritis biomarker found in mice and confirmed in human serum.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21769962",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Donepezil treatment and cognitive improvement in mild Alzheimer's patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:41633102",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "3D lab model of ovarian cancer metastasis using porcine matrix.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:41056698",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical study of neuropathy and osteomyelitis in type 2 diabetes patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30733690",
+      "sets": [
+        "train"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of glutamatergic dysfunction and treatments like ketamine in psychiatric disorders.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
     }
   ]
 }
