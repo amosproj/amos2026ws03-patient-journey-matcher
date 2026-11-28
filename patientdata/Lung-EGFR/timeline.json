@@ -1,0 +1,158 @@
+{
+  "patient_id": "Lung-EGFR",
+  "pathway_id": "nsclc-adjuvant",
+  "start_date": "2026-03-02",
+  "events": [
+    {
+      "id": "e01",
+      "type": "referral",
+      "label": "Überweisung zur Pneumologie wegen Rundherd im Röntgen-Thorax",
+      "date": "2026-03-02",
+      "specialist": "hausarzt",
+      "parameters": { "reason": "Rundherd rechter Oberlappen, Nichtraucherin" },
+      "documents": ["ueberweisungsbrief"],
+      "repeat_index": null
+    },
+    {
+      "id": "e02",
+      "type": "imaging",
+      "label": "CT Thorax mit Kontrastmittel",
+      "date": "2026-03-09",
+      "specialist": "radiologie",
+      "parameters": {
+        "modality": "CT",
+        "finding": "Spikulierter Rundherd 3,4 cm rechter Oberlappen, Verdacht auf Bronchialkarzinom, hilärer Lymphknoten 1,2 cm"
+      },
+      "documents": ["befundbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e03",
+      "type": "biopsy",
+      "label": "Bronchoskopie mit EBUS-TBNA",
+      "date": "2026-03-18",
+      "specialist": "pneumologie",
+      "parameters": { "sampled": "Rundherd und Lymphknotenstation 10R" },
+      "documents": ["befundbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e04",
+      "type": "pathology",
+      "label": "Histologie: Adenokarzinom der Lunge, EGFR Exon-19-Deletion",
+      "date": "2026-03-24",
+      "specialist": "pathologie",
+      "parameters": {
+        "diagnosis": "Adenokarzinom der Lunge",
+        "icd_code": "C34.1",
+        "histology": "nichtkleinzellig",
+        "egfr": "Exon-19-Deletion",
+        "pd_l1_tps": "10 %",
+        "alk": "negativ"
+      },
+      "documents": ["pathologiebericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e05",
+      "type": "imaging",
+      "label": "PET-CT und MRT Schädel zum Staging",
+      "date": "2026-03-30",
+      "specialist": "nuklearmedizin",
+      "parameters": {
+        "modality": "PET-CT",
+        "finding": "cT2a cN1 M0, keine Fernmetastasen, MRT Schädel unauffällig",
+        "stage": "UICC IIB"
+      },
+      "documents": ["befundbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e06",
+      "type": "tumor_board",
+      "label": "Tumorkonferenz: Lobektomie mit Lymphadenektomie, danach adjuvante Therapie",
+      "date": "2026-04-02",
+      "specialist": "thoraxchirurgie",
+      "parameters": {
+        "decision": "Lobektomie rechts oben, systematische Lymphknotendissektion",
+        "participants": ["thoraxchirurgie", "pneumologie", "onkologie", "strahlentherapie"]
+      },
+      "documents": ["tumorkonferenzprotokoll"],
+      "repeat_index": null
+    },
+    {
+      "id": "e07",
+      "type": "surgery",
+      "label": "Lobektomie rechter Oberlappen mit systematischer Lymphadenektomie (VATS)",
+      "date": "2026-04-20",
+      "specialist": "thoraxchirurgie",
+      "parameters": { "procedure": "VATS-Lobektomie" },
+      "documents": ["op_bericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e08",
+      "type": "pathology",
+      "label": "Pathologie nach Lobektomie",
+      "date": "2026-04-27",
+      "specialist": "pathologie",
+      "parameters": {
+        "pt_stage": "pT2a pN1 (1/18) R0",
+        "diagnosis": "Adenokarzinom der Lunge pT2a pN1 R0",
+        "stage": "UICC IIB"
+      },
+      "documents": ["pathologiebericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e09",
+      "type": "systemic_therapy",
+      "label": "Adjuvante Chemotherapie mit Cisplatin und Vinorelbin, 4 Zyklen",
+      "date": "2026-05-25",
+      "specialist": "onkologie",
+      "parameters": { "drug": "Cisplatin, Vinorelbin", "indication": "Adenokarzinom der Lunge" },
+      "documents": ["arztbrief"],
+      "repeat_index": null
+    },
+    {
+      "id": "e10",
+      "type": "systemic_therapy",
+      "label": "Adjuvante Therapie mit Osimertinib begonnen",
+      "date": "2026-08-17",
+      "specialist": "onkologie",
+      "parameters": { "drug": "Osimertinib 80 mg", "indication": "Adenokarzinom der Lunge", "planned_duration": "3 Jahre" },
+      "documents": ["arztbrief"],
+      "repeat_index": null
+    },
+    {
+      "id": "e11",
+      "type": "followup",
+      "label": "Nachsorge mit CT Thorax unter Osimertinib",
+      "date": "2027-02-15",
+      "specialist": "onkologie",
+      "parameters": { "finding": "Kein Anhalt für Rezidiv, Osimertinib gut vertragen, Diarrhö Grad 1" },
+      "documents": ["verlaufsbericht"],
+      "repeat_index": 0
+    },
+    {
+      "id": "e12",
+      "type": "progression",
+      "label": "Rezidiv mit zwei Hirnmetastasen im MRT Schädel",
+      "date": "2028-01-10",
+      "specialist": "neurologie",
+      "parameters": { "finding": "Zwei Hirnmetastasen (1,1 cm und 0,8 cm), extrakraniell kein Progress" },
+      "documents": ["befundbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e13",
+      "type": "radiation",
+      "label": "Stereotaktische Radiochirurgie der Hirnmetastasen",
+      "date": "2028-01-24",
+      "specialist": "strahlentherapie",
+      "parameters": { "technique": "Radiochirurgie", "dose": "20 Gy" },
+      "documents": ["arztbrief"],
+      "repeat_index": null
+    }
+  ]
+}

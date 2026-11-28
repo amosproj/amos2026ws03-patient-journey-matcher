@@ -1,6 +1,6 @@
 # MCP interface
 
-How a client uses the Patient Journey Matcher: the two MCP tools, their inputs and outputs, and the errors. The server is `patient-journey-matcher` version 0.1.0. The schemas in [`matcher/mcp-server/src/contract.ts`](../../matcher/mcp-server/src/contract.ts) are the source of truth for field names and limits. `match_journey` works with the `keyword` approach ([keyword matching](../design/keyword-matching.md)) and, when enabled, `ai_summary` ([semantic setup](../../matcher/README.md#semantic-matching)). Graph and disabled or unbuilt semantic indexes answer with `NOT_AVAILABLE`.
+How a client uses the Patient Journey Matcher: the two MCP tools, their inputs and outputs, and the errors. The server is `patient-journey-matcher` version 0.1.0. The schemas in [`matcher/mcp-server/src/contract.ts`](../../matcher/mcp-server/src/contract.ts) are the source of truth for field names and limits. `match_journey` supports [keyword matching](../design/keyword-matching.md), [graph matching](../design/graph-normalization.md) and, when enabled, `ai_summary` ([semantic setup](../../matcher/README.md#semantic-matching)). A disabled or unbuilt semantic index answers with `NOT_AVAILABLE`.
 
 All fields use `snake_case`, like the journey generator.
 
@@ -63,7 +63,7 @@ Set `algorithm` to choose an approach. It defaults to `keyword`.
 |---|---|---|---|
 | `journey` | object | one of the two | The patient as a list of events, see below |
 | `graph` | object | one of the two | The patient as the patient graph, see [graph input](#graph-input) |
-| `algorithm` | `keyword`, `graph`, `ai_summary` | no | One approach; without it the server chooses, today `keyword` |
+| `algorithm` | `keyword`, `graph`, `ai_summary`, `graph_keyword` | no | One approach, or graph and keyword merged by rank fusion; without it the server chooses, today `keyword` |
 | `limit` | integer, 1 to 50 | no | Default 10 |
 | `content_types` | list of `content_type` values, at least one, see [output](#match_journey-output) | no | Default: all types |
 
@@ -85,7 +85,7 @@ Set `algorithm` to choose an approach. It defaults to `keyword`.
 
 ### Graph input
 
-`graph` is the [patient graph](#patient-graph) as JSON, in Graphiti's field names. A generated `graph.json` can be sent unchanged. The table lists the fields that the server reads. All other fields are dropped without a check, such as `patient`, `documents`, `summary` and `attributes`, and `name`, `fact` and `invalid_at` of an edge.
+`graph` is the [patient graph](#patient-graph) as JSON, in Graphiti's field names. A generated `graph.json` can be sent unchanged. The table lists the fields used to derive daily events. The server also preserves the original nodes and edges for graph matching, including node attributes, edge types, evidence and validity dates.
 
 | Field | Type | Required | Notes |
 |---|---|---|---|
@@ -99,7 +99,7 @@ Set `algorithm` to choose an approach. It defaults to `keyword`.
 | `edges[].source_node_uuid`, `edges[].target_node_uuid` | string | yes | Both nodes are in `nodes` |
 | `edges[].valid_at` | ISO date or date-time, or `null` | no | The day the fact starts |
 
-The server turns the graph into a journey and matches that, with the same rules as for a `journey`. How it does this is described in [reading a graph](#reading-a-graph). In the answer, `focus_event_id` is then the day of the most recent event, such as `2030-12-16`, because the events of this journey are days.
+The server derives daily events for focus and context. With `algorithm` set to `graph`, the matcher also reads the relationships. For a timeline treatment, pair `parameters.drug`, `medication` or `procedure` with `parameters.indication` to state which diagnosis it treats. A finding or test can name its diagnosis with `parameters.indicates`. With separate mentions the matcher can still search by diagnosis. How it does this is described in [reading a graph](#reading-a-graph). In the answer, `focus_event_id` is then the day of the most recent event, such as `2030-12-16`, because the events of this journey are days.
 
 ### `match_journey` output
 
@@ -108,8 +108,8 @@ The server turns the graph into a journey and matches that, with the same rules 
 | `algorithm` | string | yes | The approach that produced the list |
 | `focus_event_id` | string | yes | The event treated as most recent |
 | `results` | list | yes | Best match first. Empty if nothing fits |
-| `degraded` | boolean | yes | `true` if a search could not run, so an empty list does not mean "nothing relevant" |
-| `degraded_reason` | string | no | |
+| `degraded` | boolean | yes | `true` if a search failed or timed out, so an empty list does not mean "nothing relevant"; with `graph_keyword` also if one part failed, and `results` hold the other's |
+| `degraded_reason` | string | no | Why, such as `The graph search took longer than allowed.` |
 
 Each result holds the source reference and optional relevance information:
 
@@ -128,7 +128,7 @@ Each result holds the source reference and optional relevance information:
 | `licence` | string | no | |
 | `score` | number, 0 to 1 | no | Only comparable within one list, not between approaches |
 | `matched_terms` | list of strings | no | Why this source matched |
-| `explanation` | string | no | Reserved for a short text for the same purpose; not set yet |
+| `explanation` | string | no | The graph matcher's reason for ranking this paper |
 
 Example:
 
@@ -200,7 +200,7 @@ The SDK checks the input before a tool runs and the output after it. When a chec
 
 ## Health data
 
-The server does not store or log the journey. It also does not log the message of an unexpected failure, because the message can contain journey data. Development uses synthetic journeys only.
+The server does not store or log the journey; it keeps an answer in memory for five minutes, to answer the same request again without a search. It also does not log the message of an unexpected failure, because the message can contain journey data. Development uses synthetic journeys only.
 
 ## Patient graph
 
@@ -211,12 +211,12 @@ The patient graph is what the SS26 pipeline builds from a patient's documents wi
 [`graph.ts`](../../matcher/mcp-server/src/graph.ts) turns a [`graph`](#graph-input) into a journey:
 
 - **Checked:** every node has `uuid`, `name` and `labels`; every edge has `uuid` and the IDs of its two nodes, and both nodes are in the graph; no two nodes and no two edges share a `uuid`; there is exactly one `Patient` node; `valid_at` is an ISO date or date-time, `null` or left out, and an empty string is rejected. A graph that fails a check is rejected with the place of the error.
-- **Not checked:** fields the reader does not use, such as `name`, `fact` and `invalid_at` of an edge. They are dropped, because Graphiti takes the times of a fact from an LLM and one odd fact would otherwise reject the whole graph.
+- Graph normalization checks the additional fields it uses and skips unreadable statements.
 - **The day of a time** is the day as it is written: `2027-01-22T00:30:00+02:00` counts as 22 January.
 - **One event per day:** the facts whose `valid_at` is that day. The event `id` is the date; its `label` lists the names of the nodes of these facts, each once, in alphabetical order and without the patient.
 - **Left out:** facts without `valid_at`, facts about a `Provider`, and facts that name only the patient.
 - **Replaced facts stay:** a fact with `invalid_at` still happened on its day.
-- **The fact sentences are not passed on:** the matcher sees which concepts a day names, not their values or whether a finding was confirmed or ruled out.
+- The keyword matcher reads the daily event labels. The graph matcher also reads the fact sentences to resolve status.
 - **`patient_id`** is the name of the `Patient` node.
 - **The journey has to pass the contract** like any other: a graph without a dated fact or with facts on more than 500 days is rejected, and so is an `as_of` before the first event.
 

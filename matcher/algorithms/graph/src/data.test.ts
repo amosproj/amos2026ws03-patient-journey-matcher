@@ -1,14 +1,21 @@
 // The data files are cast to their types, not parsed, so a typo would pass silently. These
 // tests check them against each other and against the lists the types are made from.
+
+import { normalizeName } from "@matcher/terminology";
 import { expect, test } from "vitest";
 import concepts from "../data/concepts.json" with { type: "json" };
-import icd from "../data/icd10-mesh.json" with { type: "json" };
 import outcomes from "../data/outcomes.json" with { type: "json" };
 import patient from "../data/patient-relations.json" with { type: "json" };
 import pubtator from "../data/pubtator-relations.json" with { type: "json" };
+import stages from "../data/stages.json" with { type: "json" };
 import cues from "../data/status-cues.json" with { type: "json" };
+import timeline from "../data/timeline.json" with { type: "json" };
+import { PROFILES } from "./profile.ts";
+import { ROLES } from "./query.ts";
+import { conceptOf } from "./resolve.ts";
+import { STAGES, type StageRow } from "./stages.ts";
 import { CUE_STATUSES } from "./status.ts";
-import { normalizeName } from "./text.ts";
+import type { ParameterRule } from "./timeline-reader.ts";
 import { ENTITY_TYPES, FACT_KINDS, PREDICATES, STATUSES } from "./types.ts";
 
 type Row = { type: string } & Record<string, unknown>;
@@ -27,10 +34,13 @@ test("concepts: a known type, a well-formed ID, each ID once", () => {
   expect(CONCEPT_IDS.size).toBe(concepts.concepts.length);
 });
 
-test("every ICD code points to a curated concept", () => {
-  for (const [code, id] of Object.entries(icd.codes)) {
-    expect(code).toMatch(/^[A-Z]\d{2}(\.\d{1,2})?$/);
-    expect(CONCEPT_IDS, `${code} → ${id}`).toContain(id);
+test("concepts: no name belongs to two concepts", () => {
+  const owner = new Map<string, string>();
+  for (const { id, name, names } of concepts.concepts) {
+    for (const key of [name, ...names].map(normalizeName)) {
+      expect(owner.get(key) ?? id, `"${key}"`).toBe(id);
+      owner.set(key, id);
+    }
   }
 });
 
@@ -50,6 +60,10 @@ test.each([
     expect(allowed, what).toContain(kinds[0]);
     if ("predicate" in row) expect(PREDICATES, what).toContain(row.predicate);
     if ("fact" in row) expect(FACT_KINDS, what).toContain(row.fact);
+    if (row.fact === "has_condition")
+      expect(["diagnosis", "symptom", "allergy"], what).toContain(
+        row.conditionRole,
+      );
     if ("status" in row) expect(STATUSES, what).toContain(row.status);
     if ("about" in row) expect(row.about, what).toBe("source");
     if ("flip" in row) expect(typeof row.flip, what).toBe("boolean");
@@ -88,5 +102,79 @@ test("status cues: valid status, position and window, each written once", () => 
 test("attribute values give a status", () => {
   for (const status of Object.values(cues.attributes)) {
     expect(STATUSES).toContain(status);
+  }
+});
+
+test("the stage and timeline tables reference curated patient concepts", () => {
+  for (const row of concepts.concepts) {
+    if ("role" in row) expect(ROLES).toContain(row.role);
+    for (const id of [...(row.broader ?? []), ...(row.narrower ?? [])])
+      expect(CONCEPT_IDS).toContain(id);
+    if (row.implies) expect(CONCEPT_IDS).toContain(row.implies);
+  }
+  for (const table of [
+    stages.stages,
+    ...PROFILES.map((profile) => profile.stages ?? []),
+  ]) {
+    const ids = table.map(({ id }) => id);
+    expect(new Set(ids).size, "each state once per table").toBe(ids.length);
+  }
+  const rows: StageRow[] = [
+    ...stages.stages,
+    ...PROFILES.flatMap((profile) => profile.stages ?? []),
+  ];
+  for (const stage of rows) {
+    expect(STAGES).toContain(stage.id);
+    expect(stage.title, stage.id).not.toBe("");
+    for (const id of stage.concepts) expect(CONCEPT_IDS).toContain(id);
+    for (const id of stage.ends ?? []) expect(STAGES).toContain(id);
+  }
+  const rules: ParameterRule[] = [
+    timeline.parameters,
+    ...PROFILES.map((profile) => profile.parameters ?? {}),
+  ].flatMap((parameters) => Object.values(parameters));
+  for (const rule of rules) {
+    for (const ids of Object.values(rule.values ?? {}))
+      for (const id of ids) expect(CONCEPT_IDS).toContain(id);
+    for (const id of rule.concepts ?? []) expect(CONCEPT_IDS).toContain(id);
+    for (const [id, status] of Object.entries(rule.implies ?? {})) {
+      expect(CONCEPT_IDS).toContain(id);
+      expect(STATUSES).toContain(status);
+    }
+  }
+});
+
+test("a disease profile references curated concepts, known states and MeSH topics", () => {
+  for (const profile of PROFILES) {
+    expect(CONCEPT_IDS).toContain(profile.diagnosis);
+    const kinds = Object.entries(profile.histology?.kinds ?? {});
+    if (profile.histology) expect(kinds).toHaveLength(2);
+    for (const [id, names] of kinds) {
+      expect(conceptOf(id)?.type, id).toBe("disease");
+      expect(names.length, id).toBeGreaterThan(0);
+    }
+    for (const [id, states] of Object.entries(profile.impliedStages ?? {})) {
+      expect(CONCEPT_IDS).toContain(id);
+      for (const stage of states) expect(STAGES).toContain(stage);
+    }
+    for (const stage of Object.keys(profile.stateRules ?? {}))
+      expect(STAGES).toContain(stage);
+    for (const id of [
+      ...Object.values(profile.measurements ?? {}).map(
+        ({ concept }) => concept,
+      ),
+      ...Object.keys(profile.impliesWhen ?? {}),
+      ...(profile.workup?.procedures ?? []),
+      ...Object.values(profile.flags ?? {}).flatMap((flag) =>
+        "operation" in flag ? [flag.operation] : [],
+      ),
+    ])
+      expect(CONCEPT_IDS).toContain(id);
+    for (const id of [
+      ...(profile.phase?.treatment ?? []),
+      ...(profile.phase?.diagnosis ?? []),
+      ...(profile.alternatives ?? []),
+    ])
+      expect(id).toMatch(/^mesh:D\d+(Q\d+)?$/);
   }
 });

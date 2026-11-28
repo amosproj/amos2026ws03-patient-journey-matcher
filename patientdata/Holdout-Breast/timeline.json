@@ -1,0 +1,353 @@
+{
+  "patient_id": "Holdout-Breast",
+  "pathway_id": "hb01",
+  "start_date": "2027-03-08",
+  "events": [
+    {
+      "id": "e01",
+      "type": "referral",
+      "label": "Überweisung ins Brustzentrum zur Abklärung eines Tastbefundes li.",
+      "date": "2027-03-08",
+      "specialist": "gynaekologie",
+      "parameters": {
+        "reason": "Selbst getasteter Knoten Mamma li. oben außen seit ca. 4 Wochen, klinisch ca. 3 cm, derb, wenig verschieblich; Axilla li. fraglich vergrößerter LK",
+        "age_years": 56,
+        "menopausal_status": "postmenopausal (Menopause mit 51 J.)",
+        "previous_screening": "Screening-Mammographie 05/2025 ohne Befund",
+        "suspected_diagnosis": "V. a. Mammakarzinom li."
+      },
+      "documents": [
+        "ueberweisungsbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e02",
+      "type": "imaging",
+      "label": "Mammographie in 2 Ebenen und Mammasonographie bds.",
+      "date": "2027-03-15",
+      "specialist": "radiologie",
+      "parameters": {
+        "modality": "Mammographie, Mammasonographie",
+        "region": "Mamma bds., Axilla bds.",
+        "finding": "Li. 2 Uhr, 6 cm mamillenfern: spikulierte, unscharf begrenzte Raumforderung 28 × 24 mm, sonographisch echoarm mit dorsaler Schallauslöschung; Axilla li. Level I: 1 LK mit exzentrisch verbreitertem Kortex (5 mm); re. unauffällig",
+        "bi_rads": 5,
+        "breast_density": "ACR B",
+        "tumor_size_mm": 28,
+        "recommendation": "Sonographisch gesteuerte Stanzbiopsie von Herdbefund und LK"
+      },
+      "documents": [
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e03",
+      "type": "biopsy",
+      "label": "Sonographisch gesteuerte Stanzbiopsie Mamma li. und Axilla li. mit Clipmarkierung",
+      "date": "2027-03-17",
+      "specialist": "senologie",
+      "parameters": {
+        "method": "Hochgeschwindigkeits-Stanzbiopsie 14 G in Lokalanästhesie",
+        "samples": "Herdbefund 2 Uhr: 4 Stanzzylinder; axillärer LK: 2 Stanzzylinder",
+        "clip_marking": "Clip in Herdbefund und in biopsiertem LK (für spätere Targeted Axillary Dissection)",
+        "complications": "keine"
+      },
+      "documents": [
+        "biopsieprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e04",
+      "type": "pathology",
+      "label": "Histologie Stanzbiopsie: invasives Mammakarzinom NST li. mit axillärer LK-Metastase",
+      "date": "2027-03-22",
+      "specialist": "pathologie",
+      "parameters": {
+        "diagnosis": "Invasives Mammakarzinom li., kein spezieller Typ (NST)",
+        "icd_code": "C50.4 L",
+        "grading": "G2 (Elston/Ellis-Score 6)",
+        "er_percent": 95,
+        "er_irs": 12,
+        "pr_percent": 30,
+        "pr_irs": 6,
+        "her2_ihc": "1+",
+        "her2_status": "negativ (HER2-low)",
+        "ki67_percent": 25,
+        "lymph_node": "Metastase des Mammakarzinoms im axillären LK li.",
+        "surrogate_subtype": "Luminal-B-like, HER2-negativ"
+      },
+      "documents": [
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e05",
+      "type": "imaging",
+      "label": "Staging: CT Thorax/Abdomen und Skelettszintigraphie",
+      "date": "2027-03-24",
+      "specialist": "radiologie",
+      "parameters": {
+        "modality": "CT Thorax/Abdomen mit KM, Ganzkörper-Skelettszintigraphie",
+        "finding": "Kein Anhalt für pulmonale, hepatische oder ossäre Metastasen; bekannter suspekter LK axillär li., sonst keine Lymphadenopathie",
+        "tnm": "cT2 cN1 cM0",
+        "uicc_stage": "IIB"
+      },
+      "documents": [
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e06",
+      "type": "tumor_board",
+      "label": "Prätherapeutische interdisziplinäre Tumorkonferenz",
+      "date": "2027-03-31",
+      "specialist": "senologie",
+      "parameters": {
+        "diagnosis": "Mammakarzinom li. o. a. Q., NST, cT2 cN1 cM0, G2, ER 95 %, PR 30 %, HER2 1+, Ki-67 25 %",
+        "icd_code": "C50.4 L",
+        "decision": "Neoadjuvante Chemotherapie: Paclitaxel wöchentlich ×12, anschließend Epirubicin/Cyclophosphamid dosisdicht ×4; danach brusterhaltende OP mit Targeted Axillary Dissection; Portanlage",
+        "participants": [
+          "senologie",
+          "radiologie",
+          "pathologie",
+          "gynaekologische_onkologie",
+          "strahlentherapie",
+          "psychoonkologie"
+        ],
+        "ecog": 0,
+        "lvef_percent": 62
+      },
+      "documents": [
+        "tumorkonferenzprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e07",
+      "type": "systemic_therapy",
+      "label": "Beginn neoadjuvante Chemotherapie (Paclitaxel wöchentlich, gefolgt von EC dosisdicht)",
+      "date": "2027-04-12",
+      "specialist": "gynaekologische_onkologie",
+      "parameters": {
+        "setting": "neoadjuvant",
+        "regimen": "Paclitaxel 80 mg/m² d1 q7d ×12, anschließend Epirubicin 90 mg/m² + Cyclophosphamid 600 mg/m² d1 q14d ×4 mit Pegfilgrastim",
+        "planned_duration_weeks": 20,
+        "supportive": "Port re. infraklavikulär, Kopfhautkühlung"
+      },
+      "documents": [
+        "therapieplan",
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e08",
+      "type": "surgery",
+      "label": "BET li. mit Targeted Axillary Dissection, Schnellschnitt positiv, Axilladissektion Level I/II",
+      "date": "2027-09-21",
+      "specialist": "senologie",
+      "parameters": {
+        "response_before_surgery": "Sonographisch partielle Remission (28 → 12 mm), Clip-LK nicht mehr suspekt",
+        "procedure": "Clipgesteuerte Segmentresektion li. 2 Uhr mit Präparatradiographie (Clip im Präparat), Entfernung von Clip-LK und Sentinel-LK (Tc-99m); intraoperativer Schnellschnitt: Makrometastase im Clip-LK, daher Axilladissektion Level I/II",
+        "approach": "brusterhaltend"
+      },
+      "documents": [
+        "op_bericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e09",
+      "type": "pathology",
+      "label": "Histologie OP-Präparat: ypT1c ypN1a (2/14), R0, kein pCR",
+      "date": "2027-09-28",
+      "specialist": "pathologie",
+      "parameters": {
+        "diagnosis": "Residuelles invasives Mammakarzinom NST li. nach neoadjuvanter Chemotherapie",
+        "icd_code": "C50.4 L",
+        "tnm": "ypT1c (13 mm) ypN1a (2/14) L0 V0 Pn0 R0",
+        "r_status": "R0",
+        "margin_mm": 4,
+        "lymph_nodes": "2/14 befallen (Clip-LK: Makrometastase 4 mm; 1 LK aus dem Axilladissektat: Metastase 2,5 mm)",
+        "grading": "G2",
+        "regression": "Regressionsgrad nach Sinn 1",
+        "residual_cancer_burden": "RCB-II",
+        "er_percent": 90,
+        "pr_percent": 20,
+        "her2_ihc": "1+",
+        "ki67_percent": 15,
+        "pcr": false
+      },
+      "documents": [
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e10",
+      "type": "tumor_board",
+      "label": "Postoperative Tumorkonferenz: adjuvante Therapie nach Non-pCR",
+      "date": "2027-10-06",
+      "specialist": "senologie",
+      "parameters": {
+        "diagnosis": "Mammakarzinom li. ypT1c ypN1a (2/14) L0 V0 R0, G2, ER+/PR+/HER2-low, Non-pCR nach neoadjuvanter Chemotherapie (initial cT2 cN1 cM0, UICC IIB)",
+        "icd_code": "C50.4 L",
+        "decision": "Adjuvante Radiotherapie der Restbrust mit Boost und der supra-/infraklavikulären Lymphabflusswege; im Anschluss Letrozol 2,5 mg plus Ribociclib 400 mg über 3 Jahre; Zoledronsäure 4 mg i.v. alle 6 Monate über 3 Jahre; keine Nachresektion erforderlich",
+        "genetic_testing": "Keimbahntestung nicht indiziert (familiäre Einschlusskriterien nicht erfüllt, CPS+EG-Score 2)",
+        "bone_density": "DXA: Osteopenie (T-Score LWS −1,6)",
+        "participants": [
+          "senologie",
+          "pathologie",
+          "radiologie",
+          "gynaekologische_onkologie",
+          "strahlentherapie"
+        ]
+      },
+      "documents": [
+        "tumorkonferenzprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e11",
+      "type": "radiation",
+      "label": "Adjuvante Radiotherapie Mamma li. und Lymphabflusswege (hypofraktioniert, SIB)",
+      "date": "2027-10-25",
+      "specialist": "strahlentherapie",
+      "parameters": {
+        "technique": "VMAT in tiefer Inspiration (DIBH)",
+        "target": "Restbrust li., Tumorbett (simultan integrierter Boost), Lymphabflusswege supra-/infraklavikulär li.",
+        "total_dose_gy": 40.05,
+        "fractions": 15,
+        "boost": "SIB Tumorbett 48 Gy in 15 Fraktionen",
+        "duration_weeks": 3
+      },
+      "documents": [
+        "bestrahlungsplan",
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e12",
+      "type": "systemic_therapy",
+      "label": "Beginn adjuvante Therapie mit Letrozol plus Ribociclib, Zoledronsäure",
+      "date": "2027-11-29",
+      "specialist": "gynaekologische_onkologie",
+      "parameters": {
+        "setting": "adjuvant",
+        "drug": "Letrozol 2,5 mg 1× tgl.; Ribociclib 400 mg 1× tgl. d1–21 q28d; Zoledronsäure 4 mg i.v. alle 6 Monate",
+        "planned_duration": "Ribociclib 3 Jahre, Letrozol mind. 5 Jahre, Zoledronsäure 3 Jahre",
+        "qtc_ms": 421,
+        "alt_u_l": 22,
+        "supportive": "Calcium/Vitamin D3; zahnärztliche Kontrolle vor Zoledronsäure erfolgt"
+      },
+      "documents": [
+        "arztbrief",
+        "laborbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e13",
+      "type": "followup",
+      "label": "Nachsorge und Therapiekontrolle unter Letrozol/Ribociclib",
+      "date": "2028-05-24",
+      "specialist": "gynaekologische_onkologie",
+      "parameters": {
+        "finding": "Klinisch kein Anhalt für Rezidiv; Mammographie/Sonographie bds.: Narbe und Radiatiofolgen li., BI-RADS 2",
+        "bi_rads": 2,
+        "adverse_events": "Neutropenie CTCAE Grad 3 in Zyklus 2 und erneut in Zyklus 6 (ANC 0,8/nl), Arthralgien Grad 1",
+        "action": "Nach dem ersten Ereignis Pause bis Grad ≤ 2 und Fortführung mit 400 mg; nach dem erneuten Ereignis Pause bis Grad ≤ 2 und Fortführung mit 200 mg",
+        "anc_per_nl": 0.8,
+        "qtc_ms": 434
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht",
+        "befundbericht"
+      ],
+      "repeat_index": 0
+    },
+    {
+      "id": "e14",
+      "type": "followup",
+      "label": "Jahresnachsorge: Ribociclib nach 36 Monaten abgeschlossen",
+      "date": "2030-12-04",
+      "specialist": "gynaekologische_onkologie",
+      "parameters": {
+        "finding": "Kein Anhalt für Lokalrezidiv oder Fernmetastasen; Mammographie/Sonographie bds. BI-RADS 2",
+        "bi_rads": 2,
+        "therapy_status": "Ribociclib 200 mg planmäßig nach 36 Monaten beendet; Zoledronsäure nach 6 Gaben beendet (letzte Gabe 05/2030); Letrozol wird fortgeführt",
+        "bone_density": "DXA: T-Score LWS −1,5",
+        "plan": "Fortführung Letrozol; über eine erweiterte endokrine Therapie nach 5 Jahren wird im Verlauf entschieden"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "befundbericht"
+      ],
+      "repeat_index": 1
+    },
+    {
+      "id": "e15",
+      "type": "progression",
+      "label": "V. a. ossäre und hepatische Metastasierung unter adjuvanter Letrozol-Therapie",
+      "date": "2031-06-16",
+      "specialist": "gynaekologische_onkologie",
+      "parameters": {
+        "presentation": "Seit 6 Wochen zunehmende Rückenschmerzen thorakolumbal, ECOG 1",
+        "imaging": "CT Thorax/Abdomen: 2 hypodense Leberläsionen (Segment VII 19 mm, Segment IVa 12 mm); Skelettszintigraphie mit CT-Korrelation: gemischt osteolytisch-osteoblastische Herde BWK 11, LWK 2 und Os ilium re., keine Fraktur, keine Myelonkompression (SINS 4)",
+        "ca15_3_u_ml": 74,
+        "alkaline_phosphatase_u_l": 168,
+        "calcium_mmol_l": 2.45,
+        "interval": "Rezidiv unter laufender Letrozol-Therapie, gut 6 Monate nach Ende von Ribociclib",
+        "next_step": "Sonographisch gesteuerte Leberstanzbiopsie mit Rezeptor- und Mutationsanalyse"
+      },
+      "documents": [
+        "arztbrief",
+        "befundbericht",
+        "laborbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e16",
+      "type": "tumor_board",
+      "label": "Tumorkonferenz: histologisch gesicherte Fernmetastasierung, Erstlinientherapie",
+      "date": "2031-07-01",
+      "specialist": "gynaekologische_onkologie",
+      "parameters": {
+        "diagnosis": "Metastasiertes Mammakarzinom li. (hepatisch, ossär), ER+/HER2-low, PIK3CA-mutiert; Erstdiagnose 03/2027 (cT2 cN1 cM0), Rezidiv unter adjuvanter endokriner Therapie",
+        "icd_code": "C50.4 L",
+        "icd_secondary": "C78.7, C79.5",
+        "biopsy": "Leberstanzbiopsie Segment VII: Metastase des bekannten Mammakarzinoms (GATA3 positiv)",
+        "er_percent": 80,
+        "pr_status": "negativ (< 1 %)",
+        "her2_ihc": "1+",
+        "ki67_percent": 30,
+        "molecular": "NGS (Gewebe): PIK3CA c.3140A>G p.H1047R; AKT1 und PTEN ohne Alteration; ESR1 Wildtyp (Gewebe und ctDNA)",
+        "hba1c_percent": 5.7,
+        "rationale": "Rezidiv unter adjuvantem Aromatasehemmer und weniger als 12 Monate nach Ende des adjuvanten CDK4/6-Inhibitors; keine viszerale Krise",
+        "decision": "Fulvestrant 500 mg i.m. (Tag 1, 15, 29, danach alle 4 Wochen) plus Capivasertib 400 mg 2× tgl. p.o. (4 Tage Einnahme, 3 Tage Pause); Denosumab 120 mg s.c. alle 4 Wochen nach zahnärztlicher Freigabe, Calcium/Vitamin D; palliative Radiatio LWK 2 mit 8 Gy Einzeldosis; Blutzuckerkontrollen; Restaging nach 12 Wochen",
+        "participants": [
+          "gynaekologische_onkologie",
+          "senologie",
+          "radiologie",
+          "pathologie",
+          "strahlentherapie",
+          "nuklearmedizin",
+          "palliativmedizin"
+        ]
+      },
+      "documents": [
+        "tumorkonferenzprotokoll",
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    }
+  ]
+}

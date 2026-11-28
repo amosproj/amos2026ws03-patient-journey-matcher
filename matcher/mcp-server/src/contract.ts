@@ -3,7 +3,7 @@ import { graphJourney, patientGraphSchema } from "./graph.ts";
 
 // Field names follow the timeline.json of the synthetic journey generator,
 // so a generated journey can be sent as it is. Unknown fields are dropped.
-export const journeyEventSchema = z.object({
+const journeyEventSchema = z.object({
   id: z.string().min(1),
   type: z.string().min(1),
   label: z.string().min(1),
@@ -13,7 +13,7 @@ export const journeyEventSchema = z.object({
 });
 
 // Without an event on or before as_of there is no most recent event to match.
-export const patientJourneySchema = z
+const patientJourneySchema = z
   .object({
     patient_id: z.string().min(1),
     as_of: z.iso.date().optional(),
@@ -28,9 +28,14 @@ export const patientJourneySchema = z
     },
   );
 
-export const algorithmSchema = z.enum(["keyword", "graph", "ai_summary"]);
+const algorithmSchema = z.enum([
+  "keyword",
+  "graph",
+  "ai_summary",
+  "graph_keyword",
+]);
 
-export const contentTypeSchema = z.enum([
+const contentTypeSchema = z.enum([
   "journal_article",
   "preprint",
   "conference_paper",
@@ -42,8 +47,7 @@ export const contentTypeSchema = z.enum([
   "podcast_episode",
 ]);
 
-// The patient comes as a journey or as the patient graph of the real app. A graph is turned
-// into its journey here, so the tools and the matchers only ever get a journey.
+// Derive the daily events for all approaches and retain the graph for relationship matching.
 export const matchJourneyInputSchema = z
   .object({
     journey: patientJourneySchema.optional(),
@@ -57,21 +61,22 @@ export const matchJourneyInputSchema = z
     { message: "Send either journey or graph, not both and not neither." },
   )
   .transform(({ journey, graph, ...request }, context) => {
-    if (journey !== undefined) return { journey, ...request };
-    // The refinement above ensures the graph. Its journey has to pass the same checks as one
-    // that a client sends.
-    const made = patientJourneySchema.safeParse(
-      graphJourney(graph as z.output<typeof patientGraphSchema>),
-    );
-    if (made.success) return { journey: made.data, ...request };
-    for (const { message } of made.error.issues) {
-      context.addIssue({
-        code: "custom",
-        path: ["graph"],
-        message: `The journey made from the graph is not valid. ${message}`,
-      });
+    if (!journey) {
+      if (!graph) return z.NEVER;
+      const made = patientJourneySchema.safeParse(graphJourney(graph));
+      if (!made.success) {
+        for (const { message } of made.error.issues) {
+          context.addIssue({
+            code: "custom",
+            path: ["graph"],
+            message: `The journey made from the graph is not valid. ${message}`,
+          });
+        }
+        return z.NEVER;
+      }
+      journey = made.data;
     }
-    return z.NEVER;
+    return { journey, ...(graph && { graph }), ...request };
   });
 
 export const sourceReferenceSchema = z.object({
@@ -87,7 +92,7 @@ export const sourceReferenceSchema = z.object({
   licence: z.string().optional(),
 });
 
-export const matchItemSchema = sourceReferenceSchema.extend({
+const matchItemSchema = sourceReferenceSchema.extend({
   rank: z.number().int().min(1),
   score: z.number().min(0).max(1).optional(),
   matched_terms: z.array(z.string()).optional(),

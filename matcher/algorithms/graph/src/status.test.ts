@@ -1,5 +1,11 @@
 import { expect, test } from "vitest";
-import { statusFromAttribute, statusFromText } from "./status.ts";
+import { defaultTerminology } from "./resolve.ts";
+import {
+  diseaseMentions,
+  patientText,
+  statusFromAttribute,
+  statusFromText,
+} from "./status.ts";
 
 const PROSTATE_CANCER = ["prostate cancer", "Prostatakarzinom"];
 
@@ -64,6 +70,12 @@ test("a cue covers the words after it, not before", () => {
   });
 });
 
+test("ruling out a drug for a disease does not rule out the disease", () => {
+  const text = "Olaparib was ruled out for breast cancer.";
+  expect(statusFromText(text, ["Olaparib"])?.status).toBe("negated");
+  expect(statusFromText(text, ["breast cancer"])).toBeUndefined();
+});
+
 test("the cue next to the name wins, not the first of the sentence", () => {
   const text = "An elevated PSA level and suspected prostate cancer.";
   expect(statusFromText(text, ["elevated PSA level", "PSA"])).toBeUndefined();
@@ -124,6 +136,9 @@ test.each([
   ["Knochenmetastasen nicht bestätigt.", undefined],
   ["Bone metastases were confirmed.", "asserted"],
   ["Bone metastases were ruled out.", "negated"],
+  ["Pathology excluded bone metastases.", "negated"],
+  ["Biopsy requested to rule out bone metastases.", undefined],
+  ["Pathology has not ruled out bone metastases.", undefined],
   // A cue after a negation that no cue lists says nothing, not the opposite.
   ["Bone metastases could not be ruled out.", undefined],
   ["Bone metastases can't be ruled out.", undefined],
@@ -173,4 +188,19 @@ test("the default windows: up to 5 words between before, 3 after", () => {
 test("an attribute value that is an Object method is no status", () => {
   expect(statusFromAttribute("constructor")).toBeUndefined();
   expect(statusFromAttribute("toString")).toBeUndefined();
+});
+
+test("a long run of spaces neither changes the result nor takes long", () => {
+  // Each took time with the square of the run: 100,000 spaces more than ten seconds.
+  const run = " ".repeat(100_000);
+  const started = performance.now();
+  expect(
+    patientText(
+      `Prostate cancer confirmed. His mother${run}had breast cancer.`,
+    ),
+  ).toBe("Prostate cancer confirmed");
+  expect(
+    diseaseMentions(`V${run}. a. Prostatakarzinom`, defaultTerminology),
+  ).toMatchObject([{ concept: { id: "mesh:D011471" }, status: "suspected" }]);
+  expect(performance.now() - started).toBeLessThan(1_000);
 });

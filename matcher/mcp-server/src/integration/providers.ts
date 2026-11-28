@@ -59,6 +59,9 @@ export async function createProviders() {
       (target.origin === "https://zenodo.org" &&
         target.pathname.startsWith("/api/records/")) ||
       target.origin === "https://fixtures.example.org" ||
+      (target.origin === "https://www.ncbi.nlm.nih.gov" &&
+        target.pathname ===
+          "/research/pubtator3-api/publications/export/biocjson") ||
       target.origin === "https://pmc-oa-opendata.s3.amazonaws.com"
     ) {
       target.host = new URL(baseUrl).host;

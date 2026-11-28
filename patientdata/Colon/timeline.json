@@ -1,0 +1,291 @@
+{
+  "patient_id": "Colon",
+  "pathway_id": "kk01",
+  "start_date": "2027-03-08",
+  "events": [
+    {
+      "id": "e01",
+      "type": "referral",
+      "label": "Überweisung zur Koloskopie bei positivem iFOBT und Eisenmangelanämie",
+      "date": "2027-03-08",
+      "specialist": "hausarzt",
+      "parameters": {
+        "reason": "iFOBT aus dem Früherkennungsprogramm positiv; seit ca. 3 Monaten wechselnde Stuhlgewohnheiten und zunehmende Müdigkeit",
+        "history": "64-jähriger Patient, art. Hypertonie, Z.n. Appendektomie; bisher keine Vorsorgekoloskopie; keine familiäre Belastung für kolorektale Karzinome",
+        "ifobt_ug_hb_per_g": 126,
+        "hb_g_dl": 10.9,
+        "mcv_fl": 76,
+        "ferritin_ug_l": 8,
+        "diagnosis": "Eisenmangelanämie, V.a. chronischen gastrointestinalen Blutverlust",
+        "icd_code": "D50.0",
+        "urgency": "dringlich"
+      },
+      "documents": ["ueberweisungsschein", "laborbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e02",
+      "type": "endoscopy",
+      "label": "Ileokoloskopie mit PE",
+      "date": "2027-03-22",
+      "specialist": "gastroenterologie",
+      "parameters": {
+        "indication": "Positiver iFOBT, Eisenmangelanämie",
+        "bowel_preparation": "gut",
+        "finding": "Im Colon sigmoideum ca. 25–30 cm ab ano semizirkulärer, exulzerierter, kontaktvulnerabler Tumor, mit dem Standardkoloskop passierbar. Colon ascendens: 7 mm sessiler Polyp (Paris 0-Is), mit kalter Schlinge in toto abgetragen. Übriges Kolon und terminales Ileum unauffällig.",
+        "biopsies": 8,
+        "marking": "Tuschemarkierung ca. 3 cm aboral des Tumors",
+        "assessment": "Hochgradiger V.a. Sigmakarzinom, Histologie ausstehend",
+        "recommendation": "Staging mit CT Thorax/Abdomen und CEA, nach Histologie Vorstellung in der Viszeralchirurgie"
+      },
+      "documents": ["koloskopiebefund"],
+      "repeat_index": null
+    },
+    {
+      "id": "e03",
+      "type": "pathology",
+      "label": "Histologie Sigmatumor und Polyp Colon ascendens",
+      "date": "2027-03-25",
+      "specialist": "pathologie",
+      "parameters": {
+        "material": "Biopsien Colon sigmoideum (8 Partikel), Polypektomiepräparat Colon ascendens",
+        "histology": "Anteile eines mäßig differenzierten, invasiven Adenokarzinoms (G2), ICD-O 8140/3",
+        "mmr_status": "MMR-profizient (MLH1, PMS2, MSH2 und MSH6 immunhistochemisch erhalten)",
+        "polyp": "Tubuläres Adenom mit niedriggradiger intraepithelialer Neoplasie, im Gesunden entfernt",
+        "diagnosis": "Adenokarzinom des Colon sigmoideum",
+        "icd_code": "C18.7"
+      },
+      "documents": ["pathologiebericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e04",
+      "type": "imaging",
+      "label": "Staging-CT Thorax/Abdomen, CEA",
+      "date": "2027-03-31",
+      "specialist": "radiologie",
+      "parameters": {
+        "modality": "CT Thorax/Abdomen/Becken mit i.v. KM",
+        "finding": "Wandverdickung des Colon sigmoideum auf ca. 5 cm Länge mit streifiger Imbibierung des perikolischen Fettgewebes; drei perikolische Lymphknoten bis 9 mm, suspekt. Leber, Lunge und Peritoneum ohne Metastasennachweis, kein Aszites.",
+        "tnm_clinical": "cT3 cN1 cM0",
+        "cea_ng_ml": 6.4
+      },
+      "documents": ["befundbericht", "laborbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e05",
+      "type": "surgery",
+      "label": "Laparoskopische Sigmaresektion",
+      "date": "2027-04-14",
+      "specialist": "viszeralchirurgie",
+      "parameters": {
+        "indication": "Sigmakarzinom cT3 cN1 cM0, G2, pMMR",
+        "procedure": "Laparoskopische onkologische Sigmaresektion mit mesokolischer Exzision und zentraler Ligatur der A. mesenterica inferior, Deszendorektostomie (Stapler-Anastomose)",
+        "intraoperative_finding": "Tumor im Bereich der Tuschemarkierung, Serosa makroskopisch nicht durchbrochen; keine Peritonealkarzinose, Leberoberfläche unauffällig",
+        "conversion": false,
+        "blood_loss_ml": 80,
+        "asa_class": 2,
+        "perioperative_care": "Fast-Track-Konzept"
+      },
+      "documents": ["op_bericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e06",
+      "type": "pathology",
+      "label": "Histologie Sigmaresektat",
+      "date": "2027-04-21",
+      "specialist": "pathologie",
+      "parameters": {
+        "histology": "Mäßig differenziertes Adenokarzinom des Colon sigmoideum, Tumorgröße 4,2 cm, Infiltration bis in das perikolische Fettgewebe",
+        "tnm": "pT3 pN1b (3/24) L1 V0 Pn0 G2 R0",
+        "uicc_stage": "IIIB",
+        "lymph_nodes_examined": 24,
+        "lymph_nodes_positive": 3,
+        "resection_margins": "Oraler und aboraler Absetzungsrand tumorfrei (6 bzw. 7 cm), zirkumferentieller Rand frei",
+        "specimen_quality": "Mesokolische Resektionsebene (gut)",
+        "tumor_budding": "Bd1",
+        "mmr_status": "pMMR",
+        "diagnosis": "Adenokarzinom des Colon sigmoideum",
+        "icd_code": "C18.7"
+      },
+      "documents": ["pathologiebericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e07",
+      "type": "tumor_board",
+      "label": "Postoperative Tumorkonferenz",
+      "date": "2027-04-28",
+      "specialist": "onkologie",
+      "parameters": {
+        "diagnosis": "Sigmakarzinom pT3 pN1b (3/24) cM0 L1 V0 Pn0 G2 R0, UICC IIIB, pMMR",
+        "icd_code": "C18.7",
+        "postoperative_course": "Komplikationsloser Verlauf, Entlassung am 6. postoperativen Tag",
+        "risk_group": "Stadium III mit niedrigem Rezidivrisiko (pT1–3 pN1)",
+        "karnofsky_percent": 90,
+        "recommendation": "Adjuvante Chemotherapie mit CAPOX über 3 Monate (4 Zyklen), Beginn innerhalb von 8 Wochen postoperativ; vorab DPYD-Genotypisierung. Anschließend strukturierte Nachsorge.",
+        "participants": ["viszeralchirurgie", "onkologie", "gastroenterologie", "radiologie", "pathologie", "strahlentherapie"]
+      },
+      "documents": ["tumorkonferenzprotokoll"],
+      "repeat_index": null
+    },
+    {
+      "id": "e08",
+      "type": "systemic_therapy",
+      "label": "Adjuvante Chemotherapie CAPOX, Zyklus 1",
+      "date": "2027-05-18",
+      "specialist": "onkologie",
+      "parameters": {
+        "regimen": "CAPOX",
+        "drugs": ["Oxaliplatin 130 mg/m² i.v. Tag 1", "Capecitabin 1000 mg/m² p.o. 2x täglich Tag 1–14"],
+        "cycle_length_days": 21,
+        "planned_cycles": 4,
+        "body_surface_m2": 2.02,
+        "dpyd_genotyping": "Keine der vier untersuchten DPYD-Varianten nachgewiesen (Aktivitätsscore 2), Standarddosierung",
+        "cea_ng_ml": 1.8,
+        "karnofsky_percent": 90,
+        "supportive_care": "Antiemese mit 5-HT3-Antagonist und Dexamethason, Harnstoffcreme prophylaktisch; Aufklärung über kälteinduzierte Dysästhesien unter Oxaliplatin"
+      },
+      "documents": ["arztbrief", "chemotherapieprotokoll"],
+      "repeat_index": null
+    },
+    {
+      "id": "e09",
+      "type": "followup",
+      "label": "Abschluss der adjuvanten Chemotherapie",
+      "date": "2027-08-10",
+      "specialist": "onkologie",
+      "parameters": {
+        "cycles_completed": 4,
+        "dose_modification": "Capecitabin ab Zyklus 3 auf 75 % reduziert wegen Hand-Fuß-Syndrom CTCAE Grad 2",
+        "toxicity": "Periphere sensorische Polyneuropathie CTCAE Grad 1 (Kribbelparästhesien an Fingern und Zehen), Hand-Fuß-Syndrom rückläufig, aktuell Grad 1",
+        "cea_ng_ml": 1.6,
+        "plan": "Nachsorge nach S3-Leitlinie: CEA und Abdomensonographie halbjährlich, Koloskopie nach 1 Jahr"
+      },
+      "documents": ["arztbrief", "laborbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e10",
+      "type": "followup",
+      "label": "Tumornachsorge",
+      "date": "2028-04-11",
+      "specialist": "gastroenterologie",
+      "parameters": {
+        "interval": "12 Monate postoperativ",
+        "colonoscopy": "Reizlose Anastomose bei 20 cm ab ano, kein Lokalrezidiv, keine Polypen",
+        "abdominal_ultrasound": "Leber homogen, keine fokalen Läsionen",
+        "cea_ng_ml": 2.1,
+        "symptoms": "Beschwerdefrei, Gewicht stabil; Polyneuropathie Grad 1 persistierend",
+        "next_colonoscopy": "in 5 Jahren"
+      },
+      "documents": ["verlaufsbericht", "koloskopiebefund", "laborbericht"],
+      "repeat_index": 0
+    },
+    {
+      "id": "e11",
+      "type": "followup",
+      "label": "Tumornachsorge",
+      "date": "2029-04-10",
+      "specialist": "onkologie",
+      "parameters": {
+        "interval": "24 Monate postoperativ",
+        "cea_ng_ml": 9.6,
+        "cea_previous": "3,1 ng/ml (10/2028)",
+        "cea_trend": "steigend",
+        "abdominal_ultrasound": "Zwei neue echoarme Rundherde im rechten Leberlappen (ca. 2,3 und 1,7 cm)",
+        "symptoms": "Beschwerdefrei",
+        "assessment": "V.a. metachrone Lebermetastasen",
+        "recommendation": "MRT Leber mit leberspezifischem KM, CT Thorax"
+      },
+      "documents": ["verlaufsbericht", "laborbericht"],
+      "repeat_index": 1
+    },
+    {
+      "id": "e12",
+      "type": "imaging",
+      "label": "MRT Leber mit Gd-EOB-DTPA und CT Thorax",
+      "date": "2029-04-19",
+      "specialist": "radiologie",
+      "parameters": {
+        "modality": "MRT Oberbauch mit leberspezifischem KM (Gd-EOB-DTPA), CT Thorax mit KM",
+        "finding": "Zwei metastasentypische Läsionen in Lebersegment VI (24 mm) und VII (18 mm) mit Diffusionsrestriktion und Kontrastmittelaussparung in der hepatobiliären Phase; keine weiteren Herde, Lebervenen und Pfortaderäste frei. CT Thorax ohne pulmonale Metastasen, kein Lokalrezidiv, keine Lymphadenopathie.",
+        "diagnosis": "Metachrone Lebermetastasen (2 Herde, rechter Leberlappen)",
+        "icd_code": "C78.7"
+      },
+      "documents": ["befundbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e13",
+      "type": "tumor_board",
+      "label": "Tumorkonferenz: metachrone Lebermetastasen",
+      "date": "2029-04-25",
+      "specialist": "viszeralchirurgie",
+      "parameters": {
+        "diagnosis": "Metachrone hepatische Metastasierung (2 Herde, Segment VI und VII) eines Sigmakarzinoms, ED 03/2027, Z.n. Sigmaresektion und adjuvanter CAPOX-Therapie",
+        "icd_code": "C78.7",
+        "molecular_pathology": "Am Primärtumor: KRAS Exon 2 p.G12D mutiert, NRAS und BRAF Wildtyp, MSS",
+        "disease_free_interval_months": 24,
+        "cea_ng_ml": 9.6,
+        "resectability": "Primär resektabel, ausreichendes Restlebervolumen",
+        "recommendation": "Primäre laparoskopische Resektion der Lebermetastasen (Segment VI und VII) mit intraoperativer Sonographie; postoperative Wiedervorstellung zur Entscheidung über eine additive Therapie",
+        "participants": ["viszeralchirurgie", "onkologie", "radiologie", "gastroenterologie", "pathologie", "strahlentherapie"]
+      },
+      "documents": ["tumorkonferenzprotokoll"],
+      "repeat_index": null
+    },
+    {
+      "id": "e14",
+      "type": "surgery",
+      "label": "Laparoskopische Leberresektion Segment VI und VII",
+      "date": "2029-05-15",
+      "specialist": "viszeralchirurgie",
+      "parameters": {
+        "procedure": "Laparoskopische parenchymsparende Resektion der Metastasen in Segment VI und VII",
+        "intraoperative_ultrasound": "Keine zusätzlichen Herde",
+        "intraoperative_finding": "Keine Peritonealkarzinose, Anastomosenregion unauffällig",
+        "pringle_maneuver": "intermittierend, 2 × 15 min",
+        "blood_loss_ml": 250,
+        "complications": "keine"
+      },
+      "documents": ["op_bericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e15",
+      "type": "tumor_board",
+      "label": "Postoperative Tumorkonferenz nach Leberresektion",
+      "date": "2029-05-30",
+      "specialist": "onkologie",
+      "parameters": {
+        "histology": "Zwei Metastasen eines mäßig differenzierten Adenokarzinoms, morphologisch und immunhistochemisch passend zum bekannten Sigmakarzinom (CK20+, CDX2+), 25 und 17 mm",
+        "r_status": "R0 (minimaler Sicherheitsabstand 4 mm)",
+        "postoperative_course": "Komplikationslos, Entlassung am 5. postoperativen Tag",
+        "neuropathy": "Oxaliplatin-assoziierte Polyneuropathie CTCAE Grad 1 persistierend",
+        "recommendation": "Nutzen einer additiven Chemotherapie nach R0-Resektion unsicher; erneute oxaliplatinhaltige Therapie wegen persistierender PNP nicht empfohlen. Nach Aufklärung entscheidet sich der Patient für eine engmaschige Nachsorge (CEA und CT Thorax/Abdomen alle 3 Monate im ersten Jahr).",
+        "participants": ["viszeralchirurgie", "onkologie", "radiologie", "gastroenterologie", "pathologie", "strahlentherapie"]
+      },
+      "documents": ["tumorkonferenzprotokoll", "pathologiebericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e16",
+      "type": "followup",
+      "label": "Tumornachsorge",
+      "date": "2030-05-14",
+      "specialist": "onkologie",
+      "parameters": {
+        "interval": "12 Monate nach Leberresektion",
+        "ct": "CT Thorax/Abdomen: Z.n. Leberteilresektion rechts, kein Anhalt für Rezidiv, keine neuen Herde",
+        "cea_ng_ml": 1.9,
+        "symptoms": "Beschwerdefrei, Karnofsky 90 %",
+        "plan": "CEA und CT Thorax/Abdomen halbjährlich im 2. Jahr nach Leberresektion"
+      },
+      "documents": ["verlaufsbericht", "laborbericht", "befundbericht"],
+      "repeat_index": 2
+    }
+  ]
+}

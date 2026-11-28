@@ -1,0 +1,310 @@
+{
+  "patient_id": "Gout",
+  "pathway_id": "gicht01",
+  "start_date": "2026-12-28",
+  "events": [
+    {
+      "id": "e01",
+      "type": "consultation",
+      "label": "Akute schmerzhafte Schwellung des rechten Großzehengrundgelenks seit der Nacht.",
+      "date": "2026-12-28",
+      "specialist": "hausarzt",
+      "parameters": {
+        "complaint": "Seit ca. 3 Uhr nachts heftigste Schmerzen im rechten Großzehengrundgelenk, kann keinen Schuh tragen; über die Feiertage reichlich Fleisch und Alkohol",
+        "history": "52-jähriger Patient, art. Hypertonie (Ramipril/HCT 5/12,5 mg), Adipositas, Fettleber; erstes derartiges Ereignis",
+        "findings": "MTP I rechts gerötet, überwärmt, massiv druckschmerzhaft, Schwellung bis zum Fußrücken; Temp. 37,4 °C; kein Trauma, keine Hautverletzung",
+        "crp_mg_l": 41,
+        "leukocytes_per_nl": 10.8,
+        "uric_acid_mg_dl": 7.6,
+        "creatinine_mg_dl": 1.04,
+        "diagnosis": "V.a. akute Gichtarthritis (Podagra) rechts",
+        "icd_code": "M10.07",
+        "icd_certainty": "V",
+        "laterality": "R",
+        "therapy": "Colchicin 1 mg, nach 1 h 0,5 mg, ab Tag 2 0,5 mg 1-0-1 bis zum Abklingen; Kühlen, Hochlagern",
+        "plan": "Wiedervorstellung bei Fieber oder ohne Besserung nach 48 h; Harnsäure nach Abklingen kontrollieren"
+      },
+      "documents": ["karteieintrag", "laborbericht", "rezept"],
+      "repeat_index": null
+    },
+    {
+      "id": "e02",
+      "type": "followup",
+      "label": "Kontrolle nach Gichtanfall, Besprechung der Laborwerte.",
+      "date": "2027-01-19",
+      "specialist": "hausarzt",
+      "parameters": {
+        "status": "Seit ca. 2 Wochen beschwerdefrei, Gelenk reizlos",
+        "uric_acid_mg_dl": 8.8,
+        "creatinine_mg_dl": 1.06,
+        "egfr_ml_min": 84,
+        "ggt_u_l": 94,
+        "triglycerides_mg_dl": 248,
+        "ldl_c_mg_dl": 131,
+        "hba1c_percent": 5.9,
+        "bp_mmhg": "146/92",
+        "bmi_kg_m2": 31.8,
+        "measures": "Ramipril/HCT umgestellt auf Losartan 100 mg und Amlodipin 5 mg; Beratung zu Alkohol (v.a. Bier), zuckerhaltigen Getränken, Fleisch und Innereien sowie Gewichtsreduktion",
+        "plan": "Vorerst keine harnsäuresenkende Therapie, Neubewertung bei erneutem Anfall; Colchicin als Bedarfsmedikation mitgegeben"
+      },
+      "documents": ["karteieintrag", "laborbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e03",
+      "type": "consultation",
+      "label": "Erneuter Anfall, diesmal rechtes Knie mit Erguss.",
+      "date": "2027-05-10",
+      "specialist": "hausarzt",
+      "parameters": {
+        "complaint": "Seit gestern Abend zunehmende Schmerzen und Schwellung im rechten Knie, Gehen kaum möglich",
+        "findings": "Kniegelenk rechts überwärmt, deutlicher Erguss, Beugung bis 70°; Temp. 37,3 °C",
+        "crp_mg_l": 52,
+        "diagnosis": "Akute Monarthritis Knie rechts, V.a. erneuten Gichtanfall, DD septische Arthritis",
+        "icd_code": "M10.06",
+        "icd_certainty": "V",
+        "laterality": "R",
+        "measures": "Kein Antibiotikum vor Punktion; Überweisung zur Gelenkpunktion in die rheumatologische Akutsprechstunde am Folgetag",
+        "referral_urgency": "dringlich"
+      },
+      "documents": ["ueberweisungsschein", "laborbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e04",
+      "type": "procedure",
+      "label": "Punktion des rechten Kniegelenks, Uratkristalle nachgewiesen.",
+      "date": "2027-05-11",
+      "specialist": "rheumatologie",
+      "parameters": {
+        "aspirate": "45 ml trübes, gelbliches Punktat",
+        "synovial_cell_count_per_ul": 24800,
+        "neutrophils_percent": 86,
+        "polarization_microscopy": "Zahlreiche intra- und extrazelluläre nadelförmige, stark negativ doppelbrechende Kristalle (Mononatriumurat)",
+        "microbiology": "Gram-Präparat ohne Bakterien, Kultur nach 48 h steril",
+        "joint_ultrasound": "Doppelkonturzeichen an MTP I beidseits und am Femurknorpel rechts",
+        "diagnosis": "Gichtarthritis, kristallographisch gesichert",
+        "icd_code": "M10.06",
+        "icd_certainty": "G",
+        "laterality": "R",
+        "therapy": "Triamcinolonacetonid 40 mg intraartikulär nach unauffälligem Gram-Präparat",
+        "plan": "Indikation zur harnsäuresenkenden Therapie (2 Anfälle innerhalb von 5 Monaten, Harnsäure > 8 mg/dl), Beginn nach Abklingen des Anfalls"
+      },
+      "documents": ["arztbrief", "laborbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e05",
+      "type": "medication",
+      "label": "Beginn der harnsäuresenkenden Therapie mit Allopurinol.",
+      "date": "2027-06-02",
+      "specialist": "rheumatologie",
+      "parameters": {
+        "drug": "Allopurinol",
+        "dose": "100 mg 1x täglich, Steigerung um 100 mg alle 3–4 Wochen nach Harnsäurewert",
+        "target": "Serumharnsäure < 6 mg/dl",
+        "flare_prophylaxis": "Colchicin 0,5 mg 1x täglich für 6 Monate",
+        "uric_acid_mg_dl": 8.9,
+        "egfr_ml_min": 86,
+        "alt_u_l": 52,
+        "education": "Aufklärung über vermehrte Anfälle zu Therapiebeginn, Notwendigkeit der Dauertherapie und Hautreaktionen; Colchicin bei Anfall als Bedarfsmedikation"
+      },
+      "documents": ["arztbrief", "rezept"],
+      "repeat_index": null
+    },
+    {
+      "id": "e06",
+      "type": "lab_test",
+      "label": "Harnsäurekontrolle unter Allopurinol.",
+      "date": "2027-07-07",
+      "specialist": "hausarzt",
+      "parameters": {
+        "uric_acid_mg_dl": 7.1,
+        "allopurinol_dose_mg": 200,
+        "dose_since": "23.06.2027",
+        "creatinine_mg_dl": 1.02,
+        "alt_u_l": 48,
+        "flares": "keine",
+        "measures": "Steigerung auf Allopurinol 300 mg 1x täglich nach Rücksprache mit der Rheumatologie"
+      },
+      "documents": ["laborbericht"],
+      "repeat_index": 0
+    },
+    {
+      "id": "e07",
+      "type": "lab_test",
+      "label": "Harnsäurekontrolle unter Allopurinol.",
+      "date": "2027-09-02",
+      "specialist": "hausarzt",
+      "parameters": {
+        "uric_acid_mg_dl": 5.4,
+        "allopurinol_dose_mg": 300,
+        "egfr_ml_min": 85,
+        "alt_u_l": 41,
+        "flares": "Ein leichter Anfall MTP I links Mitte Juli, mit Colchicin nach 2 Tagen abgeklungen",
+        "assessment": "Zielwert erreicht",
+        "measures": "Allopurinol 300 mg fortführen, Colchicin-Prophylaxe bis Anfang Dezember 2027"
+      },
+      "documents": ["laborbericht"],
+      "repeat_index": 1
+    },
+    {
+      "id": "e08",
+      "type": "followup",
+      "label": "Rheumatologische Verlaufskontrolle, seit Juli 2027 anfallsfrei.",
+      "date": "2028-03-09",
+      "specialist": "rheumatologie",
+      "parameters": {
+        "uric_acid_mg_dl": 5.1,
+        "allopurinol_dose_mg": 300,
+        "egfr_ml_min": 83,
+        "bp_mmhg": "134/84",
+        "weight_change": "−6 kg seit 01/2027",
+        "joint_ultrasound": "Doppelkonturzeichen MTP I beidseits rückläufig, kein Erguss",
+        "measures": "Colchicin im Dezember 2027 beendet; Allopurinol 300 mg als Dauertherapie; Harnsäure halbjährlich beim Hausarzt",
+        "assessment": "Gicht unter Therapie in Remission"
+      },
+      "documents": ["arztbrief", "laborbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e09",
+      "type": "consultation",
+      "label": "Wiederholte Gichtanfälle nach eigenmächtigem Absetzen von Allopurinol, Knoten am linken Ellenbogen.",
+      "date": "2029-06-11",
+      "specialist": "hausarzt",
+      "parameters": {
+        "history": "Allopurinol im Herbst 2028 eigenmächtig abgesetzt („ging ja gut“); seit 01/2029 drei Anfälle (MTP I rechts, Sprunggelenk links, Handgelenk rechts), jeweils selbst mit Ibuprofen 800 mg bis 3x täglich über mehrere Tage behandelt",
+        "findings": "Derber, nicht verschieblicher Knoten über dem linken Olekranon (ca. 2,5 cm), weißlich durchscheinend; aktuell kein akuter Anfall",
+        "uric_acid_mg_dl": 9.7,
+        "creatinine_mg_dl": 1.48,
+        "egfr_ml_min": 55,
+        "uacr_mg_g": 41,
+        "bp_mmhg": "148/90",
+        "diagnosis": "Rezidivierende Gichtanfälle bei Therapieabbruch, V.a. Gichttophus Olekranon links; neu eingeschränkte Nierenfunktion, am ehesten NSAR-assoziiert",
+        "icd_code": "M10.00",
+        "icd_certainty": "G",
+        "measures": "Ibuprofen abgesetzt, Aufklärung über NSAR und Nierenfunktion; Kontrolle der Nierenwerte in 4–6 Wochen; Überweisung Rheumatologie"
+      },
+      "documents": ["ueberweisungsschein", "laborbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e10",
+      "type": "followup",
+      "label": "Rheumatologische Wiedervorstellung: chronische tophöse Gicht.",
+      "date": "2029-07-04",
+      "specialist": "rheumatologie",
+      "parameters": {
+        "imaging": "DECT beider Füße und Knie: Uratablagerungen an MTP I beidseits, Achillessehne rechts, Patellarsehne und Kniegelenken, Gesamtvolumen 3,9 cm³; Röntgen Füße: Erosion mit überhängender Randkante an MTP I rechts",
+        "tophus": "Tophus Bursa olecrani links, 2,5 cm",
+        "uric_acid_mg_dl": 9.5,
+        "egfr_ml_min": 54,
+        "diagnosis": "Chronische tophöse Gicht mit erosiver Arthropathie MTP I rechts",
+        "icd_code": "M10.00",
+        "icd_certainty": "G",
+        "therapy": "Wiederbeginn Allopurinol 100 mg 1x täglich, langsame Steigerung um 100 mg alle 4 Wochen unter Kontrolle der Nierenfunktion; Colchicin 0,5 mg 1x täglich als Anfallsprophylaxe; keine NSAR",
+        "target": "Serumharnsäure < 5 mg/dl bis zur Auflösung der Tophi"
+      },
+      "documents": ["arztbrief", "befundbericht", "laborbericht"],
+      "repeat_index": null
+    },
+    {
+      "id": "e11",
+      "type": "adverse_drug_reaction",
+      "label": "Juckender Ausschlag am Stamm knapp drei Wochen nach Wiederbeginn von Allopurinol.",
+      "date": "2029-07-23",
+      "specialist": "hausarzt",
+      "parameters": {
+        "findings": "Makulopapulöses, juckendes Exanthem an Stamm und proximalen Extremitäten seit 2 Tagen; keine Schleimhautbeteiligung, keine Blasen, kein Fieber, keine Lymphknotenschwellung",
+        "eosinophils_per_ul": 610,
+        "alt_u_l": 38,
+        "creatinine_mg_dl": 1.5,
+        "egfr_ml_min": 55,
+        "diagnosis": "Arzneimittelexanthem, am ehesten durch Allopurinol",
+        "icd_code": "L27.0",
+        "measures": "Allopurinol sofort und dauerhaft abgesetzt, Eintrag in den Allergiepass; Prednisolon 30 mg für 5 Tage, Cetirizin 10 mg; Kontrolle von Blutbild, Leber- und Nierenwerten in 1 Woche; Colchicin fortführen",
+        "plan": "Rücksprache mit der Rheumatologie zur alternativen harnsäuresenkenden Therapie"
+      },
+      "documents": ["karteieintrag", "laborbericht", "allergiepass"],
+      "repeat_index": null
+    },
+    {
+      "id": "e12",
+      "type": "medication",
+      "label": "Umstellung auf Febuxostat nach Abheilung des Exanthems.",
+      "date": "2029-08-16",
+      "specialist": "rheumatologie",
+      "parameters": {
+        "drug": "Febuxostat",
+        "dose": "80 mg 1x täglich",
+        "rationale": "Allopurinol-Unverträglichkeit (Exanthem); keine manifeste kardiovaskuläre Erkrankung (keine KHK, kein Schlaganfall, keine Herzinsuffizienz); bei eGFR 53 keine Dosisanpassung erforderlich",
+        "skin": "Exanthem vollständig abgeheilt",
+        "uric_acid_mg_dl": 9.2,
+        "egfr_ml_min": 53,
+        "flare_prophylaxis": "Colchicin 0,5 mg 1x täglich fortführen",
+        "monitoring": "Aufklärung über mögliche erneute Hautreaktion; Leberwerte und Harnsäure in 6–8 Wochen"
+      },
+      "documents": ["arztbrief", "rezept"],
+      "repeat_index": null
+    },
+    {
+      "id": "e13",
+      "type": "lab_test",
+      "label": "Harnsäurekontrolle unter Febuxostat.",
+      "date": "2029-10-11",
+      "specialist": "hausarzt",
+      "parameters": {
+        "uric_acid_mg_dl": 5.8,
+        "febuxostat_dose_mg": 80,
+        "creatinine_mg_dl": 1.47,
+        "egfr_ml_min": 56,
+        "uacr_mg_g": 36,
+        "alt_u_l": 35,
+        "flares": "Ein Anfall Sprunggelenk links im September, mit Prednisolon 30 mg über 5 Tage behandelt",
+        "assessment": "Harnsäure-Zielwert < 5 mg/dl noch nicht erreicht; eGFR seit über 3 Monaten < 60 ml/min/1,73 m²: chronische Nierenkrankheit G3a A2",
+        "measures": "Steigerung auf Febuxostat 120 mg 1x täglich nach Rücksprache mit der Rheumatologie"
+      },
+      "documents": ["laborbericht"],
+      "repeat_index": 0
+    },
+    {
+      "id": "e14",
+      "type": "lab_test",
+      "label": "Harnsäurekontrolle unter Febuxostat.",
+      "date": "2030-01-17",
+      "specialist": "hausarzt",
+      "parameters": {
+        "uric_acid_mg_dl": 4.3,
+        "febuxostat_dose_mg": 120,
+        "egfr_ml_min": 57,
+        "alt_u_l": 33,
+        "flares": "Keine seit September 2029",
+        "assessment": "Zielwert < 5 mg/dl erreicht",
+        "measures": "Colchicin-Prophylaxe Mitte Februar 2030 beenden (6 Monate nach Beginn von Febuxostat)"
+      },
+      "documents": ["laborbericht"],
+      "repeat_index": 1
+    },
+    {
+      "id": "e15",
+      "type": "followup",
+      "label": "Rheumatologische Jahreskontrolle, Tophus deutlich kleiner.",
+      "date": "2030-09-19",
+      "specialist": "rheumatologie",
+      "parameters": {
+        "uric_acid_mg_dl": 4.1,
+        "febuxostat_dose_mg": 120,
+        "egfr_ml_min": 57,
+        "tophus": "Tophus Bursa olecrani links auf ca. 1,2 cm verkleinert",
+        "joint_ultrasound": "Doppelkonturzeichen MTP I beidseits deutlich rückläufig",
+        "flares": "Seit September 2029 anfallsfrei",
+        "bp_mmhg": "132/82",
+        "assessment": "Chronische tophöse Gicht unter Febuxostat gut kontrolliert, CKD G3a A2 stabil",
+        "plan": "Febuxostat 120 mg fortführen; nach Auflösung der Tophi Zielwert < 6 mg/dl und ggf. Dosisreduktion; Harnsäure und Nierenwerte halbjährlich"
+      },
+      "documents": ["arztbrief", "laborbericht"],
+      "repeat_index": null
+    }
+  ]
+}

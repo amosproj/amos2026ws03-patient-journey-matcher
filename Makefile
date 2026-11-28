@@ -1,4 +1,4 @@
-.PHONY: build test start debug sbom db seed index transcribe graph
+.PHONY: build test start debug sbom db seed index benchmark-graph transcribe graph
 
 PORT ?= 8765
 export SEMANTIC_MODEL SEMANTIC_MODELS SEMANTIC_URL SEMANTIC_DEVICE
@@ -10,7 +10,7 @@ ifneq ($(wildcard .env),)
 include .env
 LOCAL_DATABASE_URL := postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@127.0.0.1:$(or $(POSTGRES_PORT),5432)/$(POSTGRES_DB)
 export TEST_DATABASE_URL ?= $(LOCAL_DATABASE_URL)
-seed index transcribe start debug-ai index-ai start-ai: export DATABASE_URL ?= $(LOCAL_DATABASE_URL)
+seed index benchmark-graph transcribe start debug-ai index-ai start-ai: export DATABASE_URL ?= $(LOCAL_DATABASE_URL)
 endif
 
 build:
@@ -55,6 +55,9 @@ seed: db
 # crawl. All approaches, or the ones named, e.g. `make index APPROACHES=keyword`.
 index: build
 	cd matcher && pnpm --filter @matcher/indexer start $(APPROACHES)
+
+benchmark-graph:
+	node scripts/benchmark-graph.mjs $(BENCH_SET)
 
 # Reads the audio that has no transcript with speech-to-text, for the indexes, until it is
 # stopped: `WHISPER_MODEL=tiny-q5_1 make transcribe`. How many files it reads at once is set in

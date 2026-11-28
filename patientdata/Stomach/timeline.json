@@ -1,0 +1,355 @@
+{
+  "patient_id": "Stomach",
+  "pathway_id": "st01",
+  "start_date": "2026-09-14",
+  "events": [
+    {
+      "id": "e01",
+      "type": "consultation",
+      "label": "Hausärztliche Vorstellung: Oberbauchbeschwerden, Gewichtsverlust, Anämie",
+      "date": "2026-09-14",
+      "specialist": "hausarzt",
+      "parameters": {
+        "patient": "61 J., männlich",
+        "complaints": "epigastrisches Druckgefühl, frühes Sättigungsgefühl und Inappetenz seit ca. 3 Monaten",
+        "weight_loss": "7 kg in 3 Monaten (aktuell 74 kg bei 1,78 m)",
+        "risk_factors": "Nikotinabusus ca. 30 py, Alkohol gelegentlich",
+        "hb_value": 10.1,
+        "hb_display": "10,1 g/dl",
+        "mcv_display": "74 fl",
+        "ferritin_display": "9 µg/l",
+        "alarm_symptoms": [
+          "ungewollter Gewichtsverlust",
+          "Eisenmangelanämie"
+        ],
+        "plan": "dringliche ÖGD, Überweisung Gastroenterologie"
+      },
+      "documents": [
+        "ueberweisungsschein",
+        "laborbefund"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e02",
+      "type": "endoscopy",
+      "label": "ÖGD mit PE: ulzerierter Tumor an der kleinen Kurvatur, distales Corpus",
+      "date": "2026-09-24",
+      "specialist": "gastroenterologie",
+      "parameters": {
+        "procedure": "Ösophagogastroduodenoskopie mit Biopsien",
+        "finding": "ca. 4 cm großer, ulzerierter, wallartig aufgeworfener Tumor an der kleinen Kurvatur im distalen Corpus (Borrmann II), ca. 7 cm aboral der Kardia; Pylorus und Duodenum unauffällig, keine aktive Blutung",
+        "biopsies": 10,
+        "hp_urease_test": "positiv",
+        "suspected_diagnosis": "V.a. Magenkarzinom"
+      },
+      "documents": [
+        "endoskopiebefund"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e03",
+      "type": "pathology",
+      "label": "Histologie Magen-PE: Adenokarzinom, intestinaler Typ nach Laurén",
+      "date": "2026-09-30",
+      "specialist": "pathologie",
+      "parameters": {
+        "histology": "schlecht differenziertes tubuläres Adenokarzinom des Magens (G3), intestinaler Typ nach Laurén",
+        "her2": "IHC 1+ (negativ)",
+        "mmr_status": "MLH1, PMS2, MSH2, MSH6 erhalten (pMMR)",
+        "pd_l1_cps": 8,
+        "cldn18_2": "negativ (ca. 30 % der Tumorzellen mit Färbeintensität 2+/3+)",
+        "h_pylori": "Helicobacter pylori nachweisbar",
+        "diagnosis": "Adenokarzinom des Magens (Corpus, kleine Kurvatur)",
+        "icd_code": "C16.2"
+      },
+      "documents": [
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e04",
+      "type": "imaging",
+      "label": "Staging-CT Thorax/Abdomen/Becken mit KM",
+      "date": "2026-10-02",
+      "specialist": "radiologie",
+      "parameters": {
+        "modality": "CT",
+        "region": "Thorax, Abdomen, Becken",
+        "finding": "Wandverdickung der kleinen Kurvatur im distalen Corpus bis 19 mm mit unscharfer Grenze zum perigastrischen Fettgewebe; 3 perigastrische LK bis 13 mm (KAD); keine Leber- oder Lungenmetastasen, kein Aszites, kein Anhalt für Peritonealkarzinose",
+        "staging": "cT3 cN1 cM0"
+      },
+      "documents": [
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e05",
+      "type": "endoscopy",
+      "label": "Endosonographie zum lokoregionären Staging",
+      "date": "2026-10-07",
+      "specialist": "gastroenterologie",
+      "parameters": {
+        "procedure": "Endosonographie des Magens",
+        "finding": "echoarmer Wandtumor mit Infiltration bis in die Subserosa, Serosagrenze erhalten; 2 rundliche, echoarme perigastrische LK bis 12 mm, malignitätssuspekt",
+        "staging": "uT3 uN1"
+      },
+      "documents": [
+        "endosonographiebefund"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e06",
+      "type": "diagnostic_procedure",
+      "label": "Staging-Laparoskopie mit Peritoneallavage, Portanlage",
+      "date": "2026-10-13",
+      "specialist": "viszeralchirurgie",
+      "parameters": {
+        "procedure": "diagnostische Laparoskopie mit Spülzytologie; in gleicher Narkose Portimplantation über die V. cephalica re.",
+        "finding": "kein Anhalt für Peritonealkarzinose, Leberoberfläche unauffällig, kein Aszites",
+        "pci": 0,
+        "cytology": "Spülzytologie entnommen, Befund ausstehend"
+      },
+      "documents": [
+        "op_bericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e07",
+      "type": "tumor_board",
+      "label": "Interdisziplinäre Tumorkonferenz (prätherapeutisch)",
+      "date": "2026-10-15",
+      "specialist": "gastroenterologie",
+      "parameters": {
+        "staging": "cT3 cN1 cM0, Cy0 (UICC III)",
+        "histology": "Adenokarzinom, intestinaler Typ, G3, HER2-negativ, pMMR",
+        "cytology": "Spülzytologie vom 13.10.2026 ohne maligne Zellen (Cy0)",
+        "ecog": 1,
+        "nutrition": "NRS-2002: 3 Punkte (Nahrungszufuhr ca. 50 % des Bedarfs, onkologische Grunderkrankung); Ernährungsberatung und Trinknahrung eingeleitet",
+        "decision": "perioperative Chemotherapie nach FLOT-Schema (4 Zyklen präoperativ, 4 Zyklen postoperativ), anschließend Gastrektomie mit D2-Lymphadenektomie",
+        "participants": [
+          "gastroenterologie",
+          "viszeralchirurgie",
+          "onkologie",
+          "radiologie",
+          "pathologie",
+          "strahlentherapie"
+        ]
+      },
+      "documents": [
+        "tumorkonferenzprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e08",
+      "type": "systemic_therapy",
+      "label": "Beginn neoadjuvante Chemotherapie nach FLOT-Schema (Zyklus 1)",
+      "date": "2026-10-26",
+      "specialist": "onkologie",
+      "parameters": {
+        "regimen": "FLOT",
+        "intent": "kurativ, neoadjuvant",
+        "drugs": [
+          "Docetaxel 50 mg/m² d1",
+          "Oxaliplatin 85 mg/m² d1",
+          "Calciumfolinat 200 mg/m² d1",
+          "5-FU 2600 mg/m² über 24 h d1"
+        ],
+        "cycle_interval_days": 14,
+        "cycles_planned": 4,
+        "body_weight_kg": 73,
+        "bsa_m2": 1.9,
+        "ecog": 1,
+        "supportive_care": "Antiemese mit 5-HT3-Antagonist und Dexamethason"
+      },
+      "documents": [
+        "chemotherapieprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e09",
+      "type": "restaging",
+      "label": "Re-Staging nach 4 Zyklen FLOT",
+      "date": "2026-12-21",
+      "specialist": "onkologie",
+      "parameters": {
+        "cycles_completed": "4/4, letzter Zyklus am 07.12.2026",
+        "toxicity": "Neutropenie CTCAE Grad 3 nach Zyklus 2, ab Zyklus 3 Pegfilgrastim; Diarrhö Grad 1; periphere sensorische Neuropathie Grad 1",
+        "imaging": "CT Thorax/Abdomen: deutlich regrediente Wandverdickung (max. 10 mm), perigastrische LK nicht mehr vergrößert, keine Fernmetastasen",
+        "response": "partielle Remission",
+        "ecog": 1,
+        "plan": "Gastrektomie mit D2-Lymphadenektomie Mitte Januar 2027"
+      },
+      "documents": [
+        "befundbericht",
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e10",
+      "type": "surgery",
+      "label": "Gastrektomie mit D2-Lymphadenektomie, Rekonstruktion nach Roux-Y",
+      "date": "2027-01-12",
+      "specialist": "viszeralchirurgie",
+      "parameters": {
+        "procedure": "abdominale Gastrektomie mit D2-Lymphadenektomie, Ösophagojejunostomie (Roux-Y), Feinnadelkatheterjejunostomie",
+        "approach": "offen, Oberbauchquerschnitt",
+        "intraoperative_finding": "keine Peritonealkarzinose, keine Lebermetastasen; Schnellschnitt oraler Absetzungsrand tumorfrei",
+        "interval_after_chemotherapy_days": 36
+      },
+      "documents": [
+        "op_bericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e11",
+      "type": "pathology",
+      "label": "Histologie Gastrektomiepräparat",
+      "date": "2027-01-20",
+      "specialist": "pathologie",
+      "parameters": {
+        "histology": "Adenokarzinom des Magens, intestinaler Typ nach Laurén, nach neoadjuvanter Chemotherapie",
+        "yp_tnm": "ypT2 ypN1 (2/36) L0 V0 Pn0",
+        "r_status": "R0, Abstand zum oralen Resektionsrand 6 cm",
+        "regression_grade": "Becker 2 (10–50 % vitaler Residualtumor)",
+        "diagnosis": "Magenkarzinom ypT2 ypN1 R0",
+        "icd_code": "C16.2"
+      },
+      "documents": [
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e12",
+      "type": "systemic_therapy",
+      "label": "Postoperative FLOT-Chemotherapie, Beginn Zyklus 5",
+      "date": "2027-02-22",
+      "specialist": "onkologie",
+      "parameters": {
+        "regimen": "FLOT",
+        "intent": "kurativ, postoperativ",
+        "cycles_planned": 4,
+        "postoperative_course": "komplikationslos, Entlassung am 24.01.2027",
+        "weight": "68 kg",
+        "neuropathy": "PNP Grad 1 (Zehen und Fingerkuppen)",
+        "ecog": 1
+      },
+      "documents": [
+        "chemotherapieprotokoll",
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e13",
+      "type": "followup",
+      "label": "Tumornachsorge nach Gastrektomie",
+      "date": "2027-07-19",
+      "specialist": "onkologie",
+      "parameters": {
+        "interval": "6 Monate nach Gastrektomie",
+        "adjuvant_therapy": "Zyklen 5–8 bis 05.04.2027 appliziert, Oxaliplatin in Zyklus 7 und 8 wegen PNP Grad 2 pausiert",
+        "imaging": "CT Thorax/Abdomen: kein Anhalt für Lokalrezidiv oder Metastasen",
+        "cea_display": "2,1 ng/ml",
+        "weight": "66 kg (BMI 20,8), seit 2 Monaten stabil",
+        "symptoms": "postprandiales Frühdumping, unter kleinen häufigen Mahlzeiten gebessert; gelegentlich Steatorrhö",
+        "supportive_care": "Vitamin B12 1000 µg i.m. alle 3 Monate, Pankreatin 25.000 E zu den Hauptmahlzeiten, Ernährungsberatung",
+        "neuropathy": "PNP Grad 1, rückläufig"
+      },
+      "documents": [
+        "arztbrief",
+        "laborbefund"
+      ],
+      "repeat_index": 0
+    },
+    {
+      "id": "e14",
+      "type": "followup",
+      "label": "Tumornachsorge nach Gastrektomie",
+      "date": "2028-01-24",
+      "specialist": "onkologie",
+      "parameters": {
+        "interval": "12 Monate nach Gastrektomie",
+        "imaging": "CT Thorax/Abdomen: kein Anhalt für Rezidiv",
+        "cea_display": "2,4 ng/ml",
+        "hb_display": "12,9 g/dl",
+        "vitamin_b12_display": "452 pg/ml unter Substitution",
+        "weight": "67 kg",
+        "ecog": 0
+      },
+      "documents": [
+        "arztbrief",
+        "laborbefund"
+      ],
+      "repeat_index": 1
+    },
+    {
+      "id": "e15",
+      "type": "progression",
+      "label": "Histologisch gesichertes Rezidiv mit Leber- und Lymphknotenmetastasen",
+      "date": "2028-11-27",
+      "specialist": "onkologie",
+      "parameters": {
+        "imaging": "Nachsorge-CT vom 13.11.2028: zwei neue hypodense Leberläsionen (Segment VI 26 mm, Segment VIII 18 mm), LK am Truncus coeliacus 17 mm (KAD); kein Aszites, kein Anhalt für Peritonealkarzinose",
+        "biopsy": "sonographisch gesteuerte Leberbiopsie Segment VI am 20.11.2028: Metastase eines Adenokarzinoms, morphologisch und immunhistochemisch (CK7+, CDX2+) vereinbar mit dem bekannten Magenkarzinom",
+        "her2": "IHC 1+ (negativ)",
+        "pd_l1_cps": 10,
+        "cldn18_2": "negativ",
+        "mmr_status": "pMMR",
+        "cea_display": "16,8 ng/ml",
+        "disease_free_interval": "22 Monate nach Gastrektomie, 19 Monate nach Ende der perioperativen Chemotherapie",
+        "ecog": 1,
+        "diagnosis": "Rezidiv eines Magenkarzinoms mit hepatischer und lymphogener Metastasierung",
+        "icd_code": "C16.2",
+        "secondary_diagnoses": [
+          "Lebermetastasen (C78.7)",
+          "intraabdominale LK-Metastasen (C77.2)"
+        ]
+      },
+      "documents": [
+        "arztbrief",
+        "pathologiebericht",
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e16",
+      "type": "systemic_therapy",
+      "label": "Palliative Erstlinientherapie mit mFOLFOX6 und Nivolumab",
+      "date": "2028-12-11",
+      "specialist": "onkologie",
+      "parameters": {
+        "tumor_board_decision": "Tumorkonferenz vom 06.12.2028: palliative Chemoimmuntherapie bei HER2-negativem Rezidiv mit PD-L1 CPS 10",
+        "regimen": "mFOLFOX6 + Nivolumab",
+        "drugs": [
+          "Oxaliplatin 85 mg/m²",
+          "Calciumfolinat 400 mg/m²",
+          "5-FU 400 mg/m² Bolus",
+          "5-FU 2400 mg/m² über 46 h",
+          "Nivolumab 240 mg"
+        ],
+        "cycle_interval_days": 14,
+        "intent": "palliativ",
+        "line": "1. Linie",
+        "ecog": 1,
+        "note": "Oxaliplatin-Reexposition vertretbar (Rezidiv > 12 Monate nach Ende der perioperativen Chemotherapie); vorbestehende PNP Grad 1, engmaschige neurologische Kontrolle"
+      },
+      "documents": [
+        "tumorkonferenzprotokoll",
+        "chemotherapieprotokoll"
+      ],
+      "repeat_index": null
+    }
+  ]
+}

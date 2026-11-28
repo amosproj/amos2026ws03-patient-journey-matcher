@@ -1,0 +1,65 @@
+{
+  "nodes": [
+    {
+      "uuid": "p",
+      "name": "Lung",
+      "labels": [
+        "Entity",
+        "Patient"
+      ]
+    },
+    {
+      "uuid": "d",
+      "name": "Lungenkarzinom",
+      "labels": [
+        "Entity",
+        "Diagnosis"
+      ],
+      "attributes": {
+        "icd_code": "C34"
+      }
+    },
+    {
+      "uuid": "rx",
+      "name": "Pembrolizumab",
+      "labels": [
+        "Entity",
+        "Medication"
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "uuid": "e1",
+      "name": "HAS_DIAGNOSIS",
+      "source_node_uuid": "p",
+      "target_node_uuid": "d",
+      "fact": "Verdacht auf Lungenkarzinom nach auffälligem CT.",
+      "valid_at": "2026-01-10"
+    },
+    {
+      "uuid": "e2",
+      "name": "HAS_DIAGNOSIS",
+      "source_node_uuid": "p",
+      "target_node_uuid": "d",
+      "fact": "Lungenkarzinom bestätigt.",
+      "valid_at": "2026-01-17"
+    },
+    {
+      "uuid": "e3",
+      "name": "PRESCRIBED",
+      "source_node_uuid": "p",
+      "target_node_uuid": "rx",
+      "fact": "Pembrolizumab zur Behandlung von Lungenkarzinom begonnen. Histologie: nichtkleinzellig. PD-L1 positiv.",
+      "valid_at": "2026-02-09"
+    },
+    {
+      "uuid": "e4",
+      "name": "TREATED_BY",
+      "source_node_uuid": "d",
+      "target_node_uuid": "rx",
+      "fact": "Pembrolizumab zur Behandlung von Lungenkarzinom begonnen. Histologie: nichtkleinzellig. PD-L1 positiv.",
+      "valid_at": "2026-02-09"
+    }
+  ]
+}

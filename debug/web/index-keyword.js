@@ -3,9 +3,9 @@
 // The columns of the keyword coverage (FULL_TEXT_STATES): the first two are done, the next run
 // reads the other two.
 const COVERAGE_STATES = [
-  ["indexed", "Indexed", "good", FULL_TEXT_STATES.indexed[1]],
-  ["skipped", "Skipped", "neutral", FULL_TEXT_STATES.skipped[1]],
-  ["failed", "Failed", "critical", FULL_TEXT_STATES.failed[1]],
+  ["indexed", "Fully indexed", "good", FULL_TEXT_STATES.indexed[1]],
+  ["skipped", "Metadata only", "neutral", FULL_TEXT_STATES.skipped[1]],
+  ["failed", "Retry download", "critical", FULL_TEXT_STATES.failed[1]],
   ["unread", "New or changed", "pending", "Open: not read yet, or changed since it was read; the next run reads it"],
 ];
 const COVERAGE_BAR = { good: "--good", neutral: "--dropped", critical: "--critical", pending: "--pending" };
@@ -32,8 +32,8 @@ function renderKwSide() {
     box.replaceChildren(...lines(
       h("b", {}, !overview.exists ? "No keyword index yet" : waiting ? `${plural(waiting, "document")} to index` : "Up to date"),
       h("small", {}, !overview.exists ? "The indexer creates it: start it below, or run make index."
-        : waiting ? "Failed, new and changed documents wait for the next run."
-        : "Every document is done: its full text indexed or skipped."),
+        : waiting ? "Downloads to retry, new and changed documents wait for the next run."
+        : "Every document is done: fully indexed, or metadata only."),
       h("small", {}, available ? `pg_textsearch ${installed || available}${installed ? "" : " (not created yet)"}${preloaded ? ", preloaded" : ""}` : ""),
       !available && h("span", { class: "hint" }, "This database has no pg_textsearch: use the database of compose.yaml (make db)"),
       available && !preloaded && h("span", { class: "hint" }, "pg_textsearch is not in shared_preload_libraries: start the database with make db"),
@@ -45,7 +45,7 @@ function renderKwSide() {
   if (!hosts.length) list.replaceChildren(h("li", { class: "empty" }, overview ? "Nothing: every full text is read" : "–"));
   else list.replaceChildren(...hosts.map((host) => h("li", { class: "plain" },
     h("code", {}, host.host || "no readable file"),
-    h("small", {}, host.host ? `${plural(host.documents, "file")} · about ${fmtSpan(host.seconds * 1000)}` : `${host.documents} · skipped at once`))));
+    h("small", {}, host.host ? `${plural(host.documents, "file")}, about ${fmtSpan(host.seconds * 1000)}` : `${host.documents}: metadata only, nothing to download`))));
 }
 
 function renderKwStats() {
@@ -82,7 +82,7 @@ function coverageGroups() {
 
 // One whole split into its states; the figures stand in the columns beside it.
 function coverageBar(group) {
-  const title = COVERAGE_STATES.map(([key, label]) => `${label}: ${fmtCount(group[key])}`).join(" · ");
+  const title = COVERAGE_STATES.map(([key, label]) => `${label}: ${fmtCount(group[key])}`).join(", ");
   return h("div", { class: "seg-bar", role: "img", title, "aria-label": title },
     ...COVERAGE_STATES.filter(([key]) => group[key] > 0).map(([key]) => h("i", { class: `s-${key}`, style: `flex:${group[key]}` })));
 }
@@ -103,14 +103,13 @@ function coveragePanel() {
     h("td", { class: "num" }, fmtShare(group.indexed + group.skipped, group.documents)));
   const seg = h("span", { class: "mini-seg" }, ...[["source", "Source"], ["type", "Content type"]].map(([value, label]) =>
     h("button", { type: "button", class: kw.by === value ? "active" : null, onclick: () => { kw.by = value; renderKwCoverage(); } }, label)));
-  const legend = (label, states) => h("span", { class: "legend-row" }, label, ...states.map(([, name, cls, tip]) => h("span", { title: tip }, h("i", { class: `swatch ${cls}` }), name)));
   return h("div", { class: "panel" },
-    h("h3", {}, "Full texts by", seg, h("span", { class: "spacer" }),
-      legend("Done:", COVERAGE_STATES.slice(0, 2)), legend("Open, the next run reads them:", COVERAGE_STATES.slice(2))),
+    h("h3", {}, "Full texts by", seg),
     h("table", {},
       h("thead", {}, h("tr", {}, h("th", {}, kw.by === "source" ? "Source" : "Content type"), h("th", {}, "Share"), h("th", { class: "num" }, "Documents"),
-        ...COVERAGE_STATES.map(([, label, , tip]) => h("th", { class: "num", title: tip }, label)),
-        h("th", { class: "num", title: "Indexed or skipped: the share the next run leaves alone" }, "Done"))),
+        // Each state's heading carries the colour of its part of the bar.
+        ...COVERAGE_STATES.map(([, label, cls, tip]) => h("th", { class: "num", title: tip }, h("i", { class: `swatch ${cls}` }), label)),
+        h("th", { class: "num", title: "Fully indexed or metadata only: the share the next run leaves alone" }, "Done"))),
       h("tbody", {},
         ...coverageGroups().map((group) => row(group, kw.by === "source" ? sourcePill(group.key) : typeLabel(group.key))),
         row({ ...total, key: null }, h("b", {}, "All")))));
@@ -121,14 +120,14 @@ function reasonsPanel() {
   const body = reasons.length
     ? barList(reasons.map((reason) => ({
       name: h("span", {}, fullTextPill(reason.status), ` ${reason.detail || "no reason given"}`,
-        reason.detail === tx.data?.waiting_detail ? h("small", { class: "muted" }, " · the transcription job reads these") : null),
+        reason.detail === tx.data?.waiting_detail ? h("small", { class: "muted" }, "; the transcription job reads these") : null),
       value: reason.documents,
       title: `${reason.detail || reason.status}: show these documents`,
       onclick: () => dbShowDocuments({ "db-fulltext": reason.status }, reason.detail),
     })), 420)
     : h("div", { class: "muted" }, "Every document read so far has an indexed full text.");
   return h("div", { class: "panel" },
-    h("h3", {}, "Why a document has no full text", h("small", {}, "skipped: done, no usable full text · failed: open, tried again in the next run")),
+    h("h3", {}, "Why a document has no full text", h("small", {}, "metadata only: done, no usable full text; retry download: open, tried again in the next run")),
     h("div", { class: "panel-body" }, body));
 }
 
@@ -137,7 +136,7 @@ function wordsPanel() {
   if (!words.documents) return null;
   const label = (bucket) => bucket.to == null ? `${fmtCount(bucket.from)} (cut off)` : `${fmtCount(bucket.from)}–${fmtCount(bucket.to)}`;
   return h("div", { class: "panel" },
-    h("h3", {}, "Keywords per indexed full text", h("small", {}, `median ${fmtCount(words.median)} · from ${fmtCount(words.min)} to ${fmtCount(words.max)} · very few can mean a file that was not read well`)),
+    h("h3", {}, "Keywords per indexed full text", h("small", {}, `median ${fmtCount(words.median)}, from ${fmtCount(words.min)} to ${fmtCount(words.max)}; very few can mean a file that was not read well`)),
     h("div", { class: "panel-body" }, barList(words.buckets.map((bucket) => ({ name: label(bucket), value: bucket.documents })), 130)));
 }
 
@@ -167,22 +166,30 @@ function renderKwCoverage() {
   $("#kw-coverage").replaceChildren(...parts.filter(Boolean));
 }
 
+// The figures, then their share of all documents as a bar on a fixed 0–100 % scale; for a right-aligned cell.
+const kwShare = (count, total) => [`${fmtCount(count)} (${fmtShare(count, total)})`, h("span", { class: "meter", style: "margin:0 0 0 7px" }, h("i", { style: `width:${total ? (100 * count) / total : 0}%` }))];
+
+// Counting runs over every full text: the first time a note in the table, later the list fades.
 async function kwLoadWords() {
   const ticket = ++kw.wordsTicket;
   const body = $("#kw-words");
-  $("#kw-words-shown").textContent = "Counting the keywords of every full text …";
+  const request = api(`/api/index/vocabulary?${queryString({ limit: $("#kw-words-limit").value, q: $("#kw-word").value.trim() })}`);
+  const first = !body.childElementCount;
+  if (first) {
+    body.replaceChildren(loadingRow(5, "Counting the keywords of every full text …"));
+    $("#kw-words-shown").textContent = "";
+  }
   try {
-    const data = await api(`/api/index/vocabulary?${queryString({ limit: $("#kw-words-limit").value, q: $("#kw-word").value.trim() })}`);
+    const data = await (first ? request : busyArea($("#keyword-view .content"), request));
     if (ticket !== kw.wordsTicket) return;
-    const top = Math.max(1, ...data.rows.map((row) => row.count));
     const stems = (row) => !row.stems.length
       ? h("span", { class: "pill none", title: "An English stop word: stored, but not searched" }, "stop word, not searched")
-      : row.stems.join(" ") === row.word ? h("span", { class: "muted" }, "as it is") : row.stems.join(" ");
+      : row.stems.join(" ") === row.word ? h("span", { class: "muted", title: "The stemmer keeps the word as it is" }, "unchanged") : row.stems.join(" ");
     body.replaceChildren(...(data.rows.length ? data.rows.map((row, index) => h("tr", {},
       h("td", { class: "num zero" }, index + 1),
       h("td", { class: "id" }, row.word),
-      h("td", {}, h("div", { class: "bar-row", style: "--name-width:0px; padding:0" }, h("span"), h("span", { class: "bar-track" }, h("i", { style: `width:${Math.max(0.6, (100 * row.count) / top)}%` })), h("span", { class: "bar-value" }, fmtCount(row.count)))),
-      h("td", { class: "num" }, `${fmtCount(row.documents)} · ${fmtShare(row.documents, data.documents)}`),
+      h("td", { class: "num" }, fmtCount(row.count)),
+      h("td", { class: "num" }, kwShare(row.documents, data.documents)),
       h("td", { class: "small" }, stems(row)),
     )) : [messageRow(5, "No keyword matches.")]));
     $("#kw-words-shown").textContent = `the most frequent keywords of ${plural(data.documents, "full text")}`;
@@ -195,10 +202,12 @@ async function kwLoadWords() {
 
 async function kwLoadTerms() {
   const body = $("#kw-terms");
+  const request = api("/api/index/journey-terms");
+  const first = !body.childElementCount;
+  if (first) body.replaceChildren(loadingRow(5, "Counting the documents each journey term finds …"));
   try {
-    const data = await api("/api/index/journey-terms");
+    const data = await (first ? request : busyArea($("#keyword-view .content"), request));
     const found = (term) => term.metadata + term.full_text;
-    const share = (count, total) => h("span", {}, h("span", { class: "meter" }, h("i", { style: `width:${total ? (100 * count) / total : 0}%` })), `${fmtCount(count)} · ${fmtShare(count, total)}`);
     const flag = (term) => term.stop_words ? h("span", { class: "pill none", title: "Only English stop words: stored, but not searched" }, "stop words")
       : !found(term) ? h("span", { class: "pill failed", title: "No indexed document has this term" }, "finds nothing")
       : term.metadata > data.totals.metadata / 2 ? h("span", { class: "pill plain", title: "In more than half of the documents: it hardly tells them apart" }, "in most documents") : null;
@@ -206,8 +215,8 @@ async function kwLoadTerms() {
     body.replaceChildren(...rows.map((term) => h("tr", {},
       h("td", {}, term.term),
       h("td", { class: "small" }, term.german.join(", ")),
-      h("td", { class: "small" }, share(term.metadata, data.totals.metadata)),
-      h("td", { class: "small" }, share(term.full_text, data.totals.full_text)),
+      h("td", { class: "small num" }, kwShare(term.metadata, data.totals.metadata)),
+      h("td", { class: "small num" }, kwShare(term.full_text, data.totals.full_text)),
       h("td", {}, flag(term)),
     )));
     $("#kw-terms-shown").textContent = `${plural(rows.length, "English term")} of german-terms.json and the indexed documents each one finds, the rarest first`;

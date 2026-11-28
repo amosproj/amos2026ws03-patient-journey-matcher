@@ -23,7 +23,7 @@ The architecture and the code.
 - [Data sources](design/sources.md): what is crawled, keys, request budgets, licences
 - [Storage and retrieval](design/storage.md): tables, columns, who writes and who reads them
 - [Keyword matching](design/keyword-matching.md): how the keyword approach ranks sources, and its limits
-- [Graph normalization](design/graph-normalization.md): how patient graphs and PubTator3 annotations get shared IDs, predicates and a status, for the graph approach
+- [Graph matching](design/graph-normalization.md): how the graph approach gives patients and papers shared IDs and ranks the papers
 - Next to the code: [crawler](../crawler/README.md), [matcher packages](../matcher/README.md), [adding an approach](../matcher/algorithms/README.md)
 
 ## Build and deploy documentation

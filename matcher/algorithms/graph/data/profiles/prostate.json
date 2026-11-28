@@ -1,0 +1,128 @@
+{
+  "_comment": "The prostate cancer profile (Documentation/design/graph-normalization.md#ranking). src/profile.ts says what each field means, src/profiles/prostate.ts holds the rules that are no data. Read in every journey, as they find the disease: `parameters`, `measurements`, `impliesWhen`, `workup` and `therapyNames` (after normalizeName). For a patient with the disease and the papers on it: `stages` (a row with the id of a general state adds its title pattern for the papers on the disease, its names for every journey), `impliedStages`, the `phase` topics and the treatment `alternatives` (brachytherapy, radiosurgery, HIFU, hypofractionation, orchiectomy and the like).",
+  "diagnosis": "mesh:D011471",
+  "parameters": {
+    "gleason_primary": {
+      "concepts": ["mesh:D060787"],
+      "implies": {
+        "mesh:D011471": "asserted"
+      }
+    },
+    "gleason_secondary": {
+      "concepts": ["mesh:D060787"],
+      "implies": {
+        "mesh:D011471": "asserted"
+      }
+    },
+    "pi_rads": {
+      "atLeast": 3,
+      "implies": {
+        "mesh:D011471": "suspected"
+      }
+    },
+    "psa_value": {
+      "atLeast": 4,
+      "events": ["referral", "lab_test"],
+      "implies": {
+        "mesh:D011471": "suspected"
+      }
+    },
+    "psa_event": {
+      "values": {
+        "biochemical_recurrence": ["mesh:D009364", "ncbigene:354"],
+        "castration_resistance": ["mesh:D064129", "ncbigene:354"]
+      }
+    }
+  },
+  "measurements": {
+    "psa_value": {
+      "concept": "ncbigene:354",
+      "events": ["lab_test", "followup"]
+    }
+  },
+  "impliesWhen": {
+    "mesh:D011468": "\\bradical|\\bradikal|\\brpe\\b|\\brarp\\b|\\bralp\\b"
+  },
+  "workup": {
+    "name": "prostate workup",
+    "procedures": ["mesh:D011468"]
+  },
+  "therapyNames": {
+    "local": "prostatektom|prostatectom|\\brpe\\b|\\brarp\\b",
+    "systemic": "\\badt\\b|androgen|leupro|gosere|degarel|relugol|bicalut|abirater|enzalut|apalut|darolut|cabazitax|radium"
+  },
+  "stages": [
+    {
+      "id": "hormone_sensitive",
+      "title": "hormone[- ]sensitive|castrat\\w*[- ]sensitive|\\bm?hspc\\b|\\bm?cspc\\b|hormone[- ]na[iï]ve",
+      "mesh": [],
+      "concepts": [],
+      "names": "hormonsensitiv|hormone sensitive|kastrationssensitiv|\\bm?(?:hspc|cspc)\\b"
+    },
+    {
+      "id": "castration_resistant",
+      "title": "castrat\\w*[- ]resist|\\b(?:nm|m)?crpc\\b|hormone[- ](?:refractory|resistant|independent)|androgen[- ]independent",
+      "mesh": ["mesh:D064129"],
+      "concepts": ["mesh:D064129"],
+      "names": "kastrationsresist|castration resist|crpc|hormonrefraktar",
+      "advanced": true,
+      "ends": ["hormone_sensitive"]
+    },
+    {
+      "id": "recurrence",
+      "title": "biochemical(?:ly)? (?:recurren|relapse|failure|progression)|\\bbcr\\b|psa (?:recurren|relapse|failure|persistence)|recurrent prostate",
+      "mesh": [],
+      "concepts": [],
+      "names": "psa anstieg nach"
+    },
+    {
+      "id": "metastatic",
+      "title": "\\bm(?:crpc|hspc|cspc)\\b",
+      "mesh": [],
+      "concepts": [],
+      "names": "\\bm(?:crpc|hspc|cspc)\\b"
+    }
+  ],
+  "impliedStages": {
+    "mesh:C552428": ["metastatic", "castration_resistant"],
+    "mesh:C000615150": ["metastatic", "castration_resistant"]
+  },
+  "phase": {
+    "treatment": [
+      "mesh:D011468",
+      "mesh:D011878",
+      "mesh:D050397",
+      "mesh:D018714",
+      "mesh:D001918",
+      "mesh:D000726",
+      "mesh:D018931",
+      "mesh:D000971",
+      "mesh:D000970",
+      "mesh:D011471Q000601",
+      "mesh:D011471Q000532",
+      "mesh:D011471Q000188",
+      "mesh:D011471Q000628",
+      "mesh:D064129Q000188"
+    ],
+    "diagnosis": [
+      "mesh:D001706",
+      "mesh:D061705",
+      "mesh:D055088",
+      "mesh:D008403",
+      "mesh:D011471Q000175",
+      "mesh:D011471Q000000981",
+      "mesh:D008279",
+      "mesh:D000081364"
+    ]
+  },
+  "alternatives": [
+    "mesh:D001918",
+    "mesh:D016634",
+    "mesh:D057086",
+    "mesh:D003452",
+    "mesh:D000069473",
+    "mesh:D061766",
+    "mesh:D009919",
+    "mesh:D055011"
+  ]
+}

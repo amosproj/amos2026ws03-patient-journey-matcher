@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 /** What ends a transcription early. */
-export interface TranscribeLimits {
+interface TranscribeLimits {
   /** Milliseconds a run may take; an hour if left out. */
   timeoutMs?: number;
   signal?: AbortSignal;

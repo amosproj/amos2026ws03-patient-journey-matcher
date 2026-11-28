@@ -5,6 +5,8 @@
   "negatorWindow": 3,
   "negators": ["not", "nicht", "cannot", "never", "t"],
   "clauseBreaks": [
+    "and",
+    "und",
     "but",
     "however",
     "although",
@@ -17,6 +19,10 @@
   ],
   "attributes": {
     "active": "asserted",
+    "suspected": "suspected",
+    "ruled out": "negated",
+    "excluded": "negated",
+    "planned": "planned",
     "confirmed": "asserted"
   },
   "cues": [
@@ -220,6 +226,18 @@
       "status": "negated",
       "position": "pre",
       "window": 1
+    },
+    {
+      "text": "ruled out",
+      "status": "negated",
+      "position": "pre",
+      "window": 0
+    },
+    {
+      "text": "excluded",
+      "status": "negated",
+      "position": "pre",
+      "window": 0
     },
     {
       "text": "ruled out",

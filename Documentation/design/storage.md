@@ -64,7 +64,7 @@ Lists and objects are `[]` or `{}`, never null. The crawler's JSON Lines use oth
 The crawler detects the language of each document's title and summary offline with [py3langid](https://github.com/adbar/py3langid) ([`crawler/src/crawler/language.py`](../../crawler/src/crawler/language.py)) and stores it as `extra.metadata_language` (BCP 47, e.g. `en`). A source's `language` can name something else: PubMed gives the article's language, and a German article often has an English abstract. So `language` keeps the source's value.
 
 - Missing `metadata_language` means unknown, not "not English": short titles such as `PSA` are too short to tell, and stored cited papers keep their old row until a run fetches them again. An indexer that skips non-English metadata should treat unknown as matchable.
-- Ordinary runs do not fetch stored cited papers again. Backfill their language markers and [OpenAlex](../../research/sources/openalex.md) links with `cd crawler && uv run crawler refresh`; no database reset is needed.
+- Backfill the language markers and [OpenAlex](../../research/sources/openalex.md) links of stored cited papers with [`crawler refresh`](#refresh-stored-enrichment).
 - Non-English documents are stored like the others, so they stay findable and their citations stay complete.
 
 ### Refresh stored enrichment
@@ -108,6 +108,19 @@ The last run per data source: `SELECT DISTINCT ON (source) * FROM crawl_runs ORD
 - Stored cited papers are not refreshed; search results are.
 - YouTube rows have no `venue`, and a few rows have no `title` (shown as `Untitled`).
 
+## Graph index
+
+The graph approach keeps its index in the schema `graph` ([`schema.ts`](../../matcher/algorithms/graph/src/schema.ts)):
+
+| Table or view | Holds |
+|---|---|
+| `graph.documents` | Per paper its normalized PubTator3 entities and relations, and its MeSH headings with their flags |
+| `graph.evidence` | One row per concept of a paper and how the paper has it (title, abstract, MeSH major topic …); what a match reads |
+| `graph.treats` | The `treats` relations of each paper |
+| `graph.concept_names` | The names PubTator3 gives the concepts of the indexed papers, for the dictionary |
+
+A trigger keeps `graph.evidence` and `graph.treats` in step with `graph.documents`. Raising `SCHEMA_VERSION` in `schema.ts` makes the next index run build them and the views again from `graph.documents`, without asking PubTator3; until it has, graph searches answer degraded. Raising `NORMALIZATION_VERSION` makes the index runs fetch every paper again; each keeps its old annotations until then.
+
 ## Schema changes
 
-`db/init/` runs when an empty volume starts; `make db` applies it again, so the files must stay idempotent. Put a change into a new numbered file, e.g. `04-….sql` with `ALTER TABLE … ADD COLUMN IF NOT EXISTS`.
+`db/init/` runs when an empty volume starts; `make db` applies it again, so the files must stay idempotent. Put a change into a new numbered file, e.g. `05-….sql` with `ALTER TABLE … ADD COLUMN IF NOT EXISTS`.

@@ -2,11 +2,7 @@
 // ── Index: the overview of the shared jobs, then one screen per approach ───────
 // The indexer job brings the index of every approach up to date, or of one. Its lines start with
 // the approach that writes them (`keyword: …`), so the screen of an approach shows only its own.
-// Graph and AI have no indexer yet: Index › Graph shows the normalization, Index › AI a card.
 const ix = { overview: null, error: null, tab: "log", loading: false, run: null, stream: null };
-const IX_PLANNED = [
-  ["graph", "Graph index", "Only the normalization is built (#80); the indexer and matcher follow (#10)."],
-];
 // Lines of the other approaches and of the steps after them, left out of the keyword log.
 const KW_LOG_HIDES = new Set(["graph", "ai_summary", "transcripts"]);
 // The same for the AI log. A line that starts with none of them, like an error, shows in every log.
@@ -17,36 +13,41 @@ async function ixRefresh() {
   if (ix.loading) return;
   ix.loading = true;
   try {
-    try {
-      ix.overview = await api("/api/index");
-      ix.error = null;
-    } catch (error) {
-      ix.overview = null;
-      ix.error = { message: error.message, hint: error.data?.hint, database: Boolean(error.data?.unavailable) };
-    }
-    renderIxButtons();
-    renderIxSide();
-    renderIxStats();
-    renderKwSide();
-    renderKwStats();
-    renderKwCoverage();
-    renderIxDown();
-    const updated = `· ${fmtClock(new Date().toISOString())}`;
-    $("#ix-updated").textContent = updated;
-    $("#kw-updated").textContent = updated;
-    await aiRefresh();
-    await ixFollowRun();
+    const work = ixLoad();
+    await Promise.all([busyButton($("#ix-refresh"), work), busyButton($("#kw-refresh"), work)]);
   } finally {
     ix.loading = false;
   }
 }
 
-// One job at a time: a run of every approach or of one blocks both Start buttons.
+async function ixLoad() {
+  try {
+    ix.overview = await api("/api/index");
+    ix.error = null;
+  } catch (error) {
+    ix.overview = null;
+    ix.error = { message: error.message, hint: error.data?.hint, database: Boolean(error.data?.unavailable) };
+  }
+  renderIxButtons();
+  renderIxSide();
+  renderIxStats();
+  renderKwSide();
+  renderKwStats();
+  renderKwCoverage();
+  renderIxDown();
+  const updated = `(last ${fmtClock(new Date().toISOString())})`;
+  $("#ix-updated").textContent = updated;
+  $("#kw-updated").textContent = updated;
+  await aiRefresh();
+  await ixFollowRun();
+}
+
+// One job at a time: a run of every approach or of one blocks all Start buttons.
 function renderIxButtons() {
   const indexer = ix.overview?.indexer || ai.data?.indexer;
   const running = indexer?.run?.status === "running";
-  for (const id of ["#ix-start", "#kw-start", "#ai-start"]) $(id).disabled = !indexer || running || Boolean(indexer.missing);
-  for (const id of ["#ix-stop", "#kw-stop", "#ai-stop"]) $(id).disabled = !running;
+  for (const id of ["#ix-start", "#kw-start", "#gr-start", "#ai-start"]) $(id).disabled = !indexer || running || Boolean(indexer.missing);
+  for (const id of ["#ix-stop", "#kw-stop", "#gr-stop", "#ai-stop"]) $(id).disabled = !running;
   $("#ai-start").disabled ||= ai.loading || !ai.data || ai.encoder?.status !== "running";
 }
 
@@ -76,13 +77,21 @@ function renderIxStats() {
     h("b", { class: `ov-total${overview?.exists ? "" : " muted"}` }, !overview ? "–" : overview.exists ? `${fmtShare(total.indexed + total.skipped, total.documents)} done` : "no index yet"),
     overview ? ovList(COVERAGE_STATES.map(([key, label, cls, tip]) => ovShare(label, total[key], total.documents, { color: COVERAGE_BAR[cls], tip, onclick: () => showScreen("keyword") }))) : null,
     overview ? h("small", { class: "ov-note" }, `of ${fmtCount(total.documents)} documents, not expired`) : null);
+  const g = overview?.graph;
+  const graphCard = ovSection(title("Graph index", "graph"),
+    h("b", { class: `ov-total${g?.exists ? "" : " muted"}` }, !g ? "–" : g.exists ? `${fmtShare(g.indexed, g.pubmed)} done` : "no index yet"),
+    g ? ovList([
+      ovShare("With entities", g.with_entities, g.pubmed, { color: "--good", tip: "PubMed papers with at least one mapped PubTator3 entity", onclick: () => showScreen("graph") }),
+      ovShare("With relations", g.with_relations, g.pubmed, { color: "--accent", tip: "PubMed papers with at least one normalized PubTator3 relation", onclick: () => showScreen("graph") }),
+      ovShare("Retry PubTator3", g.retrying, g.pubmed, { color: "--warn", tip: "PubMed papers PubTator3 did not return, asked again after 2 days; meanwhile their MeSH headings still match", onclick: () => showScreen("graph") }),
+    ]) : null,
+    g ? h("small", { class: "ov-note" }, `of ${fmtCount(g.pubmed)} PubMed papers, not expired`) : null);
   // One approach with an index per model: its part is wide enough for both next to each other.
   const semantic = ovSection(title("AI index", "ai"),
     ai.data ? h("div", { class: "ov-parts even" }, ...ai.data.models.map(aiOverviewPart)) : h("b", { class: "ov-total muted" }, "–"),
     ai.data ? h("small", { class: "ov-note" }, `of ${fmtCount(ai.data.models[0]?.documents ?? 0)} documents, not expired`) : null);
   semantic.classList.add("wide");
-  $("#ix-stats").replaceChildren(keyword, semantic,
-    ...IX_PLANNED.map(([screen, label, note]) => ovSection(title(label, screen), h("b", { class: "ov-total muted" }, "planned"), h("small", { class: "ov-note" }, note))));
+  $("#ix-stats").replaceChildren(keyword, graphCard, semantic);
 }
 
 function renderIxDown() {
@@ -144,14 +153,18 @@ async function ixFollowRun() {
 // Starts or stops the job from the overview or from the screen of an approach, then shows its log.
 async function ixCommand(path, body = {}) {
   const keyword = state.screen === "keyword";
+  const graphScreen = state.screen === "graph";
   const semantic = state.screen === "ai";
-  const error = $(semantic ? "#ai-error" : keyword ? "#kw-error" : "#ix-error");
+  const error = $(semantic ? "#ai-error" : keyword ? "#kw-error" : graphScreen ? "#gr-index-error" : "#ix-error");
   error.textContent = "";
   try {
     await api(path, { method: "POST", body: JSON.stringify(body) });
     if (keyword) kwSwitchTab("log");
     else if (semantic) aiSwitchTab("log");
-    else ixSwitchTab("log");
+    else {
+      if (graphScreen) showScreen("index");
+      ixSwitchTab("log");
+    }
     // A refresh in progress still holds the state from before the command.
     while (ix.loading) await new Promise((resolve) => setTimeout(resolve, 100));
     await ixRefresh();
@@ -220,7 +233,7 @@ function txIdleReason() {
 function renderTxSide() {
   const box = $("#tx-state"), data = tx.data;
   if (!data) {
-    box.className = `db-conn${tx.error ? " down" : ""}`;
+    box.className = `db-conn${tx.error ? " down" : " loading"}`;
     box.replaceChildren(h("b", {}, tx.error ? "Not loaded" : "Loading …"), tx.error ? h("small", {}, tx.error) : null);
     $("#tx-workers").replaceChildren();
     $("#tx-note").textContent = "";
@@ -250,12 +263,12 @@ function renderTxSide() {
   }
   const state = data.state, cores = data.cpus;
   $("#tx-note").textContent = !state ? "Each file takes up to 4 threads."
-    : `${wanted ? `${wanted} × ${state.threads} threads: ${wanted * state.threads} of ${cores} cores` : `${state.threads} threads per file, ${data.max_workers} files fill the ${cores} cores`} · model ${state.model}`;
+    : `${wanted ? `${wanted} × ${state.threads} threads: ${wanted * state.threads} of ${cores} cores` : `${state.threads} threads per file, ${data.max_workers} files fill the ${cores} cores`}; model ${state.model}`;
 }
 
 function renderTxPanels() {
   const data = tx.data, box = $("#tx-panels");
-  if (!data) { box.replaceChildren(tx.error ? h("div", { class: "notice", style: "margin:0" }, tx.error) : h("div", { class: "muted" }, "Loading …")); return; }
+  if (!data) { box.replaceChildren(tx.error ? h("div", { class: "notice", style: "margin:0" }, tx.error) : loadingNote("Loading the transcription job …")); return; }
   const { job, running, wanted, active, reading } = txNow();
   const reason = txIdleReason();
   const workers = h("div", { class: "panel" },
@@ -264,7 +277,7 @@ function renderTxPanels() {
     reading.length ? h("table", {},
       h("thead", {}, h("tr", {}, h("th", {}, "Audio"), h("th", { class: "num" }, "Length"), h("th", {}, "Step"), h("th", {}, "For"))),
       h("tbody", {}, ...reading.map((item) => h("tr", {},
-        h("td", {}, item.title, h("div", { class: "small muted" }, [item.venue, item.id].filter(Boolean).join(" · "))),
+        h("td", {}, item.title, h("div", { class: "small muted" }, [item.venue, item.id].filter(Boolean).join(", "))),
         h("td", { class: "num" }, fmtLength(item.duration_seconds)),
         h("td", {}, h("span", { class: "pill plain" }, item.step)),
         h("td", { class: "when" }, fmtSpan(Date.now() - new Date(item.since)))))))
@@ -288,15 +301,15 @@ function renderTxPanels() {
       ], true), files ? h("button", { type: "button", class: "link-button", style: "margin-top:6px", onclick: () => dbShowDocuments({ "db-fulltext": "skipped" }, data.waiting_detail) }, "Show these documents") : null),
       ovSection("Read from audio so far", ovList([
         ovShare("Transcribed", read.ok, total, { unit: "files", color: "--good", tip: "Stored for the indexes; the text goes once every index has read it" }),
-        ovShare("Skipped", read.skipped, total, { unit: "files", color: "--dropped", tip: "No speech, an unreadable file, or larger than 150 MB" }),
-        ovShare("Failed", read.failed, total, { unit: "files", color: "--critical", tip: "The download or speech-to-text failed; tried again a day later" }),
+        ovShare("No transcript", read.skipped, total, { unit: "files", color: "--dropped", tip: "No speech, an unreadable file, or larger than 150 MB; the episode is matched by its metadata" }),
+        ovShare("Retry", read.failed, total, { unit: "files", color: "--critical", tip: "The download or speech-to-text failed; tried again a day later" }),
       ])),
       ovSection("Pace", ovList([
         ovFigure(speed ? `${speed.toFixed(1)} ×` : "–", "real time per worker", { cls: speed ? "" : "zero", title: "Seconds of audio one worker reads in a second, download included, over the 30 files read last" }),
         ovFigure(speed && left ? fmtSpan((left / (speed * pace)) * 1000) : "–", `left with ${plural(pace, "worker")}`, { cls: speed && left ? "" : "zero", title: "The waiting audio at this pace; a rough estimate" }),
       ], true))));
 
-  const pill = { ok: "ok", skipped: "plain", failed: "failed" };
+  const pill = { ok: ["ok", "transcribed"], skipped: ["plain", "no transcript"], failed: ["failed", "retry"] };
   const recent = data.state?.recent || [];
   const last = recent.length ? h("div", { class: "panel" },
     h("h3", {}, "Read last", h("small", {}, running ? "by the running job" : "by the job that ran last")),
@@ -305,7 +318,7 @@ function renderTxPanels() {
       h("tbody", {}, ...recent.map((item) => h("tr", {},
         h("td", { class: "when", title: fmtDateTime(item.at) }, fmtAgo(item.at)),
         h("td", {}, item.title, h("div", { class: "small muted mono" }, item.id)),
-        h("td", {}, h("span", { class: `pill ${pill[item.status] || "plain"}` }, item.status),
+        h("td", {}, h("span", { class: `pill ${pill[item.status]?.[0] || "plain"}` }, pill[item.status]?.[1] || item.status),
           item.detail ? h("div", { class: "small muted" }, item.detail) : null),
         h("td", { class: "num" }, fmtLength(item.duration_seconds)),
         h("td", { class: "num" }, fmtSpan(item.seconds * 1000))))))) : null;
@@ -334,7 +347,8 @@ function ixSwitchTab(tab) {
 for (const button of document.querySelectorAll("#ix-tabs button")) button.addEventListener("click", () => ixSwitchTab(button.dataset.ixtab));
 $("#ix-refresh").addEventListener("click", () => { ixRefresh(); txRefresh(); });
 $("#ix-start").addEventListener("click", () => ixCommand("/api/index/run"));
-for (const id of ["#ix-stop", "#kw-stop"]) $(id).addEventListener("click", () => ixCommand("/api/index/cancel"));
+$("#gr-start").addEventListener("click", () => ixCommand("/api/index/run", { approach: "graph" }));
+for (const id of ["#ix-stop", "#kw-stop", "#gr-stop"]) $(id).addEventListener("click", () => ixCommand("/api/index/cancel"));
 const ixAutoRefresh = (screen, checkbox) => state.screen === screen && $(checkbox).checked && document.visibilityState === "visible";
 setInterval(() => { if (ixAutoRefresh("index", "#ix-auto") || ixAutoRefresh("keyword", "#kw-auto")) ixRefresh(); }, 5000);
 // The job follows a new number within seconds: its state is asked for more often than the index.

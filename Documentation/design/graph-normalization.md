@@ -1,113 +1,89 @@
-# Graph normalization
+# Graph matching
 
-The first part of the graph approach. Graph matching compares the patient graph with the PubTator3 annotations of a paper: the entities that PubTator3 found in the title and abstract, and the relations between them ([research](../../research/graph-based-matching.md)). The two inputs say the same things in different words, IDs and relation types:
+The graph approach ranks papers by the medical concepts they share with the patient. It gives the patient, from a patient graph or a timeline, and every paper the same concept IDs, keeps the papers that name one of the patient's diagnoses and ranks them by the other shared concepts and by their fit to the patient's situation. The matcher reads the patient offline and sends nothing about them out; only PubMed IDs go to PubTator3, during indexing. Code: [`matcher/algorithms/graph/`](../../matcher/algorithms/graph/src/); research and results: [graph-based matching](../../research/graph-based-matching.md).
 
-| | Patient graph | PubTator3 annotations of a paper |
-|---|---|---|
-| Disease | `C61 Prostatakarzinom`, `Adenokarzinom der Prostata` | `Prostatic Neoplasms` (`MESH:D011471`) |
-| Treatment | edge `TREATED_BY`, from the disease to the drug | relation `Negative_Correlation`, from the drug to the disease |
-| Certainty | `Vd. a. Prostatakarzinom` (suspected), confirmed weeks later | none: what the abstract states |
+![Graph matching, UML activity diagram](graph-normalization/graph-matching.svg)
 
-Normalization rewrites both into one form, for example:
-
-```
-patient:  mesh:C531550 (olaparib)  treats  mesh:D011471 (prostate cancer)   asserted, from 2026-12-08
-paper:    mesh:C531550 (olaparib)  treats  mesh:D011471 (prostate cancer)   score 0.998
-```
-
-It gives every name a shared ID, maps every edge and relation type to one predicate with one direction, and gives each patient statement a status. It runs offline and sends nothing about the patient out. It does not rank papers: that is the job of the graph matcher, which is not built yet, like the graph indexer. Until both exist, the approach is not in the registry. Code: [`matcher/algorithms/graph/`](../../matcher/algorithms/graph/src/). What the patient graph holds and lacks: [input findings](../../research/graph-based-matching.md#input-format-and-findings).
-
-## Shared representation
-
-Both inputs become entities and relations between them; the patient graph also gives facts about the patient ([`types.ts`](../../matcher/algorithms/graph/src/types.ts)).
-
-**Entity types:** `disease`, `chemical`, `gene`, `variant`, `procedure`, `finding`, `device`. PubTator3 has no procedure, finding or device type, so these match no paper triple; they stay for context and the keyword fallback.
-
-**Entity IDs:** the IDs that PubTator3 uses, `mesh:<ID>` for diseases and chemicals and `ncbigene:<ID>` for genes. A variant gets one ID from the parts PubTator3 writes: its dbSNP number (`dbsnp:rs113488022`), else its HGVS name with the gene (`hgvs:673:p.V599E`). A patient entity without a mapping has no ID. It keeps its names but takes no part in triple matching, because a made-up ID could never match a paper.
-
-**Predicates:**
-
-| Predicate | Direction | Patient graph | PubTator3 |
-|---|---|---|---|
-| `treats` | chemical or procedure → disease | `TREATED_BY`, reversed | `Negative_Correlation` chemical → disease |
-| `causes` | chemical → disease | none | `Positive_Correlation` chemical → disease |
-| `improves_outcome`, `worsens_outcome` | chemical → outcome | none | `treats` or `causes` with an outcome such as Death |
-| `indicates` | finding → disease | `INDICATES`, `CONFIRMED_BY`, `SYMPTOM_OF` | none |
-| `associated_with` | symmetric | none | `Association` |
-| `positive_correlation`, `negative_correlation` | as stored | none | the correlations without a disease |
-| `cotreated_with`, `compared_with` | symmetric | none | `Cotreatment`, `Comparison` |
-| `interacts_with` | symmetric | none | `Bind`, `Drug_Interaction`, `Conversion` |
-| `related` | as stored | `RELATES_TO` between findings | none |
-| `has_condition`, `receives`, `has_finding` | patient → entity | edges from the `Patient` node, such as `HAS_DIAGNOSIS`, `UNDERWENT`, `HAS_PATHOLOGY` | none |
-
-An unknown relation type between two entities becomes `related`; it is not rejected. An unknown edge type from the patient is left out. Symmetric predicates store their two ends in a fixed order, so `A compared_with B` and `B compared_with A` are one triple.
-
-**Status** of a patient statement: `asserted`, `suspected`, `negated`, `planned` or `unknown` ([status](#status)). PubTator3 relations are `asserted` and keep their score.
-
-Each triple keeps where it came from: the patient edge, or the PMID and the relation; the original type; the fact sentence or the score; and for patient edges `valid_at` and `invalid_at`.
-
-## Entities
-
-A patient entity gets its ID from the first tier that knows its code or name ([`resolve.ts`](../../matcher/algorithms/graph/src/resolve.ts)):
-
-| Tier | Looks up | Example | Built |
-|---|---|---|---|
-| 1. Code | The ICD-10 code of a diagnosis, in [`icd10-mesh.json`](../../matcher/algorithms/graph/data/icd10-mesh.json) | C61 → `mesh:D011471` | yes |
-| 2. Curated name | German and English names and abbreviations, in [`concepts.json`](../../matcher/algorithms/graph/data/concepts.json) | `Prostatakarzinom`, `PCa`, `prostate cancer` → `mesh:D011471`; `RPE` → Prostatectomy | yes |
-| 3. Corpus dictionary | The mention texts and IDs of the PubTator3 annotations that the graph indexer stores | a spelling that our papers use → the ID PubTator3 gave it | no: needs the graph indexer |
-| 4. MeSH entry terms | The MeSH files of NLM | `Leuprorelin`, an entry term of Leuprolide | no, optional |
-
-- **Tier 3 finds only IDs that can match:** it holds exactly the IDs of our papers, with their spellings. Tiers 1 and 2 cover what it cannot: German names, clinical abbreviations and the ICD codes of the patient. The curated IDs were checked with the PubTator3 entity lookup and the NLM MeSH lookup, sending only generic drug and disease names.
-- **Names match whole**, after case, accents and punctuation are normalized ([`text.ts`](../../matcher/algorithms/graph/src/text.ts)). There is no fuzzy matching: `prostatitis` and `prostate cancer` are close as strings and far as concepts, and a wrong ID is worse than none.
-- **The concept decides the type**, not the node label: a catheter labelled `Medication` becomes a `device` and can never match `olaparib treats …`, and PSA labelled `LabTest` becomes the gene KLK3, as PubTator3 annotates it. Without a concept, the label decides: a diagnosis, symptom or allergy is a disease, a medication a chemical, a procedure or treatment plan a procedure, and a lab test, tumor marker, pathology or imaging result a finding.
-- **Duplicates merge:** nodes with the same ID become one entity with all their names. In Patient-5, `C61 Prostatakarzinom`, `prostate cancer` and `Adenokarzinom der Prostata` are one entity. Nodes without an ID merge only when their names are the same.
-
-**Not done, by decision:**
-
-- **Sending patient names to PubTator3's annotation service, an LLM or an embedding API.** That sends journey data out and needs a team decision ([rules](../../matcher/algorithms/README.md#rules)).
-- **UMLS crosswalks from ICD-10 to MeSH.** They need a UMLS licence per user and may not be put in the repository.
-- **IDs from the graph builder.** The LLM that builds the patient graph ([patient graph tool](../../tools/patient-graph/README.md)) could write a MeSH ID per node, but the graph builder of the real app belongs to AIlixir. This is a question for them.
-
-## Relations
-
-Each input has one table that maps a relation by its type and the types of both ends: [`patient-relations.json`](../../matcher/algorithms/graph/data/patient-relations.json) and [`pubtator-relations.json`](../../matcher/algorithms/graph/data/pubtator-relations.json). A new type is a new row.
-
-- **One direction:** `treats` and `causes` always point from the drug or procedure to the disease. `TREATED_BY`, stored from the disease to the drug, is reversed.
-- **Outcomes are not diseases:** with an outcome from [`outcomes.json`](../../matcher/algorithms/graph/data/outcomes.json), `olaparib treats Death` becomes `olaparib improves_outcome Death`, so it never matches a patient's disease.
-- **Left out:** `Provider`, `Appointment`, `Referral` and `VitalSigns` nodes with their edges, the PubTator3 types `Species` and `CellLine`, variants without a dbSNP number or HGVS name (`C>G` alone names no one variant), edges whose two ends became one entity, and PubTator3 relations below a minimum score (0 by default; the value is still to be chosen). Each is listed with the reason. A node or edge that cannot be read is left out too and does not reject the graph.
-- **Duplicates:** relations with the same triple in one paper become one, with the highest score.
-- **Patient facts are not paper triples.** Matching combines them into patterns: `has_condition(A)` and `receives(B)` give the query `B treats A`.
-- **Treatment links only with evidence (not built yet).** For the patient, `B treats A` is derived only from a text that names both and resolves to a diagnosis of the patient: the indication of a procedure, the recommendation of a treatment plan or the fact of an edge. Without such a text, matching uses the pattern above with a lower weight.
-
-## Status
-
-Status belongs to one statement at its time, not to the concept: in Patient-5, prostate cancer is suspected in November 2026 and confirmed in December. The matcher is to take the latest statement per concept up to `as_of`. For each patient edge, the first of these rules applies ([`status.ts`](../../matcher/algorithms/graph/src/status.ts), cue words in [`status-cues.json`](../../matcher/algorithms/graph/data/status-cues.json)):
-
-1. **A cue word near the entity in the fact sentence, in the same clause:** `suspected`, `Verdacht auf`, `cannot be ruled out` → `suspected`; `no evidence of`, `ruled out`, `ausgeschlossen` → `negated`; `confirmed`, `diagnosed with` → `asserted`. Of two overlapping cues the longer wins. A confirmation after the name beats a suspicion before it: `the suspected prostate cancer was confirmed`. A cue right after a negation says nothing: `could not be ruled out`, `has not been confirmed`. German cues are kept because German terms leak into Graphiti's English facts.
-2. **`planned`** for a treatment plan.
-3. **The node attribute `status: active` or `confirmed`** → `asserted`, but only from the node's `date_confirmed` on. Graphiti rewrites a node with every document, so the attribute describes the end of the record, not its first weeks.
-4. **`unknown`.** Never `asserted` by default; the matcher is to treat `unknown` as weaker than `asserted`, not as a negative. One exception: a condition that is still `unknown` becomes `asserted` from the day a pathology result of the same concept confirms it (`CONFIRMED_BY`).
+Patient and paper are compared by concept IDs, not by the shape of their graphs. The one relation the ranking compares is `treats`, from a treatment to a diagnosis.
 
 ## Try it
 
-From the repository root:
+After crawling PubMed papers, build the graph index:
+
+```sh
+make index APPROACHES=graph
+```
+
+In the [debug UI](../../debug/README.md), **Matcher › Graph** with Patient-5 shows the patient query, the candidates and the reasons for each hit. **Index › Graph** shows how a patient graph or a test paper is normalized; so does the command line:
 
 ```sh
 pnpm --dir matcher --filter @matcher/graph normalize patientdata/Patient-5/graph.json
 pnpm --dir matcher --filter @matcher/graph normalize matcher/algorithms/graph/fixtures/pubtator/32343890.json --min-score 0.5
 ```
 
-It prints each entity with its ID and the tier that found it, the patient facts, the relations and what was left out. The Index › Graph screen of the [debug UI](../../debug/README.md) shows the same, with the sentence and cue behind each status. The papers are trimmed PubTator3 exports ([test fixtures](../../matcher/algorithms/graph/fixtures/pubtator/README.md)).
+A patient concept without an ID: check its spelling or code in the dictionary. An ID but no candidates: check the annotations and MeSH headings of the indexed papers.
 
-An entity without an ID can never match a paper. Close the gap with a row in `concepts.json`, not with a looser match; [`data.test.ts`](../../matcher/algorithms/graph/src/data.test.ts) checks the data files against each other.
+## Shared representation
+
+Normalization brings the patient graph and the PubTator3 annotations of a paper into one form: shared IDs, one predicate per relation type and a status for each patient statement ([`types.ts`](../../matcher/algorithms/graph/src/types.ts)).
+
+**Example:** a patient graph and a paper on the same disease and drug, before normalization:
+
+| | Patient graph | PubTator3 annotations of a paper |
+|---|---|---|
+| Disease | `C61 Prostatakarzinom`, `Adenokarzinom der Prostata` | `Prostatic Neoplasms` (`MESH:D011471`) |
+| Treatment | edge `TREATED_BY`, from the disease to the drug | relation `Negative_Correlation`, from the drug to the disease |
+| Certainty | `Vd. a. Prostatakarzinom` (suspected), confirmed weeks later | none |
+
+After normalization, both state the same triple:
+
+```
+patient:  mesh:C531550 (olaparib)  treats  mesh:D011471 (prostate cancer)   asserted, from 2026-12-08
+paper:    mesh:C531550 (olaparib)  treats  mesh:D011471 (prostate cancer)   score 0.998
+```
+
+### Entities
+
+IDs are the ones PubTator3 uses: `mesh:` for diseases and chemicals, `ncbigene:` for genes, `dbsnp:` or `hgvs:` for variants. The matcher finds them offline in its own dictionary ([`resolve.ts`](../../matcher/algorithms/graph/src/resolve.ts)), on top of the shared MeSH of [`@matcher/terminology`](../../matcher/terminology/src/) (built by [`build-terminology.py`](../../matcher/terminology/scripts/build-terminology.py)): English and German MeSH names, clinical aliases ([`concepts.json`](../../matcher/algorithms/graph/data/concepts.json)), ICD-10 codes ([`icd10-mesh.json`](../../matcher/terminology/data/icd10-mesh.json) and Mondo mappings) and the names PubTator3 gives the concepts in the index. A patient entity without an ID keeps its name but matches no paper.
+
+Not done, by decision: sending patient names to PubTator3's annotation service, an LLM or an embedding API, which needs a team decision ([rules](../../matcher/algorithms/README.md#rules)); UMLS crosswalks, which need a licence per user. MeSH IDs written by the graph builder would help, but AIlixir owns the builder of the real app.
+
+### Relations
+
+Each edge or relation type becomes one predicate with one direction: the patient's `TREATED_BY` (disease → drug) and PubTator3's `Negative_Correlation` (drug → disease) both become `treats` (drug → disease). The tables are [`patient-relations.json`](../../matcher/algorithms/graph/data/patient-relations.json) and [`pubtator-relations.json`](../../matcher/algorithms/graph/data/pubtator-relations.json); a type without a row becomes `related`. Providers, appointments, referrals and vital signs are left out.
+
+### Status
+
+Each patient statement is `asserted`, `suspected`, `negated`, `planned` or `unknown` at its date. Cue words in the fact sentence decide first (`Verdacht auf` → suspected, `ausgeschlossen` → negated, `confirmed` → asserted), then a treatment plan (planned), then the node's own status from its confirmation date on, because Graphiti rewrites a node with every document ([`status.ts`](../../matcher/algorithms/graph/src/status.ts), [`status-cues.json`](../../matcher/algorithms/graph/data/status-cues.json)). The matcher reads the statements valid on `as_of`: suspected, planned and unknown ones count less than asserted ones, negated ones not at all.
+
+## Ranking
+
+Steps 1 and 2 are one SQL query ([`retrieval.ts`](../../matcher/algorithms/graph/src/retrieval.ts)) over the tables of the [graph index](storage.md#graph-index). Step 3 runs in the matcher on the best papers only, because its rules need the matcher's dictionaries ([`rerank.ts`](../../matcher/algorithms/graph/src/rerank.ts)).
+
+1. **Candidates:** the papers whose PubTator3 concepts or MeSH headings name one of the patient's diagnoses, or a narrower form such as castration-resistant prostate cancer. A general word such as tumor or carcinoma is no diagnosis of its own. Without a diagnosis there are no hits. For a diagnosis that very many papers name, only the newest of them are candidates (`pool`).
+2. **Score:** the sum of evidence × IDF × weight over the patient's concepts that the paper has; each concept counts once.
+   - **Evidence:** the concept's strongest mention in the paper: title or MeSH major topic, then the substance list, another MeSH heading, the abstract alone.
+   - **IDF** (inverse document frequency, as in BM25): how rare the concept is among the candidates of this query. A concept that nearly every candidate has, such as the diagnosis, hardly tells them apart; a rare one, such as a specific drug, does. Diagnoses keep an IDF of at least 1, so their title and major-topic evidence still counts; prostate cancer, whose constants were tuned without this floor, is the exception.
+   - **Weight:** the concept's role (a drug or procedure counts more than a finding) × the certainty of its status × focus: the news of the focus day and the current therapy count more.
+3. **Re-rank:** the matcher scores the best papers (`candidates`; on a tie the newer paper) again with what the SQL query cannot check, and explains each hit by its main reasons:
+   - concepts in the title count, also procedures, which PubTator3 does not annotate;
+   - a paper that links the patient's drug to the patient's diagnosis gains; one that links it only to another disease does not count the drug;
+   - a paper on the patient's disease state, such as metastatic or castration-resistant, gains; one on another state or phase of care loses;
+   - a paper mainly about something else loses: the diagnosis only in its abstract, lab or animal research, the other sex, another cancer or histology, and for a patient without cancer another disease, which costs less than another cancer;
+   - guidelines and reviews gain a little, case reports lose a little.
+
+The rules of one disease live in its disease profile ([`profile.ts`](../../matcher/algorithms/graph/src/profile.ts)): how a journey shows the disease without naming it, such as PSA, PI-RADS and Gleason for prostate cancer, its own disease states and its words for the general ones (biochemical recurrence, mCRPC), the MeSH topics that tell a paper on treating the disease from one on finding it, its treatment options, its care questions and two histologies that rule each other out. Its data is in [`data/profiles/`](../../matcher/algorithms/graph/data/profiles/), the rest in [`src/profiles/`](../../matcher/algorithms/graph/src/profiles/). The rules for reading a journey apply to every journey, because they find the disease; the others apply to a patient with the disease and to the papers on it. A patient with several such diseases gets the rules of each, every one for the papers on its disease. Prostate cancer has a profile with all of these, lung cancer one with its histologies (non-small cell, small cell). Profiles are where the matcher is fine-tuned for a disease: a new disease is one more profile in `PROFILES`, without changes to the general code.
+
+The constants are `SETTINGS` in [`settings.ts`](../../matcher/algorithms/graph/src/settings.ts); in the debug UI, a `tuning` object overrides them. How they were set and what they achieve: [results](../../research/graph-based-matching.md#4-results).
 
 ## Known limitations
 
-- **PubTator3's `treat` is a negative correlation:** the chemical lowers the disease. A `treats` triple says that a paper links the drug and the disease, not that the drug works. `causes` can be a side effect, such as olaparib causing anemia.
-- **PubTator3 has no negation, no evidence sentence and no date.** A relation holds for the whole title and abstract, with a confidence score only, so a central result and a background mention look the same.
-- **Gaps in PubTator3:** it does not annotate leuprorelin, leuprolide, goserelin or the drug class PARP inhibitor, all named by synthetic patients, so their facts never meet a paper triple. It often annotates "PSA" as the gene NPEPPS instead of KLK3, and it gives abiraterone two IDs that do not match each other.
-- **`TREATED_BY` is missing from some patient graphs**, Patient-5 among them. They give no `treats` triple, and matching starts from the patient facts, as the [research](../../research/graph-based-matching.md#2-questions-our-matching-proposal-must-answer) plans with typed placeholders.
-- **Curated names** cover the main concepts of the 20 synthetic patients. A name that the graph's LLM writes differently has no ID until it is added. Broader and narrower concepts (castration-resistant prostate cancer under prostate cancer) are not expanded.
-- **Status comes from rules** over sentences that an LLM has already rewritten: a hedge it dropped is lost. There is no status for past conditions ("history of", "Z. n.") yet.
-- **Worked out on Patient-5 and three papers.** Types absent from them, such as `Bind`, are mapped from their documented meaning, not from data.
-- **Out of scope:** PubMed MeSH headings and the concepts of Zenodo, arXiv, podcasts and YouTube. Graph matching covers only PubMed papers with PubTator3 annotations; the keyword approach finds the rest, and the two rankings can be merged with `reciprocalRankFusion`.
+- **`treats` is no proof of effect:** PubTator3's relation means that the paper links the drug and the disease, not that the drug works. It has no negation, evidence sentence or date.
+- **Gaps in PubTator3:** it annotates no procedures and misses some drugs, such as leuprorelin, goserelin and the class PARP inhibitor; only MeSH headings or the title find them. It often annotates PSA as the wrong gene.
+- **The candidate gate:** a paper that names the diagnosis neither in its annotations nor in its MeSH headings is never a candidate, even with a relevant title.
+- **The shortlist:** the re-rank sees only the best papers by score. A paper whose fit shows only there, such as a procedure in its title, can be cut before (`candidates` in `SETTINGS`).
+- **Status comes from rules** over sentences that an LLM has already rewritten: a hedge it dropped is lost. Past conditions ("history of", "Z. n.") have no status yet.
+- **Two disease profiles:** prostate cancer has rules of its own, lung cancer only its histologies ([Ranking](#ranking)). Other cancers get the states every cancer has, other diseases the general rules.
+- **One set of disease states per patient:** the states are not kept per disease, so with two cancers a paper on one is judged by the states of both.
+- **Vocabulary:** some clinical German names and some operations have no MeSH name; ICD-10 mappings outside the reviewed cancer categories are partial.
+- **Sources:** only PubMed papers have PubTator3 annotations; other sources match through their MeSH headings only.

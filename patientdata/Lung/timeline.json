@@ -1,0 +1,35 @@
+{
+  "patient_id": "Lung",
+  "events": [
+    {
+      "id": "e1",
+      "date": "2026-01-10",
+      "type": "diagnosis",
+      "label": "Verdacht auf Lungenkarzinom nach auffälligem CT.",
+      "parameters": {
+        "diagnosis": "Lungenkarzinom",
+        "icd_code": "C34"
+      }
+    },
+    {
+      "id": "e2",
+      "date": "2026-01-17",
+      "type": "diagnosis",
+      "label": "Lungenkarzinom bestätigt.",
+      "parameters": {
+        "diagnosis": "Lungenkarzinom",
+        "icd_code": "C34"
+      }
+    },
+    {
+      "id": "e3",
+      "date": "2026-02-09",
+      "type": "systemic_therapy",
+      "label": "Pembrolizumab zur Behandlung von Lungenkarzinom begonnen. Histologie: nichtkleinzellig. PD-L1 positiv.",
+      "parameters": {
+        "drug": "Pembrolizumab",
+        "indication": "Lungenkarzinom"
+      }
+    }
+  ]
+}

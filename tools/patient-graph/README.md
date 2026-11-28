@@ -24,4 +24,4 @@ Licence: MIT, Copyright (c) 2021 The AMOS Projects, the same as this repository 
 
 Python 3.12 or newer and [uv](https://docs.astral.sh/uv/); `make graph` installs the locked dependencies. In this folder, `uv run pytest` checks that every copied module imports. Commit `uv.lock` with every dependency change.
 
-Its four direct dependencies: graphiti-core (Apache-2.0), google-genai (Apache-2.0), python-dotenv (BSD-3-Clause) and kuzu (MIT); none is copyleft. [`scripts/dependencies.py`](../../scripts/dependencies.py) lists only `crawler/` and `matcher/`, so add these four to the bill of materials by hand.
+Its four direct dependencies: graphiti-core (Apache-2.0), google-genai (Apache-2.0), python-dotenv (BSD-3-Clause) and kuzu (MIT); none is copyleft. The [SBOM](../../Documentation/build-deploy/build.md#sbom) lists them with their licences.

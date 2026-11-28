@@ -14,7 +14,7 @@ The Patient Journey Matcher is an MCP server for the AIlixir app. A client sends
 <img src="Documentation/banner.svg" alt="A patient journey goes to the MCP server with match_journey; the keyword, graph and AI summary approaches match it, and the best matches come back as papers, preprints, videos and podcast episodes" width="100%">
 
 - **Crawler (Python):** collects metadata and links from PubMed, arXiv, Zenodo, YouTube and podcast feeds and stores them in PostgreSQL, never the full texts.
-- **Indexer (TypeScript):** downloads each full text again, keeps it in memory and builds the index of each matching approach. Supports [keyword matching](Documentation/design/keyword-matching.md) and optional [semantic matching](matcher/README.md#semantic-matching); graph matching is planned.
+- **Indexer (TypeScript):** builds the [keyword index](Documentation/design/keyword-matching.md) from document text, the [graph index](Documentation/design/graph-normalization.md) from PubTator3 annotations and, if enabled, the index of [semantic matching](matcher/README.md#semantic-matching).
 - **MCP server (TypeScript):** matches the journey against the index and returns the best sources with links to the originals.
 
 How it fits together: [software architecture](Documentation/design/architecture.md). To watch it work with real data, use the [debug UI](#explore-the-pipeline).
@@ -54,7 +54,7 @@ For semantic matching, run `make index-ai` once, then `make debug-ai` to start t
 
 ```sh
 make build              # installs crawler/ with uv and matcher/ with pnpm, type-checks matcher/
-make test               # everything CI checks: lint, formatting, types, unit and integration tests
+make test               # the crawler and matcher checks of CI: lint, formatting, types, unit and integration tests
 make test-integration   # only the matcher's integration tests
 ```
 

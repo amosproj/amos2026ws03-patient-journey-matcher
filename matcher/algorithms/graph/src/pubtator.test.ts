@@ -176,7 +176,7 @@ test("scores: equal to minScore is kept, none at all is kept, duplicates keep th
     document([
       relation("R1", "Association", gene("1"), disease, "0.5"),
       relation("R2", "Association", gene("2"), disease),
-      relation("R3", "Association", gene("1"), disease, "0.8"),
+      relation("R3", "Association", disease, gene("1"), "0.8"),
       relation("R4", "Association", gene("3"), disease, "0.49"),
     ]),
     { minScore: 0.5 },

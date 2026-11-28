@@ -1,0 +1,40 @@
+{
+  "_comment": "What the events of a journey without a patient graph say (timeline.json of the synthetic journeys; Documentation/design/graph-normalization.md#ranking). Event types: `plans` decide the therapies they name (tumor board), `gives` give them; in other events a named therapy is history or context. `parameters`: a parameter key gives `concepts` when present, `values` per value, or makes a diagnosis asserted or suspected (`implies`), also only from a number up (`atLeast`) and only in some event types (`events`). A disease profile adds the parameters of its disease (data/profiles).",
+  "plans": ["tumor_board", "treatment_decision", "hospital_admission"],
+  "gives": [
+    "therapy",
+    "treatment",
+    "systemic_therapy",
+    "radiation",
+    "surgery",
+    "nuclear_medicine",
+    "palliative"
+  ],
+  "parameters": {
+    "r_status": {
+      "values": {
+        "R1": ["mesh:D000072662"]
+      }
+    },
+    "bone_mets": {
+      "values": {
+        "true": ["mesh:D001859"]
+      }
+    },
+    "liver_mets": {
+      "values": {
+        "true": ["mesh:D008113"]
+      }
+    },
+    "lymph_node_mets": {
+      "values": {
+        "true": ["mesh:D008207"]
+      }
+    },
+    "pain_management": {
+      "values": {
+        "true": ["mesh:D059408"]
+      }
+    }
+  }
+}

@@ -1,0 +1,331 @@
+{
+  "patient_id": "Myeloma",
+  "pathway_id": "hae-09",
+  "start_date": "2027-01-11",
+  "events": [
+    {
+      "id": "e01",
+      "type": "referral",
+      "label": "Überweisung Hämatologie: Rückenschmerzen, Anämie, Hyperproteinämie",
+      "date": "2027-01-11",
+      "specialist": "hausarzt",
+      "parameters": {
+        "age": 58,
+        "sex": "m",
+        "complaints": "Seit 3 Monaten zunehmende Rückenschmerzen (BWS/LWS), Abgeschlagenheit, Belastungsdyspnoe",
+        "hb_g_dl": 9.4,
+        "total_protein_g_dl": 9.6,
+        "esr_mm_h": 104,
+        "creatinine_mg_dl": 1.7,
+        "calcium_mmol_l": 2.70,
+        "serum_electrophoresis": "schmalbasiger M-Gradient im Gamma-Bereich",
+        "question": "V. a. Plasmazellerkrankung"
+      },
+      "documents": [
+        "ueberweisungsbrief",
+        "laborbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e02",
+      "type": "lab_test",
+      "label": "Myelom-Labordiagnostik",
+      "date": "2027-01-19",
+      "specialist": "haematologie",
+      "parameters": {
+        "m_protein_g_dl": 3.6,
+        "immunofixation": "monoklonales IgG Kappa",
+        "igg_g_l": 44.8,
+        "iga_g_l": 0.4,
+        "igm_g_l": 0.2,
+        "flc_kappa_mg_l": 612,
+        "flc_lambda_mg_l": 9.6,
+        "flc_ratio": 63.8,
+        "beta2_microglobulin_mg_l": 4.8,
+        "albumin_g_l": 33,
+        "ldh_u_l": 228,
+        "ldh_reference": "< 250 U/l",
+        "hb_g_dl": 9.2,
+        "calcium_corrected_mmol_l": 2.84,
+        "creatinine_mg_dl": 1.7,
+        "egfr_ml_min": 46,
+        "urine": "Bence-Jones-Proteinurie Typ Kappa, 0,9 g/24 h"
+      },
+      "documents": [
+        "laborbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e03",
+      "type": "imaging",
+      "label": "Ganzkörper-Low-Dose-CT",
+      "date": "2027-01-21",
+      "specialist": "radiologie",
+      "parameters": {
+        "modality": "Ganzkörper-Low-Dose-CT",
+        "finding": "Multiple osteolytische Läsionen in Achsenskelett und Becken (BWK 8, LWK 2, LWK 4, Sternum, Os ilium bds.), größte Läsion Os ilium rechts 3,2 cm; pathologische Deckplattenimpressionsfraktur LWK 2 mit ca. 25 % Höhenminderung, Hinterkante intakt, keine spinale Enge; kein extraossärer Weichteilanteil",
+        "recommendation": "Wirbelsäulenchirurgische Mitbeurteilung LWK 2"
+      },
+      "documents": [
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e04",
+      "type": "biopsy",
+      "label": "Knochenmarkpunktion",
+      "date": "2027-01-26",
+      "specialist": "haematologie",
+      "parameters": {
+        "site": "Hinterer Beckenkamm rechts, Aspiration und Stanzbiopsie in Lokalanästhesie",
+        "cytology": "Plasmazellanteil 38 % im Ausstrich, teils atypische, mehrkernige Plasmazellen",
+        "pending": "Histologie, Durchflusszytometrie, FISH an CD138-angereicherten Plasmazellen"
+      },
+      "documents": [
+        "knochenmarkbefund"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e05",
+      "type": "diagnosis",
+      "label": "Erstdiagnose Multiples Myelom IgG Kappa",
+      "date": "2027-02-03",
+      "specialist": "haematologie",
+      "parameters": {
+        "bone_marrow_histology": "Diffuse Infiltration durch kappa-restringierte Plasmazellen (CD138+), Infiltrationsgrad ca. 50 %",
+        "fish": "t(4;14) positiv; Zugewinn 1q21 (3 Kopien); kein del(17p), keine t(14;16)",
+        "myeloma_defining_events": "Hyperkalzämie, Anämie, Osteolysen",
+        "iss": "II",
+        "r_iss": "II",
+        "r2_iss": "III",
+        "cytogenetic_risk": "Hochrisiko: t(4;14) mit 1q-Zugewinn",
+        "spine": "LWK-2-Fraktur wirbelsäulenchirurgisch als stabil eingestuft, konservative Therapie mit Orthese",
+        "transplant_eligibility": "transplantfähig",
+        "diagnosis": "Multiples Myelom IgG Kappa, R-ISS II, mit Hyperkalzämie, Anämie und multiplen Osteolysen inkl. pathologischer Fraktur LWK 2",
+        "icd_code": "C90.00"
+      },
+      "documents": [
+        "arztbrief",
+        "knochenmarkbefund"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e06",
+      "type": "systemic_therapy",
+      "label": "Induktionstherapie D-VRd, Zyklus 1",
+      "date": "2027-02-09",
+      "specialist": "haematologie",
+      "parameters": {
+        "regimen": "Daratumumab 1800 mg s.c., Bortezomib 1,3 mg/m² s.c. an Tag 1, 4, 8, 11, Lenalidomid an Tag 1–21, Dexamethason 40 mg an Tag 1–4 und 9–12; Zykluslänge 28 Tage",
+        "cycles_planned": 4,
+        "lenalidomide_dose": "10 mg/d, angepasst an Kreatinin-Clearance 56 ml/min",
+        "pre_daratumumab": "Blutgruppe und erweiterte Antikörpersuche vor Erstgabe bestimmt",
+        "bone_therapy": "Denosumab 120 mg s.c. alle 4 Wochen nach zahnärztlicher Freigabe",
+        "infection_prophylaxis": "Aciclovir 400 mg 1-0-1, Cotrimoxazol 960 mg Mo/Mi/Fr",
+        "thrombosis_prophylaxis": "ASS 100 mg",
+        "calcium_mmol_l": 2.46,
+        "pain": "Metamizol, Tapentadol retard, Rumpforthese"
+      },
+      "documents": [
+        "therapieplan",
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e07",
+      "type": "procedure",
+      "label": "Stammzellmobilisierung und Leukapherese",
+      "date": "2027-06-15",
+      "specialist": "haematologie",
+      "parameters": {
+        "response_after_induction": "VGPR nach 4 Zyklen D-VRd: M-Protein 0,2 g/dl, Immunfixation positiv, FLC-Ratio 1,9, Urin-M-Protein < 100 mg/24 h",
+        "creatinine_mg_dl": 1.1,
+        "mobilization": "G-CSF 10 µg/kg/d ab 10.06.2027; Plerixafor bei 9 CD34+ Zellen/µl im peripheren Blut an Tag 4",
+        "apheresis": "2 Leukapheresen am 14. und 15.06.2027",
+        "cd34_yield_10e6_per_kg": 7.4
+      },
+      "documents": [
+        "aphereseprotokoll",
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e08",
+      "type": "stem_cell_transplant",
+      "label": "Hochdosis-Melphalan und autologe Stammzelltransplantation (Tag 0)",
+      "date": "2027-07-22",
+      "specialist": "haematologie",
+      "parameters": {
+        "admission_date": "2027-07-19",
+        "conditioning": "Melphalan 200 mg/m² an Tag −2 (20.07.2027)",
+        "cd34_reinfused_10e6_per_kg": 3.8,
+        "cd34_remaining_10e6_per_kg": 3.6,
+        "status_before_transplant": "VGPR",
+        "creatinine_mg_dl": 1.0
+      },
+      "documents": [
+        "transplantationsprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e09",
+      "type": "lab_test",
+      "label": "Remissionsbeurteilung nach autologer SZT (ca. Tag +100)",
+      "date": "2027-11-02",
+      "specialist": "haematologie",
+      "parameters": {
+        "days_post_transplant": 103,
+        "inpatient_course": "Engraftment der Neutrophilen an Tag +12, der Thrombozyten an Tag +14; Mukositis Grad 2, febrile Neutropenie ohne Erregernachweis",
+        "m_protein": "nicht nachweisbar",
+        "immunofixation": "negativ (Daratumumab-Interferenz mittels Spezialtest ausgeschlossen)",
+        "flc_ratio": 1.2,
+        "bone_marrow": "Knochenmarkpunktion 25.10.2027: Plasmazellen 2 %, MRD-negativ (Next-Generation Flow, Sensitivität 10^-5)",
+        "response": "CR, MRD-negativ",
+        "plan": "Konsolidierung mit 2 Zyklen D-VRd, danach Lenalidomid-Erhaltung"
+      },
+      "documents": [
+        "arztbrief",
+        "knochenmarkbefund"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e10",
+      "type": "systemic_therapy",
+      "label": "Beginn Erhaltungstherapie mit Lenalidomid",
+      "date": "2028-01-18",
+      "specialist": "haematologie",
+      "parameters": {
+        "consolidation": "2 Zyklen D-VRd (11/2027–01/2028) abgeschlossen, letzte Daratumumab-Gabe 12/2027",
+        "drug": "Lenalidomid 10 mg an Tag 1–28, kontinuierlich bis Progress oder Unverträglichkeit",
+        "creatinine_mg_dl": 0.98,
+        "egfr_ml_min": 89,
+        "supportive": "ASS 100 mg, Aciclovir-Prophylaxe, Denosumab fortgeführt",
+        "vaccination": "Impfschema nach autologer SZT begonnen"
+      },
+      "documents": [
+        "therapieplan"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e11",
+      "type": "followup",
+      "label": "Myelomsprechstunde: Verlaufskontrolle unter Lenalidomid-Erhaltung",
+      "date": "2028-07-20",
+      "specialist": "haematologie",
+      "parameters": {
+        "m_protein": "nicht nachweisbar",
+        "immunofixation": "negativ",
+        "flc_kappa_mg_l": 11.2,
+        "flc_lambda_mg_l": 9.8,
+        "bone_marrow": "Knochenmarkpunktion 11.07.2028 (ca. 12 Monate nach SZT): MRD-negativ (10^-5)",
+        "blood_count": "Leukozyten 3,1/nl, Neutrophile 1,4/nl, Hb 13,2 g/dl, Thrombozyten 142/nl",
+        "toxicity": "Neutropenie Grad 2, Fatigue Grad 1, intermittierende Diarrhoe Grad 1",
+        "response": "anhaltende CR, MRD-negativ",
+        "icd_code": "C90.01"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 0
+    },
+    {
+      "id": "e12",
+      "type": "followup",
+      "label": "Myelomsprechstunde: Verlaufskontrolle unter Lenalidomid-Erhaltung",
+      "date": "2029-04-18",
+      "specialist": "haematologie",
+      "parameters": {
+        "m_protein": "elektrophoretisch nicht quantifizierbar",
+        "immunofixation": "wieder positiv: schwache monoklonale Bande IgG Kappa",
+        "flc_kappa_mg_l": 38.0,
+        "flc_lambda_mg_l": 10.4,
+        "flc_ratio": 3.7,
+        "blood_count": "Hb 13,0 g/dl, Thrombozyten 138/nl",
+        "assessment": "Rezidiv aus CR (Immunfixation wieder positiv), noch kein Progress; Kontrollen alle 6 Wochen"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 1
+    },
+    {
+      "id": "e13",
+      "type": "progression",
+      "label": "Progress unter Lenalidomid-Erhaltung",
+      "date": "2029-08-22",
+      "specialist": "haematologie",
+      "parameters": {
+        "m_protein_g_dl": 1.1,
+        "m_protein_trend": "0,6 g/dl (07/2029) → 1,1 g/dl",
+        "flc_kappa_mg_l": 286,
+        "flc_lambda_mg_l": 9.0,
+        "flc_ratio": 31.8,
+        "hb_g_dl": 11.4,
+        "calcium_mmol_l": 2.41,
+        "creatinine_mg_dl": 1.0,
+        "imaging": "PET-CT vom 16.08.2029: neue FDG-avide Osteolysen Os ilium links (2,4 cm) und BWK 11, kein extramedullärer Befall",
+        "assessment": "Progress nach IMWG unter laufender Lenalidomid-Erhaltung (lenalidomid-refraktär); Daratumumab-exponiert, letzte Gabe 12/2027; proteasominhibitor-sensibel",
+        "icd_code": "C90.00"
+      },
+      "documents": [
+        "arztbrief",
+        "laborbericht",
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e14",
+      "type": "tumor_board",
+      "label": "Myelomboard: Therapie des ersten Rezidivs",
+      "date": "2029-09-05",
+      "specialist": "haematologie",
+      "parameters": {
+        "bone_marrow_fish": "Knochenmark 08/2029: t(4;14), 1q21-Amplifikation (4 Kopien), kein del(17p), TP53 nicht mutiert",
+        "decision": "BCMA-gerichtete CAR-T-Zelltherapie mit Ciltacabtagen autoleucel; Bridging mit Pomalidomid, Bortezomib und Dexamethason (PVd); Zuweisung an CAR-T-Zentrum, Leukapherese im Oktober geplant",
+        "rationale": "Frühes Rezidiv unter Lenalidomid bei Hochrisikozytogenetik nach einer Therapielinie",
+        "participants": [
+          "haematologie",
+          "strahlentherapie",
+          "radiologie"
+        ]
+      },
+      "documents": [
+        "tumorkonferenzprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e15",
+      "type": "systemic_therapy",
+      "label": "CAR-T-Zellinfusion (Ciltacabtagen autoleucel)",
+      "date": "2029-12-12",
+      "specialist": "haematologie",
+      "parameters": {
+        "leukapheresis": "09.10.2029",
+        "bridging": "2 Zyklen PVd (10–11/2029): M-Protein 1,1 → 0,5 g/dl",
+        "lymphodepletion": "Fludarabin 30 mg/m² und Cyclophosphamid 300 mg/m² an Tag −5 bis −3",
+        "cell_dose": "0,75 × 10^6 CAR-positive T-Zellen/kg",
+        "status_before_infusion": "partielle Remission",
+        "monitoring": "stationäre Überwachung auf Zytokinfreisetzungssyndrom und Neurotoxizität, Tocilizumab vorrätig"
+      },
+      "documents": [
+        "arztbrief",
+        "zelltherapieprotokoll"
+      ],
+      "repeat_index": null
+    }
+  ]
+}

@@ -1,0 +1,99 @@
+{
+  "Breast": {
+    "diagnosis": "mesh:D001943",
+    "controls": ["pubmed:20609467", "pubmed:20609468"]
+  },
+  "Lung": {
+    "diagnosis": "mesh:D008175",
+    "controls": ["pubmed:26712084", "pubmed:29992241"]
+  },
+  "Arthritis": {
+    "diagnosis": "mesh:D001172",
+    "controls": ["pubmed:12571869", "pubmed:12174922"]
+  },
+  "Crohn": {
+    "diagnosis": "mesh:D003424",
+    "controls": ["pubmed:20587545", "pubmed:21349113"]
+  },
+  "Lung-EGFR": {
+    "diagnosis": "mesh:D008175",
+    "points": ["e02", "e07", "e10", "e12"]
+  },
+  "Holdout-Breast": {
+    "diagnosis": "mesh:D001943",
+    "points": ["e02", "e07", "e13", "e16"]
+  },
+  "Holdout-Ovarian": {
+    "diagnosis": "mesh:D010051",
+    "points": ["e02", "e05", "e12", "e14"]
+  },
+  "Holdout-Colorectal": {
+    "diagnosis": "mesh:D012004",
+    "points": ["e02", "e06", "e11", "e16"]
+  },
+  "Bladder": {
+    "diagnosis": "mesh:D001749",
+    "points": ["e02", "e08", "e10", "e13"]
+  },
+  "Pancreas": {
+    "diagnosis": "mesh:D010190",
+    "points": ["e02", "e06", "e12", "e14"]
+  },
+  "Myeloma": {
+    "diagnosis": "mesh:D009101",
+    "points": ["e03", "e06", "e11", "e13"]
+  },
+  "Diabetes": {
+    "diagnosis": "mesh:D003924",
+    "points": ["e01", "e04", "e06", "e11"]
+  },
+  "HeartFailure": {
+    "diagnosis": "mesh:D006333",
+    "points": ["e01", "e03", "e09", "e13"]
+  },
+  "Stomach": {
+    "diagnosis": "mesh:D013274",
+    "points": ["e02", "e08", "e13", "e16"]
+  },
+  "Kidney": {
+    "diagnosis": "mesh:D007680",
+    "points": ["e02", "e04", "e10", "e15"]
+  },
+  "Melanoma": {
+    "diagnosis": "mesh:D008545",
+    "points": ["e01", "e08", "e09", "e14"]
+  },
+  "Depression": {
+    "diagnosis": "mesh:D003866",
+    "points": ["e01", "e04", "e08", "e11"]
+  },
+  "Stroke": {
+    "diagnosis": "mesh:D020521",
+    "points": ["e02", "e07", "e10", "e14"]
+  },
+  "Colon": {
+    "holdout": true,
+    "diagnosis": "mesh:D003110",
+    "points": ["e02", "e05", "e10", "e13"]
+  },
+  "Thyroid": {
+    "holdout": true,
+    "diagnosis": "mesh:D013964",
+    "points": ["e02", "e05", "e10", "e14"]
+  },
+  "Infarction": {
+    "holdout": true,
+    "diagnosis": "mesh:D009203",
+    "points": ["e01", "e03", "e10", "e13"]
+  },
+  "Gout": {
+    "holdout": true,
+    "diagnosis": "mesh:D006073",
+    "points": ["e01", "e05", "e08", "e11"]
+  },
+  "COPD": {
+    "holdout": true,
+    "diagnosis": "mesh:D029424",
+    "points": ["e01", "e03", "e05", "e13"]
+  }
+}

@@ -1,0 +1,355 @@
+{
+  "patient_id": "Thyroid",
+  "pathway_id": "sdk-01",
+  "start_date": "2026-12-02",
+  "events": [
+    {
+      "id": "e01",
+      "type": "referral",
+      "label": "Überweisung Nuklearmedizin: Schilddrüsenknoten rechts",
+      "date": "2026-12-02",
+      "specialist": "hausarzt",
+      "parameters": {
+        "reason": "Seit ca. 6 Wochen tastbarer Knoten rechts am Hals, gelegentlich Globusgefühl; keine Heiserkeit, keine Schluckbeschwerden",
+        "history": "46-jährige Patientin, keine Bestrahlung der Halsregion, keine Schilddrüsenkarzinome in der Familie",
+        "tsh_mu_l": 1.42,
+        "diagnosis": "Schilddrüsenknoten rechts, unklar",
+        "icd_code": "E04.1",
+        "question": "Dignität? Weiteres Procedere?"
+      },
+      "documents": [
+        "ueberweisungsschein",
+        "laborbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e02",
+      "type": "imaging",
+      "label": "Schilddrüsensonographie und -szintigraphie",
+      "date": "2026-12-15",
+      "specialist": "nuklearmedizin",
+      "parameters": {
+        "modality": "B-Bild-Sonographie mit Farbdoppler, 99mTc-Pertechnetat-Szintigraphie",
+        "thyroid_volume_ml": 13.8,
+        "finding": "Rechter Lappen mittig solider, deutlich echoarmer Knoten 24 × 17 × 15 mm, unscharf begrenzt, höher als breit, mit Mikroverkalkungen. Linker Lappen unauffällig. Lateral zervikal keine suspekten Lymphknoten, zentrales Kompartiment eingeschränkt beurteilbar.",
+        "eu_tirads": 5,
+        "scintigraphy": "Knoten rechts minderspeichernd (kalter Knoten), globaler TcTU 1,0 %",
+        "tsh_mu_l": 1.38,
+        "ft4_ng_dl": 1.21,
+        "calcitonin_pg_ml": 2.1,
+        "tpo_ab_iu_ml": 14,
+        "assessment": "Malignitätssuspekter kalter Knoten rechts (EU-TIRADS 5), euthyreote Stoffwechsellage, Calcitonin unauffällig",
+        "recommendation": "Sonographisch gesteuerte Feinnadelpunktion"
+      },
+      "documents": [
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e03",
+      "type": "biopsy",
+      "label": "Feinnadelpunktion Knoten rechts",
+      "date": "2027-01-05",
+      "specialist": "nuklearmedizin",
+      "parameters": {
+        "technique": "Sonographisch gesteuerte FNP mit 25G-Kanüle, 3 Passagen, 6 Ausstriche",
+        "cytology": "Zellreiches Material mit papillären Verbänden, Kernvergrößerung, Milchglaskernen, Kernfurchen und intranukleären Pseudoinklusionen",
+        "bethesda_category": "VI",
+        "cytology_result": "Papilläres Schilddrüsenkarzinom",
+        "diagnosis": "Papilläres Schilddrüsenkarzinom rechts (zytologisch)",
+        "icd_code": "C73",
+        "recommendation": "Vorstellung in der endokrinen Chirurgie zur Thyreoidektomie"
+      },
+      "documents": [
+        "zytologiebefund",
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e04",
+      "type": "consultation",
+      "label": "Präoperative Vorstellung endokrine Chirurgie",
+      "date": "2027-01-20",
+      "specialist": "endokrine_chirurgie",
+      "parameters": {
+        "staging": "cT2 cN0 cM0",
+        "laryngoscopy": "HNO-ärztlich: Stimmlippen beidseits frei beweglich, Glottisschluss vollständig",
+        "calcium_mmol_l": 2.39,
+        "pth_pg_ml": 41,
+        "vitamin_d_ng_ml": 24,
+        "planned_procedure": "Thyreoidektomie mit zentraler Lymphknotendissektion (Kompartiment 1a/1b) unter Neuromonitoring",
+        "informed_consent": "Aufklärung u.a. über Rekurrensparese, Hypoparathyreoidismus und lebenslange Hormonsubstitution"
+      },
+      "documents": [
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e05",
+      "type": "surgery",
+      "label": "Thyreoidektomie mit zentraler Lymphknotendissektion",
+      "date": "2027-02-09",
+      "specialist": "endokrine_chirurgie",
+      "parameters": {
+        "procedure": "Totale Thyreoidektomie, zentrale Lymphknotendissektion beidseits (Kompartiment 1a/1b)",
+        "neuromonitoring": "Kontinuierliches intraoperatives Neuromonitoring, Signal des N. laryngeus recurrens beidseits bis OP-Ende erhalten",
+        "parathyroid_glands": "Drei Nebenschilddrüsen dargestellt und in situ belassen, eine devaskularisierte Nebenschilddrüse in den M. sternocleidomastoideus rechts autotransplantiert",
+        "intraoperative_finding": "Mehrere vergrößerte, derbe Lymphknoten paratracheal rechts",
+        "blood_loss_ml": 50
+      },
+      "documents": [
+        "op_bericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e06",
+      "type": "hospital_discharge",
+      "label": "Entlassung nach Thyreoidektomie",
+      "date": "2027-02-12",
+      "specialist": "endokrine_chirurgie",
+      "parameters": {
+        "diagnosis": "Papilläres Schilddrüsenkarzinom rechts, postoperativer Hypoparathyreoidismus",
+        "icd_code": "C73",
+        "secondary_diagnoses": [
+          "E89.2 Hypoparathyreoidismus nach medizinischen Maßnahmen",
+          "E89.0 Hypothyreose nach medizinischen Maßnahmen"
+        ],
+        "postoperative_course": "Am 1. postoperativen Tag periorale und digitale Kribbelparästhesien, Calcium 1,94 mmol/l, PTH 8 pg/ml; unter oraler Substitution beschwerdefrei. Postoperative Laryngoskopie: Stimmlippen beidseits regelrecht beweglich.",
+        "calcium_mmol_l": 2.08,
+        "discharge_medication": [
+          "Levothyroxin 125 µg 1-0-0 nüchtern",
+          "Calciumcarbonat 1000 mg 1-1-1",
+          "Calcitriol 0,25 µg 1-0-1"
+        ],
+        "recommendation": "Calciumkontrolle beim Hausarzt in 3–4 Tagen; Besprechung der Histologie in der interdisziplinären Tumorkonferenz"
+      },
+      "documents": [
+        "entlassungsbrief",
+        "medikationsplan"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e07",
+      "type": "pathology",
+      "label": "Histologie Thyreoidektomiepräparat und zentrale Lymphknoten",
+      "date": "2027-02-16",
+      "specialist": "pathologie",
+      "parameters": {
+        "histology": "Papilläres Schilddrüsenkarzinom, klassischer Typ, rechter Lappen, 23 mm, unifokal, ohne extrathyreoidale Ausdehnung",
+        "tnm": "pT2 pN1a (3/12) L0 V0 Pn0 R0",
+        "lymph_nodes": "3 von 12 zentralen Lymphknoten mit Metastasen (größte 7 mm), keine extranodale Ausbreitung",
+        "uicc_stage": "I",
+        "braf_v600e": "nachgewiesen",
+        "diagnosis": "Papilläres Schilddrüsenkarzinom",
+        "icd_code": "C73"
+      },
+      "documents": [
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e08",
+      "type": "tumor_board",
+      "label": "Interdisziplinäre Tumorkonferenz: adjuvante RIT",
+      "date": "2027-03-03",
+      "specialist": "nuklearmedizin",
+      "parameters": {
+        "diagnosis": "Papilläres Schilddrüsenkarzinom rechts pT2 pN1a (3/12) cM0 R0, UICC I, BRAF V600E",
+        "icd_code": "C73",
+        "risk_assessment": "Intermediäres Rezidivrisiko (ATA)",
+        "recommendation": "Adjuvante Radioiodtherapie mit 3,7 GBq I-131 nach rhTSH-Stimulation unter fortgeführter Levothyroxin-Einnahme; anschließend TSH-Zielbereich 0,1–0,5 mU/l",
+        "participants": [
+          "nuklearmedizin",
+          "endokrine_chirurgie",
+          "pathologie",
+          "endokrinologie",
+          "radiologie",
+          "strahlentherapie"
+        ]
+      },
+      "documents": [
+        "tumorkonferenzprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e09",
+      "type": "radionuclide_therapy",
+      "label": "Radioiodtherapie (3,7 GBq I-131) unter rhTSH",
+      "date": "2027-03-17",
+      "specialist": "nuklearmedizin",
+      "parameters": {
+        "activity_gbq": 3.7,
+        "stimulation": "rhTSH 0,9 mg i.m. am 15. und 16.03.2027",
+        "preparation": "Iodarme Kost über 2 Wochen, kein iodhaltiges Kontrastmittel in den letzten 3 Monaten",
+        "tsh_mu_l": 118,
+        "thyroglobulin_ng_ml": 1.9,
+        "tg_antibodies": "negativ",
+        "post_therapy_scan": "Ganzkörperszintigraphie mit SPECT/CT am 19.03.2027: Restgewebe im Schilddrüsenbett beidseits, kein Hinweis auf iodspeichernde Lymphknoten- oder Fernmetastasen",
+        "inpatient_days": 3,
+        "side_effects": "Leichte Sialadenitis, unter symptomatischer Therapie rückläufig"
+      },
+      "documents": [
+        "entlassungsbrief",
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e10",
+      "type": "followup",
+      "label": "Erfolgskontrolle nach RIT mit rhTSH-Stimulation",
+      "date": "2027-11-19",
+      "specialist": "nuklearmedizin",
+      "parameters": {
+        "diagnostic_scan": "I-131-Ganzkörperszintigraphie (185 MBq) nach rhTSH: kein iodspeicherndes Gewebe",
+        "tg_stimulated": "< 0,1 ng/ml",
+        "tg_antibodies": "negativ",
+        "neck_ultrasound": "Schilddrüsenloge frei, keine suspekten zervikalen Lymphknoten",
+        "response": "Exzellentes Ansprechen",
+        "tsh_basal_mu_l": 0.21,
+        "therapy_change": "Levothyroxin von 125 auf 112 µg reduziert, neuer TSH-Zielbereich 0,5–2,0 mU/l",
+        "parathyroid_function": "Calcium und Calcitriol bis 06/2027 ausgeschlichen; Calcium 2,31 mmol/l, PTH 33 pg/ml (transienter Hypoparathyreoidismus)"
+      },
+      "documents": [
+        "befundbericht",
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e11",
+      "type": "followup",
+      "label": "Nachsorge differenziertes Schilddrüsenkarzinom",
+      "date": "2028-11-21",
+      "specialist": "nuklearmedizin",
+      "parameters": {
+        "tg_basal": "< 0,1 ng/ml (hochsensitiver Assay)",
+        "tg_antibodies": "negativ",
+        "tsh_mu_l": 0.84,
+        "levothyroxine_ug": 112,
+        "neck_ultrasound": "Unauffällige Schilddrüsenloge, keine suspekten Lymphknoten",
+        "assessment": "Kein Anhalt für Rezidiv",
+        "next_visit": "in 12 Monaten"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 0
+    },
+    {
+      "id": "e12",
+      "type": "followup",
+      "label": "Nachsorge differenziertes Schilddrüsenkarzinom",
+      "date": "2029-11-20",
+      "specialist": "nuklearmedizin",
+      "parameters": {
+        "tg_basal": "1,7 ng/ml (Vorwert 11/2028 < 0,1 ng/ml)",
+        "tg_antibodies": "negativ",
+        "tsh_mu_l": 0.92,
+        "levothyroxine_ug": 112,
+        "neck_ultrasound": "Lateral rechts Level III rundlicher Lymphknoten 15 × 10 mm ohne Hilus, mit Mikroverkalkungen, zystischen Anteilen und peripherer Vaskularisation; weiterer Lymphknoten Level IV rechts 7 mm, unklar",
+        "assessment": "V.a. lokoregionäres Lymphknotenrezidiv lateral rechts",
+        "recommendation": "Feinnadelpunktion mit Thyreoglobulinbestimmung im Spülpunktat"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 1
+    },
+    {
+      "id": "e13",
+      "type": "biopsy",
+      "label": "FNP Lymphknoten Level III rechts mit Tg-Washout",
+      "date": "2029-12-04",
+      "specialist": "nuklearmedizin",
+      "parameters": {
+        "technique": "Sonographisch gesteuerte FNP 25G, Nadelspülung in 1 ml NaCl 0,9 %",
+        "cytology": "Metastase eines papillären Schilddrüsenkarzinoms",
+        "tg_washout_ng_ml": 2860,
+        "diagnosis": "Lymphknotenmetastase lateral zervikal rechts bei papillärem Schilddrüsenkarzinom",
+        "icd_code": "C77.0"
+      },
+      "documents": [
+        "zytologiebefund",
+        "laborbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e14",
+      "type": "tumor_board",
+      "label": "Tumorkonferenz: Lymphknotenrezidiv lateral rechts",
+      "date": "2029-12-12",
+      "specialist": "endokrine_chirurgie",
+      "parameters": {
+        "diagnosis": "Lokoregionäres Lymphknotenrezidiv lateral zervikal rechts eines papillären Schilddrüsenkarzinoms (ED 01/2027, Z.n. Thyreoidektomie mit zentraler Lymphknotendissektion und RIT 03/2027)",
+        "icd_code": "C77.0",
+        "staging": "MRT Hals: zwei suspekte Lymphknoten Level III und IV rechts (15 und 8 mm), zentral kein Rezidiv. CT Thorax nativ (ohne iodhaltiges KM): keine pulmonalen Rundherde.",
+        "recommendation": "Kompartmentorientierte laterale Lymphknotendissektion rechts (Kompartiment 2) unter Neuromonitoring, anschließend erneute Radioiodtherapie nach rhTSH; TSH-Suppression < 0,1 mU/l bis zur Reevaluation",
+        "participants": [
+          "endokrine_chirurgie",
+          "nuklearmedizin",
+          "radiologie",
+          "pathologie",
+          "endokrinologie",
+          "strahlentherapie"
+        ]
+      },
+      "documents": [
+        "tumorkonferenzprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e15",
+      "type": "surgery",
+      "label": "Laterale Lymphknotendissektion rechts (Kompartiment 2)",
+      "date": "2030-01-15",
+      "specialist": "endokrine_chirurgie",
+      "parameters": {
+        "procedure": "Selektive laterale Neck Dissection rechts (Level IIa, III, IV und Vb) unter Neuromonitoring",
+        "histology": "2 von 26 Lymphknoten mit Metastasen eines papillären Schilddrüsenkarzinoms (größte 16 mm), keine extranodale Ausbreitung",
+        "postoperative_course": "Komplikationslos; N. accessorius und N. phrenicus intakt, kein Chylusleck; Entlassung am 3. postoperativen Tag"
+      },
+      "documents": [
+        "op_bericht",
+        "pathologiebericht",
+        "entlassungsbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e16",
+      "type": "radionuclide_therapy",
+      "label": "Zweite Radioiodtherapie (5,5 GBq I-131) unter rhTSH",
+      "date": "2030-03-06",
+      "specialist": "nuklearmedizin",
+      "parameters": {
+        "indication": "Z.n. lateraler Lymphknotendissektion rechts bei Lymphknotenrezidiv",
+        "activity_gbq": 5.5,
+        "stimulation": "rhTSH 0,9 mg i.m. am 04. und 05.03.2030",
+        "thyroglobulin_ng_ml": 0.9,
+        "tg_antibodies": "negativ",
+        "post_therapy_scan": "SPECT/CT: keine pathologische Iodspeicherung zervikal, mediastinal oder pulmonal",
+        "levothyroxine_ug": 137,
+        "tsh_target": "< 0,1 mU/l",
+        "plan": "Reevaluation mit Halssonographie und Thyreoglobulin in 6 Monaten"
+      },
+      "documents": [
+        "entlassungsbrief",
+        "befundbericht"
+      ],
+      "repeat_index": null
+    }
+  ]
+}

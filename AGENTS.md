@@ -7,7 +7,7 @@ What each folder holds: [repository](README.md#repository). Where new things go:
 - `crawler/src/crawler/sources/`: a new data source; also add its name to `SourceName` (crawler and matcher) and to the `source` checks in `db/init/` (new numbered file)
 - `crawler/topics/`: a new disease or field to crawl, one YAML file each ([topic files](crawler/README.md#topic-files))
 - `matcher/algorithms/<name>/`: a new matching approach ([add an approach](matcher/algorithms/README.md#add-an-approach))
-- `matcher/core/`, `matcher/db/`, `matcher/download/`: code that several matcher packages share (contracts, database access, full-text downloads)
+- `matcher/core/`, `matcher/db/`, `matcher/download/`, `matcher/terminology/`: code that several matcher packages share (contracts, database access, full-text downloads, MeSH and ICD-10 lookup)
 - `matcher/mcp-server/src/`: the MCP tools
 - `debug/web/`: a new screen of the debug UI, one script each ([debug UI](debug/README.md))
 - `db/init/`: changes to the shared tables, in a new numbered file ([schema changes](Documentation/design/storage.md#schema-changes)); an approach keeps its own tables in its package

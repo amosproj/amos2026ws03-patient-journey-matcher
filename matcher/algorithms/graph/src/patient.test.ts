@@ -368,7 +368,7 @@ test("unresolved nodes merge by name; a name with nothing left merges with nothi
     nodes: [
       node("a", "Knochenschmerz links", "Symptom"),
       node("b", "knochenschmerz  LINKS", "Symptom"),
-      node("c", "(C61)", "Symptom"),
+      node("c", "(Z99)", "Symptom"),
       node("d", "–", "LabTest"),
     ],
     edges: [edge("e", "RELATES_TO", "c", "d")],
@@ -431,4 +431,26 @@ test("an unresolved name with a leading code is the same entity without it, and 
     ["name:seltene krankheit", ["a", "b"]],
   ]);
   expect(graph.facts[0]).toMatchObject({ status: "suspected" });
+});
+
+test("of an overlong node name or fact sentence only the start is kept", () => {
+  const long = `Prostatakarzinom${" lorem".repeat(1_000)}`;
+  const { entities, facts } = normalizePatientGraph({
+    nodes: [
+      { uuid: "p", name: "P", labels: ["Patient"] },
+      { uuid: "d", name: long, labels: ["Diagnosis"] },
+    ],
+    edges: [
+      {
+        uuid: "e",
+        name: "HAS_DIAGNOSIS",
+        source_node_uuid: "p",
+        target_node_uuid: "d",
+        fact: long,
+        valid_at: "2026-01-01",
+      },
+    ],
+  });
+  expect(entities[0].names[0]).toHaveLength(2_000);
+  expect(facts[0].text).toHaveLength(2_000);
 });

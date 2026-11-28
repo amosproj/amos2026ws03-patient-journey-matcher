@@ -80,7 +80,8 @@ export async function createHarness(url: string) {
     });
     const approaches = createApproaches({ db: db.pool, downloader });
     const server = createMcpHttpServer(
-      createMatchService(approaches, createDocumentStore(db.pool)),
+      // No answer cache: the tests match the same journey again after each index change.
+      createMatchService(approaches, createDocumentStore(db.pool), 0),
     );
     cleanup.push(async () => {
       server.closeAllConnections();
@@ -200,7 +201,10 @@ export async function createHarness(url: string) {
       async match(args = {}) {
         const result = await client.callTool({
           name: "match_journey",
-          arguments: { journey: JOURNEY, ...args },
+          arguments: {
+            ...("graph" in args ? {} : { journey: JOURNEY }),
+            ...args,
+          },
         });
         expect(result.isError).not.toBe(true);
         return matchResultSchema.parse(result.structuredContent);

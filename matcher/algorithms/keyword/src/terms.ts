@@ -1,4 +1,10 @@
 import type { JourneyEvent } from "@matcher/core";
+import {
+  mesh,
+  nameIndex,
+  normalizeName,
+  phraseLookup,
+} from "@matcher/terminology";
 
 // journey vocabulary: translations, skip words, negations, generic terms
 import german from "../data/german-terms.json" with { type: "json" };
@@ -19,13 +25,15 @@ const NEGATIONS = Object.entries(german.negations)
   .sort((a, b) => b.words.length - a.words.length);
 // not the comma of "87,7" or the point of "11.25"
 const CLAUSE_END = /[;:()]|[,.]\s|\s[–—-]\s/;
+// for the words the list does not know
+const GERMAN_MESH = phraseLookup(germanHeadings());
 
 /** The words of the English terms, e.g. "radical" and "prostatectomy". */
 export const ENGLISH_WORDS = [...ENGLISH.values()].flatMap((term) =>
   term.split(" "),
 );
 
-/** A word of an event and the search term it becomes; `null` for skipped words and numbers. */
+/** A word of an event, or a German MeSH name of several, and the search term it becomes; `null` for skipped words and numbers. */
 export interface EventWord {
   word: string;
   term: string | null;
@@ -90,16 +98,45 @@ function clauseWords(clause: string): EventWord[] {
   const first = (scope: Scope) =>
     scopes.findIndex((found, at) => found === scope && !cancelled.has(at));
   const negatedFrom = first("clause") === -1 ? first("following") : 0;
-  return words.map((word, at) => {
+  const negated = (at: number) =>
+    (negatedFrom !== -1 && at >= negatedFrom) || negatedNext.has(at);
+  const result = words.map((word, at): EventWord => {
     if (scopes[at]) return { word, term: null };
-    if ((negatedFrom !== -1 && at >= negatedFrom) || negatedNext.has(at)) {
-      return { word, term: null, negated: true };
-    }
+    if (negated(at)) return { word, term: null, negated: true };
     return {
       word,
       term: searched(word, at) ? (ENGLISH.get(word) ?? word) : null,
     };
   });
+  // "" matches no name: a phrase never spans a known, skipped or negated word
+  const unknown = words.map((word, at) =>
+    searched(word, at) && !negated(at) && !ENGLISH.has(word)
+      ? normalizeName(word)
+      : "",
+  );
+  for (const { value, start, end } of GERMAN_MESH(unknown).toReversed()) {
+    const word = words.slice(start, end).join(" ");
+    if (value !== word)
+      result.splice(start, end - start, { word, term: value });
+  }
+  return result;
+}
+
+/** German MeSH names, each to its English heading, both normalized; none in capitals. */
+function germanHeadings(): Map<string, string> {
+  const entries = Object.entries(mesh.german).map(([id, names]) => ({
+    id,
+    heading: normalizeName(
+      (mesh.diseases[id] ?? mesh.chemicals[id] ?? mesh.procedures[id])[0],
+    ),
+    // abbreviations (COPD, PET-CT) stay as papers write them
+    names: names.filter((name) => /\p{Ll}/u.test(name)),
+  }));
+  const headings = new Map<string, string>();
+  for (const [name, entry] of nameIndex(entries, (entry) => entry.names)) {
+    if (entry) headings.set(name, entry.heading);
+  }
+  return headings;
 }
 
 /** The English search terms of an event, each once. */

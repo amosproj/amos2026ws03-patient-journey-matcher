@@ -1,6 +1,18 @@
 {
-  "_comment": "Tier 2 of the entity mapping (Documentation/design/graph-normalization.md#entities): names of the generated patients, German and English, to the IDs PubTator3 uses. IDs checked 20. and 22.11.2026 with the PubTator3 entity lookup and the NLM MeSH lookup. Names are matched whole, after normalizeName; add a row for a missing name instead of matching looser.",
+  "_comment": "Tier 2 of the entity mapping (Documentation/design/graph-normalization.md#entities): names of the generated patients, German and English, to the IDs PubTator3 uses. IDs checked 20. and 22.11.2026 with the PubTator3 entity lookup and the NLM MeSH lookup. Names are matched whole, after normalizeName; add a row for a missing name instead of matching looser. Optional fields: `also` (other IDs of the concept on papers), `broader` and `narrower` (concepts a paper may name instead), `diagnostic` (a procedure that finds), `qualifier` (the MeSH qualifier of a diagnosis its papers carry), `role` (instead of the one of its type), `sex` (of a diagnosis) and `implies` (a diagnosis that giving it shows, for journeys without one).",
   "concepts": [
+    {
+      "id": "mesh:D001943",
+      "type": "disease",
+      "name": "Breast Neoplasms",
+      "names": ["Mammakarzinom", "Mammacarcinom"]
+    },
+    {
+      "id": "mesh:D008175",
+      "type": "disease",
+      "name": "Lung Neoplasms",
+      "names": ["Lungenkarzinom", "Bronchialkarzinom"]
+    },
     {
       "id": "mesh:D011471",
       "type": "disease",
@@ -15,11 +27,13 @@
         "prostatakarzinom",
         "prostata karzinom",
         "adenokarzinom der prostata",
-        "pca",
         "hormone sensitive prostate cancer",
         "metastatic hormone sensitive prostate cancer",
-        "mhspc"
-      ]
+        "mhspc",
+        "mcspc"
+      ],
+      "narrower": ["mesh:D064129"],
+      "sex": "male"
     },
     {
       "id": "mesh:D064129",
@@ -31,8 +45,10 @@
         "crpc",
         "mcrpc",
         "kastrationsresistentes prostatakarzinom",
-        "kastrationsresistenz"
-      ]
+        "kastrationsresistenz",
+        "nmcrpc"
+      ],
+      "sex": "male"
     },
     {
       "id": "mesh:D009364",
@@ -41,7 +57,12 @@
       "names": [
         "local recurrence",
         "lokalrezidiv",
-        "lokalrezidiv in der prostataloge"
+        "lokalrezidiv in der prostataloge",
+        "biochemical recurrence",
+        "biochemisches rezidiv",
+        "psa recurrence",
+        "fruhes rezidiv",
+        "early recurrence"
       ]
     },
     {
@@ -77,7 +98,8 @@
         "lymph node involvement",
         "lymphknotenmetastasen",
         "lymphknotenbefall"
-      ]
+      ],
+      "role": "stage"
     },
     {
       "id": "mesh:D008113",
@@ -89,7 +111,8 @@
       "id": "mesh:D010146",
       "type": "disease",
       "name": "Pain",
-      "names": ["pain", "bone pain", "schmerzen", "knochenschmerzen"]
+      "names": ["pain", "bone pain", "schmerzen", "knochenschmerzen"],
+      "also": ["mesh:D000072716"]
     },
     {
       "id": "mesh:D005221",
@@ -109,61 +132,83 @@
         "eligard",
         "lupron",
         "trenantone"
-      ]
+      ],
+      "broader": ["mesh:D000726", "mesh:D007987"]
     },
     {
       "id": "mesh:D017273",
       "type": "chemical",
       "name": "Goserelin",
-      "names": ["goserelin", "zoladex"]
+      "names": ["goserelin", "zoladex"],
+      "broader": ["mesh:D000726", "mesh:D007987"]
     },
     {
       "id": "mesh:C089740",
       "type": "chemical",
       "name": "abiraterone",
-      "names": ["abiraterone", "abirateron", "zytiga"]
+      "names": ["abiraterone", "abirateron", "zytiga"],
+      "also": ["mesh:D000069501"],
+      "implies": "mesh:D011471"
     },
     {
       "id": "mesh:D000069501",
       "type": "chemical",
       "name": "Abiraterone Acetate",
-      "names": ["abiraterone acetate", "abirateronacetat"]
+      "names": ["abiraterone acetate", "abirateronacetat"],
+      "also": ["mesh:C089740"],
+      "implies": "mesh:D011471"
     },
     {
       "id": "mesh:C540278",
       "type": "chemical",
       "name": "enzalutamide",
-      "names": ["enzalutamide", "enzalutamid", "xtandi"]
+      "names": ["enzalutamide", "enzalutamid", "xtandi"],
+      "broader": ["mesh:D059002"],
+      "implies": "mesh:D011471"
     },
     {
       "id": "mesh:C053541",
       "type": "chemical",
       "name": "bicalutamide",
-      "names": ["bicalutamide", "bicalutamid", "casodex"]
+      "names": ["bicalutamide", "bicalutamid", "casodex"],
+      "broader": ["mesh:D059002", "mesh:D000726"],
+      "implies": "mesh:D011471"
     },
     {
       "id": "mesh:C531550",
       "type": "chemical",
       "name": "olaparib",
-      "names": ["olaparib", "lynparza"]
+      "names": ["olaparib", "lynparza"],
+      "broader": ["mesh:D000067856"]
     },
     {
       "id": "mesh:D000077143",
       "type": "chemical",
       "name": "Docetaxel",
-      "names": ["docetaxel", "taxotere"]
+      "names": ["docetaxel", "taxotere"],
+      "broader": ["mesh:D043823"]
     },
     {
       "id": "mesh:C552428",
       "type": "chemical",
       "name": "cabazitaxel",
-      "names": ["cabazitaxel", "jevtana"]
+      "names": ["cabazitaxel", "jevtana"],
+      "broader": ["mesh:D043823"],
+      "implies": "mesh:D011471"
     },
     {
       "id": "mesh:C000615150",
       "type": "chemical",
       "name": "Radium-223",
-      "names": ["radium 223", "radium 223 dichloride", "xofigo"]
+      "names": [
+        "radium 223",
+        "radium 223 dichloride",
+        "xofigo",
+        "radium ra 223 dichloride"
+      ],
+      "also": ["mesh:C581106", "mesh:D011883"],
+      "broader": ["mesh:D019275"],
+      "implies": "mesh:D011471"
     },
     {
       "id": "mesh:D011241",
@@ -175,7 +220,8 @@
       "id": "mesh:D013739",
       "type": "chemical",
       "name": "Testosterone",
-      "names": ["testosterone", "testosteron"]
+      "names": ["testosterone", "testosteron"],
+      "role": "finding"
     },
     {
       "id": "mesh:D000726",
@@ -188,8 +234,11 @@
         "androgenentzug",
         "androgenentzugstherapie",
         "hormone therapy",
-        "hormontherapie"
-      ]
+        "hormontherapie",
+        "androgendeprivation",
+        "androgen deprivation treatment"
+      ],
+      "also": ["mesh:D018931"]
     },
     {
       "id": "ncbigene:354",
@@ -205,20 +254,29 @@
         "psa level",
         "elevated psa level",
         "psa increase",
-        "psa anstieg"
-      ]
+        "psa anstieg",
+        "psa lab test",
+        "psa kontrolle",
+        "psa test",
+        "psa gesamt",
+        "psa wert",
+        "psa erstbefund"
+      ],
+      "also": ["mesh:D017430"]
     },
     {
       "id": "ncbigene:675",
       "type": "gene",
       "name": "BRCA2",
-      "names": ["brca2", "brca2 mutation"]
+      "names": ["brca2", "brca2 mutation"],
+      "also": ["mesh:D024682", "mesh:D024522"]
     },
     {
       "id": "ncbigene:672",
       "type": "gene",
       "name": "BRCA1",
-      "names": ["brca1", "brca1 mutation"]
+      "names": ["brca1", "brca1 mutation"],
+      "also": ["mesh:D019313", "mesh:D019398"]
     },
     {
       "id": "mesh:D011468",
@@ -232,8 +290,11 @@
         "rarp",
         "ralp",
         "radikale prostatektomie",
-        "roboterassistierte radikale prostatektomie"
-      ]
+        "roboterassistierte radikale prostatektomie",
+        "robotic prostatectomy"
+      ],
+      "qualifier": "Q000601",
+      "implies": "mesh:D011471"
     },
     {
       "id": "mesh:D011878",
@@ -243,19 +304,30 @@
         "radiotherapy",
         "radiation therapy",
         "salvage radiotherapy",
-        "adjuvant radiotherapy",
         "rt",
         "salvage rt",
         "strahlentherapie",
         "bestrahlung",
-        "salvage bestrahlung"
+        "salvage bestrahlung",
+        "perkutane strahlentherapie",
+        "radiotherapie"
+      ],
+      "qualifier": "Q000532",
+      "also": [
+        "mesh:D020266",
+        "mesh:D061089",
+        "mesh:D011879",
+        "mesh:D018714",
+        "mesh:D050397"
       ]
     },
     {
       "id": "mesh:D050397",
       "type": "procedure",
       "name": "Radiotherapy, Intensity-Modulated",
-      "names": ["imrt", "intensity modulated radiotherapy"]
+      "names": ["imrt", "intensity modulated radiotherapy"],
+      "qualifier": "Q000532",
+      "broader": ["mesh:D011878"]
     },
     {
       "id": "mesh:D001706",
@@ -269,7 +341,10 @@
         "prostatastanzbiopsie",
         "prostatastanzbiopsien",
         "transrektale stanzbiopsie der prostata"
-      ]
+      ],
+      "diagnostic": true,
+      "also": ["mesh:D061705", "mesh:D062005"],
+      "qualifier": "Q000473"
     },
     {
       "id": "mesh:D057832",
@@ -287,7 +362,10 @@
       "id": "mesh:D000072078",
       "type": "procedure",
       "name": "Positron Emission Tomography Computed Tomography",
-      "names": ["pet ct", "psma pet ct", "psma pet"]
+      "names": ["pet ct", "psma pet ct", "psma pet"],
+      "diagnostic": true,
+      "also": ["mesh:D049268"],
+      "qualifier": "Q000000981"
     },
     {
       "id": "mesh:D008279",
@@ -300,8 +378,14 @@
         "multiparametric mri",
         "mpmri of the prostate",
         "mrt der prostata",
-        "multiparametrische mrt der prostata"
-      ]
+        "multiparametrische mrt der prostata",
+        "mri of the prostate",
+        "multiparametrische mrt",
+        "prostata mrt"
+      ],
+      "diagnostic": true,
+      "also": ["mesh:D000081364"],
+      "qualifier": "Q000000981"
     },
     {
       "id": "mesh:D062885",
@@ -314,6 +398,302 @@
         "dauerkatheter",
         "blasenkatheter"
       ]
+    },
+    {
+      "id": "mesh:D018714",
+      "type": "procedure",
+      "name": "Radiotherapy, Adjuvant",
+      "names": [
+        "adjuvant radiotherapy",
+        "adjuvante radiotherapie",
+        "adjuvante strahlentherapie",
+        "adjuvante bestrahlung"
+      ],
+      "broader": ["mesh:D011878"],
+      "qualifier": "Q000532"
+    },
+    {
+      "id": "mesh:D014057",
+      "type": "procedure",
+      "name": "Tomography, X-Ray Computed",
+      "names": [
+        "computed tomography",
+        "ct",
+        "computed tomography ct",
+        "computertomographie",
+        "staging ct",
+        "ct thorax abdomen becken"
+      ],
+      "diagnostic": true,
+      "qualifier": "Q000000981"
+    },
+    {
+      "id": "mesh:D011877",
+      "type": "procedure",
+      "name": "Radionuclide Imaging",
+      "names": [
+        "bone scan",
+        "bone scintigraphy",
+        "skelettszintigraphie",
+        "skelettszintigrafie",
+        "knochenszintigraphie",
+        "szintigraphie"
+      ],
+      "diagnostic": true,
+      "qualifier": "Q000000981"
+    },
+    {
+      "id": "mesh:D008197",
+      "type": "procedure",
+      "name": "Lymph Node Excision",
+      "names": [
+        "lymphadenectomy",
+        "lymph node dissection",
+        "pelvic lymph node dissection",
+        "lymphadenektomie",
+        "bilateral extended lymphadenectomy",
+        "pelvine lymphadenektomie",
+        "plnd"
+      ],
+      "qualifier": "Q000601"
+    },
+    {
+      "id": "mesh:D060787",
+      "type": "finding",
+      "name": "Neoplasm Grading",
+      "names": [
+        "gleason score",
+        "gleason",
+        "gleason grading",
+        "isup grade",
+        "grade group",
+        "gleason summe"
+      ]
+    },
+    {
+      "id": "mesh:D000072662",
+      "type": "finding",
+      "name": "Margins of Excision",
+      "names": [
+        "positive surgical margin",
+        "positive margin",
+        "surgical margin",
+        "r1 resection",
+        "positiver schnittrand",
+        "schnittrand"
+      ]
+    },
+    {
+      "id": "mesh:D014549",
+      "type": "disease",
+      "name": "Urinary Incontinence",
+      "names": [
+        "urinary incontinence",
+        "incontinence",
+        "harninkontinenz",
+        "inkontinenz",
+        "stress urinary incontinence",
+        "belastungsinkontinenz"
+      ]
+    },
+    {
+      "id": "mesh:D007172",
+      "type": "disease",
+      "name": "Erectile Dysfunction",
+      "names": [
+        "erectile dysfunction",
+        "erektile dysfunktion",
+        "impotence",
+        "impotenz"
+      ]
+    },
+    {
+      "id": "mesh:D019584",
+      "type": "disease",
+      "name": "Hot Flashes",
+      "names": ["hot flashes", "hot flushes", "hitzewallungen"]
+    },
+    {
+      "id": "mesh:D010024",
+      "type": "disease",
+      "name": "Osteoporosis",
+      "names": ["osteoporosis", "osteoporose", "osteopenia", "osteopenie"]
+    },
+    {
+      "id": "mesh:D015519",
+      "type": "finding",
+      "name": "Bone Density",
+      "names": [
+        "bone density",
+        "bone mineral density",
+        "knochendichte",
+        "knochendichtemessung",
+        "dxa",
+        "dexa",
+        "osteodensitometrie"
+      ]
+    },
+    {
+      "id": "mesh:D015431",
+      "type": "disease",
+      "name": "Weight Loss",
+      "names": ["weight loss", "gewichtsverlust", "gewichtsabnahme"]
+    },
+    {
+      "id": "mesh:D000740",
+      "type": "disease",
+      "name": "Anemia",
+      "names": ["anemia", "anamie", "anaemia"]
+    },
+    {
+      "id": "mesh:D010166",
+      "type": "procedure",
+      "name": "Palliative Care",
+      "names": [
+        "palliative care",
+        "best supportive care",
+        "bsc",
+        "palliativversorgung",
+        "palliative therapie",
+        "palliativmedizin"
+      ]
+    },
+    {
+      "id": "mesh:D000067856",
+      "type": "chemical",
+      "name": "Poly(ADP-ribose) Polymerase Inhibitors",
+      "names": ["parp inhibitor", "parp inhibitors", "parp hemmer"]
+    },
+    {
+      "id": "mesh:D059002",
+      "type": "chemical",
+      "name": "Androgen Receptor Antagonists",
+      "names": [
+        "androgen receptor antagonist",
+        "androgen receptor inhibitor",
+        "androgen receptor pathway inhibitor",
+        "arpi",
+        "antiandrogen",
+        "antiandrogens"
+      ]
+    },
+    {
+      "id": "mesh:D007987",
+      "type": "chemical",
+      "name": "Gonadotropin-Releasing Hormone",
+      "names": [
+        "lhrh agonist",
+        "gnrh agonist",
+        "lhrh analogue",
+        "gnrh analogue",
+        "lhrh analog",
+        "gnrh analog"
+      ]
+    },
+    {
+      "id": "mesh:D043823",
+      "type": "chemical",
+      "name": "Taxoids",
+      "names": ["taxane", "taxanes", "taxan"]
+    },
+    {
+      "id": "mesh:D019275",
+      "type": "chemical",
+      "name": "Radiopharmaceuticals",
+      "names": [
+        "radiopharmaceutical",
+        "radionuclide therapy",
+        "radioligand therapy",
+        "radioligandentherapie"
+      ]
+    },
+    {
+      "id": "mesh:D050071",
+      "type": "chemical",
+      "name": "Bone Density Conservation Agents",
+      "names": [
+        "bone protective agent",
+        "antiresorptive therapy",
+        "knochenschutz"
+      ]
+    },
+    {
+      "id": "mesh:C572045",
+      "type": "chemical",
+      "name": "apalutamide",
+      "names": ["apalutamide", "apalutamid", "erleada"],
+      "broader": ["mesh:D059002"],
+      "implies": "mesh:D011471"
+    },
+    {
+      "id": "mesh:C000607739",
+      "type": "chemical",
+      "name": "darolutamide",
+      "names": ["darolutamide", "darolutamid", "nubeqa"],
+      "broader": ["mesh:D059002"],
+      "implies": "mesh:D011471"
+    },
+    {
+      "id": "mesh:C561634",
+      "type": "chemical",
+      "name": "relugolix",
+      "names": ["relugolix", "orgovyx"],
+      "broader": ["mesh:D000726"]
+    },
+    {
+      "id": "mesh:D000069448",
+      "type": "chemical",
+      "name": "Denosumab",
+      "names": ["denosumab", "xgeva", "prolia"],
+      "broader": ["mesh:D050071"]
+    },
+    {
+      "id": "mesh:D000077211",
+      "type": "chemical",
+      "name": "Zoledronic Acid",
+      "names": ["zoledronic acid", "zoledronsaure", "zometa", "zoledronat"],
+      "broader": ["mesh:D050071"]
+    },
+    {
+      "id": "mesh:D000970",
+      "type": "chemical",
+      "name": "Antineoplastic Agents",
+      "names": ["chemotherapy", "chemotherapie", "systemic chemotherapy"]
+    },
+    {
+      "id": "mesh:D001918",
+      "type": "procedure",
+      "name": "Brachytherapy",
+      "names": ["brachytherapie"],
+      "broader": ["mesh:D011878"],
+      "qualifier": "Q000532"
+    },
+    {
+      "id": "mesh:D005820",
+      "type": "procedure",
+      "name": "Genetic Testing",
+      "names": ["genetische testung", "keimbahn und somatische genetik"],
+      "diagnostic": true
+    },
+    {
+      "id": "mesh:D000469",
+      "name": "Alkaline Phosphatase",
+      "type": "finding",
+      "role": "test",
+      "names": ["alkalische phosphatase", "alp"]
+    },
+    {
+      "id": "mesh:D007770",
+      "name": "L-Lactate Dehydrogenase",
+      "type": "finding",
+      "role": "test",
+      "names": ["lactate dehydrogenase", "laktatdehydrogenase", "ldh"]
+    },
+    {
+      "id": "mesh:D059408",
+      "type": "procedure",
+      "name": "Pain Management",
+      "names": ["schmerztherapie", "schmerzbehandlung", "pain control"]
     }
   ]
 }

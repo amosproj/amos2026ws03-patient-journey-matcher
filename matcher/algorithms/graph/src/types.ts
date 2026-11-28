@@ -18,7 +18,7 @@ export const ENTITY_TYPES = [
 export type EntityType = (typeof ENTITY_TYPES)[number];
 
 /** How a patient entity got its ID; `null` when it has none. PubTator3 entities: `"pubtator"`. */
-export type ResolvedBy = "icd" | "curated" | "pubtator" | null;
+export type ResolvedBy = "icd" | "curated" | "mesh" | "pubtator" | null;
 
 /** Relations between two entities. The symmetric ones have no direction, see `SYMMETRIC`. */
 export const PREDICATES = [
@@ -67,6 +67,8 @@ export type NormalizedEntity = {
   name: string;
   /** All names it was written with, as written. */
   names: string[];
+  /** PubTator3 annotated this entity in the title. */
+  inTitle?: boolean;
   resolvedBy: ResolvedBy;
   /** Patient node labels (`Medication`) or PubTator3 types (`Chemical`) it came with. */
   labels: string[];
@@ -74,7 +76,7 @@ export type NormalizedEntity = {
   sources: string[];
 };
 
-export type Origin = {
+type Origin = {
   source: "patient" | "pubtator";
   /** Patient edge `uuid`, or `<pmid>:<relation id>`. */
   ref: string;
@@ -95,15 +97,19 @@ type Statement = {
   origin: Origin;
 };
 
-export type NormalizedRelation = Statement & {
+export type Triple = {
   subject: string;
   predicate: Predicate;
   object: string;
 };
 
+export type NormalizedRelation = Statement & Triple;
+
 export type PatientFact = Statement & {
   kind: FactKind;
   entity: string;
+  /** How this edge relates the condition to the patient, before synonymous nodes merge. */
+  conditionRole?: "diagnosis" | "symptom" | "allergy";
 };
 
 export type Skipped = { ref: string; type: string; reason: string };

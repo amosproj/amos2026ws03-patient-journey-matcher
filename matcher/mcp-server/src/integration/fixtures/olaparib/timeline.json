@@ -1,0 +1,24 @@
+{
+  "patient_id": "Synthetic patient",
+  "events": [
+    {
+      "id": "dx1",
+      "type": "diagnosis",
+      "label": "Breast cancer confirmed.",
+      "date": "2026-01-10"
+    },
+    {
+      "id": "dx2",
+      "type": "diagnosis",
+      "label": "Lung cancer confirmed.",
+      "date": "2026-01-10"
+    },
+    {
+      "id": "therapy",
+      "type": "systemic_therapy",
+      "label": "Olaparib started.",
+      "date": "2026-02-09",
+      "parameters": { "drug": "Olaparib" }
+    }
+  ]
+}

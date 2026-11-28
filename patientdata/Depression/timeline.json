@@ -1,0 +1,334 @@
+{
+  "patient_id": "Depression",
+  "pathway_id": "de01",
+  "start_date": "2027-01-18",
+  "events": [
+    {
+      "id": "e01",
+      "type": "consultation",
+      "label": "Hausärztliche Konsultation: Erschöpfung, Schlafstörungen, Niedergeschlagenheit",
+      "date": "2027-01-18",
+      "specialist": "hausarzt",
+      "parameters": {
+        "patient": "38 J., w, Grundschullehrerin, seit 09/2026 vom Partner getrennt lebend, 1 Kind (7 J.)",
+        "complaints": "seit ca. 8 Wochen gedrückte Stimmung, Freud- und Interessenverlust, Antriebsmangel, Ein- und Durchschlafstörungen mit Früherwachen, Konzentrationsstörungen, Appetitminderung (−4 kg)",
+        "phq9": 17,
+        "suicidality": "passive Todeswünsche, keine konkreten Suizidgedanken oder -pläne, glaubhaft absprachefähig",
+        "family_history": "Mutter mit rezidivierenden depressiven Episoden",
+        "somatic_history": "keine relevanten Vorerkrankungen; Dauermedikation: orale Kontrazeption",
+        "assessment": "V.a. mittelgradige depressive Episode",
+        "plan": "Basislabor; Überweisung zum Facharzt für Psychiatrie und Psychotherapie; Hinweis auf psychotherapeutische Sprechstunde",
+        "work_incapacity": "AU vorerst für 2 Wochen"
+      },
+      "documents": [
+        "behandlungsdokumentation",
+        "au_bescheinigung",
+        "ueberweisungsschein"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e02",
+      "type": "lab_test",
+      "label": "Basislabor zum Ausschluss somatischer Ursachen",
+      "date": "2027-01-20",
+      "specialist": "hausarzt",
+      "parameters": {
+        "tsh_display": "1,6 mU/l",
+        "hb_display": "13,2 g/dl",
+        "ferritin_display": "41 µg/l",
+        "vitamin_b12_display": "386 pg/ml",
+        "folate": "normwertig",
+        "hba1c_display": "5,2 %",
+        "crp_display": "< 0,5 mg/dl",
+        "electrolytes": "Natrium, Kalium, Calcium normwertig",
+        "liver_kidney": "GOT, GPT, γ-GT und Kreatinin normwertig",
+        "result": "kein Hinweis auf eine somatische Ursache"
+      },
+      "documents": [
+        "laborbefund"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e03",
+      "type": "diagnosis",
+      "label": "Fachpsychiatrische Erstuntersuchung: mittelgradige depressive Episode",
+      "date": "2027-02-03",
+      "specialist": "psychiatrie",
+      "parameters": {
+        "psychopathology": "wach, bewusstseinsklar, allseits orientiert; im Kontakt zugewandt, psychomotorisch verlangsamt; Konzentration und Auffassung subjektiv vermindert; formalgedanklich Grübeln mit Einengung auf Versagens- und Schuldthemen; kein Anhalt für Wahn, Sinnestäuschungen oder Ich-Störungen; Stimmung deutlich gedrückt, affektiv vermindert schwingungsfähig, Insuffizienzgefühle; Antrieb reduziert; Ein- und Durchschlafstörungen, Früherwachen, Appetitminderung; passive Todeswünsche, von Suizidalität glaubhaft distanziert",
+        "madrs": 27,
+        "bdi_ii": 26,
+        "protective_factors": "Verantwortung für das Kind, tragfähiges soziales Umfeld, Behandlungsbereitschaft",
+        "diagnosis": "Mittelgradige depressive Episode",
+        "icd_code": "F32.1",
+        "recommendation": "Kombination aus Antidepressivum und ambulanter Verhaltenstherapie, Psychoedukation"
+      },
+      "documents": [
+        "arztbrief",
+        "psychopathologischer_befund"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e04",
+      "type": "medication",
+      "label": "Beginn antidepressive Pharmakotherapie mit Sertralin",
+      "date": "2027-02-03",
+      "specialist": "psychiatrie",
+      "parameters": {
+        "drug": "Sertralin",
+        "dose": "50 mg 1-0-0",
+        "plan": "Kontrolle von Wirksamkeit und Verträglichkeit nach 4 Wochen, ggf. Dosissteigerung",
+        "information": "Aufklärung über Wirklatenz von 2–4 Wochen, mögliche initiale Übelkeit und Unruhe, sexuelle Funktionsstörungen, Vorgehen bei zunehmender Suizidalität (Notfallkontakt besprochen)",
+        "contraception": "orale Kontrazeption"
+      },
+      "documents": [
+        "medikationsplan"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e05",
+      "type": "followup",
+      "label": "Psychiatrische Verlaufskontrolle",
+      "date": "2027-03-03",
+      "specialist": "psychiatrie",
+      "parameters": {
+        "weeks_on_treatment": 4,
+        "madrs": 21,
+        "phq9": 13,
+        "side_effects": "anfängliche Übelkeit nach 1 Woche abgeklungen",
+        "suicidality": "keine Todeswünsche mehr",
+        "medication_change": "Sertralin auf 100 mg/d gesteigert",
+        "work_incapacity": "AU fortbestehend",
+        "psychotherapy": "psychotherapeutische Sprechstunde am 24.02.2027 erfolgt, Therapieplatz ab April zugesagt"
+      },
+      "documents": [
+        "verlaufsdokumentation"
+      ],
+      "repeat_index": 0
+    },
+    {
+      "id": "e06",
+      "type": "psychotherapy",
+      "label": "Beginn ambulante kognitive Verhaltenstherapie (Kurzzeittherapie)",
+      "date": "2027-04-12",
+      "specialist": "psychotherapie",
+      "parameters": {
+        "method": "kognitive Verhaltenstherapie im Einzelsetting, wöchentlich 50 min",
+        "approved_sessions": "Kurzzeittherapie 1 (12 Sitzungen) nach 3 probatorischen Sitzungen",
+        "goals": [
+          "Aktivitätsaufbau und Tagesstruktur",
+          "Bearbeitung dysfunktionaler Kognitionen (Versagens- und Schuldgedanken)",
+          "Verarbeitung der Trennung",
+          "Rückfallprophylaxe"
+        ],
+        "bdi_ii": 19
+      },
+      "documents": [
+        "konsiliarbericht",
+        "therapieantrag"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e07",
+      "type": "followup",
+      "label": "Psychiatrische Verlaufskontrolle",
+      "date": "2027-06-09",
+      "specialist": "psychiatrie",
+      "parameters": {
+        "weeks_on_treatment": 18,
+        "madrs": 8,
+        "phq9": 4,
+        "status": "Remission",
+        "medication": "Sertralin 100 mg/d, gut verträglich",
+        "psychotherapy": "Verhaltenstherapie läuft, Fortführung als Kurzzeittherapie 2 beantragt",
+        "work": "stufenweise Wiedereingliederung ab 14.06.2027",
+        "plan": "Erhaltungstherapie mit unveränderter Dosis für mindestens 6–12 Monate"
+      },
+      "documents": [
+        "verlaufsdokumentation"
+      ],
+      "repeat_index": 1
+    },
+    {
+      "id": "e08",
+      "type": "followup",
+      "label": "Psychiatrische Verlaufskontrolle",
+      "date": "2028-02-16",
+      "specialist": "psychiatrie",
+      "parameters": {
+        "status": "stabile Remission seit ca. 8 Monaten, volle Berufstätigkeit seit 08/2027",
+        "madrs": 4,
+        "psychotherapy": "Verhaltenstherapie nach 24 Sitzungen im Dezember 2027 regulär beendet",
+        "patient_preference": "Wunsch nach Absetzen des Antidepressivums",
+        "decision": "gemeinsame Entscheidung zum Ausschleichen von Sertralin über 8 Wochen (100 → 50 → 25 mg → Absetzen); Aufklärung über Rückfallrisiko und Frühwarnzeichen, Krisenplan",
+        "medication": "Sertralin 50 mg/d ab heute"
+      },
+      "documents": [
+        "verlaufsdokumentation",
+        "medikationsplan"
+      ],
+      "repeat_index": 2
+    },
+    {
+      "id": "e09",
+      "type": "relapse",
+      "label": "Rezidiv: schwere depressive Episode mit Suizidgedanken",
+      "date": "2028-10-23",
+      "specialist": "psychiatrie",
+      "parameters": {
+        "history": "Sertralin seit 04/2028 abgesetzt; seit ca. 5 Wochen erneut zunehmend depressiv nach dem Tod des Vaters (07/2028) und einem Konflikt um das Sorgerecht",
+        "madrs": 37,
+        "phq9": 24,
+        "psychopathology": "schwer gedrückte Stimmung, Hoffnungslosigkeit, ausgeprägter Antriebsmangel, sozialer Rückzug, Schlaf 3–4 h pro Nacht, Gewichtsverlust 5 kg; keine psychotischen Symptome",
+        "suicidality": "konkrete Suizidgedanken mit Planungsansätzen (Medikamente), nicht sicher absprachefähig",
+        "diagnosis": "Rezidivierende depressive Störung, gegenwärtig schwere Episode ohne psychotische Symptome",
+        "icd_code": "F33.2",
+        "secondary_diagnoses": [
+          "Suizidgedanken (R45.8)"
+        ],
+        "plan": "stationäre Einweisung am selben Tag, Pat. einverstanden"
+      },
+      "documents": [
+        "einweisungsschein",
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e10",
+      "type": "hospital_admission",
+      "label": "Freiwillige stationäre Aufnahme in die Klinik für Psychiatrie und Psychotherapie",
+      "date": "2028-10-23",
+      "specialist": "psychiatrie",
+      "parameters": {
+        "legal_status": "freiwillig",
+        "setting": "zunächst geschützte Station mit engmaschiger Überwachung",
+        "medication": "Wiederbeginn Sertralin 50 mg/d mit wöchentlicher Steigerung bis 200 mg/d; Lorazepam 1 mg bei Bedarf in den ersten Tagen",
+        "therapy_plan": "Einzel- und Gruppenpsychotherapie (KVT), Psychoedukation, Ergo- und Bewegungstherapie"
+      },
+      "documents": [
+        "aufnahmebefund"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e11",
+      "type": "medication",
+      "label": "Lithium-Augmentation bei Non-Response auf Sertralin",
+      "date": "2028-12-04",
+      "specialist": "psychiatrie",
+      "parameters": {
+        "indication": "unzureichendes Ansprechen nach 6 Wochen Sertralin, davon 3 Wochen 200 mg/d: MADRS 30 (Reduktion um 19 %)",
+        "suicidality": "weiterhin passive Todeswünsche, von Suizidhandlungen distanziert",
+        "baseline_workup": "vor Beginn: Kreatinin 0,7 mg/dl (eGFR > 90 ml/min/1,73 m²), TSH 1,9 mU/l, Calcium 2,34 mmol/l, Natrium 139 mmol/l; EKG: Sinusrhythmus, QTc 416 ms; β-HCG negativ",
+        "drug": "Lithiumcarbonat, Beginn mit 450 mg/d",
+        "target_level": "0,6–0,8 mmol/l (12 h nach letzter Einnahme)",
+        "information": "Aufklärung über Intoxikationszeichen, ausreichende Flüssigkeits- und Kochsalzzufuhr, Interaktionen (NSAR, Diuretika, ACE-Hemmer), Teratogenität und sichere Verhütung"
+      },
+      "documents": [
+        "medikationsplan",
+        "laborbefund",
+        "ekg_befund"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e12",
+      "type": "hospital_discharge",
+      "label": "Entlassung aus der stationären Behandlung",
+      "date": "2029-01-15",
+      "specialist": "psychiatrie",
+      "parameters": {
+        "diagnosis": "Rezidivierende depressive Störung, gegenwärtig schwere Episode ohne psychotische Symptome, in Besserung",
+        "icd_code": "F33.2",
+        "madrs": 12,
+        "course": "deutliche Besserung ca. 3 Wochen nach Beginn der Lithium-Augmentation",
+        "lithium_level_display": "0,71 mmol/l",
+        "discharge_medication": [
+          "Sertralin 200 mg 1-0-0",
+          "Lithiumcarbonat 450 mg 1-0-1"
+        ],
+        "suicidality": "von Suizidalität glaubhaft distanziert, Krisenplan erstellt",
+        "aftercare": "Weiterbehandlung in der Psychiatrischen Institutsambulanz, Lithiumspiegel zunächst wöchentlich; Wiederaufnahme ambulanter Verhaltenstherapie beantragt; stufenweise Wiedereingliederung geplant"
+      },
+      "documents": [
+        "entlassungsbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e13",
+      "type": "followup",
+      "label": "Ambulante Weiterbehandlung in der Psychiatrischen Institutsambulanz",
+      "date": "2029-04-16",
+      "specialist": "psychiatrie",
+      "parameters": {
+        "madrs": 7,
+        "status": "Remission",
+        "lithium_level_display": "0,68 mmol/l",
+        "labs": "TSH 3,4 mU/l, Kreatinin 0,8 mg/dl",
+        "work": "stufenweise Wiedereingliederung seit 03/2029",
+        "psychotherapy": "ambulante Verhaltenstherapie wieder aufgenommen",
+        "plan": "Rezidivprophylaxe mit Sertralin und Lithium für mindestens 2 Jahre; Lithiumspiegel vierteljährlich, Kreatinin, TSH und Calcium halbjährlich"
+      },
+      "documents": [
+        "verlaufsdokumentation",
+        "laborbefund"
+      ],
+      "repeat_index": 0
+    },
+    {
+      "id": "e14",
+      "type": "adverse_event",
+      "label": "Lithium-assoziierte Hypothyreose",
+      "date": "2029-10-08",
+      "specialist": "psychiatrie",
+      "parameters": {
+        "tsh_display": "9,6 mU/l",
+        "ft4_display": "0,9 ng/dl (unterer Normbereich)",
+        "tpo_antibodies": "negativ",
+        "thyroid_ultrasound": "diffuse Struma, Volumen 24 ml, keine Knoten",
+        "symptoms": "Müdigkeit, Gewichtszunahme 3 kg; Stimmung stabil (MADRS 6)",
+        "lithium_level_display": "0,66 mmol/l",
+        "management": "L-Thyroxin 50 µg/d, Lithium unverändert fortgeführt; TSH-Kontrolle in 6–8 Wochen",
+        "diagnosis": "Hypothyreose durch Lithium",
+        "icd_code": "E03.2"
+      },
+      "documents": [
+        "arztbrief",
+        "laborbefund"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e15",
+      "type": "followup",
+      "label": "Ambulante Weiterbehandlung in der Psychiatrischen Institutsambulanz",
+      "date": "2030-04-15",
+      "specialist": "psychiatrie",
+      "parameters": {
+        "madrs": 5,
+        "status": "stabile Remission seit mindestens 12 Monaten, volle Berufstätigkeit",
+        "lithium_level_display": "0,64 mmol/l",
+        "labs": "TSH 2,1 mU/l unter L-Thyroxin 50 µg, Kreatinin 0,8 mg/dl, Calcium normwertig",
+        "medication": [
+          "Sertralin 200 mg 1-0-0",
+          "Lithiumcarbonat 450 mg 1-0-1",
+          "L-Thyroxin 50 µg 1-0-0"
+        ],
+        "psychotherapy": "Einzeltherapie abgeschlossen; Teilnahme an einer Gruppe für achtsamkeitsbasierte kognitive Therapie (MBCT) zur Rückfallprophylaxe",
+        "plan": "Fortführung der Rezidivprophylaxe, Reevaluation 01/2031"
+      },
+      "documents": [
+        "verlaufsdokumentation",
+        "laborbefund"
+      ],
+      "repeat_index": 1
+    }
+  ]
+}

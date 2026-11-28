@@ -59,32 +59,32 @@
     <h1>Code components</h1>
 
     <div class="diagram-container">
-      <svg viewBox="0 0 1072 928" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="code-view-title code-view-desc">
+      <svg viewBox="0 0 1072 1028" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="code-view-title code-view-desc">
         <title id="code-view-title">Code components of the Patient Journey Matcher</title>
-        <desc id="code-view-desc">UML package diagram. Crawler (Python): cli uses runner, store and sources; runner uses sources and links; links uses sources; store uses the SQL schema in db/init. Matcher (TypeScript) in three layers. Programs: mcp-server, indexer depend on approaches, transcriber only on the libraries; evaluation uses the saved results of mcp-server; the programs layer depends on the libraries layer. Matching: approaches (createApproaches, selectApproaches) uses the interface Approach of core and instantiates the approaches keyword, graph and ai_summary in algorithms, which implement the interface Approach of core; the matching layer depends on the libraries layer. Libraries: core (interfaces Approach, Indexer and Matcher, data types JourneyState and Hit, reciprocalRankFusion), db (DocumentStore, createPool, indexChangedDocuments; uses the SQL schema in db/init) and download (Downloader, extractText, createTranscriber).</desc>
+        <desc id="code-view-desc">UML package diagram. Crawler (Python): cli uses runner, store and sources; runner uses sources and links; links uses sources; store uses the SQL schema in db/init. Matcher (TypeScript) in three layers. Programs: mcp-server, indexer depend on approaches, transcriber only on the libraries; evaluation uses the saved results of mcp-server; the programs layer depends on the libraries layer. Matching: approaches (createApproaches, selectApproaches) uses the interface Approach of core and instantiates the approaches keyword, graph and ai_summary in algorithms, which implement the interface Approach of core; the matching layer depends on the libraries layer. Libraries: core (interfaces Approach, Indexer and Matcher, data types JourneyState and Hit, reciprocalRankFusion), db (DocumentStore, createPool, indexChangedDocuments; uses the SQL schema in db/init), download (Downloader, extractText, createTranscriber) and terminology (mesh, normalizeName, icdToMesh, nameIndex, phraseLookup).</desc>
 <defs>
   <marker id="open" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1,1 L 9,5 L 1,9" fill="none" stroke="#57606a" stroke-width="1.2"/></marker>
   <marker id="open-solid" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1,1 L 9,5 L 1,9" fill="none" stroke="#57606a" stroke-width="1.2"/></marker>
   <marker id="realize" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto" markerUnits="userSpaceOnUse"><path d="M 1,1 L 12,7 L 1,13 Z" fill="#ffffff" stroke="#57606a" stroke-width="1.2"/></marker>
 </defs>
 <rect width="100%" height="100%" fill="#fafafa"/>
-<rect x="16" y="16" width="1040" height="832" fill="none" stroke="#1f2328" stroke-width="1"/>
+<rect x="16" y="16" width="1040" height="932" fill="none" stroke="#1f2328" stroke-width="1"/>
 <path d="M 16,16 H 144 V 30 L 134,40 H 16 Z" fill="#fafafa" stroke="#1f2328" stroke-width="1"/>
 <text x="24" y="32" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Code components</text>
 <rect x="40" y="56" width="136" height="20" fill="#fafafa" stroke="#1f2328" stroke-width="1"/>
 <rect x="40" y="76" width="504" height="188" fill="rgba(31,35,40,0.02)" stroke="#1f2328" stroke-width="1"/>
 <text x="48" y="70" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">crawler {Python}</text>
 <rect x="40" y="300" width="168" height="20" fill="#fafafa" stroke="#1f2328" stroke-width="1"/>
-<rect x="40" y="320" width="992" height="504" fill="rgba(31,35,40,0.02)" stroke="#1f2328" stroke-width="1"/>
+<rect x="40" y="320" width="992" height="604" fill="rgba(31,35,40,0.02)" stroke="#1f2328" stroke-width="1"/>
 <text x="48" y="314" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">matcher {TypeScript}</text>
 <rect x="64" y="352" width="112" height="20" fill="#fafafa" stroke="#1f2328" stroke-width="1"/>
-<rect x="64" y="372" width="184" height="412" fill="rgba(31,35,40,0.02)" stroke="#1f2328" stroke-width="1"/>
+<rect x="64" y="372" width="184" height="512" fill="rgba(31,35,40,0.02)" stroke="#1f2328" stroke-width="1"/>
 <text x="72" y="366" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start"><tspan fill="#57606a" font-size="9" font-weight="400" font-family="'Geist', system-ui, sans-serif">«layer»</tspan><tspan dx="4">programs</tspan></text>
 <rect x="320" y="352" width="112" height="20" fill="#fafafa" stroke="#1f2328" stroke-width="1"/>
-<rect x="320" y="372" width="416" height="412" fill="rgba(31,35,40,0.02)" stroke="#1f2328" stroke-width="1"/>
+<rect x="320" y="372" width="416" height="512" fill="rgba(31,35,40,0.02)" stroke="#1f2328" stroke-width="1"/>
 <text x="328" y="366" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start"><tspan fill="#57606a" font-size="9" font-weight="400" font-family="'Geist', system-ui, sans-serif">«layer»</tspan><tspan dx="4">matching</tspan></text>
 <rect x="784" y="352" width="112" height="20" fill="#fafafa" stroke="#1f2328" stroke-width="1"/>
-<rect x="784" y="372" width="224" height="412" fill="rgba(31,35,40,0.02)" stroke="#1f2328" stroke-width="1"/>
+<rect x="784" y="372" width="224" height="512" fill="rgba(31,35,40,0.02)" stroke="#1f2328" stroke-width="1"/>
 <text x="792" y="366" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start"><tspan fill="#57606a" font-size="9" font-weight="400" font-family="'Geist', system-ui, sans-serif">«layer»</tspan><tspan dx="4">libraries</tspan></text>
 <rect x="560" y="392" width="96" height="20" fill="#fafafa" stroke="#1f2328" stroke-width="1"/>
 <rect x="560" y="412" width="152" height="212" fill="rgba(31,35,40,0.02)" stroke="#1f2328" stroke-width="1"/>
@@ -109,7 +109,7 @@
 <path d="M 700,460 H 724 V 588" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4"/>
 <path d="M 700,524 H 724" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4"/>
 <path d="M 736,720 H 784" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#open)"/>
-<path d="M 156,784 V 800 Q 156,808 164,808 H 888 Q 896,808 896,800 V 784" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#open)"/>
+<path d="M 156,884 V 900 Q 156,908 164,908 H 888 Q 896,908 896,900 V 884" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#open)"/>
 <path d="M 920,412 V 272" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#open)"/>
 <rect x="928" y="290" width="32" height="12" fill="#fafafa"/>
 <text x="944.0" y="299" fill="#656d76" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">«use»</text>
@@ -191,24 +191,30 @@
 <text x="818" y="718" fill="#1f2328" font-size="8.5" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start"><tspan fill="#57606a" font-family="'Geist', system-ui, sans-serif">«interface»</tspan><tspan dx="4">Downloader</tspan></text>
 <text x="818" y="732" fill="#1f2328" font-size="8.5" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">extractText()</text>
 <text x="818" y="746" fill="#1f2328" font-size="8.5" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">createTranscriber()</text>
+<rect x="808" y="780" width="92" height="20" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<text x="816" y="794" fill="#1f2328" font-size="10" font-weight="600" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">terminology</text>
+<rect x="808" y="800" width="176" height="64" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<text x="818" y="818" fill="#1f2328" font-size="8.5" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">mesh</text>
+<text x="818" y="832" fill="#1f2328" font-size="8.5" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">normalizeName(), icdToMesh()</text>
+<text x="818" y="846" fill="#1f2328" font-size="8.5" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start">nameIndex(), phraseLookup()</text>
 <rect x="848" y="220" width="136" height="52" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
 <path d="M 960,226 H 970 L 976,232 V 244 H 960 Z M 970,226 V 232 H 976" fill="#ffffff" stroke="#1f2328" stroke-width="0.8"/>
 <text x="916" y="242" fill="#57606a" font-size="9" font-family="'Geist', system-ui, sans-serif" text-anchor="middle">«artifact»</text>
 <text x="916" y="258" fill="#1f2328" font-size="11" font-weight="600" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="middle">db/init/*.sql</text>
-<line x1="40" y1="872" x2="1032" y2="872" stroke="rgba(31,35,40,0.10)" stroke-width="0.8"/>
-<text x="40" y="888" fill="#57606a" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.18em">LEGEND</text>
-<rect x="40" y="894" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="1"/><rect x="40" y="898" width="18" height="10" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
-<text x="64" y="908" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Package</text>
-<rect x="128" y="895" width="18" height="14" fill="#ffffff" stroke="#1f2328" stroke-width="1"/><path d="M 137,898 H 141 L 143,900 V 906 H 137 Z" fill="none" stroke="#1f2328" stroke-width="0.7"/>
-<text x="152" y="908" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Artifact</text>
-<rect x="216" y="895" width="18" height="14" fill="#ffffff" stroke="#1f2328" stroke-width="1"/><line x1="216" y1="901" x2="234" y2="901" stroke="#1f2328" stroke-width="0.8"/>
-<text x="240" y="908" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Interface</text>
-<path d="M 308,902 H 326" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#open)"/>
-<text x="332" y="908" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Dependency: imports; «use»: needs it; «instantiate»: creates</text>
-<path d="M 620,902 H 636" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#realize)"/>
-<text x="644" y="908" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Realization: implements</text>
-<rect x="788" y="898" width="18" height="10" fill="rgba(29,95,138,0.06)" stroke="#1d5f8a" stroke-width="1"/>
-<text x="812" y="908" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">MCP interface</text>
+<line x1="40" y1="972" x2="1032" y2="972" stroke="rgba(31,35,40,0.10)" stroke-width="0.8"/>
+<text x="40" y="988" fill="#57606a" font-size="8" font-family="'Geist Mono', ui-monospace, monospace" text-anchor="start" letter-spacing="0.18em">LEGEND</text>
+<rect x="40" y="994" width="8" height="4" fill="#ffffff" stroke="#1f2328" stroke-width="1"/><rect x="40" y="998" width="18" height="10" fill="#ffffff" stroke="#1f2328" stroke-width="1"/>
+<text x="64" y="1008" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Package</text>
+<rect x="128" y="995" width="18" height="14" fill="#ffffff" stroke="#1f2328" stroke-width="1"/><path d="M 137,998 H 141 L 143,1000 V 1006 H 137 Z" fill="none" stroke="#1f2328" stroke-width="0.7"/>
+<text x="152" y="1008" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Artifact</text>
+<rect x="216" y="995" width="18" height="14" fill="#ffffff" stroke="#1f2328" stroke-width="1"/><line x1="216" y1="1001" x2="234" y2="1001" stroke="#1f2328" stroke-width="0.8"/>
+<text x="240" y="1008" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Interface</text>
+<path d="M 308,1002 H 326" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#open)"/>
+<text x="332" y="1008" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Dependency: imports; «use»: needs it; «instantiate»: creates</text>
+<path d="M 620,1002 H 636" fill="none" stroke="#57606a" stroke-width="1.2" stroke-dasharray="5,4" marker-end="url(#realize)"/>
+<text x="644" y="1008" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">Realization: implements</text>
+<rect x="788" y="998" width="18" height="10" fill="rgba(29,95,138,0.06)" stroke="#1d5f8a" stroke-width="1"/>
+<text x="812" y="1008" fill="#57606a" font-size="8.5" font-family="'Geist', system-ui, sans-serif" text-anchor="start">MCP interface</text>
       </svg>
     </div>
   </div>

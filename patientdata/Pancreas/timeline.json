@@ -1,0 +1,339 @@
+{
+  "patient_id": "Pancreas",
+  "pathway_id": "vis-04",
+  "start_date": "2026-10-05",
+  "events": [
+    {
+      "id": "e01",
+      "type": "referral",
+      "label": "Krankenhauseinweisung bei schmerzlosem Ikterus und Gewichtsverlust",
+      "date": "2026-10-05",
+      "specialist": "hausarzt",
+      "parameters": {
+        "age_years": 63,
+        "sex": "weiblich",
+        "symptoms": "Schmerzloser Ikterus seit ca. 1 Woche, dunkler Urin, heller Stuhl, Juckreiz; ungewollter Gewichtsverlust 6 kg in 3 Monaten; dumpfe Oberbauchschmerzen mit Ausstrahlung in den Rücken",
+        "history": "Diabetes mellitus seit 4 Monaten bekannt (Metformin 500 mg 1-0-1); keine Vorerkrankungen der Gallenwege",
+        "bilirubin_total_mg_dl": 8.6,
+        "alkaline_phosphatase_u_l": 412,
+        "ggt_u_l": 655,
+        "lipase_u_l": 48,
+        "ultrasound": "Intra- und extrahepatische Cholestase (DHC 14 mm), prall gefüllte, nicht schmerzhafte Gallenblase; Pankreaskopf durch Luftüberlagerung nicht beurteilbar"
+      },
+      "documents": [
+        "einweisungsbrief",
+        "laborbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e02",
+      "type": "imaging",
+      "label": "CT Abdomen nach Pankreasprotokoll und CT Thorax",
+      "date": "2026-10-07",
+      "specialist": "radiologie",
+      "parameters": {
+        "modality": "Biphasische Multidetektor-CT (pankreatische und portalvenöse Phase), CT Thorax",
+        "finding": "Hypodense, unscharf begrenzte Raumforderung im Pankreaskopf (3,1 × 2,7 cm) mit Aufstau von DHC und Ductus pancreaticus (Double-Duct-Zeichen). Tumorkontakt zur V. mesenterica superior über ca. 150° mit tränentropfenförmiger Konturdeformierung, Pfortader frei. A. mesenterica superior, Truncus coeliacus und A. hepatica communis ohne Tumorkontakt. Keine Leberläsionen, kein Aszites, keine suspekten Lymphknoten. Thorax ohne Metastasennachweis.",
+        "assessment": "Hochgradiger V. a. Pankreaskopfkarzinom, borderline resektabel (venös)",
+        "clinical_stage": "cT2 cN0 cM0"
+      },
+      "documents": [
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e03",
+      "type": "procedure",
+      "label": "ERCP mit Metallstent-Einlage und Endosonographie mit Feinnadelbiopsie",
+      "date": "2026-10-09",
+      "specialist": "gastroenterologie",
+      "parameters": {
+        "ercp": "Ca. 2 cm lange distale DHC-Stenose; Papillotomie und Einlage eines vollständig gecoverten Metallstents (10 × 60 mm), prompter Galleabfluss",
+        "eus": "Echoarme, inhomogene Raumforderung im Pankreaskopf (3,0 cm) mit Kontakt zur VMS; keine suspekten Lymphknoten, kein Aszites",
+        "biopsy": "EUS-gesteuerte Feinnadelbiopsie (22 G, 3 Passagen)",
+        "complications": "keine"
+      },
+      "documents": [
+        "endoskopiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e04",
+      "type": "pathology",
+      "label": "Histologie der EUS-Feinnadelbiopsie",
+      "date": "2026-10-14",
+      "specialist": "pathologie",
+      "parameters": {
+        "histology": "Infiltrate eines duktalen Adenokarzinoms, mäßig differenziert (G2), desmoplastisches Stroma",
+        "immunohistochemistry": "CK7 positiv, CK20 negativ, Verlust der SMAD4-Expression",
+        "icd_o": "8500/3",
+        "diagnosis": "Duktales Adenokarzinom des Pankreaskopfes",
+        "icd_code": "C25.0"
+      },
+      "documents": [
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e05",
+      "type": "tumor_board",
+      "label": "Viszeralonkologische Tumorkonferenz (Erstvorstellung)",
+      "date": "2026-10-21",
+      "specialist": "viszeralchirurgie",
+      "parameters": {
+        "summary": "Duktales Adenokarzinom des Pankreaskopfes, cT2 cN0 cM0, borderline resektabel (Kontakt zur VMS ca. 150° mit Konturdeformierung, arterielle Gefäße frei)",
+        "ca19_9_u_ml": 410,
+        "ca19_9_note": "nach Galleableitung bei Bilirubin 2,1 mg/dl; vor Drainage 980 U/ml",
+        "decision": "neoadjuvant_chemotherapy",
+        "recommendation": "Neoadjuvante Chemotherapie mit mFOLFIRINOX über ca. 4 Monate, danach Restaging und erneute Vorstellung zur Resektion. Keimbahndiagnostik (BRCA1/2, PALB2 u. a.) und DPYD-Genotypisierung veranlassen; Portanlage; Ernährungsberatung.",
+        "participants": [
+          "viszeralchirurgie",
+          "gastroenterologie",
+          "onkologie",
+          "radiologie",
+          "strahlentherapie",
+          "pathologie"
+        ]
+      },
+      "documents": [
+        "tumorkonferenzprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e06",
+      "type": "systemic_therapy",
+      "label": "Neoadjuvante Chemotherapie mit mFOLFIRINOX, Zyklus 1",
+      "date": "2026-11-02",
+      "specialist": "onkologie",
+      "parameters": {
+        "regimen": "mFOLFIRINOX alle 14 Tage: Oxaliplatin 85 mg/m², Irinotecan 150 mg/m², Folinsäure 400 mg/m², 5-FU 2400 mg/m² über 46 h, kein 5-FU-Bolus",
+        "cycles_planned": 8,
+        "intent": "neoadjuvant",
+        "karnofsky_percent": 90,
+        "body_surface_m2": 1.67,
+        "dpyd_genotype": "keine relevante DPYD-Variante",
+        "bilirubin_total_mg_dl": 0.9,
+        "supportive": "Port seit 28.10.2026; Antiemese mit NK1-Antagonist, 5-HT3-Antagonist und Dexamethason; Pankreatin 25.000 IE zu den Mahlzeiten"
+      },
+      "documents": [
+        "chemotherapieprotokoll",
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e07",
+      "type": "imaging",
+      "label": "Restaging-CT nach 8 Zyklen mFOLFIRINOX",
+      "date": "2027-03-02",
+      "specialist": "radiologie",
+      "parameters": {
+        "modality": "CT Thorax/Abdomen, Pankreasprotokoll",
+        "finding": "Größenregredienz der Pankreaskopfraumforderung auf 2,0 × 1,7 cm; Kontakt zur VMS nur noch < 90° ohne Konturdeformierung, arterielle Gefäße frei; keine Leber- oder Lungenmetastasen, kein Aszites",
+        "ca19_9_u_ml": 31
+      },
+      "documents": [
+        "befundbericht",
+        "laborbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e08",
+      "type": "tumor_board",
+      "label": "Viszeralonkologische Tumorkonferenz nach neoadjuvanter Therapie",
+      "date": "2027-03-03",
+      "specialist": "viszeralchirurgie",
+      "parameters": {
+        "treatment_course": "8 Zyklen mFOLFIRINOX (11/2026–02/2027); febrile Neutropenie nach Zyklus 3, ab Zyklus 4 Dosisreduktion um 20 % und G-CSF-Sekundärprophylaxe; sensorische Polyneuropathie Grad 1",
+        "response": "Größenregredienz, CA 19-9 von 410 auf 31 U/ml normalisiert",
+        "decision": "resection",
+        "recommendation": "Explorative Laparotomie und partielle Pankreatoduodenektomie, ggf. mit Resektion und Rekonstruktion der VMS",
+        "participants": [
+          "viszeralchirurgie",
+          "gastroenterologie",
+          "onkologie",
+          "radiologie",
+          "strahlentherapie",
+          "pathologie"
+        ]
+      },
+      "documents": [
+        "tumorkonferenzprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e09",
+      "type": "surgery",
+      "label": "Pyloruserhaltende partielle Pankreatoduodenektomie mit tangentialer Resektion der VMS",
+      "date": "2027-03-30",
+      "specialist": "viszeralchirurgie",
+      "parameters": {
+        "exploration": "Keine Peritonealkarzinose, kein Aszites; 4 mm große Leberkapselläsion Segment III im Schnellschnitt: Gallengangsadenom",
+        "procedure": "Pyloruserhaltende partielle Pankreatoduodenektomie mit regionaler Lymphadenektomie; tangentiale Resektion der V. mesenterica superior mit Patchplastik",
+        "reconstruction": "Pankreatogastrostomie, Hepatikojejunostomie, Duodenojejunostomie",
+        "duration_min": 412,
+        "blood_loss_ml": 650
+      },
+      "documents": [
+        "op_bericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e10",
+      "type": "pathology",
+      "label": "Histologie des Pankreatoduodenektomie-Präparats",
+      "date": "2027-04-07",
+      "specialist": "pathologie",
+      "parameters": {
+        "histology": "Duktales Adenokarzinom des Pankreaskopfes mit Therapieeffekt",
+        "tumor_size_cm": 1.6,
+        "yp_stage": "ypT1c ypN1 (2/24) L1 V0 Pn1",
+        "grade": "G2",
+        "r_status": "R0, CRM-negativ (minimaler Abstand 1,4 mm zur Resektionsfläche an der A. mesenterica superior)",
+        "regression": "Tumorregressionsgrad 2 nach CAP (partielles Ansprechen)",
+        "vein": "Tumorinfiltration der Adventitia der VMS, Intima frei",
+        "diagnosis": "Duktales Adenokarzinom des Pankreaskopfes ypT1c ypN1 (2/24) L1 V0 Pn1 G2 R0",
+        "icd_code": "C25.0"
+      },
+      "documents": [
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e11",
+      "type": "systemic_therapy",
+      "label": "Adjuvante Fortführung mit mFOLFIRINOX (Komplettierung auf 6 Monate perioperativ)",
+      "date": "2027-05-18",
+      "specialist": "onkologie",
+      "parameters": {
+        "postoperative_course": "Biochemisches Leck ohne klinische Relevanz, verzögerte Magenentleerung; Entlassung am 14. postoperativen Tag",
+        "regimen": "mFOLFIRINOX mit 20 % Dosisreduktion; Oxaliplatin bei Zunahme der Polyneuropathie pausieren",
+        "cycles_planned": 4,
+        "intent": "adjuvant",
+        "karnofsky_percent": 80,
+        "ca19_9_u_ml": 14,
+        "germline_result": "Keimbahndiagnostik: keine pathogene Variante in BRCA1, BRCA2, PALB2 und ATM",
+        "exocrine_insufficiency": "Pankreatin 40.000 IE zu den Hauptmahlzeiten, 20.000 IE zu Zwischenmahlzeiten",
+        "diabetes": "Metformin 500 mg 1-0-1, HbA1c 6,6 %"
+      },
+      "documents": [
+        "arztbrief",
+        "chemotherapieprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e12",
+      "type": "followup",
+      "label": "Tumornachsorge",
+      "date": "2027-10-14",
+      "specialist": "onkologie",
+      "parameters": {
+        "imaging": "CT Thorax/Abdomen: postoperative Veränderungen, kein Lokalrezidiv, keine Metastasen",
+        "ca19_9_u_ml": 18,
+        "weight_kg": 58.5,
+        "symptoms": "beschwerdefrei bis auf Kribbelparästhesien der Füße (PNP Grad 1); Stuhl unter Pankreatin geformt",
+        "therapy_completed": "Perioperative Chemotherapie mit insgesamt 12 Zyklen bis 07/2027 abgeschlossen, Oxaliplatin in den letzten 2 Zyklen pausiert",
+        "assessment": "Kein Anhalt für Rezidiv"
+      },
+      "documents": [
+        "verlaufsbericht",
+        "laborbericht"
+      ],
+      "repeat_index": 0
+    },
+    {
+      "id": "e13",
+      "type": "followup",
+      "label": "Tumornachsorge",
+      "date": "2028-04-13",
+      "specialist": "onkologie",
+      "parameters": {
+        "imaging": "CT Thorax/Abdomen: kein Rezidivnachweis",
+        "ca19_9_u_ml": 24,
+        "weight_kg": 59.8,
+        "assessment": "Weiterhin kein Anhalt für Rezidiv; nächste Kontrolle in 6 Monaten"
+      },
+      "documents": [
+        "verlaufsbericht"
+      ],
+      "repeat_index": 1
+    },
+    {
+      "id": "e14",
+      "type": "progression",
+      "label": "Rezidiv: neue Leberläsionen und CA-19-9-Anstieg",
+      "date": "2028-10-17",
+      "specialist": "onkologie",
+      "parameters": {
+        "imaging": "CT Thorax/Abdomen: drei neue hypodense Leberläsionen (Segmente II, VI und VIII, max. 1,9 cm), V. a. Lebermetastasen; kein Lokalrezidiv, kein Aszites, Lunge frei",
+        "ca19_9_u_ml": 212,
+        "ca19_9_trend": "24 U/ml (04/2028) → 212 U/ml",
+        "interval": "ca. 15,5 Monate nach Ende der perioperativen Chemotherapie",
+        "karnofsky_percent": 90,
+        "residual_toxicity": "sensorische Polyneuropathie Grad 1",
+        "plan": "Sonographisch gesteuerte Leberstanzbiopsie mit molekularpathologischer Diagnostik, Vorstellung in der Tumorkonferenz"
+      },
+      "documents": [
+        "arztbrief",
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e15",
+      "type": "systemic_therapy",
+      "label": "Palliative Erstlinientherapie mit Gemcitabin und nab-Paclitaxel",
+      "date": "2028-11-07",
+      "specialist": "onkologie",
+      "parameters": {
+        "biopsy": "Leberstanzbiopsie vom 20.10.2028: Metastase eines duktalen Adenokarzinoms, morphologisch und immunhistochemisch vereinbar mit dem bekannten Pankreaskarzinom",
+        "molecular": "KRAS p.G12D, TP53-Mutation, CDKN2A-Deletion; mikrosatellitenstabil (pMMR)",
+        "diagnosis": "Lebermetastasiertes Rezidiv eines duktalen Adenokarzinoms des Pankreaskopfes (ED 10/2026)",
+        "icd_code": "C25.0",
+        "secondary_icd_code": "C78.7",
+        "regimen": "Gemcitabin 1000 mg/m² und nab-Paclitaxel 125 mg/m² an Tag 1, 8 und 15, alle 28 Tage",
+        "rationale": "Wechsel auf gemcitabinbasierte Therapie nach perioperativer Vorbehandlung mit mFOLFIRINOX",
+        "karnofsky_percent": 90,
+        "palliative_care": "Erstgespräch in der Palliativambulanz, Patientenverfügung besprochen"
+      },
+      "documents": [
+        "arztbrief",
+        "chemotherapieprotokoll",
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e16",
+      "type": "progression",
+      "label": "Progress unter Erstlinientherapie mit Peritonealkarzinose und Aszites",
+      "date": "2029-05-16",
+      "specialist": "onkologie",
+      "parameters": {
+        "cycles_completed": 6,
+        "imaging": "CT Abdomen: größenprogrediente Lebermetastasen (max. 3,4 cm), neu Peritonealkarzinose, mäßiger Aszites",
+        "ca19_9_u_ml": 1240,
+        "karnofsky_percent": 70,
+        "weight_kg": 53.0,
+        "symptoms": "Zunehmender Bauchumfang, Inappetenz, Fatigue",
+        "procedure": "Entlastende Aszitespunktion 2,8 l",
+        "decision": "Zweitlinientherapie mit liposomalem Irinotecan, 5-FU und Folinsäure; Mitbetreuung durch SAPV-Team"
+      },
+      "documents": [
+        "arztbrief",
+        "befundbericht"
+      ],
+      "repeat_index": null
+    }
+  ]
+}

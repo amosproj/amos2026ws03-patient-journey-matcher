@@ -77,6 +77,7 @@ Shared per key or host by the crawler and the indexer.
 | Semantic Scholar | 1 request a second with a key | arXiv references |
 | OpenAlex | Small daily budget per IP address without a key; the crawler sends one request a second | PubMed crawler, `crawler refresh` |
 | PMC bucket | None published; 0.1 s between requests | Crawler, indexer |
+| PubTator3 export | Our own pace: 1 request a second | Graph indexer |
 | Podcast hosts and other hosts | None published; 3 s between requests | Crawler, indexer |
 
 ## Storage and retention

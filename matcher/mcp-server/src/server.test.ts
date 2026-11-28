@@ -180,14 +180,14 @@ test("accepts an as_of on the date of the first event", async () => {
   expect(received?.journey.as_of).toBe("2026-10-31");
 });
 
-test("accepts a patient graph and passes on its journey", async () => {
+test("passes the original graph and its daily journey through MCP", async () => {
   const result = await client.callTool({
     name: "match_journey",
     arguments: { graph },
   });
 
   expect(result.isError).toBeFalsy();
-  expect(received).not.toHaveProperty("graph");
+  expect(received?.graph).toEqual(graph);
   expect(received?.journey).toEqual({
     patient_id: "Patient-5",
     events: [

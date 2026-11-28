@@ -6,7 +6,7 @@ test.each([
     "HAS_DIAGNOSIS",
     "Patient",
     "Diagnosis",
-    { kind: "fact", fact: "has_condition" },
+    { kind: "fact", fact: "has_condition", conditionRole: "diagnosis" },
   ],
   ["PRESCRIBED", "Patient", "Medication", { kind: "fact", fact: "receives" }],
   ["UNDERWENT", "Patient", "Procedure", { kind: "fact", fact: "receives" }],

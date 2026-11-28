@@ -1,0 +1,335 @@
+{
+  "patient_id": "Stroke",
+  "pathway_id": "sr01",
+  "start_date": "2027-06-08",
+  "events": [
+    {
+      "id": "e01",
+      "type": "emergency_admission",
+      "label": "Notaufnahme (Stroke-Alarm): akute Hemiparese re. und Aphasie",
+      "date": "2027-06-08",
+      "specialist": "neurologie",
+      "parameters": {
+        "patient": "73 J., w; vorbestehend selbstständig (mRS 0), lebt mit Ehemann",
+        "symptom_onset_time": "07:45",
+        "door_time": "08:31",
+        "onset": "beobachteter Symptombeginn beim Frühstück (Ehemann)",
+        "prehospital": "RTW mit Voranmeldung als Stroke-Alarm",
+        "nihss": 14,
+        "findings": "nicht-flüssige, motorisch betonte Aphasie, zentrale Fazialisparese re., brachiofazial betonte Hemiparese re. (Arm KG 2/5, Bein KG 3/5), Hypästhesie re., Blickwendung nach li.",
+        "rr": "172/94 mmHg",
+        "blood_glucose_display": "131 mg/dl",
+        "poc_lab": "INR 1,0; Thrombozyten 241/nl",
+        "body_weight_kg": 68,
+        "medication": "Ramipril 5 mg; keine Antikoagulanzien, keine Thrombozytenfunktionshemmer",
+        "history": "art. Hypertonie, Hypercholesterinämie (unbehandelt), Ex-Raucherin"
+      },
+      "documents": [
+        "rettungsdienstprotokoll",
+        "notaufnahmeprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e02",
+      "type": "imaging",
+      "label": "Multimodale CT: Verschluss der A. cerebri media li. (M1)",
+      "date": "2027-06-08",
+      "specialist": "neuroradiologie",
+      "parameters": {
+        "modality": "CCT nativ, CT-Angiographie, CT-Perfusion",
+        "ct_time": "08:40",
+        "finding": "keine intrakranielle Blutung; frühe Infarktzeichen im Nucleus lentiformis und in der Inselrinde li.; Verschluss der ACM li. im proximalen M1-Segment mit guter leptomeningealer Kollateralisierung; extrakranielle Gefäße ohne höhergradige Stenose",
+        "aspects": 8,
+        "perfusion": "Infarktkern (rCBF < 30 %) 16 ml, Hypoperfusion (Tmax > 6 s) 104 ml, Mismatch-Ratio 6,5"
+      },
+      "documents": [
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e03",
+      "type": "thrombolysis",
+      "label": "Intravenöse Thrombolyse mit Tenecteplase",
+      "date": "2027-06-08",
+      "specialist": "neurologie",
+      "parameters": {
+        "drug": "Tenecteplase 17,5 mg i.v. als Bolus (0,25 mg/kg, Gewichtsklasse 60–69 kg)",
+        "needle_time": "08:50",
+        "door_to_needle_min": 19,
+        "onset_to_needle_min": 65,
+        "rr_before_lysis": "164/90 mmHg"
+      },
+      "documents": [
+        "lyseprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e04",
+      "type": "thrombectomy",
+      "label": "Mechanische Thrombektomie ACM li. (M1)",
+      "date": "2027-06-08",
+      "specialist": "neuroradiologie",
+      "parameters": {
+        "groin_puncture_time": "09:06",
+        "reperfusion_time": "09:38",
+        "access": "transfemoral",
+        "technique": "Stent-Retriever in Kombination mit Aspirationskatheter, 2 Manöver",
+        "result": "mTICI 3",
+        "anesthesia": "Analgosedierung",
+        "complications": "keine"
+      },
+      "documents": [
+        "interventionsbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e05",
+      "type": "imaging",
+      "label": "Kontroll-MRT 24 h nach Rekanalisation",
+      "date": "2027-06-09",
+      "specialist": "neuroradiologie",
+      "parameters": {
+        "modality": "cMRT (DWI, FLAIR, SWI, TOF-MRA)",
+        "finding": "demarkierter Infarkt im Stammganglienbereich und in der Inselrinde li. (DWI-Volumen ca. 13 ml), keine Einblutung, ACM li. regelrecht durchgängig"
+      },
+      "documents": [
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e06",
+      "type": "diagnostic_workup",
+      "label": "Ätiologische Abklärung auf der Stroke Unit: paroxysmales Vorhofflimmern",
+      "date": "2027-06-11",
+      "specialist": "neurologie",
+      "parameters": {
+        "nihss": 5,
+        "rhythm_monitoring": "72-h-Monitoring auf der Stroke Unit: paroxysmales Vorhofflimmern, längste Episode 3 h 40 min",
+        "echocardiography": "TTE: linker Vorhof dilatiert (LAVI 41 ml/m²), LVEF 60 %, kein intrakardialer Thrombus",
+        "carotid_duplex": "Plaques der ACI bds. ohne hämodynamisch relevante Stenose (< 50 %)",
+        "labs": "LDL-C 146 mg/dl, HbA1c 5,9 %, TSH 1,2 mU/l, Kreatinin 0,9 mg/dl",
+        "dysphagia_screening": "GUSS 17 Punkte: leichte Dysphagie, angepasste Kostform, logopädische Mitbehandlung",
+        "etiology": "kardioembolisch bei neu diagnostiziertem paroxysmalem Vorhofflimmern"
+      },
+      "documents": [
+        "ekg_befund",
+        "echokardiographiebefund",
+        "dopplerbefund",
+        "laborbefund"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e07",
+      "type": "medication",
+      "label": "Beginn orale Antikoagulation mit Apixaban und Sekundärprophylaxe",
+      "date": "2027-06-12",
+      "specialist": "neurologie",
+      "parameters": {
+        "drug": "Apixaban 5 mg 1-0-1",
+        "timing": "Beginn 4 Tage nach dem Schlaganfall, keine Einblutung im Kontroll-MRT",
+        "cha2ds2_va": "4 (Hypertonie 1, Alter 65–74 J. 1, Schlaganfall 2)",
+        "dose_check": "keine Dosisreduktion: Alter < 80 J., Körpergewicht 68 kg, Kreatinin 0,9 mg/dl",
+        "lipid_lowering": "Atorvastatin 80 mg 0-0-1, LDL-C-Ziel < 55 mg/dl",
+        "antihypertensive": "Ramipril 10 mg 1-0-0, Amlodipin 5 mg 1-0-0, RR-Ziel < 130/80 mmHg"
+      },
+      "documents": [
+        "medikationsplan",
+        "arztbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e08",
+      "type": "hospital_discharge",
+      "label": "Entlassung von der Stroke Unit in die neurologische Rehabilitation",
+      "date": "2027-06-17",
+      "specialist": "neurologie",
+      "parameters": {
+        "diagnosis": "Ischämischer Schlaganfall im Mediastromgebiet li. bei embolischem M1-Verschluss; Z.n. i.v. Thrombolyse und mechanischer Thrombektomie (mTICI 3)",
+        "icd_code": "I63.4",
+        "secondary_diagnoses": [
+          "Vorhofflimmern, paroxysmal (I48.0)",
+          "Aphasie (R47.0)",
+          "Hemiparese re. (G81.9)",
+          "Essentielle Hypertonie (I10.90)",
+          "Hypercholesterinämie"
+        ],
+        "nihss": 4,
+        "mrs": 3,
+        "barthel_index": 55,
+        "discharge_medication": [
+          "Apixaban 5 mg 1-0-1",
+          "Atorvastatin 80 mg 0-0-1",
+          "Ramipril 10 mg 1-0-0",
+          "Amlodipin 5 mg 1-0-0"
+        ],
+        "transfer": "neurologische Rehabilitation Phase C"
+      },
+      "documents": [
+        "entlassungsbrief"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e09",
+      "type": "rehabilitation",
+      "label": "Abschluss stationäre neurologische Rehabilitation (Phase C/D)",
+      "date": "2027-07-29",
+      "specialist": "rehabilitation",
+      "parameters": {
+        "duration_weeks": 6,
+        "therapies": [
+          "Physiotherapie",
+          "Ergotherapie",
+          "Logopädie",
+          "Neuropsychologie"
+        ],
+        "barthel_index": 90,
+        "mrs": 2,
+        "residual_deficits": "leichte amnestische Aphasie mit Wortfindungsstörungen, Feinmotorikstörung der re. Hand; Gang frei ohne Hilfsmittel",
+        "recommendations": "ambulante Logopädie und Ergotherapie; Fahreignung derzeit nicht gegeben, Reevaluation mit neuropsychologischer Testung nach 3 Monaten"
+      },
+      "documents": [
+        "rehabericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e10",
+      "type": "followup",
+      "label": "Ambulante neurologische Verlaufskontrolle",
+      "date": "2027-09-14",
+      "specialist": "neurologie",
+      "parameters": {
+        "interval": "3 Monate nach Schlaganfall",
+        "nihss": 2,
+        "mrs": 2,
+        "rr": "128/78 mmHg",
+        "ldl_display": "68 mg/dl unter Atorvastatin 80 mg",
+        "anticoagulation": "Apixaban regelmäßig eingenommen, keine Blutungen",
+        "mood": "seit Rückkehr nach Hause Antriebsminderung, sozialer Rückzug, Grübeln, Durchschlafstörungen; PHQ-9 14",
+        "diagnosis": "Post-Stroke-Depression, mittelgradig",
+        "icd_code": "F06.3",
+        "therapy_changes": "Ezetimib 10 mg ergänzt; Sertralin 50 mg begonnen (erhöhtes Blutungsrisiko in Kombination mit Apixaban besprochen); ambulante Psychotherapie empfohlen"
+      },
+      "documents": [
+        "arztbrief"
+      ],
+      "repeat_index": 0
+    },
+    {
+      "id": "e11",
+      "type": "followup",
+      "label": "Ambulante neurologische Verlaufskontrolle",
+      "date": "2028-06-13",
+      "specialist": "neurologie",
+      "parameters": {
+        "interval": "12 Monate nach Schlaganfall",
+        "mrs": 1,
+        "phq9": 5,
+        "rr": "126/76 mmHg",
+        "ldl_display": "49 mg/dl unter Atorvastatin 80 mg und Ezetimib 10 mg",
+        "anticoagulation": "Apixaban fortgeführt, keine Blutungen",
+        "driving": "Fahreignung (Gruppe 1) nach neuropsychologischer Testung 11/2027 wieder gegeben",
+        "plan": "Sertralin bis Ende 2028 fortführen, dann Ausschleichversuch"
+      },
+      "documents": [
+        "arztbrief"
+      ],
+      "repeat_index": 1
+    },
+    {
+      "id": "e12",
+      "type": "emergency_admission",
+      "label": "Notaufnahme: erstmaliger epileptischer Anfall",
+      "date": "2028-10-02",
+      "specialist": "neurologie",
+      "parameters": {
+        "semiology": "fremdanamnestisch (Ehemann) fokal beginnender Anfall mit Kloni des re. Arms und Bewusstseinsstörung, Übergang in einen bilateral tonisch-klonischen Anfall, Dauer ca. 2 min; lateraler Zungenbiss; postiktal ca. 30 min verstärkte Aphasie",
+        "interval_after_stroke_months": 16,
+        "imaging": "CCT: bekannte Infarktnarbe Stammganglien/Insel li., keine Blutung, kein frischer Infarkt; CTA: ACM li. offen",
+        "labs": "Natrium 139 mmol/l, BZ 108 mg/dl, CK 312 U/l, Laktat bei Aufnahme 4,1 mmol/l",
+        "provoking_factors": "kein Schlafentzug, kein Alkohol, keine Elektrolytstörung; Sertralin 50 mg als Dauermedikation",
+        "nihss": 2
+      },
+      "documents": [
+        "notaufnahmeprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e13",
+      "type": "diagnostic_workup",
+      "label": "EEG und cMRT: strukturelle Epilepsie nach Hirninfarkt",
+      "date": "2028-10-04",
+      "specialist": "neurologie",
+      "parameters": {
+        "eeg": "intermittierende Theta-Delta-Verlangsamung und vereinzelte Sharp Waves links temporal",
+        "mri": "postischämischer Defekt mit Gliose im Stammganglienbereich und in der Inselrinde li.; keine neue Ischämie, keine Blutungsresiduen, keine weitere epileptogene Läsion",
+        "assessment": "erster unprovozierter Anfall mehr als 7 Tage nach Hirninfarkt bei strukturellem Korrelat und epilepsietypischen Potenzialen, hohes Rezidivrisiko",
+        "diagnosis": "Strukturelle Epilepsie nach Hirninfarkt mit fokal zu bilateral tonisch-klonischem Anfall",
+        "icd_code": "G40.2"
+      },
+      "documents": [
+        "eeg_befund",
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e14",
+      "type": "medication",
+      "label": "Beginn anfallssuppressive Therapie mit Lamotrigin",
+      "date": "2028-10-05",
+      "specialist": "neurologie",
+      "parameters": {
+        "drug": "Lamotrigin",
+        "titration": "25 mg/d für 2 Wochen, 50 mg/d für 2 Wochen, danach Steigerung um 50 mg alle 2 Wochen bis 2 × 100 mg/d",
+        "rationale": "Levetiracetam wegen Post-Stroke-Depression nicht bevorzugt; keine Enzyminduktion, keine relevante Interaktion mit Apixaban",
+        "information": "Aufklärung über Hautausschlag (bei Exanthem sofortige Vorstellung), Anfallskalender",
+        "driving": "keine Fahreignung bis zu 1 Jahr Anfallsfreiheit (Gruppe 1)"
+      },
+      "documents": [
+        "arztbrief",
+        "medikationsplan"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e15",
+      "type": "followup",
+      "label": "Ambulante neurologische Verlaufskontrolle",
+      "date": "2029-10-09",
+      "specialist": "neurologie",
+      "parameters": {
+        "seizures": "seit dem Anfall am 02.10.2028 anfallsfrei",
+        "medication": [
+          "Lamotrigin 100 mg 1-0-1",
+          "Apixaban 5 mg 1-0-1",
+          "Atorvastatin 80 mg 0-0-1",
+          "Ezetimib 10 mg 0-0-1",
+          "Ramipril 10 mg 1-0-0",
+          "Amlodipin 5 mg 1-0-0"
+        ],
+        "lamotrigine_level_display": "4,6 mg/l",
+        "eeg": "keine epilepsietypischen Potenziale",
+        "mrs": 1,
+        "phq9": 4,
+        "mood": "Sertralin 12/2028 ausgeschlichen, Stimmung stabil",
+        "rr": "124/78 mmHg",
+        "driving": "Fahreignung (Gruppe 1) nach 12 Monaten Anfallsfreiheit wieder gegeben"
+      },
+      "documents": [
+        "arztbrief",
+        "eeg_befund"
+      ],
+      "repeat_index": 2
+    }
+  ]
+}

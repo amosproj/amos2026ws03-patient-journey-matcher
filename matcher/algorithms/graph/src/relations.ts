@@ -3,14 +3,15 @@
 // ends.
 import patient from "../data/patient-relations.json" with { type: "json" };
 import pubtator from "../data/pubtator-relations.json" with { type: "json" };
-import type { FactKind, Predicate, Status } from "./types.ts";
+import type { FactKind, PatientFact, Predicate, Status } from "./types.ts";
 
-export type Row = {
+type Row = {
   type: string;
   subject?: string;
   object?: string;
   predicate?: Predicate;
   fact?: FactKind;
+  conditionRole?: PatientFact["conditionRole"];
   flip?: boolean;
   status?: Status;
   drop?: string;
@@ -28,11 +29,16 @@ export type Mapping =
       about?: "source";
       confirms?: boolean;
     }
-  | { kind: "fact"; fact: FactKind; status?: Status }
+  | {
+      kind: "fact";
+      fact: FactKind;
+      status?: Status;
+      conditionRole?: PatientFact["conditionRole"];
+    }
   | { kind: "drop"; reason: string };
 
 /** The first row whose type matches and whose `subject` and `object`, where given, match too. */
-export function findRow(
+function findRow(
   rows: readonly Row[],
   type: string,
   subject: string,
@@ -49,7 +55,12 @@ export function findRow(
 function mapping(row: Row): Mapping {
   if (row.drop !== undefined) return { kind: "drop", reason: row.drop };
   if (row.fact !== undefined)
-    return { kind: "fact", fact: row.fact, status: row.status };
+    return {
+      kind: "fact",
+      fact: row.fact,
+      status: row.status,
+      conditionRole: row.conditionRole,
+    };
   if (row.predicate !== undefined) {
     return {
       kind: "relation",

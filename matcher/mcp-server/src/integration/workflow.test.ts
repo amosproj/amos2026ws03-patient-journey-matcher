@@ -170,12 +170,12 @@ describe.skipIf(!databaseUrl)("crawl, index and MCP", () => {
   });
 
   test("an unavailable algorithm, an unknown source and a failing database answer with error codes", async () => {
-    const graph = await h.client.callTool({
+    const unavailable = await h.client.callTool({
       name: "match_journey",
-      arguments: { journey: JOURNEY, algorithm: "graph" },
+      arguments: { journey: JOURNEY, algorithm: "ai_summary" },
     });
-    expect(graph.isError).toBe(true);
-    expect(JSON.stringify(graph.content)).toContain("NOT_AVAILABLE");
+    expect(unavailable.isError).toBe(true);
+    expect(JSON.stringify(unavailable.content)).toContain("NOT_AVAILABLE");
     const missing = await h.client.callTool({
       name: "get_source",
       arguments: { source_id: "absent" },

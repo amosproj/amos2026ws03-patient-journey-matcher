@@ -5,7 +5,7 @@
 const MT_DEFAULTS = { algorithm: "keyword", limit: 10 };
 const mt = {
   meta: null, args: null, dates: [], asOf: null, request: null, via: null, result: null,
-  model: "qwen", tuning: {}, settings: "", tab: "results", cache: new Map(), sources: new Map(), ticket: 0, timer: 0,
+  model: "qwen", tuning: {}, settings: "", tab: "results", client: false, switching: null, switchTimer: 0, cache: new Map(), sources: new Map(), ticket: 0, loadTicket: 0, timer: 0,
 };
 
 // The data of a step of the match shown, e.g. "terms"; undefined through the MCP server.
@@ -14,12 +14,13 @@ const mtSetting = (name) => mtStep("settings")?.find((setting) => setting.name =
 
 async function mtShow() {
   mtSwitchTab(mt.tab);
+  mtSetClient(mt.client);
   try {
     const first = !mt.meta;
     mt.meta = await api("/api/match/meta");
     if (first) {
       $("#mt-journey").replaceChildren(
-        ...mt.meta.journeys.map((id) => h("option", { value: id }, id === "demo" ? "demo-1, the example of build.md" : id)),
+        ...[...new Set([...mt.meta.journeys, ...mt.meta.graphs])].map((id) => h("option", { value: id }, id === "demo" ? "demo-1 (timeline example)" : id)),
         h("option", { value: "", disabled: true }, "Edited or opened"));
       await mtLoadJourney(mt.meta.journeys[0]);
     }
@@ -37,17 +38,60 @@ function mtRenderSide() {
   if (!viaMcp && mt.meta?.missing) $("#mt-error").textContent = mt.meta.missing;
 }
 
-async function mtLoadJourney(id) {
-  const journey = await api(`/api/match/journey?${queryString({ id })}`);
-  $("#mt-journey").value = id;
-  mtSetJourney(journey);
+async function mtLoadJourney(id, asOf) {
+  const picker = $("#mt-journey");
+  picker.value = id;
+  picker.dataset.loaded = "";
+  clearTimeout(mt.timer);
+  const ticket = ++mt.loadTicket;
+  const graph = mt.meta.graphs.includes(id) && (mtAlgorithm() === "graph" || !mt.meta.journeys.includes(id));
+  const name = picker.selectedOptions[0]?.textContent || id;
+  mtSwitch(`Loading the ${graph ? "graph" : "journey"} of ${name} …`, true);
+  try {
+    const patient = await api(`/api/match/journey?${queryString({ id, kind: graph ? "graph" : "journey" })}`);
+    if (ticket !== mt.loadTicket || picker.value !== id) return;
+    picker.dataset.loaded = id;
+    mtSwitch(`Matching the ${graph ? "graph" : "journey"} of ${name} …`);
+    mtSetJourney(asOf ? { ...patient, as_of: asOf } : patient);
+  } catch (error) {
+    if (ticket === mt.loadTicket && picker.value === id) {
+      picker.value = "";
+      mtFailed(error.message);
+    }
+  }
 }
 
 // Puts a journey into the arguments and keeps their other fields.
 function mtSetJourney(journey) {
   const { journey: _, graph: __, ...others } = mt.args || MT_DEFAULTS; // a request has a journey or a graph
-  $("#mt-json").value = JSON.stringify({ journey, ...others }, null, 2);
+  const input = Array.isArray(journey?.nodes) && Array.isArray(journey?.edges) ? { graph: journey } : { journey };
+  $("#mt-json").value = JSON.stringify({ ...input, ...others }, null, 2);
   if (mtParse()) mtRun(true);
+  else mtFailed("The journey is no valid JSON object");
+}
+
+// Daily events from a graph, matching mcp-server/src/graph.ts, for the timeline and as-of slider.
+function mtEvents(args) {
+  if (Array.isArray(args?.journey?.events)) return args.journey.events.filter((event) => event && typeof event === "object");
+  const graph = args?.graph;
+  if (!Array.isArray(graph?.nodes) || !Array.isArray(graph?.edges)) return [];
+  const byUuid = new Map(graph.nodes.filter((node) => node?.uuid).map((node) => [node.uuid, node]));
+  const days = new Map();
+  for (const edge of graph.edges) {
+    const date = typeof edge?.valid_at === "string" ? edge.valid_at.slice(0, 10) : "";
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
+    const ends = [byUuid.get(edge.source_node_uuid), byUuid.get(edge.target_node_uuid)].filter(Boolean);
+    if (ends.some((node) => Array.isArray(node.labels) && node.labels.includes("Provider"))) continue;
+    for (const node of ends) {
+      if (Array.isArray(node.labels) && node.labels.includes("Patient")) continue;
+      const names = days.get(date) ?? new Set();
+      if (node.name) names.add(node.name);
+      days.set(date, names);
+    }
+  }
+  return [...days].sort(([a], [b]) => a.localeCompare(b)).map(([date, names]) => ({
+    id: date, type: "facts", label: [...names].sort().join(", "), date,
+  }));
 }
 
 // Reads the arguments from the text box; the server checks them against the contract.
@@ -66,10 +110,10 @@ function mtParse() {
   $("#mt-json-error").textContent = "";
   mt.args = args;
   mtRenderAlgorithm();
-  const events = Array.isArray(args.journey?.events) ? args.journey.events : [];
+  const events = mtEvents(args);
   mt.dates = [...new Set(events.map((event) => event?.date).filter((date) => /^\d{4}-\d{2}-\d{2}$/.test(date)))].sort();
   // The focus is the latest event up to as_of; without as_of, the latest of all.
-  const asOf = args.journey?.as_of;
+  const asOf = args.journey?.as_of ?? args.graph?.as_of;
   mt.asOf = (typeof asOf === "string" ? mt.dates.filter((date) => date <= asOf) : mt.dates).at(-1) ?? null;
   const slider = $("#mt-asof");
   slider.max = Math.max(0, mt.dates.length - 1);
@@ -80,19 +124,21 @@ function mtParse() {
 
 function mtShowAsOf() {
   $("#mt-asof").value = Math.max(0, mt.dates.indexOf(mt.asOf));
-  const asOf = mt.args?.journey?.as_of;
+  const asOf = mt.args?.journey?.as_of ?? mt.args?.graph?.as_of;
   $("#mt-asof-date").textContent = typeof asOf === "string" ? asOf : mt.asOf || "–";
-  const ahead = (mt.args?.journey?.events || []).filter((event) => mt.asOf && event?.date > mt.asOf).length;
+  const ahead = mtEvents(mt.args).filter((event) => mt.asOf && event?.date > mt.asOf).length;
   const where = mt.asOf ? `date ${mt.dates.indexOf(mt.asOf) + 1} of ${mt.dates.length}` : "before the first event";
-  $("#mt-asof-note").textContent = mt.dates.length > 1 ? `${typeof asOf === "string" ? "" : "the latest event is the focus · "}${where}${ahead ? ` · ${plural(ahead, "later event")} left out` : ""} · drag, or click an event` : "";
+  $("#mt-asof-note").textContent = mt.dates.length > 1 ? `${typeof asOf === "string" ? "" : "the latest event is the focus; "}${where}${ahead ? `, ${plural(ahead, "later event")} left out` : ""}; drag, or click an event` : "";
   mtRenderTimeline();
 }
 
-// Cuts the journey at `date`: writes it to journey.as_of in the arguments.
+// Cuts the journey or graph at `date`: writes it to journey.as_of or graph.as_of.
 function mtSetAsOf(date) {
-  if (!mt.dates.includes(date) || date === mt.args.journey.as_of) return;
-  const { as_of: _, ...journey } = mt.args.journey;
-  mt.args = { ...mt.args, journey: { as_of: date, ...journey } };
+  const field = mt.args?.graph ? "graph" : "journey";
+  const target = mt.args?.[field];
+  if (!target || !mt.dates.includes(date) || date === target.as_of) return;
+  const { as_of: _, ...rest } = target;
+  mt.args = { ...mt.args, [field]: { as_of: date, ...rest } };
   $("#mt-json").value = JSON.stringify(mt.args, null, 2);
   mt.asOf = date;
   mtShowAsOf();
@@ -127,6 +173,43 @@ function mtBusy(busy) {
   $("#mt-run").textContent = busy ? "Matching …" : "Match";
 }
 
+// Another patient: from the pick until their match is drawn, one note stands where the results go,
+// instead of the numbers and results of the patient before; their timeline fades until the new
+// one is loaded. All of this only after 200 ms, so a quick switch shows none of it.
+function mtSwitch(text, loadingJourney = false) {
+  const main = $(".match-main");
+  main.classList.toggle("journey-loading", loadingJourney);
+  $("#mt-loading").replaceChildren(loadingNote(text));
+  $("#mt-error").textContent = "";
+  if (mt.switching) return;
+  mt.switching = true;
+  mtBusy(true);
+  clearTimeout(mt.switchTimer);
+  mt.switchTimer = setTimeout(() => { if (mt.switching) main.classList.add("switching"); }, 200);
+}
+
+function mtSwitchEnd() {
+  clearTimeout(mt.switchTimer);
+  mt.switching = null;
+  $(".match-main").classList.remove("switching", "journey-loading");
+}
+
+// A failed request: during a switch the note becomes the error, as the results shown before
+// belong to another patient; else the error stands in the controls above the last result.
+function mtFailed(message) {
+  mtBusy(false);
+  if (mt.switching) {
+    clearTimeout(mt.switchTimer);
+    mt.switching = null;
+    $(".match-main").classList.remove("journey-loading");
+    $(".match-main").classList.add("switching");
+    $("#mt-loading").replaceChildren(h("div", { class: "notice" }, message));
+    $("#mt-error").textContent = message;
+    return;
+  }
+  $("#mt-error").textContent = mt.result ? `${message} (showing the previous result)` : message;
+}
+
 // `fresh`: ask the matcher again, e.g. after its code or the index changed; else an answer
 // seen for the same request is shown again, which keeps the as-of slider quick.
 async function mtRun(fresh) {
@@ -142,24 +225,26 @@ async function mtRun(fresh) {
   // The matcher would answer an out-of-range constant only with a failed search.
   const invalid = via === "direct" && mtAlgorithm() === "keyword" && [...document.querySelectorAll("#mt-tuning input")].find((input) => !input.checkValidity());
   if (invalid) {
-    $("#mt-error").textContent = `${invalid.dataset.name} must be ${invalid.step === "1" ? "a whole number" : "a number"} from ${invalid.min} to ${invalid.max}`;
-    mtBusy(false);
+    mtFailed(`${invalid.dataset.name} must be ${invalid.step === "1" ? "a whole number" : "a number"} from ${invalid.min} to ${invalid.max}`);
     return;
   }
   let result = mt.cache.get(key);
   if (!result) {
+    // After a failed switch its error stands where the results go: a new attempt shows the note again.
+    if (!mt.switching && $(".match-main").classList.contains("switching")) mtSwitch("Matching …");
     mtBusy(true);
+    // The answer, then what it does not say itself: the spinner stays until both are here.
+    const work = (async () => {
+      const answer = await api("/api/match", { method: "POST", body: JSON.stringify({ request, via, technique }) });
+      if (ticket === mt.ticket) await mtEnrich(answer);
+      return answer;
+    })();
     try {
-      result = await api("/api/match", { method: "POST", body: JSON.stringify({ request, via, technique }) });
-      if (ticket !== mt.ticket) return;
-      await mtEnrich(result);
+      result = await busyButton($("#mt-run"), mt.switching ? work : busyArea($("#match-view .content"), work));
       if (ticket !== mt.ticket) return;
       mt.cache.set(key, result);
     } catch (error) {
-      if (ticket === mt.ticket) {
-        $("#mt-error").textContent = mt.result ? `${error.message} · showing the previous result` : error.message;
-        mtBusy(false);
-      }
+      if (ticket === mt.ticket) mtFailed(error.message);
       return;
     }
   }
@@ -167,6 +252,7 @@ async function mtRun(fresh) {
   mt.via = via;
   mt.result = result;
   mtRender();
+  mtSwitchEnd();
   mtBusy(false);
 }
 
@@ -184,14 +270,9 @@ function mtRender() {
   mtRenderPending();
 }
 
-// Graph is planned, and AI needs its index: until then match_journey answers NOT_AVAILABLE for
-// them, which shows here with what the approach does or needs.
+// AI needs its index: until then match_journey answers NOT_AVAILABLE for it, which shows here
+// with what the approach needs.
 const MT_PLANNED = {
-  graph: {
-    name: "Graph approach",
-    text: "Compares relations instead of words: the journey and every source become links between medical concepts, such as olaparib –treats→ prostate cancer, with shared MeSH IDs. A source ranks high when it links the patient's concepts the same way.",
-    doc: "research/graph-based-matching.md",
-  },
   ai_summary: {
     name: "AI approach",
     text: "Start the encoder under Index › AI and build the index there, or run make index-ai.",
@@ -218,17 +299,27 @@ function mtRenderPending() {
   $("#mt-pending").hidden = !planned;
   if (!planned) return;
   $("#mt-pending").replaceChildren(h("div", { class: "mt-pending-card" },
-    h("h3", {}, planned.name, h("span", { class: "pill plain" }, algorithm === "graph" ? "planned" : "unavailable")),
+    h("h3", {}, planned.name, h("span", { class: "pill plain" }, "unavailable")),
     h("p", { class: "muted" }, mt.result.error.message),
     planned.text ? h("p", {}, planned.text) : null,
     planned.doc ? h("small", { class: "muted mono" }, planned.doc) : null));
 }
 
 for (const button of document.querySelectorAll("#mt-algorithm button")) button.addEventListener("click", () => {
-  if (!mt.args || mtAlgorithm() === button.dataset.value) return;
-  mt.args = { ...mt.args, algorithm: button.dataset.value };
+  const picker = $("#mt-journey");
+  if (!mt.args || (!picker.value && !mtParse()) || mtAlgorithm() === button.dataset.value) return;
+  clearTimeout(mt.timer);
+  const previous = mtAlgorithm(), algorithm = button.dataset.value;
+  mt.args = { ...mt.args, algorithm };
   $("#mt-json").value = JSON.stringify(mt.args, null, 2);
   mtRenderAlgorithm();
+  const selected = picker.value;
+  if (selected && (previous === "graph" || algorithm === "graph")) {
+    const id = selected === "demo" && algorithm === "graph" ? mt.meta.graphs[0] ?? selected : selected;
+    const asOf = id === picker.dataset.loaded ? (mt.args.graph ?? mt.args.journey)?.as_of : undefined;
+    mtLoadJourney(id, asOf);
+    return;
+  }
   mtRun(false);
 });
 for (const button of document.querySelectorAll("#mt-model button")) button.addEventListener("click", () => {
@@ -243,13 +334,16 @@ function mtRenderStats() {
   const result = mt.result;
   if (!result) { box.replaceChildren(card("Focus event", "–", "muted"), card("Results", "–", "muted")); return; }
   const answer = result.answer;
-  const terms = mtStep("terms"), rankings = mtStep("rankings"), candidates = mtStep("candidates");
+  const terms = mtStep("terms"), rankings = mtStep("rankings"), candidates = mtStep("candidates"), query = mtStep("query");
   const dropped = candidates?.filter((candidate) => candidate.score == null).length;
   box.replaceChildren(...[
     card("Focus event", answer?.focus_event_id ?? "–", answer ? "" : "muted"),
     terms && card("Search terms: focus + context", `${terms.focus.length + (terms.generic?.length ?? 0)} + ${terms.context.length}`),
     rankings && card("Candidates: metadata + full text", `${rankings.metadata.length} + ${rankings.fullTexts.length}`),
     candidates && card("Candidates without a medical term, dropped", dropped, dropped ? "" : "muted"),
+    query && card("Diagnosis IDs for retrieval", Object.keys(query.diagnoses).length, Object.keys(query.diagnoses).length ? "" : "muted"),
+    query && card("Patient concepts: focus + other", `${query.concepts.filter((concept) => concept.focus).length} + ${query.concepts.filter((concept) => !concept.focus).length}`),
+    query && card("Disease state", query.stage.states.join(", ").replaceAll("_", " ") || "–", query.stage.states.length ? "" : "muted"),
     mtStep("semantic") && card(`Model: ${mtStep("semantic").repository}`, aiName(mtStep("semantic").model)),
     mtStep("semantic") && card("Encode / search", `${Math.round(mtStep("semantic").encoder_ms)} / ${Math.round(mtStep("semantic").search_ms)} ms`),
     card(answer?.degraded ? "Results (degraded)" : "Results", answer ? answer.results.length : "–", answer?.degraded || result.error ? "bad" : ""),
@@ -260,10 +354,10 @@ function mtRenderStats() {
 
 function mtRenderTimeline() {
   const box = $("#mt-timeline");
-  const events = Array.isArray(mt.args?.journey?.events) ? mt.args.journey.events.filter((event) => event && typeof event === "object") : [];
-  if (!events.length) { box.replaceChildren(h("div", { class: "empty" }, mt.args?.graph ? "The request sends a graph: the timeline shows journeys only." : "The journey has no events.")); return; }
+  const events = mtEvents(mt.args);
+  if (!events.length) { box.replaceChildren(h("div", { class: "empty" }, mt.args?.graph ? "The graph has no dated medical facts." : "The journey has no events.")); return; }
   // Focus and context are the matcher's; they show once its answer for this journey is here.
-  const current = mt.request?.journey === mt.args?.journey ? mt.result : null;
+  const current = mt.request?.journey === mt.args?.journey && mt.request?.graph === mt.args?.graph ? mt.result : null;
   const focus = current?.answer?.focus_event_id;
   const context = new Set(current?.steps?.find((entry) => entry.step === "journey")?.data.context || []);
   const date = (event) => String(event.date || "");
@@ -275,7 +369,7 @@ function mtRenderTimeline() {
       h("span", { class: "when" }, date(event) || "no date"),
       h("span", { class: "dot" }),
       h("span", { class: "label" }, event.label || ""),
-      h("span", { class: "what" }, [role ? { focus: "Focus", context: "Context", future: "Later" }[role] : null, event.id, event.type].filter(Boolean).join(" · ")));
+      h("span", { class: "what" }, [role ? { focus: "Focus", context: "Context", future: "Later" }[role] : null, event.id, event.type].filter(Boolean).join(", ")));
   }));
   const shown = box.querySelector(".ev.focus") || [...box.querySelectorAll(".ev:not(.future)")].at(-1);
   if (shown) box.scrollLeft = Math.max(0, shown.offsetLeft - box.offsetLeft - box.clientWidth / 2 + shown.offsetWidth / 2);
@@ -321,16 +415,16 @@ function mtRenderTerms() {
     }
     const termChip = ({ word, term }) => {
       const inQuery = terms.focus.includes(term) || terms.context.includes(term) || (isFocus && generic.includes(term));
-      const how = word === term ? "Searched as it is: no translation in german-terms.json" : "Translated by german-terms.json";
+      const how = word === term ? "Searched as it is: neither german-terms.json nor the German MeSH translates it" : "Translated by german-terms.json or the German MeSH";
       return h("span", { class: `term${inQuery ? "" : " unused"}`, title: `${how}\n${role(term, isFocus)}` }, word, word === term ? null : h("small", {}, `→ ${term}`));
     };
     const left = [
       skipped.size && `Skipped: ${[...skipped].join(" ")}`,
       negated.size && `Negated, left out: ${[...negated].join(" ")}`,
-    ].filter(Boolean).join(" · ");
+    ].filter(Boolean).join("; ");
     return h("div", { class: `ev-terms${isFocus ? " focus" : ""}` },
       h("div", { class: "head", title: "Terms come from the label, the text parameters and the names of true flags" },
-        h("b", {}, id), [isFocus ? "focus" : "older event", source.date, source.type].filter(Boolean).join(" · ")),
+        h("b", {}, id), [isFocus ? "focus" : "older event", source.date, source.type].filter(Boolean).join(", ")),
       h("div", {}, source.label || ""),
       h("div", { class: "chips" }, pairs.size ? [...pairs.values()].map(termChip) : h("span", { class: "muted" }, "no search term")),
       left ? h("div", { class: "left", title: "Numbers and the skip list of german-terms.json (function words, units, time spans …) are skipped; so are the words of a negated finding" }, left) : null);
@@ -339,7 +433,7 @@ function mtRenderTerms() {
     row(`Focus ${focusEvent.id}`, `×${mtSetting("focusWeight") ?? 1} in the query`, "The medical terms of the focus event, repeated this often in the query, so that the sources on the focus rank first.", terms.focus.map((term) => chip(term))),
     row("Context", "older events, ×1", `Up to ${mtSetting("contextTerms") ?? terms.context.length} terms that the most older events name, each once in the query; of two named equally often, the more recent first. Generic terms of older events are left out.`, terms.context.map((term) => chip(term, `Named by ${named(term)} of ${older.length} older events`))),
     row("Generic", "once, never a hit alone", "The generic terms of the focus event (german-terms.json): each once in the query, and a source with only these is no hit.", generic.map((term) => chip(term))),
-    h("div", { class: "term-key" }, "Documents with the term", h("i", { class: "sq m" }), "in their metadata", h("i", { class: "sq f" }), "in their full text · ∅ finds nothing · ⚠ in more than half of them"),
+    h("div", { class: "term-key" }, "Documents with the term", h("i", { class: "sq m" }), "in their metadata", h("i", { class: "sq f" }), "in their full text; ∅ finds nothing; ⚠ in more than half of them"),
     // Stays open from one match to the next, e.g. while the as-of date moves.
     h("details", { open: box.querySelector("details")?.open },
       h("summary", {}, "How each event became search terms"),
@@ -380,7 +474,7 @@ function mtRenderNotice() {
   else if (result.answer.degraded) {
     const missing = /does not exist/.test(failure?.message || "");
     text = `Degraded: ${result.answer.degraded_reason}${failure ? `\n${failure.name || "Error"}${failure.code ? ` ${failure.code}` : ""}: ${failure.message}` : ""}${missing ? "\nThe index is missing: start the indexer on the Index screen, or run make index." : ""}`;
-  } else if (!result.answer.results.length) [text, info] = ["No stored document shares a term with this journey.", true];
+  } else if (!result.answer.results.length) [text, info] = [result.answer.algorithm === "graph" ? "No indexed paper matched a mapped patient diagnosis." : "No stored document shares a term with this journey.", true];
   box.hidden = !text;
   box.className = `notice${info ? " quiet" : ""}`;
   box.textContent = text || "";
@@ -423,7 +517,7 @@ function mtRankStrip(candidate, last) {
   ].join("\n");
   return [
     h("td", { title: says }, h("div", { class: "ranks" }, ...marks)),
-    h("td", { class: "rank-numbers", title: says }, `${metaCounts ? meta : "–"} · ${hasFullText ? (fullCounts ? full : "–") : "none"}`),
+    h("td", { class: "rank-numbers", title: says }, `${metaCounts ? meta : "–"}, ${hasFullText ? (fullCounts ? full : "–") : "none"}`),
   ];
 }
 
@@ -459,17 +553,21 @@ function mtRenderResults() {
     h("i", { style: `left:${at(rank)}%` }),
     h("span", { style: `left:${at(rank)}%;transform:translateX(${index === 0 ? 0 : index === ticks.length - 1 ? -100 : -50}%)` }, rank),
   ]));
+  const hasExplanation = results.some((result) => result.explanation);
   head.replaceChildren(...[
     h("th", { class: "num" }, "#"),
-    traced && h("th", { title: `What rank fusion adds up for the document, the order of the results: 1 / (${constant} + its rank) from the metadata index and ${fullWeight === 1 ? "1" : fullWeight} / (${constant} + its rank) from the full-text index. An index adds nothing where it finds none of the terms; without a full text, the metadata rank counts for both. The bar is the sum, scaled to the best hit.` },
-      "Rank fusion",
-      h("small", {}, h("i", { class: "swatch meta" }), "metadata + ", h("i", { class: "swatch full" }), "full text"),
-      h("small", {}, fullWeight === 1 ? `each 1 / (${constant} + its rank)` : `1 / (${constant} + rank) + ${fullWeight} / (${constant} + rank)`)),
+    traced
+      ? h("th", { title: `What rank fusion adds up for the document, the order of the results: 1 / (${constant} + its rank) from the metadata index and ${fullWeight === 1 ? "1" : fullWeight} / (${constant} + its rank) from the full-text index. An index adds nothing where it finds none of the terms; without a full text, the metadata rank counts for both. The bar is the sum, scaled to the best hit.` },
+        "Rank fusion",
+        h("small", {}, h("i", { class: "swatch meta" }), "metadata + ", h("i", { class: "swatch full" }), "full text"),
+        h("small", {}, fullWeight === 1 ? `each 1 / (${constant} + its rank)` : `1 / (${constant} + rank) + ${fullWeight} / (${constant} + rank)`))
+      : h("th", { title: "Relative score in this result list (0 to 1)" }, "Score"),
     h("th", {}, "Source"), h("th", {}, "Title"),
+    !traced && hasExplanation && h("th", {}, "Why it matches"),
     traced && h("th", { title: `Where the document stands among the best ${last} candidates of each index, by BM25: rank 1 on the left, on a log scale. Blue: metadata, orange: full text; no dot: not among them, or none of the terms there.` },
       "Rank in each index", h("small", {}, axis)),
     traced && h("th", { title: "The two ranks as numbers. –: not among the candidates, or none of the terms there; none: the document has no full text, so its metadata rank counts for both." },
-      "Ranks", h("small", {}, "metadata · full text")),
+      "Ranks", h("small", {}, "metadata, full text")),
     h("th", { title: traced ? "The focus terms in bold, then the context terms that most results hold. A cell: left half found in the metadata, right half in the full text. Hover a name for the whole term." : "The terms each result holds (matched_terms). A grey cell: found. Hover a name for the whole term." },
       h("div", { class: "heat-head" }, ...columns.flatMap((column, index) => [gap(index), h("span", { class: column.focus ? "focus" : null, title: column.term }, column.term)]))),
   ].filter(Boolean));
@@ -482,18 +580,33 @@ function mtRenderResults() {
     };
     return h("tr", { class: db.selected?.id === result.source_id ? "selected" : null, onclick: () => dbOpenDocument(result.source_id) },
       h("td", { class: "num" }, result.rank),
-      traced && mtFusion(candidates.get(result.source_id), ranked[0]?.score),
+      traced
+        ? mtFusion(candidates.get(result.source_id), ranked[0]?.score)
+        : h("td", { class: "rank-numbers" }, result.score == null ? "–" : [h("span", { class: "meter" }, h("i", { style: `width:${100 * result.score}%` })), ` ${result.score.toFixed(2)}`]),
       h("td", {}, sourcePill(result.source)),
-      h("td", { class: "title" }, result.title, h("div", { class: "muted", style: "font-size:12px" }, [typeLabel(result.content_type), result.published_date, result.source_id].filter(Boolean).join(" · "))),
+      h("td", { class: "title" }, result.title, h("div", { class: "muted", style: "font-size:12px" }, [typeLabel(result.content_type), result.published_date, result.source_id].filter(Boolean).join(", "))),
+      !traced && hasExplanation && h("td", { class: "small" }, result.explanation || "–"),
       traced && mtRankStrip(candidates.get(result.source_id), last),
       h("td", {}, h("div", { class: "heat" }, ...columns.flatMap((column, index) => [gap(index), where(column)]))));
   }));
 }
 
-// The two rankings the result is fused from, with the place each candidate ended on.
+// The two rankings the result is fused from, with the place each candidate ended on. Graph has no
+// index rankings: it shows the query it built from the patient instead.
 function mtRenderRankings() {
   const box = $("#mt-rankings");
   const rankings = mtStep("rankings");
+  const query = mtStep("query");
+  const graph = !rankings && (mt.request?.algorithm === "graph" || Boolean(query));
+  const tab = $('#mt-tabs button[data-mttab="rankings"]');
+  tab.textContent = graph ? "Patient query" : "Index rankings";
+  tab.title = graph ? "What the graph matcher searched for: the patient's diagnoses, concepts and situation" : "The best candidates of each index before rank fusion, and where each one ended";
+  box.className = graph ? "panels" : "rank-lists";
+  if (graph) {
+    box.replaceChildren(...(query ? mtGraphQuery(query)
+      : [h("div", { class: "empty" }, mt.via === "mcp" ? "The MCP server answers without the steps of the match." : "No graph query trace available.")]));
+    return;
+  }
   const intro = h("p", { class: "muted", style: "grid-column:1 / 3; margin:10px 0 0" }, "Before rank fusion: the best candidates of each index in its own order, and where each one ended. Rank fusion merges the two lists into the results.");
   if (!rankings) {
     const why = mt.via === "mcp" ? "The MCP server answers without the steps of the match."
@@ -530,91 +643,6 @@ function mtRenderRaw() {
     block("Request", mt.request, false));
 }
 
-// ── Example client: the answer as an app could show it ────────────────────────
-// It reads only what the tools answer, no step of the match and no database row, so it shows
-// what a client can build from the contract (Documentation/user/mcp-interface.md).
-const CLIENT_FILES = 8;
-
-function mtRenderClient() {
-  const box = $("#mt-client");
-  const result = mt.result;
-  if (result.error) {
-    box.replaceChildren(h("div", { class: "notice" }, `The request was refused (${result.error.code}).`));
-    return;
-  }
-  const answer = result.answer;
-  const focus = (mt.request?.journey?.events || []).find((event) => event?.id === answer.focus_event_id);
-  const state = answer.degraded ? h("div", { class: "notice" }, `The search is not available right now, so this is not “nothing relevant”.\n${answer.degraded_reason || ""}`)
-    : answer.results.length ? null : h("div", { class: "notice quiet" }, "Nothing relevant for this event.");
-  box.replaceChildren(...[
-    h("div", { class: "client-head" },
-      h("small", {}, [plural(answer.results.length, "source"), focus?.date].filter(Boolean).join(" · ")),
-      h("h3", {}, focus?.label || answer.focus_event_id)),
-    state, ...answer.results.map(mtClientCard)].filter(Boolean));
-}
-
-function mtClientCard(result) {
-  const authors = result.authors || [];
-  const files = h("div", { class: "files" });
-  const long = result.summary && (result.summary.length > 220 || result.summary.includes("\n"));
-  const card = h("article", { class: `src-card${result.rank === 1 ? " top-result" : ""}${result.image_url ? " has-image" : ""}` },
-    result.image_url ? h("img", { src: result.image_url, alt: "", loading: "lazy" }) : null,
-    h("div", {},
-      h("div", { class: "src-meta" },
-        sourcePill(result.source),
-        h("span", {}, [typeLabel(result.content_type), result.published_date].filter(Boolean).join(" · ")),
-        h("span", { class: "rank", title: result.score == null ? null : `score ${result.score}: relative to the best source of this list` }, `#${result.rank}`,
-          result.score == null ? null : h("span", { class: "meter" }, h("i", { style: `width:${100 * result.score}%` })))),
-      h("h4", {}, h("a", { href: result.url, target: "_blank", rel: "noopener noreferrer" }, result.title)),
-      authors.length ? h("div", { class: "byline" }, authors.length > 3 ? `${authors.slice(0, 3).join(", ")} and ${authors.length - 3} more` : authors.join(", ")) : null,
-      h("p", { class: `summary${result.summary ? "" : " none"}` }, result.summary || "No summary"),
-      h("div", { class: "src-foot" },
-        h("button", { type: "button", title: "get_source: the files of this source at its origin", onclick: (event) => mtClientFiles(result.source_id, files, event.currentTarget) }, "Files"),
-        long ? h("button", { type: "button", onclick: (event) => { event.currentTarget.textContent = card.classList.toggle("more") ? "Less" : "More"; } }, "More") : null,
-        h("span", { title: "The client has to follow the licence when it downloads a file" }, result.licence || "Licence unknown")),
-      files));
-  return card;
-}
-
-// Shows the files of a source below its card, or hides them again.
-async function mtClientFiles(id, box, button) {
-  if (box.childElementCount) { box.replaceChildren(); button.textContent = "Files"; return; }
-  const key = `${mt.via}:${id}`;
-  button.disabled = true;
-  try {
-    if (!mt.sources.has(key)) mt.sources.set(key, await api("/api/match/source", { method: "POST", body: JSON.stringify({ source_id: id, via: mt.via }) }));
-    box.replaceChildren(...mtClientFileRows(mt.sources.get(key)));
-    button.textContent = "Hide files";
-  } catch (error) {
-    box.replaceChildren(h("div", { class: "error" }, error.message));
-  } finally {
-    button.disabled = false;
-  }
-}
-
-function mtClientFileRows(source) {
-  if (source.error) return [h("div", { class: "error" }, `get_source refused the request (${source.error.code}): ${source.error.message}`)];
-  const { downloads, url } = source.answer;
-  const open = { target: "_blank", rel: "noopener noreferrer" };
-  // The file name of a link (Zenodo's end in /content after it); the whole link if it has none.
-  const name = (link) => {
-    try {
-      const parts = new URL(link).pathname.split("/").filter(Boolean);
-      return decodeURIComponent((parts.at(-1) === "content" ? parts.at(-2) : parts.at(-1)) || link);
-    } catch (error) {
-      return link;
-    }
-  };
-  return [
-    downloads.length ? null : h("div", { class: "muted" }, "No file to download. ", h("a", { href: url, ...open }, "Open the page"), " instead."),
-    ...downloads.slice(0, CLIENT_FILES).map((file) => h("div", { class: "file" },
-      h("a", { href: file.url, ...open }, name(file.url)),
-      h("span", { class: "muted" }, [file.kind, file.media_type, file.size == null ? null : fmtBytes(file.size)].filter(Boolean).join(" · ")))),
-    downloads.length > CLIENT_FILES ? h("div", { class: "muted" }, `and ${fmtCount(downloads.length - CLIENT_FILES)} more`) : null,
-    h("details", {}, h("summary", {}, `Answer of get_source · ${source.seconds.toFixed(2)} s`), h("pre", {}, JSON.stringify(source.answer, null, 2))),
-  ].filter(Boolean);
-}
-
 // What this match found of a document, for the top of its panel.
 function mtDocumentParts(id) {
   const candidate = (mtStep("candidates") || []).find((entry) => entry.id === id);
@@ -624,23 +652,35 @@ function mtDocumentParts(id) {
   const rows = [["Result", result ? `rank ${result.rank}` : candidate.score == null ? "dropped: none of the medical terms is in it" : "ranked, but below the limit"]];
   if (candidate?.score != null) rows.push(["Rank fusion", `${candidate.metadataScore.toFixed(4)} metadata + ${candidate.fullTextScore.toFixed(4)} full text = ${candidate.score.toFixed(4)}`]);
   if (candidate) rows.push(
-    ["Metadata", `${candidate.metadataRank ? `rank ${candidate.metadataRank}, BM25 ${mtBm25(candidate.metadataBm25)}` : `not among the best ${last}`}${candidate.metadataTerms.length ? ` · ${candidate.metadataTerms.join(", ")}` : " · no term"}`],
-    ["Full text", !candidate.hasFullText ? "none indexed: the metadata rank stands in for it" : `${candidate.fullTextRank ? `rank ${candidate.fullTextRank}, BM25 ${mtBm25(candidate.fullTextBm25)}` : `not among the best ${last}`}${candidate.fullTextTerms.length ? ` · ${candidate.fullTextTerms.join(", ")}` : " · no term"}`]);
+    ["Metadata", `${candidate.metadataRank ? `rank ${candidate.metadataRank}, BM25 ${mtBm25(candidate.metadataBm25)}` : `not among the best ${last}`}${candidate.metadataTerms.length ? `; ${candidate.metadataTerms.join(", ")}` : "; no term"}`],
+    ["Full text", !candidate.hasFullText ? "none indexed: the metadata rank stands in for it" : `${candidate.fullTextRank ? `rank ${candidate.fullTextRank}, BM25 ${mtBm25(candidate.fullTextBm25)}` : `not among the best ${last}`}${candidate.fullTextTerms.length ? `; ${candidate.fullTextTerms.join(", ")}` : "; no term"}`]);
   else if (result.matched_terms?.length) rows.push(["Terms", result.matched_terms.join(", ")]);
+  if (result?.explanation) rows.push(["Why it matches", result.explanation]);
   return [h("div", { class: "label" }, "In this match"), h("dl", {}, ...rows.flatMap(([label, value]) => [h("dt", {}, label), h("dd", {}, value)]))];
 }
 
 function mtSwitchTab(tab) {
   mt.tab = tab;
-  history.replaceState(null, "", tab === "results" ? "#match" : `#match-${tab}`);
+  if (!mt.client) history.replaceState(null, "", tab === "results" ? "#match" : `#match-${tab}`);
   for (const button of document.querySelectorAll("#mt-tabs button")) button.classList.toggle("active", button.dataset.mttab === tab);
   for (const section of document.querySelectorAll(".mttab")) section.classList.toggle("active", section.id === `mttab-${tab}`);
   dbCloseDetail();
 }
 
+// The example client instead of the steps of the match: the column shows only the answer, as an
+// app could show it (#match-client); switched off, the tab shown before comes back.
+function mtSetClient(on) {
+  mt.client = on;
+  $("#mt-client-switch").checked = on;
+  $(".match-main").classList.toggle("client-mode", on);
+  history.replaceState(null, "", on ? "#match-client" : mt.tab === "results" ? "#match" : `#match-${mt.tab}`);
+  dbCloseDetail();
+}
+
 for (const button of document.querySelectorAll("#mt-tabs button")) button.addEventListener("click", () => mtSwitchTab(button.dataset.mttab));
+$("#mt-client-switch").addEventListener("change", (event) => mtSetClient(event.target.checked));
 $("#mt-run").addEventListener("click", () => mtRun(true));
-$("#mt-journey").addEventListener("change", (event) => mtLoadJourney(event.target.value).catch((error) => { $("#mt-error").textContent = error.message; }));
+$("#mt-journey").addEventListener("change", (event) => mtLoadJourney(event.target.value));
 $("#mt-open").addEventListener("click", () => $("#mt-file").click());
 $("#mt-file").addEventListener("change", async (event) => {
   const [file] = event.target.files;
@@ -654,6 +694,7 @@ $("#mt-file").addEventListener("change", async (event) => {
     return;
   }
   $("#mt-journey").value = "";
+  mtSwitch(`Matching ${file.name} …`);
   mtSetJourney(journey);
 });
 $("#mt-json").addEventListener("input", () => {

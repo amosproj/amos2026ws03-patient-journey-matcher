@@ -18,11 +18,11 @@ Run the commands from the repository root. Each `make` target runs the `uv`, `pn
 | Command | What it does |
 |---|---|
 | `make build` | Installs the locked dependencies of `crawler/` and `matcher/`, and type-checks `matcher/` |
-| `make test` | Builds, then runs the same checks as [CI](#ci); with the root `.env`, the database tests use the database from `make db` |
+| `make test` | Builds, then runs the crawler and matcher checks of [CI](#ci); with the root `.env`, the database tests use the database from `make db` |
 | `make test-integration` | Builds, then runs only the [end-to-end tests](#end-to-end-tests) |
 | `make db` | Starts the [database](database.md) and applies `db/init/`; needs the root `.env` |
 | `make seed` | Runs `make db`, then stores a sample crawl of every source ([`scripts/seed.py`](../../scripts/seed.py)) |
-| `make index` | Builds, then updates the indexes of enabled approaches ([keyword](../design/keyword-matching.md), [semantic](../../matcher/README.md#semantic-matching)) |
+| `make index` | Builds, then updates the indexes of enabled approaches ([keyword](../design/keyword-matching.md), [graph](../design/graph-normalization.md), [semantic](../../matcher/README.md#semantic-matching)) |
 | `WHISPER_MODEL=tiny-q5_1 make transcribe` | Builds, then runs the [transcription job](../design/keyword-matching.md#speech-to-text) until you stop it: speech-to-text for podcast audio that has no transcript, for the indexes. It reads no file until you set how many at once: [options](#options) or the debug UI |
 | `make start` | Builds, then starts the MCP server on `http://127.0.0.1:3000/mcp`; needs the root `.env` |
 | `make index-ai` | Prepares the local encoder and indexes metadata with Qwen and BGE-M3 |
@@ -68,7 +68,7 @@ The Python crawler and the TypeScript matcher are separate projects with their o
 
 **Matcher (`matcher/`, TypeScript, Node.js 24, pnpm workspace).** `pnpm install --frozen-lockfile` installs all packages. Checks: `pnpm typecheck`, `pnpm test`, `pnpm lint`, `pnpm test:integration`. Add a dependency to one package with `pnpm --filter @matcher/indexer add <package>`, a shared dev tool with `pnpm add -w -D <package>`. Package rules: [matcher](../../matcher/README.md).
 
-**Database tests.** The store tests of the crawler, the database tests of `@matcher/db` and `@matcher/keyword`, and the end-to-end tests are skipped unless `TEST_DATABASE_URL` points to a PostgreSQL database; the root `.env` sets it for `make`.
+**Database tests.** The store tests of the crawler, the database tests of the matcher packages and the end-to-end tests are skipped unless `TEST_DATABASE_URL` points to a PostgreSQL database; the root `.env` sets it for `make`.
 
 ### End-to-end tests
 
@@ -92,14 +92,6 @@ Not covered: the live data sources, the quality of the ranking, reading a valid 
 - Not included: the operating system packages of the Docker images, Python and Node.js.
 - PostgreSQL has only its major version: the image tag in `db/Dockerfile` names no minor version.
 - Licences that the package metadata leaves unclear are set by hand in `scripts/sbom.py`; `make sbom` names every package that still has no SPDX licence ID.
-
-The list of direct dependencies, after installing both projects:
-
-```sh
-uv run --project crawler python scripts/dependencies.py
-```
-
-It writes the direct dependencies of `crawler/` and `matcher/` with version, licence and scope to `out/dependencies.tsv`; those of the [patient graph tool](../../tools/patient-graph/README.md#development) are added by hand. The `Context` and `Comment` columns stay empty; fill them in afterwards.
 
 ## Limitations
 

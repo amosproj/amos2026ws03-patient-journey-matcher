@@ -61,6 +61,35 @@ function armOrRun(button, label, action) {
 const LOG_LIMIT = 4000;
 function card(label, value, cls) { return h("div", { class: `card ${cls || ""}` }, h("b", {}, value ?? "–"), h("span", {}, label)); }
 
+// ── Loading: answers from a large database take time, and the screen says so ───
+// Nothing changes for a quick answer: a note fades in after a moment, and a busy mark is set only
+// once a load takes longer than 200 ms. What loads for the first time shows a note in its place;
+// what loads again keeps its content, faded under a spinner; a refresh in the background only
+// turns the icon of its Refresh button.
+const spinner = () => h("span", { class: "spinner", "aria-hidden": "true" });
+const loadingNote = (text) => h("div", { class: "loading", role: "status" }, spinner(), h("span", {}, text));
+const loadingRow = (columns, text) => h("tr", { class: "loading-row" }, h("td", { colspan: columns }, loadingNote(text)));
+const BUSY = new WeakMap();
+async function busy(node, work, cls) {
+  if (!node) return work;
+  const mark = BUSY.get(node) || { count: 0, timer: 0 };
+  BUSY.set(node, mark);
+  if (!mark.count++) mark.timer = setTimeout(() => { node.classList.add(cls); node.setAttribute("aria-busy", "true"); }, 200);
+  try {
+    return await work;
+  } finally {
+    if (!--mark.count) {
+      clearTimeout(mark.timer);
+      node.classList.remove(cls);
+      node.removeAttribute("aria-busy");
+    }
+  }
+}
+// The content area of a screen (.content) while `work` runs: its lists fade under a spinner.
+const busyArea = (node, work) => busy(node, work, "reloading");
+// A Refresh button or an action button while `work` runs: a spinner in place of its icon.
+const busyButton = (button, work) => busy(button, work, "spinning");
+
 // Overviews above the tabs (.stats.overview): a total stands above what it splits into, so no part
 // reads as a total of its own. A bar is a share of its group's total, in the colour of what it
 // counts (an origin or a state), else graphite.
@@ -115,19 +144,19 @@ function shellQuote(value) { return /^[\w@%+=:,./-]+$/.test(value) ? value : `'$
 const fmtCount = (value) => Number(value).toLocaleString("en-GB");
 const fmtCompact = (value) => new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 1 }).format(value);
 const fmtShare = (count, total) => total ? `${Math.round((100 * count) / total)} %` : "–";
-// What the keyword indexer did with a document's full text (`full_text_state` in server.py):
-// the first two are done, the next run reads the others.
+// What the keyword indexer did with a document's full text (`full_text_state` in common.py):
+// the first two are done, the next run reads the others. [pill class, tip, label]
 const FULL_TEXT_STATES = {
-  indexed: ["ok", "Done: its keywords are in the index"],
-  skipped: ["plain", "Done: no usable full text, so at most its metadata is matched"],
-  failed: ["failed", "Open: the download failed; the next run tries again"],
-  new: ["none", "Open: not read yet; the next run reads it"],
-  changed: ["none", "Open: changed since it was read; the next run reads it again"],
+  indexed: ["ok", "Done: the keywords of its full text are in the index, beside its metadata", "fully indexed"],
+  skipped: ["plain", "Done: no usable full text, so at most its metadata is matched", "metadata only"],
+  failed: ["failed", "Open: the download failed, so at most its metadata is matched until the next run tries again", "retry download"],
+  new: ["none", "Open: not read yet; the next run reads it", "new"],
+  changed: ["none", "Open: changed since it was read; the next run reads it again", "changed"],
 };
 
 function fullTextPill(state) {
-  const [cls, tip] = FULL_TEXT_STATES[state] || ["plain", ""];
-  return h("span", { class: `pill ${cls}`, title: tip }, state);
+  const [cls, tip, label = state] = FULL_TEXT_STATES[state] || ["plain", ""];
+  return h("span", { class: `pill ${cls}`, title: tip }, label);
 }
 
 // Named bars with their figure at the end. Rows: { name, value, label, title, onclick }.

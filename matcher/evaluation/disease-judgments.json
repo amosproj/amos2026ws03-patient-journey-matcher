@@ -1,0 +1,1197 @@
+{
+  "version": 1,
+  "about": "Additional blinded grades from the development and frozen comparison pools. Each paper was judged against the synthetic case at the cutoff date without its rank or the retrieving algorithm. The scale is in research/matching-evaluation.md.",
+  "points": {
+    "Arthritis-e1": {
+      "as_of": "2026-01-10",
+      "grades": {
+        "3": "pubmed:111762 pubmed:12111074 pubmed:15308516 pubmed:22984174 pubmed:24258615 pubmed:26389852 pubmed:40220982 pubmed:7656341",
+        "2": "pubmed:11508423 pubmed:20870100 pubmed:31196652",
+        "1": "pubmed:10796420 pubmed:11396092 pubmed:14974005 pubmed:23684699 pubmed:24618101 pubmed:24729685 pubmed:26612244 pubmed:28251248 pubmed:28544648 pubmed:30421196 pubmed:32367211 pubmed:36995320 pubmed:37954220 pubmed:42399075",
+        "0": "pubmed:24938195 pubmed:34598717 pubmed:5310143"
+      }
+    },
+    "Arthritis-e2": {
+      "as_of": "2026-01-17",
+      "grades": {
+        "3": "pubmed:20398020 pubmed:20870100 pubmed:9489813",
+        "2": "pubmed:10796420 pubmed:111762 pubmed:11557646 pubmed:14974005 pubmed:15308516 pubmed:24258615 pubmed:26389852 pubmed:31196652 pubmed:40220982 pubmed:7656341",
+        "1": "pubmed:11396092 pubmed:19424068 pubmed:23684699 pubmed:24618101 pubmed:24729685 pubmed:26612244 pubmed:30421196 pubmed:32794076 pubmed:35886067 pubmed:37954220",
+        "0": "pubmed:24938195 pubmed:36280095 pubmed:5310143"
+      }
+    },
+    "Arthritis-e3": {
+      "as_of": "2026-02-09",
+      "grades": {
+        "3": "pubmed:12571869 pubmed:17907167 pubmed:24012043 pubmed:9489813",
+        "2": "pubmed:20870100 pubmed:24081439 pubmed:26389852",
+        "1": "pubmed:111762 pubmed:15308516 pubmed:19424068 pubmed:21330639 pubmed:24729685 pubmed:26612244 pubmed:30421196 pubmed:31196652 pubmed:31823822 pubmed:32794076 pubmed:37954220 pubmed:40220982",
+        "0": "pubmed:5310143"
+      }
+    },
+    "Breast-e1": {
+      "as_of": "2026-01-10",
+      "grades": {
+        "3": "pubmed:25547239 pubmed:32180032",
+        "1": "pubmed:11257103 pubmed:12677558 pubmed:12847142 pubmed:15040392 pubmed:18316752 pubmed:19789974 pubmed:21037116 pubmed:21908500 pubmed:22147742 pubmed:23558900 pubmed:25186627 pubmed:27749552 pubmed:27918707 pubmed:28104314 pubmed:29571797 pubmed:30980249 pubmed:32721031",
+        "0": "pubmed:11230499 pubmed:12487280 pubmed:16384764 pubmed:17697780 pubmed:19298662 pubmed:19555589 pubmed:2143400 pubmed:21990134 pubmed:23129741 pubmed:25372568 pubmed:26153499 pubmed:26510017 pubmed:28098572 pubmed:29361001 pubmed:30971774 pubmed:33106023"
+      }
+    },
+    "Breast-e2": {
+      "as_of": "2026-01-17",
+      "grades": {
+        "3": "pubmed:12847142 pubmed:22157293",
+        "2": "pubmed:12487280 pubmed:21908500 pubmed:26405167 pubmed:32180032",
+        "1": "pubmed:11230499 pubmed:11257103 pubmed:12677558 pubmed:15040392 pubmed:16545560 pubmed:17229773 pubmed:17690930 pubmed:18398097 pubmed:18955443 pubmed:19555589 pubmed:19914530 pubmed:20015594 pubmed:2143400 pubmed:23404816 pubmed:24567198 pubmed:25494663 pubmed:25547239 pubmed:26237064 pubmed:26461271 pubmed:26510017 pubmed:27998966 pubmed:28618241 pubmed:29908297 pubmed:30971774",
+        "0": "pubmed:12058160 pubmed:16384764 pubmed:18316752 pubmed:21037116 pubmed:23129741 pubmed:25372568 pubmed:27918707 pubmed:29361001 pubmed:29571797 pubmed:33106023"
+      }
+    },
+    "Breast-e3": {
+      "as_of": "2026-02-09",
+      "grades": {
+        "3": "pubmed:28578601 pubmed:29867226 pubmed:30689707 pubmed:32249603 pubmed:34081848 pubmed:36228963 pubmed:39421986 pubmed:40795806",
+        "2": "pubmed:19553641 pubmed:24063698 pubmed:27993796 pubmed:31218365 pubmed:39243563 zenodo:5543238",
+        "1": "pubmed:28138868 pubmed:34430738",
+        "0": "pubmed:27385701 pubmed:28223274 pubmed:28525389 pubmed:30092674 pubmed:30353044 pubmed:31075528 pubmed:32347934 pubmed:34353615 pubmed:35146567 pubmed:35967752 pubmed:36484513 pubmed:36564284 pubmed:36944815 pubmed:37048111 pubmed:37791389 pubmed:38027160 pubmed:39187531 pubmed:40174507"
+      }
+    },
+    "Crohn-e1": {
+      "as_of": "2026-01-10",
+      "grades": {
+        "3": "pubmed:15143222 pubmed:30604884 pubmed:31432777 pubmed:34304381 pubmed:8897619",
+        "2": "pubmed:22200942 pubmed:22564182 pubmed:22997386 pubmed:24778747 pubmed:27813111 pubmed:28179361 pubmed:28283726 pubmed:29347813",
+        "1": "pubmed:12122736 pubmed:17508418 pubmed:24004045 pubmed:25816833 pubmed:37623162 pubmed:40362790",
+        "0": "pubmed:15937625 pubmed:16697723 pubmed:22573565"
+      }
+    },
+    "Crohn-e2": {
+      "as_of": "2026-01-17",
+      "grades": {
+        "3": "pubmed:30604884 pubmed:31432777 pubmed:8897619",
+        "2": "pubmed:28283726 pubmed:32515798 pubmed:34304381 pubmed:40362790",
+        "1": "pubmed:11023556 pubmed:12122736 pubmed:15937625 pubmed:21157441 pubmed:22112005 pubmed:25816833 pubmed:27813111 pubmed:29338679 pubmed:30541458 pubmed:33156100 pubmed:34402887 pubmed:36150926 pubmed:7084615"
+      }
+    },
+    "Crohn-e3": {
+      "as_of": "2026-02-09",
+      "grades": {
+        "3": "pubmed:20587545 pubmed:26342731 pubmed:36280102 pubmed:36294494 pubmed:38985232",
+        "2": "pubmed:29206816 pubmed:32762582",
+        "1": "pubmed:11023556 pubmed:21157441 pubmed:29338679 pubmed:34402887",
+        "0": "pubmed:21349113 pubmed:37600624"
+      }
+    },
+    "Lung-e1": {
+      "as_of": "2026-01-10",
+      "grades": {
+        "3": "pubmed:1465483 pubmed:28115167 pubmed:32591241",
+        "2": "pubmed:11443621 pubmed:17964957 pubmed:21694641 pubmed:27588333 pubmed:29644440 pubmed:31200873 pubmed:33389149",
+        "1": "pubmed:11577479 pubmed:12461246 pubmed:17873181 pubmed:21606442 pubmed:24011633 pubmed:24379002 pubmed:26389769 pubmed:28404761 pubmed:28942912 pubmed:30285222 pubmed:36872130 pubmed:38754467 pubmed:40154514",
+        "0": "pubmed:10516903 pubmed:11512394 pubmed:12493257 pubmed:12671819 pubmed:17392247 pubmed:22088938 pubmed:22308519 pubmed:23904353 pubmed:27179989 pubmed:27659411 pubmed:29800127 pubmed:30616263 pubmed:31704600 pubmed:32011914 pubmed:34729614 pubmed:38376761 pubmed:38522956"
+      }
+    },
+    "Lung-e2": {
+      "as_of": "2026-01-17",
+      "grades": {
+        "3": "pubmed:17964957",
+        "2": "pubmed:24011633 pubmed:31200873 pubmed:38754467",
+        "1": "pubmed:10811675 pubmed:12461246 pubmed:14570950 pubmed:15117980 pubmed:17873181 pubmed:18378568 pubmed:19027483 pubmed:19807917 pubmed:20022809 pubmed:20530281 pubmed:26389769 pubmed:28404761 pubmed:28942912 pubmed:30285222 pubmed:35597478 pubmed:36872130",
+        "0": "pubmed:10516903 pubmed:11512394 pubmed:12493257 pubmed:12671819 pubmed:12915606 pubmed:17392247 pubmed:22308519 pubmed:23904353 pubmed:24141889 pubmed:24379002 pubmed:27179989 pubmed:27659411 pubmed:29800127 pubmed:30616263 pubmed:31704600 pubmed:38376761 pubmed:38522956 pubmed:40154514"
+      }
+    },
+    "Lung-e3": {
+      "as_of": "2026-02-09",
+      "grades": {
+        "3": "pubmed:26712084 pubmed:28404761 pubmed:32271354 pubmed:34048946 pubmed:34103147 pubmed:41388832 pubmed:42214392",
+        "1": "pubmed:10811675 pubmed:14570950 pubmed:15117980 pubmed:19027483 pubmed:28942912 pubmed:31200873 pubmed:31704600",
+        "0": "pubmed:22308519 pubmed:24379002 pubmed:28813164 pubmed:29775808 pubmed:29992241 pubmed:31050707 pubmed:31270961 pubmed:31774688 pubmed:34239813 pubmed:35623069 pubmed:38054201 pubmed:38284349 pubmed:39739622 pubmed:41405563 pubmed:41536071"
+      }
+    },
+    "patient-1-e01": {
+      "as_of": "2026-11-06",
+      "grades": {
+        "2": "pubmed:17848671",
+        "1": "pubmed:17437803"
+      }
+    },
+    "patient-1-e02": {
+      "as_of": "2026-11-09",
+      "grades": {
+        "2": "pubmed:17848671",
+        "1": "pubmed:17437803"
+      }
+    },
+    "patient-1-e03": {
+      "as_of": "2026-12-12",
+      "grades": {
+        "3": "pubmed:34230616 pubmed:34906585 pubmed:35179971",
+        "1": "pubmed:33000302",
+        "0": "pubmed:34003127 pubmed:34499551"
+      }
+    },
+    "patient-1-e04": {
+      "as_of": "2027-01-09",
+      "grades": {
+        "2": "pubmed:25035153"
+      }
+    },
+    "patient-1-e05": {
+      "as_of": "2027-01-23",
+      "grades": {
+        "3": "pubmed:33000302 pubmed:39800984"
+      }
+    },
+    "patient-10-e01": {
+      "as_of": "2026-11-06",
+      "grades": {
+        "0": "pubmed:38547495"
+      }
+    },
+    "patient-10-e03": {
+      "as_of": "2026-11-21",
+      "grades": {
+        "3": "pubmed:37173901 pubmed:39798235",
+        "2": "pubmed:26100327"
+      }
+    },
+    "patient-10-e04": {
+      "as_of": "2026-12-05",
+      "grades": {
+        "3": "pubmed:30120038"
+      }
+    },
+    "patient-10-e05": {
+      "as_of": "2027-01-02",
+      "grades": {
+        "2": "pubmed:41914444"
+      }
+    },
+    "patient-10-e06": {
+      "as_of": "2027-01-13",
+      "grades": {
+        "2": "pubmed:33106584 pubmed:37714168 pubmed:38582650 pubmed:40099663"
+      }
+    },
+    "patient-10-e08": {
+      "as_of": "2027-04-23",
+      "grades": {
+        "2": "pubmed:6436700"
+      }
+    },
+    "patient-10-e10": {
+      "as_of": "2027-10-20",
+      "grades": {
+        "2": "pubmed:6436700"
+      }
+    },
+    "patient-10-e11": {
+      "as_of": "2028-01-31",
+      "grades": {
+        "2": "pubmed:6436700"
+      }
+    },
+    "patient-10-e12": {
+      "as_of": "2028-06-21",
+      "grades": {
+        "2": "pubmed:6436700"
+      }
+    },
+    "patient-10-e13": {
+      "as_of": "2028-06-30",
+      "grades": {
+        "3": "pubmed:32212535",
+        "2": "pubmed:23084527 pubmed:28450426 pubmed:28540598 pubmed:38731844",
+        "1": "pubmed:22048000 pubmed:26244877 pubmed:32367009"
+      }
+    },
+    "patient-10-e14": {
+      "as_of": "2028-07-13",
+      "grades": {
+        "3": "pubmed:21406025 pubmed:32212535",
+        "2": "pubmed:21744161 pubmed:23084527 pubmed:29063869 pubmed:36283420",
+        "1": "pubmed:26244877 pubmed:32367009 pubmed:6436700",
+        "0": "pubmed:37439809"
+      }
+    },
+    "patient-10-e20": {
+      "as_of": "2028-10-28",
+      "grades": {
+        "2": "pubmed:38731844",
+        "1": "pubmed:32367009 pubmed:32814685 pubmed:37689306 pubmed:42312474"
+      }
+    },
+    "patient-10-e21": {
+      "as_of": "2028-10-29",
+      "grades": {
+        "3": "pubmed:31158090"
+      }
+    },
+    "patient-10-e22": {
+      "as_of": "2028-12-22",
+      "grades": {
+        "3": "pubmed:25270847",
+        "2": "pubmed:31913197",
+        "1": "pubmed:34789394"
+      }
+    },
+    "patient-2-e01": {
+      "as_of": "2026-11-06",
+      "grades": {
+        "1": "pubmed:25168546"
+      }
+    },
+    "patient-2-e02": {
+      "as_of": "2026-11-16",
+      "grades": {
+        "3": "pubmed:37202311",
+        "2": "pubmed:18036719 pubmed:21047592",
+        "1": "pubmed:25168546 pubmed:33773592",
+        "0": "pubmed:35182206 pubmed:37307153"
+      }
+    },
+    "patient-2-e03": {
+      "as_of": "2026-12-03",
+      "grades": {
+        "3": "pubmed:26343218"
+      }
+    },
+    "patient-2-e04": {
+      "as_of": "2026-12-15",
+      "grades": {
+        "2": "pubmed:35288662",
+        "0": "pubmed:22325447 pubmed:26651990"
+      }
+    },
+    "patient-2-e05": {
+      "as_of": "2026-12-28",
+      "grades": {
+        "3": "pubmed:25524243 pubmed:29072790"
+      }
+    },
+    "patient-2-e06": {
+      "as_of": "2027-01-02",
+      "grades": {
+        "3": "pubmed:11533098"
+      }
+    },
+    "patient-2-e07": {
+      "as_of": "2027-01-17",
+      "grades": {
+        "3": "pubmed:12627216 pubmed:23258223"
+      }
+    },
+    "patient-3-e01": {
+      "as_of": "2026-11-06",
+      "grades": {
+        "3": "pubmed:17848671",
+        "0": "pubmed:17437803"
+      }
+    },
+    "patient-3-e02": {
+      "as_of": "2026-11-12",
+      "grades": {
+        "3": "pubmed:17848671",
+        "0": "pubmed:17437803"
+      }
+    },
+    "patient-3-e05": {
+      "as_of": "2027-01-02",
+      "grades": {
+        "3": "pubmed:25100337",
+        "2": "pubmed:29154904 pubmed:31977306",
+        "1": "pubmed:31287613"
+      }
+    },
+    "patient-3-e06": {
+      "as_of": "2027-01-26",
+      "grades": {
+        "3": "pubmed:27930844",
+        "2": "pubmed:25100337 pubmed:25240973 pubmed:32320063",
+        "1": "pubmed:28830754",
+        "0": "pubmed:28418690"
+      }
+    },
+    "patient-3-e07": {
+      "as_of": "2027-01-27",
+      "grades": {
+        "3": "pubmed:11590819"
+      }
+    },
+    "patient-3-e08": {
+      "as_of": "2027-02-08",
+      "grades": {
+        "2": "pubmed:11590819"
+      }
+    },
+    "patient-3-e09": {
+      "as_of": "2027-02-09",
+      "grades": {
+        "3": "pubmed:11590819 pubmed:8795650",
+        "0": "pubmed:31441133"
+      }
+    },
+    "patient-3-e10": {
+      "as_of": "2027-04-06",
+      "grades": {
+        "3": "pubmed:8795650",
+        "2": "pubmed:11590819 pubmed:20380985 pubmed:22182202",
+        "0": "pubmed:22085203 pubmed:31441133 pubmed:34570379"
+      }
+    },
+    "patient-3-e16": {
+      "as_of": "2029-06-10",
+      "grades": {
+        "3": "pubmed:8795650",
+        "2": "pubmed:11590819 pubmed:20380985 pubmed:22182202",
+        "0": "pubmed:22085203 pubmed:31441133 pubmed:34570379"
+      }
+    },
+    "patient-4-e01": {
+      "as_of": "2026-11-06",
+      "grades": {
+        "3": "pubmed:17848671",
+        "0": "pubmed:17437803"
+      }
+    },
+    "patient-4-e02": {
+      "as_of": "2026-11-11",
+      "grades": {
+        "3": "pubmed:17848671",
+        "0": "pubmed:17437803 pubmed:9989421"
+      }
+    },
+    "patient-4-e03": {
+      "as_of": "2026-11-29",
+      "grades": {
+        "3": "pubmed:27193786 pubmed:31326219 pubmed:37640584",
+        "2": "pubmed:29894214",
+        "1": "pubmed:31279677 pubmed:32444265 pubmed:37877601"
+      }
+    },
+    "patient-4-e04": {
+      "as_of": "2026-12-10",
+      "grades": {
+        "3": "pubmed:24769030 pubmed:27568655 pubmed:32505458",
+        "2": "pubmed:25466942",
+        "1": "pubmed:23537686 pubmed:27320841"
+      }
+    },
+    "patient-4-e05": {
+      "as_of": "2026-12-23",
+      "grades": {
+        "3": "pubmed:27930844",
+        "2": "pubmed:16280755 pubmed:18395322 pubmed:24841378 pubmed:28728994 pubmed:28988753 pubmed:30652213",
+        "1": "pubmed:21491408 pubmed:21640056 pubmed:25261861"
+      }
+    },
+    "patient-4-e06": {
+      "as_of": "2027-01-23",
+      "grades": {
+        "2": "pubmed:22085203",
+        "1": "pubmed:24666839 pubmed:31399825",
+        "0": "pubmed:28267899"
+      }
+    },
+    "patient-4-e07": {
+      "as_of": "2027-01-24",
+      "grades": {
+        "3": "pubmed:12775280 pubmed:14767305 pubmed:18366294 pubmed:19365894 pubmed:21035248 pubmed:25770484 pubmed:28895658 pubmed:31158073 pubmed:34538508 pubmed:7544933",
+        "2": "pubmed:24267107"
+      }
+    },
+    "patient-4-e08": {
+      "as_of": "2027-02-03",
+      "grades": {
+        "3": "pubmed:22901983 pubmed:27004601 pubmed:30587172 pubmed:34570379",
+        "2": "pubmed:19365894 pubmed:20380985 pubmed:22591631 pubmed:23017512 pubmed:31145297 pubmed:39472200 pubmed:7544933"
+      }
+    },
+    "patient-4-e09": {
+      "as_of": "2027-02-06",
+      "grades": {
+        "3": "pubmed:27004601",
+        "2": "pubmed:14767305 pubmed:20380985 pubmed:23017512 pubmed:23356747 pubmed:24267107 pubmed:25770484 pubmed:28895658 pubmed:34538508 pubmed:7544933",
+        "1": "pubmed:22591631"
+      }
+    },
+    "patient-4-e10": {
+      "as_of": "2027-03-18",
+      "grades": {
+        "1": "pubmed:10458230 pubmed:20825403 pubmed:23083862 pubmed:7544933"
+      }
+    },
+    "patient-4-e11": {
+      "as_of": "2027-06-16",
+      "grades": {
+        "2": "pubmed:18707818",
+        "1": "pubmed:10561174 pubmed:12949429 pubmed:14747043 pubmed:16229369 pubmed:27160475",
+        "0": "pubmed:20237908"
+      }
+    },
+    "patient-4-e17": {
+      "as_of": "2029-11-06",
+      "grades": {
+        "1": "pubmed:27160475"
+      }
+    },
+    "patient-5-e01": {
+      "as_of": "2026-11-06",
+      "grades": {
+        "2": "pubmed:17848671",
+        "1": "pubmed:17437803"
+      }
+    },
+    "patient-5-e02": {
+      "as_of": "2026-11-12",
+      "grades": {
+        "2": "pubmed:17848671",
+        "1": "pubmed:17437803"
+      }
+    },
+    "patient-5-e04": {
+      "as_of": "2026-12-08",
+      "grades": {
+        "2": "pubmed:26116294"
+      }
+    },
+    "patient-5-e05": {
+      "as_of": "2026-12-19",
+      "grades": {
+        "2": "pubmed:31115364",
+        "1": "pubmed:10462314",
+        "0": "pubmed:20237908"
+      }
+    },
+    "patient-5-e06": {
+      "as_of": "2027-01-20",
+      "grades": {
+        "3": "pubmed:27930844",
+        "2": "pubmed:22085203 pubmed:32320063",
+        "1": "pubmed:10561174 pubmed:28418690"
+      }
+    },
+    "patient-5-e08": {
+      "as_of": "2027-01-29",
+      "grades": {
+        "3": "pubmed:26542947",
+        "2": "pubmed:16280737 pubmed:28464434 pubmed:39476142 pubmed:7853552",
+        "1": "pubmed:10462314 pubmed:18001790 pubmed:21497853 pubmed:26507516 pubmed:29211407 pubmed:29523479 pubmed:4775740"
+      }
+    },
+    "patient-5-e09": {
+      "as_of": "2027-02-01",
+      "grades": {
+        "3": "pubmed:11590819 pubmed:24136479 pubmed:8795650",
+        "2": "pubmed:28965315 pubmed:31546125",
+        "1": "pubmed:10462314 pubmed:12560439 pubmed:17320671 pubmed:18353395 pubmed:23305529 pubmed:32229186 pubmed:34140144",
+        "0": "pubmed:12545622 pubmed:22633803 pubmed:23619579"
+      }
+    },
+    "patient-5-e10": {
+      "as_of": "2027-03-20",
+      "grades": {
+        "2": "pubmed:11590819 pubmed:16402091 pubmed:31546125",
+        "1": "pubmed:12560439 pubmed:17320671 pubmed:29230008 pubmed:32215583 pubmed:32229186",
+        "0": "pubmed:23619579"
+      }
+    },
+    "patient-5-e14": {
+      "as_of": "2028-08-02",
+      "grades": {
+        "3": "pubmed:21388736 pubmed:23707439 pubmed:29123013 pubmed:32215583 pubmed:32229186",
+        "2": "pubmed:11590819 pubmed:16402091",
+        "1": "pubmed:17320671 pubmed:31546125"
+      }
+    },
+    "patient-5-e15": {
+      "as_of": "2028-12-25",
+      "grades": {
+        "3": "pubmed:21388736 pubmed:23707439 pubmed:27749412 pubmed:29123013 pubmed:33517323"
+      }
+    },
+    "patient-5-e16": {
+      "as_of": "2029-01-02",
+      "grades": {
+        "3": "pubmed:22795730",
+        "2": "pubmed:12949429 pubmed:16229369"
+      }
+    },
+    "patient-5-e18": {
+      "as_of": "2029-01-04",
+      "grades": {
+        "3": "pubmed:24829952 pubmed:29123013 pubmed:33517323",
+        "2": "pubmed:20643445 pubmed:24434294 pubmed:29084827 pubmed:30003375 pubmed:33971152 pubmed:41973167",
+        "1": "pubmed:17157630 pubmed:33159608"
+      }
+    },
+    "patient-5-e19": {
+      "as_of": "2029-01-22",
+      "grades": {
+        "3": "pubmed:23707439 pubmed:31472746 pubmed:33971152",
+        "2": "pubmed:12949429 pubmed:16229369 pubmed:22892261",
+        "1": "pubmed:28366513",
+        "0": "pubmed:22439742"
+      }
+    },
+    "patient-5-e20": {
+      "as_of": "2029-04-22",
+      "grades": {
+        "3": "pubmed:21109361 pubmed:34595542",
+        "2": "pubmed:12949429",
+        "1": "pubmed:31115124 pubmed:31441133 pubmed:31820209"
+      }
+    },
+    "patient-5-e24": {
+      "as_of": "2030-12-16",
+      "grades": {
+        "3": "pubmed:21109361 pubmed:34595542",
+        "1": "pubmed:31115124 pubmed:31441133 pubmed:31820209"
+      }
+    },
+    "patient-6-e01": {
+      "as_of": "2026-11-06",
+      "grades": {
+        "2": "pubmed:17848671",
+        "0": "pubmed:17437803"
+      }
+    },
+    "patient-6-e02": {
+      "as_of": "2026-11-12",
+      "grades": {
+        "2": "pubmed:17848671",
+        "0": "pubmed:17437803"
+      }
+    },
+    "patient-6-e03": {
+      "as_of": "2026-12-03",
+      "grades": {
+        "3": "pubmed:27287889 pubmed:34230616",
+        "1": "pubmed:33036660 pubmed:34906585",
+        "0": "pubmed:31650100 pubmed:33000302 pubmed:33143905"
+      }
+    },
+    "patient-6-e05": {
+      "as_of": "2026-12-20",
+      "grades": {
+        "3": "pubmed:12504845 pubmed:20690197",
+        "2": "pubmed:20921463 pubmed:23279038 pubmed:25242555",
+        "0": "pubmed:28589400 pubmed:31220400"
+      }
+    },
+    "patient-6-e06": {
+      "as_of": "2026-12-29",
+      "grades": {
+        "3": "pubmed:19356817"
+      }
+    },
+    "patient-6-e07": {
+      "as_of": "2027-01-08",
+      "grades": {
+        "2": "pubmed:11240234"
+      }
+    },
+    "patient-6-e08": {
+      "as_of": "2027-02-04",
+      "grades": {
+        "3": "pubmed:19356817"
+      }
+    },
+    "patient-6-e09": {
+      "as_of": "2027-05-05",
+      "grades": {
+        "2": "pubmed:19356817"
+      }
+    },
+    "patient-6-e17": {
+      "as_of": "2030-08-01",
+      "grades": {
+        "2": "pubmed:19356817"
+      }
+    },
+    "patient-7-e01": {
+      "as_of": "2026-11-06",
+      "grades": {
+        "0": "pubmed:38224407"
+      }
+    },
+    "patient-7-e03": {
+      "as_of": "2026-11-17",
+      "grades": {
+        "3": "pubmed:14976540",
+        "2": "pubmed:22743165 pubmed:26343218",
+        "1": "pubmed:15959911 pubmed:17342490 pubmed:18765133 pubmed:19858401 pubmed:24866597 pubmed:9788616 pubmed:9816265",
+        "0": "pubmed:11912384 pubmed:15372478 pubmed:17161554 pubmed:1717094 pubmed:25035153 pubmed:33089586"
+      }
+    },
+    "patient-7-e04": {
+      "as_of": "2026-11-30",
+      "grades": {
+        "3": "pubmed:22306323 pubmed:31541035",
+        "2": "pubmed:20034730",
+        "1": "pubmed:24321784 pubmed:32693961",
+        "0": "pubmed:30227924"
+      }
+    },
+    "patient-7-e05": {
+      "as_of": "2026-12-10",
+      "grades": {
+        "2": "pubmed:28055108 pubmed:31843335"
+      }
+    },
+    "patient-7-e07": {
+      "as_of": "2026-12-28",
+      "grades": {
+        "3": "pubmed:20952020",
+        "2": "pubmed:11575286 pubmed:15226323 pubmed:19912212 pubmed:2503724 pubmed:6436700"
+      }
+    },
+    "patient-7-e08": {
+      "as_of": "2026-12-31",
+      "grades": {
+        "2": "pubmed:26262831 pubmed:33246636",
+        "1": "pubmed:22655525 pubmed:23863050 pubmed:26779616 pubmed:26912557 pubmed:27377415 pubmed:27825434 pubmed:28453701 pubmed:29046247 pubmed:29658243 pubmed:31096849 pubmed:31598745 pubmed:31986318 pubmed:33918705 pubmed:42951717"
+      }
+    },
+    "patient-7-e09": {
+      "as_of": "2027-01-21",
+      "grades": {
+        "2": "pubmed:26262831",
+        "1": "pubmed:22655525 pubmed:26912557 pubmed:28453701 pubmed:29046247 pubmed:31096849 pubmed:31598745 pubmed:31986318 pubmed:42951717"
+      }
+    },
+    "patient-7-e13": {
+      "as_of": "2027-04-15",
+      "grades": {
+        "2": "pubmed:26262831",
+        "1": "pubmed:22655525 pubmed:26779616 pubmed:26912557 pubmed:28453701 pubmed:29046247 pubmed:31096849 pubmed:31598745 pubmed:31986318 pubmed:42951717"
+      }
+    },
+    "patient-7-e14": {
+      "as_of": "2027-09-16",
+      "grades": {
+        "2": "pubmed:26262831",
+        "1": "pubmed:22655525 pubmed:26779616 pubmed:26912557 pubmed:29046247 pubmed:31096849 pubmed:31598745 pubmed:31986318 pubmed:42951717"
+      }
+    },
+    "patient-7-e15": {
+      "as_of": "2027-12-24",
+      "grades": {
+        "3": "pubmed:26262831 pubmed:26779616 pubmed:26912557 pubmed:29046247 pubmed:31096849 pubmed:31986318 pubmed:42951717",
+        "2": "pubmed:22655525 pubmed:28453701",
+        "1": "pubmed:6436700"
+      }
+    },
+    "patient-7-e16": {
+      "as_of": "2028-01-04",
+      "grades": {
+        "3": "pubmed:22655525 pubmed:24562070 pubmed:27613490 pubmed:42951717"
+      }
+    },
+    "patient-7-e17": {
+      "as_of": "2028-01-29",
+      "grades": {
+        "3": "pubmed:22655525 pubmed:28453701 pubmed:42951717"
+      }
+    },
+    "patient-7-e22": {
+      "as_of": "2028-06-17",
+      "grades": {
+        "3": "pubmed:28453701 pubmed:42951717",
+        "2": "pubmed:11575286 pubmed:15226323 pubmed:18348297 pubmed:19912212 pubmed:20952020 pubmed:41706486 pubmed:9519419",
+        "1": "pubmed:32469183 pubmed:6436700"
+      }
+    },
+    "patient-7-e23": {
+      "as_of": "2028-09-04",
+      "grades": {
+        "2": "pubmed:22655525 pubmed:23863050 pubmed:27377415 pubmed:27825434 pubmed:28453701 pubmed:29658243 pubmed:31096849 pubmed:33246636 pubmed:33918705 pubmed:42951717"
+      }
+    },
+    "patient-8-e01": {
+      "as_of": "2026-11-06",
+      "grades": {
+        "0": "pubmed:38224407"
+      }
+    },
+    "patient-8-e02": {
+      "as_of": "2026-11-08",
+      "grades": {
+        "3": "pubmed:9474251"
+      }
+    },
+    "patient-8-e03": {
+      "as_of": "2026-11-24",
+      "grades": {
+        "2": "pubmed:26343218"
+      }
+    },
+    "patient-8-e04": {
+      "as_of": "2026-12-05",
+      "grades": {
+        "3": "pubmed:30120038",
+        "2": "pubmed:10520701",
+        "1": "pubmed:20034730 pubmed:24321784"
+      }
+    },
+    "patient-8-e05": {
+      "as_of": "2026-12-12",
+      "grades": {
+        "1": "pubmed:30227222"
+      }
+    },
+    "patient-8-e14": {
+      "as_of": "2028-12-18",
+      "grades": {
+        "2": "pubmed:31977388",
+        "1": "pubmed:35610112"
+      }
+    },
+    "patient-8-e15": {
+      "as_of": "2030-04-30",
+      "grades": {
+        "3": "pubmed:43054252",
+        "1": "pubmed:34600602"
+      }
+    },
+    "patient-8-e16": {
+      "as_of": "2030-05-12",
+      "grades": {
+        "2": "pubmed:30209161"
+      }
+    },
+    "patient-9-e01": {
+      "as_of": "2026-11-06",
+      "grades": {
+        "2": "pubmed:17848671",
+        "0": "pubmed:17437803"
+      }
+    },
+    "patient-9-e02": {
+      "as_of": "2026-11-11",
+      "grades": {
+        "2": "pubmed:17848671",
+        "0": "pubmed:17437803"
+      }
+    },
+    "patient-9-e03": {
+      "as_of": "2026-11-29",
+      "grades": {
+        "3": "pubmed:26343218"
+      }
+    },
+    "patient-9-e04": {
+      "as_of": "2026-12-10",
+      "grades": {
+        "1": "pubmed:21692049 pubmed:21751904 pubmed:38763154",
+        "0": "pubmed:11240234 pubmed:17531401 pubmed:21440505 pubmed:23265571 pubmed:38763153"
+      }
+    },
+    "patient-9-e05": {
+      "as_of": "2026-12-30",
+      "grades": {
+        "1": "pubmed:18167004 pubmed:21751904 pubmed:22652234",
+        "0": "pubmed:17531401 pubmed:21440505 pubmed:22056152 pubmed:22931259 pubmed:23265571 pubmed:24512527"
+      }
+    },
+    "patient-9-e06": {
+      "as_of": "2027-01-01",
+      "grades": {
+        "2": "pubmed:23707439"
+      }
+    },
+    "patient-9-e07": {
+      "as_of": "2027-01-15",
+      "grades": {
+        "2": "pubmed:21443656 pubmed:32382097",
+        "1": "pubmed:23707439",
+        "0": "pubmed:33820533"
+      }
+    },
+    "patient-9-e08": {
+      "as_of": "2027-01-17",
+      "grades": {
+        "0": "pubmed:16229369"
+      }
+    },
+    "patient-9-e09": {
+      "as_of": "2027-03-06",
+      "grades": {
+        "1": "pubmed:23707439"
+      }
+    },
+    "patient-9-e14": {
+      "as_of": "2028-12-01",
+      "grades": {
+        "3": "pubmed:18560003",
+        "2": "pubmed:12949429"
+      }
+    },
+    "patient-9-e15": {
+      "as_of": "2028-12-14",
+      "grades": {
+        "3": "pubmed:23845839",
+        "2": "pubmed:12949429"
+      }
+    },
+    "patient-9-e16": {
+      "as_of": "2028-12-19",
+      "grades": {
+        "3": "pubmed:27160475",
+        "1": "pubmed:21751904"
+      }
+    },
+    "patient-9-e17": {
+      "as_of": "2029-01-10",
+      "grades": {
+        "3": "pubmed:12560439 pubmed:26497924 pubmed:28146658 pubmed:32215583 pubmed:33002438",
+        "0": "pubmed:16750497 pubmed:31977382"
+      }
+    },
+    "patient-9-e18": {
+      "as_of": "2029-04-10",
+      "grades": {
+        "2": "pubmed:23845839"
+      }
+    },
+    "patient-9-e21": {
+      "as_of": "2030-04-28",
+      "grades": {
+        "1": "pubmed:24894850"
+      }
+    },
+    "patient-5-e07": {
+      "as_of": "2027-01-22",
+      "grades": {
+        "1": "pubmed:10462314"
+      }
+    },
+    "patient-6-e04": {
+      "as_of": "2026-12-11",
+      "grades": {
+        "1": "pubmed:26116294"
+      }
+    },
+    "patient-7-e02": {
+      "as_of": "2026-11-08",
+      "grades": {
+        "1": "pubmed:21042731"
+      }
+    },
+    "Lung-EGFR-e07": {
+      "as_of": "2026-04-20",
+      "grades": {
+        "3": "pubmed:20493989 pubmed:23904353 pubmed:27641744 pubmed:42203339",
+        "2": "pubmed:28942912",
+        "1": "pubmed:15753357 pubmed:19251380 pubmed:19414667 pubmed:28115167 pubmed:30285222 pubmed:30718052 pubmed:31200873 pubmed:31704600 pubmed:33901637 pubmed:34155000 pubmed:35406531 pubmed:36863124",
+        "0": "pubmed:12461246 pubmed:22308519 pubmed:24379002 pubmed:27179989 pubmed:29800127"
+      }
+    },
+    "Lung-EGFR-e02": {
+      "as_of": "2026-03-09",
+      "grades": {
+        "3": "pubmed:28115167",
+        "1": "pubmed:31200873",
+        "0": "pubmed:11443621 pubmed:12461246 pubmed:22088938 pubmed:22308519 pubmed:24379002 pubmed:27179989 pubmed:29800127 pubmed:40154514"
+      }
+    },
+    "Lung-EGFR-e10": {
+      "as_of": "2026-08-17",
+      "grades": {
+        "2": "pubmed:36863124",
+        "1": "pubmed:14570950 pubmed:15117980 pubmed:19027483 pubmed:26412456 pubmed:26712084 pubmed:29023213 pubmed:31200873 pubmed:34155000 pubmed:42203339",
+        "0": "pubmed:26028407 pubmed:27006332"
+      }
+    },
+    "Lung-EGFR-e12": {
+      "as_of": "2028-01-10",
+      "grades": {
+        "3": "pubmed:30285222",
+        "2": "pubmed:15205197",
+        "1": "pubmed:14570950 pubmed:15117980 pubmed:28242140 pubmed:29408986 pubmed:31200873 pubmed:34155000 pubmed:36863124 pubmed:42203339",
+        "0": "pubmed:11100822 pubmed:27006332 pubmed:35123531"
+      }
+    },
+    "Holdout-Breast-e13": {
+      "as_of": "2028-05-24",
+      "grades": {
+        "3": "pubmed:17159193 pubmed:18205185 pubmed:19214743 pubmed:19433387 pubmed:20079640 pubmed:21987386 pubmed:22014381 pubmed:25930719 pubmed:38395242",
+        "2": "pubmed:37306182",
+        "1": "pubmed:11693896 pubmed:25381047 pubmed:25547239 pubmed:29908297 pubmed:9469328",
+        "0": "pubmed:24951614 pubmed:27000268 pubmed:34087487 pubmed:36097856 pubmed:37010126 pubmed:43068613"
+      }
+    },
+    "Holdout-Colorectal-e11": {
+      "as_of": "2028-06-12",
+      "grades": {
+        "3": "pubmed:24999460 pubmed:26219852 pubmed:32277612 pubmed:37401305",
+        "2": "pubmed:17140901 pubmed:26511803 pubmed:29967994 pubmed:30006429 pubmed:30603861 pubmed:30837792",
+        "1": "pubmed:12243814 pubmed:23478607 pubmed:32666388 pubmed:36825985 pubmed:40211676",
+        "0": "pubmed:19092346 pubmed:20943612 pubmed:22119204 pubmed:23322206 pubmed:24011233 pubmed:24412228 pubmed:26362228 pubmed:27298411 pubmed:27467466 pubmed:28192641 pubmed:31157963 pubmed:31375338 pubmed:31982206 pubmed:32535711 pubmed:34019698 pubmed:34392104 pubmed:35032765 pubmed:38442886 pubmed:38457083 pubmed:39467871"
+      }
+    },
+    "Holdout-Ovarian-e12": {
+      "as_of": "2027-12-06",
+      "grades": {
+        "3": "pubmed:31851799 pubmed:33017510 pubmed:34623572 pubmed:34952708 pubmed:36067615 pubmed:37211045",
+        "2": "pubmed:36716415 pubmed:39528049 pubmed:41380962",
+        "1": "pubmed:18542079 pubmed:22223088 pubmed:35267593 pubmed:36564284 pubmed:37935524 pubmed:37939124",
+        "0": "pubmed:17919549 pubmed:19116699 pubmed:27351586 pubmed:31475045 pubmed:41586889"
+      }
+    },
+    "Holdout-Breast-e16": {
+      "as_of": "2031-07-01",
+      "grades": {
+        "3": "pubmed:25380844 pubmed:34324367",
+        "2": "pubmed:30807234",
+        "1": "pubmed:18725648 pubmed:19214743 pubmed:19433387 pubmed:20079640 pubmed:21987386 pubmed:25930719 pubmed:29520506 pubmed:32835531 pubmed:33098995 pubmed:34518313 pubmed:37306182",
+        "0": "pubmed:16982748 pubmed:31744831 pubmed:32017154 pubmed:33326257 pubmed:35657152 pubmed:39021052"
+      }
+    },
+    "Holdout-Colorectal-e16": {
+      "as_of": "2030-02-18",
+      "grades": {
+        "3": "pubmed:18316791 pubmed:21960311 pubmed:31912793",
+        "2": "pubmed:24263065",
+        "1": "pubmed:12243814 pubmed:24511107 pubmed:26511803 pubmed:27631775 pubmed:28685354 pubmed:30739838 pubmed:32666388 pubmed:36410812 pubmed:40845854",
+        "0": "pubmed:12095973 pubmed:15753357 pubmed:21189380 pubmed:23322206 pubmed:23576486 pubmed:24562448 pubmed:24604580 pubmed:24830619 pubmed:26282084 pubmed:29631810 pubmed:31375338 pubmed:31787751 pubmed:34019698 pubmed:34392104 pubmed:34626563 pubmed:37963317 pubmed:41795872"
+      }
+    },
+    "Holdout-Ovarian-e14": {
+      "as_of": "2029-08-21",
+      "grades": {
+        "3": "pubmed:20044128 pubmed:25626481 pubmed:30073633 pubmed:31629204 pubmed:37201444",
+        "2": "pubmed:26271155 pubmed:29977351 pubmed:30449210 pubmed:31242303 pubmed:31851799 pubmed:37637244",
+        "1": "pubmed:15547181 pubmed:26180927 pubmed:34930617 pubmed:35298906 pubmed:37935524 pubmed:37939124 pubmed:39914419 pubmed:41380962",
+        "0": "pubmed:29501363 pubmed:36623515"
+      }
+    },
+    "Holdout-Breast-e02": {
+      "as_of": "2027-03-15",
+      "grades": {
+        "2": "pubmed:25547239 pubmed:32180032",
+        "1": "pubmed:15698728 pubmed:18316752 pubmed:20413742 pubmed:21037116 pubmed:27918707 pubmed:29571797 pubmed:31876042 pubmed:32721031",
+        "0": "pubmed:12655519 pubmed:18555035 pubmed:25203489 pubmed:29558300 pubmed:29702015 pubmed:35115177 pubmed:36475814"
+      }
+    },
+    "Holdout-Colorectal-e02": {
+      "as_of": "2026-10-14",
+      "grades": {
+        "3": "pubmed:11926950 pubmed:20093520",
+        "2": "pubmed:17498902",
+        "1": "pubmed:17140901 pubmed:26290629 pubmed:35892341 pubmed:38442886 pubmed:9841970",
+        "0": "pubmed:14559892 pubmed:15990624 pubmed:16631303 pubmed:16767709 pubmed:19367268 pubmed:20379442 pubmed:21512807 pubmed:22027476 pubmed:24412228 pubmed:24922745 pubmed:2514202 pubmed:28758096 pubmed:31944236 pubmed:35115177 pubmed:35489126 pubmed:36475814 pubmed:38000889 pubmed:40639383 pubmed:8576295 pubmed:9118393 pubmed:9128304 zenodo:20065712"
+      }
+    },
+    "Holdout-Ovarian-e02": {
+      "as_of": "2026-06-05",
+      "grades": {
+        "3": "pubmed:36895122",
+        "2": "pubmed:22343227 pubmed:28549976",
+        "1": "pubmed:11555720 pubmed:12648580 pubmed:22182415 pubmed:23885715 pubmed:24316306 pubmed:25011220 pubmed:25581732 pubmed:26404183 pubmed:32413141 pubmed:35764743 pubmed:41108488",
+        "0": "pubmed:12048399 pubmed:15519772 pubmed:19654294 pubmed:27000268 pubmed:30051098 pubmed:30975947"
+      }
+    },
+    "Holdout-Breast-e07": {
+      "as_of": "2027-04-12",
+      "grades": {
+        "3": "pubmed:26869049 pubmed:30452398",
+        "2": "pubmed:11896092 pubmed:26754092",
+        "1": "pubmed:19884557 pubmed:29223479 pubmed:29501363 pubmed:29791287 pubmed:32275467 pubmed:33098995 pubmed:34591977 pubmed:34741023",
+        "0": "pubmed:22231041 pubmed:32988624"
+      }
+    },
+    "Holdout-Colorectal-e06": {
+      "as_of": "2026-11-16",
+      "grades": {
+        "3": "pubmed:12243814 pubmed:20978768 pubmed:27631775 pubmed:30006429 pubmed:32277612",
+        "2": "pubmed:15763604 pubmed:24316942 pubmed:26511803 pubmed:30739838 pubmed:40616745",
+        "1": "pubmed:24604580",
+        "0": "pubmed:10430790 pubmed:20728210 pubmed:22119204 pubmed:22380383 pubmed:22917985 pubmed:24412228 pubmed:24881730 pubmed:25702876 pubmed:25782685 pubmed:27356743 pubmed:28237181 pubmed:28758096 pubmed:30316827 pubmed:31157963 pubmed:31794928 pubmed:32945701 pubmed:34392104 pubmed:35032765 pubmed:35595780 pubmed:40639383 pubmed:42905721 pubmed:43067554 zenodo:11005206 zenodo:6580659"
+      }
+    },
+    "Holdout-Ovarian-e05": {
+      "as_of": "2026-06-23",
+      "grades": {
+        "3": "pubmed:25824857",
+        "2": "pubmed:35764743",
+        "1": "pubmed:16631919 pubmed:19370622 pubmed:20555098 pubmed:22343227 pubmed:23885715 pubmed:24895230 pubmed:24962381 pubmed:25006190 pubmed:30180749 pubmed:30390762 pubmed:34620496 pubmed:34629168 pubmed:34639707 pubmed:37669829",
+        "0": "pubmed:11161856 pubmed:11551132 pubmed:11555720 pubmed:12775280 pubmed:16167352 pubmed:21917606 pubmed:22182415 pubmed:22332815 pubmed:22746358 pubmed:24316306 pubmed:25011220 pubmed:29944030 pubmed:37603211"
+      }
+    },
+    "Bladder-e08": {
+      "as_of": "2027-05-04",
+      "grades": {
+        "3": "pubmed:22101115 pubmed:36853609",
+        "2": "pubmed:22757606 pubmed:29663062 pubmed:31019310",
+        "1": "pubmed:16879676 pubmed:17157629 pubmed:17280906 pubmed:22917985 pubmed:27457483 pubmed:28677000 pubmed:33253641 pubmed:33457266 pubmed:35489126 pubmed:40805257",
+        "0": "pubmed:17342490 pubmed:22405699 pubmed:26688133 pubmed:28766223 pubmed:29408568 pubmed:34352796 pubmed:38053418"
+      }
+    },
+    "Bladder-e13": {
+      "as_of": "2029-03-07",
+      "grades": {
+        "3": "pubmed:22177416 pubmed:22515472 pubmed:22917985 pubmed:23880740 pubmed:36197698 pubmed:40683073",
+        "2": "pubmed:19176205 pubmed:22101115 pubmed:33253641 pubmed:34084119",
+        "1": "pubmed:16879676 pubmed:17157629 pubmed:27457483 pubmed:28677000 pubmed:30811784 pubmed:33457266 pubmed:36853609 pubmed:40805257",
+        "0": "pubmed:17342490 pubmed:38053418"
+      }
+    },
+    "Pancreas-e12": {
+      "as_of": "2027-10-14",
+      "grades": {
+        "2": "pubmed:31375338 pubmed:32314163",
+        "1": "pubmed:31542591 pubmed:31787751 pubmed:34392104 pubmed:36229752 pubmed:37791389 pubmed:38030179 pubmed:42192328",
+        "0": "pubmed:20947488 pubmed:22643536 pubmed:23322206 pubmed:27298411 pubmed:28758096 pubmed:34019698 pubmed:37963317 pubmed:38457083 pubmed:40639383"
+      }
+    },
+    "Bladder-e10": {
+      "as_of": "2028-05-11",
+      "grades": {
+        "3": "pubmed:22101115 pubmed:22757606 pubmed:28677000 pubmed:29663062 pubmed:31019310",
+        "2": "pubmed:19176205",
+        "1": "pubmed:16879676 pubmed:17157629 pubmed:17475965 pubmed:21231796 pubmed:27457483 pubmed:33253641 pubmed:33457266 pubmed:35489126 pubmed:40805257",
+        "0": "pubmed:17342490 pubmed:22405699 pubmed:26688133 pubmed:28766223 pubmed:34352796 pubmed:38053418"
+      }
+    },
+    "Pancreas-e06": {
+      "as_of": "2026-11-02",
+      "grades": {
+        "3": "pubmed:31375338 pubmed:32314163",
+        "2": "pubmed:34392104",
+        "1": "pubmed:30458340 pubmed:31787751 pubmed:36229752 pubmed:36670426 pubmed:37791389 pubmed:41795872 pubmed:42192328",
+        "0": "pubmed:21189380 pubmed:23322206 pubmed:29631810 pubmed:34019698 pubmed:37963317 pubmed:38457083"
+      }
+    },
+    "Pancreas-e14": {
+      "as_of": "2028-10-17",
+      "grades": {
+        "2": "pubmed:24929865 pubmed:30458340 pubmed:42192328",
+        "1": "pubmed:31157963 pubmed:31375338 pubmed:31787751 pubmed:34392104 pubmed:36229752 pubmed:38030179",
+        "0": "pubmed:20947488 pubmed:22643536 pubmed:23322206 pubmed:28758096 pubmed:29631810 pubmed:34019698 pubmed:37963317 pubmed:38457083 pubmed:40639383"
+      }
+    },
+    "Bladder-e02": {
+      "as_of": "2027-02-23",
+      "grades": {
+        "3": "pubmed:19176205",
+        "0": "pubmed:10793087 pubmed:13679454 pubmed:17342490 pubmed:28375947 pubmed:29297491 pubmed:36229464 pubmed:38053418 pubmed:7803731 pubmed:9388062"
+      }
+    },
+    "Diabetes-e11": {
+      "as_of": "2030-07-10",
+      "grades": {
+        "3": "pubmed:40156843",
+        "2": "pubmed:35266164 pubmed:40022078 pubmed:40839273",
+        "1": "pubmed:23634670 pubmed:24498905 pubmed:37344384 pubmed:37606429 pubmed:39858442 pubmed:40828947",
+        "0": "pubmed:14011100 pubmed:23972041"
+      }
+    },
+    "HeartFailure-e09": {
+      "as_of": "2027-05-12",
+      "grades": {
+        "3": "pubmed:31475295",
+        "2": "pubmed:40047763",
+        "1": "pubmed:12678137 pubmed:15134800 pubmed:16703238 pubmed:24035166 pubmed:37225286 pubmed:38242507",
+        "0": "pubmed:30958721 pubmed:31035008"
+      }
+    },
+    "HeartFailure-e13": {
+      "as_of": "2030-02-12",
+      "grades": {
+        "3": "pubmed:36423214 pubmed:37225286 pubmed:38161537 pubmed:38242507 pubmed:40047763",
+        "2": "pubmed:23158527 pubmed:31475295",
+        "1": "pubmed:16703238 pubmed:24035166 pubmed:30910768"
+      }
+    },
+    "Stroke-e10": {
+      "as_of": "2027-09-14",
+      "grades": {
+        "3": "pubmed:23640971 pubmed:39567875",
+        "2": "pubmed:23642855",
+        "1": "pubmed:11274542 pubmed:30536140 pubmed:32956106 pubmed:34244703 pubmed:34269121 pubmed:40891051 pubmed:41287903",
+        "0": "pubmed:35124243"
+      }
+    },
+    "Depression-e04": {
+      "as_of": "2027-02-03",
+      "grades": {
+        "1": "pubmed:33634765 pubmed:37638529",
+        "0": "pubmed:16415703 pubmed:19015231 pubmed:23085503 pubmed:23512146 pubmed:25787724 pubmed:37740851 pubmed:38609342 pubmed:40457975"
+      }
+    },
+    "Depression-e08": {
+      "as_of": "2028-02-16",
+      "grades": {
+        "1": "pubmed:29394962 pubmed:33634765",
+        "0": "pubmed:16415703 pubmed:19015231 pubmed:19294953 pubmed:20845239 pubmed:23085503 pubmed:23512146 pubmed:25787724 pubmed:37740851"
+      }
+    },
+    "Stomach-e16": {
+      "as_of": "2028-12-11",
+      "grades": {
+        "3": "pubmed:35030335 pubmed:39528778",
+        "2": "pubmed:18669868 pubmed:24332238",
+        "1": "pubmed:20332133 pubmed:20728210 pubmed:23322206 pubmed:25370767 pubmed:27776843 pubmed:34133211 pubmed:37678277 pubmed:38180622"
+      }
+    },
+    "Gout-e05": {
+      "as_of": "2027-06-02",
+      "grades": {
+        "3": "pubmed:16259349 pubmed:20102992 pubmed:24378930 pubmed:38831665 pubmed:39089837",
+        "2": "pubmed:11978160 pubmed:18250112 pubmed:21382654 pubmed:4606955",
+        "1": "pubmed:11821994 pubmed:36609359"
+      }
+    },
+    "Infarction-e03": {
+      "as_of": "2027-02-08",
+      "grades": {
+        "3": "pubmed:32476540 pubmed:36063862",
+        "2": "pubmed:21067805",
+        "1": "pubmed:17097446 pubmed:25110899 pubmed:25855797 pubmed:30281320 pubmed:33183506 pubmed:34672967",
+        "0": "pubmed:18434732 pubmed:22939359 pubmed:23777442 pubmed:35621088 pubmed:37119051 pubmed:37191906 pubmed:38246651 pubmed:8609338"
+      }
+    },
+    "Infarction-e13": {
+      "as_of": "2030-03-21",
+      "grades": {
+        "2": "pubmed:25110899 pubmed:36301318 pubmed:40022078 pubmed:40156843",
+        "1": "pubmed:11705815 pubmed:22643536 pubmed:29057189 pubmed:37171944 pubmed:37344384 pubmed:40828947",
+        "0": "pubmed:19007693 pubmed:34970915 pubmed:39858442"
+      }
+    },
+    "Thyroid-e14": {
+      "as_of": "2029-12-12",
+      "grades": {
+        "3": "pubmed:24862675",
+        "2": "pubmed:26446582 pubmed:38781736",
+        "1": "pubmed:25471041 pubmed:29374347 pubmed:29664794 pubmed:29848239 pubmed:39645560 pubmed:41372989",
+        "0": "pubmed:12771918 pubmed:25810047"
+      }
+    },
+    "Gout-e01": {
+      "as_of": "2026-12-28",
+      "grades": {
+        "3": "pubmed:23852689",
+        "2": "pubmed:11333356 pubmed:12077033 pubmed:36609359",
+        "1": "pubmed:10212666 pubmed:1820473 pubmed:25589513 pubmed:25739830 pubmed:29888674 pubmed:32366929 pubmed:33427618 pubmed:36109143 pubmed:38831665 pubmed:39089837 pubmed:39939033 pubmed:4606955",
+        "0": "pubmed:25031195 pubmed:30396516"
+      }
+    },
+    "Gout-e08": {
+      "as_of": "2028-03-09",
+      "grades": {
+        "3": "pubmed:20102992 pubmed:39089837",
+        "2": "pubmed:16259349 pubmed:21382654 pubmed:24378930 pubmed:38831665",
+        "1": "pubmed:11821994 pubmed:18250112 pubmed:36609359 pubmed:4606955"
+      }
+    },
+    "Infarction-e10": {
+      "as_of": "2028-02-15",
+      "grades": {
+        "2": "pubmed:25110899 pubmed:38576462",
+        "1": "pubmed:14693990 pubmed:16703238 pubmed:17097446 pubmed:32476540 pubmed:34672967 pubmed:8609338",
+        "0": "pubmed:18434732 pubmed:22939359 pubmed:23777442 pubmed:25855797 pubmed:30281320 pubmed:31594780 pubmed:33183506 pubmed:35621088 pubmed:37119051 pubmed:37191906 pubmed:39012797"
+      }
+    }
+  }
+}

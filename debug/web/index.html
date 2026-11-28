@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Journey Matcher · Debug console</title>
+<title>Journey Matcher – Debug console</title>
 <link rel="icon" href="data:,">
 <script>
   // Before the first paint, so a dark theme does not flash light: the stored choice, else the system's.
@@ -19,6 +19,7 @@
 <link rel="stylesheet" href="match.css">
 <link rel="stylesheet" href="info.css">
 <link rel="stylesheet" href="index-graph.css">
+<link rel="stylesheet" href="docs.css">
 </head>
 <body>
 <header>
@@ -27,18 +28,25 @@
     <img class="brand-mark" src="data:image/png;base64,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" alt="">
     <h1>Journey Matcher</h1>
   </div>
-  <nav class="views" id="views" aria-label="Pipeline screens">
-    <button type="button" data-screen="runs" class="active" aria-current="page">Runs</button>
-    <button type="button" data-screen="db">Database</button>
-    <div class="view-group" role="group" aria-labelledby="view-group-index">
-      <span class="view-group-label" id="view-group-index">Index</span>
-      <button type="button" data-screen="index" title="The indexer job and the transcription job, which every index shares">Overview</button>
-      <button type="button" data-screen="keyword">Keyword</button>
-      <button type="button" data-screen="graph" title="For now the graph normalization">Graph</button>
-      <button type="button" data-screen="ai" title="Semantic indexing with Qwen and BGE-M3">AI</button>
+  <nav class="views" id="views" aria-label="Screens">
+    <!-- The pipeline in the order the data takes it; the tools beside it are not a step of it. -->
+    <div class="view-set" role="group" aria-label="Pipeline">
+      <button type="button" data-screen="runs" class="active" aria-current="page">Runs</button>
+      <button type="button" data-screen="db">Database</button>
+      <div class="view-group" role="group" aria-labelledby="view-group-index">
+        <span class="view-group-label" id="view-group-index">Index</span>
+        <button type="button" data-screen="index" title="The indexer job and the transcription job, which every index shares">Overview</button>
+        <button type="button" data-screen="keyword">Keyword</button>
+        <button type="button" data-screen="graph" title="For now the graph normalization">Graph</button>
+        <button type="button" data-screen="ai" title="Semantic indexing with Qwen and BGE-M3">AI</button>
+      </div>
+      <button type="button" data-screen="match">Matcher</button>
+      <button type="button" data-screen="fusion" title="Approaches fused into one ranking">Fusion</button>
     </div>
-    <button type="button" data-screen="match">Matcher</button>
-    <button type="button" data-screen="info">Info</button>
+    <div class="view-set" role="group" aria-label="Tools">
+      <button type="button" data-screen="info">Info</button>
+      <button type="button" data-screen="doc" title="Every Markdown file of the checkout, rendered and searchable">Docs</button>
+    </div>
   </nav>
   <details class="environment"><summary>Environment</summary><div class="chips" id="env"></div></details>
   <button type="button" class="theme-toggle" id="theme-toggle" aria-label="Switch theme"></button>
@@ -138,7 +146,7 @@
           <span><i style="background:var(--cited)"></i>Cited</span>
           <span><i style="background:var(--dropped)"></i>Dropped (off-topic)</span>
         </div>
-        <div class="graph-note" id="graph-note">Scroll = zoom · Drag = pan · Click = details</div>
+        <div class="graph-note" id="graph-note">Scroll to zoom, drag to pan, click for details</div>
         <div class="tooltip" id="tooltip"></div>
       </section>
       <section class="tab" id="tab-failures">
@@ -158,9 +166,9 @@
   <aside class="side" id="db-controls">
     <div class="side-head">
       <h2>Database</h2>
-      <button type="button" class="link-button" id="db-refresh" title="Load everything again">↻ Refresh</button>
+      <button type="button" class="link-button refresh" id="db-refresh" title="Load everything again">Refresh</button>
     </div>
-    <div class="db-conn" id="db-conn"><b>Connecting …</b></div>
+    <div class="db-conn loading" id="db-conn"><b>Connecting …</b></div>
     <label class="check"><input type="checkbox" id="db-auto" checked> Refresh every 5 s <small class="muted" id="db-updated"></small></label>
     <div class="db-notice" id="db-notice" hidden></div>
     <div class="side-head">
@@ -185,7 +193,7 @@
         <label class="field"><span>Topic</span><select id="db-topic"><option value="">All topics</option></select></label>
         <label class="field"><span>Licence</span><select id="db-licence"><option value="">All licences</option></select></label>
         <label class="field"><span>Full text <i class="info" tabindex="0" data-tip="What the keyword indexer did with a document's full text, as on Index › Keyword. Leaves out expired documents. Needs make index.">i</i></span>
-          <select id="db-fulltext"><option value="">All</option><option value="indexed">Indexed</option><option value="skipped">Skipped</option><option value="failed">Failed</option><option value="unread">New or changed</option></select>
+          <select id="db-fulltext"><option value="">All</option><option value="indexed">Fully indexed</option><option value="skipped">Metadata only</option><option value="failed">Retry download</option><option value="unread">New or changed</option></select>
         </label>
         <label class="field"><span>Expiry <i class="info" tabindex="0" data-tip="Only YouTube rows expire, 30 days after they were retrieved. The next store run deletes expired rows; until then readers such as @matcher/db ignore them.">i</i></span>
           <select id="db-expiry"><option value="">All</option></select>
@@ -195,7 +203,7 @@
   </aside>
 
   <main aria-label="Document database">
-    <div class="stats overview" id="db-stats"></div>
+    <div class="stats overview" id="db-stats"><div class="loading" role="status"><span class="spinner" aria-hidden="true"></span><span>Loading the database …</span></div></div>
     <nav class="tabs" id="db-tabs">
       <button data-dbtab="documents" class="active">Documents <span class="badge" id="db-docs-count">0</span></button>
       <button data-dbtab="runs">Store runs <span class="badge" id="db-runs-count">0</span></button>
@@ -241,9 +249,9 @@
   <aside class="side" id="index-controls">
     <div class="side-head">
       <h2>Indexer <i class="info" tabindex="0" data-tip="The indexer job of make index: brings the index of every approach up to date with the stored documents, one approach after the other. It reads the full texts of new and changed documents and tries failed downloads again. Stopping is safe: the next run continues with the documents not read yet. The screen of an approach starts the job for that approach only.">i</i></h2>
-      <button type="button" class="link-button" id="ix-refresh" title="Load everything again">↻ Refresh</button>
+      <button type="button" class="link-button refresh" id="ix-refresh" title="Load everything again">Refresh</button>
     </div>
-    <div class="db-conn" id="ix-state"><b>Loading …</b></div>
+    <div class="db-conn loading" id="ix-state"><b>Loading …</b></div>
     <label class="check"><input type="checkbox" id="ix-auto" checked> Refresh every 5 s <small class="muted" id="ix-updated"></small></label>
     <div class="buttons">
       <button type="button" class="primary" id="ix-start">Index all</button>
@@ -254,7 +262,7 @@
     <div class="side-head">
       <h2>Transcription <i class="info" tabindex="0" data-tip="Speech-to-text for audio that has no transcript, mostly podcast episodes. The indexer skips them (audio, and speech-to-text is off); the transcription job reads them, newest first, and stores their transcripts for every index. The job runs on its own: as a service on the VM, with make transcribe elsewhere. Here you set how many files it reads at once, also while it runs: it follows within seconds. With fewer or Off, the files in work are read to their end and no new one starts. On the VM the job only gets processor time that nothing else wants.">i</i></h2>
     </div>
-    <div class="db-conn" id="tx-state"><b>Loading …</b></div>
+    <div class="db-conn loading" id="tx-state"><b>Loading …</b></div>
     <div class="field">
       <span>Audio files read at once</span>
       <div class="seg" id="tx-workers" role="group" aria-label="Audio files read at once"></div>
@@ -264,7 +272,7 @@
   </aside>
 
   <main aria-label="Index overview">
-    <div class="stats overview" id="ix-stats"></div>
+    <div class="stats overview" id="ix-stats"><div class="loading" role="status"><span class="spinner" aria-hidden="true"></span><span>Loading the indexes …</span></div></div>
     <nav class="tabs" id="ix-tabs">
       <button data-ixtab="log" class="active">Indexer log</button>
       <button data-ixtab="transcription" title="The job that reads audio without a transcript, and its workers">Transcription <span class="badge" id="tx-count">0</span></button>
@@ -274,7 +282,7 @@
         <div class="log-tools"><label><input type="checkbox" id="ix-follow" checked> Follow</label><span id="ix-run"></span></div>
         <div class="log" id="ix-log"><div class="empty">No indexer run since this server started. Use Index all in the controls.</div></div>
       </section>
-      <section class="ixtab" id="ixtab-transcription"><div class="panels" id="tx-panels"></div></section>
+      <section class="ixtab" id="ixtab-transcription"><div class="panels" id="tx-panels"><div class="loading" role="status"><span class="spinner" aria-hidden="true"></span><span>Loading the transcription job …</span></div></div></section>
       <div class="db-down" id="ix-down" hidden></div>
     </div>
   </main>
@@ -284,9 +292,9 @@
   <aside class="side" id="keyword-controls">
     <div class="side-head">
       <h2>Keyword index</h2>
-      <button type="button" class="link-button" id="kw-refresh" title="Load everything again">↻ Refresh</button>
+      <button type="button" class="link-button refresh" id="kw-refresh" title="Load everything again">Refresh</button>
     </div>
-    <div class="db-conn" id="kw-state"><b>Loading …</b></div>
+    <div class="db-conn loading" id="kw-state"><b>Loading …</b></div>
     <label class="check"><input type="checkbox" id="kw-auto" checked> Refresh every 5 s <small class="muted" id="kw-updated"></small></label>
     <div class="side-head">
       <h2>Indexer <i class="info" tabindex="0" data-tip="Runs the indexer job for the keyword index only; Index all on the Index overview runs it for every approach. Stopping is safe: the next run continues with the documents not read yet.">i</i></h2>
@@ -300,11 +308,11 @@
     <div class="side-head">
       <h2>Next run downloads <i class="info" tabindex="0" data-tip="The full texts the next run reads, by the host of the file it tries first, and how long that host takes at its pace: arxiv.org one request every 15 s, zenodo.org 1 s, the PMC bucket 0.1 s, others 3 s. A rough estimate: hosts are read in parallel, and second files and retries add to it.">i</i></h2>
     </div>
-    <ul class="db-tables" id="kw-hosts"></ul>
+    <ul class="db-tables" id="kw-hosts"><li class="plain"><div class="loading" role="status"><span class="spinner" aria-hidden="true"></span><span>Loading …</span></div></li></ul>
   </aside>
 
   <main aria-label="Keyword index">
-    <div class="stats" id="kw-stats"></div>
+    <div class="stats" id="kw-stats"><div class="loading" role="status"><span class="spinner" aria-hidden="true"></span><span>Loading the keyword index …</span></div></div>
     <nav class="tabs" id="kw-tabs">
       <button data-kwtab="coverage" class="active">Coverage</button>
       <button data-kwtab="log">Indexer log</button>
@@ -312,7 +320,7 @@
       <button data-kwtab="terms">Journey terms</button>
     </nav>
     <div class="content">
-      <section class="kwtab active" id="kwtab-coverage"><div class="panels" id="kw-coverage"></div></section>
+      <section class="kwtab active" id="kwtab-coverage"><div class="panels" id="kw-coverage"><div class="loading" role="status"><span class="spinner" aria-hidden="true"></span><span>Loading the coverage …</span></div></div></section>
       <section class="kwtab" id="kwtab-log">
         <div class="log-tools"><label><input type="checkbox" id="kw-follow" checked> Follow</label><span id="kw-run"></span></div>
         <div class="log" id="kw-log"><div class="empty">No indexer run since this server started. Use Index keyword in the controls.</div></div>
@@ -325,7 +333,7 @@
         </div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th class="num">#</th><th>Keyword</th><th>Occurrences</th><th class="num">Full texts</th><th>Indexed as</th></tr></thead>
+            <thead><tr><th class="num">#</th><th>Keyword</th><th class="num" title="How often the word occurs in all indexed full texts, repeats included">Occurrences</th><th class="num" title="In how many indexed full texts the word occurs, and their share; a word in most of them hardly tells documents apart">In full texts</th><th style="width:100%" title="The stem the search matches (PostgreSQL English stemmer): patients and patient both become patient">Indexed as (word stem)</th></tr></thead>
             <tbody id="kw-words"></tbody>
           </table>
         </div>
@@ -334,7 +342,7 @@
         <div class="toolbar"><span class="muted" id="kw-terms-shown"></span></div>
         <div class="table-wrap">
           <table>
-            <thead><tr><th>English term</th><th>German journey words</th><th>In metadata</th><th>In full texts</th><th></th></tr></thead>
+            <thead><tr><th>English term</th><th>German journey words</th><th class="num">In metadata</th><th class="num">In full texts</th><th>Note</th></tr></thead>
             <tbody id="kw-terms"></tbody>
           </table>
         </div>
@@ -346,8 +354,12 @@
 
 <div class="layout" id="match-view" hidden>
   <aside class="side" id="match-controls">
+    <label class="switch-row" title="Only what the tools return, as an app could show it; the steps of the match are hidden">
+      <span>Example client<small>The answer as an app could show it</small></span>
+      <input type="checkbox" class="switch" role="switch" id="mt-client-switch">
+    </label>
     <div class="side-head">
-      <h2>Algorithm <i class="info" tabindex="0" data-tip="The algorithm argument of match_journey. Keyword is built. AI (ai_summary) is semantic matching: it needs the local encoder and an index (make index-ai, then make debug-ai). Graph is planned.">i</i></h2>
+      <h2>Algorithm <i class="info" tabindex="0" data-tip="The algorithm argument of match_journey. Keyword searches terms. Graph matches diagnoses and relationships in annotated PubMed papers. AI (ai_summary) is semantic matching: it needs the local encoder and an index (make index-ai, then make debug-ai).">i</i></h2>
     </div>
     <div class="seg" id="mt-algorithm" role="group" aria-label="Algorithm">
       <button type="button" data-value="keyword" class="active">Keyword</button>
@@ -363,8 +375,8 @@
       <small class="muted" id="mt-model-note"></small>
     </div>
     <div class="side-head">
-      <h2>Journey <i class="info" tabindex="0" data-tip="Puts a journey into the arguments below and keeps their other fields: a synthetic journey of patientdata/, the one of the example in Documentation/user/mcp-interface.md, or a timeline.json from disk. Only synthetic journeys belong here: the journey goes to the matcher and back, it is not stored or logged.">i</i></h2>
-      <button type="button" class="link-button" id="mt-open" title="Put a timeline.json from disk into the arguments">Open file …</button>
+      <h2>Journey <i class="info" tabindex="0" data-tip="Choose a synthetic patient or import a timeline.json or graph.json from this computer. Graph loads the patient's graph when available. Keyword loads the timeline.">i</i></h2>
+      <button type="button" class="link-button" id="mt-open" title="Import a timeline.json or graph.json from this computer; it is read here, not uploaded"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 2.5v7M5 6.5l3 3 3-3M2.5 10v2.5a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1V10"/></svg>Import journey</button>
     </div>
     <select id="mt-journey" aria-label="Patient journey"></select>
     <input type="file" id="mt-file" accept=".json,application/json" hidden>
@@ -405,7 +417,6 @@
       <button data-mttab="results" class="active">Results <span class="badge" id="mt-count">0</span></button>
       <button data-mttab="rankings" title="The best candidates of each index before rank fusion, and where each one ended">Index rankings</button>
       <button data-mttab="answer">Answer</button>
-      <button data-mttab="client" title="How an app could show the answer, with only what the tools return">Example client</button>
     </nav>
     <div class="content">
       <section class="mttab active" id="mttab-results">
@@ -429,17 +440,42 @@
       <aside class="detail" id="mt-detail"></aside>
     </div>
     <section class="mt-pending" id="mt-pending" aria-live="polite" hidden></section>
+    <section class="mt-loading" id="mt-loading" aria-live="polite"></section>
+  </main>
+</div>
+
+<div class="layout" id="fusion-view" hidden>
+  <aside class="side" id="fusion-controls">
+    <div class="side-head">
+      <h2>Graph + keyword <i class="info" tabindex="0" data-tip="The graph_keyword algorithm of match_journey: the graph and the keyword matcher each rank at least 30 papers, and rank fusion merges the two lists with equal weights. A paper both rank high comes first. If one part fails, the answer is degraded and holds the other part's papers.">i</i></h2>
+    </div>
+    <div class="side-head">
+      <h2>Journey <i class="info" tabindex="0" data-tip="A synthetic patient. One with a graph.json goes as its graph: the graph part reads its relationships, the keyword part the journey made from it.">i</i></h2>
+    </div>
+    <select id="fu-journey" aria-label="Patient journey"></select>
+    <div class="buttons"><button type="button" class="primary" id="fu-run">Match</button></div>
+    <div class="error" id="fu-error"></div>
+  </aside>
+
+  <main class="fusion-main" aria-label="Fused matching">
+    <div class="stats" id="fu-stats"></div>
+    <div class="notice" id="fu-notice" hidden></div>
+    <div class="table-wrap"><table><thead><tr id="fu-head"></tr></thead><tbody id="fu-results"></tbody></table></div>
   </main>
 </div>
 
 <div class="layout" id="graph-view" hidden>
   <aside class="side" id="graph-controls">
     <div class="side-head"><h2>Graph index</h2></div>
-    <div class="db-conn off"><b>Not built yet</b><small>The graph indexer and matcher follow (#10). Until then, this screen shows the normalization of one file.</small></div>
-    <div class="side-head"><h2>Normalization</h2></div>
+    <div class="buttons">
+      <button type="button" class="primary" id="gr-start">Index graph</button>
+      <button type="button" id="gr-stop" disabled>Stop</button>
+    </div>
+    <code class="cmd" title="Index PubMed annotations">make index APPROACHES=graph</code>
+    <div class="error" id="gr-index-error"></div>
+    <div class="side-head"><h2>Normalization <i class="info" tabindex="0" data-tip="What the graph matcher makes of the file. Every name gets a shared ID (MeSH, NCBI Gene): only an entity with one can match a paper. A spoke from the patient is one entity, with a line per status; a repeated relation is drawn once, with its count.">i</i></h2><a class="link-button" href="#doc/Documentation/design/graph-normalization.md">Docs</a></div>
     <label class="field"><span>Graph</span><select id="gr-source" aria-label="Graph to show"></select></label>
-    <label class="field"><span>View</span><select id="gr-view" aria-label="Graph representation"><option value="normalized">Normalized</option><option value="original">Original (patient graph)</option></select></label>
-    <p id="gr-original-note" class="muted gr-note" hidden>Original nodes and directed edges, including providers and appointments. Click a node to inspect its original attributes. Switch to Normalized to compare merged concepts and omitted edges.</p>
+    <label class="field"><span>View <i class="info" tabindex="0" data-tip="Normalized: what the matcher uses. Original: the patient graph as it is, with providers and appointments; click a node for its attributes.">i</i></span><select id="gr-view" aria-label="Graph representation"><option value="normalized">Normalized</option><option value="original">Original (patient graph)</option></select></label>
     <label class="field" id="gr-score-field" hidden><span>PubTator3 minimum score</span>
       <input type="number" id="gr-score" min="0" max="1" step="0.05" value="0"></label>
     <label class="check"><input type="checkbox" id="gr-unresolved" checked> Entities without an ID</label>
@@ -449,7 +485,6 @@
     <div class="gr-legend" id="gr-type-legend"></div>
     <div class="side-head"><h2>Status</h2></div>
     <div class="gr-legend" id="gr-status-legend"></div>
-    <p class="muted gr-note">What <span class="mono">matcher/algorithms/graph</span> makes of the file (<a href="https://github.com/amosproj/amos2026ws03-patient-journey-matcher/blob/main/Documentation/design/graph-normalization.md" target="_blank" rel="noopener">graph normalization</a>). A hollow node has no shared ID: it is kept by its name but never meets a paper. The facts of one entity are one spoke from the patient, with a line per status; relations with the same ends, predicate and status are drawn once, with their count.</p>
   </aside>
 
   <main aria-label="Graph normalization">
@@ -468,7 +503,7 @@
           <button type="button" id="gr-zoom-out" title="Zoom out" aria-label="Zoom out"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10"/></svg></button>
           <button type="button" id="gr-fit" title="Fit the graph into the view" aria-label="Fit the graph into the view"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2.5 6V2.5H6M10 2.5h3.5V6M13.5 10v3.5H10M6 13.5H2.5V10"/></svg></button>
         </div>
-        <div class="gr-hint">Scroll to zoom · drag to pan · double-click to fit · click for details</div>
+        <div class="gr-hint">Scroll to zoom, drag to pan, double-click to fit, click for details</div>
       </section>
       <section class="grtab" id="grtab-entities"><div class="table-wrap"><table id="gr-entities"></table></div></section>
       <section class="grtab" id="grtab-statements"><div class="table-wrap"><table id="gr-statements"></table></div></section>
@@ -480,8 +515,8 @@
 
 <div class="layout" id="ai-view" hidden>
   <aside class="side" id="ai-controls">
-    <div class="side-head"><h2>Encoder <i class="info" tabindex="0" data-tip="The local program that turns texts into vectors, scripts/semantic.py. Indexing and the AI approach of the Matcher need it. It loads Qwen and BGE-M3 before it answers; the first start downloads them (about 3 GB). One started by make debug-ai shows here, and that command stops it.">i</i></h2><button type="button" class="link-button" id="ai-refresh">↻ Refresh</button></div>
-    <div class="db-conn" id="ai-encoder"><b>Loading …</b></div>
+    <div class="side-head"><h2>Encoder <i class="info" tabindex="0" data-tip="The local program that turns texts into vectors, scripts/semantic.py. Indexing and the AI approach of the Matcher need it. It loads Qwen and BGE-M3 before it answers; the first start downloads them (about 3 GB). One started by make debug-ai shows here, and that command stops it.">i</i></h2><button type="button" class="link-button refresh" id="ai-refresh">Refresh</button></div>
+    <div class="db-conn loading" id="ai-encoder"><b>Loading …</b></div>
     <div class="buttons"><button type="button" class="primary" id="ai-encoder-start" disabled>Start encoder</button><button type="button" id="ai-encoder-stop" disabled>Stop encoder</button></div>
     <code class="cmd" id="ai-encoder-lines" title="The last lines of the encoder" hidden></code>
     <div class="error" id="ai-encoder-error"></div>
@@ -492,16 +527,16 @@
       <option value="qwen">Qwen</option>
       <option value="bge">BGE-M3</option>
     </select>
-    <div class="db-conn" id="ai-state"><b>Loading …</b></div>
+    <div class="db-conn loading" id="ai-state"><b>Loading …</b></div>
     <label class="check"><input type="checkbox" id="ai-auto" checked> Refresh every 5 s</label>
     <div class="buttons"><button type="button" class="primary" id="ai-start" disabled>Start indexing</button><button type="button" id="ai-stop" disabled>Stop</button></div>
     <div class="error" id="ai-error"></div>
   </aside>
   <main aria-label="AI index">
-    <div class="stats" id="ai-stats"></div>
+    <div class="stats" id="ai-stats"><div class="loading" role="status"><span class="spinner" aria-hidden="true"></span><span>Loading the AI index …</span></div></div>
     <nav class="tabs" id="ai-tabs"><button data-aitab="coverage" class="active">Coverage</button><button data-aitab="log">Indexer log</button></nav>
     <div class="content">
-      <section id="aitab-coverage"><div class="panels" id="ai-coverage"></div></section>
+      <section id="aitab-coverage"><div class="panels" id="ai-coverage"><div class="loading" role="status"><span class="spinner" aria-hidden="true"></span><span>Loading the coverage …</span></div></div></section>
       <section id="aitab-log" hidden><div class="log-tools"><label><input type="checkbox" id="ai-follow" checked> Follow</label></div><div class="log" id="ai-log"><div class="empty">No run for the AI index since this server started.</div></div></section>
     </div>
   </main>
@@ -511,24 +546,24 @@
   <aside class="side" id="info-controls">
     <div class="side-head">
       <h2>This machine</h2>
-      <button type="button" class="link-button" id="info-refresh" title="Probe everything again">↻ Refresh</button>
+      <button type="button" class="link-button refresh" id="info-refresh" title="Probe everything again">Refresh</button>
     </div>
-    <div class="db-conn" id="info-host"><b>Loading …</b></div>
+    <div class="db-conn loading" id="info-host"><b>Loading …</b></div>
     <label class="check"><input type="checkbox" id="info-auto" checked> Refresh every 5 s <small class="muted" id="info-updated"></small></label>
     <div class="side-head"><h2>Code</h2></div>
     <dl class="info-facts" id="info-code"></dl>
   </aside>
 
   <main aria-label="System information">
-    <div class="stats overview" id="info-stats"></div>
+    <div class="stats overview" id="info-stats"><div class="loading" role="status"><span class="spinner" aria-hidden="true"></span><span>Probing this machine …</span></div></div>
     <nav class="tabs" id="info-tabs">
       <button data-infotab="schedule" class="active">Schedule</button>
       <button data-infotab="running">Running</button>
       <button data-infotab="topics">Topic files <span class="badge" id="info-topics-count">0</span></button>
     </nav>
     <div class="content">
-      <section class="infotab active" id="infotab-schedule"><div class="panels" id="info-schedule"></div></section>
-      <section class="infotab" id="infotab-running"><div class="panels" id="info-running"></div></section>
+      <section class="infotab active" id="infotab-schedule"><div class="panels" id="info-schedule"><div class="loading" role="status"><span class="spinner" aria-hidden="true"></span><span>Loading the timers …</span></div></div></section>
+      <section class="infotab" id="infotab-running"><div class="panels" id="info-running"><div class="loading" role="status"><span class="spinner" aria-hidden="true"></span><span>Loading what runs …</span></div></div></section>
       <section class="infotab" id="infotab-topics">
         <div class="topic-browser">
           <div class="topic-list">
@@ -538,6 +573,37 @@
           <div class="topic-detail" id="info-topic"></div>
         </div>
       </section>
+    </div>
+  </main>
+</div>
+
+<div class="layout" id="doc-view" hidden>
+  <aside class="side doc-side" id="doc-controls">
+    <div class="side-head">
+      <h2>Docs</h2>
+      <button type="button" class="link-button refresh" id="doc-refresh" title="Read the files again">Refresh</button>
+    </div>
+    <label class="dc-search">
+      <input type="text" id="doc-search" placeholder="Search all docs" autocomplete="off" spellcheck="false" aria-label="Search all docs" aria-keyshortcuts="/ Control+K Meta+K">
+      <kbd title="Press / or Ctrl+K to search">/</kbd>
+    </label>
+    <div class="dc-tools">
+      <small class="muted" id="doc-count"></small>
+      <div class="mini-seg" id="doc-labels" role="group" aria-label="Name the docs by">
+        <button type="button" data-value="titles" title="The first heading of each doc">Titles</button>
+        <button type="button" data-value="files" title="The file names">Files</button>
+      </div>
+    </div>
+    <nav class="dc-nav" id="doc-tree" aria-label="Docs"></nav>
+  </aside>
+
+  <main aria-label="Documentation">
+    <div class="dc-bar" id="doc-bar"></div>
+    <div class="dc-scroll" id="doc-scroll">
+      <div class="dc-page">
+        <article class="md" id="doc-article"></article>
+        <nav class="dc-outline" id="doc-outline" aria-label="On this page"></nav>
+      </div>
     </div>
   </main>
 </div>
@@ -561,14 +627,21 @@
 
 <div class="tip" id="tip"></div>
 <script src="base.js"></script>
+<script src="runs-graph.js"></script>
 <script src="runs.js"></script>
 <script src="database.js"></script>
 <script src="index-overview.js"></script>
 <script src="index-keyword.js"></script>
+<script src="index-graph-draw.js"></script>
 <script src="index-graph.js"></script>
 <script src="index-ai.js"></script>
+<script src="match-graph.js"></script>
+<script src="match-client.js"></script>
 <script src="match.js"></script>
+<script src="fusion.js"></script>
 <script src="info.js"></script>
+<script src="markdown.js"></script>
+<script src="docs.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

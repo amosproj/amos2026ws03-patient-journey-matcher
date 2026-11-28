@@ -10,7 +10,7 @@
 .pager button:hover:not(:disabled) { background: var(--hover); }
 .pager button:disabled { opacity: .4; cursor: default; }
 .pager select { width: auto; padding: 3px 6px; }
-th.sortable { cursor: pointer; user-select: none; }
+th.sortable { cursor: pointer; user-select: none; white-space: nowrap; }
 th.sortable:hover, th.sorted { color: var(--text); }
 th.sorted::after { content: " ↓"; }
 th.sorted.asc::after { content: " ↑"; }

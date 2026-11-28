@@ -15,6 +15,23 @@ export interface JourneyEvent {
 export interface JourneyState {
   focus: JourneyEvent;
   context: JourneyEvent[];
+  /** Original Graphiti nodes and edges, when the request supplied a graph. */
+  graph?: {
+    as_of?: string;
+    nodes: {
+      uuid: string;
+      name: string;
+      labels: string[];
+      [field: string]: unknown;
+    }[];
+    edges: {
+      uuid: string;
+      source_node_uuid: string;
+      target_node_uuid: string;
+      valid_at?: string | null;
+      [field: string]: unknown;
+    }[];
+  };
 }
 
 export interface MatchOptions {
@@ -28,10 +45,12 @@ export interface MatchOptions {
   tuning?: Readonly<Record<string, number>>;
   /** Gets what the matcher works out on the way; only the debug UI passes one. */
   trace?: Trace;
+  /** Told when a matcher made of others answers without the part `part`, which failed. */
+  partFailed?: (part: string, error: unknown) => void;
 }
 
 /** Receives the steps of a match: a name and its data, which must be JSON values. */
-export type Trace = (step: string, data: unknown) => void;
+type Trace = (step: string, data: unknown) => void;
 
 /** A stored document a matcher found for a journey. */
 export interface Hit {
@@ -40,6 +59,7 @@ export interface Hit {
   score: number;
   /** The query terms found in the document, for approaches that match terms. */
   matchedTerms?: string[];
+  explanation?: string;
 }
 
 /** Ranks the documents an approach indexed for a journey. */
@@ -66,7 +86,7 @@ export interface Approach {
 }
 
 export {
+  createFusedMatcher,
   RANK_CONSTANT,
-  type Ranking,
   reciprocalRankFusion,
 } from "./fusion.ts";

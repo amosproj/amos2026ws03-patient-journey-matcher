@@ -1,7 +1,7 @@
 import type { Queryable } from "./documents.ts";
 
 /** What the transcription job read from an audio file, as the downloader gives a full text. */
-export interface StoredTranscript {
+interface StoredTranscript {
   status: "ok" | "skipped";
   text: string;
   url: string;

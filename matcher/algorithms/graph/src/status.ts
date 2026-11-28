@@ -3,8 +3,10 @@
 // statement at its time, not to the concept: prostate cancer is suspected in November and
 // confirmed in December. Without a cue near the entity the sentence says nothing, and the
 // caller falls back.
+
+import { normalizeName, words } from "@matcher/terminology";
 import cues from "../data/status-cues.json" with { type: "json" };
-import { normalizeName, words } from "./text.ts";
+import type { Terminology } from "./resolve.ts";
 import type { Status } from "./types.ts";
 
 /** What a cue can say; a `pseudo` cue only blocks shorter ones (`no change` is not `no`). */
@@ -49,8 +51,82 @@ export type StatusCue = {
   cue: string;
 };
 
-// "V. a." and "Vd. a." (Verdacht auf) would end a sentence at their dots.
-const VERDACHT_AUF = /\bv\s*d?\s*\.\s*a\s*\./gi;
+// Family history belongs to the relative even when stored on a patient-diagnosis edge.
+const RELATIVE =
+  /\b(?:(?:grand)?(?:mother|father|parents?)|sister|brother|daughter|son|aunt|uncle|sibling|(?:gro[ßs]s?)?(?:mutter|vater|eltern)|schwester|bruder|tochter|sohn|tante|onkel)\b/gi;
+const FAMILY_HISTORY = /\b(?:family history|familienanamnese)\b/i;
+
+function familyClause(clause: string): boolean {
+  if (FAMILY_HISTORY.test(clause)) return true;
+  return [...clause.matchAll(RELATIVE)].some((match) => {
+    const before = clause.slice(0, match.index);
+    const after = clause.slice(match.index + match[0].length);
+    // A relative can accompany the patient without being the subject of the diagnosis.
+    return (
+      !/\b(?:accompanied by|in the presence of|in begleitung (?:von|der|des))\s+(?:(?:the|his|her|their|seiner|ihrer)\s+)?$/i.test(
+        before,
+      ) &&
+      !/^\s+(?:accompanied|brought|begleitete)\s+(?:the |her |his |their |den |die )?(?:patient\w*|him|her|ihn|sie)\b/i.test(
+        after,
+      )
+    );
+  });
+}
+
+export function patientText(text: string): string {
+  if (!familyClause(text)) return text;
+  // One space for each run: the split below would take time with the square of a long run.
+  const parts = text
+    .replace(/\s+/g, " ")
+    .replace(VERDACHT_AUF, "verdacht auf ")
+    .split(
+      /[;!?]|\.(?=\s|$)|,?\s+\b(?:but|aber|jedoch)\b\s+|(?:,\s*|\s+(?:and|und)\s+)(?=(?:(?:the|der|die)\s+)?patient\w*\b)/i,
+    );
+  return parts
+    .filter((clause) => clause.trim() && !familyClause(clause))
+    .join(". ")
+    .trim();
+}
+
+const PLANNED =
+  /\b(?:plan(?:ned)?|proposed|scheduled|recommended|empfohlen|geplant\w*|vorgesehen)\b/i;
+const CANCELLED =
+  /\b(?:cancelled|canceled|abgesagt\w*|(?:not|never)\s+(?:(?:yet|previously|ever|been)\s+)*(?:give[n]?|start(?:ed)?|administer(?:ed)?|receive[d]?|undergone|undergo|prescribe[d]?)|(?:nicht|nie)\s+(?:begonnen|verabreicht|erhalten|durchgefuhrt|durchgeführt|verordnet))\b/i;
+const PERFORMED =
+  /\b(?:administered|received|underwent|given|started|begonnen|verabreicht|durchgeführt|durchgefuhrt)\b/i;
+
+export function treatmentStatus(text: string): Status | undefined {
+  if (CANCELLED.test(text)) return "negated";
+  // A recommendation can describe the strategy under which treatment is already being given.
+  const course = text.replace(
+    /\b(?:the )?recommended (?:treatment |therapy )?(?:regimen|strategy)\b/gi,
+    "",
+  );
+  if (PLANNED.test(course)) return "planned";
+  if (PERFORMED.test(text)) return "asserted";
+  if (/\b(?:prescribed|verordnet|verschrieben)\b/i.test(text)) return "unknown";
+  return undefined;
+}
+
+/** Conjoined drug names can share a verb. A new sentence or a contrast starts a new action. */
+export function treatmentClauses(text: string) {
+  return text
+    .split(/[;!?]|\.(?=\s|$)|\b(?:but|however|aber|jedoch)\b/i)
+    .flatMap((sentence) => {
+      const parts = sentence.split(/,\s*|\b(?:and|und)\b/i);
+      const statuses = parts.map(treatmentStatus);
+      let shared = statuses.findLast((status) => status !== undefined);
+      for (let i = parts.length - 1; i >= 0; i--) {
+        shared = statuses[i] ?? shared;
+        statuses[i] = shared;
+      }
+      return parts.map((text, i) => ({ text, status: statuses[i] }));
+    });
+}
+
+// "V. a." and "Vd. a." (Verdacht auf) would end a sentence at their dots. The spaces before the
+// "d" belong to it: two optional runs of spaces in a row would be tried in every split.
+const VERDACHT_AUF = /\bv(?:\s*d)?\s*\.\s*a\s*\./gi;
 
 /** Sentences, then clauses: split at `;`, `!`, `?`, a dot before a space and words like "but". */
 function clauses(text: string): string[][] {
@@ -98,6 +174,7 @@ function occurrences(
 export function statusFromText(
   text: string,
   names: readonly string[],
+  otherMentions: readonly string[] = [],
 ): StatusCue | undefined {
   const phrases = [...new Set(names.map(normalizeName))]
     .filter((name) => name !== "")
@@ -127,9 +204,18 @@ export function statusFromText(
           .slice(Math.max(0, start - cues.negatorWindow), start)
           .some((word) => NEGATORS.has(word)),
     );
+    const otherSpans = otherMentions.flatMap((other) =>
+      occurrences(clause, words(other)),
+    );
     for (const name of phrases.flatMap((phrase) =>
       occurrences(clause, phrase),
     )) {
+      if (
+        otherSpans.some(
+          (span) => span.start <= name.start && span.end >= name.end,
+        )
+      )
+        continue;
       const near = effective.flatMap((match) => {
         if (match.start < name.end && name.start < match.end) return [];
         const distance =
@@ -142,7 +228,6 @@ export function statusFromText(
       });
       // "The suspected X was confirmed": a confirmation after the name ends the suspicion
       // before it, though "suspected" stands nearer.
-      // shortcut: also fires for X in "suspected X and confirmed Y", refine once facts read so
       const confirmed = near.some(
         ({ cue }) => cue.status === "asserted" && cue.position === "post",
       );
@@ -165,6 +250,61 @@ export function statusFromText(
   }
   if (best === undefined) return undefined;
   return { status: best.cue.status as StatusCue["status"], cue: best.cue.text };
+}
+
+/** Keep the cue on the disease phrase that the terminology actually matched. */
+export function diseaseMentions(text: string, terminology: Terminology) {
+  return text
+    .replace(VERDACHT_AUF, "verdacht auf ")
+    .split(/[;!?]|\.(?=\s|$)|\b(?:but|however|aber|jedoch)\b/i)
+    .flatMap((clause) => {
+      const hits = terminology.findDiseases(clause);
+      return hits.map((hit) => ({
+        ...hit,
+        status: statusFromText(
+          clause,
+          [hit.mention],
+          hits
+            .filter((other) => other.concept.id !== hit.concept.id)
+            .map((other) => other.mention),
+        )?.status,
+      }));
+    });
+}
+
+/** Read a treatment action about this edge's subject, including a shared verb in a list. */
+export function graphTreatmentStatus(
+  text: string,
+  names: string[],
+  terminology: Terminology,
+) {
+  const clauses = treatmentClauses(text);
+  const aliases = names.map(normalizeName).filter(Boolean);
+  const named = clauses.filter((clause) => {
+    const words = ` ${normalizeName(clause.text)} `;
+    return aliases.some((name) => words.includes(` ${name} `));
+  });
+  if (named.length) {
+    for (const clause of named.reverse()) {
+      const cue = statusFromText(clause.text, names)?.status;
+      if (cue === "negated" || cue === "suspected") return cue;
+      if (clause.status) return clause.status;
+    }
+    return;
+  }
+  if (
+    clauses.some((clause) =>
+      terminology
+        .findConcepts(clause.text)
+        .some(
+          (concept) =>
+            concept.type === "chemical" || concept.type === "procedure",
+        ),
+    )
+  )
+    return;
+  const actions = new Set(clauses.flatMap((clause) => clause.status ?? []));
+  if (actions.size === 1) return [...actions][0];
 }
 
 /** The status a node attribute such as `Diagnosis.status = "active"` stands for, if any. */

@@ -1,0 +1,339 @@
+{
+  "patient_id": "Kidney",
+  "pathway_id": "ki01",
+  "start_date": "2027-02-08",
+  "events": [
+    {
+      "id": "e01",
+      "type": "referral",
+      "label": "Überweisung zur Urologie: sonographisch solide Raumforderung Niere re.",
+      "date": "2027-02-08",
+      "specialist": "hausarzt",
+      "parameters": {
+        "reason": "einmalige schmerzlose Makrohämaturie vor 10 Tagen; Oberbauchsonographie: solide, inhomogene Raumforderung am Unterpol der rechten Niere, ca. 7 cm",
+        "patient": "59 J., m; art. Hypertonie, Adipositas (BMI 31 kg/m²), Nikotinabusus 30 py",
+        "urinalysis": "U-Stix: Erythrozyten +, Leukozyten neg., Nitrit neg.",
+        "creatinine_mg_dl": 1.0,
+        "egfr_ml_min": 87,
+        "suspected_diagnosis": "V.a. Nierenzellkarzinom re."
+      },
+      "documents": [
+        "ueberweisungsschein",
+        "sonographiebefund"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e02",
+      "type": "imaging",
+      "label": "CT Thorax/Abdomen mit KM: Raumforderung Niere re. 7,8 cm, cT3a",
+      "date": "2027-02-19",
+      "specialist": "radiologie",
+      "parameters": {
+        "modality": "CT, mehrphasig",
+        "region": "Thorax, Abdomen",
+        "finding": "7,8 × 7,2 cm große, kräftig und inhomogen KM-aufnehmende Raumforderung am Unterpol der rechten Niere mit zentraler Nekrose, Infiltration des perirenalen Fettgewebes und Tumorzapfen in einem segmentalen Venenast; Hauptstamm der V. renalis und V. cava inferior frei; keine vergrößerten LK; Nebennieren unauffällig; linke Niere regelrecht; Thorax ohne Rundherde",
+        "staging": "cT3a cN0 cM0",
+        "assessment": "dringender V.a. Nierenzellkarzinom"
+      },
+      "documents": [
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e03",
+      "type": "tumor_board",
+      "label": "Uroonkologische Tumorkonferenz (präoperativ)",
+      "date": "2027-03-03",
+      "specialist": "urologie",
+      "parameters": {
+        "staging": "cT3a cN0 cM0",
+        "decision": "laparoskopische radikale Tumornephrektomie re.; Nierenteilresektion wegen Tumorgröße und segmentaler Venenbeteiligung nicht empfohlen; keine Adrenalektomie und keine Lymphadenektomie bei unauffälliger Nebenniere und cN0; präoperative Biopsie nicht erforderlich",
+        "participants": [
+          "urologie",
+          "radiologie",
+          "onkologie",
+          "strahlentherapie",
+          "pathologie"
+        ]
+      },
+      "documents": [
+        "tumorkonferenzprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e04",
+      "type": "surgery",
+      "label": "Laparoskopische radikale Nephrektomie rechts",
+      "date": "2027-03-16",
+      "specialist": "urologie",
+      "parameters": {
+        "procedure": "laparoskopische transperitoneale radikale Nephrektomie re. unter Belassen der Nebenniere",
+        "intraoperative_finding": "Tumor am Unterpol mit Infiltration des perirenalen Fetts innerhalb der Gerota-Faszie, kein makroskopischer Tumorthrombus im Hauptstamm der V. renalis",
+        "blood_loss_ml": 200,
+        "intraoperative_complications": "keine"
+      },
+      "documents": [
+        "op_bericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e05",
+      "type": "pathology",
+      "label": "Histologie Nephrektomiepräparat: klarzelliges NZK",
+      "date": "2027-03-22",
+      "specialist": "pathologie",
+      "parameters": {
+        "histology": "klarzelliges Nierenzellkarzinom",
+        "tumor_size_cm": 7.9,
+        "who_isup_grade": 3,
+        "necrosis": "Tumornekrose ca. 20 %",
+        "sarcomatoid_rhabdoid": "nicht nachweisbar",
+        "ptnm": "pT3a pNX L0 V1 R0",
+        "diagnosis": "Klarzelliges Nierenzellkarzinom re., pT3a G3 R0",
+        "icd_code": "C64"
+      },
+      "documents": [
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e06",
+      "type": "tumor_board",
+      "label": "Postoperative Tumorkonferenz: adjuvante Therapie",
+      "date": "2027-04-07",
+      "specialist": "urologie",
+      "parameters": {
+        "postoperative_course": "komplikationslos, Entlassung am 5. postoperativen Tag",
+        "creatinine_mg_dl": 1.4,
+        "egfr_ml_min": 58,
+        "postoperative_ct": "CT Thorax/Abdomen vom 05.04.2027: kein Residualtumor, keine Metastasen",
+        "risk_assessment": "erhöhtes Rezidivrisiko (pT3a, WHO/ISUP-Grad 3, Tumornekrose)",
+        "ecog": 0,
+        "decision": "adjuvante Immuntherapie mit Pembrolizumab 400 mg alle 6 Wochen über bis zu 12 Monate (9 Gaben); Pat. nach Aufklärung über Nutzen und immunvermittelte Nebenwirkungen einverstanden",
+        "participants": [
+          "urologie",
+          "onkologie",
+          "radiologie",
+          "strahlentherapie",
+          "pathologie"
+        ]
+      },
+      "documents": [
+        "tumorkonferenzprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e07",
+      "type": "systemic_therapy",
+      "label": "Beginn adjuvante Therapie mit Pembrolizumab",
+      "date": "2027-04-21",
+      "specialist": "onkologie",
+      "parameters": {
+        "drug": "Pembrolizumab 400 mg i.v.",
+        "interval_weeks": 6,
+        "cycles_planned": 9,
+        "weeks_after_nephrectomy": 5,
+        "baseline_labs": "TSH 1,8 mU/l, Kortisol morgens normwertig, GOT/GPT, Lipase und BZ normwertig, Kreatinin 1,3 mg/dl (eGFR 63)",
+        "ecog": 0
+      },
+      "documents": [
+        "therapieplan",
+        "laborbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e08",
+      "type": "adverse_event",
+      "label": "Immunvermittelte Thyreoiditis mit Übergang in Hypothyreose",
+      "date": "2027-07-14",
+      "specialist": "onkologie",
+      "parameters": {
+        "course": "vor Zyklus 2 (02.06.2027) passagere Hyperthyreose mit TSH 0,02 mU/l und fT4 2,3 ng/dl, symptomatisch mit Propranolol behandelt; jetzt vor Zyklus 3 Hypothyreose",
+        "tsh_display": "28,4 mU/l",
+        "ft4_display": "0,5 ng/dl",
+        "symptoms": "Müdigkeit, Kälteempfindlichkeit",
+        "ctcae_grade": 2,
+        "management": "L-Thyroxin 75 µg/d, Propranolol abgesetzt, Pembrolizumab fortgeführt (Zyklus 3 heute appliziert)",
+        "diagnosis": "Thyreoiditis unter Pembrolizumab mit nachfolgender Hypothyreose",
+        "icd_code": "E06.4",
+        "secondary_diagnoses": [
+          "Hypothyreose durch Arzneimittel (E03.2)"
+        ]
+      },
+      "documents": [
+        "arztbrief",
+        "laborbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e09",
+      "type": "followup",
+      "label": "Tumornachsorge",
+      "date": "2028-05-03",
+      "specialist": "urologie",
+      "parameters": {
+        "status": "adjuvante Therapie abgeschlossen: 9 Gaben Pembrolizumab, letzte Gabe am 22.03.2028",
+        "imaging": "CT Thorax/Abdomen: kein Anhalt für Lokalrezidiv oder Metastasen",
+        "tsh_display": "2,2 mU/l unter L-Thyroxin 75 µg",
+        "creatinine_mg_dl": 1.3,
+        "rr": "138/86 mmHg"
+      },
+      "documents": [
+        "arztbrief",
+        "befundbericht"
+      ],
+      "repeat_index": 0
+    },
+    {
+      "id": "e10",
+      "type": "followup",
+      "label": "Tumornachsorge",
+      "date": "2028-11-08",
+      "specialist": "urologie",
+      "parameters": {
+        "status": "20 Monate nach Nephrektomie, beschwerdefrei",
+        "imaging": "CT Thorax/Abdomen: kein Anhalt für Rezidiv",
+        "creatinine_mg_dl": 1.3,
+        "hb_display": "13,9 g/dl",
+        "rr": "146/90 mmHg, antihypertensive Therapie hausärztlich angepasst"
+      },
+      "documents": [
+        "arztbrief",
+        "befundbericht"
+      ],
+      "repeat_index": 1
+    },
+    {
+      "id": "e11",
+      "type": "imaging",
+      "label": "Nachsorge-CT: neue pulmonale Rundherde und Osteolyse BWK 8",
+      "date": "2029-05-09",
+      "specialist": "radiologie",
+      "parameters": {
+        "modality": "CT",
+        "region": "Thorax, Abdomen",
+        "clinical_information": "seit ca. 4 Wochen thorakale Rückenschmerzen (NRS 5)",
+        "finding": "6 neue pulmonale Rundherde bds., größter 22 mm im re. Unterlappen; osteolytische Läsion BWK 8 mit kleinem paravertebralem Weichteilanteil, Hinterkante intakt, Spinalkanal frei, keine Sinterung; Nephrektomieloge re. ohne Rezidiv",
+        "assessment": "V.a. pulmonale und ossäre Metastasen des bekannten NZK"
+      },
+      "documents": [
+        "befundbericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e12",
+      "type": "biopsy",
+      "label": "CT-gesteuerte Stanzbiopsie Lungenrundherd re. Unterlappen",
+      "date": "2029-05-23",
+      "specialist": "radiologie",
+      "parameters": {
+        "procedure": "CT-gesteuerte Stanzbiopsie, 3 Zylinder",
+        "complication": "kleiner Mantelpneumothorax, konservativ",
+        "histology": "Metastase eines klarzelligen Nierenzellkarzinoms (PAX8+, CAIX+, CD10+)",
+        "diagnosis": "Pulmonal und ossär metastasiertes klarzelliges Nierenzellkarzinom",
+        "icd_code": "C64",
+        "secondary_diagnoses": [
+          "Lungenmetastasen (C78.0)",
+          "Knochenmetastase BWK 8 (C79.5)"
+        ]
+      },
+      "documents": [
+        "befundbericht",
+        "pathologiebericht"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e13",
+      "type": "tumor_board",
+      "label": "Tumorkonferenz: metachron metastasiertes NZK nach adjuvantem Pembrolizumab",
+      "date": "2029-06-06",
+      "specialist": "urologie",
+      "parameters": {
+        "situation": "Rezidiv 26 Monate nach Nephrektomie, gut 13 Monate nach der letzten Pembrolizumab-Gabe (22.03.2028)",
+        "imdc_factors": "Karnofsky 80 %; Intervall Diagnose bis Systemtherapie > 1 Jahr; Hb 12,6 g/dl (< Norm); Ca korr. 2,38 mmol/l, Neutrophile 5,1/nl und Thrombozyten 312/nl normwertig",
+        "imdc_risk": "intermediär (1 Risikofaktor: Anämie)",
+        "creatinine_mg_dl": 1.3,
+        "egfr_ml_min": 62,
+        "decision": "Cabozantinib 60 mg/d als Erstlinientherapie nach PD-1-Vorbehandlung; Denosumab 120 mg s.c. alle 4 Wochen nach zahnärztlicher Freigabe; stereotaktische Bestrahlung BWK 8",
+        "participants": [
+          "urologie",
+          "onkologie",
+          "strahlentherapie",
+          "radiologie",
+          "pathologie"
+        ]
+      },
+      "documents": [
+        "tumorkonferenzprotokoll"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e14",
+      "type": "radiation",
+      "label": "Stereotaktische Bestrahlung BWK 8",
+      "date": "2029-06-18",
+      "specialist": "strahlentherapie",
+      "parameters": {
+        "technique": "SBRT",
+        "target": "BWK 8 inkl. paravertebralem Weichteilanteil",
+        "fractionation": "3 × 8 Gy",
+        "total_dose_gy": 24,
+        "indication": "Schmerzlinderung und lokale Kontrolle"
+      },
+      "documents": [
+        "bestrahlungsplan"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e15",
+      "type": "systemic_therapy",
+      "label": "Beginn Cabozantinib 60 mg/d und Denosumab",
+      "date": "2029-06-25",
+      "specialist": "onkologie",
+      "parameters": {
+        "drug": "Cabozantinib 60 mg p.o. 1×/d",
+        "line": "1. Linie im metastasierten Stadium",
+        "bone_targeted_therapy": "Denosumab 120 mg s.c. alle 4 Wochen, Calcium 500 mg und Colecalciferol 1000 IE täglich",
+        "dental_clearance": "zahnärztliche Kontrolle am 12.06.2029 ohne Befund",
+        "baseline": "RR 134/84 mmHg, TSH 2,0 mU/l unter L-Thyroxin, Ca korr. 2,38 mmol/l",
+        "ecog": 1
+      },
+      "documents": [
+        "therapieplan",
+        "medikationsplan"
+      ],
+      "repeat_index": null
+    },
+    {
+      "id": "e16",
+      "type": "followup",
+      "label": "Re-Staging nach 12 Wochen Cabozantinib",
+      "date": "2029-09-19",
+      "specialist": "onkologie",
+      "parameters": {
+        "imaging": "CT Thorax/Abdomen: Größenregredienz der pulmonalen Metastasen, Summe der Zielläsionen −36 %; BWK 8 nach SBRT stabil, zunehmend sklerosiert",
+        "response": "partielle Remission nach RECIST 1.1",
+        "toxicity": "palmar-plantare Erythrodysästhesie CTCAE Grad 2, arterielle Hypertonie Grad 2 (RR bis 154/96 mmHg), Diarrhö Grad 1",
+        "dose_modification": "Cabozantinib pausiert bis Rückbildung auf Grad 1, dann Fortführung mit 40 mg/d; Amlodipin 5 mg ergänzt; harnstoffhaltige Hautpflege",
+        "pain": "Rückenschmerzen rückläufig (NRS 1)"
+      },
+      "documents": [
+        "arztbrief",
+        "befundbericht"
+      ],
+      "repeat_index": null
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 import { createHash } from "node:crypto";
 import type { JourneyEvent, JourneyState } from "@matcher/core";
 
-export const models = {
+const models = {
   qwen: {
     repository: "Qwen/Qwen3-Embedding-0.6B",
     revision: "97b0c614be4d77ee51c0cef4e5f07c00f9eb65b3",
@@ -14,13 +14,13 @@ export const models = {
   },
 } as const;
 export type Model = keyof typeof models;
-export const settings = {
+const settings = {
   template: 1,
   maxTokens: 512,
   dimensions: 1024,
   attention: "sdpa",
 };
-export const instruction =
+const instruction =
   "Given a patient's current medical situation and history, retrieve resources relevant to the current situation.";
 /** The start of a text that is sent: several times what the encoder reads of it (`maxTokens`). */
 const MAX_CHARACTERS = 20_000;

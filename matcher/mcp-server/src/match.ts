@@ -1,9 +1,22 @@
+import { createHash } from "node:crypto";
 import type { Approach, Hit } from "@matcher/core";
 import type { DocumentRow, DocumentStore } from "@matcher/db";
 import type { MatchResult } from "./contract.ts";
 import { journeyState } from "./journey.ts";
 import { type MatchService, ToolError, withSqlState } from "./server.ts";
 import { toSourceDownloads, toSourceReference } from "./sources.ts";
+
+// The same request within five minutes gets the same answer without a search; degraded answers
+// are not kept.
+const CACHE_MS = 300_000;
+const CACHE_SIZE = 200;
+
+/** Why `name` found nothing, for `degraded_reason`; SQLSTATE 57014 is the statement timeout. */
+function failure(name: string, error: unknown): string {
+  return (error as { code?: unknown } | null | undefined)?.code === "57014"
+    ? `The ${name} search took longer than allowed.`
+    : `The ${name} index could not be searched.`;
+}
 
 /**
  * `match_journey` with the matcher of the approach the request names as `algorithm`, and the
@@ -13,15 +26,15 @@ import { toSourceDownloads, toSourceReference } from "./sources.ts";
 export function createMatchService(
   approaches: readonly Pick<Approach, "name" | "matcher">[],
   store: DocumentStore,
+  cacheMs = CACHE_MS,
 ): MatchService {
   const byAlgorithm = new Map(
     approaches.map(({ name, matcher }) => [name, matcher]),
   );
+  const cache = new Map<string, { expires: number; answer: MatchResult }>();
   return {
-    async matchJourney(
-      { journey, algorithm, limit, content_types },
-      debug = {},
-    ) {
+    async matchJourney(request, debug = {}) {
+      const { journey, graph, algorithm, limit, content_types } = request;
       const matcher = byAlgorithm.get(algorithm);
       if (matcher === undefined) {
         throw new ToolError(
@@ -30,34 +43,21 @@ export function createMatchService(
         );
       }
       const state = journeyState(journey);
+      if (graph) state.graph = graph;
       debug.trace?.("journey", {
         focus: state.focus.id,
         context: state.context.map((event) => event.id),
       });
+      // Traced or tuned requests come from the debug UI, which wants a fresh search.
+      const key =
+        debug.trace || debug.tuning
+          ? undefined
+          : createHash("sha256").update(JSON.stringify(request)).digest("hex");
+      const cached = key === undefined ? undefined : cache.get(key);
+      if (cached && cached.expires > Date.now()) return cached.answer;
       const answer = { algorithm, focus_event_id: state.focus.id };
-      try {
-        const hits = await matcher.match(state, {
-          limit,
-          contentTypes: content_types,
-          ...debug,
-        });
-        const documents = await store.getDocuments(
-          hits.map((hit) => hit.documentId),
-        );
-        return {
-          ...answer,
-          results: results(hits, documents),
-          degraded: false,
-        };
-      } catch (error) {
-        if (
-          error instanceof Error &&
-          "code" in error &&
-          error.code === "NOT_AVAILABLE"
-        ) {
-          throw new ToolError("NOT_AVAILABLE", error.message);
-        }
-        console.error(withSqlState(`${algorithm} search failed`, error));
+      const report = (part: string, error: unknown) => {
+        console.error(withSqlState(`${part} search failed`, error));
         // The trace goes back to the developer who sent the journey, so it gets the message.
         const details =
           typeof error === "object" && error !== null ? error : {};
@@ -66,12 +66,56 @@ export function createMatchService(
           code?: unknown;
           message?: unknown;
         };
-        debug.trace?.("error", { name, code, message });
+        debug.trace?.("error", {
+          ...(part !== algorithm && { part }),
+          name,
+          code,
+          message,
+        });
+      };
+      const missing: string[] = [];
+      try {
+        const hits = await matcher.match(state, {
+          limit,
+          contentTypes: content_types,
+          ...debug,
+          partFailed: (part, error) => {
+            report(part, error);
+            missing.push(
+              `${failure(part, error).slice(0, -1)}; the results are without it.`,
+            );
+          },
+        });
+        const documents = await store.getDocuments(
+          hits.map((hit) => hit.documentId),
+        );
+        const result: MatchResult = {
+          ...answer,
+          results: results(hits, documents),
+          degraded: missing.length > 0,
+          ...(missing.length > 0 && { degraded_reason: missing.join(" ") }),
+        };
+        if (key !== undefined && !result.degraded) {
+          cache.delete(key);
+          cache.set(key, { expires: Date.now() + cacheMs, answer: result });
+          if (cache.size > CACHE_SIZE)
+            cache.delete(cache.keys().next().value as string);
+        }
+        return result;
+      } catch (error) {
+        if (
+          error instanceof Error &&
+          "code" in error &&
+          error.code === "NOT_AVAILABLE"
+        ) {
+          throw new ToolError("NOT_AVAILABLE", error.message);
+        }
+        report(algorithm, error);
         return {
           ...answer,
           results: [],
           degraded: true,
-          degraded_reason: `The ${algorithm} index could not be searched.`,
+          degraded_reason: failure(algorithm, error),
         };
       }
     },
@@ -96,5 +140,6 @@ function results(
     rank: index + 1,
     score: byId.get(document.id)?.score,
     matched_terms: byId.get(document.id)?.matchedTerms,
+    explanation: byId.get(document.id)?.explanation,
   }));
 }

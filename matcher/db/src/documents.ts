@@ -2,9 +2,9 @@ import type { QueryResult, QueryResultRow } from "pg";
 
 // Mirrors db/init/02-documents.sql. Column meanings and read rules: Documentation/design/storage.md.
 
-export type SourceName = "pubmed" | "arxiv" | "zenodo" | "youtube" | "podcast";
+type SourceName = "pubmed" | "arxiv" | "zenodo" | "youtube" | "podcast";
 
-export type ContentType =
+type ContentType =
   | "journal_article"
   | "preprint"
   | "conference_paper"
@@ -15,22 +15,22 @@ export type ContentType =
   | "video"
   | "podcast_episode";
 
-export type PublishedPrecision = "year" | "month" | "day";
+type PublishedPrecision = "year" | "month" | "day";
 
-export interface Author {
+interface Author {
   name: string;
   orcid: string | null;
   affiliation: string | null;
 }
 
-export interface Subject {
+interface Subject {
   scheme: string;
   label: string;
   id: string | null;
   major: boolean | null;
 }
 
-export interface FullTextLocator {
+interface FullTextLocator {
   kind: string;
   url: string;
   media_type: string | null;
@@ -39,9 +39,7 @@ export interface FullTextLocator {
   language: string | null;
 }
 
-export type FoundBy =
-  | { topic: string | null; query: string }
-  | { cited_by: string };
+type FoundBy = { topic: string | null; query: string } | { cited_by: string };
 
 /** One row of `documents`. */
 export interface DocumentRow {

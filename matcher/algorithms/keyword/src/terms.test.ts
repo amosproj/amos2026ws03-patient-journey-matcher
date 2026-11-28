@@ -61,6 +61,38 @@ test("passes through words named like built-in object properties", () => {
   expect(eventTerms({ label: "constructor" })).toEqual(["constructor"]);
 });
 
+test("translates other German words to their English MeSH heading", () => {
+  expect(eventTerms({ label: "Herzinsuffizienz mit Husten" })).toEqual([
+    "heart failure",
+    "cough",
+  ]);
+});
+
+test("takes a German MeSH name of several words as one term", () => {
+  expect(eventWords({ label: "Rheumatoide Arthritis" })).toEqual([
+    { word: "rheumatoide arthritis", term: "arthritis rheumatoid" },
+  ]);
+});
+
+test("keeps the translation of the list", () => {
+  // MeSH: prostatic neoplasms
+  expect(eventTerms({ label: "Prostatakarzinom" })).toEqual([
+    "prostate cancer",
+  ]);
+});
+
+test("keeps abbreviations in capitals as papers write them", () => {
+  // MeSH: pulmonary disease chronic obstructive
+  expect(eventTerms({ label: "COPD, PET-CT" })).toEqual(["copd", "pet", "ct"]);
+});
+
+test("does not translate a negated word", () => {
+  expect(eventWords({ label: "Keine Herzinsuffizienz" })).toEqual([
+    { word: "keine", term: null },
+    { word: "herzinsuffizienz", term: null, negated: true },
+  ]);
+});
+
 test("tells what became of each word", () => {
   expect(eventWords({ label: "Kontrolle nach 3 Zyklen Lutetium" })).toEqual([
     { word: "kontrolle", term: "monitoring" },
