@@ -46,8 +46,31 @@ async function pfRefresh() {
   await pfLoadDocuments();
 }
 
+// The study in one row: each step with how far it is. "done", "todo", "warn" or "optional".
+function pfRenderPipeline() {
+  const p = pf.data?.pipeline;
+  if (!p) { $("#pf-stats").replaceChildren(); return; }
+  const progress = pf.data.progress || {};
+  const model = p.model;
+  const rules = p.rules;
+  const steps = [
+    ["Sample", Object.entries(progress).filter(([name]) => !name.startsWith("drops-")).map(([name, n]) => `${fmtCount(n.total)} ${pfSetLabel(name).toLowerCase()}`).join(" · ") || "none yet",
+      p.documents ? "done" : "todo", "scripts/prefilter.py sample: random documents to label"],
+    ["LLM labels", `${fmtCount(p.proposed)} of ${fmtCount(p.documents)} · ${Object.entries(p.by_model).map(([name, n]) => `${name} ${fmtCount(n)}`).join(", ") || "none"}`,
+      p.documents && p.proposed === p.documents ? "done" : "todo", "propose / import-proposals: a local LLM labels each document keep or unhelpful (group 1 or 2)"],
+    ["People correct", `${fmtCount(p.by_person)} seen · optional`, "optional", "Here, on the cards: a person's label replaces the LLM's"],
+    ["Rules", rules ? `drop ${fmtCount(rules.dropped)} · ${pfPercent(rules.share)}` : "not measured", rules ? "done" : "todo", "Metadata rules (errata, no summary …) drop documents before the classifier"],
+    ["Classifier", model ? `trained on ${fmtCount(model.trained_on)} · ${model.threshold == null ? "no safe threshold" : `threshold ${model.threshold.toFixed(3)}`}` : "not trained",
+      !model ? "todo" : model.threshold == null ? "warn" : "done", "train: logistic regression on the stored embeddings; the threshold drops ≥ 100 training documents with ≤ 1 % of them keep"],
+    ["Measure", p.measured_at ? `on the whole table · ${fmtDateTime(p.measured_at)}` : "not yet", p.measured_at ? "done" : "todo", "measure: drops per approach on the whole table, and samples of drops to check (Results tab)"],
+  ];
+  $("#pf-stats").replaceChildren(h("ol", { class: "pf-pipeline", "aria-label": "Study pipeline" },
+    ...steps.map(([name, detail, status, tip]) => h("li", { class: `pf-step ${status}`, title: tip }, h("b", {}, name), h("small", {}, detail)))));
+}
+
 function pfRenderControls() {
   const data = pf.data;
+  pfRenderPipeline();
   if (!data || data.missing) {
     $("#pf-progress").replaceChildren(h("b", {}, "No labels yet"), h("small", {}, "Run uv run --locked scripts/prefilter.py sample --set train"));
     return;

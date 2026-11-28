@@ -39,3 +39,13 @@
 #pf-results td.bad { color: var(--error); font-weight: 650; }
 #pf-results .pf-variant td { color: var(--muted); }
 #pftab-label:not([hidden]), #pftab-results:not([hidden]) { position: absolute; inset: 0; display: flex; flex-direction: column; }
+.pf-pipeline { display: flex; flex-wrap: wrap; gap: 6px 0; margin: 0; padding: 8px 12px; list-style: none; counter-reset: step; }
+.pf-step { position: relative; display: grid; gap: 1px; padding: 0 22px 0 18px; counter-increment: step; cursor: help; }
+.pf-step::before { content: ""; position: absolute; left: 4px; top: 5px; width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); }
+.pf-step.done::before { background: var(--good); }
+.pf-step.warn::before { background: var(--pending); }
+.pf-step.optional::before { background: none; box-shadow: inset 0 0 0 1.5px var(--line-strong); }
+.pf-step:not(:last-child)::after { content: "→"; position: absolute; right: 4px; top: 0; color: var(--muted); }
+.pf-step b { font-size: 12px; }
+.pf-step b::before { content: counter(step) ". "; color: var(--muted); font-weight: 500; }
+.pf-step small { color: var(--muted); font-size: 11px; white-space: nowrap; }

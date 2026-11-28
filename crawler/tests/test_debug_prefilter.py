@@ -87,6 +87,26 @@ def test_labels_filter_by_the_label_that_counts(server, labels_file):
         server.prefilter_labels({"label": ["maybe"]})
 
 
+def test_pipeline_reports_proposals_people_and_the_model(server, labels_file, tmp_path):
+    pipeline = server.prefilter_labels({})["pipeline"]
+    assert pipeline | {"model": None} == {
+        "documents": 4,
+        "proposed": 3,
+        "by_model": {"m": 3},
+        "by_person": 2,
+        "model": None,
+        "measured_at": None,
+        "rules": None,
+    }
+    model = {"trained_on": 268, "threshold": None, "below_threshold": 0, "weights": [1.0]}
+    (tmp_path / "model.json").write_text(json.dumps(model))
+    assert server.prefilter_labels({})["pipeline"]["model"] == {
+        "trained_on": 268,
+        "threshold": None,
+        "below_threshold": 0,
+    }
+
+
 def test_labels_refuse_an_unknown_status(server, labels_file):
     with pytest.raises(ValueError):
         server.prefilter_labels({"status": ["maybe"]})

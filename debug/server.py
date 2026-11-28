@@ -2607,6 +2607,32 @@ def prefilter_labels(params: dict[str, list[str]]) -> dict[str, Any]:
         "total": len(items),
         "progress": progress,
         "guide": data.get("guide", []),
+        "pipeline": prefilter_pipeline(data["documents"]),
+    }
+
+
+def prefilter_pipeline(documents: list[dict[str, Any]]) -> dict[str, Any]:
+    """How far the study is, for the pipeline strip: labels, the classifier and the last measure."""
+    by_model: dict[str, int] = {}
+    for entry in documents:
+        if entry.get("proposal"):
+            name = str(entry["proposal"].get("model") or "?").split("@")[0].split("/")[-1]
+            by_model[name] = by_model.get(name, 0) + 1
+    model_path, results_path = PREFILTER_DIR / "model.json", PREFILTER_DIR / "results.json"
+    model, results = (
+        json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+        for path in (model_path, results_path)
+    )
+    return {
+        "documents": len(documents),
+        "proposed": sum(by_model.values()),
+        "by_model": by_model,
+        "by_person": sum(entry.get("label") is not None for entry in documents),
+        "model": None
+        if model is None
+        else {key: model.get(key) for key in ("trained_on", "threshold", "below_threshold")},
+        "measured_at": results.get("generated_at") if results else None,
+        "rules": (results or {}).get("approaches", {}).get("rules"),
     }
 
 
