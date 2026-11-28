@@ -279,7 +279,8 @@
     {
       "id": "pubmed:34044485",
       "sets": [
-        "train"
+        "train",
+        "drops-rules"
       ],
       "proposal": {
         "label": "unhelpful",
@@ -942,7 +943,8 @@
     {
       "id": "pubmed:36464532",
       "sets": [
-        "train"
+        "train",
+        "drops-rules"
       ],
       "proposal": {
         "label": "unhelpful",
@@ -7453,7 +7455,8 @@
     {
       "id": "pubmed:38483432",
       "sets": [
-        "train"
+        "train",
+        "drops-rules"
       ],
       "proposal": {
         "label": "unhelpful",
@@ -17014,6 +17017,5412 @@
         "label": "keep",
         "group": null,
         "reason": "Health care costs associated with PTSD symptoms in women.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37414423",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a research letter with real-world effectiveness and safety data on COPD inhaler therapy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:18585842",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Opinion editorial questioning maintenance BCG, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:22840545",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on the autism sex ratio, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:22835796",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a safety warning about epinephrine autoinjectors could matter to allergy patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35675621",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter commenting on another paper about ovarian cancer symptoms.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37140525",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter commenting on another paper about pruritus neuroanatomy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30369086",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Editorial on body composition changes and sarcopenia with SGLT2 inhibitors, a side effect patients face.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36455579",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter commenting on another paper about prostate SBRT.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36277701",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Introductory editorial to a PCOS research topic, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31416355",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment reacting to a paper on PCI for chronic total occlusions.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:16118279",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment on an anti-HIV microbicide paper, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27269371",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Opinion editorial on stem cell transplantation in HIV lymphoma, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:6888456",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a standalone editorial overview of gastroesophageal reflux in infants.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29470012",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter commenting on another paper about NASH.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28316277",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial reacting to the reduced-dose rivaroxaban trial, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33565238",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment on prostate cancer survivorship care, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32604884",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Special issue editorial on rheumatoid arthritis whose summary only restates the definition.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34688571",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment on another paper about bariatric surgery in children.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31538493",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Vision editorial on lung cancer with no usable content.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36373842",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial reacting to an elotuzumab trial, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32426954",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a research letter on vitamin E supplementation in treated celiac disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:18091696",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a review on management of deep vein thrombosis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:12525542",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a research letter identifying OTOF mutations as cause of auditory neuropathy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33711101",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment on another paper about gout imaging.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32445218",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but an editorial on mobile health apps for bipolar disorder care.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33040583",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment reacting to a paper on peripheral artery disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31621800",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment on pediatric thyroid cancer overdiagnosis, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15364337",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment reacting to a paper on furosemide in heart failure.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35482968",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on postoperative atrial fibrillation, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:11198295",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on migraine aura mechanisms, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26369396",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a research letter with daily practice data on methotrexate in hand eczema.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34129808",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a research letter on identifying steroid-resistant severe asthma.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32105562",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Editorial for radiologists about their COVID-19 work.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32695069",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Introductory editorial to a research topic on hypothyroidism therapy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38957017",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but an editorial overview of preventing hospital-acquired venous thromboembolism.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33168933",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a research letter on CAR T outcomes and toxicities in secondary CNS lymphoma.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37219467",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment on MINOCA in COVID-19, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35863489",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter commenting on another paper about hepatitis B related liver cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25786145",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on a methacholine test metric.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35403850",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a research letter on sex differences in anemia symptoms.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33891886",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but regional data on thyroid cancer overdiagnosis in China.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31926705",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Commentary reacting to a paper on postoperative atrial fibrillation.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28498578",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Opinion letter on psychosis risk criteria, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31854256",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Untitled editorial comment with no content.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37329568",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a research letter on a prognostic deletion in IDH-mutant gliomas.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28331036",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a letter reporting compassionate bedaquiline use in drug-resistant tuberculosis patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43079186",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Correction notice for an aortic aneurysm paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:20590940",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Introductory editorial to a supplement on erectile dysfunction after prostate cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35236761",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but an editorial on myo-inositol treatment for PCOS, insulin resistance and gestational diabetes.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:8169194",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter commenting on another paper about clozapine.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:20595426",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial debating DSM-5 classification of melancholia, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36702541",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on heart valve clinics, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:8158809",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but likely a research letter on APOE4 and gender in Alzheimer's disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29948738",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment reacting to a paper on iron pots for anemia.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38946275",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial reacting to findings on antidepressants in bipolar disorder.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26871673",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Molecular study of MUC5B expression in airway tissue.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36450133",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter commenting on a sepsis crystalloid paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33541536",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on intravascular ultrasound in PCI.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37067149",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a letter describing traction alopecia caused by OCD.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38306587",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial on ovarian cancer screening, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38933279",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Introductory editorial to a research topic on tuberculous meningitis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35599115",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a meta-analysis on recurrence risk after laparoscopic colectomy for T4 colon cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:22547369",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a VTE risk score for cancer patients on chemotherapy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27083530",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a clinicopathological case report on bvFTD phenocopy syndrome.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37933606",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Journal centennial editorial with no usable content.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:7603188",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter commenting on another paper about LDL apheresis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26081816",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Introductory editorial titled only kidney cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:8193438",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a letter on the safety of combining SSRIs with selegiline.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39083784",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Reply to letters about a nirmatrelvir paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31934831",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter commenting on another paper about corticosteroid injection safety.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32319029",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a case report on self-proning in COVID-19 pneumonia.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27238199",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a case report on rituximab and belimumab for refractory lupus nephritis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27671024",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but an editorial overview of migraine treatment advances.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:10988173",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but tagged as a review on Pneumocystis pneumonia.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38636975",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on smoking cessation at lung cancer screening.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:10817763",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a standalone editorial on treating fibromyalgia.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30700792",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a clinical trial of chemoimmunotherapy in relapsed Hodgkin lymphoma.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21403004",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a case report on stem cell transplantation failing in neuromyelitis optica.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31138038",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but reviews psoriasis guideline recommendations for topical corticosteroids.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33913643",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment reacting to another paper on CKD anemia therapy, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34965925",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a standalone editorial on screening children for type 1 diabetes.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31269386",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter comment titled only Hepatocellular Carcinoma, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:14534442",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but an editorial on disability determination in fibromyalgia, relevant to patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25934473",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on cryobiopsy costs reacting to another paper, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36181332",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on cannabis use disorder diagnoses reacting to another paper, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38302315",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a research letter on ctDNA detection in bladder cancer patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:18703799",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment asking what a lacune is, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33227409",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on pancreatic cancer transcriptomes reacting to another paper, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32088375",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on trauma-related nightmares reacting to another paper, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36813933",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on low-dose coronary calcium scoring, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43101517",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on depression and cancer survival reacting to another paper, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32009622",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a standalone editorial on lipoprotein(a) and cardiovascular risk.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33353287",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on hidden hepatitis B virus reacting to another paper, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31091383",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter comment on an e-cigarette versus nicotine replacement trial, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35436168",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on monocyte activation in sleep apnea, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38422324",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a standalone editorial on ALIF for refractory low back pain.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32766713",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on gonorrhea resistance diagnostics, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37921683",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a letter on lenvatinib causing fulminant type 1 diabetes, a drug side effect.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23375431",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on LUTS and prostate cancer reacting to another paper, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:41133175",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a standalone editorial on linzagolix therapy for uterine fibroids.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30799059",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment on video-observed tuberculosis therapy, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43080857",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Published erratum to a PCI cohort study.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:19641175",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a research letter on ctDNA to confirm KRAS mutations.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43075162",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Published erratum to a stroke rehabilitation study.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38635427",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on decisional autonomy reacting to another paper, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30448142",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on calcium score in familial hypercholesterolemia, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23821087",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment titled Preventing heart failure, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36598078",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on high-flow nasal oxygen in COVID-19, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35278095",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment on SBRT for oligometastatic renal cell cancer, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:17278314",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment titled Ventilator-associated pneumonia, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34719263",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on aortic stenosis, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37461221",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment on PCOS and cardiovascular morbidity reacting to another paper, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28968691",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a standalone editorial on treatment adherence in lupus and rheumatoid arthritis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15123569",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on left ventricular hypertrophy by race, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:7769928",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a case report on rifampicin-resistant tuberculosis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37080221",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment on chemo-immunotherapy in oesophageal cancer, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30395914",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a retrospective study on crisaborole application site pain, a side effect.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32320587",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter comment on preventing ventilator-associated pneumonia, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30916385",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a phase 1 trial of lenalidomide maintenance in chronic myeloid leukaemia.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36372628",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on PSA screening, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35337709",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but an update of French guidelines for idiopathic pulmonary fibrosis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:14605583",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a case report of recurrent diverticulitis after sigmoid colectomy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29887459",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on HbA1c targets and coronary calcification, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28629743",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a human association study of childhood food allergy risk loci.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26005960",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but an opinion piece on ureteroscopy versus shock-wave lithotripsy for stones.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38834503",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a standalone editorial on systematic lipoprotein(a) testing.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38840224",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter comment on early sepsis recognition, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35120610",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter comment on awake prone positioning in COVID-19, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:11526551",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter comment on tumor dissemination after liver cancer ablation, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23575319",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Editorial FAQs for tuberculosis test developers, not for patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38712730",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but registry results of dupilumab in pediatric atopic dermatitis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35701715",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Editorial calling for standardized HVPG measurement, a clinician methods topic.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27053093",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but an editorial on quality of life interventions for thyroid cancer survivors.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28723318",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter comment on diabetes incidence trends reacting to another paper, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26195699",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on predicting bevacizumab response in glioblastoma, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:12707021",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Comment on Wnt signaling in pulmonary fibrosis, molecular mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36583925",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a real-life study of secukinumab in axial spondyloarthritis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:12190198",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a letter on the gut-liver axis as a treatment target for chronic liver damage.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33617781",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a letter on delayed-onset myocarditis after COVID-19.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31605448",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter comment on ventilation in cystic fibrosis reacting to another paper, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:23952559",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Erratum adding an omitted author.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34698590",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a standalone editorial on progestin or anti-estrogen therapy for endometrial cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:843810",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a letter on adjuvant therapy of lung cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39693413",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on hypoxic burden in sleep apnea, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:10532929",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a letter on BCG and tuberculosis, kept in doubt.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25096551",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a meta-analysis of heart disease and stroke risk in PCOS.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29137210",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a standalone editorial on intentional weight loss and cancer risk.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:10526749",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a controlled trial of gluten-free diet in type 1 diabetes with celiac disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:12427769",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment on argon plasma coagulation for Barrett's oesophagus, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35797760",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a letter on survival in smouldering and symptomatic myeloma.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43057401",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter revisiting a historical first case report, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43071189",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial on a journal anniversary, nothing usable for patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32971718",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter with a vague title and no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43060984",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Correction notice for another article.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35263535",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but research letter on antiviral efficacy against Omicron BA.2.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:2105308",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but clinical trial letter on bupropion dosing.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29550365",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter and comment reacting to the headache classification.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32246886",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter and comment reacting to another paper on COVID-19 transmission.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:6108151",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial with only a disease name as title and no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31866089",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter and comment reacting to a saffron vs sertraline trial.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35333560",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial with a vague title and no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21873698",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment reacting to a pediatric UTI guideline.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:17544787",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment letter with a vague title and no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28314532",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but editorial on management of T1 esophageal adenocarcinoma.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15664237",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but review on long-term antiviral therapy in chronic hepatitis B.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23999214",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment highlighting another paper on smoldering myeloma.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:1002656",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Old editorial with a vague title and no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30480704",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Author response to another paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:40023556",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter with a vague title and no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28758257",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but research letter on comorbidities of atopic dermatitis in a population sample.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36424003",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment reacting to another paper on AF and heart failure.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30262607",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but editorial on non-drug migraine management.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29509996",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment reacting to another celiac disease paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35450688",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment reacting to another PCI paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30501402",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Opinion editorial on diagnostic criteria, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37666542",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment reacting to another paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34192450",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Reply letter to correspondence on a semaglutide trial.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:22610962",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Comment on animal models of PCOS.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34392358",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment reacting to another sacubitril/valsartan paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:17853392",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment reacting to a SEARCH database paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32786198",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter and comment reacting to an HCC trial.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29340542",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter on sepsis definitions, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43075767",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Correction notice for a trial article.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23691988",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but phase 1 trial of ponatinib in refractory AML.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28147393",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment reacting to another IBD paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26987461",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment reacting to a vaccine paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39215479",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but editorial on prostate cancer care disparities in Black men.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31423888",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment pointing to another article.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24269361",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment reacting to another CKD paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39383464",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but linked to a randomized trial of prostatectomy vs watchful waiting.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35714657",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment calling for a core outcome set, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43072872",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but editorial on biliary stent choice in pancreatic cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23208171",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but editorial on endoscopy use in GERD.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33170984",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but research letter on penicillin allergy de-labelling by telemedicine.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:1738383",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter with a vague title and no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:8778596",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but letter on gynecomastia and breast cancer as finasteride side effects.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33914103",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial on fracture prediction tool time horizons, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38578452",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter and comment reacting to a cost-effectiveness paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31399206",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial reacting to olaparib trial results, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36734419",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment reacting to another adherence paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39002325",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter and comment reacting to another paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35170153",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but letter reporting psoriasis eruption after SARS-CoV-2 vaccination.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39838494",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Correspondence letter about a gout drug trial, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:17644797",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Lab method reproducibility study of oligoclonal band detection.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34261747",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but research letter on MOG-IgG testing in CSF vs serum.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:293549",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Old letter with a vague title and no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29126498",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Introductory editorial with a vague title.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27402335",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but clinical trial of romidepsin in angioimmunoblastic T-cell lymphoma.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43082486",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Correction notice for another article.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36631212",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but research letter on sex disparities in familial hypercholesterolemia.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31674306",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial on cervical cancer elimination policy, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30395890",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment reacting to another alpha-Gal paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32460328",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment reacting to another AF paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28784725",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but regional statistics on type 1 diabetes in Sweden.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23228245",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but letter on interference-free venom allergy diagnostics.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27770995",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial with a vague title and no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32740281",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but letter on a severe avelumab side effect.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28724564",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Introductory editorial pointing to two other reviews.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34273301",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment reacting to another maternal sepsis paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:12011155",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but letter on SPINK1 mutations in tropical calcific pancreatitis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25955323",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but editorial on pancreatectomy with islet autotransplantation for chronic pancreatitis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30794094",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter from the editor, nothing usable.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15476148",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but editorial on screening in Barrett's esophagus.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37595999",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment reacting to another stroke triage paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34823388",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but editorial on preventing postoperative atrial fibrillation.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15389471",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a review of managing uterine serous carcinoma.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31008803",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but proposes a transition protocol for celiac patients moving to adult care.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:16337445",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a standalone editorial on sleep disorders in asthma, eczema and rhinitis patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35759726",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment reacting to a myeloma staging paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36907596",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but an editorial on imaging surveillance for pancreatic cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38780961",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Reply letter about pediatric sepsis criteria.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31496104",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter with a philosophical reflection on eating disorders, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:20607638",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on autism in adults, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26643150",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on stroke risk scores in atrial fibrillation.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27070440",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter commenting on antibiotics in pancreatitis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30290121",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a letter reporting randomized trial data on smoking cessation incentives.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29226410",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Authors' reply to an editorial on alfapump.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38511262",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on interferons in leukemia.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30473007",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but an editorial on drug interactions of phosphate binders patients take.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23334899",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter commenting on another article about cherry juice for gout.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38354982",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on cardiac MRI studies in Africa.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32711782",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment on glucocorticoid tapering in rheumatoid arthritis, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34718640",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Response to a letter to the editor about hypothyroidism treatments.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21995392",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on Barrett's esophagus surveillance.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27701912",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a funded research letter on metformin and MGUS progression.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35820562",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter commenting on diets for IBS.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25288787",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a case report of bortezomib for haemolytic anaemia in lupus.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31345456",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter commenting on yellow fever vaccine and egg allergy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36630555",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on pretomanid regimens for tuberculosis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:11092301",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a case report on latent autoimmune diabetes in the young.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37678721",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but reports prevalence and risk factors of fatty liver disease in a Brazilian cohort.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:3974665",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a standalone editorial on methotrexate in rheumatoid arthritis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31873737",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment on axial psoriatic arthritis, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:18219786",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment letter on surgical technique of sleeve gastrectomy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29581241",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment on the blood microbiome, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:22188302",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a randomized trial of etanercept with patient-reported outcomes in scalp psoriasis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32200614",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on readmissions after cholecystectomy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25006736",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter commenting on stool DNA screening.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35085527",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on a hepatitis B research model.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21079083",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a case report of ustekinumab for nail psoriasis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43102063",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Corrigendum fixing a figure in a breast cancer cell study.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26871672",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Tissue study of mucin expression in fibrotic lungs, mechanism only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31976630",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but an editorial on access criteria for cataract treatment.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:17107897",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment on thalidomide neuropathy reacting to another paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28628573",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on postoperative atrial fibrillation.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29551478",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on myomectomy safety.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29372382",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a standalone editorial on comorbid insomnia and sleep apnea.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:8436317",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a standalone editorial on laparoscopic cholecystectomy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29094864",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter commenting on post-traumatic stress disorder.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35794090",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but long-term outcomes of ten CML patients with P190 BCR-ABL1.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:16783898",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment letter on bowel cancer screening.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33913646",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a funded research letter on how a trial changed cervical cancer surgery.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:9703370",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a review on predicting postpartum thyroiditis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37271699",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but an editorial on survivorship support for prostate cancer patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:19713441",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a case report of lupus podocytopathy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:10199381",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a case report on Churg-Strauss syndrome with asthma drugs.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28179635",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment on chronic lymphocytic leukaemia, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34635783",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but outcomes of triple-class refractory myeloma patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35546302",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on HLA-DP alloreactivity in transplantation.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:10984723",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a standalone editorial on treatment guidelines for mania in old age.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:12782910",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a letter on fibrosis as a side effect of dopamine agonists in Parkinson's.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43061726",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a phase II trial of azithromycin in MALT lymphoma.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35924479",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on drivers in persistent atrial fibrillation.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:12414398",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a standalone editorial on glaucoma treatment options.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33517752",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on ketamine for PTSD.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37366346",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Laboratory practice feedback on the basophil activation test, about lab work.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:10421311",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Reports raised coeliac disease prevalence in dilated cardiomyopathy patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32083961",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a funded research letter on removing penicillin allergy labels in ICU.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:10330622",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a review on anesthesia for cataract surgery.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31116508",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment on predicting sepsis after nephrolithotomy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28024965",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Commentary on a cranberry trial for urinary infections.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36907573",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on lean versus obese fatty liver disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34105039",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on myocardial blood flow and revascularization.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38719384",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment on dementia screening.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32828956",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a letter on prone positioning in awake COVID-19 ARDS patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:17218803",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a review on inflammation in allergic rhinitis; in doubt, keep.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37383388",
+      "sets": [
+        "drops-rules"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial introducing a research topic collection on thyroid cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43052571",
+      "sets": [
+        "drops-rule:erratum"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Author correction to a patent landscape paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:14447800",
+      "sets": [
+        "drops-rule:erratum"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Erratum to a migraine nerve block paper, no content.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43074410",
+      "sets": [
+        "drops-rule:erratum"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Correction to an ulcerative colitis study.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31571232",
+      "sets": [
+        "drops-rule:erratum"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Corrigendum to the FIGO cervical cancer staging paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43058223",
+      "sets": [
+        "drops-rule:erratum"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Author correction to a MASLD biomarker study.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43080226",
+      "sets": [
+        "drops-rule:erratum"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Erratum to a bladder cancer miRNA study.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39185658",
+      "sets": [
+        "drops-rule:erratum"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Corrigendum adding funding details to a thyroid ultrasound paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34179979",
+      "sets": [
+        "drops-rule:erratum"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Corrigendum to the EHRA anticoagulant guide.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43062549",
+      "sets": [
+        "drops-rule:erratum"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Correction to a substance use curriculum paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43054410",
+      "sets": [
+        "drops-rule:erratum"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Correction to a dendritic cell immunotherapy case report.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43061437",
+      "sets": [
+        "drops-rule:erratum"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Correction to a cognitive impairment index study.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43094801",
+      "sets": [
+        "drops-rule:erratum"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Correction to a bullous pemphigoid case report.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43071507",
+      "sets": [
+        "drops-rule:erratum"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Correction to an Alzheimer's mouse model study.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:14473625",
+      "sets": [
+        "drops-rule:erratum"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Correction to a Dravet and Lennox-Gastaut comorbidities paper, no content.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43097228",
+      "sets": [
+        "drops-rule:erratum"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Correction to a pulmonary vein isolation review.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:18971501",
+      "sets": [
+        "drops-rule:erratum"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Erratum letter on HIV-1 subtype diversity.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43059389",
+      "sets": [
+        "drops-rule:erratum"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Corrigendum to a review on immune dysregulation in depression.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43057330",
+      "sets": [
+        "drops-rule:erratum"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Erratum to a physical activity discussions paper in atrial fibrillation.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43056319",
+      "sets": [
+        "drops-rule:erratum"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Correction to an ulcerative colitis mechanism study.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43066368",
+      "sets": [
+        "drops-rule:erratum"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Correction to an opioid use disorder brain network study.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43068647",
+      "sets": [
+        "drops-rule:erratum"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Retraction notice for a multiple sclerosis redox paper.",
         "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
