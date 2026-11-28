@@ -1,0 +1,974 @@
+"""The document pre-filter study (scripts/prefilter.py, #92) without its heavy dependencies:
+the labels file, the safety statistics, the rules, the samples and the summary of the results."""
+
+import asyncio
+import importlib.util
+import json
+import sys
+from pathlib import Path
+from typing import Any
+
+import asyncpg
+import pytest
+
+ROOT = Path(__file__).resolve().parents[2]
+
+
+@pytest.fixture
+def prefilter(monkeypatch):
+    spec = importlib.util.spec_from_file_location("prefilter_test", ROOT / "scripts/prefilter.py")
+    module = importlib.util.module_from_spec(spec)
+    monkeypatch.setitem(sys.modules, spec.name, module)
+    spec.loader.exec_module(module)
+    return module
+
+
+async def execute(url: str, sql: str, *args: Any) -> None:
+    connection = await asyncpg.connect(url)
+    try:
+        await connection.execute(sql, *args)
+    finally:
+        await connection.close()
+
+
+def run(query: Any, url: str) -> Any:
+    """`query(connection)` on a read-only connection, as the script opens them."""
+
+    async def main() -> Any:
+        connection = await asyncpg.connect(
+            url, server_settings={"default_transaction_read_only": "on"}
+        )
+        try:
+            return await query(connection)
+        finally:
+            await connection.close()
+
+    return asyncio.run(main())
+
+
+CONTENT_TYPES = {"pubmed": "journal_article", "youtube": "video", "zenodo": "report"}
+
+
+def doc(document_id: str, **fields: Any) -> dict[str, Any]:
+    source, native_id = document_id.split(":")
+    return {
+        "id": document_id,
+        "source": source,
+        "native_id": native_id,
+        "content_type": CONTENT_TYPES[source],
+        "title": f"Title {document_id}",
+        "summary": "x" * 500,
+        "publication_types": [],
+        "full_text": [],
+        "canonical_url": f"https://example.org/{native_id}",
+    } | fields
+
+
+def insert(url: str, *documents: dict[str, Any]) -> None:
+    async def main() -> None:
+        connection = await asyncpg.connect(url)
+        try:
+            for document in documents:
+                await connection.execute(
+                    "INSERT INTO documents (id, source, native_id, content_type, title, summary,"
+                    " publication_types, full_text, canonical_url, retrieved_at)"
+                    " VALUES ($1, $2, $3, $4, $5, $6, $7, $8::jsonb, $9, now())",
+                    document["id"],
+                    document["source"],
+                    document["native_id"],
+                    document["content_type"],
+                    document["title"],
+                    document["summary"],
+                    document["publication_types"],
+                    json.dumps(document["full_text"]),
+                    document["canonical_url"],
+                )
+        finally:
+            await connection.close()
+
+    asyncio.run(main())
+
+
+def test_cli_has_the_four_subcommands(prefilter, capsys):
+    with pytest.raises(SystemExit):
+        prefilter.main(["--help"])
+    out = capsys.readouterr().out
+    for command in ("sample", "propose", "train", "measure"):
+        assert command in out
+
+
+def test_load_labels_starts_with_the_guide_when_missing(prefilter, tmp_path):
+    data = prefilter.load_labels(tmp_path / "labels.json")
+    assert data == {"version": 1, "guide": prefilter.GUIDE, "documents": []}
+    assert len(prefilter.GUIDE) == 7
+
+
+def test_add_documents_keeps_labels_on_rerun(prefilter, tmp_path):
+    data = prefilter.load_labels(tmp_path / "labels.json")
+    assert prefilter.add_documents(data, ["pubmed:1", "pubmed:2"], "train") == 2
+    data["documents"][0] |= {"label": "keep", "note": "trial"}
+    assert prefilter.add_documents(data, ["pubmed:1", "pubmed:3"], "random") == 1
+    first = data["documents"][0]
+    assert first["sets"] == ["train", "random"]
+    assert (first["label"], first["note"]) == ("keep", "trial")
+    assert len(data["documents"]) == 3
+
+
+def test_new_entries_have_no_label_and_no_proposal(prefilter, tmp_path):
+    data = prefilter.load_labels(tmp_path / "labels.json")
+    prefilter.add_documents(data, ["pubmed:1"], "train")
+    assert data["documents"][0] == {
+        "id": "pubmed:1",
+        "sets": ["train"],
+        "proposal": None,
+        "proposal_raw": None,
+        "label": None,
+        "group": None,
+        "note": "",
+        "checked_at": None,
+    }
+
+
+def test_labeled_lists_only_entries_of_a_set_with_a_label(prefilter, tmp_path):
+    data = prefilter.load_labels(tmp_path / "labels.json")
+    prefilter.add_documents(data, ["pubmed:1", "pubmed:2", "pubmed:3"], "train")
+    data["documents"][1]["label"] = "keep"
+    data["documents"][2]["proposal"] = {"label": "unhelpful", "group": 2, "reason": "x"}
+    assert [entry["id"] for entry in prefilter.labeled(data, "train")] == ["pubmed:2", "pubmed:3"]
+    assert prefilter.labeled(data, "random") == []
+
+
+def test_a_person_overrides_the_proposed_label(prefilter):
+    proposal = {"label": "unhelpful", "group": 2, "reason": "x"}
+    entry = {"label": None, "group": None, "proposal": proposal}
+    assert (prefilter.label_of(entry), prefilter.group_of(entry)) == ("unhelpful", 2)
+    entry |= {"label": "keep"}
+    assert (prefilter.label_of(entry), prefilter.group_of(entry)) == ("keep", None)
+    assert prefilter.label_of({"label": None, "proposal": None}) is None
+
+
+def test_save_labels_round_trips_and_leaves_no_temp_file(prefilter, tmp_path):
+    path = tmp_path / "labels.json"
+    data = prefilter.load_labels(path)
+    prefilter.add_documents(data, ["pubmed:1"], "train")
+    prefilter.save_labels(path, data)
+    assert prefilter.load_labels(path) == data
+    assert [p.name for p in tmp_path.iterdir()] == ["labels.json"]
+
+
+def test_upper_bound_matches_the_safety_bar(prefilter):
+    assert prefilter.upper_bound(0, 300) == pytest.approx(0.00994, abs=1e-4)
+    assert prefilter.upper_bound(1, 300) == pytest.approx(0.0157, abs=2e-4)
+    assert prefilter.upper_bound(0, 0) == 1.0
+
+
+def test_passes_safety_needs_300_checked_and_at_most_one_wrong(prefilter):
+    assert prefilter.passes_safety(1, 300)
+    assert not prefilter.passes_safety(2, 300)
+    assert not prefilter.passes_safety(0, 299)
+
+
+def test_choose_threshold_keeps_wrong_drops_under_one_percent(prefilter):
+    unhelpful = [(i / 1000, "unhelpful") for i in range(150)]
+    scores = unhelpful + [(0.149, "keep")] * 3 + [(0.9, "keep")] * 50
+    # Below 0.149: 149 unhelpful, no keep. Below 0.9: 3 keep of 153, more than 1%.
+    assert prefilter.choose_threshold(scores) == pytest.approx(0.149)
+
+
+def test_choose_threshold_needs_100_documents_below(prefilter):
+    scores = [(i / 1000, "unhelpful") for i in range(50)] + [(0.9, "keep")]
+    assert prefilter.choose_threshold(scores) is None
+
+
+RULE_ROWS = [
+    doc("pubmed:1", summary=None),
+    doc("pubmed:2", summary="x" * 150),
+    doc("pubmed:3", publication_types=["Published Erratum"]),
+    doc("pubmed:4", summary=None, publication_types=["Letter"]),
+    doc("pubmed:5", full_text=[{"url": "https://example.org/5.pdf"}]),
+    doc("pubmed:6", title="Correction to: PSA after surgery"),
+    doc("pubmed:7", summary="   "),
+    doc("pubmed:8", publication_types=["Editorial"]),
+    doc("youtube:9", summary="short"),
+    doc("pubmed:10", publication_types=["Journal Article", "Published Erratum"]),
+]
+
+
+@pytest.mark.postgres
+@pytest.mark.parametrize(
+    "rule, expected",
+    [
+        ("no_summary", {"pubmed:1", "pubmed:4", "pubmed:7"}),
+        ("short_summary", {"pubmed:2", "youtube:9"}),
+        ("erratum", {"pubmed:3", "pubmed:6"}),
+        ("reaction_without_abstract", {"pubmed:4"}),
+    ],
+)
+def test_rules_match_their_documents(prefilter, url, rule, expected):
+    insert(url, *RULE_ROWS)
+    hits = run(lambda connection: prefilter.rule_hits(connection, rule, 100, 0.5), url)
+    assert set(hits) == expected
+
+
+@pytest.mark.postgres
+def test_full_text_variant_spares_documents_with_a_link(prefilter, url):
+    insert(
+        url,
+        doc("pubmed:1", summary=None, full_text=[{"url": "https://example.org/1.pdf"}]),
+        doc("pubmed:2", summary=None),
+    )
+    hits = run(lambda c: prefilter.rule_hits(c, "no_summary_no_full_text", 100, 0.5), url)
+    assert hits == ["pubmed:2"]
+
+
+def test_rule_set_holds_the_two_rules_without_variants(prefilter):
+    assert prefilter.RULE_SET == ["erratum", "reaction_without_abstract"]
+    assert set(prefilter.RULES) == set(prefilter.RULE_SET) | {
+        "no_summary",
+        "short_summary",
+        "no_summary_no_full_text",
+        "short_summary_no_full_text",
+    }
+
+
+@pytest.mark.postgres
+def test_rule_counts_per_rule_and_source(prefilter, url):
+    insert(url, *RULE_ROWS)
+    counts = run(prefilter.rule_counts, url)
+    assert counts["no_summary"] == {"pubmed": 3}
+    assert counts["short_summary"] == {"pubmed": 1, "youtube": 1}
+    assert counts["erratum"] == {"pubmed": 2}
+    assert counts["reaction_without_abstract"] == {"pubmed": 1}
+    assert counts["no_summary_no_full_text"] == {"pubmed": 3}
+    # pubmed:3, 4 and 6 are dropped; the others are kept, pubmed:10 is the corrected article.
+    assert counts["_all"] == {"pubmed": 3}
+    assert counts["_total"] == {"pubmed": 9, "youtube": 1}
+    assert set(counts["_seconds"]) == set(prefilter.RULES) | {"_all"}
+    assert all(seconds >= 0 for seconds in counts["_seconds"].values())
+
+
+def test_never_above_one_reads_the_llm_grades(prefilter, tmp_path):
+    path = tmp_path / "grades.json"
+    points = {
+        "p1": {"grades": {"3": "pubmed:1", "1": "pubmed:2 pubmed:3", "0": "pubmed:4"}},
+        "p2": {"grades": {"1": "pubmed:1", "0": "pubmed:3"}},
+    }
+    path.write_text(json.dumps({"points": points}))
+    assert prefilter.never_above_one(path) == ["pubmed:2", "pubmed:3", "pubmed:4"]
+
+
+@pytest.mark.postgres
+def test_sample_train_has_no_duplicates_and_fills_short_groups(prefilter, url):
+    insert(url, *[doc(f"pubmed:{i}") for i in range(40)])
+    ids = run(lambda c: prefilter.sample_train(c, n=20), url)
+    assert len(ids) == len(set(ids)) == 20
+
+
+@pytest.mark.postgres
+def test_sample_train_takes_rule_hits_and_lab_titles(prefilter, url):
+    insert(
+        url,
+        *[doc(f"pubmed:{i}") for i in range(200)],
+        doc("pubmed:900", publication_types=["Published Erratum"]),
+        doc("pubmed:901", title="Enzalutamide resistance in a mouse xenograft model"),
+    )
+    ids = run(lambda c: prefilter.sample_train(c, n=20), url)
+    assert {"pubmed:900", "pubmed:901"} <= set(ids)
+
+
+@pytest.mark.postgres
+def test_sample_train_stops_when_the_table_is_smaller(prefilter, url):
+    insert(url, *[doc(f"pubmed:{i}") for i in range(5)])
+    assert len(run(lambda c: prefilter.sample_train(c, n=20), url)) == 5
+
+
+@pytest.mark.postgres
+def test_sample_random_is_repeatable(prefilter, url):
+    insert(url, *[doc(f"pubmed:{i}") for i in range(50)])
+    first = run(lambda c: prefilter.sample_random(c, n=10), url)
+    assert len(set(first)) == 10
+    assert run(lambda c: prefilter.sample_random(c, n=10), url) == first
+
+
+@pytest.mark.postgres
+def test_connect_refuses_writes(prefilter, url):
+    async def write() -> None:
+        connection = await prefilter.connect(url)
+        try:
+            await connection.execute("DELETE FROM documents")
+        finally:
+            await connection.close()
+
+    with pytest.raises(asyncpg.ReadOnlySQLTransactionError):
+        asyncio.run(write())
+
+
+@pytest.mark.postgres
+def test_sample_command_adds_to_the_labels_file(prefilter, url, tmp_path, monkeypatch):
+    monkeypatch.setattr(prefilter, "LABELS", tmp_path / "labels.json")
+    insert(url, *[doc(f"pubmed:{i}") for i in range(10)])
+    prefilter.main(["--database-url", url, "sample", "--set", "random", "--n", "4"])
+    prefilter.main(["--database-url", url, "sample", "--set", "random", "--n", "4"])
+    data = prefilter.load_labels(tmp_path / "labels.json")
+    assert len(data["documents"]) == 4
+    assert all(entry["sets"] == ["random"] for entry in data["documents"])
+
+
+def test_build_prompt_has_the_guide_and_cuts_long_summaries(prefilter):
+    document = {
+        "title": "T",
+        "source": "pubmed",
+        "content_type": "journal_article",
+        "publication_types": ["Review"],
+        "summary": "a" * 9000,
+    }
+    prompt = prefilter.build_prompt(document, prefilter.GUIDE)
+    assert "In doubt, keep" in prompt
+    assert "Altered glycosylation in prostate cancer" in prompt
+    assert "a" * 4000 in prompt and "a" * 4001 not in prompt
+    assert "Review" in prompt
+
+
+def test_build_prompt_says_when_there_is_no_summary(prefilter):
+    document = {"title": "T", "source": "youtube", "content_type": "video", "summary": None}
+    assert "(none)" in prefilter.build_prompt(document, prefilter.GUIDE)
+
+
+@pytest.mark.parametrize(
+    "text, expected",
+    [
+        (
+            '{"label": "unhelpful", "group": 1, "reason": "cell lines only"}',
+            {"label": "unhelpful", "group": 1, "reason": "cell lines only"},
+        ),
+        (
+            'Sure! {"label": "keep", "group": null, "reason": "trial"} done',
+            {"label": "keep", "group": None, "reason": "trial"},
+        ),
+        ('{"label": "unhelpful", "group": null, "reason": "x"}', None),
+        ('{"label": "keep", "group": 2, "reason": "x"}', None),
+        ('{"label": "maybe", "group": 1, "reason": "x"}', None),
+        ('{"label": "keep", "group": null, "reason": ""}', None),
+        ('{"label": "keep", "group": null', None),
+        ("no json here", None),
+    ],
+)
+def test_parse_answer(prefilter, text, expected):
+    assert prefilter.parse_answer(text) == expected
+
+
+@pytest.mark.postgres
+def test_propose_stores_proposals_and_raw_answers(prefilter, url, tmp_path, monkeypatch):
+    monkeypatch.setattr(prefilter, "LABELS", tmp_path / "labels.json")
+    insert(url, doc("pubmed:1", title="Mice"), doc("pubmed:2", title="Trial"))
+    data = prefilter.load_labels(prefilter.LABELS)
+    prefilter.add_documents(data, ["pubmed:1", "pubmed:2", "pubmed:404"], "train")
+    data["documents"][1]["proposal"] = {"label": "keep", "group": None, "reason": "old"}
+    prefilter.save_labels(prefilter.LABELS, data)
+    prompts: list[str] = []
+
+    def generate(prompt: str) -> str:
+        prompts.append(prompt)
+        return '{"label": "unhelpful", "group": 1, "reason": "mice"}' if "Mice" in prompt else "?"
+
+    asyncio.run(prefilter.propose(url, "train", None, generate))
+    entries = {e["id"]: e for e in prefilter.load_labels(prefilter.LABELS)["documents"]}
+    assert len(prompts) == 1  # pubmed:2 already has a proposal; pubmed:404 is not stored
+    assert entries["pubmed:1"]["proposal"]["label"] == "unhelpful"
+    assert entries["pubmed:1"]["proposal"]["model"] == "{}@{}".format(*prefilter.PROPOSER)
+    assert entries["pubmed:2"]["proposal"]["reason"] == "old"
+    assert entries["pubmed:404"]["proposal"] is None
+
+
+@pytest.mark.postgres
+def test_propose_keeps_an_unparsable_answer_for_checking(prefilter, url, tmp_path, monkeypatch):
+    monkeypatch.setattr(prefilter, "LABELS", tmp_path / "labels.json")
+    insert(url, doc("pubmed:1"))
+    data = prefilter.load_labels(prefilter.LABELS)
+    prefilter.add_documents(data, ["pubmed:1"], "train")
+    prefilter.save_labels(prefilter.LABELS, data)
+    asyncio.run(prefilter.propose(url, None, None, lambda prompt: "I am not sure."))
+    entry = prefilter.load_labels(prefilter.LABELS)["documents"][0]
+    assert entry["proposal"] is None and entry["proposal_raw"] == "I am not sure."
+    # A raw answer counts as tried: a second run does not ask again.
+    asyncio.run(prefilter.propose(url, None, None, lambda prompt: pytest.fail("asked again")))
+
+
+def embedded(url: str, vectors: dict[str, list[float] | None]) -> str:
+    """A table shaped like the AI index's, in the test schema; returns its name."""
+
+    async def main() -> None:
+        connection = await asyncpg.connect(url)
+        try:
+            await connection.execute(
+                "CREATE TABLE emb (document_id text PRIMARY KEY REFERENCES documents (id),"
+                " document_changed_at timestamptz NOT NULL DEFAULT now(), embedding vector(2))"
+            )
+            for document_id, vector in vectors.items():
+                await connection.execute(
+                    "INSERT INTO emb (document_id, embedding) VALUES ($1, $2::text::vector)",
+                    document_id,
+                    None if vector is None else json.dumps(vector),
+                )
+        finally:
+            await connection.close()
+
+    asyncio.run(main())
+    return "emb"
+
+
+@pytest.mark.postgres
+def test_embeddings_skip_missing_and_null_vectors(prefilter, url):
+    insert(url, doc("pubmed:1"), doc("pubmed:2"), doc("pubmed:3"))
+    table = embedded(url, {"pubmed:1": [0.5, -1.0], "pubmed:2": None})
+    found = run(lambda c: prefilter.embeddings(c, ["pubmed:1", "pubmed:2", "pubmed:3"], table), url)
+    assert found == {"pubmed:1": [0.5, -1.0]}
+
+
+@pytest.mark.postgres
+def test_embeddings_refuse_a_missing_table(prefilter, url):
+    with pytest.raises(SystemExit, match="no_such_table"):
+        run(lambda c: prefilter.embeddings(c, ["pubmed:1"], "no_such_table"), url)
+
+
+def test_keep_probability_is_the_logistic_of_the_score(prefilter):
+    assert prefilter.keep_probability([1.0, -1.0], 0.0, [2.0, 2.0]) == pytest.approx(0.5)
+    assert prefilter.keep_probability([1.0], 0.0, [10.0]) > 0.99
+    assert prefilter.keep_probability([1.0], 0.0, [-1000.0]) == pytest.approx(0.0)
+
+
+def test_score_rows_skips_null_vectors(prefilter):
+    rows = [("pubmed:1", [1.0]), ("pubmed:2", None), ("pubmed:3", [-1.0])]
+    scored = list(prefilter.score_rows(rows, [1.0], 0.0))
+    assert [document_id for document_id, _ in scored] == ["pubmed:1", "pubmed:3"]
+
+
+def test_fit_separates_two_clusters(prefilter):
+    pytest.importorskip("sklearn")
+    vectors = [[1.0, 0.0]] * 30 + [[0.0, 1.0]] * 30
+    labels = ["keep"] * 30 + ["unhelpful"] * 30
+    weights, bias, out_of_fold = prefilter.fit(vectors, labels)
+    assert prefilter.keep_probability(weights, bias, [1.0, 0.0]) > 0.9
+    assert prefilter.keep_probability(weights, bias, [0.0, 1.0]) < 0.1
+    assert len(out_of_fold) == 60
+
+
+def test_labels_hash_changes_with_a_label(prefilter):
+    entries = [{"id": "pubmed:1", "label": "keep"}, {"id": "pubmed:2", "label": "unhelpful"}]
+    first = prefilter.labels_hash(entries)
+    assert prefilter.labels_hash(list(reversed(entries))) == first
+    entries[0]["label"] = "unhelpful"
+    assert prefilter.labels_hash(entries) != first
+
+
+@pytest.mark.postgres
+def test_train_uses_checked_labels_the_rules_keep(prefilter, url, tmp_path, monkeypatch):
+    pytest.importorskip("sklearn")
+    monkeypatch.setattr(prefilter, "LABELS", tmp_path / "labels.json")
+    monkeypatch.setattr(prefilter, "MODEL", tmp_path / "model.json")
+    keep = [f"pubmed:{i}" for i in range(30)]
+    unhelpful = [f"pubmed:{i}" for i in range(30, 60)]
+    insert(url, *[doc(i) for i in keep + unhelpful], doc("pubmed:99", summary=None))
+    vectors = {i: [1.0, 0.0] for i in keep} | {i: [0.0, 1.0] for i in unhelpful}
+    table = embedded(url, vectors | {"pubmed:99": [0.0, 1.0]})
+    data = prefilter.load_labels(prefilter.LABELS)
+    prefilter.add_documents(data, [*keep, *unhelpful, "pubmed:99", "pubmed:98"], "train")
+    for entry in data["documents"]:
+        if entry["id"] != "pubmed:98":  # pubmed:98 stays unchecked
+            entry["label"] = "keep" if entry["id"] in keep else "unhelpful"
+            entry["group"] = None if entry["id"] in keep else 1
+    prefilter.save_labels(prefilter.LABELS, data)
+    asyncio.run(prefilter.train(url, table))
+    model = json.loads((tmp_path / "model.json").read_text())
+    assert model["trained_on"] == 60  # pubmed:99 is dropped by a rule, pubmed:98 unchecked
+    assert model["threshold"] is None  # fewer than 100 below any cut-off
+    assert len(model["weights"]) == 2 and model["embeddings"] == table
+    assert model["labels_hash"] == prefilter.labels_hash(prefilter.labeled(data, "train"))
+
+
+def entry(document_id: str, sets: list[str], label: str | None, **fields: Any) -> dict[str, Any]:
+    group = 1 if label == "unhelpful" else None
+    return {
+        "id": document_id,
+        "sets": sets,
+        "proposal": None,
+        "proposal_raw": None,
+        "label": label,
+        "group": group,
+        "note": "",
+        "checked_at": None,
+    } | fields
+
+
+def counts(total: int = 1000, rules_all: int = 0, **rules: int) -> dict[str, Any]:
+    base: dict[str, Any] = {"_total": {"pubmed": total}, "_all": {"pubmed": rules_all}}
+    return base | {"_seconds": {"_all": 0.5}} | {rule: {"pubmed": n} for rule, n in rules.items()}
+
+
+def model(threshold: float | None = 0.1, labels_hash: str = "", **fields: Any) -> dict[str, Any]:
+    return {
+        "weights": [1.0],
+        "bias": 0.0,
+        "threshold": threshold,
+        "trained_on": 500,
+        "below_threshold": 120,
+        "labels_hash": labels_hash,
+        "embeddings": "emb",
+    } | fields
+
+
+def scored(embedded: int = 0, dropped: int = 0) -> dict[str, Any]:
+    return {"embedded": {"pubmed": embedded}, "dropped": {"pubmed": dropped}}
+
+
+def test_summarize_counts_wrong_drops_and_safety(prefilter):
+    drops = [entry(f"pubmed:{i}", ["drops-rules"], "unhelpful") for i in range(299)]
+    labels = {"documents": [*drops, entry("pubmed:x", ["drops-rules"], "keep")]}
+    result = prefilter.summarize(labels, counts(total=1000, rules_all=30), None, {}, {})
+    rules = result["approaches"]["rules"]
+    assert (rules["dropped"], rules["share"]) == (30, 0.03)
+    assert (rules["checked"], rules["wrong"]) == (300, 1)
+    assert rules["upper_bound"] == pytest.approx(0.0157, abs=2e-4)
+    assert rules["passes"] == {"safety": True, "usefulness_2": True, "usefulness_3": True}
+    assert result["approaches"]["rules+model"] is None  # no model yet
+
+
+def test_summarize_counts_documents_without_embedding_as_cannot_judge(prefilter):
+    result = prefilter.summarize(
+        {"documents": []}, counts(total=100), model(), scored(embedded=40, dropped=4), {}
+    )
+    combined = result["approaches"]["rules+model"]
+    assert combined["cannot_judge"] == 60
+    assert combined["dropped"] == 10  # 4 of 40 embedded, scaled to the 100 the rules keep
+    assert combined["extrapolated"] is True
+
+
+def test_summarize_model_safety_needs_both_samples(prefilter):
+    rule_drops = [entry(f"pubmed:r{i}", ["drops-rules"], "unhelpful") for i in range(300)]
+    model_drops = [entry(f"pubmed:m{i}", ["drops-model:"], "keep") for i in range(2)]
+    model_drops += [entry(f"pubmed:n{i}", ["drops-model:"], "unhelpful") for i in range(298)]
+    labels = {"documents": rule_drops + model_drops}
+    result = prefilter.summarize(labels, counts(), model(), scored(embedded=10), {})
+    assert result["approaches"]["rules"]["passes"]["safety"]
+    combined = result["approaches"]["rules+model"]
+    assert (combined["checked"], combined["wrong"]) == (300, 2)
+    assert not combined["passes"]["safety"]
+
+
+def test_summarize_reports_each_rule_with_its_own_checks(prefilter):
+    labels = {
+        "documents": [
+            entry("pubmed:1", ["drops-rules"], "unhelpful"),
+            entry("pubmed:2", ["drops-rule:erratum"], "keep"),
+            entry("pubmed:3", ["drops-rules"], None),
+        ]
+    }
+    hits = {"pubmed:1": ["no_summary", "erratum"], "pubmed:2": ["erratum"], "pubmed:3": ["erratum"]}
+    result = prefilter.summarize(labels, counts(erratum=7, no_summary=3), None, {}, {}, hits)
+    assert result["rules"]["erratum"] | {"by_source": None} == {
+        "dropped": 7,
+        "by_source": None,
+        "checked": 2,
+        "wrong": 1,
+        "seconds": None,
+        "variant": False,
+    }
+    assert result["rules"]["no_summary"]["checked"] == 1
+
+
+def test_summarize_marks_model_stale_when_train_labels_changed(prefilter):
+    labels = {"documents": [entry("pubmed:1", ["train"], "keep")]}
+    result = prefilter.summarize(labels, counts(), model(labels_hash="old"), scored(), {})
+    assert result["model"]["stale"]
+    fresh = prefilter.labels_hash(labels["documents"])
+    assert not prefilter.summarize(labels, counts(), model(labels_hash=fresh), scored(), {})[
+        "model"
+    ]["stale"]
+
+
+def test_summarize_reports_llm_agreement_and_the_random_sample(prefilter):
+    proposal = {"label": "unhelpful", "group": 2, "reason": "x", "model": "m"}
+    labels = {
+        "documents": [
+            entry("pubmed:1", ["random"], "unhelpful", group=2, proposal=proposal),
+            entry("pubmed:2", ["random"], "keep", proposal=proposal),
+            entry("pubmed:3", ["random"], None, proposal=proposal),
+        ]
+    }
+    result = prefilter.summarize(labels, counts(), None, {}, {})
+    assert result["llm_agreement"] | {"by_model": None} == {
+        "checked": 2,
+        "agreed": 1,
+        "by_model": None,
+    }
+    assert result["random"] == {
+        "checked": 3,  # pubmed:3 counts with the label the LLM proposed
+        "by_person": 2,
+        "unhelpful": 2,
+        "by_group": {"1": 0, "2": 2},
+    }
+
+
+def test_drop_samples_are_added_once(prefilter):
+    data = {"version": 1, "guide": [], "documents": []}
+    prefilter.add_drop_samples(
+        data, ["pubmed:1", "pubmed:2"], ["pubmed:3"], {"erratum": ["pubmed:4"]}
+    )
+    before = json.dumps(data, sort_keys=True)
+    prefilter.add_drop_samples(data, ["pubmed:9"], ["pubmed:8"], {"erratum": ["pubmed:7"]})
+    assert json.dumps(data, sort_keys=True) == before
+    sets = {e["id"]: e["sets"] for e in data["documents"]}
+    assert sets == {
+        "pubmed:1": ["drops-rules"],
+        "pubmed:2": ["drops-rules"],
+        "pubmed:3": ["drops-model"],
+        "pubmed:4": ["drops-rule:erratum"],
+    }
+
+
+def test_drop_samples_keep_labels_of_documents_already_known(prefilter):
+    data = {"version": 1, "guide": [], "documents": [entry("pubmed:1", ["train"], "keep")]}
+    prefilter.add_drop_samples(data, ["pubmed:1"], [], {})
+    assert data["documents"] == [entry("pubmed:1", ["train", "drops-rules"], "keep")]
+
+
+@pytest.fixture
+def study(prefilter, url, tmp_path, monkeypatch):
+    """10 documents the rules drop, 10 the model drops, 10 it keeps, 2 without an embedding."""
+    for name in ("LABELS", "MODEL", "RESULTS"):
+        monkeypatch.setattr(prefilter, name, tmp_path / f"{name.lower()}.json")
+    low = [f"pubmed:{i}" for i in range(10, 20)]
+    high = [f"pubmed:{i}" for i in range(20, 30)]
+    insert(
+        url,
+        *[doc(f"pubmed:{i}", publication_types=["Published Erratum"]) for i in range(10)],
+        *[doc(i) for i in low + high],
+        doc("pubmed:30"),
+        doc("pubmed:31"),
+    )
+    vectors = {i: [0.0, 1.0] for i in low} | {i: [1.0, 0.0] for i in high} | {"pubmed:31": None}
+    table = embedded(url, vectors)
+    model = {
+        "weights": [5.0, -5.0],
+        "bias": 0.0,
+        "threshold": 0.5,
+        "trained_on": 500,
+        "below_threshold": 120,
+        "labels_hash": "",
+        "embeddings": table,
+    }
+    prefilter.MODEL.write_text(json.dumps(model))
+    return table
+
+
+@pytest.mark.postgres
+def test_measure_writes_results_and_drop_samples(prefilter, url, study):
+    asyncio.run(prefilter.measure(url, study))
+    result = json.loads(prefilter.RESULTS.read_text())
+    assert result["total"] == 32
+    assert result["approaches"]["rules"]["dropped"] == 10
+    combined = result["approaches"]["rules+model"]
+    # 10 of 20 embedded are dropped, scaled to the 22 the rules keep: 11.
+    assert (combined["dropped"], combined["cannot_judge"]) == (21, 2)
+    assert result["timing"]["model_ms_per_document"] >= 0
+    sets = {e["id"]: e["sets"] for e in prefilter.load_labels(prefilter.LABELS)["documents"]}
+    assert sorted(i for i, s in sets.items() if "drops-rules" in s) == [
+        f"pubmed:{i}" for i in range(10)
+    ]
+    assert len([i for i, s in sets.items() if "drops-model:" in s]) == 10
+
+
+@pytest.mark.postgres
+def test_measure_again_keeps_samples_and_labels(prefilter, url, study):
+    asyncio.run(prefilter.measure(url, study))
+    data = prefilter.load_labels(prefilter.LABELS)
+    data["documents"][0] |= {"label": "keep", "note": "a person checked this"}
+    prefilter.save_labels(prefilter.LABELS, data)
+    asyncio.run(prefilter.measure(url, study))
+    assert prefilter.load_labels(prefilter.LABELS) == data
+
+
+@pytest.mark.postgres
+def test_measure_without_a_model_reports_the_rules(prefilter, url, study):
+    prefilter.MODEL.unlink()
+    asyncio.run(prefilter.measure(url, study))
+    result = json.loads(prefilter.RESULTS.read_text())
+    assert result["approaches"]["rules+model"] is None and result["model"] is None
+    assert result["rules"]["no_summary"]["checked"] == 0
+
+
+def label_on_disk(prefilter, document_id: str, label: str) -> None:
+    """What the Pre-filter screen does while a subcommand runs: a person saves a label."""
+    data = prefilter.load_labels(prefilter.LABELS)
+    for item in data["documents"]:
+        if item["id"] == document_id:
+            item |= {"label": label, "note": "saved in the UI"}
+    prefilter.save_labels(prefilter.LABELS, data)
+
+
+@pytest.mark.postgres
+def test_propose_keeps_labels_saved_while_it_runs(prefilter, url, tmp_path, monkeypatch):
+    monkeypatch.setattr(prefilter, "LABELS", tmp_path / "labels.json")
+    insert(url, doc("pubmed:1"), doc("pubmed:2"))
+    data = prefilter.load_labels(prefilter.LABELS)
+    prefilter.add_documents(data, ["pubmed:1", "pubmed:2"], "train")
+    prefilter.save_labels(prefilter.LABELS, data)
+
+    def generate(prompt: str) -> str:
+        label_on_disk(prefilter, "pubmed:1", "keep")
+        return '{"label": "keep", "group": null, "reason": "trial"}'
+
+    asyncio.run(prefilter.propose(url, None, None, generate))
+    entries = {e["id"]: e for e in prefilter.load_labels(prefilter.LABELS)["documents"]}
+    assert (entries["pubmed:1"]["label"], entries["pubmed:1"]["note"]) == (
+        "keep",
+        "saved in the UI",
+    )
+    assert entries["pubmed:2"]["proposal"]["reason"] == "trial"
+
+
+@pytest.mark.postgres
+def test_measure_keeps_labels_saved_while_it_runs(prefilter, url, study, monkeypatch):
+    asyncio.run(prefilter.measure(url, study))
+    first_id = prefilter.load_labels(prefilter.LABELS)["documents"][0]["id"]
+    original = prefilter.rule_counts
+
+    async def counting(connection):
+        label_on_disk(prefilter, first_id, "keep")
+        return await original(connection)
+
+    monkeypatch.setattr(prefilter, "rule_counts", counting)
+    asyncio.run(prefilter.measure(url, study))
+    entries = {e["id"]: e for e in prefilter.load_labels(prefilter.LABELS)["documents"]}
+    assert entries[first_id]["label"] == "keep"
+
+
+@pytest.mark.postgres
+def test_sample_keeps_labels_saved_while_it_runs(prefilter, url, tmp_path, monkeypatch):
+    monkeypatch.setattr(prefilter, "LABELS", tmp_path / "labels.json")
+    insert(url, *[doc(f"pubmed:{i}") for i in range(10)])
+    prefilter.main(["--database-url", url, "sample", "--set", "random", "--n", "3"])
+    first_id = prefilter.load_labels(prefilter.LABELS)["documents"][0]["id"]
+    original = prefilter.sample_train
+
+    async def sampling(connection, *args, **kwargs):
+        label_on_disk(prefilter, first_id, "keep")
+        return await original(connection, *args, **kwargs)
+
+    monkeypatch.setattr(prefilter, "sample_train", sampling)
+    prefilter.main(["--database-url", url, "sample", "--set", "train", "--n", "3"])
+    entries = {e["id"]: e for e in prefilter.load_labels(prefilter.LABELS)["documents"]}
+    assert entries[first_id]["label"] == "keep"
+
+
+def test_update_labels_waits_for_the_lock(prefilter, tmp_path):
+    import fcntl
+    import threading
+
+    path = tmp_path / "labels.json"
+    prefilter.save_labels(path, prefilter.load_labels(path))
+    lock = open(prefilter.lock_path(path), "a")  # noqa: SIM115
+    fcntl.flock(lock, fcntl.LOCK_EX)
+    done = threading.Event()
+    thread = threading.Thread(
+        target=lambda: (prefilter.update_labels(path, lambda data: None), done.set())
+    )
+    thread.start()
+    assert not done.wait(0.2)
+    fcntl.flock(lock, fcntl.LOCK_UN)
+    lock.close()
+    assert done.wait(2)
+
+
+def test_model_drop_sample_belongs_to_its_model(prefilter):
+    assert prefilter.model_drop_set(model(labels_hash="abcdef0123")) == "drops-model:abcdef01"
+
+
+def test_summarize_ignores_the_drop_sample_of_an_older_model(prefilter):
+    old = [entry(f"pubmed:o{i}", ["drops-model:oldoldol"], "unhelpful") for i in range(300)]
+    current = [entry("pubmed:n1", ["drops-model:newnewne"], "keep")]
+    labels = {"documents": old + current}
+    result = prefilter.summarize(labels, counts(), model(labels_hash="newnewnew"), scored(), {})
+    combined = result["approaches"]["rules+model"]
+    assert (combined["checked"], combined["wrong"]) == (1, 1)
+
+
+@pytest.mark.postgres
+def test_measure_after_retraining_draws_a_new_model_sample(prefilter, url, study):
+    asyncio.run(prefilter.measure(url, study))
+    current = json.loads(prefilter.MODEL.read_text())
+    prefilter.MODEL.write_text(json.dumps(current | {"labels_hash": "retrained"}))
+    asyncio.run(prefilter.measure(url, study))
+    sets = {s for e in prefilter.load_labels(prefilter.LABELS)["documents"] for s in e["sets"]}
+    assert {"drops-model:", "drops-model:retraine"} <= sets
+
+
+@pytest.mark.postgres
+def test_sample_train_skips_documents_already_in_the_file(prefilter, url):
+    insert(url, *[doc(f"pubmed:{i}") for i in range(40)])
+    known = [f"pubmed:{i}" for i in range(20)]
+    ids = run(lambda c: prefilter.sample_train(c, n=10, exclude=known), url)
+    assert len(ids) == 10 and not set(ids) & set(known)
+
+
+@pytest.mark.postgres
+def test_a_second_training_sample_adds_new_documents(prefilter, url, tmp_path, monkeypatch):
+    monkeypatch.setattr(prefilter, "LABELS", tmp_path / "labels.json")
+    insert(url, *[doc(f"pubmed:{i}") for i in range(20)])
+    for _ in range(2):
+        prefilter.main(["--database-url", url, "sample", "--set", "train", "--n", "5"])
+    assert len(prefilter.load_labels(prefilter.LABELS)["documents"]) == 10
+
+
+@pytest.mark.postgres
+def test_low_score_sample_takes_documents_the_classifier_scores_low(prefilter, url, study):
+    model = json.loads(prefilter.MODEL.read_text())
+    low = {f"pubmed:{i}" for i in range(10, 20)}
+    ids = run(lambda c: prefilter.sample_low_score(c, model, study, 5, ["pubmed:10"]), url)
+    assert len(ids) == 5 and set(ids) <= low - {"pubmed:10"}
+
+
+@pytest.mark.postgres
+def test_sample_command_low_score_needs_a_model(prefilter, url, study):
+    prefilter.MODEL.unlink()
+    with pytest.raises(SystemExit, match="train"):
+        prefilter.main(["--database-url", url, "sample", "--set", "train", "--low-score"])
+
+
+@pytest.mark.postgres
+def test_propose_does_not_store_an_empty_answer(prefilter, url, tmp_path, monkeypatch):
+    monkeypatch.setattr(prefilter, "LABELS", tmp_path / "labels.json")
+    insert(url, doc("pubmed:1"))
+    data = prefilter.load_labels(prefilter.LABELS)
+    prefilter.add_documents(data, ["pubmed:1"], "train")
+    prefilter.save_labels(prefilter.LABELS, data)
+    asyncio.run(prefilter.propose(url, None, None, lambda prompt: "  \n"))
+    entry = prefilter.load_labels(prefilter.LABELS)["documents"][0]
+    assert entry["proposal"] is None and entry["proposal_raw"] is None  # asked again next run
+
+
+def write_lines(path: Path, *lines: str) -> Path:
+    path.write_text("".join(line + "\n" for line in lines))
+    return path
+
+
+def test_import_proposals_merges_valid_lines_only(prefilter, tmp_path, monkeypatch):
+    monkeypatch.setattr(prefilter, "LABELS", tmp_path / "labels.json")
+    data = prefilter.load_labels(prefilter.LABELS)
+    prefilter.add_documents(data, ["pubmed:1", "pubmed:2", "pubmed:3", "pubmed:4"], "train")
+    data["documents"][2]["proposal"] = {
+        "label": "keep",
+        "group": None,
+        "reason": "qwen",
+        "model": "q",
+    }
+    data["documents"][3] |= {"label": "keep", "note": "a person checked this"}
+    prefilter.save_labels(prefilter.LABELS, data)
+    source = write_lines(
+        tmp_path / "proposals.jsonl",
+        '{"id": "pubmed:1", "label": "unhelpful", "group": 1, "reason": "Mouse model."}',
+        '{"id": "pubmed:2", "label": "unhelpful", "group": null, "reason": "bad group"}',
+        '{"id": "pubmed:3", "label": "unhelpful", "group": 2, "reason": "already proposed"}',
+        '{"id": "pubmed:4", "label": "unhelpful", "group": 2, "reason": "Letter."}',
+        '{"id": "pubmed:404", "label": "keep", "group": null, "reason": "unknown id"}',
+        "not json",
+    )
+    report = prefilter.import_proposals(source, "codex")
+    entries = {e["id"]: e for e in prefilter.load_labels(prefilter.LABELS)["documents"]}
+    assert entries["pubmed:1"]["proposal"] == {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Mouse model.",
+        "model": "codex",
+    }
+    assert entries["pubmed:2"]["proposal"] is None
+    assert entries["pubmed:3"]["proposal"]["reason"] == "qwen"
+    assert entries["pubmed:4"]["label"] == "keep" and entries["pubmed:4"]["note"]
+    assert report == {"merged": 2, "invalid": 2, "unknown": 1, "already": 1}
+
+
+def test_import_proposals_command(prefilter, tmp_path, monkeypatch, capsys):
+    monkeypatch.setattr(prefilter, "LABELS", tmp_path / "labels.json")
+    data = prefilter.load_labels(prefilter.LABELS)
+    prefilter.add_documents(data, ["pubmed:1"], "train")
+    prefilter.save_labels(prefilter.LABELS, data)
+    source = write_lines(
+        tmp_path / "p.jsonl",
+        '{"id": "pubmed:1", "label": "keep", "group": null, "reason": "Trial."}',
+    )
+    prefilter.main(["import-proposals", str(source), "--model", "codex"])
+    assert "merged 1" in capsys.readouterr().out
+
+
+def test_summarize_reports_llm_agreement_per_model(prefilter):
+    def proposed(label, model):
+        return {
+            "label": label,
+            "group": 1 if label == "unhelpful" else None,
+            "reason": "x",
+            "model": model,
+        }
+
+    labels = {
+        "documents": [
+            entry("pubmed:1", ["train"], "keep", proposal=proposed("keep", "qwen")),
+            entry("pubmed:2", ["train"], "keep", proposal=proposed("unhelpful", "qwen")),
+            entry("pubmed:3", ["train"], "keep", proposal=proposed("keep", "codex")),
+        ]
+    }
+    agreement = prefilter.summarize(labels, counts(), None, {}, {})["llm_agreement"]
+    assert agreement["checked"] == 3 and agreement["agreed"] == 2
+    assert agreement["by_model"] == {
+        "qwen": {"checked": 2, "agreed": 1},
+        "codex": {"checked": 1, "agreed": 1},
+    }
+
+
+@pytest.mark.parametrize("group", ["true", "1.0", '"1"'])
+def test_parse_answer_takes_only_whole_number_groups(prefilter, group):
+    text = '{"label": "unhelpful", "group": ' + group + ', "reason": "x"}'
+    assert prefilter.parse_answer(text) is None
+
+
+async def fetch(url: str, sql: str, *args: Any) -> list[Any]:
+    connection = await asyncpg.connect(url)
+    try:
+        return list(await connection.fetch(sql, *args))
+    finally:
+        await connection.close()
+
+
+@pytest.mark.postgres
+def test_propose_drops_adds_rule_hits_once(prefilter, url):
+    insert(url, doc("pubmed:1", publication_types=["Published Erratum"]), doc("pubmed:2"))
+    assert asyncio.run(prefilter.propose_drops(url)) == (1, 0)
+    [row] = asyncio.run(fetch(url, "SELECT * FROM document_drops"))
+    assert (row["document_id"], row["status"], row["proposed_by"]) == (
+        "pubmed:1",
+        "proposed",
+        "rule:erratum",
+    )
+    assert row["decided_at"] is None and row["effect_at"] is None
+    assert asyncio.run(prefilter.propose_drops(url)) == (0, 1)
+
+
+@pytest.mark.postgres
+def test_propose_drops_never_touches_a_decision(prefilter, url):
+    insert(url, doc("pubmed:1", publication_types=["Published Erratum"]))
+    asyncio.run(prefilter.propose_drops(url))
+    asyncio.run(execute(url, "UPDATE document_drops SET status = 'rejected', decided_at = now()"))
+    [before] = asyncio.run(fetch(url, "SELECT * FROM document_drops"))
+    asyncio.run(prefilter.propose_drops(url))
+    [after] = asyncio.run(fetch(url, "SELECT * FROM document_drops"))
+    assert dict(after) == dict(before)
+
+
+@pytest.mark.postgres
+def test_propose_drops_needs_the_table(prefilter, url):
+    asyncio.run(execute(url, "DROP TABLE document_drops"))
+    with pytest.raises(RuntimeError, match="05-document-drops.sql"):
+        asyncio.run(prefilter.propose_drops(url))
+
+
+def test_drop_reasons_cover_every_rule(prefilter):
+    assert set(prefilter.DROP_REASONS) == set(prefilter.RULES)

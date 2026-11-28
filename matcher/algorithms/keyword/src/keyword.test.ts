@@ -200,6 +200,46 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     ),
   };
 
+  test("indexes an accepted drop as empty, and its text again after undo", async () => {
+    await insert("pubmed:1", "Olaparib in prostate cancer", {
+      summary: "Olaparib after PSA progression.",
+      full_text: ["https://example.org/1.xml"],
+    });
+    const downloader = fakeDownloader({
+      "https://example.org/1.xml": "Olaparib, olaparib and PSA.",
+    });
+    await indexMetadata(pool);
+    await indexFullTexts(pool, downloader);
+    const stored = async () =>
+      (
+        await pool.query(
+          `SELECT k.content, f.terms FROM keyword.documents k
+           LEFT JOIN keyword.full_texts f USING (document_id)
+           WHERE k.document_id = 'pubmed:1'`,
+        )
+      ).rows[0];
+    expect((await stored()).content).toContain("Olaparib");
+
+    await pool.query(
+      `INSERT INTO document_drops (document_id, proposed_by, reason, status, decided_at, effect_at)
+       VALUES ('pubmed:1', 'rule:erratum', 'x', 'accepted', now(), now())`,
+    );
+    await indexMetadata(pool);
+    await indexFullTexts(pool, downloader);
+    const emptied = await stored();
+    expect(emptied.content.trim()).toBe("");
+    expect(emptied.terms ?? "").toBe("");
+
+    await pool.query(
+      `UPDATE document_drops SET status = 'proposed', decided_at = now(),
+         effect_at = now() + interval '1 second'`,
+    );
+    await indexMetadata(pool);
+    await indexFullTexts(pool, downloader);
+    expect((await stored()).content).toContain("Olaparib");
+    expect((await stored()).terms).toContain("olaparib");
+  });
+
   test("leaves audio without a transcript to the transcription job", async () => {
     await insert("podcast:1", "Olaparib, the episode", {
       full_text: ["https://example.org/1.mp3"],

@@ -8,6 +8,7 @@ The crawler stores what it collects in PostgreSQL; the indexer and the MCP serve
 | `crawl_runs` | crawler | crawler (`--since auto`, `--resume`), people |
 | `transcripts` | transcription job; the indexer drops the text once every index has read it | indexer (as a full text), transcription job |
 | `transcription` | transcription job (its report), debug UI (how many files at once) | transcription job, debug UI |
+| `document_drops` | `scripts/prefilter.py propose-drops` (proposals), debug UI (a person's decision) | indexer and MCP server: an accepted drop is indexed as an empty document and left out of match results ([pre-filter study](../../research/document-prefilter.md)) |
 | index tables, e.g. `keyword.documents` and `keyword.full_texts` ([keyword matching](keyword-matching.md)) | indexer, transcription job | MCP server |
 
 ## Storing

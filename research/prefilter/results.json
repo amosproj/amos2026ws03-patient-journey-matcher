@@ -1,0 +1,129 @@
+{
+  "generated_at": "2026-11-28T12:04:45+00:00",
+  "labels_hash": "e451983964d24d610afed3d9dbe212bc9e1b0a6f22eb3934dd163978ab3a93c6",
+  "total": 612527,
+  "approaches": {
+    "rules": {
+      "dropped": 15521,
+      "share": 0.025339291165940442,
+      "by_source": {
+        "pubmed": 15504,
+        "zenodo": 17
+      },
+      "checked": 300,
+      "by_person": 0,
+      "wrong": 116,
+      "upper_bound": 0.4352707397459804,
+      "passes": {
+        "safety": false,
+        "usefulness_2": true,
+        "usefulness_3": false
+      }
+    },
+    "rules+model": null
+  },
+  "rules": {
+    "no_summary": {
+      "dropped": 35210,
+      "by_source": {
+        "podcast": 237,
+        "pubmed": 32198,
+        "youtube": 2092,
+        "zenodo": 683
+      },
+      "checked": 289,
+      "wrong": 114,
+      "seconds": 3.0341022080001494,
+      "variant": true
+    },
+    "short_summary": {
+      "dropped": 6720,
+      "by_source": {
+        "podcast": 1501,
+        "pubmed": 749,
+        "youtube": 3132,
+        "zenodo": 1338
+      },
+      "checked": 9,
+      "wrong": 2,
+      "seconds": 6.305114916999628,
+      "variant": true
+    },
+    "erratum": {
+      "dropped": 269,
+      "by_source": {
+        "pubmed": 252,
+        "zenodo": 17
+      },
+      "checked": 30,
+      "wrong": 0,
+      "seconds": 0.40777758399963204,
+      "variant": false
+    },
+    "reaction_without_abstract": {
+      "dropped": 15254,
+      "by_source": {
+        "pubmed": 15254
+      },
+      "checked": 291,
+      "wrong": 116,
+      "seconds": 0.27377275000071677,
+      "variant": false
+    },
+    "no_summary_no_full_text": {
+      "dropped": 26310,
+      "by_source": {
+        "pubmed": 24190,
+        "youtube": 2092,
+        "zenodo": 28
+      },
+      "checked": 200,
+      "wrong": 79,
+      "seconds": 2.9985721670000203,
+      "variant": true
+    },
+    "short_summary_no_full_text": {
+      "dropped": 3466,
+      "by_source": {
+        "podcast": 2,
+        "pubmed": 280,
+        "youtube": 3132,
+        "zenodo": 52
+      },
+      "checked": 2,
+      "wrong": 1,
+      "seconds": 3.457101957999839,
+      "variant": true
+    }
+  },
+  "model": {
+    "threshold": null,
+    "trained_on": 509,
+    "by_person": 1,
+    "below_threshold": 0,
+    "stale": false
+  },
+  "llm_agreement": {
+    "checked": 2,
+    "agreed": 2,
+    "by_model": {
+      "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c": {
+        "checked": 2,
+        "agreed": 2
+      }
+    }
+  },
+  "random": {
+    "checked": 300,
+    "by_person": 0,
+    "unhelpful": 34,
+    "by_group": {
+      "1": 23,
+      "2": 11
+    }
+  },
+  "timing": {
+    "rules_seconds": 0.4255773329996373,
+    "model_ms_per_document": null
+  }
+}

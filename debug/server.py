@@ -5,7 +5,8 @@ crawler's uv environment and only uses the crawler's public Python API (`run_req
 with its factory and sleep hooks, `crawler.store` for `--store`), asyncpg and the standard
 library, so the crawler needs nothing extra for it. The database view only reads, except when
 the user empties tables and types the database name to confirm, and when the Index overview sets
-how many audio files the transcription job reads at once.
+how many audio files the transcription job reads at once. The Pre-filter screen saves labels to
+research/prefilter/labels.json, never to the database.
 
 The matcher is TypeScript, so its logic stays there: the Index screens start the indexer job
 (`matcher/indexer`) as a child process, for every approach or one, and read its tables, and the
@@ -19,6 +20,7 @@ logged.
 import argparse
 import asyncio
 import contextlib
+import fcntl
 import http.client
 import importlib
 import io
@@ -611,6 +613,7 @@ def run_db(
             message = URL_PASSWORD.sub(r"\1<redacted>@", describe_error(error))
             raise DbUnavailable(message, connection_hint(error)) from error
         try:
+            await note_drops_table(connection)
             return await query(connection)
         finally:
             await connection.close()
@@ -798,7 +801,7 @@ def document_filter(params: dict[str, list[str]], indexed: bool) -> tuple[str, l
             states = FULL_TEXT_FILTERS.get(full_text)
             if states is None:
                 raise ValueError("Unknown full-text state")
-            conditions.append(f"{DOCUMENT_FULL_TEXT} = ANY ({arg(states)}::text[])")
+            conditions.append(f"{document_full_text()} = ANY ({arg(states)}::text[])")
         if detail:
             conditions.append(
                 "EXISTS (SELECT FROM keyword.full_texts AS f"
@@ -810,7 +813,7 @@ def document_filter(params: dict[str, list[str]], indexed: bool) -> tuple[str, l
 async def db_documents(connection: Any, params: dict[str, list[str]]) -> dict[str, Any]:
     indexed = await has_keyword_index(connection)
     where, args = document_filter(params, indexed)
-    state = DOCUMENT_FULL_TEXT if indexed else "NULL::text"
+    state = document_full_text() if indexed else "NULL::text"
     sort = DOCUMENT_SORTS.get(first(params, "sort") or "changed")
     if sort is None:
         raise ValueError("Unknown sort column")
@@ -878,19 +881,47 @@ async def db_titles(connection: Any, ids: list[str]) -> dict[str, Any]:
     return {"rows": rows}
 
 
+async def db_prefilter_documents(connection: Any, ids: list[str]) -> dict[str, Any]:
+    """What a Pre-filter card shows of the stored documents among `ids`."""
+    rows = await fetch_json(
+        connection,
+        "SELECT id, title, source, content_type, publication_types, published_at, summary,"
+        " canonical_url FROM documents WHERE id = ANY($1::text[])",
+        ids,
+    )
+    return {"rows": rows}
+
+
+DROPS_TABLE = False
+"""Whether the database has the drop list of #92 (db/init/05-document-drops.sql); `run_db` checks
+it before every query, so the version below matches the matcher's on old and new databases."""
+
+
+async def note_drops_table(connection: Any) -> None:
+    global DROPS_TABLE
+    DROPS_TABLE = bool(await connection.fetchval(DROPS_EXIST))
+
+
 def version(document: str) -> str:
-    """The version of `document` for its indexes: its last change, or a later stored transcript.
+    """The version of `document` for its indexes: its last change, a later stored transcript, or
+    the time a person's drop took effect, whichever is latest.
 
     `VERSION` in matcher/db/src/documents.ts.
     """
+    drop = (
+        f", (SELECT dr.effect_at FROM document_drops AS dr WHERE dr.document_id = {document}.id)"
+        if DROPS_TABLE
+        else ""
+    )
     return (
         f"greatest({document}.changed_at, (SELECT t.read_at FROM transcripts AS t"
-        f" WHERE t.document_id = {document}.id AND t.status <> 'failed'))"
+        f" WHERE t.document_id = {document}.id AND t.status <> 'failed'){drop})"
     )
 
 
-INDEX_CURRENT = f"i.document_changed_at = date_trunc('milliseconds', {version('d')})"
-"""An index row `i` holds the current version of its document `d` (`toIndex` in @matcher/db)."""
+def index_current() -> str:
+    """An index row `i` holds the current version of its document `d` (`toIndex` in @matcher/db)."""
+    return f"i.document_changed_at = date_trunc('milliseconds', {version('d')})"
 
 
 async def document_index(connection: Any, document_id: str) -> dict[str, Any] | None:
@@ -899,7 +930,7 @@ async def document_index(connection: Any, document_id: str) -> dict[str, Any] | 
         return None
     metadata = await fetch_json(
         connection,
-        f"""SELECT i.content, {INDEX_CURRENT} AS current
+        f"""SELECT i.content, {index_current()} AS current
             FROM keyword.documents AS i JOIN documents AS d ON d.id = i.document_id
             WHERE i.document_id = $1""",
         document_id,
@@ -908,7 +939,7 @@ async def document_index(connection: Any, document_id: str) -> dict[str, Any] | 
     full_text = await fetch_json(
         connection,
         f"""SELECT i.status, i.detail, i.url, i.media_type, i.words, i.fetched_at,
-                   {INDEX_CURRENT} AS current,
+                   {index_current()} AS current,
                    (SELECT count(DISTINCT word) FROM {words}) AS distinct_words,
                    (SELECT coalesce(jsonb_agg(top ORDER BY top.count DESC, top.word), '[]')
                     FROM (SELECT word, count(*) AS count FROM {words}
@@ -1108,11 +1139,12 @@ def full_text_state(row: str, document: str) -> str:
     )
 
 
-DOCUMENT_FULL_TEXT = (
-    f"coalesce((SELECT {full_text_state('f', 'documents')} FROM keyword.full_texts AS f"
-    " WHERE f.document_id = documents.id), 'new')"
-)
-"""The full-text state of a row of the documents table."""
+def document_full_text() -> str:
+    """The full-text state of a row of the documents table."""
+    return (
+        f"coalesce((SELECT {full_text_state('f', 'documents')} FROM keyword.full_texts AS f"
+        " WHERE f.document_id = documents.id), 'new')"
+    )
 FULL_TEXT_FILTERS = {
     "indexed": ["indexed"],
     "skipped": ["skipped"],
@@ -2541,6 +2573,228 @@ def topic_detail(topic_id: str) -> dict[str, Any]:
     }
 
 
+# The Pre-filter screen: the labels and results of the document pre-filter study (#92), which
+# scripts/prefilter.py writes. Only these files are read and written; documents come from
+# /api/prefilter/documents, read only.
+PREFILTER_DIR = ROOT / "research/prefilter"
+PREFILTER_STATUSES = ("unchecked", "accepted", "changed")
+PREFILTER_LABELS = ("keep", "unhelpful", "none")
+
+
+def prefilter_status(entry: dict[str, Any]) -> str:
+    """Unchecked, accepted (the same label and group as the proposal) or changed."""
+    if entry.get("label") is None:
+        return "unchecked"
+    proposal = entry.get("proposal") or {}
+    same = proposal.get("label") == entry["label"] and proposal.get("group") == entry.get("group")
+    return "accepted" if same else "changed"
+
+
+def prefilter_label(entry: dict[str, Any]) -> str:
+    """The label that counts: a person's, else the LLM's proposal, else none."""
+    if entry.get("label") is not None:
+        return str(entry["label"])
+    return str((entry.get("proposal") or {}).get("label") or "none")
+
+
+def prefilter_labels(params: dict[str, list[str]]) -> dict[str, Any]:
+    path = PREFILTER_DIR / "labels.json"
+    if not path.exists():
+        return {"missing": True}
+    data = json.loads(path.read_text(encoding="utf-8"))
+    set_name, status, label = first(params, "set"), first(params, "status"), first(params, "label")
+    if status and status not in PREFILTER_STATUSES:
+        raise ValueError(f"status must be one of {', '.join(PREFILTER_STATUSES)}")
+    if label and label not in PREFILTER_LABELS:
+        raise ValueError(f"label must be one of {', '.join(PREFILTER_LABELS)}")
+    limit, offset = page(params)
+    progress: dict[str, dict[str, int]] = {}
+    for entry in data["documents"]:
+        for name in entry["sets"]:
+            counts = progress.setdefault(name, {"checked": 0, "total": 0})
+            counts["total"] += 1
+            counts["checked"] += entry.get("label") is not None
+    items = [
+        entry | {"status": prefilter_status(entry)}
+        for entry in data["documents"]
+        if (not set_name or set_name in entry["sets"])
+        and (not status or prefilter_status(entry) == status)
+        and (not label or prefilter_label(entry) == label)
+    ]
+    return {
+        "items": items[offset : offset + limit],
+        "total": len(items),
+        "progress": progress,
+        "guide": data.get("guide", []),
+        "pipeline": prefilter_pipeline(data["documents"]),
+    }
+
+
+def prefilter_pipeline(documents: list[dict[str, Any]]) -> dict[str, Any]:
+    """How far the study is, for the pipeline strip: labels, the classifier and the last measure."""
+    by_model: dict[str, int] = {}
+    for entry in documents:
+        if entry.get("proposal"):
+            name = str(entry["proposal"].get("model") or "?").split("@")[0].split("/")[-1]
+            by_model[name] = by_model.get(name, 0) + 1
+    model_path, results_path = PREFILTER_DIR / "model.json", PREFILTER_DIR / "results.json"
+    model, results = (
+        json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+        for path in (model_path, results_path)
+    )
+    return {
+        "documents": len(documents),
+        "proposed": sum(by_model.values()),
+        "by_model": by_model,
+        "by_person": sum(entry.get("label") is not None for entry in documents),
+        "model": None
+        if model is None
+        else {key: model.get(key) for key in ("trained_on", "threshold", "below_threshold")},
+        "measured_at": results.get("generated_at") if results else None,
+        "rules": (results or {}).get("approaches", {}).get("rules"),
+    }
+
+
+def prefilter_results() -> dict[str, Any]:
+    path = PREFILTER_DIR / "results.json"
+    if not path.exists():
+        return {"missing": True}
+    data: dict[str, Any] = json.loads(path.read_text(encoding="utf-8"))
+    return data
+
+
+DROPS_EXIST = "SELECT to_regclass('document_drops') IS NOT NULL"
+DROPS_MISSING = (
+    "No document_drops table: apply db/init/05-document-drops.sql (make db) to this database"
+)
+DROP_STATUSES = ("proposed", "accepted", "rejected")
+# effect_at only moves forward, also if the clock went back: an index keeps its newer row.
+NEXT_EFFECT = "greatest(now(), coalesce(effect_at, '-infinity') + interval '1 millisecond')"
+DROP_DECISIONS = {
+    # Drop and keep only decide proposed rows: a page action on cards another person decided
+    # meanwhile changes nothing. Only undo changes a decision. effect_at moves only when what is
+    # indexed changes (accept, undo of an accept).
+    "accept": f"status = 'accepted', decided_at = now(), effect_at = {NEXT_EFFECT}"
+    " WHERE status = 'proposed'",
+    "reject": "status = 'rejected', decided_at = now() WHERE status = 'proposed'",
+    "undo": "status = 'proposed', decided_at = now(),"
+    f" effect_at = CASE WHEN status = 'accepted' THEN {NEXT_EFFECT} ELSE effect_at END"
+    " WHERE status <> 'proposed'",
+}
+
+
+async def prefilter_drops(connection: Any, params: dict[str, list[str]]) -> dict[str, Any]:
+    """A page of the drop list with what a card shows of each document, the counts per status and
+    who proposed drops. Rows of deleted documents are gone with them (ON DELETE CASCADE)."""
+    if not await connection.fetchval(DROPS_EXIST):
+        return {"missing": True}
+    status = first(params, "status") or "proposed"
+    if status not in DROP_STATUSES:
+        raise ValueError(f"status must be one of {', '.join(DROP_STATUSES)}")
+    proposer = first(params, "proposed_by") or None
+    limit, offset = page(params)
+    where = "dr.status = $1 AND ($2::text IS NULL OR dr.proposed_by = $2)"
+    total = await connection.fetchval(
+        f"SELECT count(*) FROM document_drops dr WHERE {where}", status, proposer
+    )
+    items = await fetch_json(
+        connection,
+        f"""SELECT dr.document_id AS id, dr.proposed_by, dr.reason, dr.status, dr.proposed_at,
+                   dr.decided_at, dr.note, d.title, d.source, d.content_type, d.publication_types,
+                   d.published_at, d.summary, d.canonical_url
+            FROM document_drops dr JOIN documents d ON d.id = dr.document_id
+            WHERE {where} ORDER BY dr.proposed_at, dr.document_id LIMIT $3 OFFSET $4""",
+        status,
+        proposer,
+        limit,
+        offset,
+    )
+    counts = {name: 0 for name in DROP_STATUSES}
+    for row in await connection.fetch(
+        "SELECT status, count(*) AS n FROM document_drops GROUP BY status"
+    ):
+        counts[row["status"]] = row["n"]
+    proposers = [
+        row["proposed_by"]
+        for row in await connection.fetch(
+            "SELECT DISTINCT proposed_by FROM document_drops ORDER BY proposed_by"
+        )
+    ]
+    return {"items": items, "total": total, "counts": counts, "proposers": proposers}
+
+
+async def save_prefilter_drops(connection: Any, body: dict[str, Any]) -> dict[str, Any]:
+    """A person's decision on drops: accept, reject or undo. Returns how many rows changed and the
+    status of every id asked about that is on the list, so the page shows what is stored."""
+    decision, note = body.get("decision"), body.get("note")
+    if decision not in DROP_DECISIONS:
+        raise ValueError(f"decision must be one of {', '.join(DROP_DECISIONS)}")
+    ids = string_list(body, "ids", 500)
+    if not ids:
+        raise ValueError("ids must not be empty")
+    if note is not None and (not isinstance(note, str) or len(note) > 500):
+        raise ValueError("note must be text of at most 500 characters")
+    if not await connection.fetchval(DROPS_EXIST):
+        raise RuntimeError(DROPS_MISSING)
+    set_note = ", note = $2" if note is not None else ""
+    changes, condition = DROP_DECISIONS[decision].split(" WHERE ")
+    async with connection.transaction():
+        rows = await connection.fetch(
+            f"UPDATE document_drops SET {changes}{set_note}"
+            f" WHERE document_id = ANY($1::text[]) AND {condition} RETURNING 1",
+            ids,
+            *([note.strip()] if note is not None else []),
+        )
+        statuses = await connection.fetch(
+            "SELECT document_id, status FROM document_drops WHERE document_id = ANY($1::text[])",
+            ids,
+        )
+    stored = {row["document_id"]: row["status"] for row in statuses}
+    return {"changed": len(rows), "statuses": stored}
+
+
+PREFILTER_LOCK = threading.Lock()
+"""One save at a time: two browser tabs must not overwrite each other's labels."""
+
+
+def prefilter_write(path: Path, data: dict[str, Any]) -> None:
+    """Write through a temporary file next to it, so the labels file is never half written."""
+    temporary = path.with_name(f".{path.name}.{uuid.uuid4().hex}.tmp")
+    temporary.write_text(json.dumps(data, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+    os.replace(temporary, path)
+
+
+def save_prefilter_label(body: dict[str, Any]) -> dict[str, Any]:
+    """A person's label for one document; the LLM's proposal stays next to it."""
+    document_id, label, group = body.get("id"), body.get("label"), body.get("group")
+    note = body.get("note", "")
+    if label not in ("unhelpful", "keep"):
+        raise ValueError("label must be unhelpful or keep")
+    whole = type(group) is int and group in (1, 2)  # not true or 1.0, which JSON also allows
+    if (label == "unhelpful") != whole or (label == "keep" and group is not None):
+        raise ValueError("group must be 1 or 2 for unhelpful and empty for keep")
+    if not isinstance(note, str) or len(note) > 500:
+        raise ValueError("note must be text of at most 500 characters")
+    path = PREFILTER_DIR / "labels.json"
+    # The thread lock for this server's own requests; the file lock for scripts/prefilter.py.
+    with PREFILTER_LOCK, open(PREFILTER_DIR / ".labels.lock", "a") as lock:
+        fcntl.flock(lock, fcntl.LOCK_EX)
+        if not path.exists():
+            raise LookupError("No labels file yet: run scripts/prefilter.py sample first")
+        data = json.loads(path.read_text(encoding="utf-8"))
+        entry = next((item for item in data["documents"] if item["id"] == document_id), None)
+        if entry is None:
+            raise LookupError(f"{document_id} is not in the labels file")
+        entry |= {
+            "label": label,
+            "group": group,
+            "note": note.strip(),
+            "checked_at": datetime.now(UTC).isoformat(timespec="seconds"),
+        }
+        prefilter_write(path, data)
+    return entry | {"status": prefilter_status(entry)}
+
+
 class Handler(BaseHTTPRequestHandler):
     server_version = "CrawlerDebug/1.0"
 
@@ -2692,6 +2946,12 @@ class Handler(BaseHTTPRequestHandler):
             params = parse_qs(url.query)
             kind, name, score = (first(params, key) for key in ("kind", "name", "min_score"))
             self.send_result(lambda: graph_normalize(kind, name, score))
+        elif path == "/api/prefilter/results":
+            self.send_result(prefilter_results)
+        elif path == "/api/prefilter/drops":
+            self.send_db(lambda connection: prefilter_drops(connection, parse_qs(url.query)))
+        elif path == "/api/prefilter/labels":
+            self.send_result(lambda: prefilter_labels(parse_qs(url.query)))
         elif path == "/api/match/meta":
             self.send_json(match_meta())
         elif path == "/api/info":
@@ -2739,8 +2999,11 @@ class Handler(BaseHTTPRequestHandler):
             "/api/index/terms",
             "/api/index/transcription",
             "/api/db/titles",
+            "/api/prefilter/documents",
+            "/api/prefilter/drops",
             "/api/match",
             "/api/match/source",
+            "/api/prefilter/label",
         ):
             try:
                 body = self.read_json()
@@ -2758,6 +3021,18 @@ class Handler(BaseHTTPRequestHandler):
                 )
             elif path == "/api/match/source":
                 self.send_result(lambda: source(body))
+            elif path == "/api/prefilter/label":
+                self.send_result(lambda: save_prefilter_label(body))
+            elif path == "/api/prefilter/drops":
+                self.send_db(
+                    lambda connection: save_prefilter_drops(connection, body), write=True
+                )
+            elif path == "/api/prefilter/documents":
+                self.send_db(
+                    lambda connection: db_prefilter_documents(
+                        connection, string_list(body, "ids", 500)
+                    )
+                )
             elif path == "/api/db/titles":
                 self.send_db(
                     lambda connection: db_titles(connection, string_list(body, "ids", 5000))

@@ -41,7 +41,7 @@ for (const icon of document.querySelectorAll(".info")) {
 }
 
 // The Index screens: the overview, then one per approach (hash #index, #index-keyword, …).
-const SCREENS = { runs: "#runs-view", db: "#db-view", index: "#index-view", keyword: "#keyword-view", graph: "#graph-view", ai: "#ai-view", match: "#match-view", info: "#info-view" };
+const SCREENS = { runs: "#runs-view", db: "#db-view", index: "#index-view", keyword: "#keyword-view", graph: "#graph-view", ai: "#ai-view", match: "#match-view", prefilter: "#prefilter-view", info: "#info-view" };
 
 const narrowScreen = window.matchMedia("(max-width: 760px)");
 const controlsToggle = $("#controls-toggle");
@@ -98,6 +98,7 @@ function showScreen(screen) {
   else if (screen === "graph") grShow();
   else if (screen === "ai") { history.replaceState(null, "", "#index-ai"); aiRefresh(); }
   else if (screen === "match") mtShow();
+  else if (screen === "prefilter") pfShow();
   else if (screen === "info") infoShow();
   else switchTab(state.tab);
 }
@@ -126,6 +127,9 @@ async function init() {
   } else if (hash === "match" || hash.startsWith("match-")) {
     if (["rankings", "answer", "client"].includes(hash.slice(6))) mt.tab = hash.slice(6);
     showScreen("match");
+  } else if (hash === "prefilter" || hash === "prefilter-results" || hash === "prefilter-drops") {
+    if (hash !== "prefilter") pf.tab = hash.slice("prefilter-".length);
+    showScreen("prefilter");
   } else if (hash === "info" || hash.startsWith("info-")) {
     if (["running", "topics"].includes(hash.slice(5))) info.tab = hash.slice(5);
     showScreen("info");

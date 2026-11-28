@@ -37,11 +37,14 @@ function document(id: string): DocumentRow {
   };
 }
 
-/** A store that has the documents with these IDs. */
-function store(ids: string[]): DocumentStore {
+/** A store that has the documents with these IDs; `dropped` are accepted drops. */
+function store(ids: string[], dropped: string[] = []): DocumentStore {
   return {
-    getDocuments: async (asked) =>
-      asked.filter((id) => ids.includes(id)).map(document),
+    getDocuments: async (asked, options) =>
+      asked
+        .filter((id) => ids.includes(id))
+        .filter((id) => !(options?.withoutDrops && dropped.includes(id)))
+        .map(document),
     getDocument: async (id) => (ids.includes(id) ? document(id) : undefined),
     documentsToIndex: async () => [],
     countToIndex: async () => 0,
@@ -68,6 +71,25 @@ const journey = {
     { id: "e2", type: "followup", label: "Nachsorge", date: "2026-03-01" },
   ],
 };
+
+test("leaves accepted drops out of the results", async () => {
+  const approach = keyword([
+    { documentId: "pubmed:1", score: 1 },
+    { documentId: "pubmed:2", score: 0.5 },
+  ]);
+  const service = createMatchService(
+    [approach],
+    store(["pubmed:1", "pubmed:2"], ["pubmed:1"]),
+  );
+
+  const result = await service.matchJourney({
+    journey,
+    algorithm: "keyword",
+    limit: 10,
+  });
+
+  expect(result.results.map((entry) => entry.source_id)).toEqual(["pubmed:2"]);
+});
 
 test("answers with the stored documents of the matcher's hits, in its order", async () => {
   const approach = keyword([
