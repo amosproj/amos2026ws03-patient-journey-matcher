@@ -367,6 +367,115 @@ describe.skipIf(!databaseUrl)("with PostgreSQL", () => {
     expect(rows).toEqual([{ count: 2 }]);
   });
 
+  /** An index table, and an index run that stores the `changed_at` it read. */
+  async function indexTable() {
+    await pool.query(`
+      CREATE TABLE keyword_index (
+        document_id text PRIMARY KEY REFERENCES documents (id) ON DELETE CASCADE,
+        document_changed_at timestamptz NOT NULL
+      )`);
+    const store = createDocumentStore(pool);
+    return async () => {
+      const read = await store.documentsToIndex("keyword_index");
+      for (const document of read) {
+        await pool.query(
+          `INSERT INTO keyword_index VALUES ($1, $2) ON CONFLICT (document_id)
+           DO UPDATE SET document_changed_at = EXCLUDED.document_changed_at`,
+          [document.id, document.changed_at],
+        );
+      }
+      return read;
+    };
+  }
+
+  async function drop(id: string, status: string, effect: boolean) {
+    await pool.query(
+      `INSERT INTO document_drops (document_id, proposed_by, reason, status, decided_at, effect_at)
+       VALUES ($1, 'rule:erratum', 'x', $2, now(), CASE WHEN $3 THEN now() + interval '1 second' END)
+       ON CONFLICT (document_id) DO UPDATE SET status = EXCLUDED.status,
+         decided_at = EXCLUDED.decided_at,
+         effect_at = coalesce(EXCLUDED.effect_at, document_drops.effect_at)`,
+      [id, status, effect],
+    );
+  }
+
+  test("lists an accepted drop again, emptied, and its real text again after undo", async () => {
+    const index = await indexTable();
+    await insert("pubmed:1", {
+      summary: "Olaparib in breast cancer.",
+      subjects: [{ label: "Breast Neoplasms" }],
+      full_text: [{ url: "https://example.org/1.pdf" }],
+    });
+    const [first] = await index();
+
+    await drop("pubmed:1", "accepted", true);
+    const [emptied] = await index();
+    expect(emptied?.title).toBe("");
+    expect(emptied?.summary).toBeNull();
+    expect(emptied?.subjects).toEqual([]);
+    expect(emptied?.full_text).toEqual([]);
+    expect(emptied?.changed_at.getTime()).toBeGreaterThan(
+      first?.changed_at.getTime() ?? Infinity,
+    );
+
+    await new Promise((resolve) => setTimeout(resolve, 5));
+    await drop("pubmed:1", "proposed", true);
+    const [back] = await index();
+    expect(back?.title).toBe("Title of pubmed:1");
+    expect(back?.summary).toBe("Olaparib in breast cancer.");
+    expect(back?.changed_at.getTime()).toBeGreaterThan(
+      emptied?.changed_at.getTime() ?? Infinity,
+    );
+  });
+
+  test("does not list a document again for a proposed or rejected drop", async () => {
+    const index = await indexTable();
+    await insert("pubmed:1");
+    await index();
+    const store = createDocumentStore(pool);
+
+    await drop("pubmed:1", "proposed", false);
+    expect(await store.countToIndex("keyword_index")).toBe(0);
+    await drop("pubmed:1", "rejected", false);
+    expect(await store.countToIndex("keyword_index")).toBe(0);
+  });
+
+  test("leaves accepted drops out of a match, not out of getDocument", async () => {
+    await insert("pubmed:1");
+    await insert("pubmed:2");
+    await drop("pubmed:1", "accepted", true);
+    const store = createDocumentStore(pool);
+
+    const ids = (rows: DocumentRow[]) => rows.map(({ id }) => id);
+    expect(
+      ids(
+        await store.getDocuments(["pubmed:1", "pubmed:2"], {
+          withoutDrops: true,
+        }),
+      ),
+    ).toEqual(["pubmed:2"]);
+    expect(ids(await store.getDocuments(["pubmed:1", "pubmed:2"]))).toEqual([
+      "pubmed:1",
+      "pubmed:2",
+    ]);
+    expect((await store.getDocument("pubmed:1"))?.id).toBe("pubmed:1");
+  });
+
+  test("works as before without the drop table", async () => {
+    await pool.query("DROP TABLE document_drops");
+    const index = await indexTable();
+    await insert("pubmed:1");
+    const store = createDocumentStore(pool);
+
+    expect((await index()).map(({ id }) => id)).toEqual(["pubmed:1"]);
+    expect(await store.countToIndex("keyword_index")).toBe(0);
+    expect(
+      (await store.getDocuments(["pubmed:1"], { withoutDrops: true })).map(
+        ({ id }) => id,
+      ),
+    ).toEqual(["pubmed:1"]);
+  });
+
   test("reads through a client of the pool, e.g. in a transaction", async () => {
     await insert("pubmed:1");
     const client = await pool.connect();
