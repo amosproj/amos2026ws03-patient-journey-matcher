@@ -2668,14 +2668,17 @@ DROPS_MISSING = (
     "No document_drops table: apply db/init/05-document-drops.sql (make db) to this database"
 )
 DROP_STATUSES = ("proposed", "accepted", "rejected")
+# effect_at only moves forward, also if the clock went back: an index keeps its newer row.
+NEXT_EFFECT = "greatest(now(), coalesce(effect_at, '-infinity') + interval '1 millisecond')"
 DROP_DECISIONS = {
-    # A decision only changes the rows it can: "Keep all on this page" never undoes an accepted
-    # drop. effect_at moves only when what is indexed changes (accept, undo of an accept).
-    "accept": "status = 'accepted', decided_at = now(), effect_at = now()"
-    " WHERE status <> 'accepted'",
+    # Drop and keep only decide proposed rows: a page action on cards another person decided
+    # meanwhile changes nothing. Only undo changes a decision. effect_at moves only when what is
+    # indexed changes (accept, undo of an accept).
+    "accept": f"status = 'accepted', decided_at = now(), effect_at = {NEXT_EFFECT}"
+    " WHERE status = 'proposed'",
     "reject": "status = 'rejected', decided_at = now() WHERE status = 'proposed'",
     "undo": "status = 'proposed', decided_at = now(),"
-    " effect_at = CASE WHEN status = 'accepted' THEN now() ELSE effect_at END"
+    f" effect_at = CASE WHEN status = 'accepted' THEN {NEXT_EFFECT} ELSE effect_at END"
     " WHERE status <> 'proposed'",
 }
 
@@ -2721,7 +2724,8 @@ async def prefilter_drops(connection: Any, params: dict[str, list[str]]) -> dict
 
 
 async def save_prefilter_drops(connection: Any, body: dict[str, Any]) -> dict[str, Any]:
-    """A person's decision on drops: accept, reject or undo; returns how many rows changed."""
+    """A person's decision on drops: accept, reject or undo. Returns how many rows changed and the
+    status of every id asked about that is on the list, so the page shows what is stored."""
     decision, note = body.get("decision"), body.get("note")
     if decision not in DROP_DECISIONS:
         raise ValueError(f"decision must be one of {', '.join(DROP_DECISIONS)}")
@@ -2734,13 +2738,19 @@ async def save_prefilter_drops(connection: Any, body: dict[str, Any]) -> dict[st
         raise RuntimeError(DROPS_MISSING)
     set_note = ", note = $2" if note is not None else ""
     changes, condition = DROP_DECISIONS[decision].split(" WHERE ")
-    rows = await connection.fetch(
-        f"UPDATE document_drops SET {changes}{set_note}"
-        f" WHERE document_id = ANY($1::text[]) AND {condition} RETURNING 1",
-        ids,
-        *([note.strip()] if note is not None else []),
-    )
-    return {"changed": len(rows)}
+    async with connection.transaction():
+        rows = await connection.fetch(
+            f"UPDATE document_drops SET {changes}{set_note}"
+            f" WHERE document_id = ANY($1::text[]) AND {condition} RETURNING 1",
+            ids,
+            *([note.strip()] if note is not None else []),
+        )
+        statuses = await connection.fetch(
+            "SELECT document_id, status FROM document_drops WHERE document_id = ANY($1::text[])",
+            ids,
+        )
+    stored = {row["document_id"]: row["status"] for row in statuses}
+    return {"changed": len(rows), "statuses": stored}
 
 
 PREFILTER_LOCK = threading.Lock()

@@ -70,6 +70,45 @@ test("joins title, abstract and subject labels as the text of a row", () => {
   ).toBe("Olaparib for mCRPC\nBackground: BRCA2\nProstatic Neoplasms");
 });
 
+/** A database that answers the drop table check with `answers` in turn, then `[]` to any query. */
+function checkingDatabase(answers: (boolean | Error)[]) {
+  const checks: string[] = [];
+  const db: Queryable = {
+    query: (async (text: string) => {
+      if (text.includes("to_regclass('document_drops')")) {
+        checks.push(text);
+        const answer = answers.shift();
+        if (answer instanceof Error) throw answer;
+        return { rows: [{ exists: answer }] };
+      }
+      return { rows: [] };
+    }) as Queryable["query"],
+  };
+  return { db, checks };
+}
+
+test("checks the drop table again after a failed check", async () => {
+  const { db } = checkingDatabase([new Error("connection reset"), false]);
+  const store = createDocumentStore(db);
+
+  await expect(
+    store.getDocuments(["pubmed:1"], { withoutDrops: true }),
+  ).rejects.toThrow("connection reset");
+  await expect(
+    store.getDocuments(["pubmed:1"], { withoutDrops: true }),
+  ).resolves.toEqual([]);
+});
+
+test("checks again while the drop table is missing, and not once it exists", async () => {
+  const { db, checks } = checkingDatabase([false, true]);
+  const store = createDocumentStore(db);
+
+  for (let run = 0; run < 3; run++) {
+    await store.getDocuments(["pubmed:1"], { withoutDrops: true });
+  }
+  expect(checks).toHaveLength(2);
+});
+
 test("asks the database nothing for no IDs", async () => {
   const documents = createDocumentStore(noDatabase).getDocuments([]);
 

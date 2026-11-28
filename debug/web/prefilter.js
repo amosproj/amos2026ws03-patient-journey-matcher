@@ -337,22 +337,20 @@ async function pdGoTo(page) {
   $("#pf-drops").scrollTop = 0;
 }
 
-// The decided cards stay where they are, with their new state: nothing jumps away under the
-// pointer. Refresh applies the filter again. What changes follows the server's rules: accept and
-// reject only touch proposed cards on a page, undo puts a card back to proposed.
-const PD_AFTER = { accept: "accepted", reject: "rejected", undo: "proposed" };
+// The decided cards stay where they are, with the state the server stored: nothing jumps away
+// under the pointer. Refresh applies the filter again.
 
 async function pdSave(ids, decision, note) {
   if (!pd.data?.items || ids.some((id) => pd.saving.has(id))) return;
   for (const id of ids) pd.saving.add(id);
   pdRender();
   try {
-    await api("/api/prefilter/drops", { method: "POST", body: JSON.stringify({ ids, decision, ...(note != null ? { note } : {}) }) });
+    const saved = await api("/api/prefilter/drops", { method: "POST", body: JSON.stringify({ ids, decision, ...(note != null ? { note } : {}) }) });
     $("#pf-error").textContent = "";
+    // What is stored, also where another person decided meanwhile and nothing changed here.
     for (const item of pd.data.items) {
-      if (!ids.includes(item.id)) continue;
-      const changes = decision === "undo" ? item.status !== "proposed" : decision === "accept" ? item.status !== "accepted" : item.status === "proposed";
-      if (changes) item.status = PD_AFTER[decision];
+      if (!ids.includes(item.id) || !(item.id in saved.statuses)) continue;
+      item.status = saved.statuses[item.id];
       if (note != null) item.note = note.trim();
     }
   } catch (error) {

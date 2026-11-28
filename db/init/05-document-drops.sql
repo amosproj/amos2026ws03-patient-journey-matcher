@@ -5,6 +5,8 @@
 -- match results; the row in documents stays as it is. effect_at is when a drop last changed what
 -- is indexed (accept, or undo of an accepted drop); it is part of the document's index version
 -- and only moves forward.
+-- Never delete a row of a decided drop: its document's index version would go back, and an index
+-- that keeps its newer row would list it again in every run.
 CREATE TABLE IF NOT EXISTS document_drops (
     document_id text PRIMARY KEY REFERENCES documents (id) ON DELETE CASCADE,
     proposed_by text NOT NULL,

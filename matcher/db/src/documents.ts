@@ -202,11 +202,16 @@ function tableName(name: string): string {
 }
 
 export function createDocumentStore(db: Queryable): DocumentStore {
-  let dropsExist: Promise<boolean> | undefined;
-  const hasDrops = () =>
-    (dropsExist ??= db
-      .query<{ exists: boolean }>(DROPS_EXIST)
-      .then(({ rows }) => rows[0]?.exists === true));
+  // Once the table exists it stays; until then every call checks again, so a long-running server
+  // sees a table applied after it started, and a failed check is not kept.
+  let dropsExist = false;
+  const hasDrops = async () => {
+    if (!dropsExist) {
+      const { rows } = await db.query<{ exists: boolean }>(DROPS_EXIST);
+      dropsExist = rows[0]?.exists === true;
+    }
+    return dropsExist;
+  };
 
   async function getDocuments(
     ids: readonly string[],

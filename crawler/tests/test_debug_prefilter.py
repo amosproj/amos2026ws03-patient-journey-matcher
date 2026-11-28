@@ -266,17 +266,17 @@ def test_accept_reject_undo_set_effect_at_only_when_indexing_changes(server, url
         body = {"ids": ids, "decision": decision}
         return on(url, lambda c: server.save_prefilter_drops(c, body))
 
-    assert save(["pubmed:1"], "accept") == {"changed": 1}
-    assert save(["pubmed:2"], "reject") == {"changed": 1}
+    assert save(["pubmed:1"], "accept")["changed"] == 1
+    assert save(["pubmed:2"], "reject")["changed"] == 1
     rows = drops(url)
     assert rows["pubmed:1"]["status"] == "accepted" and rows["pubmed:1"]["effect_at"]
     assert rows["pubmed:2"]["status"] == "rejected" and rows["pubmed:2"]["effect_at"] is None
 
     # "Keep" on a page must not undo an accepted drop.
-    assert save(["pubmed:1"], "reject") == {"changed": 0}
+    assert save(["pubmed:1"], "reject")["changed"] == 0
     assert drops(url)["pubmed:1"]["status"] == "accepted"
 
-    assert save(["pubmed:1", "pubmed:2", "pubmed:404"], "undo") == {"changed": 2}
+    assert save(["pubmed:1", "pubmed:2", "pubmed:404"], "undo")["changed"] == 2
     after = drops(url)
     assert after["pubmed:1"]["status"] == "proposed"
     assert after["pubmed:1"]["effect_at"] > rows["pubmed:1"]["effect_at"]
@@ -336,3 +336,29 @@ def test_drops_without_the_table(server, url):
 def test_save_drops_refuses_bad_bodies(server, body):
     with pytest.raises(ValueError):
         asyncio.run(server.save_prefilter_drops(None, body))
+
+
+@pytest.mark.postgres
+def test_accept_never_overrides_a_keep(server, url):
+    insert(url, doc("pubmed:1"))
+    propose(url, "pubmed:1")
+    body = {"ids": ["pubmed:1"], "decision": "reject"}
+    on(url, lambda c: server.save_prefilter_drops(c, body))
+    stale = {"ids": ["pubmed:1"], "decision": "accept"}
+    assert on(url, lambda c: server.save_prefilter_drops(c, stale)) == {
+        "changed": 0,
+        "statuses": {"pubmed:1": "rejected"},
+    }
+    assert drops(url)["pubmed:1"]["effect_at"] is None
+
+
+@pytest.mark.postgres
+def test_effect_at_moves_forward_even_if_the_clock_went_back(server, url):
+    insert(url, doc("pubmed:1"))
+    propose(url, "pubmed:1")
+    later = "now() + interval '1 hour'"
+    asyncio.run(execute(url, f"UPDATE document_drops SET status = 'accepted', effect_at = {later}"))
+    before = drops(url)["pubmed:1"]["effect_at"]
+    body = {"ids": ["pubmed:1"], "decision": "undo"}
+    on(url, lambda c: server.save_prefilter_drops(c, body))
+    assert drops(url)["pubmed:1"]["effect_at"] > before

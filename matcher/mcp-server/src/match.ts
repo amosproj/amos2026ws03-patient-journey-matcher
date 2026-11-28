@@ -41,7 +41,8 @@ export function createMatchService(
           contentTypes: content_types,
           ...debug,
         });
-        // A person's accepted drop (#92) is never shown, even before the indexes ran again.
+        // A person's accepted drop (#92) is never shown, even before the indexes ran again; until
+        // that run, a match can have fewer results than `limit`.
         const documents = await store.getDocuments(
           hits.map((hit) => hit.documentId),
           { withoutDrops: true },
