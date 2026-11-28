@@ -30,6 +30,11 @@
       "kind": "Lab work about a drug patients take",
       "label": "keep",
       "example": "Non-coding RNAs in enzalutamide resistance"
+    },
+    {
+      "kind": "No abstract, but the title shows a useful paper",
+      "label": "keep",
+      "example": "Metformin and lifestyle modification in polycystic ovary syndrome: review"
     }
   ],
   "documents": [
@@ -75,8 +80,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "It is a letter or comment with no summary provided, falling under little information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Letter and comment reacting to a radiomics paper, no summary.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -90,10 +95,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "No or very short summary available",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but distinguishing radiation necrosis from recurrence in glioblastoma matters to patients.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -107,10 +112,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "The document has no summary and is likely a report with limited patient-relevant information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but national kidney disease epidemiology report.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -126,8 +131,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "No or very short summary, and it is a comment which provides little direct information for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Comment on another paper about depression after myocardial infarction, no summary.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -141,10 +146,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "No or very short summary, and it is a letter which is considered little information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but research letter with data on eosinophil counts in COPD patients.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -160,8 +165,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "The document is a letter or comment with no or very short summary, making it little information for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Letter and comment reacting to another paper, no summary.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -175,10 +180,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "No or very short summary, making it difficult to determine if it is helpful for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but radiofrequency ablation as treatment for lung malignancies.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -192,10 +197,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "No or very short summary, lacks useful content for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "Patient education handout on atrial fibrillation screening.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -211,8 +216,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The document is a systematic review and meta-analysis on a clinical topic relevant to patients with acromegaly, providing prevalence and clinical context information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "No summary, but supplement to a systematic review on fatty liver in acromegaly.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -228,8 +233,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The title suggests a clinical case report related to a specific gastrointestinal condition in the context of Crohn's disease, which could be relevant to some patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "No summary, but case report of a Crohn's disease complication.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -243,10 +248,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "No or very short summary available",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but article on uterine myoma.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -260,10 +265,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "No or very short summary available",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but ISTH guidance on catheter-associated DVT in cancer patients.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -279,8 +284,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "The document has no or very short summary and is classified as an editorial or comment, which is considered little information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Editorial comment on another type 2 diabetes paper, no summary.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -294,10 +299,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "No or very short summary available",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but immune landscapes guiding immunotherapy in brain metastases.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -311,10 +316,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "No or very short summary, and it is a case report which may not provide enough information for general patient use.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "Case report of a dupilumab side effect.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -328,10 +333,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 1,
-        "reason": "It is a letter and may be pure methods or statistics, or written for clinicians only.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but research letter on predicting treatment response in chemotherapy-associated anemia.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -345,10 +350,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "No or very short summary, making it difficult to determine if it is useful for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but article on post-cholecystectomy syndrome.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -362,10 +367,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "The document has no summary and is therefore not useful for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but study of dementia measures and brain changes in elderly people.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -379,10 +384,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "The document is a letter with no or very short summary, making it little information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but research letter on diagnosing alpha-gal meat allergy.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -398,8 +403,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The document provides a review of new diagnostic guidelines relevant to patient management for irritable bowel syndrome.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "No summary, but review of Rome IV criteria for IBS management.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -415,8 +420,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "It is a corrigendum, which is a correction or erratum, falling under group 2 as it provides little or no new information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Corrigendum to a lab paper.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -430,10 +435,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "The document has no summary and is therefore not useful for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but clinical study of hydrocortisone in pneumococcal pneumonia.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -449,8 +454,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "No or very short summary, and it is a comment/editorial which may not provide direct patient-relevant information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Editorial comment on multidrug-resistant tuberculosis, no summary.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -464,10 +469,10 @@
         "train"
       ],
       "proposal": {
-        "label": "keep",
-        "group": null,
-        "reason": "Provides a meaningful event for patients and staff related to Remembrance Day.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Remembrance Day ceremony video with no health content.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -483,8 +488,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The video provides practical advice on managing thoughts and feelings related to migraines, which is helpful for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Q&A session on managing thoughts and feelings around migraine.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -500,8 +505,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The video provides practical advice on communication strategies for patients with eating disorders, which is relevant and helpful for some patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Eating disorder charity talk on having supportive conversations.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -515,10 +520,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "No or very short summary available",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but case series of primary fallopian tube cancer.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -534,8 +539,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The document provides experiences with CT use in diagnosing and following up on COVID-19 pneumonia, which is relevant to patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "No abstract, but CT in diagnosis and follow-up of COVID-19 pneumonia.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -549,10 +554,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 1,
-        "reason": "Pure methods or statistics papers are unhelpful for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "Policy update covering Medicaid redetermination and concurrent dialysis and hospice, which affect patients.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -568,8 +573,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The video provides information about RTH Beta by a medical professional, which could be helpful for patients seeking understanding about this condition.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Expert short on resistance to thyroid hormone beta.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -583,10 +588,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 1,
-        "reason": "The document is about chronic interstitial otitis and otosclerosis, which are medical conditions, but the summary is not available, making it unclear if the content is relevant or useful for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but article on chronic otitis and otosclerosis.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -600,10 +605,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 1,
-        "reason": "Cataract Extraction is pure lab or animal work and not relevant to patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but article on cataract extraction.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -619,8 +624,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The podcast discusses the role of a pharmacist in diabetes care, which is relevant to patients managing diabetes.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Pharmacist's role in diabetes care.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -634,10 +639,10 @@
         "train"
       ],
       "proposal": {
-        "label": "keep",
-        "group": null,
-        "reason": "The podcast interview provides accessible information that could be helpful for patients seeking personal insights or real-world perspectives on health topics.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Radio interview with only a name, nothing usable in title or summary.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -651,10 +656,10 @@
         "train"
       ],
       "proposal": {
-        "label": "keep",
-        "group": null,
-        "reason": "The podcast discusses healthcare policy trends, which is relevant to patients seeking information about potential changes affecting their care.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "General federal health care policy outlook for professionals, no patient content.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -670,8 +675,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The video provides a general overview of treatment for inflammatory breast cancer, which is helpful for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Patient video on treatment of inflammatory breast cancer.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -687,8 +692,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "Provides autopsy findings relevant to understanding COVID-19 pathology and patient outcomes.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Autopsy case series of COVID-19 patients.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -704,8 +709,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "Provides practical, patient-friendly instructions on a common and important topic for parents and caregivers.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Parent education on taking a baby's temperature.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -721,8 +726,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The video provides relevant information about the cardiovascular risks of doping, which is useful for patients interested in athletic health.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Cardiovascular risks of performance-enhancing drugs.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -738,8 +743,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The webinar provides a nurse's perspective on managing thyroid disease, which is relevant to patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Webinar on managing thyroid disease.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -753,10 +758,10 @@
         "train"
       ],
       "proposal": {
-        "label": "keep",
-        "group": null,
-        "reason": "The video promotes a conference on sleep medicine trends, which could be relevant to patients seeking information on sleep-related research and advancements.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Conference advertisement with no medical content.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -772,8 +777,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The podcast interview provides clinical insight into valve hemodynamics relevant to patients with aortic valve disease.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Interview on PARTNER trial results for transcatheter and surgical aortic valves.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -789,8 +794,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The title suggests a clinical study on rheumatoid arthritis treatment outcomes, which could be helpful for patients seeking information on treatment strategies.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "No summary, but abstract on treat-to-target outcomes in rheumatoid arthritis.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -806,8 +811,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The video provides a general overview of hormonal research related to aging, which may be relevant to some patients interested in health span and anti-aging strategies.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Popular explainer on hormones and healthy aging.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -823,8 +828,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The document provides a comprehensive classification of endometriosis relevant to diagnostic approaches, which can be useful for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Endometriosis classification for diagnostics.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -840,8 +845,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The video provides an outlook on thyroid cancer for young people, which is relevant and helpful for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Outlook for young people with thyroid cancer.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -855,10 +860,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "No or very short abstract or description",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "Webinar on vertical HIV transmission and breastfeeding.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -874,8 +879,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "A patient story podcast is relevant and helpful for patients with Multiple Myeloma.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Multiple myeloma patient shares his story.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -891,8 +896,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "It is a correction or erratum, which falls under group 2 as it provides little information for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Correction notice for a case report.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -908,8 +913,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "It is a correction or erratum, which falls under group 2 as it provides little information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Correction notice for a lab study.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -925,8 +930,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "It is an erratum, which is considered little information",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Erratum to an oxaliplatin neuropathy paper, no content of its own.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -942,8 +947,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "It is a corrigendum (correction) with no or very short description",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Corrigendum to the EASL hepatitis C recommendations.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -959,8 +964,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "It is an erratum with no or very short description",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Erratum to the CheckMate 9ER trial report.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -976,8 +981,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "It is a correction or erratum, which falls under group 2 as it provides no or very short information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Correction to a ruxolitinib cream review.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -993,8 +998,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "It is a correction or erratum, which falls under group 2 as it provides no or very short information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Correction to a glypican 3 imaging paper.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1008,10 +1013,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "No or very short summary, and it is a published erratum",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but the title is a systematic review of metformin and lifestyle change in PCOS.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1027,8 +1032,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "It is a correction or erratum, which falls under group 2 as it provides no or very short information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Correction to an ozoralizumab paper.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1044,8 +1049,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "It is a correction or erratum with no or very short description and no patient-related content.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Correction to a meningioma MRI paper.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1061,8 +1066,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "It is a corrigendum, which is a correction or erratum, indicating it contains little or no new information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Corrigendum to an AML meta-analysis.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1078,8 +1083,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "It is a correction to an article with a very short abstract or description.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Correction notice; summary only describes a wording fix in a cystic fibrosis review.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1095,8 +1100,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "It is an erratum with no substantive content for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Erratum to the KDIGO CKD-MBD guideline.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1111,9 +1116,9 @@
       ],
       "proposal": {
         "label": "unhelpful",
-        "group": 2,
-        "reason": "No or very short summary, and it is a published erratum",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "group": 1,
+        "reason": "No summary; virological study of the pangolin origin of SARS-CoV-2, not usable for patients.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1129,8 +1134,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "It is a corrigendum (correction) and has no or very short description.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Corrigendum to an axial spondyloarthritis audit paper.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1146,8 +1151,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "It is a corrigendum with no or very short description",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Corrigendum to a gout quality-of-life paper.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1163,8 +1168,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "It is a corrigendum, which is a type of correction or erratum, falling under group 2 as it provides little or no new information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Corrigendum to a low rectal cancer cohort study.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1180,8 +1185,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "It is a correction or erratum, which falls under group 2 as it provides little information for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Correction to a pigmentary glaucoma review.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1197,8 +1202,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "It is an erratum, which is considered little information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Erratum to a CircNF1 gastric cancer paper.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1214,8 +1219,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "It is an erratum with no or very short description, making it little information for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Erratum to a pediatric trigeminal case report.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1229,10 +1234,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "No or very short abstract or description",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but the title is the BSR guideline for gout management.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1248,8 +1253,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "The document is a published erratum with no abstract or description provided.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Listed only as a published erratum to a DIPG target paper, no summary.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1265,8 +1270,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "It is a correction or erratum with no or very short description",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Correction to the HIT-CRAD dysphagia trial.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1282,8 +1287,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "It is a correction or erratum, which falls under group 2 as it provides no or very short information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Correction for a Klebsiella pneumoniae paper.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1299,8 +1304,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The document provides integrative genomic analysis and molecular classification of cholangiocarcinoma, which is relevant to patients seeking understanding of the disease's molecular profiles and potential therapies.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Genomic classification of patient cholangiocarcinomas with an IDH-mutant subtype of therapeutic relevance.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1314,10 +1319,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 1,
-        "reason": "It is a clinical trial phase III study, which is considered unhelpful for most patients as it focuses on research rather than patient-facing information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but phase 3 CASSIOPEIA trial data on stem cell yield in myeloma.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1332,9 +1337,9 @@
       ],
       "proposal": {
         "label": "unhelpful",
-        "group": 1,
-        "reason": "It is pure lab research or molecular mechanisms related to a drug, not patient-focused information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "group": 2,
+        "reason": "Comment on ANGPTL3 inhibition with no summary.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1350,8 +1355,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "No or very short summary, and it is an editorial or comment which provides little direct information for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Editorial comment on heart failure and sleep apnea, no summary.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1367,8 +1372,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "It is a letter or comment with no or very short summary",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Letter commenting on incidental thyroid cancer, no summary.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1384,8 +1389,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "No or very short summary, and it is an editorial/comment, which is considered little information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Editorial comment on familial hypercholesterolemia, no summary.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1399,10 +1404,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "The document is a letter with no or very short summary, making it little information for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a research letter analysing aspirin versus LMWH for VTE prophylaxis.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1416,10 +1421,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "No or very short summary, and it is an editorial which may not provide useful information for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but tagged clinical trial on adjuvant tamoxifen in early breast cancer.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1435,8 +1440,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "No or very short summary, and it is a comment or letter, which provides little information for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Comment letter on calcium and kidney stones, no summary.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1450,10 +1455,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "No or very short abstract or description",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a letter on rare mutations in familial pulmonary fibrosis and Hermansky-Pudlak syndrome.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1467,10 +1472,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "The document is a letter or comment with no abstract or description provided.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but reports the CLL prognostic index applied in a population cohort.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1486,8 +1491,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "The document is a letter or comment with no or very short summary, making it little information for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Comment letter on coffee and kidney disease, no summary.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1501,10 +1506,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "The document has no or very short summary, and is classified as a letter, which is considered little information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a research letter on occult HFpEF in atrial fibrillation patients.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1520,8 +1525,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "No or very short summary, and the publication types include Comment and Editorial, which are considered little information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Editorial comment on recovery after cardiac surgery, no summary.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1535,10 +1540,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "The document has no summary and is classified as an editorial or comment, which is considered little information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but the editorial discusses alternatives to NSAIDs for osteoarthritis pain.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1554,8 +1559,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "No or very short summary, and it is an editorial/comment which provides little direct information for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Editorial comment on infant sleep apnea, no summary.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1569,10 +1574,10 @@
         "train"
       ],
       "proposal": {
-        "label": "keep",
-        "group": null,
-        "reason": "An editorial on endothelial function in peripheral artery disease provides general information that may be helpful for some patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial on endothelial function in PAD, no summary.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1586,10 +1591,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "No or very short abstract or description",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a letter describing a complication after YAG laser iridotomy.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1603,10 +1608,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "No or very short summary, and it is a case report or letter which provides little direct information for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a case report on combined biologics for severe asthma.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1622,8 +1627,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "No or very short abstract or description",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Editorial on bile duct injury during cholecystectomy, no summary.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1639,8 +1644,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "No or very short abstract or description",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Editorial on treatment selection in HCC, no summary.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1656,8 +1661,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "No or very short abstract or description, and it is an editorial or comment.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Editorial comment on cervical cancer management, no summary.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1671,10 +1676,10 @@
         "train"
       ],
       "proposal": {
-        "label": "unhelpful",
-        "group": 2,
-        "reason": "The document is a letter or comment with no abstract or description provided.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but the title reports a finding on detecting worsening asthma.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1690,8 +1695,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "The document is a letter with no or very short abstract or description.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Letter reacting to an endometriosis surgery meta-analysis.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1707,8 +1712,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "No or very short abstract or description",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Editorial comment on LVAD therapy, no summary.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1724,8 +1729,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 2,
-        "reason": "No or very short summary, and it is an editorial/comment, which is considered little information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Editorial comment on influenza vaccine effectiveness, no summary.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1741,8 +1746,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The document provides relevant information on the treatment of metachronous oligometastatic prostate cancer, which is useful for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Review of treatment options for metachronous oligometastatic prostate cancer.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1758,8 +1763,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The document provides a systematic review on management options for node-positive prostate cancer, which is relevant to patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Systematic review of management of node-positive prostate cancer.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1775,8 +1780,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The document provides relevant clinical information on the use of adjuvant radiotherapy for muscle-invasive bladder cancer, which is helpful for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Systematic review of adjuvant radiotherapy after cystectomy for muscle-invasive bladder cancer.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1792,8 +1797,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The document provides relevant clinical data on salvage brachytherapy for prostate cancer, which is useful for patients and clinicians.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Multicenter cohort on outcomes of salvage brachytherapy for recurrent prostate cancer.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1809,8 +1814,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The document provides a systematic review and meta-analysis on the effectiveness of pioglitazone for NAFLD patients with prediabetes or T2DM, which is relevant to patients seeking medical information on treatment options.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Meta-analysis of pioglitazone treatment for NAFLD patients with prediabetes or type 2 diabetes.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1826,8 +1831,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The document provides relevant clinical information about darolutamide for prostate cancer patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Review of darolutamide efficacy and tolerability in castration-resistant prostate cancer.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1843,8 +1848,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The document provides relevant clinical information on salvage radiotherapy for recurrent prostate cancer after HIFU, including patient outcomes and treatment details.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Patient series on toxicity and outcomes of salvage VMAT radiotherapy after HIFU for prostate cancer.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1858,10 +1863,10 @@
         "train"
       ],
       "proposal": {
-        "label": "keep",
-        "group": null,
-        "reason": "The document provides relevant biological mechanisms and clinical associations related to prostate cancer progression.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Mechanism study of tumour-derived ALPL in prostate cancer cell lines and gene expression datasets.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1877,8 +1882,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The document discusses the role of the CCL2-CCR2 axis in cabazitaxel-resistant prostate cancer, which is relevant to patients with castration-resistant prostate cancer.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Lab study on resistance to cabazitaxel, a drug patients with CRPC take.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1894,8 +1899,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The document discusses new molecular biomarkers for prostate cancer prognosis and management, which is relevant to patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Review of prognostic biomarkers for managing prostate cancer beyond PSA.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1911,8 +1916,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "Provides a summary of evidence-based guidelines on underactive bladder for healthcare providers.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "EAU guideline summary on diagnosis and treatment of underactive bladder in men.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1926,10 +1931,10 @@
         "train"
       ],
       "proposal": {
-        "label": "keep",
-        "group": null,
-        "reason": "The document discusses intracrine hormone formation in prostate cancer, which is relevant to patients seeking information on hormone-related cancers and treatment responses.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Review of molecular steroid synthesis pathways and enzyme isoforms in prostate cancer only.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1945,8 +1950,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The document provides a meta-analysis on the efficacy and safety of PARP inhibitors in advanced breast cancer, which is relevant to patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Meta-analysis of efficacy and safety of PARP inhibitors in advanced breast cancer.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1962,8 +1967,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The document provides a systematic review and meta-analysis comparing different salvage therapies for prostate cancer, offering relevant information for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Meta-analysis comparing efficacy and toxicity of local salvage therapies for recurrent prostate cancer.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1979,8 +1984,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The document proposes a standardized scoring system for evaluating prostate MRI after focal ablation, which is relevant for patients and clinicians involved in follow-up care.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Proposed MRI scoring system for follow-up after focal therapy of prostate cancer, with patient summary.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -1994,10 +1999,10 @@
         "train"
       ],
       "proposal": {
-        "label": "keep",
-        "group": null,
-        "reason": "The document provides relevant mechanistic insights into BRCA2-mutated prostate cancer and potential therapeutic strategies.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Genetic screen in C. elegans and cell models on synthetic lethality mechanisms in BRCA2-mutated cancer.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -2013,8 +2018,8 @@
       "proposal": {
         "label": "unhelpful",
         "group": 1,
-        "reason": "Pure lab or animal work: focuses on SPECT method and simulation studies, not patient-related information.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "SPECT quantification methods paper evaluated on simulated phantoms.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -2030,8 +2035,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The document provides consensus recommendations for molecular testing in NSCLC, which is relevant to patients seeking information on treatment options.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Consensus recommendations on biomarker testing for patients with non-small cell lung cancer.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -2047,8 +2052,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The document provides a systematic review on the relationship between ADC and Gleason score in prostate cancer, which is relevant for patients seeking information on imaging and cancer prognosis.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Systematic review of MRI ADC as a predictor of Gleason score in prostate cancer patients.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -2064,8 +2069,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The document provides a model for predicting Gleason scores using radiomic features from ultrasound images, which is relevant for prostate cancer patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Diagnostic model predicting Gleason score from ultrasound images of prostate cancer patients.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -2081,8 +2086,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The document provides a systematic review and meta-analysis comparing two surgical treatments for BPH, which is relevant to patients seeking information on treatment options.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Meta-analysis comparing GreenLight laser and TURP for benign prostatic hyperplasia.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -2098,8 +2103,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The document provides relevant clinical information on active surveillance for intermediate risk prostate cancer, including trends and associated factors.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "National cohort on use of active surveillance for intermediate risk prostate cancer.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -2115,8 +2120,8 @@
       "proposal": {
         "label": "keep",
         "group": null,
-        "reason": "The document provides relevant epidemiological data linking BPH to cardiovascular disease risk, which is useful for patients.",
-        "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
+        "reason": "Nationwide cohort linking benign prostatic hyperplasia to cardiovascular disease risk.",
+        "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
       "label": null,
@@ -11562,7 +11567,8 @@
     {
       "id": "pubmed:33668632",
       "sets": [
-        "train"
+        "train",
+        "random"
       ],
       "proposal": {
         "label": "keep",
@@ -11925,6 +11931,5089 @@
         "label": "keep",
         "group": null,
         "reason": "Review of glutamatergic dysfunction and treatments like ketamine in psychiatric disorders.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:10609421",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Cognitive style and life events predicting symptoms in bipolar and unipolar patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:Lb928fc7V34",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Promotional video for a physicians' conference, no patient information.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25721218",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of risk factors for recurrent venous thromboembolism.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:40699586",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of anaphylaxis triggers and management in elderly people.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29061175",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical trial comparing HAIC with TACE in unresectable liver cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:42401886",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study of HbA1c and RDW in newly diagnosed type 2 diabetes.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34111704",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "PD-L1 changes in patients' head and neck cancer, relevant to immunotherapy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29237083",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient-reported outcomes and survival in metastatic prostate cancer on abiraterone.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:77fO71hTfnU",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Video about HIV PrEP uptake and access.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35232622",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Review of molecular APOE neuroinflammation mechanisms in Alzheimer's only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36830579",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of targeted therapies for EGFR-mutant lung cancer patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:12729868",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial of cognitive remediation therapy in schizophrenia.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29025054",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Case-control study of anogenital distance in women with PCOS.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:18292978",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "FRAX fracture risk assessment from clinical risk factors.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29018780",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Surveillance colonoscopy outcomes in young versus older colorectal cancer patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:41343772",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Meta-analysis of sex differences after cardiac rehabilitation.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43048526",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Peer support program for kidney transplant patients and donors.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32034406",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Diagnostic marker study in children with Mycoplasma pneumonia.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:18536970",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Exercise, quality of life and fatigue in colorectal cancer survivors.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:-419RV70bJ8",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Video explaining HPV-related cancers.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38734609",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patients' and nurses' views of physical health screening in schizophrenia.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35672801",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Meta-analysis of stem cell transplantation for dry macular degeneration.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29100397",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "PD-L1 and mismatch repair in patients' tumors, relevant to immunotherapy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23402640",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Meta-analysis of central neck dissection in papillary thyroid cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43079768",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Pure imaging methods paper on a tractography algorithm.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36243484",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of saphenous vein graft intervention and stents.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34626093",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Comparison of glaucoma surgeries and their outcomes.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25249296",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Gait, balance and fall risk in Parkinson's disease subtypes.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:16143688",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of skin manifestations of IBD and their treatment.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39683378",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Meta-analysis of obesity and irritable bowel syndrome.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:14513774",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial of Kampo medicine versus iron for anemia with uterine myoma.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24670642",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Resistance to BRAF inhibitors patients take, with patient tumor samples.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:9451720",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical trial of tolcapone on cognition in Parkinson's disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39737178",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Review of immune mechanisms of IPF exacerbations only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:16012943",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Mouse model study of gut muscle mechanisms.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:12711484",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of diagnosis and management of benign prostatic hyperplasia.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:41294344",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of nociplastic pain concepts, diagnosis and future treatment.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:17360729",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Prevalence of sleep apnoea in heart failure patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36817315",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient cohort with progressive fibrotic hypersensitivity pneumonitis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:frYC3ZtmQj0",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Deaf charity interview on deaf representation, may interest deaf people.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:a2WquSNLKJ0",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Teaser for a medical conference aimed at clinicians.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:16464945",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Cell culture study of an investigational drug on leiomyoma cells.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:11007104",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial of lactulose for subclinical hepatic encephalopathy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37062293",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of long-acting antiretrovirals and HIV treatment adherence.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30338577",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Emotion regulation and PTSD in women after domestic violence.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33521872",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Human PET study of APOE alleles and Alzheimer's pathology.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15880816",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Autoantibody marker for amyopathic dermatomyositis with lung disease risk.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26921767",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Diagnostic biomarker study in endometriosis patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24500799",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Sleeve gastrectomy versus gastric bypass outcomes in patients with GERD.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:16629428",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Comparison of rehabilitation programmes in multiple sclerosis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:your_case_is_on_hold:https://permalink.castos.com/podcast/33910/episode/1347340",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Holiday journal podcast episode with no usable content.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29362144",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Micro-enema before rectal MRI in rectal cancer follow-up patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24097213",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Insomnia prevalence and correlates after acute coronary syndrome.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15032584",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Review of complement mechanisms in lupus pathogenesis only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32039620",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Influences on unplanned marijuana use among young people.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:8688697",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of drug treatment of Parkinson's disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30508316",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial of romosozumab then denosumab in osteoporosis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:8017742",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Long-term omeprazole efficacy and safety in reflux esophagitis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:bhof_bone_talk:5c53681dbfba3e134115e40b:5c5391d6a4222fdb767b6899:633af04941bce80f7be57104",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Bone health foundation podcast on mindfulness for stress and healing.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:7646313",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of left ventricular hypertrophy in hypertension and its treatment.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38066589",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Muscle biopsies from long COVID patients with exercise intolerance.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:22250023",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Survey of pediatricians' cardiac screening practices, about clinicians' work.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:2221485",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Exercise-induced asthma responses in children.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15988468",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Effect of nalmefene, a drug patients take, on prolactin.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36210559",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of cancer-associated thrombosis including possible therapies.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15825128",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Systematic review of celiac disease prevalence in risk groups.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:8607508",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Bleeding complications after paracentesis in cirrhosis patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25986647",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Buprenorphine treatment and 12-step meetings, patient outcomes.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25530425",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of factors helping patients move from detox to treatment.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33043545",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Biomarkers to predict atrial fibrillation after cryptogenic stroke.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37130223",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of diagnostic biomarkers for idiopathic pulmonary fibrosis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28731358",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment without summary reacting to another paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:16424917",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of memantine, a drug patients take for dementia.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26983708",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment without summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:41106680",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Naples score to predict peripheral artery disease severity.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27923714",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Case report of BRAF V600E resistance to osimertinib in a lung cancer patient with treatment implications.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:10451113",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Evaluates an Ayurvedic herbo-mineral treatment in patients with liver cirrhosis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:18853942",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Human study of head posture and upper airway collapse, relevant to airway obstruction and sleep apnea.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30142426",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Cell-line study of HBV cccDNA dynamics, molecular virology only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:BijaVfi1VKw",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Family story video promoting annual flu vaccination.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43047262",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical study linking insulin resistance to small airway dysfunction in type 2 diabetes patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:2666579",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Historical article on Parkinson's disease history with no summary and nothing usable for patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:17473222",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient study improving detection of autoimmune diabetes in phenotypic type 2 diabetes.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27908337",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review on finding and controlling infection sources in sepsis treatment.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29844795",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of diverticular disease management and drug treatments.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23623280",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Phase 2/3 randomised trial of cetuximab with chemoradiotherapy in oesophageal cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33330100",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of hepatocellular carcinoma risk factors including fatty liver disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25272292",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical study of progestin treatment effects in endometrial cancer patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21040040",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Qualitative review of tuberculosis stigma experienced by patients and families.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27324135",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Prospective study of managing gallbladder disease in bariatric surgery patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25306226",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of resistance to androgen deprivation drugs in prostate cancer, including combination approaches.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:19369406",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Rat study of sodium thiosulfate, a drug tried in humans, for preventing kidney stones.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:14748655",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of bicalutamide treatment and quality of life in prostate cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25470087",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment that only reacts to another paper's aripiprazole trial.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:18301872",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of depression in chronic heart failure with screening and treatment options.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25443980",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of lupus nephritis diagnosis and treatment.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26644410",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical trial of zoledronic acid dosing in multiple myeloma patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36723919",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial of personalized pacing on quality of life in HFpEF patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27011792",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of sepsis-related DIC and its treatment.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:11193245",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial of hormone replacement regimens for postmenopausal bone loss.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37399548",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Prospective cohort on how well home rapid antigen tests detect COVID-19.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:42602339",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of TAVI as treatment for severe aortic stenosis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33399650",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but the title covers transition of adolescents with epilepsy to adult care.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26777539",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Prospective clinical study predicting feeding intolerance in acute pancreatitis patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:aao_ophthalmology_journal:a52fcbd0-6580-44bd-8153-779ac1db305e",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Podcast on overdose and hospitalization risks after opioid prescriptions for eye surgery.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33165702",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Diagnostic accuracy study of duplex ultrasound versus CT angiography in peripheral arterial disease patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:18250216",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of central sleep apnea in heart failure patients and its prognosis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:19818303",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of liver histopathology findings in human fatty liver disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35621195",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Cohort study of lipoprotein(a) and heart attack and stroke risk in adults with cardiovascular disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30859484",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment letter on another meta-analysis, with no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27993382",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of syphilis diagnosis and treatment.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24185585",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical outcomes of haploidentical bone marrow transplant in advanced Hodgkin lymphoma.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33339436",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of COVID-19 outcomes in multiple sclerosis patients on disease-modifying therapies.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38962407",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of treatment options for metastatic castration-sensitive prostate cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:17382697",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of metabolic side effects of thiazides in kidney stone patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:ilae_sharp_waves:Buzzsprout-14601807",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Podcast on managing non-seizure symptoms and quality of life in epileptic encephalopathies.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34198132",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Study of medication use and treatment outcomes for opioid use disorder across racial groups.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34054677",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Validation of depression and anxiety screening scales in a rural Indian diabetes population.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15030343",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Scoring system to grade severity of nail psoriasis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:11225507",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of the epidemiology and course of generalized anxiety disorder.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32248229",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Meta-analysis of pain and disability in veterans with PTSD.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24531549",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized PET study showing buspirone reduces levodopa-induced dyskinesias in Parkinson's patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:PUP_wYeQur0",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but the title shows an expert talk on nutrition in multiple sclerosis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:18566863",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial showing patient education reduces anticoagulant adverse events.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27039107",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Validation of an Italian eating disorder questionnaire in patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:15710866",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of asthma immunology, prevalence and laboratory diagnosis for guiding therapy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24237855",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Large survey of accident risk in people with insomnia.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38671551",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Biobank study showing physical activity reduces genetic obesity risk for hypertension.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25774926",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Case report of CPAP treatment improving early-onset preeclampsia.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:17283268",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial data on bypass graft patency by patient characteristics.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29880882",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical study linking brain glutamate to antipsychotic response in first episode psychosis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38159973",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Regional study of HPV-positive oropharyngeal cancer incidence and outcomes in Japan.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:40555305",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Phase III trial analysis of tralokinumab for atopic dermatitis with atopic comorbidities.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35954447",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Systematic review of markers for diagnosis and prognosis of mismatch repair-deficient endometrial cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:10713143",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Spanish review of the 2022-2023 mpox epidemic, clinical features, treatment and prevention.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:20380627",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of whether CPAP improves glucose metabolism in sleep apnoea patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24182705",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of diagnosis and evaluation of monoclonal gammopathy-associated glomerulonephritis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21593511",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of biomarkers for diagnosing vitamin B12 deficiency.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32989305",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Lab study of how anti-amyloid antibodies used in Alzheimer's patients, such as aducanumab, work.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:812055",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Prospective study of presentation and risk factors in 150 head and neck cancer patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:5jy9bLK9fxc",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Little summary, but a celiac disease society's highlights of a gastroenterology congress.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34886971",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of valvular heart disease diagnosis and treatment across race and ethnicity.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39569202",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of CAR-T cell therapy for hepatocellular carcinoma.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26520199",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of colonoscopy in colorectal cancer screening and treatment.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38519329",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of subcutaneous and fast infusion isatuximab for multiple myeloma patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:20189465",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Controlled study of sleeve gastrectomy effects in obese patients with type 2 diabetes.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:40544377",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Study of gut-brain interaction disorders in children with celiac disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:14724815",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Meta-analysis of cagA-positive H. pylori and gastric cancer risk.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:breast_cancer_now_podcast:tag:audioboom.com,2024-05-07:/posts/8501548",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Podcast on support services and trial help for people with secondary breast cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24973177",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Comparison of endoscopic dissection versus surgery in elderly early gastric cancer patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34270955",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Multicenter study on pH impedance testing on PPI to guide GERD treatment escalation.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27518138",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of tests for detecting early noise-induced hearing loss in humans.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35246389",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Meta-analysis comparing tomosynthesis and mammography for breast cancer screening.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25961395",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Comment on another paper with no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:12646665",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical spectrum of MC4R-related monogenic obesity in patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:6858602",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Mouse study of adenomyosis mechanisms.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36844141",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of immunotherapy options for hepatocellular carcinoma.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:8832998",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a consensus report on fibromyalgia and disability.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26487541",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of axitinib efficacy and side effects in advanced renal cell carcinoma.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:34794166",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical consensus on treating urogenital symptoms in breast cancer survivors.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15306569",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a guideline for managing inflammatory bowel disease in adults.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30154193",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Phase Ib trial of SD-101 plus pembrolizumab in advanced melanoma.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15249439",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial comparing auto and constant CPAP in sleep apnea.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39653259",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of anti-vitamin D antibodies in autoimmune disease patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:enableme_podcast:tag:soundcloud,2010:tracks/273765425",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient-oriented podcast on managing post-stroke fatigue.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43040601",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Letter commenting on another paper, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15905468",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Human cohort study on markers predicting white matter lesion progression.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24101403",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Pilot study of adapted cognitive processing therapy for adolescent PTSD.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35005542",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Lab mechanism study of lenacapavir, an HIV drug patients take.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37189737",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of genetic and epigenetic factors in fibromyalgia susceptibility and severity.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:16729915",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a phase II trial of pazopanib in metastatic renal cell carcinoma.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36404253",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Retrospective study on Hashimoto's thyroiditis and lymph node metastasis in thyroid cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "arxiv:2503.06701",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Artificial pancreas control approach for type 1 diabetes insulin delivery.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32387698",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Population study of acute kidney injury outcomes in cirrhosis patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:2956279",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Human study on inherited Lp(a) phenotypes and plasma levels, a cardiovascular risk factor.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:22648103",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Case series of robotic radical resection for gallbladder cancer patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23171327",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Study of working memory in older adults with insomnia.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37087062",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Cell study of neurotoxicity of clozapine, a drug patients take.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29290694",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of rucaparib treatment for ovarian cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:18321606",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Biopsy study relating steatosis severity to NASH in NAFLD patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39733798",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of gut microbiota and management options in childhood obesity.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27533069",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "CT patterns predicting lung function decline in idiopathic pulmonary fibrosis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "arxiv:2504.12432",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Model of avian influenza spillover from wild birds to cattle, no patient relevance.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:41879640",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Scoping review of cardiac rehabilitation exercise for peripheral artery disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28829911",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Cochrane review of chemoradiotherapy with or without surgery for esophageal cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21572417",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Exome sequencing of autism patients identifying causative de novo mutations.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27255492",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Comparison of cyclophosphamide and mycophenolate in scleroderma lung disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37918575",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Vignette study of clinicians' diagnostic accuracy for complex PTSD.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32729278",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Cohort study of COVID-19 patients progressing to pneumonia.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32338015",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Study of gastroscopy biopsies in CDH1 mutation carriers at risk of gastric cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26530291",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of minimally invasive pancreatic surgery outcomes.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:40956253",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Quality improvement on amoxicillin treatment for pediatric pneumonia.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32208884",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Predictors of cognitive improvement after treatment of late-life depression.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:10995913",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Fracture risk prediction model for people with HIV.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31041651",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of causes and diagnostic work-up of idiopathic acute pancreatitis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31042143",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial of telephone and web CBT for refractory IBS.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26152814",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review on screening for cognitive decline and dementia.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25470189",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Drug design and binding study of experimental influenza M2 inhibitors.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15792974",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Computer model of ionic currents in simulated atrial cells.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29984848",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Quality of life of children with psoriasis and their caregivers.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21368693",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Prospective study of surgery outcomes for pediatric low-grade gliomas.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32637862",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Pregnancy outcomes across PCOS phenotypes.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:19437293",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Prevalence of ADHD, ODD, depression and anxiety in preschool children.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:24300864",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Theoretical signalling framework of insomnia pathophysiology, no summary.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:38978310",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "ACR/CHEST guideline for treating ILD in systemic autoimmune rheumatic diseases.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30630439",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Blood markers predicting outcomes in advanced cervical cancer on chemotherapy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29886394",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "GRADE recommendations on adjuvant endocrine therapy in premenopausal breast cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33355658",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial of lavage vs resection for perforated diverticulitis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:7030988",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial of halcinonide cream regimens in atopic dermatitis and psoriasis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:40376576",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of bladder-preserving treatment for muscle-invasive bladder cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31110374",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Non-invasive APRI score to predict esophageal varices in cirrhosis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:bjpsych_journals_podcast:tag:soundcloud,2010:tracks/731393131",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Podcast on mental healthcare for refugees in the Lesbos camp.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:8955650",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Phase II trial of topotecan in recurrent ovarian cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:10376128",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial of risperidone vs haloperidol in chronic schizophrenia.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25256332",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Imaging-guided management of low-flow low-gradient aortic stenosis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43078376",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Mouse study of a wastewater-derived arabinoxylan extract.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25459576",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of food allergy epidemiology and natural history.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:18512751",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Home self-videotaping for assessing Parkinson's disease patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:22711857",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "BRCA mutation frequency and treatment response in ovarian cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15121991",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of the genetics of autism.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:19740383",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Mouse mechanism study of alemtuzumab, a drug patients take.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43099818",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Mechanistic review of mitochondrial dynamics in experimental ischemia-reperfusion models.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:jaaos_unplugged:32ce45724b5143bdb11749f886a13d72",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Podcast about the gender gap among orthopaedic surgeons.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32906228",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of precision medicine and therapeutic insights in NAFLD.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:8296720",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Survey of long COVID symptoms in Scotland.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24646343",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "RCT of SMS reminders improving medication adherence in type 2 diabetes.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24130968",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of multiple myeloma diagnosis and treatment.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:30872920",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of treatments for non-metastatic castration-resistant prostate cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32861103",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of imaging to diagnose early Parkinson's disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:17278279",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but a case report of steroid therapy for biliary stenosis in autoimmune pancreatitis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:28936622",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Meta-analysis of psychopathology risk in offspring of parents with bipolar disorder.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26903256",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Nationwide cohort on ADHD and substance use disorder risk by gender.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43072901",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Randomized trial of ticagrelor dosing with and without aspirin in diabetic CAD patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37632165",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of digestive deep infiltrating endometriosis including symptoms.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:RPZwt8qR-Yk",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient education video on dense breast tissue and screening.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:5725491",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Five-year regional data on device-associated infections in ICU patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:4005121",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "HER2 testing, trastuzumab access and survival in breast cancer patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:20848701",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but the title addresses diet in diverticulitis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:3464859",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Food technology study of eggplant powder in liver pate, no patient relevance.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37781785",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "AHA scientific statement on mental health in peripheral artery disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:endometriosis_australia_living_with_endo:7d5448cf-53ff-43ec-9f6f-998ca9bb9d4d",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient podcast about a pain management app for endometriosis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:21941685",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Gait training intervention study in Parkinson's disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:9721175",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but an AGA technical review on pain treatment in chronic pancreatitis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24681130",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but guidelines for diagnosis and management of intrahepatic cholangiocarcinoma.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29032136",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Design of the VICTORIA trial of vericiguat in heart failure.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:3486090",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "No summary, but the title indicates an article on Parkinson's disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43096195",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Wastewater surveillance and economics for public health, nothing patients can use.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35344957",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "School skin cancer prevention lesson improving sun protection behavior.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:20574812",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Accuracy of CT staging in sigmoid diverticulitis for treatment choice.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23401272",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Position paper on obesity-related hypertension including treatment.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39125301",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of vitamins K and D for bone health and osteoporosis risk.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:EP98ORjACFI",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Promo for a podcast sharing surgical tips among ophthalmologists.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23381558",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of genetic susceptibility markers in rheumatoid arthritis patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36001102",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Registry study linking patient-reported outcomes to costs in ankylosing spondylitis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "podcast:celiac_canada_podcast:c3769e55-4ab5-4530-a9a4-e867ad790666",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient podcast on gluten-free dining for people with celiac disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25261806",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Population data on demographics of kidney stone treatment in Ontario.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15842025",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "RCT of a care management program for bipolar disorder.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:36907913",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Surgeon learning curve for endoscopic lumbar fusion, about clinicians' work.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43090097",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient-reported outcomes after beta-lactam allergy delabeling.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:18450868",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Prevalence and predictors of ketoacidosis at diabetes diagnosis in youth.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:20736985",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Dyslipidemia prevalence in children with chronic kidney disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:2562013",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Comparison of imaging for kidney scarring in children with vesicoureteric reflux.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32424301",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Sling treatment for incontinence and climacturia after prostatectomy.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:20092387",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Add-back therapy and treatment persistence in endometriosis patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33341285",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Cost-effectiveness and accuracy of PSMA PET/CT in prostate cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31637443",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 2,
+        "reason": "Editorial comment without summary reacting to another paper.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:17846044",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Fatigue, sleep and quality of life outcomes with abatacept in rheumatoid arthritis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:23478338",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical protocol for uterine fibroids including treatment options and patient fears.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25809767",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Fluoroquinolone resistance in tuberculosis treatment in high-burden countries.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:24532785",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Long-term safety and efficacy of natalizumab in multiple sclerosis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15183782",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical trial of an implantable telescope for macular degeneration.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "zenodo:13850623",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Nutritional status in liver cirrhosis patients by disease severity.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:16710437",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Screening test for angle closure glaucoma in patients' family members.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35328614",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of uric acid in kidney, cardiovascular and metabolic disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:8968085",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Germline BRCA2 mutations found in pancreatic cancer patients.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:16861119",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of radiation therapy advances in prostate cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:31521956",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Cohort study on predicting and preventing opioid overdose death.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:25613717",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Nationwide data on pneumococcal vaccine impact on adult invasive disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:26026821",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Oncologic and fertility outcomes of trachelectomy for early cervical cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:27080645",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Effect of hearing aids on emotion perception in older adults with hearing loss.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23466649",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "RCT of tenofovir safety for HIV prevention.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:19031176",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Efficacy and safety of bevacizumab plus irinotecan in recurrent brain tumours.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:37935198",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "Molecular mechanism study of PSMD14 in myeloma, lab work only.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:15844073",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Tuberculosis prevalence among HIV-infected people in Tanzania.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:29753531",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Compares Alzheimer's progression profiles in Japanese and North American cohorts.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:40048080",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of dialectical behavior therapy for autistic adults.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:4_ouooz7xic",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient video on getting the most from axial SpA appointments.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "youtube:3bm_PSxYf3M",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Patient town hall on FDA review of sparsentan for FSGS.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:43079546",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Case report of infected mandibular fracture in a diabetic patient.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:40240983",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Clinical guideline on anaemia management in chronic kidney disease.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:2046107",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "SHEP trial of antihypertensive treatment preventing stroke in older adults.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:33115685",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Gynecologic cancer incidence after uterine artery embolization.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:16109363",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of how glatiramer acetate, an MS drug patients take, works.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:39695992",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Nutrition status and chemotherapy side effects in stage IV gastric cancer.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:32087815",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Systematic review of influenza respiratory infection burden in young children.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:23744636",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Accuracy of kidney function equations in patients with cirrhosis.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:12520601",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "unhelpful",
+        "group": 1,
+        "reason": "No summary; title names a cataract surgery technique, about surgeons' work.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:35743141",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Review of diverticular disease and how symptoms arise.",
+        "model": "claude-opus-5-5"
+      },
+      "proposal_raw": null,
+      "label": null,
+      "group": null,
+      "note": "",
+      "checked_at": null
+    },
+    {
+      "id": "pubmed:12695314",
+      "sets": [
+        "random"
+      ],
+      "proposal": {
+        "label": "keep",
+        "group": null,
+        "reason": "Health care costs associated with PTSD symptoms in women.",
         "model": "claude-opus-5-5"
       },
       "proposal_raw": null,
