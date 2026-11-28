@@ -76,6 +76,17 @@ def test_labels_page_through_all_sets(server, labels_file):
     assert data["total"] == 4
 
 
+def test_labels_filter_by_the_label_that_counts(server, labels_file):
+    def ids(label):
+        return [item["id"] for item in server.prefilter_labels({"label": [label]})["items"]]
+
+    assert ids("keep") == ["pubmed:1"]
+    assert ids("unhelpful") == ["pubmed:2", "pubmed:4"]  # pubmed:2 by its proposal
+    assert ids("none") == ["pubmed:3"]
+    with pytest.raises(ValueError):
+        server.prefilter_labels({"label": ["maybe"]})
+
+
 def test_labels_refuse_an_unknown_status(server, labels_file):
     with pytest.raises(ValueError):
         server.prefilter_labels({"status": ["maybe"]})

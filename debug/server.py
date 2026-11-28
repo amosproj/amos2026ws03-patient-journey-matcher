@@ -880,6 +880,17 @@ async def db_titles(connection: Any, ids: list[str]) -> dict[str, Any]:
     return {"rows": rows}
 
 
+async def db_prefilter_documents(connection: Any, ids: list[str]) -> dict[str, Any]:
+    """What a Pre-filter card shows of the stored documents among `ids`."""
+    rows = await fetch_json(
+        connection,
+        "SELECT id, title, source, content_type, publication_types, published_at, summary,"
+        " canonical_url FROM documents WHERE id = ANY($1::text[])",
+        ids,
+    )
+    return {"rows": rows}
+
+
 def version(document: str) -> str:
     """The version of `document` for its indexes: its last change, or a later stored transcript.
 
@@ -2545,9 +2556,10 @@ def topic_detail(topic_id: str) -> dict[str, Any]:
 
 # The Pre-filter screen: the labels and results of the document pre-filter study (#92), which
 # scripts/prefilter.py writes. Only these files are read and written; documents come from
-# /api/db/document, read only.
+# /api/prefilter/documents, read only.
 PREFILTER_DIR = ROOT / "research/prefilter"
 PREFILTER_STATUSES = ("unchecked", "accepted", "changed")
+PREFILTER_LABELS = ("keep", "unhelpful", "none")
 
 
 def prefilter_status(entry: dict[str, Any]) -> str:
@@ -2559,14 +2571,23 @@ def prefilter_status(entry: dict[str, Any]) -> str:
     return "accepted" if same else "changed"
 
 
+def prefilter_label(entry: dict[str, Any]) -> str:
+    """The label that counts: a person's, else the LLM's proposal, else none."""
+    if entry.get("label") is not None:
+        return str(entry["label"])
+    return str((entry.get("proposal") or {}).get("label") or "none")
+
+
 def prefilter_labels(params: dict[str, list[str]]) -> dict[str, Any]:
     path = PREFILTER_DIR / "labels.json"
     if not path.exists():
         return {"missing": True}
     data = json.loads(path.read_text(encoding="utf-8"))
-    set_name, status = first(params, "set"), first(params, "status")
+    set_name, status, label = first(params, "set"), first(params, "status"), first(params, "label")
     if status and status not in PREFILTER_STATUSES:
         raise ValueError(f"status must be one of {', '.join(PREFILTER_STATUSES)}")
+    if label and label not in PREFILTER_LABELS:
+        raise ValueError(f"label must be one of {', '.join(PREFILTER_LABELS)}")
     limit, offset = page(params)
     progress: dict[str, dict[str, int]] = {}
     for entry in data["documents"]:
@@ -2579,6 +2600,7 @@ def prefilter_labels(params: dict[str, list[str]]) -> dict[str, Any]:
         for entry in data["documents"]
         if (not set_name or set_name in entry["sets"])
         and (not status or prefilter_status(entry) == status)
+        and (not label or prefilter_label(entry) == label)
     ]
     return {
         "items": items[offset : offset + limit],
@@ -2840,6 +2862,7 @@ class Handler(BaseHTTPRequestHandler):
             "/api/index/terms",
             "/api/index/transcription",
             "/api/db/titles",
+            "/api/prefilter/documents",
             "/api/match",
             "/api/match/source",
             "/api/prefilter/label",
@@ -2862,6 +2885,12 @@ class Handler(BaseHTTPRequestHandler):
                 self.send_result(lambda: source(body))
             elif path == "/api/prefilter/label":
                 self.send_result(lambda: save_prefilter_label(body))
+            elif path == "/api/prefilter/documents":
+                self.send_db(
+                    lambda connection: db_prefilter_documents(
+                        connection, string_list(body, "ids", 500)
+                    )
+                )
             elif path == "/api/db/titles":
                 self.send_db(
                     lambda connection: db_titles(connection, string_list(body, "ids", 5000))

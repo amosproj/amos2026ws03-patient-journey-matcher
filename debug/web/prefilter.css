@@ -1,17 +1,36 @@
-/* Pre-filter screen: one document to label, and the results of the study. */
-#pf-label { max-width: 920px; }
-.pf-title { font-size: 16px; font-weight: 650; line-height: 1.35; }
+/* Pre-filter screen: cards of documents to label, and the results of the study. */
+.pf-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 380px), 1fr)); gap: 12px; align-items: start; }
+.pf-card { box-shadow: inset 3px 0 var(--line-strong); }
+.pf-card.pf-keep { box-shadow: inset 3px 0 var(--good); }
+.pf-card.pf-unhelpful { box-shadow: inset 3px 0 var(--critical); }
+.pf-title { font-size: 15px; font-weight: 650; line-height: 1.35; }
+.pf-title a { color: inherit; text-decoration: none; }
+.pf-title a:hover { text-decoration: underline; }
 .pf-meta { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; color: var(--muted); font-size: 12px; }
-.pf-abstract { margin: 0; max-height: 40vh; overflow: auto; line-height: 1.5; white-space: pre-line; }
+.pf-abstract { margin: 0; line-height: 1.5; white-space: pre-line; font-size: 13px; cursor: pointer; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 5; line-clamp: 5; overflow: hidden; }
+.pf-abstract.open { display: block; cursor: default; }
 .pf-proposal { display: grid; gap: 4px; padding: 10px 12px; border-radius: 7px; background: var(--code); box-shadow: inset 3px 0 var(--meta); }
 .pf-proposal.none { box-shadow: inset 3px 0 var(--dropped); }
 .pf-proposal pre { white-space: pre-wrap; margin: 6px 0 0; font-size: 12px; }
-#pf-note { padding: 7px 9px; border: 1px solid var(--line-strong); border-radius: 7px; background: var(--panel); color: var(--text); }
-.pf-nav { display: flex; justify-content: space-between; align-items: center; }
+.pf-choices { display: flex; border: 1px solid var(--line-strong); border-radius: 7px; overflow: hidden; }
+.pf-choices button { flex: 1; padding: 7px 6px; border: 0; border-left: 1px solid var(--line-strong); background: var(--panel); color: var(--text); cursor: pointer; font-weight: 600; font-size: 13px; }
+.pf-choices button:first-child { border-left: 0; }
+.pf-choices button:hover:not(:disabled, .active) { background: var(--hover); }
+.pf-choices button.active { background: var(--action); color: var(--action-text); }
+.pf-choices button:disabled { opacity: .45; cursor: default; }
+.pf-note { padding: 7px 9px; border: 1px solid var(--line-strong); border-radius: 7px; background: var(--panel); color: var(--text); }
+.pf-nav { display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: space-between; align-items: center; font-size: 13px; }
+.pf-pages { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.pf-pages button { min-width: 32px; height: 30px; padding: 0 8px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--panel); color: var(--text); cursor: pointer; font-variant-numeric: tabular-nums; }
+.pf-pages button:hover:not(:disabled, .active) { background: var(--hover); }
+.pf-pages button.active { background: var(--action); border-color: var(--action); color: var(--action-text); font-weight: 650; }
+.pf-pages button:disabled { opacity: .45; cursor: default; }
+.pf-jump { display: flex; gap: 6px; align-items: center; color: var(--muted); white-space: nowrap; }
+.pf-jump input { width: 56px; padding: 4px 6px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--panel); color: var(--text); }
+.pf-jump select { margin-left: 8px; }
 .pf-guide > summary { padding: 9px 12px; cursor: pointer; font-weight: 600; font-size: 13px; }
 .pf-guide table { margin: 0 12px 12px; }
 .pf-guide td { padding: 4px 8px; vertical-align: top; }
-@media (max-width: 760px) { #pf-label .buttons { flex-wrap: wrap; } }
 .pf-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); border: 1px solid var(--line); border-radius: 7px; overflow: hidden; }
 .pf-badges { display: flex; flex-wrap: wrap; gap: 6px; }
 #pf-results table { width: 100%; border-collapse: collapse; font-size: 13px; }
