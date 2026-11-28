@@ -951,3 +951,47 @@ def test_summarize_reports_llm_agreement_per_model(prefilter):
 def test_parse_answer_takes_only_whole_number_groups(prefilter, group):
     text = '{"label": "unhelpful", "group": ' + group + ', "reason": "x"}'
     assert prefilter.parse_answer(text) is None
+
+
+async def fetch(url: str, sql: str, *args: Any) -> list[Any]:
+    connection = await asyncpg.connect(url)
+    try:
+        return list(await connection.fetch(sql, *args))
+    finally:
+        await connection.close()
+
+
+@pytest.mark.postgres
+def test_propose_drops_adds_rule_hits_once(prefilter, url):
+    insert(url, doc("pubmed:1", publication_types=["Published Erratum"]), doc("pubmed:2"))
+    assert asyncio.run(prefilter.propose_drops(url)) == (1, 0)
+    [row] = asyncio.run(fetch(url, "SELECT * FROM document_drops"))
+    assert (row["document_id"], row["status"], row["proposed_by"]) == (
+        "pubmed:1",
+        "proposed",
+        "rule:erratum",
+    )
+    assert row["decided_at"] is None and row["effect_at"] is None
+    assert asyncio.run(prefilter.propose_drops(url)) == (0, 1)
+
+
+@pytest.mark.postgres
+def test_propose_drops_never_touches_a_decision(prefilter, url):
+    insert(url, doc("pubmed:1", publication_types=["Published Erratum"]))
+    asyncio.run(prefilter.propose_drops(url))
+    asyncio.run(execute(url, "UPDATE document_drops SET status = 'rejected', decided_at = now()"))
+    [before] = asyncio.run(fetch(url, "SELECT * FROM document_drops"))
+    asyncio.run(prefilter.propose_drops(url))
+    [after] = asyncio.run(fetch(url, "SELECT * FROM document_drops"))
+    assert dict(after) == dict(before)
+
+
+@pytest.mark.postgres
+def test_propose_drops_needs_the_table(prefilter, url):
+    asyncio.run(execute(url, "DROP TABLE document_drops"))
+    with pytest.raises(RuntimeError, match="05-document-drops.sql"):
+        asyncio.run(prefilter.propose_drops(url))
+
+
+def test_drop_reasons_cover_every_rule(prefilter):
+    assert set(prefilter.DROP_REASONS) == set(prefilter.RULES)

@@ -24,8 +24,11 @@
     uv run --locked scripts/prefilter.py propose --set train
     uv run --locked scripts/prefilter.py train
     uv run --locked scripts/prefilter.py measure
+    uv run --locked scripts/prefilter.py propose-drops --rule erratum
 
-Reads `DATABASE_URL` (or `--database-url`) and only reads: every connection is read only. Writes
+Reads `DATABASE_URL` (or `--database-url`). Every command only reads, with a read-only connection,
+except propose-drops: it adds proposals to the drop list (`document_drops`), which a person then
+accepts or rejects in the debug UI; it never changes a row that exists. Writes
 the labels, the classifier and the results to research/prefilter/. The label a local LLM
 proposes counts unless a person changed it in the Pre-filter screen of the debug UI. Method and
 results: research/document-prefilter.md.
@@ -118,6 +121,15 @@ RULES = {
     "short_summary_no_full_text": f"({SHORT} AND {NO_FULL_TEXT})",
 }
 RULE_SET = ["erratum", "reaction_without_abstract"]
+# What a card of the drop list says about why a rule proposed a document.
+DROP_REASONS = {
+    "no_summary": "No summary or description",
+    "short_summary": "Summary shorter than 200 characters",
+    "erratum": "Notice of an erratum or correction",
+    "reaction_without_abstract": "Editorial, comment or letter without an abstract",
+    "no_summary_no_full_text": "No summary and no full text",
+    "short_summary_no_full_text": "Short summary and no full text",
+}
 ANY_RULE = "(" + " OR ".join(RULES[rule] for rule in RULE_SET) + ")"
 
 
@@ -454,6 +466,10 @@ def parser() -> argparse.ArgumentParser:
     imports.add_argument("--model", required=True, help="who proposed them, e.g. codex")
     train = commands.add_parser("train", help="train the classifier on the training labels")
     measure = commands.add_parser("measure", help="measure drops, safety and speed")
+    drops = commands.add_parser(
+        "propose-drops", help="add a rule's hits to the drop list, for a person to decide"
+    )
+    drops.add_argument("--rule", choices=list(RULES), default="erratum")
     for command in (train, measure):
         command.add_argument("--embeddings", default=EMBEDDINGS, help="table of the AI index")
     return cli
@@ -962,6 +978,35 @@ def import_proposals(path: Path, model: str) -> dict[str, int]:
     return report
 
 
+DROPS_MISSING = (
+    "No document_drops table: apply db/init/05-document-drops.sql (make db) to this database"
+)
+
+
+async def propose_drops(url: str, rule: str = "erratum") -> tuple[int, int]:
+    """Propose every document `rule` matches for the drop list; returns (added, already there).
+    A document already on the list keeps its row as it is, so a decision is never undone."""
+    import asyncpg
+
+    connection = await asyncpg.connect(url)  # the one command that writes
+    try:
+        if await connection.fetchval("SELECT to_regclass('document_drops')") is None:
+            raise RuntimeError(DROPS_MISSING)
+        row = await connection.fetchrow(
+            f"""WITH hits AS (SELECT d.id FROM documents d WHERE {RULES[rule]}),
+                added AS (
+                    INSERT INTO document_drops (document_id, proposed_by, reason)
+                    SELECT id, $1, $2 FROM hits
+                    ON CONFLICT (document_id) DO NOTHING RETURNING 1)
+            SELECT (SELECT count(*) FROM added) AS added, (SELECT count(*) FROM hits) AS hits""",
+            f"rule:{rule}",
+            DROP_REASONS[rule],
+        )
+    finally:
+        await connection.close()
+    return row["added"], row["hits"] - row["added"]
+
+
 def main(argv: list[str] | None = None) -> None:
     args = parser().parse_args(argv)
     if args.command == "import-proposals":
@@ -980,6 +1025,9 @@ def main(argv: list[str] | None = None) -> None:
         asyncio.run(train(args.database_url, args.embeddings))
     elif args.command == "measure":
         asyncio.run(measure(args.database_url, args.embeddings))
+    elif args.command == "propose-drops":
+        added, already = asyncio.run(propose_drops(args.database_url, args.rule))
+        print(f"added {added}, already {already}")
     else:
         raise SystemExit(f"{args.command}: not implemented")
 
