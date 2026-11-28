@@ -152,12 +152,22 @@ def test_new_entries_have_no_label_and_no_proposal(prefilter, tmp_path):
     }
 
 
-def test_checked_lists_only_labeled_entries_of_a_set(prefilter, tmp_path):
+def test_labeled_lists_only_entries_of_a_set_with_a_label(prefilter, tmp_path):
     data = prefilter.load_labels(tmp_path / "labels.json")
-    prefilter.add_documents(data, ["pubmed:1", "pubmed:2"], "train")
+    prefilter.add_documents(data, ["pubmed:1", "pubmed:2", "pubmed:3"], "train")
     data["documents"][1]["label"] = "keep"
-    assert [entry["id"] for entry in prefilter.checked(data, "train")] == ["pubmed:2"]
-    assert prefilter.checked(data, "random") == []
+    data["documents"][2]["proposal"] = {"label": "unhelpful", "group": 2, "reason": "x"}
+    assert [entry["id"] for entry in prefilter.labeled(data, "train")] == ["pubmed:2", "pubmed:3"]
+    assert prefilter.labeled(data, "random") == []
+
+
+def test_a_person_overrides_the_proposed_label(prefilter):
+    proposal = {"label": "unhelpful", "group": 2, "reason": "x"}
+    entry = {"label": None, "group": None, "proposal": proposal}
+    assert (prefilter.label_of(entry), prefilter.group_of(entry)) == ("unhelpful", 2)
+    entry |= {"label": "keep"}
+    assert (prefilter.label_of(entry), prefilter.group_of(entry)) == ("keep", None)
+    assert prefilter.label_of({"label": None, "proposal": None}) is None
 
 
 def test_save_labels_round_trips_and_leaves_no_temp_file(prefilter, tmp_path):
@@ -498,7 +508,7 @@ def test_train_uses_checked_labels_the_rules_keep(prefilter, url, tmp_path, monk
     assert model["trained_on"] == 60  # pubmed:99 is dropped by a rule, pubmed:98 unchecked
     assert model["threshold"] is None  # fewer than 100 below any cut-off
     assert len(model["weights"]) == 2 and model["embeddings"] == table
-    assert model["labels_hash"] == prefilter.labels_hash(prefilter.checked(data, "train"))
+    assert model["labels_hash"] == prefilter.labels_hash(prefilter.labeled(data, "train"))
 
 
 def entry(document_id: str, sets: list[str], label: str | None, **fields: Any) -> dict[str, Any]:
@@ -616,7 +626,12 @@ def test_summarize_reports_llm_agreement_and_the_random_sample(prefilter):
         "agreed": 1,
         "by_model": None,
     }
-    assert result["random"] == {"checked": 2, "unhelpful": 1, "by_group": {"1": 0, "2": 1}}
+    assert result["random"] == {
+        "checked": 3,  # pubmed:3 counts with the label the LLM proposed
+        "by_person": 2,
+        "unhelpful": 2,
+        "by_group": {"1": 0, "2": 2},
+    }
 
 
 def test_drop_samples_are_added_once(prefilter):

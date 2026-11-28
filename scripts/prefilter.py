@@ -26,8 +26,9 @@
     uv run --locked scripts/prefilter.py measure
 
 Reads `DATABASE_URL` (or `--database-url`) and only reads: every connection is read only. Writes
-the labels, the classifier and the results to research/prefilter/. People check the proposed
-labels in the Pre-filter screen of the debug UI. Method and results: research/document-prefilter.md.
+the labels, the classifier and the results to research/prefilter/. The label a local LLM
+proposes counts unless a person changed it in the Pre-filter screen of the debug UI. Method and
+results: research/document-prefilter.md.
 """
 
 import argparse
@@ -346,12 +347,26 @@ def add_documents(data: dict[str, Any], ids: Iterable[str], set_name: str) -> in
     return added
 
 
-def checked(data: dict[str, Any], set_name: str) -> list[dict[str, Any]]:
-    """The entries of a set that a person has labeled."""
+def label_of(entry: dict[str, Any]) -> str | None:
+    """The label a person gave, else the label the LLM proposed, else None."""
+    if entry["label"] is not None:
+        return entry["label"]
+    return entry["proposal"]["label"] if entry["proposal"] else None
+
+
+def group_of(entry: dict[str, Any]) -> int | None:
+    """The group that belongs to `label_of(entry)`."""
+    if entry["label"] is not None:
+        return entry["group"]
+    return entry["proposal"]["group"] if entry["proposal"] else None
+
+
+def labeled(data: dict[str, Any], set_name: str) -> list[dict[str, Any]]:
+    """The entries of a set with a label, from a person or from the LLM."""
     return [
         entry
         for entry in data["documents"]
-        if set_name in entry["sets"] and entry["label"] is not None
+        if set_name in entry["sets"] and label_of(entry) is not None
     ]
 
 
@@ -427,7 +442,7 @@ def parser() -> argparse.ArgumentParser:
     )
     imports.add_argument("file", type=Path)
     imports.add_argument("--model", required=True, help="who proposed them, e.g. codex")
-    train = commands.add_parser("train", help="train the classifier on the checked training labels")
+    train = commands.add_parser("train", help="train the classifier on the training labels")
     measure = commands.add_parser("measure", help="measure drops, safety and speed")
     for command in (train, measure):
         command.add_argument("--embeddings", default=EMBEDDINGS, help="table of the AI index")
@@ -515,8 +530,8 @@ def fit(vectors: list[list[float]], labels: list[str]) -> tuple[list[float], flo
 
 
 def labels_hash(entries: Iterable[dict[str, Any]]) -> str:
-    """Which checked labels a classifier was trained on; a change makes the model stale."""
-    pairs = sorted((entry["id"], entry["label"]) for entry in entries)
+    """Which labels a classifier was trained on; a change makes the model stale."""
+    pairs = sorted((entry["id"], label_of(entry)) for entry in entries)
     return hashlib.sha256(json.dumps(pairs).encode()).hexdigest()
 
 
@@ -528,8 +543,8 @@ async def rule_dropped(connection: Any, ids: list[str]) -> set[str]:
 
 
 async def train(url: str, table: str = EMBEDDINGS) -> None:
-    """Fit on the checked training labels of documents the rules keep, and fix the threshold."""
-    entries = checked(load_labels(LABELS), "train")
+    """Fit on the training labels of documents the rules keep, and fix the threshold."""
+    entries = labeled(load_labels(LABELS), "train")
     ids = [entry["id"] for entry in entries]
     connection = await connect(url)
     try:
@@ -538,14 +553,16 @@ async def train(url: str, table: str = EMBEDDINGS) -> None:
     finally:
         await connection.close()
     used = [e for e in entries if e["id"] not in dropped and e["id"] in vectors]
-    weights, bias, out_of_fold = fit([vectors[e["id"]] for e in used], [e["label"] for e in used])
-    threshold = choose_threshold(list(zip(out_of_fold, [e["label"] for e in used], strict=True)))
+    targets = [label_of(e) for e in used]
+    weights, bias, out_of_fold = fit([vectors[e["id"]] for e in used], targets)
+    threshold = choose_threshold(list(zip(out_of_fold, targets, strict=True)))
     below = 0 if threshold is None else sum(score < threshold for score in out_of_fold)
     model = {
         "weights": weights,
         "bias": bias,
         "threshold": threshold,
         "trained_on": len(used),
+        "by_person": sum(e["label"] is not None for e in used),
         "below_threshold": below,
         "labels_hash": labels_hash(entries),
         "embeddings": table,
@@ -580,11 +597,13 @@ def add_drop_samples(
 
 
 def drop_checks(entries: Iterable[dict[str, Any]]) -> dict[str, Any]:
-    """Checked drops, the wrong ones among them (labeled keep) and the safety bar."""
-    labels = [entry["label"] for entry in entries if entry["label"] is not None]
+    """Labeled drops, the wrong ones among them (labeled keep) and the safety bar."""
+    entries = [entry for entry in entries if label_of(entry) is not None]
+    labels = [label_of(entry) for entry in entries]
     wrong = labels.count("keep")
     return {
         "checked": len(labels),
+        "by_person": sum(entry["label"] is not None for entry in entries),
         "wrong": wrong,
         "upper_bound": upper_bound(wrong, len(labels)),
         "safe": passes_safety(wrong, len(labels)),
@@ -600,6 +619,7 @@ def approach(
         "share": share,
         "by_source": by_source,
         "checked": checks["checked"],
+        "by_person": checks["by_person"],
         "wrong": checks["wrong"],
         "upper_bound": checks["upper_bound"],
         "passes": {"safety": safe, "usefulness_2": share >= 0.02, "usefulness_3": share >= 0.03},
@@ -673,13 +693,13 @@ def summarize(
             "variant": name not in RULE_SET,
         }
 
-    labeled = [entry for entry in documents if entry["label"] is not None]
-    proposed = [entry for entry in labeled if entry["proposal"] is not None]
-    random_checked = [entry for entry in in_set("random") if entry["label"] is not None]
-    unhelpful = [entry for entry in random_checked if entry["label"] == "unhelpful"]
+    with_label = [entry for entry in documents if label_of(entry) is not None]
+    proposed = [e for e in documents if e["label"] is not None and e["proposal"] is not None]
+    random_checked = [entry for entry in in_set("random") if label_of(entry) is not None]
+    unhelpful = [entry for entry in random_checked if label_of(entry) == "unhelpful"]
     return {
         "generated_at": datetime.now(UTC).isoformat(timespec="seconds"),
-        "labels_hash": labels_hash(labeled),
+        "labels_hash": labels_hash(with_label),
         "total": total,
         "approaches": {"rules": rules, "rules+model": combined},
         "rules": per_rule,
@@ -688,14 +708,16 @@ def summarize(
         else {
             "threshold": model.get("threshold"),
             "trained_on": model.get("trained_on"),
+            "by_person": model.get("by_person"),
             "below_threshold": model.get("below_threshold"),
-            "stale": labels_hash(checked(labels, "train")) != model.get("labels_hash"),
+            "stale": labels_hash(labeled(labels, "train")) != model.get("labels_hash"),
         },
         "llm_agreement": agreement(proposed),
         "random": {
             "checked": len(random_checked),
+            "by_person": sum(entry["label"] is not None for entry in random_checked),
             "unhelpful": len(unhelpful),
-            "by_group": {g: sum(str(e["group"]) == g for e in unhelpful) for g in ("1", "2")},
+            "by_group": {g: sum(str(group_of(e)) == g for e in unhelpful) for g in ("1", "2")},
         },
         "timing": timing,
     }
