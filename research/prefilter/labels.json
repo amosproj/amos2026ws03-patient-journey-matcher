@@ -45,10 +45,10 @@
         "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
       },
       "proposal_raw": null,
-      "label": null,
+      "label": "keep",
       "group": null,
       "note": "",
-      "checked_at": null
+      "checked_at": "2026-11-28T11:25:23+00:00"
     },
     {
       "id": "podcast:bsh_guidelines:bshguidelines.podbean.com/713b5fb2-f40e-33ea-9aea-c12a56799887",
@@ -62,10 +62,10 @@
         "model": "Qwen/Qwen3-4B@1cfa9a7208912126459214e8b04321603b3df60c"
       },
       "proposal_raw": null,
-      "label": null,
-      "group": null,
+      "label": "unhelpful",
+      "group": 1,
       "note": "",
-      "checked_at": null
+      "checked_at": "2026-11-28T11:25:34+00:00"
     },
     {
       "id": "pubmed:39326887",
