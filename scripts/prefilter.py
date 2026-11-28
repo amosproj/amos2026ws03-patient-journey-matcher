@@ -101,8 +101,11 @@ NO_FULL_TEXT = "jsonb_array_length(d.full_text) = 0"
 RULES = {
     "no_summary": NO_SUMMARY,
     "short_summary": SHORT,
+    # PubMed also tags the corrected article itself "Published Erratum"; that one is a "Journal
+    # Article" too, the erratum notice is not.
     "erratum": (
-        "(d.publication_types && ARRAY['Erratum', 'Published Erratum']"
+        "((d.publication_types && ARRAY['Erratum', 'Published Erratum']"
+        " AND NOT d.publication_types && ARRAY['Journal Article'])"
         r" OR d.title ~* '^(correction to|erratum|corrigendum)\M')"
     ),
     "reaction_without_abstract": (

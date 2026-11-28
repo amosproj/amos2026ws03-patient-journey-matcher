@@ -213,6 +213,7 @@ RULE_ROWS = [
     doc("pubmed:7", summary="   "),
     doc("pubmed:8", publication_types=["Editorial"]),
     doc("youtube:9", summary="short"),
+    doc("pubmed:10", publication_types=["Journal Article", "Published Erratum"]),
 ]
 
 
@@ -262,9 +263,9 @@ def test_rule_counts_per_rule_and_source(prefilter, url):
     assert counts["erratum"] == {"pubmed": 2}
     assert counts["reaction_without_abstract"] == {"pubmed": 1}
     assert counts["no_summary_no_full_text"] == {"pubmed": 3}
-    # pubmed:1, 2, 3, 4, 6, 7 and youtube:9 are dropped; pubmed:5 and 8 are kept.
-    assert counts["_all"] == {"pubmed": 6, "youtube": 1}
-    assert counts["_total"] == {"pubmed": 8, "youtube": 1}
+    # pubmed:3, 4 and 6 are dropped; the others are kept, pubmed:10 is the corrected article.
+    assert counts["_all"] == {"pubmed": 3}
+    assert counts["_total"] == {"pubmed": 9, "youtube": 1}
     assert set(counts["_seconds"]) == set(prefilter.RULES) | {"_all"}
     assert all(seconds >= 0 for seconds in counts["_seconds"].values())
 
@@ -291,7 +292,7 @@ def test_sample_train_takes_rule_hits_and_lab_titles(prefilter, url):
     insert(
         url,
         *[doc(f"pubmed:{i}") for i in range(200)],
-        doc("pubmed:900", summary=None),
+        doc("pubmed:900", publication_types=["Published Erratum"]),
         doc("pubmed:901", title="Enzalutamide resistance in a mouse xenograft model"),
     )
     ids = run(lambda c: prefilter.sample_train(c, n=20), url)
@@ -663,7 +664,7 @@ def study(prefilter, url, tmp_path, monkeypatch):
     high = [f"pubmed:{i}" for i in range(20, 30)]
     insert(
         url,
-        *[doc(f"pubmed:{i}", summary=None) for i in range(10)],
+        *[doc(f"pubmed:{i}", publication_types=["Published Erratum"]) for i in range(10)],
         *[doc(i) for i in low + high],
         doc("pubmed:30"),
         doc("pubmed:31"),
