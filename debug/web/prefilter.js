@@ -243,16 +243,16 @@ async function pfResults() {
       h("div", { class: "panel-body" },
         h("div", { class: "stats pf-cards" },
           card("Dropped", `${fmtCount(data.dropped)} · ${pfPercent(data.share)}`),
-          card("Checked drops", fmtCount(data.checked)),
+          card(`Checked drops, ${fmtCount(data.by_person ?? 0)} by a person`, fmtCount(data.checked)),
           card("Wrong drops", fmtCount(data.wrong), data.wrong > 1 ? "bad" : ""),
           card("Upper bound (95 %)", pfPercent(data.upper_bound)),
           data.cannot_judge != null ? card("Cannot judge (no embedding)", fmtCount(data.cannot_judge), "muted") : null),
         h("div", { class: "pf-badges" },
-          pfBadge(data.passes.safety, "Safety", "At least 300 checked drops, at most 1 of them wrong"),
+          pfBadge(data.passes.safety, "Safety", "At least 300 checked drops, at most 1 of them wrong. A drop counts as checked when it has a label, from the LLM or a person"),
           pfBadge(data.passes.usefulness_2, "≥ 2 % dropped"),
           pfBadge(data.passes.usefulness_3, "≥ 3 % dropped")),
         barList(Object.entries(data.by_source).map(([source, n]) => ({ name: SOURCE_LABEL[source] || source, value: n })))))
-    : h("div", { class: "panel" }, h("h3", {}, PF_APPROACH[name] || name), h("div", { class: "panel-body" }, h("span", { class: "hint" }, "No classifier with a threshold yet: run train."))));
+    : h("div", { class: "panel" }, h("h3", {}, PF_APPROACH[name] || name), h("div", { class: "panel-body" }, h("span", { class: "hint" }, result.model ? `The classifier (trained on ${fmtCount(result.model.trained_on)}) found no safe threshold, so it drops nothing.` : "No classifier yet: run train."))));
   const rules = h("div", { class: "panel" }, h("h3", {}, "Each rule", h("small", {}, "a variant is only reported, not part of the rules")),
     h("table", {}, h("thead", {}, h("tr", {}, ...["Rule", "Dropped", "By source", "Checked", "Wrong", "Query"].map((title) => h("th", {}, title)))),
       h("tbody", {}, ...Object.entries(result.rules).map(([name, rule]) => h("tr", { class: rule.variant ? "pf-variant" : "" },
@@ -268,11 +268,12 @@ async function pfResults() {
       model?.stale ? h("span", { class: "hint" }, "The training labels changed since the classifier was trained: run train, then measure.") : null,
       h("div", { class: "stats pf-cards" },
         card("Threshold (probability of keep)", model?.threshold == null ? "–" : model.threshold.toFixed(3), model ? "" : "muted"),
-        card("Trained on", model ? fmtCount(model.trained_on) : "–", model ? "" : "muted"),
+        card(model?.by_person != null ? `Trained on, ${fmtCount(model.by_person)} labeled by a person` : "Trained on", model ? fmtCount(model.trained_on) : "–", model ? "" : "muted"),
         card("Training labels below threshold", model ? fmtCount(model.below_threshold) : "–", model ? "" : "muted"),
-        ...Object.entries(result.llm_agreement.by_model || { all: result.llm_agreement }).map(([name, counts]) =>
-          card(`${name.split("@")[0]} agreed with people`, `${fmtCount(counts.agreed)} / ${fmtCount(counts.checked)}`)),
-        card("Unhelpful in the random sample", `${fmtCount(result.random.unhelpful)} / ${fmtCount(result.random.checked)}`),
+        // Agreement says little on a few labels: muted below 30.
+        h("div", { class: `card${result.llm_agreement.checked < 30 ? " muted" : ""}`, title: result.llm_agreement.checked < 30 ? "Too few labels by a person to judge the LLM" : null },
+          h("b", {}, `${fmtCount(result.llm_agreement.agreed)} / ${fmtCount(result.llm_agreement.checked)}`), h("span", {}, "LLM label kept by a person")),
+        card(`Unhelpful in the random sample: ${fmtCount(result.random.unhelpful)} of ${fmtCount(result.random.checked)}`, pfPercent(result.random.checked ? result.random.unhelpful / result.random.checked : null)),
         card("Rules, whole table", fmtSeconds(result.timing.rules_seconds)),
         card("Classifier per document", result.timing.model_ms_per_document == null ? "–" : `${result.timing.model_ms_per_document.toFixed(3)} ms`)),
       h("small", { class: "muted" }, `Measured ${fmtDateTime(result.generated_at)} on ${fmtCount(result.total)} documents. Random sample: group 1 ${result.random.by_group["1"]}, group 2 ${result.random.by_group["2"]}.`)));
