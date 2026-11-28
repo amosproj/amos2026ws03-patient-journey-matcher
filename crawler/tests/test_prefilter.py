@@ -4,12 +4,9 @@ the labels file, the safety statistics, the rules, the samples and the summary o
 import asyncio
 import importlib.util
 import json
-import os
 import sys
-from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
-from uuid import uuid4
 
 import asyncpg
 import pytest
@@ -47,26 +44,6 @@ def run(query: Any, url: str) -> Any:
             await connection.close()
 
     return asyncio.run(main())
-
-
-@pytest.fixture
-def url() -> Iterator[str]:
-    """A fresh schema with `db/init/` applied at `TEST_DATABASE_URL`; dropped at the end."""
-    database = os.environ.get("TEST_DATABASE_URL", "").strip()
-    if not database:
-        if os.environ.get("CI"):
-            pytest.fail("TEST_DATABASE_URL must be set on CI")
-        pytest.skip("TEST_DATABASE_URL is not set")
-    asyncio.run(execute(database, "CREATE EXTENSION IF NOT EXISTS vector"))
-    schema = f"test_{uuid4().hex[:12]}"
-    asyncio.run(execute(database, f"CREATE SCHEMA {schema}"))
-    scoped = f"{database}{'&' if '?' in database else '?'}search_path={schema},public"
-    try:
-        for path in sorted((ROOT / "db/init").glob("*.sql")):
-            asyncio.run(execute(scoped, path.read_text(encoding="utf-8")))
-        yield scoped
-    finally:
-        asyncio.run(execute(database, f"DROP SCHEMA {schema} CASCADE"))
 
 
 CONTENT_TYPES = {"pubmed": "journal_article", "youtube": "video", "zenodo": "report"}

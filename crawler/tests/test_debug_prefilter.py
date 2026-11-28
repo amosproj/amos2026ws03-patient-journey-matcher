@@ -199,3 +199,140 @@ def test_save_waits_for_the_lock_the_script_holds(server, labels_file):
 def test_save_label_takes_only_whole_number_groups(server, labels_file, group):
     with pytest.raises(ValueError):
         server.save_prefilter_label({"id": "pubmed:2", "label": "unhelpful", "group": group})
+
+
+# ── The drop list (#92): listing, decisions and the index version ──
+import asyncio  # noqa: E402
+
+import asyncpg  # noqa: E402
+from test_prefilter import doc, execute, fetch, insert  # noqa: E402
+
+
+def on(url, call):
+    """`call(connection)` on a writable connection to the test schema."""
+
+    async def main():
+        connection = await asyncpg.connect(url)
+        try:
+            return await call(connection)
+        finally:
+            await connection.close()
+
+    return asyncio.run(main())
+
+
+def propose(url, *ids):
+    asyncio.run(
+        execute(
+            url,
+            "INSERT INTO document_drops (document_id, proposed_by, reason)"
+            " SELECT unnest($1::text[]), 'rule:erratum', 'Notice of an erratum'",
+            list(ids),
+        )
+    )
+
+
+def drops(url):
+    rows = asyncio.run(fetch(url, "SELECT * FROM document_drops ORDER BY document_id"))
+    return {row["document_id"]: dict(row) for row in rows}
+
+
+@pytest.mark.postgres
+def test_drops_list_filters_by_status_and_skips_deleted_documents(server, url):
+    insert(url, doc("pubmed:1"), doc("pubmed:2"), doc("pubmed:3"))
+    propose(url, "pubmed:1", "pubmed:2", "pubmed:3")
+    asyncio.run(
+        execute(url, "UPDATE document_drops SET status = 'accepted' WHERE document_id = 'pubmed:2'")
+    )
+    asyncio.run(execute(url, "DELETE FROM documents WHERE id = 'pubmed:3'"))
+
+    listed = on(url, lambda c: server.prefilter_drops(c, {}))
+    assert [item["id"] for item in listed["items"]] == ["pubmed:1"]
+    assert listed["items"][0]["title"] == "Title pubmed:1"
+    assert listed["items"][0]["reason"] == "Notice of an erratum"
+    assert listed["total"] == 1
+    assert listed["counts"] == {"proposed": 1, "accepted": 1, "rejected": 0}
+    assert listed["proposers"] == ["rule:erratum"]
+    accepted = on(url, lambda c: server.prefilter_drops(c, {"status": ["accepted"]}))
+    assert [item["id"] for item in accepted["items"]] == ["pubmed:2"]
+
+
+@pytest.mark.postgres
+def test_accept_reject_undo_set_effect_at_only_when_indexing_changes(server, url):
+    insert(url, doc("pubmed:1"), doc("pubmed:2"))
+    propose(url, "pubmed:1", "pubmed:2")
+
+    def save(ids, decision):
+        body = {"ids": ids, "decision": decision}
+        return on(url, lambda c: server.save_prefilter_drops(c, body))
+
+    assert save(["pubmed:1"], "accept") == {"changed": 1}
+    assert save(["pubmed:2"], "reject") == {"changed": 1}
+    rows = drops(url)
+    assert rows["pubmed:1"]["status"] == "accepted" and rows["pubmed:1"]["effect_at"]
+    assert rows["pubmed:2"]["status"] == "rejected" and rows["pubmed:2"]["effect_at"] is None
+
+    # "Keep" on a page must not undo an accepted drop.
+    assert save(["pubmed:1"], "reject") == {"changed": 0}
+    assert drops(url)["pubmed:1"]["status"] == "accepted"
+
+    assert save(["pubmed:1", "pubmed:2", "pubmed:404"], "undo") == {"changed": 2}
+    after = drops(url)
+    assert after["pubmed:1"]["status"] == "proposed"
+    assert after["pubmed:1"]["effect_at"] > rows["pubmed:1"]["effect_at"]
+    assert after["pubmed:2"]["status"] == "proposed" and after["pubmed:2"]["effect_at"] is None
+
+
+@pytest.mark.postgres
+def test_version_follows_an_accepted_drop_like_the_matcher(server, url):
+    insert(url, doc("pubmed:1"))
+    propose(url, "pubmed:1")
+    asyncio.run(
+        execute(
+            url,
+            "UPDATE document_drops SET status = 'accepted', effect_at = now() + interval '1 hour'",
+        )
+    )
+
+    async def versions(connection):
+        await server.note_drops_table(connection)
+        return await connection.fetchrow(
+            f"SELECT {server.version('d')} AS version, d.changed_at, dr.effect_at"
+            " FROM documents d JOIN document_drops dr ON dr.document_id = d.id"
+        )
+
+    row = on(url, versions)
+    assert row["version"] == row["effect_at"] > row["changed_at"]
+
+
+@pytest.mark.postgres
+def test_drops_without_the_table(server, url):
+    asyncio.run(execute(url, "DROP TABLE document_drops"))
+    insert(url, doc("pubmed:1"))
+    assert on(url, lambda c: server.prefilter_drops(c, {})) == {"missing": True}
+    with pytest.raises(RuntimeError, match="05-document-drops.sql"):
+        on(
+            url,
+            lambda c: server.save_prefilter_drops(c, {"ids": ["pubmed:1"], "decision": "accept"}),
+        )
+
+    async def version(connection):
+        await server.note_drops_table(connection)
+        return await connection.fetchval(f"SELECT {server.version('d')} FROM documents d")
+
+    assert on(url, version) is not None
+
+
+@pytest.mark.parametrize(
+    "body",
+    [
+        {"ids": ["pubmed:1"], "decision": "maybe"},
+        {"ids": [], "decision": "accept"},
+        {"ids": ["x"] * 501, "decision": "accept"},
+        {"ids": "pubmed:1", "decision": "accept"},
+        {"ids": ["pubmed:1"], "decision": "accept", "note": "x" * 501},
+    ],
+)
+def test_save_drops_refuses_bad_bodies(server, body):
+    with pytest.raises(ValueError):
+        asyncio.run(server.save_prefilter_drops(None, body))

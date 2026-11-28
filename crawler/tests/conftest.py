@@ -1,7 +1,24 @@
+import asyncio
+import os
 import socket
+from collections.abc import Iterator
+from pathlib import Path
 from typing import Any
+from uuid import uuid4
 
 import pytest
+
+ROOT = Path(__file__).resolve().parents[2]
+
+
+async def _execute(url: str, sql: str) -> None:
+    import asyncpg
+
+    connection = await asyncpg.connect(url)
+    try:
+        await connection.execute(sql)
+    finally:
+        await connection.close()
 
 
 @pytest.fixture(autouse=True)
@@ -46,3 +63,23 @@ def no_ncbi_sleep(monkeypatch: pytest.MonkeyPatch) -> None:
     from crawler.sources.pubmed import NCBI_THROTTLE
 
     monkeypatch.setattr(NCBI_THROTTLE, "_sleep", lambda _seconds: None)
+
+
+@pytest.fixture
+def url() -> Iterator[str]:
+    """A fresh schema with `db/init/` applied at `TEST_DATABASE_URL`; dropped at the end."""
+    database = os.environ.get("TEST_DATABASE_URL", "").strip()
+    if not database:
+        if os.environ.get("CI"):
+            pytest.fail("TEST_DATABASE_URL must be set on CI")
+        pytest.skip("TEST_DATABASE_URL is not set")
+    asyncio.run(_execute(database, "CREATE EXTENSION IF NOT EXISTS vector"))
+    schema = f"test_{uuid4().hex[:12]}"
+    asyncio.run(_execute(database, f"CREATE SCHEMA {schema}"))
+    scoped = f"{database}{'&' if '?' in database else '?'}search_path={schema},public"
+    try:
+        for path in sorted((ROOT / "db/init").glob("*.sql")):
+            asyncio.run(_execute(scoped, path.read_text(encoding="utf-8")))
+        yield scoped
+    finally:
+        asyncio.run(_execute(database, f"DROP SCHEMA {schema} CASCADE"))

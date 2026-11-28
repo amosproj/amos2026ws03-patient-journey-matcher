@@ -613,6 +613,7 @@ def run_db(
             message = URL_PASSWORD.sub(r"\1<redacted>@", describe_error(error))
             raise DbUnavailable(message, connection_hint(error)) from error
         try:
+            await note_drops_table(connection)
             return await query(connection)
         finally:
             await connection.close()
@@ -800,7 +801,7 @@ def document_filter(params: dict[str, list[str]], indexed: bool) -> tuple[str, l
             states = FULL_TEXT_FILTERS.get(full_text)
             if states is None:
                 raise ValueError("Unknown full-text state")
-            conditions.append(f"{DOCUMENT_FULL_TEXT} = ANY ({arg(states)}::text[])")
+            conditions.append(f"{document_full_text()} = ANY ({arg(states)}::text[])")
         if detail:
             conditions.append(
                 "EXISTS (SELECT FROM keyword.full_texts AS f"
@@ -812,7 +813,7 @@ def document_filter(params: dict[str, list[str]], indexed: bool) -> tuple[str, l
 async def db_documents(connection: Any, params: dict[str, list[str]]) -> dict[str, Any]:
     indexed = await has_keyword_index(connection)
     where, args = document_filter(params, indexed)
-    state = DOCUMENT_FULL_TEXT if indexed else "NULL::text"
+    state = document_full_text() if indexed else "NULL::text"
     sort = DOCUMENT_SORTS.get(first(params, "sort") or "changed")
     if sort is None:
         raise ValueError("Unknown sort column")
@@ -891,19 +892,36 @@ async def db_prefilter_documents(connection: Any, ids: list[str]) -> dict[str, A
     return {"rows": rows}
 
 
+DROPS_TABLE = False
+"""Whether the database has the drop list of #92 (db/init/05-document-drops.sql); `run_db` checks
+it before every query, so the version below matches the matcher's on old and new databases."""
+
+
+async def note_drops_table(connection: Any) -> None:
+    global DROPS_TABLE
+    DROPS_TABLE = bool(await connection.fetchval(DROPS_EXIST))
+
+
 def version(document: str) -> str:
-    """The version of `document` for its indexes: its last change, or a later stored transcript.
+    """The version of `document` for its indexes: its last change, a later stored transcript, or
+    the time a person's drop took effect, whichever is latest.
 
     `VERSION` in matcher/db/src/documents.ts.
     """
+    drop = (
+        f", (SELECT dr.effect_at FROM document_drops AS dr WHERE dr.document_id = {document}.id)"
+        if DROPS_TABLE
+        else ""
+    )
     return (
         f"greatest({document}.changed_at, (SELECT t.read_at FROM transcripts AS t"
-        f" WHERE t.document_id = {document}.id AND t.status <> 'failed'))"
+        f" WHERE t.document_id = {document}.id AND t.status <> 'failed'){drop})"
     )
 
 
-INDEX_CURRENT = f"i.document_changed_at = date_trunc('milliseconds', {version('d')})"
-"""An index row `i` holds the current version of its document `d` (`toIndex` in @matcher/db)."""
+def index_current() -> str:
+    """An index row `i` holds the current version of its document `d` (`toIndex` in @matcher/db)."""
+    return f"i.document_changed_at = date_trunc('milliseconds', {version('d')})"
 
 
 async def document_index(connection: Any, document_id: str) -> dict[str, Any] | None:
@@ -912,7 +930,7 @@ async def document_index(connection: Any, document_id: str) -> dict[str, Any] | 
         return None
     metadata = await fetch_json(
         connection,
-        f"""SELECT i.content, {INDEX_CURRENT} AS current
+        f"""SELECT i.content, {index_current()} AS current
             FROM keyword.documents AS i JOIN documents AS d ON d.id = i.document_id
             WHERE i.document_id = $1""",
         document_id,
@@ -921,7 +939,7 @@ async def document_index(connection: Any, document_id: str) -> dict[str, Any] | 
     full_text = await fetch_json(
         connection,
         f"""SELECT i.status, i.detail, i.url, i.media_type, i.words, i.fetched_at,
-                   {INDEX_CURRENT} AS current,
+                   {index_current()} AS current,
                    (SELECT count(DISTINCT word) FROM {words}) AS distinct_words,
                    (SELECT coalesce(jsonb_agg(top ORDER BY top.count DESC, top.word), '[]')
                     FROM (SELECT word, count(*) AS count FROM {words}
@@ -1121,11 +1139,12 @@ def full_text_state(row: str, document: str) -> str:
     )
 
 
-DOCUMENT_FULL_TEXT = (
-    f"coalesce((SELECT {full_text_state('f', 'documents')} FROM keyword.full_texts AS f"
-    " WHERE f.document_id = documents.id), 'new')"
-)
-"""The full-text state of a row of the documents table."""
+def document_full_text() -> str:
+    """The full-text state of a row of the documents table."""
+    return (
+        f"coalesce((SELECT {full_text_state('f', 'documents')} FROM keyword.full_texts AS f"
+        " WHERE f.document_id = documents.id), 'new')"
+    )
 FULL_TEXT_FILTERS = {
     "indexed": ["indexed"],
     "skipped": ["skipped"],
@@ -2644,6 +2663,86 @@ def prefilter_results() -> dict[str, Any]:
     return data
 
 
+DROPS_EXIST = "SELECT to_regclass('document_drops') IS NOT NULL"
+DROPS_MISSING = (
+    "No document_drops table: apply db/init/05-document-drops.sql (make db) to this database"
+)
+DROP_STATUSES = ("proposed", "accepted", "rejected")
+DROP_DECISIONS = {
+    # A decision only changes the rows it can: "Keep all on this page" never undoes an accepted
+    # drop. effect_at moves only when what is indexed changes (accept, undo of an accept).
+    "accept": "status = 'accepted', decided_at = now(), effect_at = now()"
+    " WHERE status <> 'accepted'",
+    "reject": "status = 'rejected', decided_at = now() WHERE status = 'proposed'",
+    "undo": "status = 'proposed', decided_at = now(),"
+    " effect_at = CASE WHEN status = 'accepted' THEN now() ELSE effect_at END"
+    " WHERE status <> 'proposed'",
+}
+
+
+async def prefilter_drops(connection: Any, params: dict[str, list[str]]) -> dict[str, Any]:
+    """A page of the drop list with what a card shows of each document, the counts per status and
+    who proposed drops. Rows of deleted documents are gone with them (ON DELETE CASCADE)."""
+    if not await connection.fetchval(DROPS_EXIST):
+        return {"missing": True}
+    status = first(params, "status") or "proposed"
+    if status not in DROP_STATUSES:
+        raise ValueError(f"status must be one of {', '.join(DROP_STATUSES)}")
+    proposer = first(params, "proposed_by") or None
+    limit, offset = page(params)
+    where = "dr.status = $1 AND ($2::text IS NULL OR dr.proposed_by = $2)"
+    total = await connection.fetchval(
+        f"SELECT count(*) FROM document_drops dr WHERE {where}", status, proposer
+    )
+    items = await fetch_json(
+        connection,
+        f"""SELECT dr.document_id AS id, dr.proposed_by, dr.reason, dr.status, dr.proposed_at,
+                   dr.decided_at, dr.note, d.title, d.source, d.content_type, d.publication_types,
+                   d.published_at, d.summary, d.canonical_url
+            FROM document_drops dr JOIN documents d ON d.id = dr.document_id
+            WHERE {where} ORDER BY dr.proposed_at, dr.document_id LIMIT $3 OFFSET $4""",
+        status,
+        proposer,
+        limit,
+        offset,
+    )
+    counts = {name: 0 for name in DROP_STATUSES}
+    for row in await connection.fetch(
+        "SELECT status, count(*) AS n FROM document_drops GROUP BY status"
+    ):
+        counts[row["status"]] = row["n"]
+    proposers = [
+        row["proposed_by"]
+        for row in await connection.fetch(
+            "SELECT DISTINCT proposed_by FROM document_drops ORDER BY proposed_by"
+        )
+    ]
+    return {"items": items, "total": total, "counts": counts, "proposers": proposers}
+
+
+async def save_prefilter_drops(connection: Any, body: dict[str, Any]) -> dict[str, Any]:
+    """A person's decision on drops: accept, reject or undo; returns how many rows changed."""
+    decision, note = body.get("decision"), body.get("note")
+    if decision not in DROP_DECISIONS:
+        raise ValueError(f"decision must be one of {', '.join(DROP_DECISIONS)}")
+    ids = string_list(body, "ids", 500)
+    if not ids:
+        raise ValueError("ids must not be empty")
+    if note is not None and (not isinstance(note, str) or len(note) > 500):
+        raise ValueError("note must be text of at most 500 characters")
+    if not await connection.fetchval(DROPS_EXIST):
+        raise RuntimeError(DROPS_MISSING)
+    set_note = ", note = $2" if note is not None else ""
+    changes, condition = DROP_DECISIONS[decision].split(" WHERE ")
+    rows = await connection.fetch(
+        f"UPDATE document_drops SET {changes}{set_note}"
+        f" WHERE document_id = ANY($1::text[]) AND {condition} RETURNING 1",
+        ids,
+        *([note.strip()] if note is not None else []),
+    )
+    return {"changed": len(rows)}
+
+
 PREFILTER_LOCK = threading.Lock()
 """One save at a time: two browser tabs must not overwrite each other's labels."""
 
@@ -2839,6 +2938,8 @@ class Handler(BaseHTTPRequestHandler):
             self.send_result(lambda: graph_normalize(kind, name, score))
         elif path == "/api/prefilter/results":
             self.send_result(prefilter_results)
+        elif path == "/api/prefilter/drops":
+            self.send_db(lambda connection: prefilter_drops(connection, parse_qs(url.query)))
         elif path == "/api/prefilter/labels":
             self.send_result(lambda: prefilter_labels(parse_qs(url.query)))
         elif path == "/api/match/meta":
@@ -2889,6 +2990,7 @@ class Handler(BaseHTTPRequestHandler):
             "/api/index/transcription",
             "/api/db/titles",
             "/api/prefilter/documents",
+            "/api/prefilter/drops",
             "/api/match",
             "/api/match/source",
             "/api/prefilter/label",
@@ -2911,6 +3013,10 @@ class Handler(BaseHTTPRequestHandler):
                 self.send_result(lambda: source(body))
             elif path == "/api/prefilter/label":
                 self.send_result(lambda: save_prefilter_label(body))
+            elif path == "/api/prefilter/drops":
+                self.send_db(
+                    lambda connection: save_prefilter_drops(connection, body), write=True
+                )
             elif path == "/api/prefilter/documents":
                 self.send_db(
                     lambda connection: db_prefilter_documents(
