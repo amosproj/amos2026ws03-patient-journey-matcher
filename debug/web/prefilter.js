@@ -13,22 +13,28 @@ const pfSetLabel = (name) => PF_SET_LABEL[name] || (name.startsWith("drops-rule:
 const PF_STATUS = { unchecked: ["LLM label", "none"], accepted: ["confirmed", "ok"], changed: ["changed", "plain"] };
 const PF_CHOICES = [["keep", null, "Keep"], ["unhelpful", 1, "Unhelpful 1"], ["unhelpful", 2, "Unhelpful 2"]];
 
+const PF_HASH = { label: "#prefilter", results: "#prefilter-results", drops: "#prefilter-drops" };
+
 function pfShow() {
-  history.replaceState(null, "", pf.tab === "results" ? "#prefilter-results" : "#prefilter");
+  history.replaceState(null, "", PF_HASH[pf.tab]);
   pfSwitchTab(pf.tab);
   pfRefresh();
 }
 
 function pfSwitchTab(tab) {
   pf.tab = tab;
-  $("#pftab-label").hidden = tab !== "label";
-  $("#pftab-results").hidden = tab !== "results";
+  for (const name of Object.keys(PF_HASH)) $(`#pftab-${name}`).hidden = tab !== name;
+  // The side panel filters what the tab on screen shows: labels, or the drop list.
+  $("#pf-label-filters").hidden = tab === "drops";
+  $("#pf-drop-filters").hidden = tab !== "drops";
   for (const button of document.querySelectorAll("#pf-tabs button")) button.classList.toggle("active", button.dataset.pftab === tab);
-  if (state.screen === "prefilter") history.replaceState(null, "", tab === "results" ? "#prefilter-results" : "#prefilter");
+  if (state.screen === "prefilter") history.replaceState(null, "", PF_HASH[tab]);
   if (tab === "results" && typeof pfResults === "function") pfResults();
+  if (tab === "drops" && typeof pdRefresh === "function") pdRefresh();
 }
 
 async function pfRefresh() {
+  pdLoadCounts(); // for the pipeline strip, also while another tab is on screen
   const filter = { set: $("#pf-set").value, status: $("#pf-status").value, label: $("#pf-label-filter").value };
   try {
     pf.data = await api(`/api/prefilter/labels?${queryString({ ...filter, limit: pf.size, offset: pf.offset })}`);
@@ -63,6 +69,7 @@ function pfRenderPipeline() {
     ["Classifier", model ? `trained on ${fmtCount(model.trained_on)} · ${model.threshold == null ? "no safe threshold" : `threshold ${model.threshold.toFixed(3)}`}` : "not trained",
       !model ? "todo" : model.threshold == null ? "warn" : "done", "train: logistic regression on the stored embeddings; the threshold drops ≥ 100 training documents with ≤ 1 % of them keep"],
     ["Measure", p.measured_at ? `on the whole table · ${fmtDateTime(p.measured_at)}` : "not yet", p.measured_at ? "done" : "todo", "measure: drops per approach on the whole table, and samples of drops to check (Results tab)"],
+    pdStep(),
   ];
   $("#pf-stats").replaceChildren(h("ol", { class: "pf-pipeline", "aria-label": "Study pipeline" },
     ...steps.map(([name, detail, status, tip]) => h("li", { class: `pf-step ${status}`, title: tip }, h("b", {}, name), h("small", {}, detail)))));
@@ -108,15 +115,24 @@ async function pfLoadDocuments() {
 // The label that counts: a person's, else the LLM's.
 const pfCounts = (item) => item.label != null ? [item.label, item.group] : item.proposal ? [item.proposal.label, item.proposal.group] : [null, null];
 
+// Title, source, type and abstract of a card's document `doc` (null: not stored).
+function pfDocument(id, doc, { loading = false, failed = false } = {}) {
+  const link = doc?.canonical_url || urlFor(id);
+  const title = loading ? `Loading ${id} …` : doc?.title || id;
+  return [
+    h("div", { class: "pf-title" }, link ? h("a", { href: link, target: "_blank", rel: "noopener" }, title) : title),
+    doc ? h("div", { class: "pf-meta" }, sourcePill(doc.source),
+      ...[typeLabel(doc.content_type), (doc.publication_types || []).join(", "), doc.published_at?.slice(0, 4)].filter(Boolean).map((text) => h("span", {}, text))) : null,
+    h("p", { class: "pf-abstract", title: "Click to show all", onclick: (event) => event.currentTarget.classList.toggle("open") },
+      loading ? "" : doc ? doc.summary || h("i", {}, "No abstract or description") : h("i", {}, failed ? "Could not load the document." : "No longer stored in this database. You can still label it from its source page.")),
+  ];
+}
+
 function pfCard(item, position) {
   const doc = pf.documents?.[item.id];
   const loading = !pf.documents && !pf.failed;
   const [label, group] = pfCounts(item);
   const [statusText, statusClass] = PF_STATUS[item.status] || [item.status, "plain"];
-  const link = doc?.canonical_url || urlFor(item.id);
-  const title = loading ? `Loading ${item.id} …` : doc?.title || item.id;
-  const abstract = h("p", { class: "pf-abstract", title: "Click to show all", onclick: (event) => event.currentTarget.classList.toggle("open") },
-    loading ? "" : doc ? doc.summary || h("i", {}, "No abstract or description") : h("i", {}, pf.failed ? "Could not load the document." : "No longer stored in this database. You can still label it from its source page."));
   const proposal = item.proposal
     ? h("div", { class: "pf-proposal" }, h("b", {}, `LLM: ${item.proposal.label}${item.proposal.group ? ` (group ${item.proposal.group})` : ""}`), h("span", {}, item.proposal.reason))
     : h("div", { class: "pf-proposal none" }, h("b", {}, "No proposal"), item.proposal_raw ? h("details", {}, h("summary", {}, "Raw answer"), h("pre", {}, item.proposal_raw)) : null);
@@ -129,11 +145,7 @@ function pfCard(item, position) {
   return h("article", { class: `panel pf-card pf-${label || "none"}`, "data-id": item.id },
     h("h3", {}, h("span", {}, `#${fmtCount(pf.offset + position + 1)}`), h("small", {}, item.sets.map(pfSetLabel).join(" · ")), h("span", { class: "spacer" }),
       h("span", { class: `pill ${statusClass}`, title: item.status === "unchecked" ? "No person has looked at it; the LLM's label counts" : null }, statusText)),
-    h("div", { class: "panel-body" },
-      h("div", { class: "pf-title" }, link ? h("a", { href: link, target: "_blank", rel: "noopener" }, title) : title),
-      doc ? h("div", { class: "pf-meta" }, sourcePill(doc.source),
-        ...[typeLabel(doc.content_type), (doc.publication_types || []).join(", "), doc.published_at?.slice(0, 4)].filter(Boolean).map((text) => h("span", {}, text))) : null,
-      abstract, proposal, choices, note));
+    h("div", { class: "panel-body" }, ...pfDocument(item.id, doc, { loading, failed: Boolean(pf.failed) }), proposal, choices, note));
 }
 
 // The first, the last and two pages either side of the current one; "…" for the gaps.
@@ -142,20 +154,20 @@ function pfPageNumbers(current, count) {
   return shown.flatMap((n, index) => index && n - shown[index - 1] > 1 ? ["…", n] : [n]);
 }
 
-function pfPager() {
-  const total = pf.data.total;
+// Pages of `total` cards from `offset`; `goTo(page)` shows another one. Both tabs share the size.
+function pfPager(total = pf.data.total, offset = pf.offset, goTo = pfGoTo) {
   const count = Math.max(1, Math.ceil(total / pf.size));
-  const current = Math.floor(pf.offset / pf.size) + 1;
-  const last = Math.min(pf.offset + pf.size, total);
+  const current = Math.floor(offset / pf.size) + 1;
+  const last = Math.min(offset + pf.size, total);
   const jump = h("input", { type: "number", min: "1", max: String(count), value: String(current), "aria-label": "Page number",
-    onchange: (event) => pfGoTo(Number(event.target.value)) });
+    onchange: (event) => goTo(Number(event.target.value)) });
   return h("nav", { class: "pf-nav", "aria-label": "Pages" },
-    h("span", { class: "muted" }, total ? `${fmtCount(pf.offset + 1)}–${fmtCount(last)} of ${fmtCount(total)}` : "0"),
+    h("span", { class: "muted" }, total ? `${fmtCount(offset + 1)}–${fmtCount(last)} of ${fmtCount(total)}` : "0"),
     h("div", { class: "pf-pages" },
-      h("button", { type: "button", disabled: current === 1, onclick: () => pfGoTo(current - 1), "aria-label": "Previous page" }, "‹"),
+      h("button", { type: "button", disabled: current === 1, onclick: () => goTo(current - 1), "aria-label": "Previous page" }, "‹"),
       ...pfPageNumbers(current, count).map((n) => n === "…" ? h("span", { class: "muted" }, "…")
-        : h("button", { type: "button", class: n === current ? "active" : null, "aria-current": n === current ? "page" : null, onclick: () => pfGoTo(n) }, String(n))),
-      h("button", { type: "button", disabled: current === count, onclick: () => pfGoTo(current + 1), "aria-label": "Next page" }, "›")),
+        : h("button", { type: "button", class: n === current ? "active" : null, "aria-current": n === current ? "page" : null, onclick: () => goTo(n) }, String(n))),
+      h("button", { type: "button", disabled: current === count, onclick: () => goTo(current + 1), "aria-label": "Next page" }, "›")),
     h("label", { class: "pf-jump" }, "Page ", jump, ` of ${fmtCount(count)}`,
       h("select", { "aria-label": "Documents per page", onchange: (event) => pfResize(Number(event.target.value)) },
         ...PF_SIZES.map((size) => h("option", { value: String(size), selected: size === pf.size }, `${size} per page`)))));
@@ -181,11 +193,12 @@ async function pfGoTo(page) {
   $("#pf-label").scrollTop = 0; // after the render: the browser keeps the old position otherwise
 }
 
-// A new page size keeps the first document on screen in view.
+// A new page size keeps the first document on screen in view, on the tab on screen.
 function pfResize(size) {
   try { localStorage.setItem("pf-size", String(size)); } catch { /* only a convenience */ }
   pf.size = size;
-  pfGoTo(Math.floor(pf.offset / size) + 1);
+  if (pf.tab === "drops") pdGoTo(Math.floor(pd.offset / size) + 1);
+  else pfGoTo(Math.floor(pf.offset / size) + 1);
 }
 
 function pfRenderCard(id) {
@@ -217,8 +230,141 @@ async function pfSave(id, label, group, note) {
 }
 
 for (const button of document.querySelectorAll("#pf-tabs button")) button.addEventListener("click", () => pfSwitchTab(button.dataset.pftab));
-$("#pf-refresh").addEventListener("click", pfRefresh);
+$("#pf-refresh").addEventListener("click", () => (pf.tab === "drops" ? pdRefresh() : pfRefresh()));
 for (const filter of ["#pf-set", "#pf-status", "#pf-label-filter"]) $(filter).addEventListener("change", () => { pf.offset = 0; pfRefresh(); });
+
+// ── Drops: the drop list (document_drops). A rule proposes, a person decides; only an accepted
+// drop leaves the indexes. Decisions are saved to the database the debug UI is connected to.
+// `counts` is null until loaded; `missing` when that database has no drop list table yet.
+const pd = { data: null, offset: 0, counts: null, missing: false, failed: null, saving: new Set() };
+const PD_STATUS = { proposed: ["proposed", "none"], accepted: ["dropped", "failed"], rejected: ["kept", "ok"] };
+const PD_MISSING = "No drop list yet: apply db/init/05-document-drops.sql (make db), then run scripts/prefilter.py propose-drops.";
+
+function pdStep() {
+  if (pd.missing) return ["Drops", "no drop list table", "todo", PD_MISSING];
+  if (!pd.counts) return ["Drops", pd.failed ? "database unavailable" : "…", "todo", "The drop list of the database the debug UI reads"];
+  const { proposed, accepted, rejected } = pd.counts;
+  return ["Drops", `${fmtCount(proposed)} to decide · ${fmtCount(accepted)} dropped · ${fmtCount(rejected)} kept`,
+    proposed + accepted + rejected === 0 ? "todo" : proposed ? "warn" : "done",
+    "propose-drops: a rule proposes; a person drops or keeps each one in the Drops tab. Only a dropped document leaves the indexes"];
+}
+
+async function pdLoadCounts() {
+  try {
+    const data = await api(`/api/prefilter/drops?${queryString({ limit: 1 })}`);
+    pd.missing = Boolean(data.missing);
+    pd.counts = data.missing ? null : data.counts;
+    pd.failed = null;
+  } catch (error) {
+    pd.counts = null;
+    pd.failed = error.message;
+  }
+  if (pf.data) pfRenderPipeline();
+  pdRenderCounts();
+}
+
+function pdRenderCounts() {
+  const target = $("#pf-drop-counts");
+  if (pd.missing) { target.replaceChildren(h("b", {}, "No drop list"), h("small", {}, PD_MISSING)); return; }
+  if (!pd.counts) { target.replaceChildren(h("b", {}, pd.failed ? "Database unavailable" : "Loading …"), pd.failed ? h("small", {}, pd.failed) : null); return; }
+  target.replaceChildren(h("b", {}, `${fmtCount(pd.counts.proposed)} to decide`),
+    h("small", {}, `${fmtCount(pd.counts.accepted)} dropped`), h("small", {}, `${fmtCount(pd.counts.rejected)} kept`));
+}
+
+async function pdRefresh() {
+  const filter = { status: $("#pf-drop-status").value, proposed_by: $("#pf-drop-proposer").value };
+  try {
+    pd.data = await api(`/api/prefilter/drops?${queryString({ ...filter, limit: pf.size, offset: pd.offset })}`);
+    $("#pf-error").textContent = "";
+  } catch (error) {
+    pd.data = null;
+    $("#pf-error").textContent = error.message;
+  }
+  if (pd.data && !pd.data.missing && !pd.data.items.length && pd.offset > 0) {
+    pd.offset = Math.max(0, Math.floor((pd.data.total - 1) / pf.size) * pf.size);
+    return pdRefresh();
+  }
+  if (pd.data && !pd.data.missing) {
+    const select = $("#pf-drop-proposer");
+    const chosen = select.value;
+    select.replaceChildren(h("option", { value: "" }, "All"), ...pd.data.proposers.map((name) => h("option", { value: name, selected: name === chosen }, name)));
+    pd.counts = pd.data.counts;
+  }
+  pd.missing = Boolean(pd.data?.missing);
+  pdRenderCounts();
+  if (pf.data) pfRenderPipeline();
+  pdRender();
+}
+
+function pdCard(item, position) {
+  const [statusText, statusClass] = PD_STATUS[item.status] || [item.status, "plain"];
+  const busy = pd.saving.has(item.id);
+  const note = h("input", { class: "pf-note", type: "text", maxlength: "500", placeholder: "Note (optional)", value: item.note || "", "aria-label": `Note for ${item.id}` });
+  const decide = (decision) => pdSave([item.id], decision, note.value);
+  const buttons = item.status === "proposed"
+    ? [h("button", { type: "button", class: "pd-drop", disabled: busy, onclick: () => decide("accept") }, "Drop"),
+      h("button", { type: "button", disabled: busy, onclick: () => decide("reject") }, "Keep")]
+    : [h("button", { type: "button", disabled: busy, onclick: () => decide("undo") }, "Undo")];
+  return h("article", { class: `panel pf-card pd-${item.status}`, "data-id": item.id },
+    h("h3", {}, h("span", {}, `#${fmtCount(pd.offset + position + 1)}`), h("small", {}, item.proposed_by), h("span", { class: "spacer" }),
+      h("span", { class: `pill ${statusClass}` }, statusText)),
+    h("div", { class: "panel-body" }, ...pfDocument(item.id, item),
+      h("div", { class: "pf-proposal" }, h("b", {}, "Why proposed"), h("span", {}, item.reason)),
+      h("div", { class: "pf-choices", role: "group", "aria-label": "Decision" }, ...buttons), note));
+}
+
+function pdRender() {
+  const target = $("#pf-drops");
+  if (!pd.data) { target.replaceChildren(h("div", { class: "empty" }, "Could not load the drop list.")); return; }
+  if (pd.data.missing) { target.replaceChildren(h("div", { class: "empty" }, PD_MISSING)); return; }
+  if (!pd.data.items.length) { target.replaceChildren(h("div", { class: "empty" }, "Nothing with this filter.")); return; }
+  const open = pd.data.items.filter((item) => item.status === "proposed").map((item) => item.id);
+  const pageAction = (text, armed, decision) => h("button", { type: "button", disabled: !open.length,
+    onclick: (event) => armOrRun(event.currentTarget, armed, () => pdSave(open, decision)) }, text);
+  const actions = h("div", { class: "pd-actions" },
+    h("span", { class: "muted" }, open.length ? `${fmtCount(open.length)} to decide on this page` : "Everything on this page is decided"),
+    pageAction("Drop all on this page", `Click again to drop ${open.length}`, "accept"),
+    pageAction("Keep all on this page", `Click again to keep ${open.length}`, "reject"));
+  target.replaceChildren(actions, pfPager(pd.data.total, pd.offset, pdGoTo),
+    h("div", { class: "pf-grid" }, ...pd.data.items.map(pdCard)), pfPager(pd.data.total, pd.offset, pdGoTo));
+}
+
+async function pdGoTo(page) {
+  if (!pd.data || pd.data.missing || !Number.isFinite(page)) return;
+  const count = Math.max(1, Math.ceil(pd.data.total / pf.size));
+  pd.offset = (Math.min(Math.max(1, Math.round(page)), count) - 1) * pf.size;
+  await pdRefresh();
+  $("#pf-drops").scrollTop = 0;
+}
+
+// The decided cards stay where they are, with their new state: nothing jumps away under the
+// pointer. Refresh applies the filter again. What changes follows the server's rules: accept and
+// reject only touch proposed cards on a page, undo puts a card back to proposed.
+const PD_AFTER = { accept: "accepted", reject: "rejected", undo: "proposed" };
+
+async function pdSave(ids, decision, note) {
+  if (!pd.data?.items || ids.some((id) => pd.saving.has(id))) return;
+  for (const id of ids) pd.saving.add(id);
+  pdRender();
+  try {
+    await api("/api/prefilter/drops", { method: "POST", body: JSON.stringify({ ids, decision, ...(note != null ? { note } : {}) }) });
+    $("#pf-error").textContent = "";
+    for (const item of pd.data.items) {
+      if (!ids.includes(item.id)) continue;
+      const changes = decision === "undo" ? item.status !== "proposed" : decision === "accept" ? item.status !== "accepted" : item.status === "proposed";
+      if (changes) item.status = PD_AFTER[decision];
+      if (note != null) item.note = note.trim();
+    }
+  } catch (error) {
+    $("#pf-error").textContent = error.message;
+  } finally {
+    for (const id of ids) pd.saving.delete(id);
+    pdRender();
+    pdLoadCounts();
+  }
+}
+
+for (const filter of ["#pf-drop-status", "#pf-drop-proposer"]) $(filter).addEventListener("change", () => { pd.offset = 0; pdRefresh(); });
 
 // ── Results: what scripts/prefilter.py measure wrote, against the success criteria of #92 ──
 const PF_APPROACH = { rules: "Rules", "rules+model": "Rules + classifier" };

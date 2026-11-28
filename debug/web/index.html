@@ -512,6 +512,7 @@
 <div class="layout" id="prefilter-view" hidden>
   <aside class="side" id="prefilter-controls">
     <div class="side-head"><h2>Labels <i class="info" tabindex="0" data-tip="The document pre-filter study (#92): can metadata rules or a small classifier drop documents that help no patient? An LLM labels each sampled document keep or unhelpful (group 1: not usable for patients, group 2: little information); its label counts unless a person changes it on a card. Each card shows the label that counts. Labels are saved to research/prefilter/labels.json, never to the database. scripts/prefilter.py makes the samples and the results; method and findings: research/document-prefilter.md.">i</i></h2><button type="button" class="link-button" id="pf-refresh">↻ Refresh</button></div>
+    <div id="pf-label-filters">
     <label class="field" for="pf-set">Set</label>
     <select id="pf-set"><option value="">All sets</option></select>
     <label class="field" for="pf-status">Status</label>
@@ -529,14 +530,27 @@
       <option value="none">No label</option>
     </select>
     <div class="db-conn" id="pf-progress"><b>Loading …</b></div>
+    </div>
+    <div id="pf-drop-filters" hidden>
+    <label class="field" for="pf-drop-status">Status</label>
+    <select id="pf-drop-status">
+      <option value="proposed">To decide</option>
+      <option value="accepted">Dropped</option>
+      <option value="rejected">Kept</option>
+    </select>
+    <label class="field" for="pf-drop-proposer">Proposed by</label>
+    <select id="pf-drop-proposer"><option value="">All</option></select>
+    <div class="db-conn" id="pf-drop-counts"><b>Loading …</b></div>
+    </div>
     <div class="error" id="pf-error"></div>
   </aside>
   <main aria-label="Pre-filter">
     <div class="stats" id="pf-stats"></div>
-    <nav class="tabs" id="pf-tabs"><button data-pftab="label" class="active">Label</button><button data-pftab="results">Results</button></nav>
+    <nav class="tabs" id="pf-tabs"><button data-pftab="label" class="active">Label</button><button data-pftab="results">Results</button><button data-pftab="drops">Drops</button></nav>
     <div class="content">
       <section id="pftab-label"><div class="panels" id="pf-label"></div></section>
       <section id="pftab-results" hidden><div class="panels" id="pf-results"></div></section>
+      <section id="pftab-drops" hidden><div class="panels" id="pf-drops"></div></section>
     </div>
   </main>
 </div>

@@ -2,7 +2,7 @@
 
 Can cheap rules or a small classifier drop documents that help no patient, before they are indexed? We tested both on the VM's `documents` table (612,527 documents, 28 November 2026).
 
-**Result: no.** No approach meets both bars at once. The only safe rule drops 0.04% of the table. Every rule that drops 2% or more also drops many documents that could help a patient. The classifier finds no safe cut-off at all. We do not integrate a pre-filter.
+**Result: no.** No approach meets both bars at once. The only safe rule drops 0.04% of the table. Every rule that drops 2% or more also drops many documents that could help a patient. The classifier finds no safe cut-off at all. So nothing is dropped automatically. A rule only proposes drops (`scripts/prefilter.py propose-drops`, `erratum` by default), and a person drops or keeps each one in the Drops tab of the Pre-filter screen. Only a dropped document leaves the indexes and the match results.
 
 ## Question and success criteria
 

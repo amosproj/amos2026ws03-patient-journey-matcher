@@ -127,8 +127,8 @@ async function init() {
   } else if (hash === "match" || hash.startsWith("match-")) {
     if (["rankings", "answer", "client"].includes(hash.slice(6))) mt.tab = hash.slice(6);
     showScreen("match");
-  } else if (hash === "prefilter" || hash === "prefilter-results") {
-    if (hash === "prefilter-results") pf.tab = "results";
+  } else if (hash === "prefilter" || hash === "prefilter-results" || hash === "prefilter-drops") {
+    if (hash !== "prefilter") pf.tab = hash.slice("prefilter-".length);
     showScreen("prefilter");
   } else if (hash === "info" || hash.startsWith("info-")) {
     if (["running", "topics"].includes(hash.slice(5))) info.tab = hash.slice(5);

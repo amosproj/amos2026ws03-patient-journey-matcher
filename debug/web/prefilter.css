@@ -38,7 +38,7 @@
 #pf-results td.num { text-align: right; font-variant-numeric: tabular-nums; }
 #pf-results td.bad { color: var(--error); font-weight: 650; }
 #pf-results .pf-variant td { color: var(--muted); }
-#pftab-label:not([hidden]), #pftab-results:not([hidden]) { position: absolute; inset: 0; display: flex; flex-direction: column; }
+#pftab-label:not([hidden]), #pftab-results:not([hidden]), #pftab-drops:not([hidden]) { position: absolute; inset: 0; display: flex; flex-direction: column; }
 .pf-pipeline { display: flex; flex-wrap: wrap; gap: 6px 0; margin: 0; padding: 8px 12px; list-style: none; counter-reset: step; }
 .pf-step { position: relative; display: grid; gap: 1px; padding: 0 22px 0 18px; counter-increment: step; cursor: help; }
 .pf-step::before { content: ""; position: absolute; left: 4px; top: 5px; width: 8px; height: 8px; border-radius: 50%; background: var(--line-strong); }
@@ -49,3 +49,12 @@
 .pf-step b { font-size: 12px; }
 .pf-step b::before { content: counter(step) ". "; color: var(--muted); font-weight: 500; }
 .pf-step small { color: var(--muted); font-size: 11px; white-space: nowrap; }
+.pf-card.pd-accepted { box-shadow: inset 3px 0 var(--critical); }
+.pf-card.pd-rejected { box-shadow: inset 3px 0 var(--good); }
+.pf-choices button.pd-drop:hover:not(:disabled) { background: var(--critical); color: #fff; }
+.pd-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; font-size: 13px; }
+.pd-actions .muted { margin-right: auto; }
+.pd-actions button { padding: 6px 10px; border: 1px solid var(--line-strong); border-radius: 6px; background: var(--panel); color: var(--text); cursor: pointer; font-weight: 600; }
+.pd-actions button:hover:not(:disabled) { background: var(--hover); }
+.pd-actions button:disabled { opacity: .45; cursor: default; }
+.pd-actions button.armed { background: var(--critical); border-color: var(--critical); color: #fff; }
